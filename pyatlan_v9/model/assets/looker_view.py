@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .looker_related import RelatedLookerField, RelatedLookerProject, RelatedLookerView
+from .looker_related import RelatedLookerField, RelatedLookerProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class LookerView(Asset):
@@ -187,7 +190,9 @@ class LookerView(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -206,41 +211,7 @@ class LookerView(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.project is UNSET:
-                errors.append("project is required for creation")
-            if self.project_name is UNSET:
-                errors.append("project_name is required for creation")
-        if errors:
-            raise ValueError(f"LookerView validation failed: {errors}")
-
-    def minimize(self) -> "LookerView":
-        self.validate()
-        return LookerView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLookerView":
-        if self.guid is not UNSET:
-            return RelatedLookerView(guid=self.guid)
-        return RelatedLookerView(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -293,6 +264,7 @@ class LookerView(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LookerViewAttributes(AssetAttributes):
     """LookerView-specific attributes for nested API format."""
 
@@ -307,6 +279,7 @@ class LookerViewAttributes(AssetAttributes):
 
     looker_slug: str | None | UnsetType = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
+
 
 class LookerViewRelationshipAttributes(AssetRelationshipAttributes):
     """LookerView-specific relationship attributes for nested API format."""
@@ -389,7 +362,9 @@ class LookerViewRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -401,6 +376,7 @@ class LookerViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class LookerViewNested(AssetNested):
     """LookerView in nested API format for high-performance serialization."""
 
@@ -408,6 +384,7 @@ class LookerViewNested(AssetNested):
     relationship_attributes: LookerViewRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: LookerViewRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: LookerViewRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -447,6 +424,7 @@ _LOOKER_VIEW_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_looker_view_attrs(attrs: LookerViewAttributes, obj: LookerView) -> None:
     """Populate LookerView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -454,6 +432,7 @@ def _populate_looker_view_attrs(attrs: LookerViewAttributes, obj: LookerView) ->
     attrs.looker_view_file_path = obj.looker_view_file_path
     attrs.looker_file_name = obj.looker_file_name
     attrs.looker_slug = obj.looker_slug
+
 
 def _extract_looker_view_attrs(attrs: LookerViewAttributes) -> dict:
     """Extract all LookerView attributes from the attrs struct into a flat dict."""
@@ -463,6 +442,7 @@ def _extract_looker_view_attrs(attrs: LookerViewAttributes) -> dict:
     result["looker_file_name"] = attrs.looker_file_name
     result["looker_slug"] = attrs.looker_slug
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -503,16 +483,19 @@ def _looker_view_to_nested(looker_view: LookerView) -> LookerViewNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _looker_view_from_nested(nested: LookerViewNested) -> LookerView:
     """Convert nested format to flat LookerView."""
-    attrs = nested.attributes if nested.attributes is not UNSET else LookerViewAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else LookerViewAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_VIEW_REL_FIELDS,
-        LookerViewRelationshipAttributes
+        LookerViewRelationshipAttributes,
     )
     return LookerView(
         guid=nested.guid,
@@ -539,6 +522,7 @@ def _looker_view_from_nested(nested: LookerViewNested) -> LookerView:
         **merged_rels,
     )
 
+
 def _looker_view_to_nested_bytes(looker_view: LookerView, serde: Serde) -> bytes:
     """Convert flat LookerView to nested JSON bytes."""
     return serde.encode(_looker_view_to_nested(looker_view))
@@ -549,6 +533,7 @@ def _looker_view_from_nested_bytes(data: bytes, serde: Serde) -> LookerView:
     nested = serde.decode(data, LookerViewNested)
     return _looker_view_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -558,7 +543,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 LookerView.PROJECT_NAME = KeywordField("projectName", "projectName")
-LookerView.LOOKER_VIEW_FILE_PATH = KeywordField("lookerViewFilePath", "lookerViewFilePath")
+LookerView.LOOKER_VIEW_FILE_PATH = KeywordField(
+    "lookerViewFilePath", "lookerViewFilePath"
+)
 LookerView.LOOKER_FILE_NAME = KeywordField("lookerFileName", "lookerFileName")
 LookerView.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
 LookerView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

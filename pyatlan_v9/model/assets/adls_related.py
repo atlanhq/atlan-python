@@ -45,6 +45,7 @@ class RelatedADLS(RelatedObjectStore):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ADLS"
 
+
 class RelatedADLSAccount(RelatedADLS):
     """
     Related entity reference for ADLSAccount assets.
@@ -89,6 +90,7 @@ class RelatedADLSAccount(RelatedADLS):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ADLSAccount"
 
+
 class RelatedADLSContainer(RelatedADLS):
     """
     Related entity reference for ADLSContainer assets.
@@ -120,6 +122,7 @@ class RelatedADLSContainer(RelatedADLS):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ADLSContainer"
+
 
 class RelatedADLSObject(RelatedADLS):
     """
@@ -167,7 +170,9 @@ class RelatedADLSObject(RelatedADLS):
     adls_object_content_type: str | None | UnsetType = UNSET
     """Content type of this object."""
 
-    adls_object_content_md5_hash: str | None | UnsetType = msgspec.field(default=UNSET, name="adlsObjectContentMD5Hash")
+    adls_object_content_md5_hash: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="adlsObjectContentMD5Hash"
+    )
     """MD5 hash of this object's contents."""
 
     adls_object_content_language: str | None | UnsetType = UNSET

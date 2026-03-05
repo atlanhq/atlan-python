@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .catalog_related import RelatedInsight
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Insight(Asset):
@@ -162,7 +163,9 @@ class Insight(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class Insight(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Insight"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Insight validation failed: {errors}")
-
-    def minimize(self) -> "Insight":
-        self.validate()
-        return Insight(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedInsight":
-        if self.guid is not UNSET:
-            return RelatedInsight(guid=self.guid)
-        return RelatedInsight(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class Insight(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class InsightAttributes(AssetAttributes):
     """Insight-specific attributes for nested API format."""
 
     pass
+
 
 class InsightRelationshipAttributes(AssetRelationshipAttributes):
     """Insight-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class InsightRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,6 +327,7 @@ class InsightRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class InsightNested(AssetNested):
     """Insight in nested API format for high-performance serialization."""
 
@@ -351,6 +335,7 @@ class InsightNested(AssetNested):
     relationship_attributes: InsightRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: InsightRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: InsightRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +373,16 @@ _INSIGHT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_insight_attrs(attrs: InsightAttributes, obj: Insight) -> None:
     """Populate Insight-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_insight_attrs(attrs: InsightAttributes) -> dict:
     """Extract all Insight attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,6 +423,7 @@ def _insight_to_nested(insight: Insight) -> InsightNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _insight_from_nested(nested: InsightNested) -> Insight:
     """Convert nested format to flat Insight."""
     attrs = nested.attributes if nested.attributes is not UNSET else InsightAttributes()
@@ -444,7 +433,7 @@ def _insight_from_nested(nested: InsightNested) -> Insight:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _INSIGHT_REL_FIELDS,
-        InsightRelationshipAttributes
+        InsightRelationshipAttributes,
     )
     return Insight(
         guid=nested.guid,
@@ -471,6 +460,7 @@ def _insight_from_nested(nested: InsightNested) -> Insight:
         **merged_rels,
     )
 
+
 def _insight_to_nested_bytes(insight: Insight, serde: Serde) -> bytes:
     """Convert flat Insight to nested JSON bytes."""
     return serde.encode(_insight_to_nested(insight))
@@ -480,6 +470,7 @@ def _insight_from_nested_bytes(data: bytes, serde: Serde) -> Insight:
     """Convert nested JSON bytes to flat Insight."""
     nested = serde.decode(data, InsightNested)
     return _insight_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

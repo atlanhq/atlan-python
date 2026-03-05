@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .salesforce_related import RelatedSalesforce
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Salesforce(Asset):
@@ -170,7 +171,9 @@ class Salesforce(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -184,30 +187,6 @@ class Salesforce(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Salesforce"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Salesforce validation failed: {errors}")
-
-    def minimize(self) -> "Salesforce":
-        self.validate()
-        return Salesforce(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSalesforce":
-        if self.guid is not UNSET:
-            return RelatedSalesforce(guid=self.guid)
-        return RelatedSalesforce(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -260,6 +239,7 @@ class Salesforce(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SalesforceAttributes(AssetAttributes):
     """Salesforce-specific attributes for nested API format."""
 
@@ -268,6 +248,7 @@ class SalesforceAttributes(AssetAttributes):
 
     api_name: str | None | UnsetType = UNSET
     """Name of this asset in the Salesforce API."""
+
 
 class SalesforceRelationshipAttributes(AssetRelationshipAttributes):
     """Salesforce-specific relationship attributes for nested API format."""
@@ -344,7 +325,9 @@ class SalesforceRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -356,6 +339,7 @@ class SalesforceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SalesforceNested(AssetNested):
     """Salesforce in nested API format for high-performance serialization."""
 
@@ -363,6 +347,7 @@ class SalesforceNested(AssetNested):
     relationship_attributes: SalesforceRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: SalesforceRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: SalesforceRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -400,11 +385,13 @@ _SALESFORCE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_salesforce_attrs(attrs: SalesforceAttributes, obj: Salesforce) -> None:
     """Populate Salesforce-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.organization_qualified_name = obj.organization_qualified_name
     attrs.api_name = obj.api_name
+
 
 def _extract_salesforce_attrs(attrs: SalesforceAttributes) -> dict:
     """Extract all Salesforce attributes from the attrs struct into a flat dict."""
@@ -412,6 +399,7 @@ def _extract_salesforce_attrs(attrs: SalesforceAttributes) -> dict:
     result["organization_qualified_name"] = attrs.organization_qualified_name
     result["api_name"] = attrs.api_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -452,16 +440,19 @@ def _salesforce_to_nested(salesforce: Salesforce) -> SalesforceNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _salesforce_from_nested(nested: SalesforceNested) -> Salesforce:
     """Convert nested format to flat Salesforce."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SalesforceAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else SalesforceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SALESFORCE_REL_FIELDS,
-        SalesforceRelationshipAttributes
+        SalesforceRelationshipAttributes,
     )
     return Salesforce(
         guid=nested.guid,
@@ -488,6 +479,7 @@ def _salesforce_from_nested(nested: SalesforceNested) -> Salesforce:
         **merged_rels,
     )
 
+
 def _salesforce_to_nested_bytes(salesforce: Salesforce, serde: Serde) -> bytes:
     """Convert flat Salesforce to nested JSON bytes."""
     return serde.encode(_salesforce_to_nested(salesforce))
@@ -498,6 +490,7 @@ def _salesforce_from_nested_bytes(data: bytes, serde: Serde) -> Salesforce:
     nested = serde.decode(data, SalesforceNested)
     return _salesforce_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -506,7 +499,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Salesforce.ORGANIZATION_QUALIFIED_NAME = KeywordField("organizationQualifiedName", "organizationQualifiedName")
+Salesforce.ORGANIZATION_QUALIFIED_NAME = KeywordField(
+    "organizationQualifiedName", "organizationQualifiedName"
+)
 Salesforce.API_NAME = KeywordField("apiName", "apiName")
 Salesforce.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Salesforce.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

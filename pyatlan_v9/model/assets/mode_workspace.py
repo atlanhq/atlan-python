@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .mode_related import RelatedModeCollection, RelatedModeWorkspace
+from .mode_related import RelatedModeCollection
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ModeWorkspace(Asset):
@@ -206,7 +209,9 @@ class ModeWorkspace(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -220,30 +225,6 @@ class ModeWorkspace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ModeWorkspace"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"ModeWorkspace validation failed: {errors}")
-
-    def minimize(self) -> "ModeWorkspace":
-        self.validate()
-        return ModeWorkspace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedModeWorkspace":
-        if self.guid is not UNSET:
-            return RelatedModeWorkspace(guid=self.guid)
-        return RelatedModeWorkspace(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -296,6 +277,7 @@ class ModeWorkspace(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ModeWorkspaceAttributes(AssetAttributes):
     """ModeWorkspace-specific attributes for nested API format."""
 
@@ -328,6 +310,7 @@ class ModeWorkspaceAttributes(AssetAttributes):
 
     mode_query_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the query for the Mode asset."""
+
 
 class ModeWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     """ModeWorkspace-specific relationship attributes for nested API format."""
@@ -407,7 +390,9 @@ class ModeWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -419,13 +404,19 @@ class ModeWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ModeWorkspaceNested(AssetNested):
     """ModeWorkspace in nested API format for high-performance serialization."""
 
     attributes: ModeWorkspaceAttributes | UnsetType = UNSET
     relationship_attributes: ModeWorkspaceRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ModeWorkspaceRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: ModeWorkspaceRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: ModeWorkspaceRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: ModeWorkspaceRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -464,7 +455,10 @@ _MODE_WORKSPACE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_mode_workspace_attrs(attrs: ModeWorkspaceAttributes, obj: ModeWorkspace) -> None:
+
+def _populate_mode_workspace_attrs(
+    attrs: ModeWorkspaceAttributes, obj: ModeWorkspace
+) -> None:
     """Populate ModeWorkspace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.mode_collection_count = obj.mode_collection_count
@@ -477,6 +471,7 @@ def _populate_mode_workspace_attrs(attrs: ModeWorkspaceAttributes, obj: ModeWork
     attrs.mode_report_qualified_name = obj.mode_report_qualified_name
     attrs.mode_query_name = obj.mode_query_name
     attrs.mode_query_qualified_name = obj.mode_query_qualified_name
+
 
 def _extract_mode_workspace_attrs(attrs: ModeWorkspaceAttributes) -> dict:
     """Extract all ModeWorkspace attributes from the attrs struct into a flat dict."""
@@ -492,6 +487,7 @@ def _extract_mode_workspace_attrs(attrs: ModeWorkspaceAttributes) -> dict:
     result["mode_query_name"] = attrs.mode_query_name
     result["mode_query_qualified_name"] = attrs.mode_query_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -532,16 +528,21 @@ def _mode_workspace_to_nested(mode_workspace: ModeWorkspace) -> ModeWorkspaceNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _mode_workspace_from_nested(nested: ModeWorkspaceNested) -> ModeWorkspace:
     """Convert nested format to flat ModeWorkspace."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ModeWorkspaceAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ModeWorkspaceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MODE_WORKSPACE_REL_FIELDS,
-        ModeWorkspaceRelationshipAttributes
+        ModeWorkspaceRelationshipAttributes,
     )
     return ModeWorkspace(
         guid=nested.guid,
@@ -568,7 +569,10 @@ def _mode_workspace_from_nested(nested: ModeWorkspaceNested) -> ModeWorkspace:
         **merged_rels,
     )
 
-def _mode_workspace_to_nested_bytes(mode_workspace: ModeWorkspace, serde: Serde) -> bytes:
+
+def _mode_workspace_to_nested_bytes(
+    mode_workspace: ModeWorkspace, serde: Serde
+) -> bytes:
     """Convert flat ModeWorkspace to nested JSON bytes."""
     return serde.encode(_mode_workspace_to_nested(mode_workspace))
 
@@ -577,6 +581,7 @@ def _mode_workspace_from_nested_bytes(data: bytes, serde: Serde) -> ModeWorkspac
     """Convert nested JSON bytes to flat ModeWorkspace."""
     nested = serde.decode(data, ModeWorkspaceNested)
     return _mode_workspace_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -588,16 +593,30 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ModeWorkspace.MODE_COLLECTION_COUNT = NumericField("modeCollectionCount", "modeCollectionCount")
+ModeWorkspace.MODE_COLLECTION_COUNT = NumericField(
+    "modeCollectionCount", "modeCollectionCount"
+)
 ModeWorkspace.MODE_ID = KeywordField("modeId", "modeId")
 ModeWorkspace.MODE_TOKEN = KeywordTextField("modeToken", "modeToken", "modeToken.text")
-ModeWorkspace.MODE_WORKSPACE_NAME = KeywordField("modeWorkspaceName", "modeWorkspaceName")
-ModeWorkspace.MODE_WORKSPACE_USERNAME = KeywordTextField("modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text")
-ModeWorkspace.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField("modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName.text")
+ModeWorkspace.MODE_WORKSPACE_NAME = KeywordField(
+    "modeWorkspaceName", "modeWorkspaceName"
+)
+ModeWorkspace.MODE_WORKSPACE_USERNAME = KeywordTextField(
+    "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
+)
+ModeWorkspace.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName.text",
+)
 ModeWorkspace.MODE_REPORT_NAME = KeywordField("modeReportName", "modeReportName")
-ModeWorkspace.MODE_REPORT_QUALIFIED_NAME = KeywordTextField("modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text")
+ModeWorkspace.MODE_REPORT_QUALIFIED_NAME = KeywordTextField(
+    "modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text"
+)
 ModeWorkspace.MODE_QUERY_NAME = KeywordField("modeQueryName", "modeQueryName")
-ModeWorkspace.MODE_QUERY_QUALIFIED_NAME = KeywordTextField("modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text")
+ModeWorkspace.MODE_QUERY_QUALIFIED_NAME = KeywordTextField(
+    "modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text"
+)
 ModeWorkspace.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModeWorkspace.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModeWorkspace.ANOMALO_CHECKS = RelationField("anomaloChecks")

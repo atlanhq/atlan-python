@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .semantic_related import RelatedSemanticMeasure, RelatedSemanticModel
+from .semantic_related import RelatedSemanticModel
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SemanticMeasure(Asset):
@@ -172,7 +175,9 @@ class SemanticMeasure(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_model: RelatedSemanticModel | None | UnsetType = UNSET
@@ -194,39 +199,7 @@ class SemanticMeasure(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.semantic_model is UNSET:
-                errors.append("semantic_model is required for creation")
-        if errors:
-            raise ValueError(f"SemanticMeasure validation failed: {errors}")
-
-    def minimize(self) -> "SemanticMeasure":
-        self.validate()
-        return SemanticMeasure(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSemanticMeasure":
-        if self.guid is not UNSET:
-            return RelatedSemanticMeasure(guid=self.guid)
-        return RelatedSemanticMeasure(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -257,7 +230,9 @@ class SemanticMeasure(Asset):
         return _semantic_measure_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SemanticMeasure:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SemanticMeasure:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -279,6 +254,7 @@ class SemanticMeasure(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SemanticMeasureAttributes(AssetAttributes):
     """SemanticMeasure-specific attributes for nested API format."""
 
@@ -287,6 +263,7 @@ class SemanticMeasureAttributes(AssetAttributes):
 
     semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
+
 
 class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     """SemanticMeasure-specific relationship attributes for nested API format."""
@@ -363,7 +340,9 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_model: RelatedSemanticModel | None | UnsetType = UNSET
@@ -378,13 +357,19 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SemanticMeasureNested(AssetNested):
     """SemanticMeasure in nested API format for high-performance serialization."""
 
     attributes: SemanticMeasureAttributes | UnsetType = UNSET
     relationship_attributes: SemanticMeasureRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SemanticMeasureRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SemanticMeasureRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        SemanticMeasureRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        SemanticMeasureRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -423,11 +408,15 @@ _SEMANTIC_MEASURE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_semantic_measure_attrs(attrs: SemanticMeasureAttributes, obj: SemanticMeasure) -> None:
+
+def _populate_semantic_measure_attrs(
+    attrs: SemanticMeasureAttributes, obj: SemanticMeasure
+) -> None:
     """Populate SemanticMeasure-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
+
 
 def _extract_semantic_measure_attrs(attrs: SemanticMeasureAttributes) -> dict:
     """Extract all SemanticMeasure attributes from the attrs struct into a flat dict."""
@@ -436,18 +425,23 @@ def _extract_semantic_measure_attrs(attrs: SemanticMeasureAttributes) -> dict:
     result["semantic_type"] = attrs.semantic_type
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _semantic_measure_to_nested(semantic_measure: SemanticMeasure) -> SemanticMeasureNested:
+def _semantic_measure_to_nested(
+    semantic_measure: SemanticMeasure,
+) -> SemanticMeasureNested:
     """Convert flat SemanticMeasure to nested format."""
     attrs = SemanticMeasureAttributes()
     _populate_semantic_measure_attrs(attrs, semantic_measure)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        semantic_measure, _SEMANTIC_MEASURE_REL_FIELDS, SemanticMeasureRelationshipAttributes
+        semantic_measure,
+        _SEMANTIC_MEASURE_REL_FIELDS,
+        SemanticMeasureRelationshipAttributes,
     )
     return SemanticMeasureNested(
         guid=semantic_measure.guid,
@@ -475,16 +469,21 @@ def _semantic_measure_to_nested(semantic_measure: SemanticMeasure) -> SemanticMe
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _semantic_measure_from_nested(nested: SemanticMeasureNested) -> SemanticMeasure:
     """Convert nested format to flat SemanticMeasure."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SemanticMeasureAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SemanticMeasureAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SEMANTIC_MEASURE_REL_FIELDS,
-        SemanticMeasureRelationshipAttributes
+        SemanticMeasureRelationshipAttributes,
     )
     return SemanticMeasure(
         guid=nested.guid,
@@ -511,7 +510,10 @@ def _semantic_measure_from_nested(nested: SemanticMeasureNested) -> SemanticMeas
         **merged_rels,
     )
 
-def _semantic_measure_to_nested_bytes(semantic_measure: SemanticMeasure, serde: Serde) -> bytes:
+
+def _semantic_measure_to_nested_bytes(
+    semantic_measure: SemanticMeasure, serde: Serde
+) -> bytes:
     """Convert flat SemanticMeasure to nested JSON bytes."""
     return serde.encode(_semantic_measure_to_nested(semantic_measure))
 
@@ -521,6 +523,7 @@ def _semantic_measure_from_nested_bytes(data: bytes, serde: Serde) -> SemanticMe
     nested = serde.decode(data, SemanticMeasureNested)
     return _semantic_measure_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -529,7 +532,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SemanticMeasure.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
+SemanticMeasure.SEMANTIC_EXPRESSION = KeywordField(
+    "semanticExpression", "semanticExpression"
+)
 SemanticMeasure.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
 SemanticMeasure.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SemanticMeasure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -539,7 +544,9 @@ SemanticMeasure.APPLICATION_FIELD = RelationField("applicationField")
 SemanticMeasure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SemanticMeasure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SemanticMeasure.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SemanticMeasure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SemanticMeasure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SemanticMeasure.METRICS = RelationField("metrics")
 SemanticMeasure.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SemanticMeasure.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

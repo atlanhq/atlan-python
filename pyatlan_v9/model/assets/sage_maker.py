@@ -43,15 +43,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .sage_maker_related import RelatedSageMaker
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SageMaker(Asset):
@@ -111,25 +113,39 @@ class SageMaker(Asset):
     sage_maker_s3_uri: str | None | UnsetType = UNSET
     """Primary S3 URI associated with this SageMaker asset."""
 
-    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIReliabilityAndSafetyConfig"
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     aws_arn: str | None | UnsetType = UNSET
@@ -234,7 +250,9 @@ class SageMaker(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -248,30 +266,6 @@ class SageMaker(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SageMaker"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SageMaker validation failed: {errors}")
-
-    def minimize(self) -> "SageMaker":
-        self.validate()
-        return SageMaker(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSageMaker":
-        if self.guid is not UNSET:
-            return RelatedSageMaker(guid=self.guid)
-        return RelatedSageMaker(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -324,31 +318,46 @@ class SageMaker(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SageMakerAttributes(AssetAttributes):
     """SageMaker-specific attributes for nested API format."""
 
     sage_maker_s3_uri: str | None | UnsetType = UNSET
     """Primary S3 URI associated with this SageMaker asset."""
 
-    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIReliabilityAndSafetyConfig"
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     aws_arn: str | None | UnsetType = UNSET
@@ -380,6 +389,7 @@ class SageMakerAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class SageMakerRelationshipAttributes(AssetRelationshipAttributes):
     """SageMaker-specific relationship attributes for nested API format."""
@@ -456,7 +466,9 @@ class SageMakerRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -468,6 +480,7 @@ class SageMakerRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SageMakerNested(AssetNested):
     """SageMaker in nested API format for high-performance serialization."""
 
@@ -475,6 +488,7 @@ class SageMakerNested(AssetNested):
     relationship_attributes: SageMakerRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: SageMakerRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: SageMakerRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -512,6 +526,7 @@ _SAGE_MAKER_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_sage_maker_attrs(attrs: SageMakerAttributes, obj: SageMaker) -> None:
     """Populate SageMaker-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -519,10 +534,14 @@ def _populate_sage_maker_attrs(attrs: SageMakerAttributes, obj: SageMaker) -> No
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
     attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
-    attrs.ethical_ai_reliability_and_safety_config = obj.ethical_ai_reliability_and_safety_config
+    attrs.ethical_ai_reliability_and_safety_config = (
+        obj.ethical_ai_reliability_and_safety_config
+    )
     attrs.ethical_ai_transparency_config = obj.ethical_ai_transparency_config
     attrs.ethical_ai_accountability_config = obj.ethical_ai_accountability_config
-    attrs.ethical_ai_environmental_consciousness_config = obj.ethical_ai_environmental_consciousness_config
+    attrs.ethical_ai_environmental_consciousness_config = (
+        obj.ethical_ai_environmental_consciousness_config
+    )
     attrs.aws_arn = obj.aws_arn
     attrs.aws_partition = obj.aws_partition
     attrs.aws_service = obj.aws_service
@@ -534,17 +553,24 @@ def _populate_sage_maker_attrs(attrs: SageMakerAttributes, obj: SageMaker) -> No
     attrs.aws_tags = obj.aws_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
 
+
 def _extract_sage_maker_attrs(attrs: SageMakerAttributes) -> dict:
     """Extract all SageMaker attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["sage_maker_s3_uri"] = attrs.sage_maker_s3_uri
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
-    result["ethical_ai_bias_mitigation_config"] = attrs.ethical_ai_bias_mitigation_config
-    result["ethical_ai_reliability_and_safety_config"] = attrs.ethical_ai_reliability_and_safety_config
+    result["ethical_ai_bias_mitigation_config"] = (
+        attrs.ethical_ai_bias_mitigation_config
+    )
+    result["ethical_ai_reliability_and_safety_config"] = (
+        attrs.ethical_ai_reliability_and_safety_config
+    )
     result["ethical_ai_transparency_config"] = attrs.ethical_ai_transparency_config
     result["ethical_ai_accountability_config"] = attrs.ethical_ai_accountability_config
-    result["ethical_ai_environmental_consciousness_config"] = attrs.ethical_ai_environmental_consciousness_config
+    result["ethical_ai_environmental_consciousness_config"] = (
+        attrs.ethical_ai_environmental_consciousness_config
+    )
     result["aws_arn"] = attrs.aws_arn
     result["aws_partition"] = attrs.aws_partition
     result["aws_service"] = attrs.aws_service
@@ -556,6 +582,7 @@ def _extract_sage_maker_attrs(attrs: SageMakerAttributes) -> dict:
     result["aws_tags"] = attrs.aws_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -596,16 +623,19 @@ def _sage_maker_to_nested(sage_maker: SageMaker) -> SageMakerNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sage_maker_from_nested(nested: SageMakerNested) -> SageMaker:
     """Convert nested format to flat SageMaker."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SageMakerAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else SageMakerAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAGE_MAKER_REL_FIELDS,
-        SageMakerRelationshipAttributes
+        SageMakerRelationshipAttributes,
     )
     return SageMaker(
         guid=nested.guid,
@@ -632,6 +662,7 @@ def _sage_maker_from_nested(nested: SageMakerNested) -> SageMaker:
         **merged_rels,
     )
 
+
 def _sage_maker_to_nested_bytes(sage_maker: SageMaker, serde: Serde) -> bytes:
     """Convert flat SageMaker to nested JSON bytes."""
     return serde.encode(_sage_maker_to_nested(sage_maker))
@@ -641,6 +672,7 @@ def _sage_maker_from_nested_bytes(data: bytes, serde: Serde) -> SageMaker:
     """Convert nested JSON bytes to flat SageMaker."""
     nested = serde.decode(data, SageMakerNested)
     return _sage_maker_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -652,23 +684,42 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SageMaker.SAGE_MAKER_S3_URI = KeywordField("sageMakerS3Uri", "sageMakerS3Uri")
-SageMaker.ETHICAL_AI_PRIVACY_CONFIG = KeywordField("ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig")
-SageMaker.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField("ethicalAIFairnessConfig", "ethicalAIFairnessConfig")
-SageMaker.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField("ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig")
-SageMaker.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField("ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig")
-SageMaker.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField("ethicalAITransparencyConfig", "ethicalAITransparencyConfig")
-SageMaker.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField("ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig")
-SageMaker.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField("ethicalAIEnvironmentalConsciousnessConfig", "ethicalAIEnvironmentalConsciousnessConfig")
+SageMaker.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
+    "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
+)
+SageMaker.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField(
+    "ethicalAIFairnessConfig", "ethicalAIFairnessConfig"
+)
+SageMaker.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField(
+    "ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig"
+)
+SageMaker.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField(
+    "ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig"
+)
+SageMaker.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField(
+    "ethicalAITransparencyConfig", "ethicalAITransparencyConfig"
+)
+SageMaker.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField(
+    "ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig"
+)
+SageMaker.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
+    "ethicalAIEnvironmentalConsciousnessConfig",
+    "ethicalAIEnvironmentalConsciousnessConfig",
+)
 SageMaker.AWS_ARN = KeywordTextField("awsArn", "awsArn", "awsArn.text")
 SageMaker.AWS_PARTITION = KeywordField("awsPartition", "awsPartition")
 SageMaker.AWS_SERVICE = KeywordField("awsService", "awsService")
 SageMaker.AWS_REGION = KeywordField("awsRegion", "awsRegion")
 SageMaker.AWS_ACCOUNT_ID = KeywordField("awsAccountId", "awsAccountId")
 SageMaker.AWS_RESOURCE_ID = KeywordField("awsResourceId", "awsResourceId")
-SageMaker.AWS_OWNER_NAME = KeywordTextField("awsOwnerName", "awsOwnerName", "awsOwnerName.text")
+SageMaker.AWS_OWNER_NAME = KeywordTextField(
+    "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+)
 SageMaker.AWS_OWNER_ID = KeywordField("awsOwnerId", "awsOwnerId")
 SageMaker.AWS_TAGS = KeywordField("awsTags", "awsTags")
-SageMaker.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+SageMaker.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 SageMaker.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SageMaker.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SageMaker.ANOMALO_CHECKS = RelationField("anomaloChecks")

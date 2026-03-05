@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,15 +50,25 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .dremio_related import RelatedDremioFolder, RelatedDremioPhysicalDataset, RelatedDremioSource, RelatedDremioSpace, RelatedDremioVirtualDataset
+from .dremio_related import (
+    RelatedDremioFolder,
+    RelatedDremioPhysicalDataset,
+    RelatedDremioSource,
+    RelatedDremioSpace,
+    RelatedDremioVirtualDataset,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DremioFolder(Asset):
@@ -206,7 +221,9 @@ class DremioFolder(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -260,7 +277,9 @@ class DremioFolder(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -278,10 +297,14 @@ class DremioFolder(Asset):
     dremio_parent_folder: RelatedDremioFolder | None | UnsetType = UNSET
     """Parent Dremio Folder containing the sub-folders."""
 
-    dremio_physical_datasets: list[RelatedDremioPhysicalDataset] | None | UnsetType = UNSET
+    dremio_physical_datasets: list[RelatedDremioPhysicalDataset] | None | UnsetType = (
+        UNSET
+    )
     """Physical datasets (tables) contained within the Dremio Folder."""
 
-    dremio_virtual_datasets: list[RelatedDremioVirtualDataset] | None | UnsetType = UNSET
+    dremio_virtual_datasets: list[RelatedDremioVirtualDataset] | None | UnsetType = (
+        UNSET
+    )
     """Virtual datasets (views) contained within the Dremio Folder."""
 
     meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
@@ -320,7 +343,9 @@ class DremioFolder(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -339,43 +364,7 @@ class DremioFolder(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.dremio_source is UNSET:
-                errors.append("dremio_source is required for creation")
-            if self.dremio_source_name is UNSET:
-                errors.append("dremio_source_name is required for creation")
-            if self.dremio_source_qualified_name is UNSET:
-                errors.append("dremio_source_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"DremioFolder validation failed: {errors}")
-
-    def minimize(self) -> "DremioFolder":
-        self.validate()
-        return DremioFolder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDremioFolder":
-        if self.guid is not UNSET:
-            return RelatedDremioFolder(guid=self.guid)
-        return RelatedDremioFolder(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -427,6 +416,7 @@ class DremioFolder(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DremioFolderAttributes(AssetAttributes):
     """DremioFolder-specific attributes for nested API format."""
@@ -506,11 +496,14 @@ class DremioFolderAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     """DremioFolder-specific relationship attributes for nested API format."""
@@ -563,7 +556,9 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -581,10 +576,14 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     dremio_parent_folder: RelatedDremioFolder | None | UnsetType = UNSET
     """Parent Dremio Folder containing the sub-folders."""
 
-    dremio_physical_datasets: list[RelatedDremioPhysicalDataset] | None | UnsetType = UNSET
+    dremio_physical_datasets: list[RelatedDremioPhysicalDataset] | None | UnsetType = (
+        UNSET
+    )
     """Physical datasets (tables) contained within the Dremio Folder."""
 
-    dremio_virtual_datasets: list[RelatedDremioVirtualDataset] | None | UnsetType = UNSET
+    dremio_virtual_datasets: list[RelatedDremioVirtualDataset] | None | UnsetType = (
+        UNSET
+    )
     """Virtual datasets (views) contained within the Dremio Folder."""
 
     meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
@@ -623,7 +622,9 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -635,13 +636,19 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DremioFolderNested(AssetNested):
     """DremioFolder in nested API format for high-performance serialization."""
 
     attributes: DremioFolderAttributes | UnsetType = UNSET
     relationship_attributes: DremioFolderRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DremioFolderRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DremioFolderRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: DremioFolderRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: DremioFolderRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -691,7 +698,10 @@ _DREMIO_FOLDER_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_dremio_folder_attrs(attrs: DremioFolderAttributes, obj: DremioFolder) -> None:
+
+def _populate_dremio_folder_attrs(
+    attrs: DremioFolderAttributes, obj: DremioFolder
+) -> None:
     """Populate DremioFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dremio_parent_asset_type = obj.dremio_parent_asset_type
@@ -722,6 +732,7 @@ def _populate_dremio_folder_attrs(attrs: DremioFolderAttributes, obj: DremioFold
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_dremio_folder_attrs(attrs: DremioFolderAttributes) -> dict:
     """Extract all DremioFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -731,7 +742,9 @@ def _extract_dremio_folder_attrs(attrs: DremioFolderAttributes) -> dict:
     result["dremio_space_name"] = attrs.dremio_space_name
     result["dremio_source_qualified_name"] = attrs.dremio_source_qualified_name
     result["dremio_source_name"] = attrs.dremio_source_name
-    result["dremio_parent_folder_qualified_name"] = attrs.dremio_parent_folder_qualified_name
+    result["dremio_parent_folder_qualified_name"] = (
+        attrs.dremio_parent_folder_qualified_name
+    )
     result["dremio_folder_hierarchy"] = attrs.dremio_folder_hierarchy
     result["dremio_labels"] = attrs.dremio_labels
     result["query_count"] = attrs.query_count
@@ -750,9 +763,12 @@ def _extract_dremio_folder_attrs(attrs: DremioFolderAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -793,16 +809,21 @@ def _dremio_folder_to_nested(dremio_folder: DremioFolder) -> DremioFolderNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dremio_folder_from_nested(nested: DremioFolderNested) -> DremioFolder:
     """Convert nested format to flat DremioFolder."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DremioFolderAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DremioFolderAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DREMIO_FOLDER_REL_FIELDS,
-        DremioFolderRelationshipAttributes
+        DremioFolderRelationshipAttributes,
     )
     return DremioFolder(
         guid=nested.guid,
@@ -829,6 +850,7 @@ def _dremio_folder_from_nested(nested: DremioFolderNested) -> DremioFolder:
         **merged_rels,
     )
 
+
 def _dremio_folder_to_nested_bytes(dremio_folder: DremioFolder, serde: Serde) -> bytes:
     """Convert flat DremioFolder to nested JSON bytes."""
     return serde.encode(_dremio_folder_to_nested(dremio_folder))
@@ -838,6 +860,7 @@ def _dremio_folder_from_nested_bytes(data: bytes, serde: Serde) -> DremioFolder:
     """Convert nested JSON bytes to flat DremioFolder."""
     nested = serde.decode(data, DremioFolderNested)
     return _dremio_folder_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -849,32 +872,58 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DremioFolder.DREMIO_PARENT_ASSET_TYPE = KeywordField("dremioParentAssetType", "dremioParentAssetType")
+DremioFolder.DREMIO_PARENT_ASSET_TYPE = KeywordField(
+    "dremioParentAssetType", "dremioParentAssetType"
+)
 DremioFolder.DREMIO_ID = KeywordField("dremioId", "dremioId")
-DremioFolder.DREMIO_SPACE_QUALIFIED_NAME = KeywordField("dremioSpaceQualifiedName", "dremioSpaceQualifiedName")
+DremioFolder.DREMIO_SPACE_QUALIFIED_NAME = KeywordField(
+    "dremioSpaceQualifiedName", "dremioSpaceQualifiedName"
+)
 DremioFolder.DREMIO_SPACE_NAME = KeywordField("dremioSpaceName", "dremioSpaceName")
-DremioFolder.DREMIO_SOURCE_QUALIFIED_NAME = KeywordField("dremioSourceQualifiedName", "dremioSourceQualifiedName")
+DremioFolder.DREMIO_SOURCE_QUALIFIED_NAME = KeywordField(
+    "dremioSourceQualifiedName", "dremioSourceQualifiedName"
+)
 DremioFolder.DREMIO_SOURCE_NAME = KeywordField("dremioSourceName", "dremioSourceName")
-DremioFolder.DREMIO_PARENT_FOLDER_QUALIFIED_NAME = KeywordField("dremioParentFolderQualifiedName", "dremioParentFolderQualifiedName")
-DremioFolder.DREMIO_FOLDER_HIERARCHY = KeywordField("dremioFolderHierarchy", "dremioFolderHierarchy")
+DremioFolder.DREMIO_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
+    "dremioParentFolderQualifiedName", "dremioParentFolderQualifiedName"
+)
+DremioFolder.DREMIO_FOLDER_HIERARCHY = KeywordField(
+    "dremioFolderHierarchy", "dremioFolderHierarchy"
+)
 DremioFolder.DREMIO_LABELS = KeywordField("dremioLabels", "dremioLabels")
 DremioFolder.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DremioFolder.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DremioFolder.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DremioFolder.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DremioFolder.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DremioFolder.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DremioFolder.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DremioFolder.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DremioFolder.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DremioFolder.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DremioFolder.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DremioFolder.TABLE_NAME = KeywordField("tableName", "tableName")
-DremioFolder.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DremioFolder.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DremioFolder.VIEW_NAME = KeywordField("viewName", "viewName")
-DremioFolder.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DremioFolder.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DremioFolder.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DremioFolder.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DremioFolder.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DremioFolder.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DremioFolder.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DremioFolder.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DremioFolder.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DremioFolder.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DremioFolder.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 DremioFolder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DremioFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

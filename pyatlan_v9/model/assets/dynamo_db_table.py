@@ -33,7 +33,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -44,16 +49,30 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema, RelatedTable, RelatedTablePartition
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from .sql_related import (
+    RelatedColumn,
+    RelatedQuery,
+    RelatedSchema,
+    RelatedTable,
+    RelatedTablePartition,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .dynamo_db_related import RelatedDynamoDBAttribute, RelatedDynamoDBGlobalSecondaryIndex, RelatedDynamoDBLocalSecondaryIndex, RelatedDynamoDBTable
+from .dynamo_db_related import (
+    RelatedDynamoDBAttribute,
+    RelatedDynamoDBGlobalSecondaryIndex,
+    RelatedDynamoDBLocalSecondaryIndex,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DynamoDBTable(Asset):
@@ -160,28 +179,44 @@ class DynamoDBTable(Asset):
 
     type_name: Union[str, UnsetType] = "DynamoDBTable"
 
-    dynamo_dbgsi_count: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBGSICount")
+    dynamo_dbgsi_count: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBGSICount"
+    )
     """Represents the number of global secondary indexes on the table."""
 
-    dynamo_dblsi_count: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBLSICount")
+    dynamo_dblsi_count: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBLSICount"
+    )
     """Represents the number of local secondary indexes on the table."""
 
-    dynamo_db_status: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBStatus")
+    dynamo_db_status: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBStatus"
+    )
     """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
+    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBPartitionKey"
+    )
     """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBSortKey")
+    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBSortKey"
+    )
     """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
+    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBReadCapacityUnits"
+    )
     """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
+    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBWriteCapacityUnits"
+    )
     """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     column_count: int | None | UnsetType = UNSET
@@ -313,7 +348,9 @@ class DynamoDBTable(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -367,19 +404,27 @@ class DynamoDBTable(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    dynamo_db_global_secondary_indexes: list[RelatedDynamoDBGlobalSecondaryIndex] | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBGlobalSecondaryIndexes")
+    dynamo_db_global_secondary_indexes: (
+        list[RelatedDynamoDBGlobalSecondaryIndex] | None | UnsetType
+    ) = msgspec.field(default=UNSET, name="dynamoDBGlobalSecondaryIndexes")
     """DynamoDB table containing global secondary indexes."""
 
-    dynamo_db_local_secondary_indexes: list[RelatedDynamoDBLocalSecondaryIndex] | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBLocalSecondaryIndexes")
+    dynamo_db_local_secondary_indexes: (
+        list[RelatedDynamoDBLocalSecondaryIndex] | None | UnsetType
+    ) = msgspec.field(default=UNSET, name="dynamoDBLocalSecondaryIndexes")
     """DynamoDB table containing local secondary indexes."""
 
-    dynamo_db_columns: list[RelatedDynamoDBAttribute] | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBColumns")
+    dynamo_db_columns: list[RelatedDynamoDBAttribute] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="dynamoDBColumns")
+    )
     """Columns (attributes) that exist within this DynamoDB table."""
 
     meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
@@ -436,7 +481,9 @@ class DynamoDBTable(Asset):
     partitions: list[RelatedTablePartition] | None | UnsetType = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -450,30 +497,6 @@ class DynamoDBTable(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DynamoDBTable"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DynamoDBTable validation failed: {errors}")
-
-    def minimize(self) -> "DynamoDBTable":
-        self.validate()
-        return DynamoDBTable(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDynamoDBTable":
-        if self.guid is not UNSET:
-            return RelatedDynamoDBTable(guid=self.guid)
-        return RelatedDynamoDBTable(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -526,31 +549,48 @@ class DynamoDBTable(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DynamoDBTableAttributes(AssetAttributes):
     """DynamoDBTable-specific attributes for nested API format."""
 
-    dynamo_dbgsi_count: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBGSICount")
+    dynamo_dbgsi_count: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBGSICount"
+    )
     """Represents the number of global secondary indexes on the table."""
 
-    dynamo_dblsi_count: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBLSICount")
+    dynamo_dblsi_count: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBLSICount"
+    )
     """Represents the number of local secondary indexes on the table."""
 
-    dynamo_db_status: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBStatus")
+    dynamo_db_status: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBStatus"
+    )
     """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
+    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBPartitionKey"
+    )
     """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBSortKey")
+    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBSortKey"
+    )
     """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
+    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBReadCapacityUnits"
+    )
     """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
+    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBWriteCapacityUnits"
+    )
     """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     column_count: int | None | UnsetType = UNSET
@@ -682,11 +722,14 @@ class DynamoDBTableAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class DynamoDBTableRelationshipAttributes(AssetRelationshipAttributes):
     """DynamoDBTable-specific relationship attributes for nested API format."""
@@ -739,19 +782,27 @@ class DynamoDBTableRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    dynamo_db_global_secondary_indexes: list[RelatedDynamoDBGlobalSecondaryIndex] | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBGlobalSecondaryIndexes")
+    dynamo_db_global_secondary_indexes: (
+        list[RelatedDynamoDBGlobalSecondaryIndex] | None | UnsetType
+    ) = msgspec.field(default=UNSET, name="dynamoDBGlobalSecondaryIndexes")
     """DynamoDB table containing global secondary indexes."""
 
-    dynamo_db_local_secondary_indexes: list[RelatedDynamoDBLocalSecondaryIndex] | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBLocalSecondaryIndexes")
+    dynamo_db_local_secondary_indexes: (
+        list[RelatedDynamoDBLocalSecondaryIndex] | None | UnsetType
+    ) = msgspec.field(default=UNSET, name="dynamoDBLocalSecondaryIndexes")
     """DynamoDB table containing local secondary indexes."""
 
-    dynamo_db_columns: list[RelatedDynamoDBAttribute] | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBColumns")
+    dynamo_db_columns: list[RelatedDynamoDBAttribute] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="dynamoDBColumns")
+    )
     """Columns (attributes) that exist within this DynamoDB table."""
 
     meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
@@ -808,7 +859,9 @@ class DynamoDBTableRelationshipAttributes(AssetRelationshipAttributes):
     partitions: list[RelatedTablePartition] | None | UnsetType = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -820,13 +873,19 @@ class DynamoDBTableRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DynamoDBTableNested(AssetNested):
     """DynamoDBTable in nested API format for high-performance serialization."""
 
     attributes: DynamoDBTableAttributes | UnsetType = UNSET
     relationship_attributes: DynamoDBTableRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DynamoDBTableRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DynamoDBTableRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: DynamoDBTableRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: DynamoDBTableRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -879,7 +938,10 @@ _DYNAMO_DB_TABLE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_dynamo_db_table_attrs(attrs: DynamoDBTableAttributes, obj: DynamoDBTable) -> None:
+
+def _populate_dynamo_db_table_attrs(
+    attrs: DynamoDBTableAttributes, obj: DynamoDBTable
+) -> None:
     """Populate DynamoDBTable-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dynamo_dbgsi_count = obj.dynamo_dbgsi_count
@@ -936,6 +998,7 @@ def _populate_dynamo_db_table_attrs(attrs: DynamoDBTableAttributes, obj: DynamoD
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_dynamo_db_table_attrs(attrs: DynamoDBTableAttributes) -> dict:
     """Extract all DynamoDBTable attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -990,9 +1053,12 @@ def _extract_dynamo_db_table_attrs(attrs: DynamoDBTableAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -1005,7 +1071,9 @@ def _dynamo_db_table_to_nested(dynamo_db_table: DynamoDBTable) -> DynamoDBTableN
     _populate_dynamo_db_table_attrs(attrs, dynamo_db_table)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        dynamo_db_table, _DYNAMO_DB_TABLE_REL_FIELDS, DynamoDBTableRelationshipAttributes
+        dynamo_db_table,
+        _DYNAMO_DB_TABLE_REL_FIELDS,
+        DynamoDBTableRelationshipAttributes,
     )
     return DynamoDBTableNested(
         guid=dynamo_db_table.guid,
@@ -1033,16 +1101,21 @@ def _dynamo_db_table_to_nested(dynamo_db_table: DynamoDBTable) -> DynamoDBTableN
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dynamo_db_table_from_nested(nested: DynamoDBTableNested) -> DynamoDBTable:
     """Convert nested format to flat DynamoDBTable."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DynamoDBTableAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DynamoDBTableAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DYNAMO_DB_TABLE_REL_FIELDS,
-        DynamoDBTableRelationshipAttributes
+        DynamoDBTableRelationshipAttributes,
     )
     return DynamoDBTable(
         guid=nested.guid,
@@ -1069,7 +1142,10 @@ def _dynamo_db_table_from_nested(nested: DynamoDBTableNested) -> DynamoDBTable:
         **merged_rels,
     )
 
-def _dynamo_db_table_to_nested_bytes(dynamo_db_table: DynamoDBTable, serde: Serde) -> bytes:
+
+def _dynamo_db_table_to_nested_bytes(
+    dynamo_db_table: DynamoDBTable, serde: Serde
+) -> bytes:
     """Convert flat DynamoDBTable to nested JSON bytes."""
     return serde.encode(_dynamo_db_table_to_nested(dynamo_db_table))
 
@@ -1078,6 +1154,7 @@ def _dynamo_db_table_from_nested_bytes(data: bytes, serde: Serde) -> DynamoDBTab
     """Convert nested JSON bytes to flat DynamoDBTable."""
     nested = serde.decode(data, DynamoDBTableNested)
     return _dynamo_db_table_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1092,11 +1169,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 DynamoDBTable.DYNAMO_DBGSI_COUNT = NumericField("dynamoDBGSICount", "dynamoDBGSICount")
 DynamoDBTable.DYNAMO_DBLSI_COUNT = NumericField("dynamoDBLSICount", "dynamoDBLSICount")
 DynamoDBTable.DYNAMO_DB_STATUS = KeywordField("dynamoDBStatus", "dynamoDBStatus")
-DynamoDBTable.DYNAMO_DB_PARTITION_KEY = KeywordField("dynamoDBPartitionKey", "dynamoDBPartitionKey")
+DynamoDBTable.DYNAMO_DB_PARTITION_KEY = KeywordField(
+    "dynamoDBPartitionKey", "dynamoDBPartitionKey"
+)
 DynamoDBTable.DYNAMO_DB_SORT_KEY = KeywordField("dynamoDBSortKey", "dynamoDBSortKey")
-DynamoDBTable.DYNAMO_DB_READ_CAPACITY_UNITS = NumericField("dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits")
-DynamoDBTable.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField("dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits")
-DynamoDBTable.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+DynamoDBTable.DYNAMO_DB_READ_CAPACITY_UNITS = NumericField(
+    "dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits"
+)
+DynamoDBTable.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField(
+    "dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits"
+)
+DynamoDBTable.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 DynamoDBTable.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 DynamoDBTable.ROW_COUNT = NumericField("rowCount", "rowCount")
 DynamoDBTable.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
@@ -1104,43 +1189,83 @@ DynamoDBTable.TABLE_OBJECT_COUNT = NumericField("tableObjectCount", "tableObject
 DynamoDBTable.ALIAS = KeywordField("alias", "alias")
 DynamoDBTable.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 DynamoDBTable.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-DynamoDBTable.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+DynamoDBTable.QUERY_PREVIEW_CONFIG = KeywordField(
+    "queryPreviewConfig", "queryPreviewConfig"
+)
 DynamoDBTable.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
-DynamoDBTable.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
-DynamoDBTable.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
+DynamoDBTable.EXTERNAL_LOCATION_REGION = KeywordField(
+    "externalLocationRegion", "externalLocationRegion"
+)
+DynamoDBTable.EXTERNAL_LOCATION_FORMAT = KeywordField(
+    "externalLocationFormat", "externalLocationFormat"
+)
 DynamoDBTable.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-DynamoDBTable.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
+DynamoDBTable.PARTITION_STRATEGY = KeywordField(
+    "partitionStrategy", "partitionStrategy"
+)
 DynamoDBTable.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
 DynamoDBTable.TABLE_DEFINITION = KeywordField("tableDefinition", "tableDefinition")
 DynamoDBTable.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 DynamoDBTable.IS_SHARDED = BooleanField("isSharded", "isSharded")
 DynamoDBTable.TABLE_TYPE = KeywordField("tableType", "tableType")
-DynamoDBTable.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
+DynamoDBTable.ICEBERG_CATALOG_NAME = KeywordField(
+    "icebergCatalogName", "icebergCatalogName"
+)
 DynamoDBTable.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
-DynamoDBTable.ICEBERG_CATALOG_SOURCE = KeywordField("icebergCatalogSource", "icebergCatalogSource")
-DynamoDBTable.ICEBERG_CATALOG_TABLE_NAME = KeywordField("icebergCatalogTableName", "icebergCatalogTableName")
-DynamoDBTable.TABLE_IMPALA_PARAMETERS = KeywordField("tableImpalaParameters", "tableImpalaParameters")
-DynamoDBTable.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField("icebergCatalogTableNamespace", "icebergCatalogTableNamespace")
-DynamoDBTable.TABLE_EXTERNAL_VOLUME_NAME = KeywordField("tableExternalVolumeName", "tableExternalVolumeName")
-DynamoDBTable.ICEBERG_TABLE_BASE_LOCATION = KeywordField("icebergTableBaseLocation", "icebergTableBaseLocation")
-DynamoDBTable.TABLE_RETENTION_TIME = NumericField("tableRetentionTime", "tableRetentionTime")
+DynamoDBTable.ICEBERG_CATALOG_SOURCE = KeywordField(
+    "icebergCatalogSource", "icebergCatalogSource"
+)
+DynamoDBTable.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
+    "icebergCatalogTableName", "icebergCatalogTableName"
+)
+DynamoDBTable.TABLE_IMPALA_PARAMETERS = KeywordField(
+    "tableImpalaParameters", "tableImpalaParameters"
+)
+DynamoDBTable.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
+    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
+)
+DynamoDBTable.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
+    "tableExternalVolumeName", "tableExternalVolumeName"
+)
+DynamoDBTable.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
+    "icebergTableBaseLocation", "icebergTableBaseLocation"
+)
+DynamoDBTable.TABLE_RETENTION_TIME = NumericField(
+    "tableRetentionTime", "tableRetentionTime"
+)
 DynamoDBTable.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DynamoDBTable.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DynamoDBTable.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DynamoDBTable.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DynamoDBTable.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DynamoDBTable.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DynamoDBTable.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DynamoDBTable.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DynamoDBTable.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DynamoDBTable.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DynamoDBTable.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DynamoDBTable.TABLE_NAME = KeywordField("tableName", "tableName")
-DynamoDBTable.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DynamoDBTable.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DynamoDBTable.VIEW_NAME = KeywordField("viewName", "viewName")
-DynamoDBTable.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DynamoDBTable.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DynamoDBTable.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DynamoDBTable.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DynamoDBTable.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DynamoDBTable.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DynamoDBTable.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DynamoDBTable.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DynamoDBTable.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DynamoDBTable.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DynamoDBTable.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 DynamoDBTable.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DynamoDBTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -1160,8 +1285,12 @@ DynamoDBTable.DBT_TESTS = RelationField("dbtTests")
 DynamoDBTable.DBT_SOURCES = RelationField("dbtSources")
 DynamoDBTable.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DynamoDBTable.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-DynamoDBTable.DYNAMO_DB_GLOBAL_SECONDARY_INDEXES = RelationField("dynamoDBGlobalSecondaryIndexes")
-DynamoDBTable.DYNAMO_DB_LOCAL_SECONDARY_INDEXES = RelationField("dynamoDBLocalSecondaryIndexes")
+DynamoDBTable.DYNAMO_DB_GLOBAL_SECONDARY_INDEXES = RelationField(
+    "dynamoDBGlobalSecondaryIndexes"
+)
+DynamoDBTable.DYNAMO_DB_LOCAL_SECONDARY_INDEXES = RelationField(
+    "dynamoDBLocalSecondaryIndexes"
+)
 DynamoDBTable.DYNAMO_DB_COLUMNS = RelationField("dynamoDBColumns")
 DynamoDBTable.MEANINGS = RelationField("meanings")
 DynamoDBTable.MC_MONITORS = RelationField("mcMonitors")

@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,15 +50,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .databricks_related import RelatedDatabricksVolume, RelatedDatabricksVolumePath
+from .databricks_related import RelatedDatabricksVolume
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DatabricksVolumePath(Asset):
@@ -177,7 +186,9 @@ class DatabricksVolumePath(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -234,7 +245,9 @@ class DatabricksVolumePath(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -276,7 +289,9 @@ class DatabricksVolumePath(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -298,48 +313,6 @@ class DatabricksVolumePath(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.databricks_volume is UNSET:
-                errors.append("databricks_volume is required for creation")
-            if self.databricks_volume_name is UNSET:
-                errors.append("databricks_volume_name is required for creation")
-            if self.databricks_volume_qualified_name is UNSET:
-                errors.append("databricks_volume_qualified_name is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"DatabricksVolumePath validation failed: {errors}")
-
-    def minimize(self) -> "DatabricksVolumePath":
-        self.validate()
-        return DatabricksVolumePath(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDatabricksVolumePath":
-        if self.guid is not UNSET:
-            return RelatedDatabricksVolumePath(guid=self.guid)
-        return RelatedDatabricksVolumePath(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -370,7 +343,9 @@ class DatabricksVolumePath(Asset):
         return _databricks_volume_path_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DatabricksVolumePath:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DatabricksVolumePath:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -391,6 +366,7 @@ class DatabricksVolumePath(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DatabricksVolumePathAttributes(AssetAttributes):
     """DatabricksVolumePath-specific attributes for nested API format."""
@@ -452,11 +428,14 @@ class DatabricksVolumePathAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class DatabricksVolumePathRelationshipAttributes(AssetRelationshipAttributes):
     """DatabricksVolumePath-specific relationship attributes for nested API format."""
@@ -512,7 +491,9 @@ class DatabricksVolumePathRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -554,7 +535,9 @@ class DatabricksVolumePathRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -566,13 +549,21 @@ class DatabricksVolumePathRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DatabricksVolumePathNested(AssetNested):
     """DatabricksVolumePath in nested API format for high-performance serialization."""
 
     attributes: DatabricksVolumePathAttributes | UnsetType = UNSET
-    relationship_attributes: DatabricksVolumePathRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DatabricksVolumePathRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DatabricksVolumePathRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: DatabricksVolumePathRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        DatabricksVolumePathRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        DatabricksVolumePathRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -617,7 +608,10 @@ _DATABRICKS_VOLUME_PATH_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_databricks_volume_path_attrs(attrs: DatabricksVolumePathAttributes, obj: DatabricksVolumePath) -> None:
+
+def _populate_databricks_volume_path_attrs(
+    attrs: DatabricksVolumePathAttributes, obj: DatabricksVolumePath
+) -> None:
     """Populate DatabricksVolumePath-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.databricks_path = obj.databricks_path
@@ -642,7 +636,10 @@ def _populate_databricks_volume_path_attrs(attrs: DatabricksVolumePathAttributes
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
-def _extract_databricks_volume_path_attrs(attrs: DatabricksVolumePathAttributes) -> dict:
+
+def _extract_databricks_volume_path_attrs(
+    attrs: DatabricksVolumePathAttributes,
+) -> dict:
     """Extract all DatabricksVolumePath attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["databricks_path"] = attrs.databricks_path
@@ -664,22 +661,29 @@ def _extract_databricks_volume_path_attrs(attrs: DatabricksVolumePathAttributes)
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _databricks_volume_path_to_nested(databricks_volume_path: DatabricksVolumePath) -> DatabricksVolumePathNested:
+def _databricks_volume_path_to_nested(
+    databricks_volume_path: DatabricksVolumePath,
+) -> DatabricksVolumePathNested:
     """Convert flat DatabricksVolumePath to nested format."""
     attrs = DatabricksVolumePathAttributes()
     _populate_databricks_volume_path_attrs(attrs, databricks_volume_path)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_volume_path, _DATABRICKS_VOLUME_PATH_REL_FIELDS, DatabricksVolumePathRelationshipAttributes
+        databricks_volume_path,
+        _DATABRICKS_VOLUME_PATH_REL_FIELDS,
+        DatabricksVolumePathRelationshipAttributes,
     )
     return DatabricksVolumePathNested(
         guid=databricks_volume_path.guid,
@@ -707,16 +711,23 @@ def _databricks_volume_path_to_nested(databricks_volume_path: DatabricksVolumePa
         remove_relationship_attributes=remove_rels,
     )
 
-def _databricks_volume_path_from_nested(nested: DatabricksVolumePathNested) -> DatabricksVolumePath:
+
+def _databricks_volume_path_from_nested(
+    nested: DatabricksVolumePathNested,
+) -> DatabricksVolumePath:
     """Convert nested format to flat DatabricksVolumePath."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksVolumePathAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DatabricksVolumePathAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_VOLUME_PATH_REL_FIELDS,
-        DatabricksVolumePathRelationshipAttributes
+        DatabricksVolumePathRelationshipAttributes,
     )
     return DatabricksVolumePath(
         guid=nested.guid,
@@ -743,15 +754,21 @@ def _databricks_volume_path_from_nested(nested: DatabricksVolumePathNested) -> D
         **merged_rels,
     )
 
-def _databricks_volume_path_to_nested_bytes(databricks_volume_path: DatabricksVolumePath, serde: Serde) -> bytes:
+
+def _databricks_volume_path_to_nested_bytes(
+    databricks_volume_path: DatabricksVolumePath, serde: Serde
+) -> bytes:
     """Convert flat DatabricksVolumePath to nested JSON bytes."""
     return serde.encode(_databricks_volume_path_to_nested(databricks_volume_path))
 
 
-def _databricks_volume_path_from_nested_bytes(data: bytes, serde: Serde) -> DatabricksVolumePath:
+def _databricks_volume_path_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DatabricksVolumePath:
     """Convert nested JSON bytes to flat DatabricksVolumePath."""
     nested = serde.decode(data, DatabricksVolumePathNested)
     return _databricks_volume_path_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -764,25 +781,45 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 DatabricksVolumePath.DATABRICKS_PATH = KeywordField("databricksPath", "databricksPath")
-DatabricksVolumePath.DATABRICKS_VOLUME_QUALIFIED_NAME = KeywordField("databricksVolumeQualifiedName", "databricksVolumeQualifiedName")
-DatabricksVolumePath.DATABRICKS_VOLUME_NAME = KeywordField("databricksVolumeName", "databricksVolumeName")
+DatabricksVolumePath.DATABRICKS_VOLUME_QUALIFIED_NAME = KeywordField(
+    "databricksVolumeQualifiedName", "databricksVolumeQualifiedName"
+)
+DatabricksVolumePath.DATABRICKS_VOLUME_NAME = KeywordField(
+    "databricksVolumeName", "databricksVolumeName"
+)
 DatabricksVolumePath.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksVolumePath.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DatabricksVolumePath.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksVolumePath.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DatabricksVolumePath.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DatabricksVolumePath.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksVolumePath.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DatabricksVolumePath.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DatabricksVolumePath.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksVolumePath.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DatabricksVolumePath.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DatabricksVolumePath.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksVolumePath.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DatabricksVolumePath.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DatabricksVolumePath.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksVolumePath.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DatabricksVolumePath.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DatabricksVolumePath.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DatabricksVolumePath.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DatabricksVolumePath.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DatabricksVolumePath.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DatabricksVolumePath.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DatabricksVolumePath.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DatabricksVolumePath.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DatabricksVolumePath.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DatabricksVolumePath.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 DatabricksVolumePath.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DatabricksVolumePath.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -791,11 +828,17 @@ DatabricksVolumePath.APPLICATION = RelationField("application")
 DatabricksVolumePath.APPLICATION_FIELD = RelationField("applicationField")
 DatabricksVolumePath.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DatabricksVolumePath.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DatabricksVolumePath.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DatabricksVolumePath.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DatabricksVolumePath.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DatabricksVolumePath.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DatabricksVolumePath.METRICS = RelationField("metrics")
 DatabricksVolumePath.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DatabricksVolumePath.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+DatabricksVolumePath.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 DatabricksVolumePath.DATABRICKS_VOLUME = RelationField("databricksVolume")
 DatabricksVolumePath.DBT_MODELS = RelationField("dbtModels")
 DatabricksVolumePath.SQL_DBT_MODELS = RelationField("sqlDbtModels")
@@ -811,7 +854,9 @@ DatabricksVolumePath.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 DatabricksVolumePath.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DatabricksVolumePath.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 DatabricksVolumePath.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DatabricksVolumePath.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+DatabricksVolumePath.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 DatabricksVolumePath.FILES = RelationField("files")
 DatabricksVolumePath.LINKS = RelationField("links")
 DatabricksVolumePath.README = RelationField("readme")

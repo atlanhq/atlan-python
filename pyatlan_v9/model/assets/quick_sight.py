@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .quick_sight_related import RelatedQuickSight
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class QuickSight(Asset):
@@ -174,7 +175,9 @@ class QuickSight(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -188,30 +191,6 @@ class QuickSight(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "QuickSight"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"QuickSight validation failed: {errors}")
-
-    def minimize(self) -> "QuickSight":
-        self.validate()
-        return QuickSight(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQuickSight":
-        if self.guid is not UNSET:
-            return RelatedQuickSight(guid=self.guid)
-        return RelatedQuickSight(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -264,6 +243,7 @@ class QuickSight(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class QuickSightAttributes(AssetAttributes):
     """QuickSight-specific attributes for nested API format."""
 
@@ -275,6 +255,7 @@ class QuickSightAttributes(AssetAttributes):
 
     quick_sight_sheet_name: str | None | UnsetType = UNSET
     """Name of the QuickSight sheet."""
+
 
 class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     """QuickSight-specific relationship attributes for nested API format."""
@@ -351,7 +332,9 @@ class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -363,6 +346,7 @@ class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class QuickSightNested(AssetNested):
     """QuickSight in nested API format for high-performance serialization."""
 
@@ -370,6 +354,7 @@ class QuickSightNested(AssetNested):
     relationship_attributes: QuickSightRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: QuickSightRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: QuickSightRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -407,12 +392,14 @@ _QUICK_SIGHT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_quick_sight_attrs(attrs: QuickSightAttributes, obj: QuickSight) -> None:
     """Populate QuickSight-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
+
 
 def _extract_quick_sight_attrs(attrs: QuickSightAttributes) -> dict:
     """Extract all QuickSight attributes from the attrs struct into a flat dict."""
@@ -421,6 +408,7 @@ def _extract_quick_sight_attrs(attrs: QuickSightAttributes) -> dict:
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -461,16 +449,19 @@ def _quick_sight_to_nested(quick_sight: QuickSight) -> QuickSightNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _quick_sight_from_nested(nested: QuickSightNested) -> QuickSight:
     """Convert nested format to flat QuickSight."""
-    attrs = nested.attributes if nested.attributes is not UNSET else QuickSightAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else QuickSightAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QUICK_SIGHT_REL_FIELDS,
-        QuickSightRelationshipAttributes
+        QuickSightRelationshipAttributes,
     )
     return QuickSight(
         guid=nested.guid,
@@ -497,6 +488,7 @@ def _quick_sight_from_nested(nested: QuickSightNested) -> QuickSight:
         **merged_rels,
     )
 
+
 def _quick_sight_to_nested_bytes(quick_sight: QuickSight, serde: Serde) -> bytes:
     """Convert flat QuickSight to nested JSON bytes."""
     return serde.encode(_quick_sight_to_nested(quick_sight))
@@ -506,6 +498,7 @@ def _quick_sight_from_nested_bytes(data: bytes, serde: Serde) -> QuickSight:
     """Convert nested JSON bytes to flat QuickSight."""
     nested = serde.decode(data, QuickSightNested)
     return _quick_sight_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -518,7 +511,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 QuickSight.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
 QuickSight.QUICK_SIGHT_SHEET_ID = KeywordField("quickSightSheetId", "quickSightSheetId")
-QuickSight.QUICK_SIGHT_SHEET_NAME = KeywordTextField("quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text")
+QuickSight.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
+    "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
+)
 QuickSight.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 QuickSight.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 QuickSight.ANOMALO_CHECKS = RelationField("anomaloChecks")

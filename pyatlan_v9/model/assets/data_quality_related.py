@@ -44,6 +44,7 @@ class RelatedDataQuality(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataQuality"
 
+
 class RelatedDataQualityRule(RelatedDataQuality):
     """
     Related entity reference for DataQualityRule assets.
@@ -111,13 +112,19 @@ class RelatedDataQualityRule(RelatedDataQuality):
     dq_rule_config_arguments: dict[str, Any] | None | UnsetType = UNSET
     """Json string of the rule config that contains the rule definitions."""
 
-    dq_rule_custom_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dqRuleCustomSQL")
+    dq_rule_custom_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dqRuleCustomSQL"
+    )
     """SQL code for custom SQL rules."""
 
-    dq_rule_custom_sql_return_type: str | None | UnsetType = msgspec.field(default=UNSET, name="dqRuleCustomSQLReturnType")
+    dq_rule_custom_sql_return_type: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dqRuleCustomSQLReturnType"
+    )
     """Type of result returned by the custom SQL (number of rows or numeric value)."""
 
-    dq_rule_failed_rows_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dqRuleFailedRowsSQL")
+    dq_rule_failed_rows_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dqRuleFailedRowsSQL"
+    )
     """SQL query used to retrieve failed rows."""
 
     dq_rule_row_scope_filtering_enabled: bool | None | UnsetType = UNSET
@@ -126,6 +133,7 @@ class RelatedDataQualityRule(RelatedDataQuality):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataQualityRule"
+
 
 class RelatedDataQualityRuleTemplate(RelatedDataQuality):
     """
@@ -149,6 +157,7 @@ class RelatedDataQualityRuleTemplate(RelatedDataQuality):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataQualityRuleTemplate"
+
 
 class RelatedMetric(RelatedDataQuality):
     """

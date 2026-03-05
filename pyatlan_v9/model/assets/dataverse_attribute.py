@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,16 +43,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .dataverse_related import RelatedDataverseAttribute, RelatedDataverseEntity
+from .dataverse_related import RelatedDataverseEntity
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DataverseAttribute(Asset):
@@ -200,7 +203,9 @@ class DataverseAttribute(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -219,41 +224,7 @@ class DataverseAttribute(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.dataverse_entity is UNSET:
-                errors.append("dataverse_entity is required for creation")
-            if self.dataverse_entity_qualified_name is UNSET:
-                errors.append("dataverse_entity_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"DataverseAttribute validation failed: {errors}")
-
-    def minimize(self) -> "DataverseAttribute":
-        self.validate()
-        return DataverseAttribute(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataverseAttribute":
-        if self.guid is not UNSET:
-            return RelatedDataverseAttribute(guid=self.guid)
-        return RelatedDataverseAttribute(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     @classmethod
     @init_guid
@@ -334,7 +305,9 @@ class DataverseAttribute(Asset):
         return _dataverse_attribute_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DataverseAttribute:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DataverseAttribute:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -355,6 +328,7 @@ class DataverseAttribute(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DataverseAttributeAttributes(AssetAttributes):
     """DataverseAttribute-specific attributes for nested API format."""
@@ -382,6 +356,7 @@ class DataverseAttributeAttributes(AssetAttributes):
 
     dataverse_is_audit_enabled: bool | None | UnsetType = UNSET
     """Indicator if DataverseEntity has auditing enabled."""
+
 
 class DataverseAttributeRelationshipAttributes(AssetRelationshipAttributes):
     """DataverseAttribute-specific relationship attributes for nested API format."""
@@ -461,7 +436,9 @@ class DataverseAttributeRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -473,13 +450,21 @@ class DataverseAttributeRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DataverseAttributeNested(AssetNested):
     """DataverseAttribute in nested API format for high-performance serialization."""
 
     attributes: DataverseAttributeAttributes | UnsetType = UNSET
-    relationship_attributes: DataverseAttributeRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DataverseAttributeRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DataverseAttributeRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: DataverseAttributeRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        DataverseAttributeRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        DataverseAttributeRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -518,7 +503,10 @@ _DATAVERSE_ATTRIBUTE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_dataverse_attribute_attrs(attrs: DataverseAttributeAttributes, obj: DataverseAttribute) -> None:
+
+def _populate_dataverse_attribute_attrs(
+    attrs: DataverseAttributeAttributes, obj: DataverseAttribute
+) -> None:
     """Populate DataverseAttribute-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dataverse_entity_qualified_name = obj.dataverse_entity_qualified_name
@@ -530,31 +518,41 @@ def _populate_dataverse_attribute_attrs(attrs: DataverseAttributeAttributes, obj
     attrs.dataverse_is_customizable = obj.dataverse_is_customizable
     attrs.dataverse_is_audit_enabled = obj.dataverse_is_audit_enabled
 
+
 def _extract_dataverse_attribute_attrs(attrs: DataverseAttributeAttributes) -> dict:
     """Extract all DataverseAttribute attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["dataverse_entity_qualified_name"] = attrs.dataverse_entity_qualified_name
     result["dataverse_attribute_schema_name"] = attrs.dataverse_attribute_schema_name
     result["dataverse_attribute_type"] = attrs.dataverse_attribute_type
-    result["dataverse_attribute_is_primary_id"] = attrs.dataverse_attribute_is_primary_id
-    result["dataverse_attribute_is_searchable"] = attrs.dataverse_attribute_is_searchable
+    result["dataverse_attribute_is_primary_id"] = (
+        attrs.dataverse_attribute_is_primary_id
+    )
+    result["dataverse_attribute_is_searchable"] = (
+        attrs.dataverse_attribute_is_searchable
+    )
     result["dataverse_is_custom"] = attrs.dataverse_is_custom
     result["dataverse_is_customizable"] = attrs.dataverse_is_customizable
     result["dataverse_is_audit_enabled"] = attrs.dataverse_is_audit_enabled
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _dataverse_attribute_to_nested(dataverse_attribute: DataverseAttribute) -> DataverseAttributeNested:
+def _dataverse_attribute_to_nested(
+    dataverse_attribute: DataverseAttribute,
+) -> DataverseAttributeNested:
     """Convert flat DataverseAttribute to nested format."""
     attrs = DataverseAttributeAttributes()
     _populate_dataverse_attribute_attrs(attrs, dataverse_attribute)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        dataverse_attribute, _DATAVERSE_ATTRIBUTE_REL_FIELDS, DataverseAttributeRelationshipAttributes
+        dataverse_attribute,
+        _DATAVERSE_ATTRIBUTE_REL_FIELDS,
+        DataverseAttributeRelationshipAttributes,
     )
     return DataverseAttributeNested(
         guid=dataverse_attribute.guid,
@@ -582,16 +580,23 @@ def _dataverse_attribute_to_nested(dataverse_attribute: DataverseAttribute) -> D
         remove_relationship_attributes=remove_rels,
     )
 
-def _dataverse_attribute_from_nested(nested: DataverseAttributeNested) -> DataverseAttribute:
+
+def _dataverse_attribute_from_nested(
+    nested: DataverseAttributeNested,
+) -> DataverseAttribute:
     """Convert nested format to flat DataverseAttribute."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DataverseAttributeAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DataverseAttributeAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATAVERSE_ATTRIBUTE_REL_FIELDS,
-        DataverseAttributeRelationshipAttributes
+        DataverseAttributeRelationshipAttributes,
     )
     return DataverseAttribute(
         guid=nested.guid,
@@ -618,15 +623,21 @@ def _dataverse_attribute_from_nested(nested: DataverseAttributeNested) -> Datave
         **merged_rels,
     )
 
-def _dataverse_attribute_to_nested_bytes(dataverse_attribute: DataverseAttribute, serde: Serde) -> bytes:
+
+def _dataverse_attribute_to_nested_bytes(
+    dataverse_attribute: DataverseAttribute, serde: Serde
+) -> bytes:
     """Convert flat DataverseAttribute to nested JSON bytes."""
     return serde.encode(_dataverse_attribute_to_nested(dataverse_attribute))
 
 
-def _dataverse_attribute_from_nested_bytes(data: bytes, serde: Serde) -> DataverseAttribute:
+def _dataverse_attribute_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DataverseAttribute:
     """Convert nested JSON bytes to flat DataverseAttribute."""
     nested = serde.decode(data, DataverseAttributeNested)
     return _dataverse_attribute_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -637,14 +648,30 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DataverseAttribute.DATAVERSE_ENTITY_QUALIFIED_NAME = KeywordField("dataverseEntityQualifiedName", "dataverseEntityQualifiedName")
-DataverseAttribute.DATAVERSE_ATTRIBUTE_SCHEMA_NAME = KeywordField("dataverseAttributeSchemaName", "dataverseAttributeSchemaName")
-DataverseAttribute.DATAVERSE_ATTRIBUTE_TYPE = KeywordField("dataverseAttributeType", "dataverseAttributeType")
-DataverseAttribute.DATAVERSE_ATTRIBUTE_IS_PRIMARY_ID = BooleanField("dataverseAttributeIsPrimaryId", "dataverseAttributeIsPrimaryId")
-DataverseAttribute.DATAVERSE_ATTRIBUTE_IS_SEARCHABLE = BooleanField("dataverseAttributeIsSearchable", "dataverseAttributeIsSearchable")
-DataverseAttribute.DATAVERSE_IS_CUSTOM = BooleanField("dataverseIsCustom", "dataverseIsCustom")
-DataverseAttribute.DATAVERSE_IS_CUSTOMIZABLE = BooleanField("dataverseIsCustomizable", "dataverseIsCustomizable")
-DataverseAttribute.DATAVERSE_IS_AUDIT_ENABLED = BooleanField("dataverseIsAuditEnabled", "dataverseIsAuditEnabled")
+DataverseAttribute.DATAVERSE_ENTITY_QUALIFIED_NAME = KeywordField(
+    "dataverseEntityQualifiedName", "dataverseEntityQualifiedName"
+)
+DataverseAttribute.DATAVERSE_ATTRIBUTE_SCHEMA_NAME = KeywordField(
+    "dataverseAttributeSchemaName", "dataverseAttributeSchemaName"
+)
+DataverseAttribute.DATAVERSE_ATTRIBUTE_TYPE = KeywordField(
+    "dataverseAttributeType", "dataverseAttributeType"
+)
+DataverseAttribute.DATAVERSE_ATTRIBUTE_IS_PRIMARY_ID = BooleanField(
+    "dataverseAttributeIsPrimaryId", "dataverseAttributeIsPrimaryId"
+)
+DataverseAttribute.DATAVERSE_ATTRIBUTE_IS_SEARCHABLE = BooleanField(
+    "dataverseAttributeIsSearchable", "dataverseAttributeIsSearchable"
+)
+DataverseAttribute.DATAVERSE_IS_CUSTOM = BooleanField(
+    "dataverseIsCustom", "dataverseIsCustom"
+)
+DataverseAttribute.DATAVERSE_IS_CUSTOMIZABLE = BooleanField(
+    "dataverseIsCustomizable", "dataverseIsCustomizable"
+)
+DataverseAttribute.DATAVERSE_IS_AUDIT_ENABLED = BooleanField(
+    "dataverseIsAuditEnabled", "dataverseIsAuditEnabled"
+)
 DataverseAttribute.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataverseAttribute.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataverseAttribute.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -652,8 +679,12 @@ DataverseAttribute.APPLICATION = RelationField("application")
 DataverseAttribute.APPLICATION_FIELD = RelationField("applicationField")
 DataverseAttribute.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DataverseAttribute.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DataverseAttribute.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DataverseAttribute.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DataverseAttribute.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DataverseAttribute.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DataverseAttribute.METRICS = RelationField("metrics")
 DataverseAttribute.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DataverseAttribute.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -42,15 +41,19 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .schema_registry_related import RelatedSchemaRegistry, RelatedSchemaRegistrySubject
+from .schema_registry_related import RelatedSchemaRegistrySubject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SchemaRegistry(Asset):
@@ -169,7 +172,9 @@ class SchemaRegistry(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -183,30 +188,6 @@ class SchemaRegistry(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SchemaRegistry"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SchemaRegistry validation failed: {errors}")
-
-    def minimize(self) -> "SchemaRegistry":
-        self.validate()
-        return SchemaRegistry(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSchemaRegistry":
-        if self.guid is not UNSET:
-            return RelatedSchemaRegistry(guid=self.guid)
-        return RelatedSchemaRegistry(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -259,6 +240,7 @@ class SchemaRegistry(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SchemaRegistryAttributes(AssetAttributes):
     """SchemaRegistry-specific attributes for nested API format."""
 
@@ -267,6 +249,7 @@ class SchemaRegistryAttributes(AssetAttributes):
 
     schema_registry_schema_id: str | None | UnsetType = UNSET
     """Unique identifier for schema definition set by the schema registry."""
+
 
 class SchemaRegistryRelationshipAttributes(AssetRelationshipAttributes):
     """SchemaRegistry-specific relationship attributes for nested API format."""
@@ -343,7 +326,9 @@ class SchemaRegistryRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -355,13 +340,19 @@ class SchemaRegistryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SchemaRegistryNested(AssetNested):
     """SchemaRegistry in nested API format for high-performance serialization."""
 
     attributes: SchemaRegistryAttributes | UnsetType = UNSET
     relationship_attributes: SchemaRegistryRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SchemaRegistryRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SchemaRegistryRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: SchemaRegistryRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: SchemaRegistryRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -399,11 +390,15 @@ _SCHEMA_REGISTRY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_schema_registry_attrs(attrs: SchemaRegistryAttributes, obj: SchemaRegistry) -> None:
+
+def _populate_schema_registry_attrs(
+    attrs: SchemaRegistryAttributes, obj: SchemaRegistry
+) -> None:
     """Populate SchemaRegistry-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.schema_registry_schema_type = obj.schema_registry_schema_type
     attrs.schema_registry_schema_id = obj.schema_registry_schema_id
+
 
 def _extract_schema_registry_attrs(attrs: SchemaRegistryAttributes) -> dict:
     """Extract all SchemaRegistry attributes from the attrs struct into a flat dict."""
@@ -411,6 +406,7 @@ def _extract_schema_registry_attrs(attrs: SchemaRegistryAttributes) -> dict:
     result["schema_registry_schema_type"] = attrs.schema_registry_schema_type
     result["schema_registry_schema_id"] = attrs.schema_registry_schema_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -423,7 +419,9 @@ def _schema_registry_to_nested(schema_registry: SchemaRegistry) -> SchemaRegistr
     _populate_schema_registry_attrs(attrs, schema_registry)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        schema_registry, _SCHEMA_REGISTRY_REL_FIELDS, SchemaRegistryRelationshipAttributes
+        schema_registry,
+        _SCHEMA_REGISTRY_REL_FIELDS,
+        SchemaRegistryRelationshipAttributes,
     )
     return SchemaRegistryNested(
         guid=schema_registry.guid,
@@ -451,16 +449,21 @@ def _schema_registry_to_nested(schema_registry: SchemaRegistry) -> SchemaRegistr
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _schema_registry_from_nested(nested: SchemaRegistryNested) -> SchemaRegistry:
     """Convert nested format to flat SchemaRegistry."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SchemaRegistryAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SchemaRegistryAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SCHEMA_REGISTRY_REL_FIELDS,
-        SchemaRegistryRelationshipAttributes
+        SchemaRegistryRelationshipAttributes,
     )
     return SchemaRegistry(
         guid=nested.guid,
@@ -487,7 +490,10 @@ def _schema_registry_from_nested(nested: SchemaRegistryNested) -> SchemaRegistry
         **merged_rels,
     )
 
-def _schema_registry_to_nested_bytes(schema_registry: SchemaRegistry, serde: Serde) -> bytes:
+
+def _schema_registry_to_nested_bytes(
+    schema_registry: SchemaRegistry, serde: Serde
+) -> bytes:
     """Convert flat SchemaRegistry to nested JSON bytes."""
     return serde.encode(_schema_registry_to_nested(schema_registry))
 
@@ -497,6 +503,7 @@ def _schema_registry_from_nested_bytes(data: bytes, serde: Serde) -> SchemaRegis
     nested = serde.decode(data, SchemaRegistryNested)
     return _schema_registry_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -505,8 +512,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SchemaRegistry.SCHEMA_REGISTRY_SCHEMA_TYPE = KeywordField("schemaRegistrySchemaType", "schemaRegistrySchemaType")
-SchemaRegistry.SCHEMA_REGISTRY_SCHEMA_ID = KeywordField("schemaRegistrySchemaId", "schemaRegistrySchemaId")
+SchemaRegistry.SCHEMA_REGISTRY_SCHEMA_TYPE = KeywordField(
+    "schemaRegistrySchemaType", "schemaRegistrySchemaType"
+)
+SchemaRegistry.SCHEMA_REGISTRY_SCHEMA_ID = KeywordField(
+    "schemaRegistrySchemaId", "schemaRegistrySchemaId"
+)
 SchemaRegistry.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SchemaRegistry.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SchemaRegistry.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -515,7 +526,9 @@ SchemaRegistry.APPLICATION_FIELD = RelationField("applicationField")
 SchemaRegistry.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SchemaRegistry.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SchemaRegistry.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SchemaRegistry.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SchemaRegistry.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SchemaRegistry.METRICS = RelationField("metrics")
 SchemaRegistry.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SchemaRegistry.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

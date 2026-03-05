@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedSaaS
@@ -59,6 +58,7 @@ class RelatedSageMakerUnifiedStudio(RelatedSaaS):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerUnifiedStudio"
 
+
 class RelatedSageMakerUnifiedStudioProject(RelatedSageMakerUnifiedStudio):
     """
     Related entity reference for SageMakerUnifiedStudioProject assets.
@@ -84,6 +84,7 @@ class RelatedSageMakerUnifiedStudioProject(RelatedSageMakerUnifiedStudio):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerUnifiedStudioProject"
+
 
 class RelatedSageMakerUnifiedStudioAsset(RelatedSageMakerUnifiedStudio):
     """
@@ -114,6 +115,7 @@ class RelatedSageMakerUnifiedStudioAsset(RelatedSageMakerUnifiedStudio):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerUnifiedStudioAsset"
 
+
 class RelatedSageMakerUnifiedStudioPublishedAsset(RelatedSageMakerUnifiedStudio):
     """
     Related entity reference for SageMakerUnifiedStudioPublishedAsset assets.
@@ -130,6 +132,7 @@ class RelatedSageMakerUnifiedStudioPublishedAsset(RelatedSageMakerUnifiedStudio)
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerUnifiedStudioPublishedAsset"
+
 
 class RelatedSageMakerUnifiedStudioSubscribedAsset(RelatedSageMakerUnifiedStudio):
     """
@@ -168,6 +171,7 @@ class RelatedSageMakerUnifiedStudioSubscribedAsset(RelatedSageMakerUnifiedStudio
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerUnifiedStudioSubscribedAsset"
+
 
 class RelatedSageMakerUnifiedStudioAssetSchema(RelatedSageMakerUnifiedStudio):
     """

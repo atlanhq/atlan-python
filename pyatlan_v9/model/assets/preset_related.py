@@ -52,6 +52,7 @@ class RelatedPreset(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Preset"
 
+
 class RelatedPresetChart(RelatedPreset):
     """
     Related entity reference for PresetChart assets.
@@ -72,6 +73,7 @@ class RelatedPresetChart(RelatedPreset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PresetChart"
 
+
 class RelatedPresetDashboard(RelatedPreset):
     """
     Related entity reference for PresetDashboard assets.
@@ -85,7 +87,9 @@ class RelatedPresetDashboard(RelatedPreset):
     preset_dashboard_changed_by_name: str | None | UnsetType = UNSET
     """"""
 
-    preset_dashboard_changed_by_url: str | None | UnsetType = msgspec.field(default=UNSET, name="presetDashboardChangedByURL")
+    preset_dashboard_changed_by_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="presetDashboardChangedByURL"
+    )
     """"""
 
     preset_dashboard_is_managed_externally: bool | None | UnsetType = UNSET
@@ -94,7 +98,9 @@ class RelatedPresetDashboard(RelatedPreset):
     preset_dashboard_is_published: bool | None | UnsetType = UNSET
     """"""
 
-    preset_dashboard_thumbnail_url: str | None | UnsetType = msgspec.field(default=UNSET, name="presetDashboardThumbnailURL")
+    preset_dashboard_thumbnail_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="presetDashboardThumbnailURL"
+    )
     """"""
 
     preset_dashboard_chart_count: int | None | UnsetType = UNSET
@@ -103,6 +109,7 @@ class RelatedPresetDashboard(RelatedPreset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PresetDashboard"
+
 
 class RelatedPresetDataset(RelatedPreset):
     """
@@ -126,6 +133,7 @@ class RelatedPresetDataset(RelatedPreset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PresetDataset"
+
 
 class RelatedPresetWorkspace(RelatedPreset):
     """

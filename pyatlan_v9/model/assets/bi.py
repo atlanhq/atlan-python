@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .catalog_related import RelatedBI
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class BI(Asset):
@@ -162,7 +163,9 @@ class BI(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class BI(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "BI"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"BI validation failed: {errors}")
-
-    def minimize(self) -> "BI":
-        self.validate()
-        return BI(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedBI":
-        if self.guid is not UNSET:
-            return RelatedBI(guid=self.guid)
-        return RelatedBI(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class BI(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class BIAttributes(AssetAttributes):
     """BI-specific attributes for nested API format."""
 
     pass
+
 
 class BIRelationshipAttributes(AssetRelationshipAttributes):
     """BI-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class BIRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,6 +327,7 @@ class BIRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class BINested(AssetNested):
     """BI in nested API format for high-performance serialization."""
 
@@ -351,6 +335,7 @@ class BINested(AssetNested):
     relationship_attributes: BIRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: BIRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: BIRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +373,16 @@ _BI_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_bi_attrs(attrs: BIAttributes, obj: BI) -> None:
     """Populate BI-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_bi_attrs(attrs: BIAttributes) -> dict:
     """Extract all BI attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,6 +423,7 @@ def _bi_to_nested(bi: BI) -> BINested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _bi_from_nested(nested: BINested) -> BI:
     """Convert nested format to flat BI."""
     attrs = nested.attributes if nested.attributes is not UNSET else BIAttributes()
@@ -444,7 +433,7 @@ def _bi_from_nested(nested: BINested) -> BI:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _BI_REL_FIELDS,
-        BIRelationshipAttributes
+        BIRelationshipAttributes,
     )
     return BI(
         guid=nested.guid,
@@ -471,6 +460,7 @@ def _bi_from_nested(nested: BINested) -> BI:
         **merged_rels,
     )
 
+
 def _bi_to_nested_bytes(bi: BI, serde: Serde) -> bytes:
     """Convert flat BI to nested JSON bytes."""
     return serde.encode(_bi_to_nested(bi))
@@ -480,6 +470,7 @@ def _bi_from_nested_bytes(data: bytes, serde: Serde) -> BI:
     """Convert nested JSON bytes to flat BI."""
     nested = serde.decode(data, BINested)
     return _bi_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

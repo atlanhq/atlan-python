@@ -35,7 +35,14 @@ from .asset import (
 from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtMetric, RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtMetric,
+    RelatedDbtModel,
+    RelatedDbtModelColumn,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
@@ -48,16 +55,28 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeDynamicTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import RelatedCalculationView, RelatedColumn, RelatedMaterialisedView, RelatedQuery, RelatedTable, RelatedTablePartition, RelatedView
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from .sql_related import (
+    RelatedCalculationView,
+    RelatedColumn,
+    RelatedMaterialisedView,
+    RelatedQuery,
+    RelatedTable,
+    RelatedTablePartition,
+    RelatedView,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .dynamo_db_related import RelatedDynamoDBAttribute, RelatedDynamoDBTable
+from .dynamo_db_related import RelatedDynamoDBTable
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DynamoDBAttribute(Asset):
@@ -215,22 +234,34 @@ class DynamoDBAttribute(Asset):
 
     type_name: Union[str, UnsetType] = "DynamoDBAttribute"
 
-    dynamo_db_status: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBStatus")
+    dynamo_db_status: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBStatus"
+    )
     """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
+    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBPartitionKey"
+    )
     """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBSortKey")
+    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBSortKey"
+    )
     """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
+    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBReadCapacityUnits"
+    )
     """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
+    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBWriteCapacityUnits"
+    )
     """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     data_type: str | None | UnsetType = UNSET
@@ -485,7 +516,9 @@ class DynamoDBAttribute(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -506,7 +539,9 @@ class DynamoDBAttribute(Asset):
     application_field: RelatedApplicationField | None | UnsetType = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    )
     """Cosmos collection in which this column exists."""
 
     output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
@@ -554,7 +589,9 @@ class DynamoDBAttribute(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: list[RelatedDbtMetric] | None | UnsetType = UNSET
@@ -569,13 +606,17 @@ class DynamoDBAttribute(Asset):
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    dynamo_db_table: RelatedDynamoDBTable | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBTable")
+    dynamo_db_table: RelatedDynamoDBTable | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBTable"
+    )
     """DynamoDB table in which this attribute exists."""
 
     meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(
+        default=UNSET, name="mongoDBCollection"
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
@@ -641,7 +682,9 @@ class DynamoDBAttribute(Asset):
     queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that access this column."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
@@ -663,45 +706,7 @@ class DynamoDBAttribute(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.table is UNSET:
-                errors.append("table is required for creation")
-            if self.table_name is UNSET:
-                errors.append("table_name is required for creation")
-            if self.table_qualified_name is UNSET:
-                errors.append("table_qualified_name is required for creation")
-            if self.order is UNSET:
-                errors.append("order is required for creation")
-        if errors:
-            raise ValueError(f"DynamoDBAttribute validation failed: {errors}")
-
-    def minimize(self) -> "DynamoDBAttribute":
-        self.validate()
-        return DynamoDBAttribute(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDynamoDBAttribute":
-        if self.guid is not UNSET:
-            return RelatedDynamoDBAttribute(guid=self.guid)
-        return RelatedDynamoDBAttribute(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -732,7 +737,9 @@ class DynamoDBAttribute(Asset):
         return _dynamo_db_attribute_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DynamoDBAttribute:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DynamoDBAttribute:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -754,25 +761,38 @@ class DynamoDBAttribute(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DynamoDBAttributeAttributes(AssetAttributes):
     """DynamoDBAttribute-specific attributes for nested API format."""
 
-    dynamo_db_status: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBStatus")
+    dynamo_db_status: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBStatus"
+    )
     """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
+    dynamo_db_partition_key: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBPartitionKey"
+    )
     """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBSortKey")
+    dynamo_db_sort_key: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBSortKey"
+    )
     """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
+    dynamo_db_read_capacity_units: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBReadCapacityUnits"
+    )
     """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
+    dynamo_db_write_capacity_units: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBWriteCapacityUnits"
+    )
     """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     data_type: str | None | UnsetType = UNSET
@@ -1027,11 +1047,14 @@ class DynamoDBAttributeAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     """DynamoDBAttribute-specific relationship attributes for nested API format."""
@@ -1051,7 +1074,9 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     application_field: RelatedApplicationField | None | UnsetType = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    )
     """Cosmos collection in which this column exists."""
 
     output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
@@ -1099,7 +1124,9 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: list[RelatedDbtMetric] | None | UnsetType = UNSET
@@ -1114,13 +1141,17 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    dynamo_db_table: RelatedDynamoDBTable | None | UnsetType = msgspec.field(default=UNSET, name="dynamoDBTable")
+    dynamo_db_table: RelatedDynamoDBTable | None | UnsetType = msgspec.field(
+        default=UNSET, name="dynamoDBTable"
+    )
     """DynamoDB table in which this attribute exists."""
 
     meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(
+        default=UNSET, name="mongoDBCollection"
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
@@ -1186,7 +1217,9 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that access this column."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
@@ -1201,13 +1234,19 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DynamoDBAttributeNested(AssetNested):
     """DynamoDBAttribute in nested API format for high-performance serialization."""
 
     attributes: DynamoDBAttributeAttributes | UnsetType = UNSET
     relationship_attributes: DynamoDBAttributeRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DynamoDBAttributeRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DynamoDBAttributeRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        DynamoDBAttributeRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        DynamoDBAttributeRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1272,7 +1311,10 @@ _DYNAMO_DB_ATTRIBUTE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes, obj: DynamoDBAttribute) -> None:
+
+def _populate_dynamo_db_attribute_attrs(
+    attrs: DynamoDBAttributeAttributes, obj: DynamoDBAttribute
+) -> None:
     """Populate DynamoDBAttribute-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dynamo_db_status = obj.dynamo_db_status
@@ -1368,6 +1410,7 @@ def _populate_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes, obj:
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> dict:
     """Extract all DynamoDBAttribute attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -1406,7 +1449,9 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
     result["parent_column_qualified_name"] = attrs.parent_column_qualified_name
     result["parent_column_name"] = attrs.parent_column_name
     result["column_distinct_values_count"] = attrs.column_distinct_values_count
-    result["column_distinct_values_count_long"] = attrs.column_distinct_values_count_long
+    result["column_distinct_values_count_long"] = (
+        attrs.column_distinct_values_count_long
+    )
     result["column_histogram"] = attrs.column_histogram
     result["column_max"] = attrs.column_max
     result["column_min"] = attrs.column_min
@@ -1419,7 +1464,9 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
     result["column_average"] = attrs.column_average
     result["column_average_length"] = attrs.column_average_length
     result["column_duplicate_values_count"] = attrs.column_duplicate_values_count
-    result["column_duplicate_values_count_long"] = attrs.column_duplicate_values_count_long
+    result["column_duplicate_values_count_long"] = (
+        attrs.column_duplicate_values_count_long
+    )
     result["column_maximum_string_length"] = attrs.column_maximum_string_length
     result["column_maxs"] = attrs.column_maxs
     result["column_minimum_string_length"] = attrs.column_minimum_string_length
@@ -1461,22 +1508,29 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _dynamo_db_attribute_to_nested(dynamo_db_attribute: DynamoDBAttribute) -> DynamoDBAttributeNested:
+def _dynamo_db_attribute_to_nested(
+    dynamo_db_attribute: DynamoDBAttribute,
+) -> DynamoDBAttributeNested:
     """Convert flat DynamoDBAttribute to nested format."""
     attrs = DynamoDBAttributeAttributes()
     _populate_dynamo_db_attribute_attrs(attrs, dynamo_db_attribute)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        dynamo_db_attribute, _DYNAMO_DB_ATTRIBUTE_REL_FIELDS, DynamoDBAttributeRelationshipAttributes
+        dynamo_db_attribute,
+        _DYNAMO_DB_ATTRIBUTE_REL_FIELDS,
+        DynamoDBAttributeRelationshipAttributes,
     )
     return DynamoDBAttributeNested(
         guid=dynamo_db_attribute.guid,
@@ -1504,16 +1558,23 @@ def _dynamo_db_attribute_to_nested(dynamo_db_attribute: DynamoDBAttribute) -> Dy
         remove_relationship_attributes=remove_rels,
     )
 
-def _dynamo_db_attribute_from_nested(nested: DynamoDBAttributeNested) -> DynamoDBAttribute:
+
+def _dynamo_db_attribute_from_nested(
+    nested: DynamoDBAttributeNested,
+) -> DynamoDBAttribute:
     """Convert nested format to flat DynamoDBAttribute."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DynamoDBAttributeAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DynamoDBAttributeAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DYNAMO_DB_ATTRIBUTE_REL_FIELDS,
-        DynamoDBAttributeRelationshipAttributes
+        DynamoDBAttributeRelationshipAttributes,
     )
     return DynamoDBAttribute(
         guid=nested.guid,
@@ -1540,15 +1601,21 @@ def _dynamo_db_attribute_from_nested(nested: DynamoDBAttributeNested) -> DynamoD
         **merged_rels,
     )
 
-def _dynamo_db_attribute_to_nested_bytes(dynamo_db_attribute: DynamoDBAttribute, serde: Serde) -> bytes:
+
+def _dynamo_db_attribute_to_nested_bytes(
+    dynamo_db_attribute: DynamoDBAttribute, serde: Serde
+) -> bytes:
     """Convert flat DynamoDBAttribute to nested JSON bytes."""
     return serde.encode(_dynamo_db_attribute_to_nested(dynamo_db_attribute))
 
 
-def _dynamo_db_attribute_from_nested_bytes(data: bytes, serde: Serde) -> DynamoDBAttribute:
+def _dynamo_db_attribute_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DynamoDBAttribute:
     """Convert nested JSON bytes to flat DynamoDBAttribute."""
     nested = serde.decode(data, DynamoDBAttributeNested)
     return _dynamo_db_attribute_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1562,19 +1629,37 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 DynamoDBAttribute.DYNAMO_DB_STATUS = KeywordField("dynamoDBStatus", "dynamoDBStatus")
-DynamoDBAttribute.DYNAMO_DB_PARTITION_KEY = KeywordField("dynamoDBPartitionKey", "dynamoDBPartitionKey")
-DynamoDBAttribute.DYNAMO_DB_SORT_KEY = KeywordField("dynamoDBSortKey", "dynamoDBSortKey")
-DynamoDBAttribute.DYNAMO_DB_READ_CAPACITY_UNITS = NumericField("dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits")
-DynamoDBAttribute.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField("dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits")
-DynamoDBAttribute.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+DynamoDBAttribute.DYNAMO_DB_PARTITION_KEY = KeywordField(
+    "dynamoDBPartitionKey", "dynamoDBPartitionKey"
+)
+DynamoDBAttribute.DYNAMO_DB_SORT_KEY = KeywordField(
+    "dynamoDBSortKey", "dynamoDBSortKey"
+)
+DynamoDBAttribute.DYNAMO_DB_READ_CAPACITY_UNITS = NumericField(
+    "dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits"
+)
+DynamoDBAttribute.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField(
+    "dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits"
+)
+DynamoDBAttribute.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 DynamoDBAttribute.DATA_TYPE = KeywordTextField("dataType", "dataType", "dataType.text")
 DynamoDBAttribute.SUB_DATA_TYPE = KeywordField("subDataType", "subDataType")
-DynamoDBAttribute.COLUMN_COMPRESSION = KeywordField("columnCompression", "columnCompression")
+DynamoDBAttribute.COLUMN_COMPRESSION = KeywordField(
+    "columnCompression", "columnCompression"
+)
 DynamoDBAttribute.COLUMN_ENCODING = KeywordField("columnEncoding", "columnEncoding")
-DynamoDBAttribute.RAW_DATA_TYPE_DEFINITION = KeywordField("rawDataTypeDefinition", "rawDataTypeDefinition")
+DynamoDBAttribute.RAW_DATA_TYPE_DEFINITION = KeywordField(
+    "rawDataTypeDefinition", "rawDataTypeDefinition"
+)
 DynamoDBAttribute.ORDER = NumericField("order", "order")
-DynamoDBAttribute.NESTED_COLUMN_ORDER = KeywordTextField("nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text")
-DynamoDBAttribute.NESTED_COLUMN_COUNT = NumericField("nestedColumnCount", "nestedColumnCount")
+DynamoDBAttribute.NESTED_COLUMN_ORDER = KeywordTextField(
+    "nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text"
+)
+DynamoDBAttribute.NESTED_COLUMN_COUNT = NumericField(
+    "nestedColumnCount", "nestedColumnCount"
+)
 DynamoDBAttribute.COLUMN_HIERARCHY = KeywordField("columnHierarchy", "columnHierarchy")
 DynamoDBAttribute.IS_PARTITION = BooleanField("isPartition", "isPartition")
 DynamoDBAttribute.PARTITION_ORDER = NumericField("partitionOrder", "partitionOrder")
@@ -1593,65 +1678,135 @@ DynamoDBAttribute.IS_NULLABLE = BooleanField("isNullable", "isNullable")
 DynamoDBAttribute.NUMERIC_SCALE = NumericField("numericScale", "numericScale")
 DynamoDBAttribute.MAX_LENGTH = NumericField("maxLength", "maxLength")
 DynamoDBAttribute.VALIDATIONS = KeywordField("validations", "validations")
-DynamoDBAttribute.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField("parentColumnQualifiedName", "parentColumnQualifiedName", "parentColumnQualifiedName.text")
-DynamoDBAttribute.PARENT_COLUMN_NAME = KeywordField("parentColumnName", "parentColumnName")
-DynamoDBAttribute.COLUMN_DISTINCT_VALUES_COUNT = NumericField("columnDistinctValuesCount", "columnDistinctValuesCount")
-DynamoDBAttribute.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField("columnDistinctValuesCountLong", "columnDistinctValuesCountLong")
+DynamoDBAttribute.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField(
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName.text",
+)
+DynamoDBAttribute.PARENT_COLUMN_NAME = KeywordField(
+    "parentColumnName", "parentColumnName"
+)
+DynamoDBAttribute.COLUMN_DISTINCT_VALUES_COUNT = NumericField(
+    "columnDistinctValuesCount", "columnDistinctValuesCount"
+)
+DynamoDBAttribute.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField(
+    "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
+)
 DynamoDBAttribute.COLUMN_HISTOGRAM = KeywordField("columnHistogram", "columnHistogram")
 DynamoDBAttribute.COLUMN_MAX = NumericField("columnMax", "columnMax")
 DynamoDBAttribute.COLUMN_MIN = NumericField("columnMin", "columnMin")
 DynamoDBAttribute.COLUMN_MEAN = NumericField("columnMean", "columnMean")
 DynamoDBAttribute.COLUMN_SUM = NumericField("columnSum", "columnSum")
 DynamoDBAttribute.COLUMN_MEDIAN = NumericField("columnMedian", "columnMedian")
-DynamoDBAttribute.COLUMN_STANDARD_DEVIATION = NumericField("columnStandardDeviation", "columnStandardDeviation")
-DynamoDBAttribute.COLUMN_UNIQUE_VALUES_COUNT = NumericField("columnUniqueValuesCount", "columnUniqueValuesCount")
-DynamoDBAttribute.COLUMN_UNIQUE_VALUES_COUNT_LONG = NumericField("columnUniqueValuesCountLong", "columnUniqueValuesCountLong")
+DynamoDBAttribute.COLUMN_STANDARD_DEVIATION = NumericField(
+    "columnStandardDeviation", "columnStandardDeviation"
+)
+DynamoDBAttribute.COLUMN_UNIQUE_VALUES_COUNT = NumericField(
+    "columnUniqueValuesCount", "columnUniqueValuesCount"
+)
+DynamoDBAttribute.COLUMN_UNIQUE_VALUES_COUNT_LONG = NumericField(
+    "columnUniqueValuesCountLong", "columnUniqueValuesCountLong"
+)
 DynamoDBAttribute.COLUMN_AVERAGE = NumericField("columnAverage", "columnAverage")
-DynamoDBAttribute.COLUMN_AVERAGE_LENGTH = NumericField("columnAverageLength", "columnAverageLength")
-DynamoDBAttribute.COLUMN_DUPLICATE_VALUES_COUNT = NumericField("columnDuplicateValuesCount", "columnDuplicateValuesCount")
-DynamoDBAttribute.COLUMN_DUPLICATE_VALUES_COUNT_LONG = NumericField("columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong")
-DynamoDBAttribute.COLUMN_MAXIMUM_STRING_LENGTH = NumericField("columnMaximumStringLength", "columnMaximumStringLength")
+DynamoDBAttribute.COLUMN_AVERAGE_LENGTH = NumericField(
+    "columnAverageLength", "columnAverageLength"
+)
+DynamoDBAttribute.COLUMN_DUPLICATE_VALUES_COUNT = NumericField(
+    "columnDuplicateValuesCount", "columnDuplicateValuesCount"
+)
+DynamoDBAttribute.COLUMN_DUPLICATE_VALUES_COUNT_LONG = NumericField(
+    "columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong"
+)
+DynamoDBAttribute.COLUMN_MAXIMUM_STRING_LENGTH = NumericField(
+    "columnMaximumStringLength", "columnMaximumStringLength"
+)
 DynamoDBAttribute.COLUMN_MAXS = KeywordField("columnMaxs", "columnMaxs")
-DynamoDBAttribute.COLUMN_MINIMUM_STRING_LENGTH = NumericField("columnMinimumStringLength", "columnMinimumStringLength")
+DynamoDBAttribute.COLUMN_MINIMUM_STRING_LENGTH = NumericField(
+    "columnMinimumStringLength", "columnMinimumStringLength"
+)
 DynamoDBAttribute.COLUMN_MINS = KeywordField("columnMins", "columnMins")
-DynamoDBAttribute.COLUMN_MISSING_VALUES_COUNT = NumericField("columnMissingValuesCount", "columnMissingValuesCount")
-DynamoDBAttribute.COLUMN_MISSING_VALUES_COUNT_LONG = NumericField("columnMissingValuesCountLong", "columnMissingValuesCountLong")
-DynamoDBAttribute.COLUMN_MISSING_VALUES_PERCENTAGE = NumericField("columnMissingValuesPercentage", "columnMissingValuesPercentage")
-DynamoDBAttribute.COLUMN_UNIQUENESS_PERCENTAGE = NumericField("columnUniquenessPercentage", "columnUniquenessPercentage")
+DynamoDBAttribute.COLUMN_MISSING_VALUES_COUNT = NumericField(
+    "columnMissingValuesCount", "columnMissingValuesCount"
+)
+DynamoDBAttribute.COLUMN_MISSING_VALUES_COUNT_LONG = NumericField(
+    "columnMissingValuesCountLong", "columnMissingValuesCountLong"
+)
+DynamoDBAttribute.COLUMN_MISSING_VALUES_PERCENTAGE = NumericField(
+    "columnMissingValuesPercentage", "columnMissingValuesPercentage"
+)
+DynamoDBAttribute.COLUMN_UNIQUENESS_PERCENTAGE = NumericField(
+    "columnUniquenessPercentage", "columnUniquenessPercentage"
+)
 DynamoDBAttribute.COLUMN_VARIANCE = NumericField("columnVariance", "columnVariance")
 DynamoDBAttribute.COLUMN_TOP_VALUES = KeywordField("columnTopValues", "columnTopValues")
 DynamoDBAttribute.COLUMN_MAX_VALUE = NumericField("columnMaxValue", "columnMaxValue")
 DynamoDBAttribute.COLUMN_MIN_VALUE = NumericField("columnMinValue", "columnMinValue")
 DynamoDBAttribute.COLUMN_MEAN_VALUE = NumericField("columnMeanValue", "columnMeanValue")
 DynamoDBAttribute.COLUMN_SUM_VALUE = NumericField("columnSumValue", "columnSumValue")
-DynamoDBAttribute.COLUMN_MEDIAN_VALUE = NumericField("columnMedianValue", "columnMedianValue")
-DynamoDBAttribute.COLUMN_STANDARD_DEVIATION_VALUE = NumericField("columnStandardDeviationValue", "columnStandardDeviationValue")
-DynamoDBAttribute.COLUMN_AVERAGE_VALUE = NumericField("columnAverageValue", "columnAverageValue")
-DynamoDBAttribute.COLUMN_VARIANCE_VALUE = NumericField("columnVarianceValue", "columnVarianceValue")
-DynamoDBAttribute.COLUMN_AVERAGE_LENGTH_VALUE = NumericField("columnAverageLengthValue", "columnAverageLengthValue")
-DynamoDBAttribute.COLUMN_DISTRIBUTION_HISTOGRAM = KeywordField("columnDistributionHistogram", "columnDistributionHistogram")
-DynamoDBAttribute.COLUMN_DEPTH_LEVEL = NumericField("columnDepthLevel", "columnDepthLevel")
-DynamoDBAttribute.NOSQL_COLLECTION_NAME = KeywordField("nosqlCollectionName", "nosqlCollectionName")
-DynamoDBAttribute.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField("nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName")
+DynamoDBAttribute.COLUMN_MEDIAN_VALUE = NumericField(
+    "columnMedianValue", "columnMedianValue"
+)
+DynamoDBAttribute.COLUMN_STANDARD_DEVIATION_VALUE = NumericField(
+    "columnStandardDeviationValue", "columnStandardDeviationValue"
+)
+DynamoDBAttribute.COLUMN_AVERAGE_VALUE = NumericField(
+    "columnAverageValue", "columnAverageValue"
+)
+DynamoDBAttribute.COLUMN_VARIANCE_VALUE = NumericField(
+    "columnVarianceValue", "columnVarianceValue"
+)
+DynamoDBAttribute.COLUMN_AVERAGE_LENGTH_VALUE = NumericField(
+    "columnAverageLengthValue", "columnAverageLengthValue"
+)
+DynamoDBAttribute.COLUMN_DISTRIBUTION_HISTOGRAM = KeywordField(
+    "columnDistributionHistogram", "columnDistributionHistogram"
+)
+DynamoDBAttribute.COLUMN_DEPTH_LEVEL = NumericField(
+    "columnDepthLevel", "columnDepthLevel"
+)
+DynamoDBAttribute.NOSQL_COLLECTION_NAME = KeywordField(
+    "nosqlCollectionName", "nosqlCollectionName"
+)
+DynamoDBAttribute.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField(
+    "nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName"
+)
 DynamoDBAttribute.COLUMN_IS_MEASURE = BooleanField("columnIsMeasure", "columnIsMeasure")
-DynamoDBAttribute.COLUMN_MEASURE_TYPE = KeywordField("columnMeasureType", "columnMeasureType")
+DynamoDBAttribute.COLUMN_MEASURE_TYPE = KeywordField(
+    "columnMeasureType", "columnMeasureType"
+)
 DynamoDBAttribute.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DynamoDBAttribute.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DynamoDBAttribute.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DynamoDBAttribute.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DynamoDBAttribute.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DynamoDBAttribute.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DynamoDBAttribute.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DynamoDBAttribute.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DynamoDBAttribute.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DynamoDBAttribute.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DynamoDBAttribute.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DynamoDBAttribute.TABLE_NAME = KeywordField("tableName", "tableName")
-DynamoDBAttribute.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DynamoDBAttribute.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DynamoDBAttribute.VIEW_NAME = KeywordField("viewName", "viewName")
-DynamoDBAttribute.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DynamoDBAttribute.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DynamoDBAttribute.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DynamoDBAttribute.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DynamoDBAttribute.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DynamoDBAttribute.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DynamoDBAttribute.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DynamoDBAttribute.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DynamoDBAttribute.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DynamoDBAttribute.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DynamoDBAttribute.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 DynamoDBAttribute.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DynamoDBAttribute.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -1662,10 +1817,14 @@ DynamoDBAttribute.COSMOS_MONGO_DB_COLLECTION = RelationField("cosmosMongoDBColle
 DynamoDBAttribute.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DynamoDBAttribute.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DynamoDBAttribute.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DynamoDBAttribute.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DynamoDBAttribute.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DynamoDBAttribute.METRICS = RelationField("metrics")
 DynamoDBAttribute.METRIC_TIMESTAMPS = RelationField("metricTimestamps")
-DynamoDBAttribute.DATA_QUALITY_METRIC_DIMENSIONS = RelationField("dataQualityMetricDimensions")
+DynamoDBAttribute.DATA_QUALITY_METRIC_DIMENSIONS = RelationField(
+    "dataQualityMetricDimensions"
+)
 DynamoDBAttribute.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DynamoDBAttribute.DQ_BASE_COLUMN_RULES = RelationField("dqBaseColumnRules")
 DynamoDBAttribute.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

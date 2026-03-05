@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,7 +42,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
@@ -53,6 +55,7 @@ from .app_related import RelatedApplication, RelatedApplicationField
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Application(Asset):
@@ -175,7 +178,9 @@ class Application(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -189,30 +194,6 @@ class Application(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Application"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Application validation failed: {errors}")
-
-    def minimize(self) -> "Application":
-        self.validate()
-        return Application(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedApplication":
-        if self.guid is not UNSET:
-            return RelatedApplication(guid=self.guid)
-        return RelatedApplication(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -299,11 +280,13 @@ class Application(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ApplicationAttributes(AssetAttributes):
     """Application-specific attributes for nested API format."""
 
     app_id: str | None | UnsetType = UNSET
     """Unique identifier for the application asset from the source system."""
+
 
 class ApplicationRelationshipAttributes(AssetRelationshipAttributes):
     """Application-specific relationship attributes for nested API format."""
@@ -386,7 +369,9 @@ class ApplicationRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -398,13 +383,19 @@ class ApplicationRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ApplicationNested(AssetNested):
     """Application in nested API format for high-performance serialization."""
 
     attributes: ApplicationAttributes | UnsetType = UNSET
     relationship_attributes: ApplicationRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ApplicationRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: ApplicationRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: ApplicationRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: ApplicationRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -444,16 +435,19 @@ _APPLICATION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_application_attrs(attrs: ApplicationAttributes, obj: Application) -> None:
     """Populate Application-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.app_id = obj.app_id
+
 
 def _extract_application_attrs(attrs: ApplicationAttributes) -> dict:
     """Extract all Application attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["app_id"] = attrs.app_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -494,16 +488,19 @@ def _application_to_nested(application: Application) -> ApplicationNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _application_from_nested(nested: ApplicationNested) -> Application:
     """Convert nested format to flat Application."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ApplicationAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ApplicationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _APPLICATION_REL_FIELDS,
-        ApplicationRelationshipAttributes
+        ApplicationRelationshipAttributes,
     )
     return Application(
         guid=nested.guid,
@@ -530,6 +527,7 @@ def _application_from_nested(nested: ApplicationNested) -> Application:
         **merged_rels,
     )
 
+
 def _application_to_nested_bytes(application: Application, serde: Serde) -> bytes:
     """Convert flat Application to nested JSON bytes."""
     return serde.encode(_application_to_nested(application))
@@ -539,6 +537,7 @@ def _application_from_nested_bytes(data: bytes, serde: Serde) -> Application:
     """Convert nested JSON bytes to flat Application."""
     nested = serde.decode(data, ApplicationNested)
     return _application_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

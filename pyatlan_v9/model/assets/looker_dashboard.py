@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,24 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .looker_related import RelatedLookerDashboard, RelatedLookerField, RelatedLookerFolder, RelatedLookerLook, RelatedLookerTile
+from .looker_related import (
+    RelatedLookerField,
+    RelatedLookerFolder,
+    RelatedLookerLook,
+    RelatedLookerTile,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class LookerDashboard(Asset):
@@ -211,7 +219,9 @@ class LookerDashboard(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -230,41 +240,7 @@ class LookerDashboard(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.folder is UNSET:
-                errors.append("folder is required for creation")
-            if self.folder_name is UNSET:
-                errors.append("folder_name is required for creation")
-        if errors:
-            raise ValueError(f"LookerDashboard validation failed: {errors}")
-
-    def minimize(self) -> "LookerDashboard":
-        self.validate()
-        return LookerDashboard(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLookerDashboard":
-        if self.guid is not UNSET:
-            return RelatedLookerDashboard(guid=self.guid)
-        return RelatedLookerDashboard(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -295,7 +271,9 @@ class LookerDashboard(Asset):
         return _looker_dashboard_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> LookerDashboard:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> LookerDashboard:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -316,6 +294,7 @@ class LookerDashboard(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class LookerDashboardAttributes(AssetAttributes):
     """LookerDashboard-specific attributes for nested API format."""
@@ -343,6 +322,7 @@ class LookerDashboardAttributes(AssetAttributes):
 
     looker_slug: str | None | UnsetType = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
+
 
 class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     """LookerDashboard-specific relationship attributes for nested API format."""
@@ -431,7 +411,9 @@ class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -443,13 +425,19 @@ class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class LookerDashboardNested(AssetNested):
     """LookerDashboard in nested API format for high-performance serialization."""
 
     attributes: LookerDashboardAttributes | UnsetType = UNSET
     relationship_attributes: LookerDashboardRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: LookerDashboardRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: LookerDashboardRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        LookerDashboardRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        LookerDashboardRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -491,7 +479,10 @@ _LOOKER_DASHBOARD_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_looker_dashboard_attrs(attrs: LookerDashboardAttributes, obj: LookerDashboard) -> None:
+
+def _populate_looker_dashboard_attrs(
+    attrs: LookerDashboardAttributes, obj: LookerDashboard
+) -> None:
     """Populate LookerDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.folder_name = obj.folder_name
@@ -502,6 +493,7 @@ def _populate_looker_dashboard_attrs(attrs: LookerDashboardAttributes, obj: Look
     attrs.source_last_accessed_at = obj.source_last_accessed_at
     attrs.source_last_viewed_at = obj.source_last_viewed_at
     attrs.looker_slug = obj.looker_slug
+
 
 def _extract_looker_dashboard_attrs(attrs: LookerDashboardAttributes) -> dict:
     """Extract all LookerDashboard attributes from the attrs struct into a flat dict."""
@@ -516,18 +508,23 @@ def _extract_looker_dashboard_attrs(attrs: LookerDashboardAttributes) -> dict:
     result["looker_slug"] = attrs.looker_slug
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _looker_dashboard_to_nested(looker_dashboard: LookerDashboard) -> LookerDashboardNested:
+def _looker_dashboard_to_nested(
+    looker_dashboard: LookerDashboard,
+) -> LookerDashboardNested:
     """Convert flat LookerDashboard to nested format."""
     attrs = LookerDashboardAttributes()
     _populate_looker_dashboard_attrs(attrs, looker_dashboard)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        looker_dashboard, _LOOKER_DASHBOARD_REL_FIELDS, LookerDashboardRelationshipAttributes
+        looker_dashboard,
+        _LOOKER_DASHBOARD_REL_FIELDS,
+        LookerDashboardRelationshipAttributes,
     )
     return LookerDashboardNested(
         guid=looker_dashboard.guid,
@@ -555,16 +552,21 @@ def _looker_dashboard_to_nested(looker_dashboard: LookerDashboard) -> LookerDash
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _looker_dashboard_from_nested(nested: LookerDashboardNested) -> LookerDashboard:
     """Convert nested format to flat LookerDashboard."""
-    attrs = nested.attributes if nested.attributes is not UNSET else LookerDashboardAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else LookerDashboardAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_DASHBOARD_REL_FIELDS,
-        LookerDashboardRelationshipAttributes
+        LookerDashboardRelationshipAttributes,
     )
     return LookerDashboard(
         guid=nested.guid,
@@ -591,7 +593,10 @@ def _looker_dashboard_from_nested(nested: LookerDashboardNested) -> LookerDashbo
         **merged_rels,
     )
 
-def _looker_dashboard_to_nested_bytes(looker_dashboard: LookerDashboard, serde: Serde) -> bytes:
+
+def _looker_dashboard_to_nested_bytes(
+    looker_dashboard: LookerDashboard, serde: Serde
+) -> bytes:
     """Convert flat LookerDashboard to nested JSON bytes."""
     return serde.encode(_looker_dashboard_to_nested(looker_dashboard))
 
@@ -600,6 +605,7 @@ def _looker_dashboard_from_nested_bytes(data: bytes, serde: Serde) -> LookerDash
     """Convert nested JSON bytes to flat LookerDashboard."""
     nested = serde.decode(data, LookerDashboardNested)
     return _looker_dashboard_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -613,10 +619,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 LookerDashboard.FOLDER_NAME = KeywordField("folderName", "folderName")
 LookerDashboard.SOURCE_USER_ID = NumericField("sourceUserId", "sourceUserId")
 LookerDashboard.SOURCE_VIEW_COUNT = NumericField("sourceViewCount", "sourceViewCount")
-LookerDashboard.SOURCE_METADATA_ID = NumericField("sourceMetadataId", "sourceMetadataId")
-LookerDashboard.SOURCELAST_UPDATER_ID = NumericField("sourcelastUpdaterId", "sourcelastUpdaterId")
-LookerDashboard.SOURCE_LAST_ACCESSED_AT = NumericField("sourceLastAccessedAt", "sourceLastAccessedAt")
-LookerDashboard.SOURCE_LAST_VIEWED_AT = NumericField("sourceLastViewedAt", "sourceLastViewedAt")
+LookerDashboard.SOURCE_METADATA_ID = NumericField(
+    "sourceMetadataId", "sourceMetadataId"
+)
+LookerDashboard.SOURCELAST_UPDATER_ID = NumericField(
+    "sourcelastUpdaterId", "sourcelastUpdaterId"
+)
+LookerDashboard.SOURCE_LAST_ACCESSED_AT = NumericField(
+    "sourceLastAccessedAt", "sourceLastAccessedAt"
+)
+LookerDashboard.SOURCE_LAST_VIEWED_AT = NumericField(
+    "sourceLastViewedAt", "sourceLastViewedAt"
+)
 LookerDashboard.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
 LookerDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 LookerDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -626,7 +640,9 @@ LookerDashboard.APPLICATION_FIELD = RelationField("applicationField")
 LookerDashboard.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 LookerDashboard.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 LookerDashboard.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-LookerDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+LookerDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 LookerDashboard.METRICS = RelationField("metrics")
 LookerDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 LookerDashboard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

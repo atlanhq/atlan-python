@@ -44,16 +44,24 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .preset_related import RelatedPresetChart, RelatedPresetDashboard, RelatedPresetDataset, RelatedPresetWorkspace
+from .preset_related import (
+    RelatedPresetChart,
+    RelatedPresetDataset,
+    RelatedPresetWorkspace,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class PresetDashboard(Asset):
@@ -108,7 +116,9 @@ class PresetDashboard(Asset):
     preset_dashboard_changed_by_name: str | None | UnsetType = UNSET
     """"""
 
-    preset_dashboard_changed_by_url: str | None | UnsetType = msgspec.field(default=UNSET, name="presetDashboardChangedByURL")
+    preset_dashboard_changed_by_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="presetDashboardChangedByURL"
+    )
     """"""
 
     preset_dashboard_is_managed_externally: bool | None | UnsetType = UNSET
@@ -117,7 +127,9 @@ class PresetDashboard(Asset):
     preset_dashboard_is_published: bool | None | UnsetType = UNSET
     """"""
 
-    preset_dashboard_thumbnail_url: str | None | UnsetType = msgspec.field(default=UNSET, name="presetDashboardThumbnailURL")
+    preset_dashboard_thumbnail_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="presetDashboardThumbnailURL"
+    )
     """"""
 
     preset_dashboard_chart_count: int | None | UnsetType = UNSET
@@ -216,7 +228,9 @@ class PresetDashboard(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -235,41 +249,7 @@ class PresetDashboard(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.preset_workspace is UNSET:
-                errors.append("preset_workspace is required for creation")
-            if self.preset_workspace_qualified_name is UNSET:
-                errors.append("preset_workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"PresetDashboard validation failed: {errors}")
-
-    def minimize(self) -> "PresetDashboard":
-        self.validate()
-        return PresetDashboard(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedPresetDashboard":
-        if self.guid is not UNSET:
-            return RelatedPresetDashboard(guid=self.guid)
-        return RelatedPresetDashboard(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     @classmethod
     @init_guid
@@ -329,7 +309,9 @@ class PresetDashboard(Asset):
         return _preset_dashboard_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> PresetDashboard:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> PresetDashboard:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -351,13 +333,16 @@ class PresetDashboard(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class PresetDashboardAttributes(AssetAttributes):
     """PresetDashboard-specific attributes for nested API format."""
 
     preset_dashboard_changed_by_name: str | None | UnsetType = UNSET
     """"""
 
-    preset_dashboard_changed_by_url: str | None | UnsetType = msgspec.field(default=UNSET, name="presetDashboardChangedByURL")
+    preset_dashboard_changed_by_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="presetDashboardChangedByURL"
+    )
     """"""
 
     preset_dashboard_is_managed_externally: bool | None | UnsetType = UNSET
@@ -366,7 +351,9 @@ class PresetDashboardAttributes(AssetAttributes):
     preset_dashboard_is_published: bool | None | UnsetType = UNSET
     """"""
 
-    preset_dashboard_thumbnail_url: str | None | UnsetType = msgspec.field(default=UNSET, name="presetDashboardThumbnailURL")
+    preset_dashboard_thumbnail_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="presetDashboardThumbnailURL"
+    )
     """"""
 
     preset_dashboard_chart_count: int | None | UnsetType = UNSET
@@ -383,6 +370,7 @@ class PresetDashboardAttributes(AssetAttributes):
 
     preset_dashboard_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dashboard in which this asset exists."""
+
 
 class PresetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     """PresetDashboard-specific relationship attributes for nested API format."""
@@ -468,7 +456,9 @@ class PresetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -480,13 +470,19 @@ class PresetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class PresetDashboardNested(AssetNested):
     """PresetDashboard in nested API format for high-performance serialization."""
 
     attributes: PresetDashboardAttributes | UnsetType = UNSET
     relationship_attributes: PresetDashboardRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: PresetDashboardRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: PresetDashboardRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        PresetDashboardRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        PresetDashboardRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -527,12 +523,17 @@ _PRESET_DASHBOARD_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_preset_dashboard_attrs(attrs: PresetDashboardAttributes, obj: PresetDashboard) -> None:
+
+def _populate_preset_dashboard_attrs(
+    attrs: PresetDashboardAttributes, obj: PresetDashboard
+) -> None:
     """Populate PresetDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.preset_dashboard_changed_by_name = obj.preset_dashboard_changed_by_name
     attrs.preset_dashboard_changed_by_url = obj.preset_dashboard_changed_by_url
-    attrs.preset_dashboard_is_managed_externally = obj.preset_dashboard_is_managed_externally
+    attrs.preset_dashboard_is_managed_externally = (
+        obj.preset_dashboard_is_managed_externally
+    )
     attrs.preset_dashboard_is_published = obj.preset_dashboard_is_published
     attrs.preset_dashboard_thumbnail_url = obj.preset_dashboard_thumbnail_url
     attrs.preset_dashboard_chart_count = obj.preset_dashboard_chart_count
@@ -541,12 +542,15 @@ def _populate_preset_dashboard_attrs(attrs: PresetDashboardAttributes, obj: Pres
     attrs.preset_dashboard_id = obj.preset_dashboard_id
     attrs.preset_dashboard_qualified_name = obj.preset_dashboard_qualified_name
 
+
 def _extract_preset_dashboard_attrs(attrs: PresetDashboardAttributes) -> dict:
     """Extract all PresetDashboard attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["preset_dashboard_changed_by_name"] = attrs.preset_dashboard_changed_by_name
     result["preset_dashboard_changed_by_url"] = attrs.preset_dashboard_changed_by_url
-    result["preset_dashboard_is_managed_externally"] = attrs.preset_dashboard_is_managed_externally
+    result["preset_dashboard_is_managed_externally"] = (
+        attrs.preset_dashboard_is_managed_externally
+    )
     result["preset_dashboard_is_published"] = attrs.preset_dashboard_is_published
     result["preset_dashboard_thumbnail_url"] = attrs.preset_dashboard_thumbnail_url
     result["preset_dashboard_chart_count"] = attrs.preset_dashboard_chart_count
@@ -556,18 +560,23 @@ def _extract_preset_dashboard_attrs(attrs: PresetDashboardAttributes) -> dict:
     result["preset_dashboard_qualified_name"] = attrs.preset_dashboard_qualified_name
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _preset_dashboard_to_nested(preset_dashboard: PresetDashboard) -> PresetDashboardNested:
+def _preset_dashboard_to_nested(
+    preset_dashboard: PresetDashboard,
+) -> PresetDashboardNested:
     """Convert flat PresetDashboard to nested format."""
     attrs = PresetDashboardAttributes()
     _populate_preset_dashboard_attrs(attrs, preset_dashboard)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        preset_dashboard, _PRESET_DASHBOARD_REL_FIELDS, PresetDashboardRelationshipAttributes
+        preset_dashboard,
+        _PRESET_DASHBOARD_REL_FIELDS,
+        PresetDashboardRelationshipAttributes,
     )
     return PresetDashboardNested(
         guid=preset_dashboard.guid,
@@ -595,16 +604,21 @@ def _preset_dashboard_to_nested(preset_dashboard: PresetDashboard) -> PresetDash
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _preset_dashboard_from_nested(nested: PresetDashboardNested) -> PresetDashboard:
     """Convert nested format to flat PresetDashboard."""
-    attrs = nested.attributes if nested.attributes is not UNSET else PresetDashboardAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else PresetDashboardAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PRESET_DASHBOARD_REL_FIELDS,
-        PresetDashboardRelationshipAttributes
+        PresetDashboardRelationshipAttributes,
     )
     return PresetDashboard(
         guid=nested.guid,
@@ -631,7 +645,10 @@ def _preset_dashboard_from_nested(nested: PresetDashboardNested) -> PresetDashbo
         **merged_rels,
     )
 
-def _preset_dashboard_to_nested_bytes(preset_dashboard: PresetDashboard, serde: Serde) -> bytes:
+
+def _preset_dashboard_to_nested_bytes(
+    preset_dashboard: PresetDashboard, serde: Serde
+) -> bytes:
     """Convert flat PresetDashboard to nested JSON bytes."""
     return serde.encode(_preset_dashboard_to_nested(preset_dashboard))
 
@@ -640,6 +657,7 @@ def _preset_dashboard_from_nested_bytes(data: bytes, serde: Serde) -> PresetDash
     """Convert nested JSON bytes to flat PresetDashboard."""
     nested = serde.decode(data, PresetDashboardNested)
     return _preset_dashboard_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -652,16 +670,40 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-PresetDashboard.PRESET_DASHBOARD_CHANGED_BY_NAME = KeywordField("presetDashboardChangedByName", "presetDashboardChangedByName")
-PresetDashboard.PRESET_DASHBOARD_CHANGED_BY_URL = KeywordField("presetDashboardChangedByURL", "presetDashboardChangedByURL")
-PresetDashboard.PRESET_DASHBOARD_IS_MANAGED_EXTERNALLY = BooleanField("presetDashboardIsManagedExternally", "presetDashboardIsManagedExternally")
-PresetDashboard.PRESET_DASHBOARD_IS_PUBLISHED = BooleanField("presetDashboardIsPublished", "presetDashboardIsPublished")
-PresetDashboard.PRESET_DASHBOARD_THUMBNAIL_URL = KeywordField("presetDashboardThumbnailURL", "presetDashboardThumbnailURL")
-PresetDashboard.PRESET_DASHBOARD_CHART_COUNT = NumericField("presetDashboardChartCount", "presetDashboardChartCount")
-PresetDashboard.PRESET_WORKSPACE_ID = NumericField("presetWorkspaceId", "presetWorkspaceId")
-PresetDashboard.PRESET_WORKSPACE_QUALIFIED_NAME = KeywordTextField("presetWorkspaceQualifiedName", "presetWorkspaceQualifiedName", "presetWorkspaceQualifiedName.text")
-PresetDashboard.PRESET_DASHBOARD_ID = NumericField("presetDashboardId", "presetDashboardId")
-PresetDashboard.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField("presetDashboardQualifiedName", "presetDashboardQualifiedName", "presetDashboardQualifiedName.text")
+PresetDashboard.PRESET_DASHBOARD_CHANGED_BY_NAME = KeywordField(
+    "presetDashboardChangedByName", "presetDashboardChangedByName"
+)
+PresetDashboard.PRESET_DASHBOARD_CHANGED_BY_URL = KeywordField(
+    "presetDashboardChangedByURL", "presetDashboardChangedByURL"
+)
+PresetDashboard.PRESET_DASHBOARD_IS_MANAGED_EXTERNALLY = BooleanField(
+    "presetDashboardIsManagedExternally", "presetDashboardIsManagedExternally"
+)
+PresetDashboard.PRESET_DASHBOARD_IS_PUBLISHED = BooleanField(
+    "presetDashboardIsPublished", "presetDashboardIsPublished"
+)
+PresetDashboard.PRESET_DASHBOARD_THUMBNAIL_URL = KeywordField(
+    "presetDashboardThumbnailURL", "presetDashboardThumbnailURL"
+)
+PresetDashboard.PRESET_DASHBOARD_CHART_COUNT = NumericField(
+    "presetDashboardChartCount", "presetDashboardChartCount"
+)
+PresetDashboard.PRESET_WORKSPACE_ID = NumericField(
+    "presetWorkspaceId", "presetWorkspaceId"
+)
+PresetDashboard.PRESET_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
+    "presetWorkspaceQualifiedName",
+    "presetWorkspaceQualifiedName",
+    "presetWorkspaceQualifiedName.text",
+)
+PresetDashboard.PRESET_DASHBOARD_ID = NumericField(
+    "presetDashboardId", "presetDashboardId"
+)
+PresetDashboard.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
+    "presetDashboardQualifiedName",
+    "presetDashboardQualifiedName",
+    "presetDashboardQualifiedName.text",
+)
 PresetDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 PresetDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 PresetDashboard.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -670,7 +712,9 @@ PresetDashboard.APPLICATION_FIELD = RelationField("applicationField")
 PresetDashboard.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 PresetDashboard.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 PresetDashboard.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-PresetDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+PresetDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 PresetDashboard.METRICS = RelationField("metrics")
 PresetDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 PresetDashboard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

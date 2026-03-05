@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -42,15 +41,19 @@ from .referenceable_related import RelatedReferenceable
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .resource_related import RelatedFile, RelatedLink, RelatedReadme, RelatedResource
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Resource(Asset):
@@ -177,7 +180,9 @@ class Resource(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -191,30 +196,6 @@ class Resource(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Resource"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Resource validation failed: {errors}")
-
-    def minimize(self) -> "Resource":
-        self.validate()
-        return Resource(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedResource":
-        if self.guid is not UNSET:
-            return RelatedResource(guid=self.guid)
-        return RelatedResource(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -267,6 +248,7 @@ class Resource(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ResourceAttributes(AssetAttributes):
     """Resource-specific attributes for nested API format."""
 
@@ -281,6 +263,7 @@ class ResourceAttributes(AssetAttributes):
 
     resource_metadata: dict[str, str] | None | UnsetType = UNSET
     """Metadata of the resource."""
+
 
 class ResourceRelationshipAttributes(AssetRelationshipAttributes):
     """Resource-specific relationship attributes for nested API format."""
@@ -357,7 +340,9 @@ class ResourceRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -369,6 +354,7 @@ class ResourceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ResourceNested(AssetNested):
     """Resource in nested API format for high-performance serialization."""
 
@@ -376,6 +362,7 @@ class ResourceNested(AssetNested):
     relationship_attributes: ResourceRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: ResourceRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: ResourceRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -413,6 +400,7 @@ _RESOURCE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_resource_attrs(attrs: ResourceAttributes, obj: Resource) -> None:
     """Populate Resource-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -420,6 +408,7 @@ def _populate_resource_attrs(attrs: ResourceAttributes, obj: Resource) -> None:
     attrs.is_global = obj.is_global
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
+
 
 def _extract_resource_attrs(attrs: ResourceAttributes) -> dict:
     """Extract all Resource attributes from the attrs struct into a flat dict."""
@@ -429,6 +418,7 @@ def _extract_resource_attrs(attrs: ResourceAttributes) -> dict:
     result["reference"] = attrs.reference
     result["resource_metadata"] = attrs.resource_metadata
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -469,16 +459,19 @@ def _resource_to_nested(resource: Resource) -> ResourceNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _resource_from_nested(nested: ResourceNested) -> Resource:
     """Convert nested format to flat Resource."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ResourceAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ResourceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _RESOURCE_REL_FIELDS,
-        ResourceRelationshipAttributes
+        ResourceRelationshipAttributes,
     )
     return Resource(
         guid=nested.guid,
@@ -505,6 +498,7 @@ def _resource_from_nested(nested: ResourceNested) -> Resource:
         **merged_rels,
     )
 
+
 def _resource_to_nested_bytes(resource: Resource, serde: Serde) -> bytes:
     """Convert flat Resource to nested JSON bytes."""
     return serde.encode(_resource_to_nested(resource))
@@ -514,6 +508,7 @@ def _resource_from_nested_bytes(data: bytes, serde: Serde) -> Resource:
     """Convert nested JSON bytes to flat Resource."""
     nested = serde.decode(data, ResourceNested)
     return _resource_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

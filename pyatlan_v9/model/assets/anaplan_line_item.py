@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -45,16 +44,24 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .anaplan_related import RelatedAnaplanDimension, RelatedAnaplanLineItem, RelatedAnaplanList, RelatedAnaplanModule
+from .anaplan_related import (
+    RelatedAnaplanDimension,
+    RelatedAnaplanList,
+    RelatedAnaplanModule,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AnaplanLineItem(Asset):
@@ -209,7 +216,9 @@ class AnaplanLineItem(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -231,48 +240,6 @@ class AnaplanLineItem(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.anaplan_module is UNSET:
-                errors.append("anaplan_module is required for creation")
-            if self.anaplan_module_name is UNSET:
-                errors.append("anaplan_module_name is required for creation")
-            if self.anaplan_module_qualified_name is UNSET:
-                errors.append("anaplan_module_qualified_name is required for creation")
-            if self.anaplan_model_name is UNSET:
-                errors.append("anaplan_model_name is required for creation")
-            if self.anaplan_model_qualified_name is UNSET:
-                errors.append("anaplan_model_qualified_name is required for creation")
-            if self.anaplan_workspace_name is UNSET:
-                errors.append("anaplan_workspace_name is required for creation")
-            if self.anaplan_workspace_qualified_name is UNSET:
-                errors.append("anaplan_workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"AnaplanLineItem validation failed: {errors}")
-
-    def minimize(self) -> "AnaplanLineItem":
-        self.validate()
-        return AnaplanLineItem(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAnaplanLineItem":
-        if self.guid is not UNSET:
-            return RelatedAnaplanLineItem(guid=self.guid)
-        return RelatedAnaplanLineItem(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -356,7 +323,9 @@ class AnaplanLineItem(Asset):
         return _anaplan_line_item_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AnaplanLineItem:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> AnaplanLineItem:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -377,6 +346,7 @@ class AnaplanLineItem(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class AnaplanLineItemAttributes(AssetAttributes):
     """AnaplanLineItem-specific attributes for nested API format."""
@@ -404,6 +374,7 @@ class AnaplanLineItemAttributes(AssetAttributes):
 
     anaplan_source_id: str | None | UnsetType = UNSET
     """Id/Guid of the Anaplan asset in the source system."""
+
 
 class AnaplanLineItemRelationshipAttributes(AssetRelationshipAttributes):
     """AnaplanLineItem-specific relationship attributes for nested API format."""
@@ -489,7 +460,9 @@ class AnaplanLineItemRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -501,13 +474,19 @@ class AnaplanLineItemRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AnaplanLineItemNested(AssetNested):
     """AnaplanLineItem in nested API format for high-performance serialization."""
 
     attributes: AnaplanLineItemAttributes | UnsetType = UNSET
     relationship_attributes: AnaplanLineItemRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AnaplanLineItemRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AnaplanLineItemRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        AnaplanLineItemRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        AnaplanLineItemRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -548,7 +527,10 @@ _ANAPLAN_LINE_ITEM_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_anaplan_line_item_attrs(attrs: AnaplanLineItemAttributes, obj: AnaplanLineItem) -> None:
+
+def _populate_anaplan_line_item_attrs(
+    attrs: AnaplanLineItemAttributes, obj: AnaplanLineItem
+) -> None:
     """Populate AnaplanLineItem-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.anaplan_line_item_formula = obj.anaplan_line_item_formula
@@ -559,6 +541,7 @@ def _populate_anaplan_line_item_attrs(attrs: AnaplanLineItemAttributes, obj: Ana
     attrs.anaplan_module_qualified_name = obj.anaplan_module_qualified_name
     attrs.anaplan_module_name = obj.anaplan_module_name
     attrs.anaplan_source_id = obj.anaplan_source_id
+
 
 def _extract_anaplan_line_item_attrs(attrs: AnaplanLineItemAttributes) -> dict:
     """Extract all AnaplanLineItem attributes from the attrs struct into a flat dict."""
@@ -573,18 +556,23 @@ def _extract_anaplan_line_item_attrs(attrs: AnaplanLineItemAttributes) -> dict:
     result["anaplan_source_id"] = attrs.anaplan_source_id
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _anaplan_line_item_to_nested(anaplan_line_item: AnaplanLineItem) -> AnaplanLineItemNested:
+def _anaplan_line_item_to_nested(
+    anaplan_line_item: AnaplanLineItem,
+) -> AnaplanLineItemNested:
     """Convert flat AnaplanLineItem to nested format."""
     attrs = AnaplanLineItemAttributes()
     _populate_anaplan_line_item_attrs(attrs, anaplan_line_item)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        anaplan_line_item, _ANAPLAN_LINE_ITEM_REL_FIELDS, AnaplanLineItemRelationshipAttributes
+        anaplan_line_item,
+        _ANAPLAN_LINE_ITEM_REL_FIELDS,
+        AnaplanLineItemRelationshipAttributes,
     )
     return AnaplanLineItemNested(
         guid=anaplan_line_item.guid,
@@ -612,16 +600,21 @@ def _anaplan_line_item_to_nested(anaplan_line_item: AnaplanLineItem) -> AnaplanL
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _anaplan_line_item_from_nested(nested: AnaplanLineItemNested) -> AnaplanLineItem:
     """Convert nested format to flat AnaplanLineItem."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AnaplanLineItemAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AnaplanLineItemAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ANAPLAN_LINE_ITEM_REL_FIELDS,
-        AnaplanLineItemRelationshipAttributes
+        AnaplanLineItemRelationshipAttributes,
     )
     return AnaplanLineItem(
         guid=nested.guid,
@@ -648,7 +641,10 @@ def _anaplan_line_item_from_nested(nested: AnaplanLineItemNested) -> AnaplanLine
         **merged_rels,
     )
 
-def _anaplan_line_item_to_nested_bytes(anaplan_line_item: AnaplanLineItem, serde: Serde) -> bytes:
+
+def _anaplan_line_item_to_nested_bytes(
+    anaplan_line_item: AnaplanLineItem, serde: Serde
+) -> bytes:
     """Convert flat AnaplanLineItem to nested JSON bytes."""
     return serde.encode(_anaplan_line_item_to_nested(anaplan_line_item))
 
@@ -658,6 +654,7 @@ def _anaplan_line_item_from_nested_bytes(data: bytes, serde: Serde) -> AnaplanLi
     nested = serde.decode(data, AnaplanLineItemNested)
     return _anaplan_line_item_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -666,13 +663,27 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AnaplanLineItem.ANAPLAN_LINE_ITEM_FORMULA = KeywordField("anaplanLineItemFormula", "anaplanLineItemFormula")
-AnaplanLineItem.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField("anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName")
-AnaplanLineItem.ANAPLAN_WORKSPACE_NAME = KeywordField("anaplanWorkspaceName", "anaplanWorkspaceName")
-AnaplanLineItem.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField("anaplanModelQualifiedName", "anaplanModelQualifiedName")
-AnaplanLineItem.ANAPLAN_MODEL_NAME = KeywordField("anaplanModelName", "anaplanModelName")
-AnaplanLineItem.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField("anaplanModuleQualifiedName", "anaplanModuleQualifiedName")
-AnaplanLineItem.ANAPLAN_MODULE_NAME = KeywordField("anaplanModuleName", "anaplanModuleName")
+AnaplanLineItem.ANAPLAN_LINE_ITEM_FORMULA = KeywordField(
+    "anaplanLineItemFormula", "anaplanLineItemFormula"
+)
+AnaplanLineItem.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField(
+    "anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName"
+)
+AnaplanLineItem.ANAPLAN_WORKSPACE_NAME = KeywordField(
+    "anaplanWorkspaceName", "anaplanWorkspaceName"
+)
+AnaplanLineItem.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField(
+    "anaplanModelQualifiedName", "anaplanModelQualifiedName"
+)
+AnaplanLineItem.ANAPLAN_MODEL_NAME = KeywordField(
+    "anaplanModelName", "anaplanModelName"
+)
+AnaplanLineItem.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField(
+    "anaplanModuleQualifiedName", "anaplanModuleQualifiedName"
+)
+AnaplanLineItem.ANAPLAN_MODULE_NAME = KeywordField(
+    "anaplanModuleName", "anaplanModuleName"
+)
 AnaplanLineItem.ANAPLAN_SOURCE_ID = KeywordField("anaplanSourceId", "anaplanSourceId")
 AnaplanLineItem.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AnaplanLineItem.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -685,7 +696,9 @@ AnaplanLineItem.APPLICATION_FIELD = RelationField("applicationField")
 AnaplanLineItem.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AnaplanLineItem.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AnaplanLineItem.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AnaplanLineItem.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+AnaplanLineItem.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 AnaplanLineItem.METRICS = RelationField("metrics")
 AnaplanLineItem.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AnaplanLineItem.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

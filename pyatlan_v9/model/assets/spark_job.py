@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflow, RelatedAirflowTask
@@ -44,7 +43,10 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -53,6 +55,7 @@ from .spark_related import RelatedSparkJob
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SparkJob(Asset):
@@ -195,7 +198,9 @@ class SparkJob(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -216,7 +221,9 @@ class SparkJob(Asset):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
-    spark_orchestrated_by_airflow_assets: list[RelatedAirflow] | None | UnsetType = UNSET
+    spark_orchestrated_by_airflow_assets: list[RelatedAirflow] | None | UnsetType = (
+        UNSET
+    )
     """Airflow assets that execute this spark asset."""
 
     def __post_init__(self) -> None:
@@ -226,39 +233,7 @@ class SparkJob(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.process is UNSET:
-                errors.append("process is required for creation")
-        if errors:
-            raise ValueError(f"SparkJob validation failed: {errors}")
-
-    def minimize(self) -> "SparkJob":
-        self.validate()
-        return SparkJob(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSparkJob":
-        if self.guid is not UNSET:
-            return RelatedSparkJob(guid=self.guid)
-        return RelatedSparkJob(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -311,6 +286,7 @@ class SparkJob(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SparkJobAttributes(AssetAttributes):
     """SparkJob-specific attributes for nested API format."""
 
@@ -334,6 +310,7 @@ class SparkJobAttributes(AssetAttributes):
 
     spark_run_open_lineage_state: str | None | UnsetType = UNSET
     """OpenLineage state of the Spark Job run eg. COMPLETE"""
+
 
 class SparkJobRelationshipAttributes(AssetRelationshipAttributes):
     """SparkJob-specific relationship attributes for nested API format."""
@@ -410,7 +387,9 @@ class SparkJobRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -431,8 +410,11 @@ class SparkJobRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
-    spark_orchestrated_by_airflow_assets: list[RelatedAirflow] | None | UnsetType = UNSET
+    spark_orchestrated_by_airflow_assets: list[RelatedAirflow] | None | UnsetType = (
+        UNSET
+    )
     """Airflow assets that execute this spark asset."""
+
 
 class SparkJobNested(AssetNested):
     """SparkJob in nested API format for high-performance serialization."""
@@ -441,6 +423,7 @@ class SparkJobNested(AssetNested):
     relationship_attributes: SparkJobRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: SparkJobRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: SparkJobRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -482,6 +465,7 @@ _SPARK_JOB_REL_FIELDS: list[str] = [
     "spark_orchestrated_by_airflow_assets",
 ]
 
+
 def _populate_spark_job_attrs(attrs: SparkJobAttributes, obj: SparkJob) -> None:
     """Populate SparkJob-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -492,6 +476,7 @@ def _populate_spark_job_attrs(attrs: SparkJobAttributes, obj: SparkJob) -> None:
     attrs.spark_run_start_time = obj.spark_run_start_time
     attrs.spark_run_end_time = obj.spark_run_end_time
     attrs.spark_run_open_lineage_state = obj.spark_run_open_lineage_state
+
 
 def _extract_spark_job_attrs(attrs: SparkJobAttributes) -> dict:
     """Extract all SparkJob attributes from the attrs struct into a flat dict."""
@@ -504,6 +489,7 @@ def _extract_spark_job_attrs(attrs: SparkJobAttributes) -> dict:
     result["spark_run_end_time"] = attrs.spark_run_end_time
     result["spark_run_open_lineage_state"] = attrs.spark_run_open_lineage_state
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -544,16 +530,19 @@ def _spark_job_to_nested(spark_job: SparkJob) -> SparkJobNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _spark_job_from_nested(nested: SparkJobNested) -> SparkJob:
     """Convert nested format to flat SparkJob."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SparkJobAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else SparkJobAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SPARK_JOB_REL_FIELDS,
-        SparkJobRelationshipAttributes
+        SparkJobRelationshipAttributes,
     )
     return SparkJob(
         guid=nested.guid,
@@ -580,6 +569,7 @@ def _spark_job_from_nested(nested: SparkJobNested) -> SparkJob:
         **merged_rels,
     )
 
+
 def _spark_job_to_nested_bytes(spark_job: SparkJob, serde: Serde) -> bytes:
     """Convert flat SparkJob to nested JSON bytes."""
     return serde.encode(_spark_job_to_nested(spark_job))
@@ -589,6 +579,7 @@ def _spark_job_from_nested_bytes(data: bytes, serde: Serde) -> SparkJob:
     """Convert nested JSON bytes to flat SparkJob."""
     nested = serde.decode(data, SparkJobNested)
     return _spark_job_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -600,13 +591,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SparkJob.SPARK_APP_NAME = KeywordTextField("sparkAppName", "sparkAppName", "sparkAppName.text")
+SparkJob.SPARK_APP_NAME = KeywordTextField(
+    "sparkAppName", "sparkAppName", "sparkAppName.text"
+)
 SparkJob.SPARK_MASTER = KeywordField("sparkMaster", "sparkMaster")
 SparkJob.SPARK_RUN_VERSION = KeywordField("sparkRunVersion", "sparkRunVersion")
-SparkJob.SPARK_RUN_OPEN_LINEAGE_VERSION = KeywordField("sparkRunOpenLineageVersion", "sparkRunOpenLineageVersion")
+SparkJob.SPARK_RUN_OPEN_LINEAGE_VERSION = KeywordField(
+    "sparkRunOpenLineageVersion", "sparkRunOpenLineageVersion"
+)
 SparkJob.SPARK_RUN_START_TIME = NumericField("sparkRunStartTime", "sparkRunStartTime")
 SparkJob.SPARK_RUN_END_TIME = NumericField("sparkRunEndTime", "sparkRunEndTime")
-SparkJob.SPARK_RUN_OPEN_LINEAGE_STATE = KeywordField("sparkRunOpenLineageState", "sparkRunOpenLineageState")
+SparkJob.SPARK_RUN_OPEN_LINEAGE_STATE = KeywordField(
+    "sparkRunOpenLineageState", "sparkRunOpenLineageState"
+)
 SparkJob.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SparkJob.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SparkJob.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -638,4 +635,6 @@ SparkJob.INPUTS = RelationField("inputs")
 SparkJob.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SparkJob.OUTPUTS = RelationField("outputs")
 SparkJob.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-SparkJob.SPARK_ORCHESTRATED_BY_AIRFLOW_ASSETS = RelationField("sparkOrchestratedByAirflowAssets")
+SparkJob.SPARK_ORCHESTRATED_BY_AIRFLOW_ASSETS = RelationField(
+    "sparkOrchestratedByAirflowAssets"
+)

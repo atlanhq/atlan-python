@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,15 +37,17 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .workflow_related import RelatedWorkflow
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Workflow(Asset):
@@ -159,7 +160,9 @@ class Workflow(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -167,30 +170,6 @@ class Workflow(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Workflow"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Workflow validation failed: {errors}")
-
-    def minimize(self) -> "Workflow":
-        self.validate()
-        return Workflow(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedWorkflow":
-        if self.guid is not UNSET:
-            return RelatedWorkflow(guid=self.guid)
-        return RelatedWorkflow(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -243,6 +222,7 @@ class Workflow(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class WorkflowAttributes(AssetAttributes):
     """Workflow-specific attributes for nested API format."""
 
@@ -272,6 +252,7 @@ class WorkflowAttributes(AssetAttributes):
 
     workflow_deleted_at: int | None | UnsetType = UNSET
     """Deletion time of this workflow."""
+
 
 class WorkflowRelationshipAttributes(AssetRelationshipAttributes):
     """Workflow-specific relationship attributes for nested API format."""
@@ -324,11 +305,14 @@ class WorkflowRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class WorkflowNested(AssetNested):
     """Workflow in nested API format for high-performance serialization."""
@@ -337,6 +321,7 @@ class WorkflowNested(AssetNested):
     relationship_attributes: WorkflowRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: WorkflowRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: WorkflowRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -364,6 +349,7 @@ _WORKFLOW_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
+
 def _populate_workflow_attrs(attrs: WorkflowAttributes, obj: Workflow) -> None:
     """Populate Workflow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -376,6 +362,7 @@ def _populate_workflow_attrs(attrs: WorkflowAttributes, obj: Workflow) -> None:
     attrs.workflow_created_by = obj.workflow_created_by
     attrs.workflow_updated_by = obj.workflow_updated_by
     attrs.workflow_deleted_at = obj.workflow_deleted_at
+
 
 def _extract_workflow_attrs(attrs: WorkflowAttributes) -> dict:
     """Extract all Workflow attributes from the attrs struct into a flat dict."""
@@ -390,6 +377,7 @@ def _extract_workflow_attrs(attrs: WorkflowAttributes) -> dict:
     result["workflow_updated_by"] = attrs.workflow_updated_by
     result["workflow_deleted_at"] = attrs.workflow_deleted_at
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -430,16 +418,19 @@ def _workflow_to_nested(workflow: Workflow) -> WorkflowNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _workflow_from_nested(nested: WorkflowNested) -> Workflow:
     """Convert nested format to flat Workflow."""
-    attrs = nested.attributes if nested.attributes is not UNSET else WorkflowAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else WorkflowAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _WORKFLOW_REL_FIELDS,
-        WorkflowRelationshipAttributes
+        WorkflowRelationshipAttributes,
     )
     return Workflow(
         guid=nested.guid,
@@ -466,6 +457,7 @@ def _workflow_from_nested(nested: WorkflowNested) -> Workflow:
         **merged_rels,
     )
 
+
 def _workflow_to_nested_bytes(workflow: Workflow, serde: Serde) -> bytes:
     """Convert flat Workflow to nested JSON bytes."""
     return serde.encode(_workflow_to_nested(workflow))
@@ -476,6 +468,7 @@ def _workflow_from_nested_bytes(data: bytes, serde: Serde) -> Workflow:
     nested = serde.decode(data, WorkflowNested)
     return _workflow_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -485,12 +478,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Workflow.WORKFLOW_TEMPLATE_GUID = KeywordField("workflowTemplateGuid", "workflowTemplateGuid")
+Workflow.WORKFLOW_TEMPLATE_GUID = KeywordField(
+    "workflowTemplateGuid", "workflowTemplateGuid"
+)
 Workflow.WORKFLOW_TYPE = KeywordField("workflowType", "workflowType")
-Workflow.WORKFLOW_ACTION_CHOICES = KeywordField("workflowActionChoices", "workflowActionChoices")
+Workflow.WORKFLOW_ACTION_CHOICES = KeywordField(
+    "workflowActionChoices", "workflowActionChoices"
+)
 Workflow.WORKFLOW_CONFIG = KeywordField("workflowConfig", "workflowConfig")
 Workflow.WORKFLOW_STATUS = KeywordField("workflowStatus", "workflowStatus")
-Workflow.WORKFLOW_RUN_EXPIRES_IN = KeywordField("workflowRunExpiresIn", "workflowRunExpiresIn")
+Workflow.WORKFLOW_RUN_EXPIRES_IN = KeywordField(
+    "workflowRunExpiresIn", "workflowRunExpiresIn"
+)
 Workflow.WORKFLOW_CREATED_BY = KeywordField("workflowCreatedBy", "workflowCreatedBy")
 Workflow.WORKFLOW_UPDATED_BY = KeywordField("workflowUpdatedBy", "workflowUpdatedBy")
 Workflow.WORKFLOW_DELETED_AT = NumericField("workflowDeletedAt", "workflowDeletedAt")

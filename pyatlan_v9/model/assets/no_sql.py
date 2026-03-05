@@ -43,15 +43,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .catalog_related import RelatedNoSQL
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class NoSQL(Asset):
@@ -91,7 +93,9 @@ class NoSQL(Asset):
 
     type_name: Union[str, UnsetType] = "NoSQL"
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -166,7 +170,9 @@ class NoSQL(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -180,30 +186,6 @@ class NoSQL(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "NoSQL"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"NoSQL validation failed: {errors}")
-
-    def minimize(self) -> "NoSQL":
-        self.validate()
-        return NoSQL(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedNoSQL":
-        if self.guid is not UNSET:
-            return RelatedNoSQL(guid=self.guid)
-        return RelatedNoSQL(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,11 +238,15 @@ class NoSQL(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class NoSQLAttributes(AssetAttributes):
     """NoSQL-specific attributes for nested API format."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
+
 
 class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     """NoSQL-specific relationship attributes for nested API format."""
@@ -337,7 +323,9 @@ class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -349,6 +337,7 @@ class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class NoSQLNested(AssetNested):
     """NoSQL in nested API format for high-performance serialization."""
 
@@ -356,6 +345,7 @@ class NoSQLNested(AssetNested):
     relationship_attributes: NoSQLRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: NoSQLRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: NoSQLRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -393,16 +383,19 @@ _NO_SQL_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_no_sql_attrs(attrs: NoSQLAttributes, obj: NoSQL) -> None:
     """Populate NoSQL-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+
 
 def _extract_no_sql_attrs(attrs: NoSQLAttributes) -> dict:
     """Extract all NoSQL attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -443,6 +436,7 @@ def _no_sql_to_nested(no_sql: NoSQL) -> NoSQLNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _no_sql_from_nested(nested: NoSQLNested) -> NoSQL:
     """Convert nested format to flat NoSQL."""
     attrs = nested.attributes if nested.attributes is not UNSET else NoSQLAttributes()
@@ -452,7 +446,7 @@ def _no_sql_from_nested(nested: NoSQLNested) -> NoSQL:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _NO_SQL_REL_FIELDS,
-        NoSQLRelationshipAttributes
+        NoSQLRelationshipAttributes,
     )
     return NoSQL(
         guid=nested.guid,
@@ -479,6 +473,7 @@ def _no_sql_from_nested(nested: NoSQLNested) -> NoSQL:
         **merged_rels,
     )
 
+
 def _no_sql_to_nested_bytes(no_sql: NoSQL, serde: Serde) -> bytes:
     """Convert flat NoSQL to nested JSON bytes."""
     return serde.encode(_no_sql_to_nested(no_sql))
@@ -489,6 +484,7 @@ def _no_sql_from_nested_bytes(data: bytes, serde: Serde) -> NoSQL:
     nested = serde.decode(data, NoSQLNested)
     return _no_sql_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -497,7 +493,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-NoSQL.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+NoSQL.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 NoSQL.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 NoSQL.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 NoSQL.ANOMALO_CHECKS = RelationField("anomaloChecks")

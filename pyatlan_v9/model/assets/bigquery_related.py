@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -46,6 +45,7 @@ class RelatedBigqueryTag(RelatedTag):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "BigqueryTag"
+
 
 class RelatedBigqueryRoutine(RelatedProcedure):
     """

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .metabase_related import RelatedMetabaseCollection, RelatedMetabaseDashboard, RelatedMetabaseQuestion
+from .metabase_related import RelatedMetabaseCollection, RelatedMetabaseDashboard
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MetabaseQuestion(Asset):
@@ -191,7 +194,9 @@ class MetabaseQuestion(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -210,43 +215,7 @@ class MetabaseQuestion(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.metabase_collection is UNSET:
-                errors.append("metabase_collection is required for creation")
-            if self.metabase_collection_name is UNSET:
-                errors.append("metabase_collection_name is required for creation")
-            if self.metabase_collection_qualified_name is UNSET:
-                errors.append("metabase_collection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MetabaseQuestion validation failed: {errors}")
-
-    def minimize(self) -> "MetabaseQuestion":
-        self.validate()
-        return MetabaseQuestion(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMetabaseQuestion":
-        if self.guid is not UNSET:
-            return RelatedMetabaseQuestion(guid=self.guid)
-        return RelatedMetabaseQuestion(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -277,7 +246,9 @@ class MetabaseQuestion(Asset):
         return _metabase_question_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MetabaseQuestion:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MetabaseQuestion:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -299,6 +270,7 @@ class MetabaseQuestion(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MetabaseQuestionAttributes(AssetAttributes):
     """MetabaseQuestion-specific attributes for nested API format."""
 
@@ -316,6 +288,7 @@ class MetabaseQuestionAttributes(AssetAttributes):
 
     metabase_collection_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the Metabase collection in which this asset exists."""
+
 
 class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     """MetabaseQuestion-specific relationship attributes for nested API format."""
@@ -398,7 +371,9 @@ class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -410,13 +385,19 @@ class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MetabaseQuestionNested(AssetNested):
     """MetabaseQuestion in nested API format for high-performance serialization."""
 
     attributes: MetabaseQuestionAttributes | UnsetType = UNSET
     relationship_attributes: MetabaseQuestionRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MetabaseQuestionRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MetabaseQuestionRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        MetabaseQuestionRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        MetabaseQuestionRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -456,7 +437,10 @@ _METABASE_QUESTION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_metabase_question_attrs(attrs: MetabaseQuestionAttributes, obj: MetabaseQuestion) -> None:
+
+def _populate_metabase_question_attrs(
+    attrs: MetabaseQuestionAttributes, obj: MetabaseQuestion
+) -> None:
     """Populate MetabaseQuestion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.metabase_dashboard_count = obj.metabase_dashboard_count
@@ -465,6 +449,7 @@ def _populate_metabase_question_attrs(attrs: MetabaseQuestionAttributes, obj: Me
     attrs.metabase_collection_name = obj.metabase_collection_name
     attrs.metabase_collection_qualified_name = obj.metabase_collection_qualified_name
 
+
 def _extract_metabase_question_attrs(attrs: MetabaseQuestionAttributes) -> dict:
     """Extract all MetabaseQuestion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -472,21 +457,28 @@ def _extract_metabase_question_attrs(attrs: MetabaseQuestionAttributes) -> dict:
     result["metabase_query_type"] = attrs.metabase_query_type
     result["metabase_query"] = attrs.metabase_query
     result["metabase_collection_name"] = attrs.metabase_collection_name
-    result["metabase_collection_qualified_name"] = attrs.metabase_collection_qualified_name
+    result["metabase_collection_qualified_name"] = (
+        attrs.metabase_collection_qualified_name
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _metabase_question_to_nested(metabase_question: MetabaseQuestion) -> MetabaseQuestionNested:
+def _metabase_question_to_nested(
+    metabase_question: MetabaseQuestion,
+) -> MetabaseQuestionNested:
     """Convert flat MetabaseQuestion to nested format."""
     attrs = MetabaseQuestionAttributes()
     _populate_metabase_question_attrs(attrs, metabase_question)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        metabase_question, _METABASE_QUESTION_REL_FIELDS, MetabaseQuestionRelationshipAttributes
+        metabase_question,
+        _METABASE_QUESTION_REL_FIELDS,
+        MetabaseQuestionRelationshipAttributes,
     )
     return MetabaseQuestionNested(
         guid=metabase_question.guid,
@@ -514,16 +506,21 @@ def _metabase_question_to_nested(metabase_question: MetabaseQuestion) -> Metabas
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _metabase_question_from_nested(nested: MetabaseQuestionNested) -> MetabaseQuestion:
     """Convert nested format to flat MetabaseQuestion."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MetabaseQuestionAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MetabaseQuestionAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _METABASE_QUESTION_REL_FIELDS,
-        MetabaseQuestionRelationshipAttributes
+        MetabaseQuestionRelationshipAttributes,
     )
     return MetabaseQuestion(
         guid=nested.guid,
@@ -550,7 +547,10 @@ def _metabase_question_from_nested(nested: MetabaseQuestionNested) -> MetabaseQu
         **merged_rels,
     )
 
-def _metabase_question_to_nested_bytes(metabase_question: MetabaseQuestion, serde: Serde) -> bytes:
+
+def _metabase_question_to_nested_bytes(
+    metabase_question: MetabaseQuestion, serde: Serde
+) -> bytes:
     """Convert flat MetabaseQuestion to nested JSON bytes."""
     return serde.encode(_metabase_question_to_nested(metabase_question))
 
@@ -559,6 +559,7 @@ def _metabase_question_from_nested_bytes(data: bytes, serde: Serde) -> MetabaseQ
     """Convert nested JSON bytes to flat MetabaseQuestion."""
     nested = serde.decode(data, MetabaseQuestionNested)
     return _metabase_question_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -570,11 +571,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MetabaseQuestion.METABASE_DASHBOARD_COUNT = NumericField("metabaseDashboardCount", "metabaseDashboardCount")
-MetabaseQuestion.METABASE_QUERY_TYPE = KeywordTextField("metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text")
+MetabaseQuestion.METABASE_DASHBOARD_COUNT = NumericField(
+    "metabaseDashboardCount", "metabaseDashboardCount"
+)
+MetabaseQuestion.METABASE_QUERY_TYPE = KeywordTextField(
+    "metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text"
+)
 MetabaseQuestion.METABASE_QUERY = KeywordField("metabaseQuery", "metabaseQuery")
-MetabaseQuestion.METABASE_COLLECTION_NAME = KeywordField("metabaseCollectionName", "metabaseCollectionName")
-MetabaseQuestion.METABASE_COLLECTION_QUALIFIED_NAME = KeywordTextField("metabaseCollectionQualifiedName", "metabaseCollectionQualifiedName", "metabaseCollectionQualifiedName.text")
+MetabaseQuestion.METABASE_COLLECTION_NAME = KeywordField(
+    "metabaseCollectionName", "metabaseCollectionName"
+)
+MetabaseQuestion.METABASE_COLLECTION_QUALIFIED_NAME = KeywordTextField(
+    "metabaseCollectionQualifiedName",
+    "metabaseCollectionQualifiedName",
+    "metabaseCollectionQualifiedName.text",
+)
 MetabaseQuestion.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MetabaseQuestion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MetabaseQuestion.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -583,7 +594,9 @@ MetabaseQuestion.APPLICATION_FIELD = RelationField("applicationField")
 MetabaseQuestion.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MetabaseQuestion.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MetabaseQuestion.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MetabaseQuestion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MetabaseQuestion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MetabaseQuestion.METRICS = RelationField("metrics")
 MetabaseQuestion.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MetabaseQuestion.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

@@ -42,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .partial_related import RelatedPartial, RelatedPartialField, RelatedPartialObject
+from .partial_related import RelatedPartialField, RelatedPartialObject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Partial(Asset):
@@ -94,7 +98,9 @@ class Partial(Asset):
 
     type_name: Union[str, UnsetType] = "Partial"
 
-    partial_structure_json: str | None | UnsetType = msgspec.field(default=UNSET, name="partialStructureJSON")
+    partial_structure_json: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="partialStructureJSON"
+    )
     """Complete JSON structure of this partial asset, as a string."""
 
     partial_resolved_type_name: str | None | UnsetType = UNSET
@@ -181,7 +187,9 @@ class Partial(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -195,30 +203,6 @@ class Partial(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Partial"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Partial validation failed: {errors}")
-
-    def minimize(self) -> "Partial":
-        self.validate()
-        return Partial(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedPartial":
-        if self.guid is not UNSET:
-            return RelatedPartial(guid=self.guid)
-        return RelatedPartial(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -271,10 +255,13 @@ class Partial(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class PartialAttributes(AssetAttributes):
     """Partial-specific attributes for nested API format."""
 
-    partial_structure_json: str | None | UnsetType = msgspec.field(default=UNSET, name="partialStructureJSON")
+    partial_structure_json: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="partialStructureJSON"
+    )
     """Complete JSON structure of this partial asset, as a string."""
 
     partial_resolved_type_name: str | None | UnsetType = UNSET
@@ -288,6 +275,7 @@ class PartialAttributes(AssetAttributes):
 
     partial_parent_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the field's parent asset."""
+
 
 class PartialRelationshipAttributes(AssetRelationshipAttributes):
     """Partial-specific relationship attributes for nested API format."""
@@ -364,7 +352,9 @@ class PartialRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -376,6 +366,7 @@ class PartialRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class PartialNested(AssetNested):
     """Partial in nested API format for high-performance serialization."""
 
@@ -383,6 +374,7 @@ class PartialNested(AssetNested):
     relationship_attributes: PartialRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: PartialRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: PartialRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -420,6 +412,7 @@ _PARTIAL_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_partial_attrs(attrs: PartialAttributes, obj: Partial) -> None:
     """Populate Partial-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -429,15 +422,19 @@ def _populate_partial_attrs(attrs: PartialAttributes, obj: Partial) -> None:
     attrs.partial_parent_type = obj.partial_parent_type
     attrs.partial_parent_qualified_name = obj.partial_parent_qualified_name
 
+
 def _extract_partial_attrs(attrs: PartialAttributes) -> dict:
     """Extract all Partial attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["partial_structure_json"] = attrs.partial_structure_json
     result["partial_resolved_type_name"] = attrs.partial_resolved_type_name
-    result["partial_unknown_attributes_hash_id"] = attrs.partial_unknown_attributes_hash_id
+    result["partial_unknown_attributes_hash_id"] = (
+        attrs.partial_unknown_attributes_hash_id
+    )
     result["partial_parent_type"] = attrs.partial_parent_type
     result["partial_parent_qualified_name"] = attrs.partial_parent_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -478,6 +475,7 @@ def _partial_to_nested(partial: Partial) -> PartialNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _partial_from_nested(nested: PartialNested) -> Partial:
     """Convert nested format to flat Partial."""
     attrs = nested.attributes if nested.attributes is not UNSET else PartialAttributes()
@@ -487,7 +485,7 @@ def _partial_from_nested(nested: PartialNested) -> Partial:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PARTIAL_REL_FIELDS,
-        PartialRelationshipAttributes
+        PartialRelationshipAttributes,
     )
     return Partial(
         guid=nested.guid,
@@ -514,6 +512,7 @@ def _partial_from_nested(nested: PartialNested) -> Partial:
         **merged_rels,
     )
 
+
 def _partial_to_nested_bytes(partial: Partial, serde: Serde) -> bytes:
     """Convert flat Partial to nested JSON bytes."""
     return serde.encode(_partial_to_nested(partial))
@@ -524,6 +523,7 @@ def _partial_from_nested_bytes(data: bytes, serde: Serde) -> Partial:
     nested = serde.decode(data, PartialNested)
     return _partial_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -532,11 +532,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Partial.PARTIAL_STRUCTURE_JSON = KeywordField("partialStructureJSON", "partialStructureJSON")
-Partial.PARTIAL_RESOLVED_TYPE_NAME = KeywordField("partialResolvedTypeName", "partialResolvedTypeName")
-Partial.PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID = KeywordField("partialUnknownAttributesHashId", "partialUnknownAttributesHashId")
+Partial.PARTIAL_STRUCTURE_JSON = KeywordField(
+    "partialStructureJSON", "partialStructureJSON"
+)
+Partial.PARTIAL_RESOLVED_TYPE_NAME = KeywordField(
+    "partialResolvedTypeName", "partialResolvedTypeName"
+)
+Partial.PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID = KeywordField(
+    "partialUnknownAttributesHashId", "partialUnknownAttributesHashId"
+)
 Partial.PARTIAL_PARENT_TYPE = KeywordField("partialParentType", "partialParentType")
-Partial.PARTIAL_PARENT_QUALIFIED_NAME = KeywordField("partialParentQualifiedName", "partialParentQualifiedName")
+Partial.PARTIAL_PARENT_QUALIFIED_NAME = KeywordField(
+    "partialParentQualifiedName", "partialParentQualifiedName"
+)
 Partial.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Partial.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Partial.ANOMALO_CHECKS = RelationField("anomaloChecks")

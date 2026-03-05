@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,16 +50,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .sql_related import RelatedColumn, RelatedMaterialisedView, RelatedSchema
+from .sql_related import RelatedColumn, RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MaterialisedView(Asset):
@@ -215,7 +224,9 @@ class MaterialisedView(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -269,7 +280,9 @@ class MaterialisedView(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -317,7 +330,9 @@ class MaterialisedView(Asset):
     atlan_schema: RelatedSchema | None | UnsetType = UNSET
     """Schema in which this materialized view exists."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -339,44 +354,6 @@ class MaterialisedView(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.atlan_schema is UNSET:
-                errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MaterialisedView validation failed: {errors}")
-
-    def minimize(self) -> "MaterialisedView":
-        self.validate()
-        return MaterialisedView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMaterialisedView":
-        if self.guid is not UNSET:
-            return RelatedMaterialisedView(guid=self.guid)
-        return RelatedMaterialisedView(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -505,7 +482,9 @@ class MaterialisedView(Asset):
         return _materialised_view_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MaterialisedView:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MaterialisedView:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -526,6 +505,7 @@ class MaterialisedView(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class MaterialisedViewAttributes(AssetAttributes):
     """MaterialisedView-specific attributes for nested API format."""
@@ -614,11 +594,14 @@ class MaterialisedViewAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     """MaterialisedView-specific relationship attributes for nested API format."""
@@ -671,7 +654,9 @@ class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -719,7 +704,9 @@ class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     atlan_schema: RelatedSchema | None | UnsetType = UNSET
     """Schema in which this materialized view exists."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -731,13 +718,19 @@ class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MaterialisedViewNested(AssetNested):
     """MaterialisedView in nested API format for high-performance serialization."""
 
     attributes: MaterialisedViewAttributes | UnsetType = UNSET
     relationship_attributes: MaterialisedViewRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MaterialisedViewRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MaterialisedViewRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        MaterialisedViewRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        MaterialisedViewRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -783,7 +776,10 @@ _MATERIALISED_VIEW_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_materialised_view_attrs(attrs: MaterialisedViewAttributes, obj: MaterialisedView) -> None:
+
+def _populate_materialised_view_attrs(
+    attrs: MaterialisedViewAttributes, obj: MaterialisedView
+) -> None:
     """Populate MaterialisedView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.refresh_mode = obj.refresh_mode
@@ -817,6 +813,7 @@ def _populate_materialised_view_attrs(attrs: MaterialisedViewAttributes, obj: Ma
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_materialised_view_attrs(attrs: MaterialisedViewAttributes) -> dict:
     """Extract all MaterialisedView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -848,22 +845,29 @@ def _extract_materialised_view_attrs(attrs: MaterialisedViewAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _materialised_view_to_nested(materialised_view: MaterialisedView) -> MaterialisedViewNested:
+def _materialised_view_to_nested(
+    materialised_view: MaterialisedView,
+) -> MaterialisedViewNested:
     """Convert flat MaterialisedView to nested format."""
     attrs = MaterialisedViewAttributes()
     _populate_materialised_view_attrs(attrs, materialised_view)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        materialised_view, _MATERIALISED_VIEW_REL_FIELDS, MaterialisedViewRelationshipAttributes
+        materialised_view,
+        _MATERIALISED_VIEW_REL_FIELDS,
+        MaterialisedViewRelationshipAttributes,
     )
     return MaterialisedViewNested(
         guid=materialised_view.guid,
@@ -891,16 +895,21 @@ def _materialised_view_to_nested(materialised_view: MaterialisedView) -> Materia
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _materialised_view_from_nested(nested: MaterialisedViewNested) -> MaterialisedView:
     """Convert nested format to flat MaterialisedView."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MaterialisedViewAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MaterialisedViewAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MATERIALISED_VIEW_REL_FIELDS,
-        MaterialisedViewRelationshipAttributes
+        MaterialisedViewRelationshipAttributes,
     )
     return MaterialisedView(
         guid=nested.guid,
@@ -927,7 +936,10 @@ def _materialised_view_from_nested(nested: MaterialisedViewNested) -> Materialis
         **merged_rels,
     )
 
-def _materialised_view_to_nested_bytes(materialised_view: MaterialisedView, serde: Serde) -> bytes:
+
+def _materialised_view_to_nested_bytes(
+    materialised_view: MaterialisedView, serde: Serde
+) -> bytes:
     """Convert flat MaterialisedView to nested JSON bytes."""
     return serde.encode(_materialised_view_to_nested(materialised_view))
 
@@ -936,6 +948,7 @@ def _materialised_view_from_nested_bytes(data: bytes, serde: Serde) -> Materiali
     """Convert nested JSON bytes to flat MaterialisedView."""
     nested = serde.decode(data, MaterialisedViewNested)
     return _materialised_view_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -955,27 +968,45 @@ MaterialisedView.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 MaterialisedView.ROW_COUNT = NumericField("rowCount", "rowCount")
 MaterialisedView.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
 MaterialisedView.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-MaterialisedView.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+MaterialisedView.QUERY_PREVIEW_CONFIG = KeywordField(
+    "queryPreviewConfig", "queryPreviewConfig"
+)
 MaterialisedView.ALIAS = KeywordField("alias", "alias")
 MaterialisedView.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 MaterialisedView.DEFINITION = KeywordField("definition", "definition")
 MaterialisedView.QUERY_COUNT = NumericField("queryCount", "queryCount")
 MaterialisedView.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 MaterialisedView.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-MaterialisedView.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+MaterialisedView.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 MaterialisedView.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-MaterialisedView.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+MaterialisedView.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 MaterialisedView.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-MaterialisedView.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+MaterialisedView.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 MaterialisedView.TABLE_NAME = KeywordField("tableName", "tableName")
-MaterialisedView.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+MaterialisedView.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 MaterialisedView.VIEW_NAME = KeywordField("viewName", "viewName")
-MaterialisedView.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-MaterialisedView.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-MaterialisedView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+MaterialisedView.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+MaterialisedView.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+MaterialisedView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 MaterialisedView.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 MaterialisedView.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-MaterialisedView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+MaterialisedView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 MaterialisedView.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 MaterialisedView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MaterialisedView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -985,7 +1016,9 @@ MaterialisedView.APPLICATION_FIELD = RelationField("applicationField")
 MaterialisedView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MaterialisedView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MaterialisedView.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MaterialisedView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MaterialisedView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MaterialisedView.METRICS = RelationField("metrics")
 MaterialisedView.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MaterialisedView.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

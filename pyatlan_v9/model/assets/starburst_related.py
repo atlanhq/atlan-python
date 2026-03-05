@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -47,6 +46,7 @@ class RelatedStarburst(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Starburst"
 
+
 class RelatedStarburstDataset(RelatedStarburst):
     """
     Related entity reference for StarburstDataset assets.
@@ -69,6 +69,7 @@ class RelatedStarburstDataset(RelatedStarburst):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "StarburstDataset"
+
 
 class RelatedStarburstDatasetColumn(RelatedStarburst):
     """

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,23 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .semantic_related import RelatedSemanticDimension, RelatedSemanticEntity, RelatedSemanticMeasure, RelatedSemanticModel
+from .semantic_related import (
+    RelatedSemanticDimension,
+    RelatedSemanticEntity,
+    RelatedSemanticMeasure,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SemanticModel(Asset):
@@ -165,7 +172,9 @@ class SemanticModel(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_dimensions: list[RelatedSemanticDimension] | None | UnsetType = UNSET
@@ -188,30 +197,6 @@ class SemanticModel(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SemanticModel"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SemanticModel validation failed: {errors}")
-
-    def minimize(self) -> "SemanticModel":
-        self.validate()
-        return SemanticModel(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSemanticModel":
-        if self.guid is not UNSET:
-            return RelatedSemanticModel(guid=self.guid)
-        return RelatedSemanticModel(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -264,10 +249,12 @@ class SemanticModel(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SemanticModelAttributes(AssetAttributes):
     """SemanticModel-specific attributes for nested API format."""
 
     pass
+
 
 class SemanticModelRelationshipAttributes(AssetRelationshipAttributes):
     """SemanticModel-specific relationship attributes for nested API format."""
@@ -344,7 +331,9 @@ class SemanticModelRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_dimensions: list[RelatedSemanticDimension] | None | UnsetType = UNSET
@@ -365,13 +354,19 @@ class SemanticModelRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SemanticModelNested(AssetNested):
     """SemanticModel in nested API format for high-performance serialization."""
 
     attributes: SemanticModelAttributes | UnsetType = UNSET
     relationship_attributes: SemanticModelRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SemanticModelRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SemanticModelRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: SemanticModelRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: SemanticModelRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -412,13 +407,18 @@ _SEMANTIC_MODEL_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_semantic_model_attrs(attrs: SemanticModelAttributes, obj: SemanticModel) -> None:
+
+def _populate_semantic_model_attrs(
+    attrs: SemanticModelAttributes, obj: SemanticModel
+) -> None:
     """Populate SemanticModel-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+
 
 def _extract_semantic_model_attrs(attrs: SemanticModelAttributes) -> dict:
     """Extract all SemanticModel attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -459,16 +459,21 @@ def _semantic_model_to_nested(semantic_model: SemanticModel) -> SemanticModelNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _semantic_model_from_nested(nested: SemanticModelNested) -> SemanticModel:
     """Convert nested format to flat SemanticModel."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SemanticModelAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SemanticModelAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SEMANTIC_MODEL_REL_FIELDS,
-        SemanticModelRelationshipAttributes
+        SemanticModelRelationshipAttributes,
     )
     return SemanticModel(
         guid=nested.guid,
@@ -495,7 +500,10 @@ def _semantic_model_from_nested(nested: SemanticModelNested) -> SemanticModel:
         **merged_rels,
     )
 
-def _semantic_model_to_nested_bytes(semantic_model: SemanticModel, serde: Serde) -> bytes:
+
+def _semantic_model_to_nested_bytes(
+    semantic_model: SemanticModel, serde: Serde
+) -> bytes:
     """Convert flat SemanticModel to nested JSON bytes."""
     return serde.encode(_semantic_model_to_nested(semantic_model))
 
@@ -504,6 +512,7 @@ def _semantic_model_from_nested_bytes(data: bytes, serde: Serde) -> SemanticMode
     """Convert nested JSON bytes to flat SemanticModel."""
     nested = serde.decode(data, SemanticModelNested)
     return _semantic_model_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

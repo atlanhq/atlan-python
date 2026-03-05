@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .adls_related import RelatedADLS
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ADLS(Asset):
@@ -190,7 +191,9 @@ class ADLS(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -204,30 +207,6 @@ class ADLS(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ADLS"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"ADLS validation failed: {errors}")
-
-    def minimize(self) -> "ADLS":
-        self.validate()
-        return ADLS(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedADLS":
-        if self.guid is not UNSET:
-            return RelatedADLS(guid=self.guid)
-        return RelatedADLS(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -280,6 +259,7 @@ class ADLS(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ADLSAttributes(AssetAttributes):
     """ADLS-specific attributes for nested API format."""
 
@@ -303,6 +283,7 @@ class ADLSAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class ADLSRelationshipAttributes(AssetRelationshipAttributes):
     """ADLS-specific relationship attributes for nested API format."""
@@ -379,7 +360,9 @@ class ADLSRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -391,6 +374,7 @@ class ADLSRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ADLSNested(AssetNested):
     """ADLS in nested API format for high-performance serialization."""
 
@@ -398,6 +382,7 @@ class ADLSNested(AssetNested):
     relationship_attributes: ADLSRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: ADLSRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: ADLSRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -435,6 +420,7 @@ _ADLS_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_adls_attrs(attrs: ADLSAttributes, obj: ADLS) -> None:
     """Populate ADLS-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -445,6 +431,7 @@ def _populate_adls_attrs(attrs: ADLSAttributes, obj: ADLS) -> None:
     attrs.adls_account_secondary_location = obj.adls_account_secondary_location
     attrs.azure_tags = obj.azure_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_adls_attrs(attrs: ADLSAttributes) -> dict:
     """Extract all ADLS attributes from the attrs struct into a flat dict."""
@@ -457,6 +444,7 @@ def _extract_adls_attrs(attrs: ADLSAttributes) -> dict:
     result["azure_tags"] = attrs.azure_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -497,6 +485,7 @@ def _adls_to_nested(adls: ADLS) -> ADLSNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _adls_from_nested(nested: ADLSNested) -> ADLS:
     """Convert nested format to flat ADLS."""
     attrs = nested.attributes if nested.attributes is not UNSET else ADLSAttributes()
@@ -506,7 +495,7 @@ def _adls_from_nested(nested: ADLSNested) -> ADLS:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADLS_REL_FIELDS,
-        ADLSRelationshipAttributes
+        ADLSRelationshipAttributes,
     )
     return ADLS(
         guid=nested.guid,
@@ -533,6 +522,7 @@ def _adls_from_nested(nested: ADLSNested) -> ADLS:
         **merged_rels,
     )
 
+
 def _adls_to_nested_bytes(adls: ADLS, serde: Serde) -> bytes:
     """Convert flat ADLS to nested JSON bytes."""
     return serde.encode(_adls_to_nested(adls))
@@ -543,6 +533,7 @@ def _adls_from_nested_bytes(data: bytes, serde: Serde) -> ADLS:
     nested = serde.decode(data, ADLSNested)
     return _adls_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -552,13 +543,23 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ADLS.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField("adlsAccountQualifiedName", "adlsAccountQualifiedName", "adlsAccountQualifiedName.text")
+ADLS.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField(
+    "adlsAccountQualifiedName",
+    "adlsAccountQualifiedName",
+    "adlsAccountQualifiedName.text",
+)
 ADLS.ADLS_ACCOUNT_NAME = KeywordField("adlsAccountName", "adlsAccountName")
-ADLS.AZURE_RESOURCE_ID = KeywordTextField("azureResourceId", "azureResourceId", "azureResourceId.text")
+ADLS.AZURE_RESOURCE_ID = KeywordTextField(
+    "azureResourceId", "azureResourceId", "azureResourceId.text"
+)
 ADLS.AZURE_LOCATION = KeywordField("azureLocation", "azureLocation")
-ADLS.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField("adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation")
+ADLS.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField(
+    "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+)
 ADLS.AZURE_TAGS = KeywordField("azureTags", "azureTags")
-ADLS.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+ADLS.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 ADLS.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ADLS.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ADLS.ANOMALO_CHECKS = RelationField("anomaloChecks")

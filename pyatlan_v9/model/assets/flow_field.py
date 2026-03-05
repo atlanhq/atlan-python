@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .flow_related import RelatedFlowDataset, RelatedFlowField
+from .flow_related import RelatedFlowDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FlowField(Asset):
@@ -239,7 +242,9 @@ class FlowField(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -261,44 +266,6 @@ class FlowField(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.flow_dataset is UNSET:
-                errors.append("flow_dataset is required for creation")
-            if self.flow_dataset_name is UNSET:
-                errors.append("flow_dataset_name is required for creation")
-            if self.flow_dataset_qualified_name is UNSET:
-                errors.append("flow_dataset_qualified_name is required for creation")
-            if self.flow_reusable_unit_name is UNSET:
-                errors.append("flow_reusable_unit_name is required for creation")
-            if self.flow_reusable_unit_qualified_name is UNSET:
-                errors.append("flow_reusable_unit_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"FlowField validation failed: {errors}")
-
-    def minimize(self) -> "FlowField":
-        self.validate()
-        return FlowField(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFlowField":
-        if self.guid is not UNSET:
-            return RelatedFlowField(guid=self.guid)
-        return RelatedFlowField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -350,6 +317,7 @@ class FlowField(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class FlowFieldAttributes(AssetAttributes):
     """FlowField-specific attributes for nested API format."""
@@ -407,6 +375,7 @@ class FlowFieldAttributes(AssetAttributes):
 
     flow_input_parameters: dict[str, str] | None | UnsetType = UNSET
     """Input parameters for the flow run."""
+
 
 class FlowFieldRelationshipAttributes(AssetRelationshipAttributes):
     """FlowField-specific relationship attributes for nested API format."""
@@ -486,7 +455,9 @@ class FlowFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -498,6 +469,7 @@ class FlowFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class FlowFieldNested(AssetNested):
     """FlowField in nested API format for high-performance serialization."""
 
@@ -505,6 +477,7 @@ class FlowFieldNested(AssetNested):
     relationship_attributes: FlowFieldRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: FlowFieldRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: FlowFieldRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -543,6 +516,7 @@ _FLOW_FIELD_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_flow_field_attrs(attrs: FlowFieldAttributes, obj: FlowField) -> None:
     """Populate FlowField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -565,6 +539,7 @@ def _populate_flow_field_attrs(attrs: FlowFieldAttributes, obj: FlowField) -> No
     attrs.flow_error_message = obj.flow_error_message
     attrs.flow_input_parameters = obj.flow_input_parameters
 
+
 def _extract_flow_field_attrs(attrs: FlowFieldAttributes) -> dict:
     """Extract all FlowField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -581,12 +556,15 @@ def _extract_flow_field_attrs(attrs: FlowFieldAttributes) -> dict:
     result["flow_folder_name"] = attrs.flow_folder_name
     result["flow_folder_qualified_name"] = attrs.flow_folder_qualified_name
     result["flow_reusable_unit_name"] = attrs.flow_reusable_unit_name
-    result["flow_reusable_unit_qualified_name"] = attrs.flow_reusable_unit_qualified_name
+    result["flow_reusable_unit_qualified_name"] = (
+        attrs.flow_reusable_unit_qualified_name
+    )
     result["flow_id"] = attrs.flow_id
     result["flow_run_id"] = attrs.flow_run_id
     result["flow_error_message"] = attrs.flow_error_message
     result["flow_input_parameters"] = attrs.flow_input_parameters
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -627,16 +605,19 @@ def _flow_field_to_nested(flow_field: FlowField) -> FlowFieldNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _flow_field_from_nested(nested: FlowFieldNested) -> FlowField:
     """Convert nested format to flat FlowField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FlowFieldAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else FlowFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FLOW_FIELD_REL_FIELDS,
-        FlowFieldRelationshipAttributes
+        FlowFieldRelationshipAttributes,
     )
     return FlowField(
         guid=nested.guid,
@@ -663,6 +644,7 @@ def _flow_field_from_nested(nested: FlowFieldNested) -> FlowField:
         **merged_rels,
     )
 
+
 def _flow_field_to_nested_bytes(flow_field: FlowField, serde: Serde) -> bytes:
     """Convert flat FlowField to nested JSON bytes."""
     return serde.encode(_flow_field_to_nested(flow_field))
@@ -672,6 +654,7 @@ def _flow_field_from_nested_bytes(data: bytes, serde: Serde) -> FlowField:
     """Convert nested JSON bytes to flat FlowField."""
     nested = serde.decode(data, FlowFieldNested)
     return _flow_field_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -683,24 +666,42 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-FlowField.FLOW_DATASET_NAME = KeywordTextField("flowDatasetName", "flowDatasetName", "flowDatasetName.text")
-FlowField.FLOW_DATASET_QUALIFIED_NAME = KeywordField("flowDatasetQualifiedName", "flowDatasetQualifiedName")
+FlowField.FLOW_DATASET_NAME = KeywordTextField(
+    "flowDatasetName", "flowDatasetName", "flowDatasetName.text"
+)
+FlowField.FLOW_DATASET_QUALIFIED_NAME = KeywordField(
+    "flowDatasetQualifiedName", "flowDatasetQualifiedName"
+)
 FlowField.FLOW_DATA_TYPE = KeywordField("flowDataType", "flowDataType")
 FlowField.FLOW_EXPRESSION = KeywordField("flowExpression", "flowExpression")
 FlowField.FLOW_STARTED_AT = NumericField("flowStartedAt", "flowStartedAt")
 FlowField.FLOW_FINISHED_AT = NumericField("flowFinishedAt", "flowFinishedAt")
 FlowField.FLOW_STATUS = KeywordField("flowStatus", "flowStatus")
 FlowField.FLOW_SCHEDULE = KeywordField("flowSchedule", "flowSchedule")
-FlowField.FLOW_PROJECT_NAME = KeywordTextField("flowProjectName", "flowProjectName", "flowProjectName.text")
-FlowField.FLOW_PROJECT_QUALIFIED_NAME = KeywordField("flowProjectQualifiedName", "flowProjectQualifiedName")
-FlowField.FLOW_FOLDER_NAME = KeywordTextField("flowFolderName", "flowFolderName", "flowFolderName.text")
-FlowField.FLOW_FOLDER_QUALIFIED_NAME = KeywordField("flowFolderQualifiedName", "flowFolderQualifiedName")
-FlowField.FLOW_REUSABLE_UNIT_NAME = KeywordTextField("flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text")
-FlowField.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField("flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName")
+FlowField.FLOW_PROJECT_NAME = KeywordTextField(
+    "flowProjectName", "flowProjectName", "flowProjectName.text"
+)
+FlowField.FLOW_PROJECT_QUALIFIED_NAME = KeywordField(
+    "flowProjectQualifiedName", "flowProjectQualifiedName"
+)
+FlowField.FLOW_FOLDER_NAME = KeywordTextField(
+    "flowFolderName", "flowFolderName", "flowFolderName.text"
+)
+FlowField.FLOW_FOLDER_QUALIFIED_NAME = KeywordField(
+    "flowFolderQualifiedName", "flowFolderQualifiedName"
+)
+FlowField.FLOW_REUSABLE_UNIT_NAME = KeywordTextField(
+    "flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text"
+)
+FlowField.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField(
+    "flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName"
+)
 FlowField.FLOW_ID = KeywordField("flowId", "flowId")
 FlowField.FLOW_RUN_ID = KeywordField("flowRunId", "flowRunId")
 FlowField.FLOW_ERROR_MESSAGE = KeywordField("flowErrorMessage", "flowErrorMessage")
-FlowField.FLOW_INPUT_PARAMETERS = KeywordField("flowInputParameters", "flowInputParameters")
+FlowField.FLOW_INPUT_PARAMETERS = KeywordField(
+    "flowInputParameters", "flowInputParameters"
+)
 FlowField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 FlowField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 FlowField.ANOMALO_CHECKS = RelationField("anomaloChecks")

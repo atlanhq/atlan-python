@@ -35,7 +35,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -47,15 +52,19 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSchema
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .databricks_related import RelatedDatabricksAIModelContext, RelatedDatabricksAIModelVersion
+from .databricks_related import RelatedDatabricksAIModelVersion
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DatabricksAIModelContext(Asset):
@@ -184,13 +193,17 @@ class DatabricksAIModelContext(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
-    ai_model_datasets_dsl: str | None | UnsetType = msgspec.field(default=UNSET, name="aiModelDatasetsDSL")
+    ai_model_datasets_dsl: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="aiModelDatasetsDSL"
+    )
     """Search DSL used to define which assets/datasets are part of the AI model."""
 
     ai_model_status: str | None | UnsetType = UNSET
@@ -199,25 +212,39 @@ class DatabricksAIModelContext(Asset):
     ai_model_version: str | None | UnsetType = UNSET
     """Version of the AI model."""
 
-    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIReliabilityAndSafetyConfig"
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     applications: list[RelatedAIApplication] | None | UnsetType = UNSET
@@ -262,10 +289,14 @@ class DatabricksAIModelContext(Asset):
     dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
     """Rules where this dataset is referenced."""
 
-    databricks_ai_model_schema: RelatedSchema | None | UnsetType = msgspec.field(default=UNSET, name="databricksAIModelSchema")
+    databricks_ai_model_schema: RelatedSchema | None | UnsetType = msgspec.field(
+        default=UNSET, name="databricksAIModelSchema"
+    )
     """Schema containing the context."""
 
-    databricks_ai_model_versions: list[RelatedDatabricksAIModelVersion] | None | UnsetType = msgspec.field(default=UNSET, name="databricksAIModelVersions")
+    databricks_ai_model_versions: (
+        list[RelatedDatabricksAIModelVersion] | None | UnsetType
+    ) = msgspec.field(default=UNSET, name="databricksAIModelVersions")
     """Versions contained within the context."""
 
     dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
@@ -280,7 +311,9 @@ class DatabricksAIModelContext(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -322,7 +355,9 @@ class DatabricksAIModelContext(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,42 +379,6 @@ class DatabricksAIModelContext(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"DatabricksAIModelContext validation failed: {errors}")
-
-    def minimize(self) -> "DatabricksAIModelContext":
-        self.validate()
-        return DatabricksAIModelContext(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDatabricksAIModelContext":
-        if self.guid is not UNSET:
-            return RelatedDatabricksAIModelContext(guid=self.guid)
-        return RelatedDatabricksAIModelContext(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -410,7 +409,9 @@ class DatabricksAIModelContext(Asset):
         return _databricks_ai_model_context_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DatabricksAIModelContext:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DatabricksAIModelContext:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -431,6 +432,7 @@ class DatabricksAIModelContext(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DatabricksAIModelContextAttributes(AssetAttributes):
     """DatabricksAIModelContext-specific attributes for nested API format."""
@@ -486,13 +488,17 @@ class DatabricksAIModelContextAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
-    ai_model_datasets_dsl: str | None | UnsetType = msgspec.field(default=UNSET, name="aiModelDatasetsDSL")
+    ai_model_datasets_dsl: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="aiModelDatasetsDSL"
+    )
     """Search DSL used to define which assets/datasets are part of the AI model."""
 
     ai_model_status: str | None | UnsetType = UNSET
@@ -501,26 +507,41 @@ class DatabricksAIModelContextAttributes(AssetAttributes):
     ai_model_version: str | None | UnsetType = UNSET
     """Version of the AI model."""
 
-    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIReliabilityAndSafetyConfig"
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
+
 
 class DatabricksAIModelContextRelationshipAttributes(AssetRelationshipAttributes):
     """DatabricksAIModelContext-specific relationship attributes for nested API format."""
@@ -567,10 +588,14 @@ class DatabricksAIModelContextRelationshipAttributes(AssetRelationshipAttributes
     dq_reference_dataset_rules: list[RelatedDataQualityRule] | None | UnsetType = UNSET
     """Rules where this dataset is referenced."""
 
-    databricks_ai_model_schema: RelatedSchema | None | UnsetType = msgspec.field(default=UNSET, name="databricksAIModelSchema")
+    databricks_ai_model_schema: RelatedSchema | None | UnsetType = msgspec.field(
+        default=UNSET, name="databricksAIModelSchema"
+    )
     """Schema containing the context."""
 
-    databricks_ai_model_versions: list[RelatedDatabricksAIModelVersion] | None | UnsetType = msgspec.field(default=UNSET, name="databricksAIModelVersions")
+    databricks_ai_model_versions: (
+        list[RelatedDatabricksAIModelVersion] | None | UnsetType
+    ) = msgspec.field(default=UNSET, name="databricksAIModelVersions")
     """Versions contained within the context."""
 
     dbt_models: list[RelatedDbtModel] | None | UnsetType = UNSET
@@ -585,7 +610,9 @@ class DatabricksAIModelContextRelationshipAttributes(AssetRelationshipAttributes
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -627,7 +654,9 @@ class DatabricksAIModelContextRelationshipAttributes(AssetRelationshipAttributes
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -639,13 +668,21 @@ class DatabricksAIModelContextRelationshipAttributes(AssetRelationshipAttributes
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DatabricksAIModelContextNested(AssetNested):
     """DatabricksAIModelContext in nested API format for high-performance serialization."""
 
     attributes: DatabricksAIModelContextAttributes | UnsetType = UNSET
-    relationship_attributes: DatabricksAIModelContextRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DatabricksAIModelContextRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DatabricksAIModelContextRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: (
+        DatabricksAIModelContextRelationshipAttributes | UnsetType
+    ) = UNSET
+    append_relationship_attributes: (
+        DatabricksAIModelContextRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        DatabricksAIModelContextRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -693,7 +730,10 @@ _DATABRICKS_AI_MODEL_CONTEXT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_databricks_ai_model_context_attrs(attrs: DatabricksAIModelContextAttributes, obj: DatabricksAIModelContext) -> None:
+
+def _populate_databricks_ai_model_context_attrs(
+    attrs: DatabricksAIModelContextAttributes, obj: DatabricksAIModelContext
+) -> None:
     """Populate DatabricksAIModelContext-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.databricks_metastore_id = obj.databricks_metastore_id
@@ -721,12 +761,19 @@ def _populate_databricks_ai_model_context_attrs(attrs: DatabricksAIModelContextA
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
     attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
-    attrs.ethical_ai_reliability_and_safety_config = obj.ethical_ai_reliability_and_safety_config
+    attrs.ethical_ai_reliability_and_safety_config = (
+        obj.ethical_ai_reliability_and_safety_config
+    )
     attrs.ethical_ai_transparency_config = obj.ethical_ai_transparency_config
     attrs.ethical_ai_accountability_config = obj.ethical_ai_accountability_config
-    attrs.ethical_ai_environmental_consciousness_config = obj.ethical_ai_environmental_consciousness_config
+    attrs.ethical_ai_environmental_consciousness_config = (
+        obj.ethical_ai_environmental_consciousness_config
+    )
 
-def _extract_databricks_ai_model_context_attrs(attrs: DatabricksAIModelContextAttributes) -> dict:
+
+def _extract_databricks_ai_model_context_attrs(
+    attrs: DatabricksAIModelContextAttributes,
+) -> dict:
     """Extract all DatabricksAIModelContext attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["databricks_metastore_id"] = attrs.databricks_metastore_id
@@ -746,32 +793,45 @@ def _extract_databricks_ai_model_context_attrs(attrs: DatabricksAIModelContextAt
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["ai_model_datasets_dsl"] = attrs.ai_model_datasets_dsl
     result["ai_model_status"] = attrs.ai_model_status
     result["ai_model_version"] = attrs.ai_model_version
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
-    result["ethical_ai_bias_mitigation_config"] = attrs.ethical_ai_bias_mitigation_config
-    result["ethical_ai_reliability_and_safety_config"] = attrs.ethical_ai_reliability_and_safety_config
+    result["ethical_ai_bias_mitigation_config"] = (
+        attrs.ethical_ai_bias_mitigation_config
+    )
+    result["ethical_ai_reliability_and_safety_config"] = (
+        attrs.ethical_ai_reliability_and_safety_config
+    )
     result["ethical_ai_transparency_config"] = attrs.ethical_ai_transparency_config
     result["ethical_ai_accountability_config"] = attrs.ethical_ai_accountability_config
-    result["ethical_ai_environmental_consciousness_config"] = attrs.ethical_ai_environmental_consciousness_config
+    result["ethical_ai_environmental_consciousness_config"] = (
+        attrs.ethical_ai_environmental_consciousness_config
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _databricks_ai_model_context_to_nested(databricks_ai_model_context: DatabricksAIModelContext) -> DatabricksAIModelContextNested:
+def _databricks_ai_model_context_to_nested(
+    databricks_ai_model_context: DatabricksAIModelContext,
+) -> DatabricksAIModelContextNested:
     """Convert flat DatabricksAIModelContext to nested format."""
     attrs = DatabricksAIModelContextAttributes()
     _populate_databricks_ai_model_context_attrs(attrs, databricks_ai_model_context)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_ai_model_context, _DATABRICKS_AI_MODEL_CONTEXT_REL_FIELDS, DatabricksAIModelContextRelationshipAttributes
+        databricks_ai_model_context,
+        _DATABRICKS_AI_MODEL_CONTEXT_REL_FIELDS,
+        DatabricksAIModelContextRelationshipAttributes,
     )
     return DatabricksAIModelContextNested(
         guid=databricks_ai_model_context.guid,
@@ -799,16 +859,23 @@ def _databricks_ai_model_context_to_nested(databricks_ai_model_context: Databric
         remove_relationship_attributes=remove_rels,
     )
 
-def _databricks_ai_model_context_from_nested(nested: DatabricksAIModelContextNested) -> DatabricksAIModelContext:
+
+def _databricks_ai_model_context_from_nested(
+    nested: DatabricksAIModelContextNested,
+) -> DatabricksAIModelContext:
     """Convert nested format to flat DatabricksAIModelContext."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksAIModelContextAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DatabricksAIModelContextAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_AI_MODEL_CONTEXT_REL_FIELDS,
-        DatabricksAIModelContextRelationshipAttributes
+        DatabricksAIModelContextRelationshipAttributes,
     )
     return DatabricksAIModelContext(
         guid=nested.guid,
@@ -835,15 +902,23 @@ def _databricks_ai_model_context_from_nested(nested: DatabricksAIModelContextNes
         **merged_rels,
     )
 
-def _databricks_ai_model_context_to_nested_bytes(databricks_ai_model_context: DatabricksAIModelContext, serde: Serde) -> bytes:
+
+def _databricks_ai_model_context_to_nested_bytes(
+    databricks_ai_model_context: DatabricksAIModelContext, serde: Serde
+) -> bytes:
     """Convert flat DatabricksAIModelContext to nested JSON bytes."""
-    return serde.encode(_databricks_ai_model_context_to_nested(databricks_ai_model_context))
+    return serde.encode(
+        _databricks_ai_model_context_to_nested(databricks_ai_model_context)
+    )
 
 
-def _databricks_ai_model_context_from_nested_bytes(data: bytes, serde: Serde) -> DatabricksAIModelContext:
+def _databricks_ai_model_context_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DatabricksAIModelContext:
     """Convert nested JSON bytes to flat DatabricksAIModelContext."""
     nested = serde.decode(data, DatabricksAIModelContextNested)
     return _databricks_ai_model_context_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -855,51 +930,110 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksAIModelContext.DATABRICKS_METASTORE_ID = KeywordField("databricksMetastoreId", "databricksMetastoreId")
+DatabricksAIModelContext.DATABRICKS_METASTORE_ID = KeywordField(
+    "databricksMetastoreId", "databricksMetastoreId"
+)
 DatabricksAIModelContext.QUERY_COUNT = NumericField("queryCount", "queryCount")
-DatabricksAIModelContext.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+DatabricksAIModelContext.QUERY_USER_COUNT = NumericField(
+    "queryUserCount", "queryUserCount"
+)
 DatabricksAIModelContext.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksAIModelContext.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DatabricksAIModelContext.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DatabricksAIModelContext.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksAIModelContext.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DatabricksAIModelContext.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DatabricksAIModelContext.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksAIModelContext.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DatabricksAIModelContext.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DatabricksAIModelContext.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksAIModelContext.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DatabricksAIModelContext.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DatabricksAIModelContext.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksAIModelContext.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DatabricksAIModelContext.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DatabricksAIModelContext.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DatabricksAIModelContext.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DatabricksAIModelContext.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DatabricksAIModelContext.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DatabricksAIModelContext.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-DatabricksAIModelContext.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DatabricksAIModelContext.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DatabricksAIModelContext.LAST_PROFILED_AT = NumericField(
+    "lastProfiledAt", "lastProfiledAt"
+)
+DatabricksAIModelContext.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DatabricksAIModelContext.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DatabricksAIModelContext.AI_MODEL_DATASETS_DSL = KeywordField("aiModelDatasetsDSL", "aiModelDatasetsDSL")
-DatabricksAIModelContext.AI_MODEL_STATUS = KeywordField("aiModelStatus", "aiModelStatus")
-DatabricksAIModelContext.AI_MODEL_VERSION = KeywordField("aiModelVersion", "aiModelVersion")
-DatabricksAIModelContext.ETHICAL_AI_PRIVACY_CONFIG = KeywordField("ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig")
-DatabricksAIModelContext.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField("ethicalAIFairnessConfig", "ethicalAIFairnessConfig")
-DatabricksAIModelContext.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField("ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig")
-DatabricksAIModelContext.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField("ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig")
-DatabricksAIModelContext.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField("ethicalAITransparencyConfig", "ethicalAITransparencyConfig")
-DatabricksAIModelContext.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField("ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig")
-DatabricksAIModelContext.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField("ethicalAIEnvironmentalConsciousnessConfig", "ethicalAIEnvironmentalConsciousnessConfig")
+DatabricksAIModelContext.AI_MODEL_DATASETS_DSL = KeywordField(
+    "aiModelDatasetsDSL", "aiModelDatasetsDSL"
+)
+DatabricksAIModelContext.AI_MODEL_STATUS = KeywordField(
+    "aiModelStatus", "aiModelStatus"
+)
+DatabricksAIModelContext.AI_MODEL_VERSION = KeywordField(
+    "aiModelVersion", "aiModelVersion"
+)
+DatabricksAIModelContext.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
+    "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
+)
+DatabricksAIModelContext.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField(
+    "ethicalAIFairnessConfig", "ethicalAIFairnessConfig"
+)
+DatabricksAIModelContext.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField(
+    "ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig"
+)
+DatabricksAIModelContext.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField(
+    "ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig"
+)
+DatabricksAIModelContext.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField(
+    "ethicalAITransparencyConfig", "ethicalAITransparencyConfig"
+)
+DatabricksAIModelContext.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField(
+    "ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig"
+)
+DatabricksAIModelContext.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
+    "ethicalAIEnvironmentalConsciousnessConfig",
+    "ethicalAIEnvironmentalConsciousnessConfig",
+)
 DatabricksAIModelContext.APPLICATIONS = RelationField("applications")
 DatabricksAIModelContext.AI_MODEL_VERSIONS = RelationField("aiModelVersions")
 DatabricksAIModelContext.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-DatabricksAIModelContext.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+DatabricksAIModelContext.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 DatabricksAIModelContext.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DatabricksAIModelContext.APPLICATION = RelationField("application")
 DatabricksAIModelContext.APPLICATION_FIELD = RelationField("applicationField")
-DatabricksAIModelContext.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-DatabricksAIModelContext.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DatabricksAIModelContext.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DatabricksAIModelContext.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DatabricksAIModelContext.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+DatabricksAIModelContext.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+DatabricksAIModelContext.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DatabricksAIModelContext.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DatabricksAIModelContext.METRICS = RelationField("metrics")
 DatabricksAIModelContext.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DatabricksAIModelContext.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-DatabricksAIModelContext.DATABRICKS_AI_MODEL_SCHEMA = RelationField("databricksAIModelSchema")
-DatabricksAIModelContext.DATABRICKS_AI_MODEL_VERSIONS = RelationField("databricksAIModelVersions")
+DatabricksAIModelContext.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+DatabricksAIModelContext.DATABRICKS_AI_MODEL_SCHEMA = RelationField(
+    "databricksAIModelSchema"
+)
+DatabricksAIModelContext.DATABRICKS_AI_MODEL_VERSIONS = RelationField(
+    "databricksAIModelVersions"
+)
 DatabricksAIModelContext.DBT_MODELS = RelationField("dbtModels")
 DatabricksAIModelContext.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DatabricksAIModelContext.DBT_TESTS = RelationField("dbtTests")
@@ -913,12 +1047,18 @@ DatabricksAIModelContext.PARTIAL_CHILD_FIELDS = RelationField("partialChildField
 DatabricksAIModelContext.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 DatabricksAIModelContext.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DatabricksAIModelContext.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-DatabricksAIModelContext.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DatabricksAIModelContext.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+DatabricksAIModelContext.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+DatabricksAIModelContext.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 DatabricksAIModelContext.FILES = RelationField("files")
 DatabricksAIModelContext.LINKS = RelationField("links")
 DatabricksAIModelContext.README = RelationField("readme")
-DatabricksAIModelContext.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+DatabricksAIModelContext.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 DatabricksAIModelContext.SODA_CHECKS = RelationField("sodaChecks")
 DatabricksAIModelContext.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DatabricksAIModelContext.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

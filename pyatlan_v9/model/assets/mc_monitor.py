@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,7 +42,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -52,6 +54,7 @@ from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MCMonitor(Asset):
@@ -262,7 +265,9 @@ class MCMonitor(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -276,30 +281,6 @@ class MCMonitor(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MCMonitor"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"MCMonitor validation failed: {errors}")
-
-    def minimize(self) -> "MCMonitor":
-        self.validate()
-        return MCMonitor(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMCMonitor":
-        if self.guid is not UNSET:
-            return RelatedMCMonitor(guid=self.guid)
-        return RelatedMCMonitor(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -351,6 +332,7 @@ class MCMonitor(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class MCMonitorAttributes(AssetAttributes):
     """MCMonitor-specific attributes for nested API format."""
@@ -426,6 +408,7 @@ class MCMonitorAttributes(AssetAttributes):
 
     dq_is_part_of_contract: bool | None | UnsetType = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
+
 
 class MCMonitorRelationshipAttributes(AssetRelationshipAttributes):
     """MCMonitor-specific relationship attributes for nested API format."""
@@ -505,7 +488,9 @@ class MCMonitorRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -517,6 +502,7 @@ class MCMonitorRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MCMonitorNested(AssetNested):
     """MCMonitor in nested API format for high-performance serialization."""
 
@@ -524,6 +510,7 @@ class MCMonitorNested(AssetNested):
     relationship_attributes: MCMonitorRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: MCMonitorRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: MCMonitorRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -562,6 +549,7 @@ _MC_MONITOR_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_mc_monitor_attrs(attrs: MCMonitorAttributes, obj: MCMonitor) -> None:
     """Populate MCMonitor-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -574,10 +562,14 @@ def _populate_mc_monitor_attrs(attrs: MCMonitorAttributes, obj: MCMonitor) -> No
     attrs.mc_monitor_rule_type = obj.mc_monitor_rule_type
     attrs.mc_monitor_rule_custom_sql = obj.mc_monitor_rule_custom_sql
     attrs.mc_monitor_rule_schedule_config = obj.mc_monitor_rule_schedule_config
-    attrs.mc_monitor_rule_schedule_config_humanized = obj.mc_monitor_rule_schedule_config_humanized
+    attrs.mc_monitor_rule_schedule_config_humanized = (
+        obj.mc_monitor_rule_schedule_config_humanized
+    )
     attrs.mc_monitor_alert_condition = obj.mc_monitor_alert_condition
     attrs.mc_monitor_rule_next_execution_time = obj.mc_monitor_rule_next_execution_time
-    attrs.mc_monitor_rule_previous_execution_time = obj.mc_monitor_rule_previous_execution_time
+    attrs.mc_monitor_rule_previous_execution_time = (
+        obj.mc_monitor_rule_previous_execution_time
+    )
     attrs.mc_monitor_rule_comparisons = obj.mc_monitor_rule_comparisons
     attrs.mc_monitor_rule_is_snoozed = obj.mc_monitor_rule_is_snoozed
     attrs.mc_monitor_breach_rate = obj.mc_monitor_breach_rate
@@ -589,6 +581,7 @@ def _populate_mc_monitor_attrs(attrs: MCMonitorAttributes, obj: MCMonitor) -> No
     attrs.mc_labels = obj.mc_labels
     attrs.mc_asset_qualified_names = obj.mc_asset_qualified_names
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
+
 
 def _extract_mc_monitor_attrs(attrs: MCMonitorAttributes) -> dict:
     """Extract all MCMonitor attributes from the attrs struct into a flat dict."""
@@ -602,10 +595,16 @@ def _extract_mc_monitor_attrs(attrs: MCMonitorAttributes) -> dict:
     result["mc_monitor_rule_type"] = attrs.mc_monitor_rule_type
     result["mc_monitor_rule_custom_sql"] = attrs.mc_monitor_rule_custom_sql
     result["mc_monitor_rule_schedule_config"] = attrs.mc_monitor_rule_schedule_config
-    result["mc_monitor_rule_schedule_config_humanized"] = attrs.mc_monitor_rule_schedule_config_humanized
+    result["mc_monitor_rule_schedule_config_humanized"] = (
+        attrs.mc_monitor_rule_schedule_config_humanized
+    )
     result["mc_monitor_alert_condition"] = attrs.mc_monitor_alert_condition
-    result["mc_monitor_rule_next_execution_time"] = attrs.mc_monitor_rule_next_execution_time
-    result["mc_monitor_rule_previous_execution_time"] = attrs.mc_monitor_rule_previous_execution_time
+    result["mc_monitor_rule_next_execution_time"] = (
+        attrs.mc_monitor_rule_next_execution_time
+    )
+    result["mc_monitor_rule_previous_execution_time"] = (
+        attrs.mc_monitor_rule_previous_execution_time
+    )
     result["mc_monitor_rule_comparisons"] = attrs.mc_monitor_rule_comparisons
     result["mc_monitor_rule_is_snoozed"] = attrs.mc_monitor_rule_is_snoozed
     result["mc_monitor_breach_rate"] = attrs.mc_monitor_breach_rate
@@ -618,6 +617,7 @@ def _extract_mc_monitor_attrs(attrs: MCMonitorAttributes) -> dict:
     result["mc_asset_qualified_names"] = attrs.mc_asset_qualified_names
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -658,16 +658,19 @@ def _mc_monitor_to_nested(mc_monitor: MCMonitor) -> MCMonitorNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _mc_monitor_from_nested(nested: MCMonitorNested) -> MCMonitor:
     """Convert nested format to flat MCMonitor."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MCMonitorAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else MCMonitorAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MC_MONITOR_REL_FIELDS,
-        MCMonitorRelationshipAttributes
+        MCMonitorRelationshipAttributes,
     )
     return MCMonitor(
         guid=nested.guid,
@@ -694,6 +697,7 @@ def _mc_monitor_from_nested(nested: MCMonitorNested) -> MCMonitor:
         **merged_rels,
     )
 
+
 def _mc_monitor_to_nested_bytes(mc_monitor: MCMonitor, serde: Serde) -> bytes:
     """Convert flat MCMonitor to nested JSON bytes."""
     return serde.encode(_mc_monitor_to_nested(mc_monitor))
@@ -703,6 +707,7 @@ def _mc_monitor_from_nested_bytes(data: bytes, serde: Serde) -> MCMonitor:
     """Convert nested JSON bytes to flat MCMonitor."""
     nested = serde.decode(data, MCMonitorNested)
     return _mc_monitor_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -718,27 +723,61 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 MCMonitor.MC_MONITOR_ID = KeywordField("mcMonitorId", "mcMonitorId")
 MCMonitor.MC_MONITOR_STATUS = KeywordField("mcMonitorStatus", "mcMonitorStatus")
 MCMonitor.MC_MONITOR_TYPE = KeywordField("mcMonitorType", "mcMonitorType")
-MCMonitor.MC_MONITOR_WAREHOUSE = KeywordField("mcMonitorWarehouse", "mcMonitorWarehouse")
-MCMonitor.MC_MONITOR_SCHEDULE_TYPE = KeywordField("mcMonitorScheduleType", "mcMonitorScheduleType")
-MCMonitor.MC_MONITOR_NAMESPACE = KeywordTextField("mcMonitorNamespace", "mcMonitorNamespace", "mcMonitorNamespace.text")
+MCMonitor.MC_MONITOR_WAREHOUSE = KeywordField(
+    "mcMonitorWarehouse", "mcMonitorWarehouse"
+)
+MCMonitor.MC_MONITOR_SCHEDULE_TYPE = KeywordField(
+    "mcMonitorScheduleType", "mcMonitorScheduleType"
+)
+MCMonitor.MC_MONITOR_NAMESPACE = KeywordTextField(
+    "mcMonitorNamespace", "mcMonitorNamespace", "mcMonitorNamespace.text"
+)
 MCMonitor.MC_MONITOR_RULE_TYPE = KeywordField("mcMonitorRuleType", "mcMonitorRuleType")
-MCMonitor.MC_MONITOR_RULE_CUSTOM_SQL = KeywordField("mcMonitorRuleCustomSql", "mcMonitorRuleCustomSql")
-MCMonitor.MC_MONITOR_RULE_SCHEDULE_CONFIG = KeywordField("mcMonitorRuleScheduleConfig", "mcMonitorRuleScheduleConfig")
-MCMonitor.MC_MONITOR_RULE_SCHEDULE_CONFIG_HUMANIZED = KeywordField("mcMonitorRuleScheduleConfigHumanized", "mcMonitorRuleScheduleConfigHumanized")
-MCMonitor.MC_MONITOR_ALERT_CONDITION = KeywordField("mcMonitorAlertCondition", "mcMonitorAlertCondition")
-MCMonitor.MC_MONITOR_RULE_NEXT_EXECUTION_TIME = NumericField("mcMonitorRuleNextExecutionTime", "mcMonitorRuleNextExecutionTime")
-MCMonitor.MC_MONITOR_RULE_PREVIOUS_EXECUTION_TIME = NumericField("mcMonitorRulePreviousExecutionTime", "mcMonitorRulePreviousExecutionTime")
-MCMonitor.MC_MONITOR_RULE_COMPARISONS = KeywordField("mcMonitorRuleComparisons", "mcMonitorRuleComparisons")
-MCMonitor.MC_MONITOR_RULE_IS_SNOOZED = BooleanField("mcMonitorRuleIsSnoozed", "mcMonitorRuleIsSnoozed")
-MCMonitor.MC_MONITOR_BREACH_RATE = NumericField("mcMonitorBreachRate", "mcMonitorBreachRate")
-MCMonitor.MC_MONITOR_INCIDENT_COUNT = NumericField("mcMonitorIncidentCount", "mcMonitorIncidentCount")
-MCMonitor.MC_MONITOR_ALERT_COUNT = NumericField("mcMonitorAlertCount", "mcMonitorAlertCount")
+MCMonitor.MC_MONITOR_RULE_CUSTOM_SQL = KeywordField(
+    "mcMonitorRuleCustomSql", "mcMonitorRuleCustomSql"
+)
+MCMonitor.MC_MONITOR_RULE_SCHEDULE_CONFIG = KeywordField(
+    "mcMonitorRuleScheduleConfig", "mcMonitorRuleScheduleConfig"
+)
+MCMonitor.MC_MONITOR_RULE_SCHEDULE_CONFIG_HUMANIZED = KeywordField(
+    "mcMonitorRuleScheduleConfigHumanized", "mcMonitorRuleScheduleConfigHumanized"
+)
+MCMonitor.MC_MONITOR_ALERT_CONDITION = KeywordField(
+    "mcMonitorAlertCondition", "mcMonitorAlertCondition"
+)
+MCMonitor.MC_MONITOR_RULE_NEXT_EXECUTION_TIME = NumericField(
+    "mcMonitorRuleNextExecutionTime", "mcMonitorRuleNextExecutionTime"
+)
+MCMonitor.MC_MONITOR_RULE_PREVIOUS_EXECUTION_TIME = NumericField(
+    "mcMonitorRulePreviousExecutionTime", "mcMonitorRulePreviousExecutionTime"
+)
+MCMonitor.MC_MONITOR_RULE_COMPARISONS = KeywordField(
+    "mcMonitorRuleComparisons", "mcMonitorRuleComparisons"
+)
+MCMonitor.MC_MONITOR_RULE_IS_SNOOZED = BooleanField(
+    "mcMonitorRuleIsSnoozed", "mcMonitorRuleIsSnoozed"
+)
+MCMonitor.MC_MONITOR_BREACH_RATE = NumericField(
+    "mcMonitorBreachRate", "mcMonitorBreachRate"
+)
+MCMonitor.MC_MONITOR_INCIDENT_COUNT = NumericField(
+    "mcMonitorIncidentCount", "mcMonitorIncidentCount"
+)
+MCMonitor.MC_MONITOR_ALERT_COUNT = NumericField(
+    "mcMonitorAlertCount", "mcMonitorAlertCount"
+)
 MCMonitor.MC_MONITOR_PRIORITY = KeywordField("mcMonitorPriority", "mcMonitorPriority")
 MCMonitor.MC_MONITOR_IS_OOTB = BooleanField("mcMonitorIsOotb", "mcMonitorIsOotb")
-MCMonitor.MC_MONITOR_NOTIFICATION_CHANNELS = KeywordField("mcMonitorNotificationChannels", "mcMonitorNotificationChannels")
+MCMonitor.MC_MONITOR_NOTIFICATION_CHANNELS = KeywordField(
+    "mcMonitorNotificationChannels", "mcMonitorNotificationChannels"
+)
 MCMonitor.MC_LABELS = KeywordField("mcLabels", "mcLabels")
-MCMonitor.MC_ASSET_QUALIFIED_NAMES = KeywordField("mcAssetQualifiedNames", "mcAssetQualifiedNames")
-MCMonitor.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
+MCMonitor.MC_ASSET_QUALIFIED_NAMES = KeywordField(
+    "mcAssetQualifiedNames", "mcAssetQualifiedNames"
+)
+MCMonitor.DQ_IS_PART_OF_CONTRACT = BooleanField(
+    "dqIsPartOfContract", "dqIsPartOfContract"
+)
 MCMonitor.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MCMonitor.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MCMonitor.ANOMALO_CHECKS = RelationField("anomaloChecks")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .redash_related import RelatedRedashQuery, RelatedRedashVisualization
+from .redash_related import RelatedRedashQuery
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class RedashVisualization(Asset):
@@ -183,7 +186,9 @@ class RedashVisualization(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -202,43 +207,7 @@ class RedashVisualization(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.redash_query is UNSET:
-                errors.append("redash_query is required for creation")
-            if self.redash_query_name is UNSET:
-                errors.append("redash_query_name is required for creation")
-            if self.redash_query_qualified_name is UNSET:
-                errors.append("redash_query_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"RedashVisualization validation failed: {errors}")
-
-    def minimize(self) -> "RedashVisualization":
-        self.validate()
-        return RedashVisualization(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedRedashVisualization":
-        if self.guid is not UNSET:
-            return RelatedRedashVisualization(guid=self.guid)
-        return RelatedRedashVisualization(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -269,7 +238,9 @@ class RedashVisualization(Asset):
         return _redash_visualization_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> RedashVisualization:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> RedashVisualization:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -291,6 +262,7 @@ class RedashVisualization(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class RedashVisualizationAttributes(AssetAttributes):
     """RedashVisualization-specific attributes for nested API format."""
 
@@ -305,6 +277,7 @@ class RedashVisualizationAttributes(AssetAttributes):
 
     redash_is_published: bool | None | UnsetType = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
+
 
 class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     """RedashVisualization-specific relationship attributes for nested API format."""
@@ -384,7 +357,9 @@ class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -396,13 +371,21 @@ class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class RedashVisualizationNested(AssetNested):
     """RedashVisualization in nested API format for high-performance serialization."""
 
     attributes: RedashVisualizationAttributes | UnsetType = UNSET
-    relationship_attributes: RedashVisualizationRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: RedashVisualizationRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: RedashVisualizationRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: RedashVisualizationRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        RedashVisualizationRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        RedashVisualizationRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -441,13 +424,17 @@ _REDASH_VISUALIZATION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_redash_visualization_attrs(attrs: RedashVisualizationAttributes, obj: RedashVisualization) -> None:
+
+def _populate_redash_visualization_attrs(
+    attrs: RedashVisualizationAttributes, obj: RedashVisualization
+) -> None:
     """Populate RedashVisualization-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.redash_visualization_type = obj.redash_visualization_type
     attrs.redash_query_name = obj.redash_query_name
     attrs.redash_query_qualified_name = obj.redash_query_qualified_name
     attrs.redash_is_published = obj.redash_is_published
+
 
 def _extract_redash_visualization_attrs(attrs: RedashVisualizationAttributes) -> dict:
     """Extract all RedashVisualization attributes from the attrs struct into a flat dict."""
@@ -458,18 +445,23 @@ def _extract_redash_visualization_attrs(attrs: RedashVisualizationAttributes) ->
     result["redash_is_published"] = attrs.redash_is_published
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _redash_visualization_to_nested(redash_visualization: RedashVisualization) -> RedashVisualizationNested:
+def _redash_visualization_to_nested(
+    redash_visualization: RedashVisualization,
+) -> RedashVisualizationNested:
     """Convert flat RedashVisualization to nested format."""
     attrs = RedashVisualizationAttributes()
     _populate_redash_visualization_attrs(attrs, redash_visualization)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        redash_visualization, _REDASH_VISUALIZATION_REL_FIELDS, RedashVisualizationRelationshipAttributes
+        redash_visualization,
+        _REDASH_VISUALIZATION_REL_FIELDS,
+        RedashVisualizationRelationshipAttributes,
     )
     return RedashVisualizationNested(
         guid=redash_visualization.guid,
@@ -497,16 +489,23 @@ def _redash_visualization_to_nested(redash_visualization: RedashVisualization) -
         remove_relationship_attributes=remove_rels,
     )
 
-def _redash_visualization_from_nested(nested: RedashVisualizationNested) -> RedashVisualization:
+
+def _redash_visualization_from_nested(
+    nested: RedashVisualizationNested,
+) -> RedashVisualization:
     """Convert nested format to flat RedashVisualization."""
-    attrs = nested.attributes if nested.attributes is not UNSET else RedashVisualizationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else RedashVisualizationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _REDASH_VISUALIZATION_REL_FIELDS,
-        RedashVisualizationRelationshipAttributes
+        RedashVisualizationRelationshipAttributes,
     )
     return RedashVisualization(
         guid=nested.guid,
@@ -533,15 +532,21 @@ def _redash_visualization_from_nested(nested: RedashVisualizationNested) -> Reda
         **merged_rels,
     )
 
-def _redash_visualization_to_nested_bytes(redash_visualization: RedashVisualization, serde: Serde) -> bytes:
+
+def _redash_visualization_to_nested_bytes(
+    redash_visualization: RedashVisualization, serde: Serde
+) -> bytes:
     """Convert flat RedashVisualization to nested JSON bytes."""
     return serde.encode(_redash_visualization_to_nested(redash_visualization))
 
 
-def _redash_visualization_from_nested_bytes(data: bytes, serde: Serde) -> RedashVisualization:
+def _redash_visualization_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> RedashVisualization:
     """Convert nested JSON bytes to flat RedashVisualization."""
     nested = serde.decode(data, RedashVisualizationNested)
     return _redash_visualization_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -553,10 +558,20 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-RedashVisualization.REDASH_VISUALIZATION_TYPE = KeywordField("redashVisualizationType", "redashVisualizationType")
-RedashVisualization.REDASH_QUERY_NAME = KeywordTextField("redashQueryName", "redashQueryName", "redashQueryName.text")
-RedashVisualization.REDASH_QUERY_QUALIFIED_NAME = KeywordTextField("redashQueryQualifiedName", "redashQueryQualifiedName", "redashQueryQualifiedName.text")
-RedashVisualization.REDASH_IS_PUBLISHED = BooleanField("redashIsPublished", "redashIsPublished")
+RedashVisualization.REDASH_VISUALIZATION_TYPE = KeywordField(
+    "redashVisualizationType", "redashVisualizationType"
+)
+RedashVisualization.REDASH_QUERY_NAME = KeywordTextField(
+    "redashQueryName", "redashQueryName", "redashQueryName.text"
+)
+RedashVisualization.REDASH_QUERY_QUALIFIED_NAME = KeywordTextField(
+    "redashQueryQualifiedName",
+    "redashQueryQualifiedName",
+    "redashQueryQualifiedName.text",
+)
+RedashVisualization.REDASH_IS_PUBLISHED = BooleanField(
+    "redashIsPublished", "redashIsPublished"
+)
 RedashVisualization.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 RedashVisualization.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 RedashVisualization.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -564,11 +579,17 @@ RedashVisualization.APPLICATION = RelationField("application")
 RedashVisualization.APPLICATION_FIELD = RelationField("applicationField")
 RedashVisualization.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 RedashVisualization.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-RedashVisualization.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-RedashVisualization.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+RedashVisualization.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+RedashVisualization.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 RedashVisualization.METRICS = RelationField("metrics")
 RedashVisualization.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-RedashVisualization.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+RedashVisualization.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 RedashVisualization.MEANINGS = RelationField("meanings")
 RedashVisualization.MC_MONITORS = RelationField("mcMonitors")
 RedashVisualization.MC_INCIDENTS = RelationField("mcIncidents")
@@ -578,7 +599,9 @@ RedashVisualization.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 RedashVisualization.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 RedashVisualization.REDASH_QUERY = RelationField("redashQuery")
 RedashVisualization.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-RedashVisualization.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+RedashVisualization.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 RedashVisualization.FILES = RelationField("files")
 RedashVisualization.LINKS = RelationField("links")
 RedashVisualization.README = RelationField("readme")

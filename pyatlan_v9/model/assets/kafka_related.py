@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedEventStore
@@ -41,6 +40,7 @@ class RelatedKafka(RelatedEventStore):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Kafka"
+
 
 class RelatedKafkaTopic(RelatedKafka):
     """
@@ -86,6 +86,7 @@ class RelatedKafkaTopic(RelatedKafka):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "KafkaTopic"
 
+
 class RelatedKafkaConsumerGroup(RelatedKafka):
     """
     Related entity reference for KafkaConsumerGroup assets.
@@ -96,7 +97,9 @@ class RelatedKafkaConsumerGroup(RelatedKafka):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "KafkaConsumerGroup" so it serializes correctly
 
-    kafka_consumer_group_topic_consumption_properties: list[dict[str, Any]] | None | UnsetType = UNSET
+    kafka_consumer_group_topic_consumption_properties: (
+        list[dict[str, Any]] | None | UnsetType
+    ) = UNSET
     """List of consumption properties for Kafka topics, for this consumer group."""
 
     kafka_consumer_group_member_count: int | None | UnsetType = UNSET
@@ -111,6 +114,7 @@ class RelatedKafkaConsumerGroup(RelatedKafka):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "KafkaConsumerGroup"
+
 
 class RelatedAzureEventHub(RelatedKafka):
     """
@@ -128,6 +132,7 @@ class RelatedAzureEventHub(RelatedKafka):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AzureEventHub"
+
 
 class RelatedAzureEventHubConsumerGroup(RelatedKafka):
     """

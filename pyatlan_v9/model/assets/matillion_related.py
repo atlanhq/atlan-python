@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -43,6 +42,7 @@ class RelatedMatillion(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Matillion"
 
+
 class RelatedMatillionGroup(RelatedMatillion):
     """
     Related entity reference for MatillionGroup assets.
@@ -59,6 +59,7 @@ class RelatedMatillionGroup(RelatedMatillion):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MatillionGroup"
+
 
 class RelatedMatillionProject(RelatedMatillion):
     """
@@ -88,6 +89,7 @@ class RelatedMatillionProject(RelatedMatillion):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MatillionProject"
+
 
 class RelatedMatillionJob(RelatedMatillion):
     """
@@ -120,6 +122,7 @@ class RelatedMatillionJob(RelatedMatillion):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MatillionJob"
+
 
 class RelatedMatillionComponent(RelatedMatillion):
     """

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,16 +42,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .preset_related import RelatedPresetDashboard, RelatedPresetWorkspace
+from .preset_related import RelatedPresetDashboard
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class PresetWorkspace(Asset):
@@ -219,7 +222,9 @@ class PresetWorkspace(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -233,30 +238,6 @@ class PresetWorkspace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "PresetWorkspace"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"PresetWorkspace validation failed: {errors}")
-
-    def minimize(self) -> "PresetWorkspace":
-        self.validate()
-        return PresetWorkspace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedPresetWorkspace":
-        if self.guid is not UNSET:
-            return RelatedPresetWorkspace(guid=self.guid)
-        return RelatedPresetWorkspace(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -316,7 +297,9 @@ class PresetWorkspace(Asset):
         return _preset_workspace_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> PresetWorkspace:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> PresetWorkspace:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -337,6 +320,7 @@ class PresetWorkspace(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class PresetWorkspaceAttributes(AssetAttributes):
     """PresetWorkspace-specific attributes for nested API format."""
@@ -379,6 +363,7 @@ class PresetWorkspaceAttributes(AssetAttributes):
 
     preset_dashboard_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dashboard in which this asset exists."""
+
 
 class PresetWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     """PresetWorkspace-specific relationship attributes for nested API format."""
@@ -458,7 +443,9 @@ class PresetWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -470,13 +457,19 @@ class PresetWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class PresetWorkspaceNested(AssetNested):
     """PresetWorkspace in nested API format for high-performance serialization."""
 
     attributes: PresetWorkspaceAttributes | UnsetType = UNSET
     relationship_attributes: PresetWorkspaceRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: PresetWorkspaceRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: PresetWorkspaceRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        PresetWorkspaceRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        PresetWorkspaceRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -515,14 +508,21 @@ _PRESET_WORKSPACE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_preset_workspace_attrs(attrs: PresetWorkspaceAttributes, obj: PresetWorkspace) -> None:
+
+def _populate_preset_workspace_attrs(
+    attrs: PresetWorkspaceAttributes, obj: PresetWorkspace
+) -> None:
     """Populate PresetWorkspace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.preset_workspace_public_dashboards_allowed = obj.preset_workspace_public_dashboards_allowed
+    attrs.preset_workspace_public_dashboards_allowed = (
+        obj.preset_workspace_public_dashboards_allowed
+    )
     attrs.preset_workspace_cluster_id = obj.preset_workspace_cluster_id
     attrs.preset_workspace_deployment_id = obj.preset_workspace_deployment_id
     attrs.preset_workspace_hostname = obj.preset_workspace_hostname
-    attrs.preset_workspace_is_in_maintenance_mode = obj.preset_workspace_is_in_maintenance_mode
+    attrs.preset_workspace_is_in_maintenance_mode = (
+        obj.preset_workspace_is_in_maintenance_mode
+    )
     attrs.preset_workspace_region = obj.preset_workspace_region
     attrs.preset_workspace_status = obj.preset_workspace_status
     attrs.preset_workspace_dashboard_count = obj.preset_workspace_dashboard_count
@@ -532,14 +532,19 @@ def _populate_preset_workspace_attrs(attrs: PresetWorkspaceAttributes, obj: Pres
     attrs.preset_dashboard_id = obj.preset_dashboard_id
     attrs.preset_dashboard_qualified_name = obj.preset_dashboard_qualified_name
 
+
 def _extract_preset_workspace_attrs(attrs: PresetWorkspaceAttributes) -> dict:
     """Extract all PresetWorkspace attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["preset_workspace_public_dashboards_allowed"] = attrs.preset_workspace_public_dashboards_allowed
+    result["preset_workspace_public_dashboards_allowed"] = (
+        attrs.preset_workspace_public_dashboards_allowed
+    )
     result["preset_workspace_cluster_id"] = attrs.preset_workspace_cluster_id
     result["preset_workspace_deployment_id"] = attrs.preset_workspace_deployment_id
     result["preset_workspace_hostname"] = attrs.preset_workspace_hostname
-    result["preset_workspace_is_in_maintenance_mode"] = attrs.preset_workspace_is_in_maintenance_mode
+    result["preset_workspace_is_in_maintenance_mode"] = (
+        attrs.preset_workspace_is_in_maintenance_mode
+    )
     result["preset_workspace_region"] = attrs.preset_workspace_region
     result["preset_workspace_status"] = attrs.preset_workspace_status
     result["preset_workspace_dashboard_count"] = attrs.preset_workspace_dashboard_count
@@ -550,18 +555,23 @@ def _extract_preset_workspace_attrs(attrs: PresetWorkspaceAttributes) -> dict:
     result["preset_dashboard_qualified_name"] = attrs.preset_dashboard_qualified_name
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _preset_workspace_to_nested(preset_workspace: PresetWorkspace) -> PresetWorkspaceNested:
+def _preset_workspace_to_nested(
+    preset_workspace: PresetWorkspace,
+) -> PresetWorkspaceNested:
     """Convert flat PresetWorkspace to nested format."""
     attrs = PresetWorkspaceAttributes()
     _populate_preset_workspace_attrs(attrs, preset_workspace)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        preset_workspace, _PRESET_WORKSPACE_REL_FIELDS, PresetWorkspaceRelationshipAttributes
+        preset_workspace,
+        _PRESET_WORKSPACE_REL_FIELDS,
+        PresetWorkspaceRelationshipAttributes,
     )
     return PresetWorkspaceNested(
         guid=preset_workspace.guid,
@@ -589,16 +599,21 @@ def _preset_workspace_to_nested(preset_workspace: PresetWorkspace) -> PresetWork
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _preset_workspace_from_nested(nested: PresetWorkspaceNested) -> PresetWorkspace:
     """Convert nested format to flat PresetWorkspace."""
-    attrs = nested.attributes if nested.attributes is not UNSET else PresetWorkspaceAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else PresetWorkspaceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PRESET_WORKSPACE_REL_FIELDS,
-        PresetWorkspaceRelationshipAttributes
+        PresetWorkspaceRelationshipAttributes,
     )
     return PresetWorkspace(
         guid=nested.guid,
@@ -625,7 +640,10 @@ def _preset_workspace_from_nested(nested: PresetWorkspaceNested) -> PresetWorksp
         **merged_rels,
     )
 
-def _preset_workspace_to_nested_bytes(preset_workspace: PresetWorkspace, serde: Serde) -> bytes:
+
+def _preset_workspace_to_nested_bytes(
+    preset_workspace: PresetWorkspace, serde: Serde
+) -> bytes:
     """Convert flat PresetWorkspace to nested JSON bytes."""
     return serde.encode(_preset_workspace_to_nested(preset_workspace))
 
@@ -634,6 +652,7 @@ def _preset_workspace_from_nested_bytes(data: bytes, serde: Serde) -> PresetWork
     """Convert nested JSON bytes to flat PresetWorkspace."""
     nested = serde.decode(data, PresetWorkspaceNested)
     return _preset_workspace_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -646,19 +665,49 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-PresetWorkspace.PRESET_WORKSPACE_PUBLIC_DASHBOARDS_ALLOWED = BooleanField("presetWorkspacePublicDashboardsAllowed", "presetWorkspacePublicDashboardsAllowed")
-PresetWorkspace.PRESET_WORKSPACE_CLUSTER_ID = NumericField("presetWorkspaceClusterId", "presetWorkspaceClusterId")
-PresetWorkspace.PRESET_WORKSPACE_DEPLOYMENT_ID = NumericField("presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId")
-PresetWorkspace.PRESET_WORKSPACE_HOSTNAME = KeywordTextField("presetWorkspaceHostname", "presetWorkspaceHostname", "presetWorkspaceHostname.text")
-PresetWorkspace.PRESET_WORKSPACE_IS_IN_MAINTENANCE_MODE = BooleanField("presetWorkspaceIsInMaintenanceMode", "presetWorkspaceIsInMaintenanceMode")
-PresetWorkspace.PRESET_WORKSPACE_REGION = KeywordTextField("presetWorkspaceRegion", "presetWorkspaceRegion", "presetWorkspaceRegion.text")
-PresetWorkspace.PRESET_WORKSPACE_STATUS = KeywordField("presetWorkspaceStatus", "presetWorkspaceStatus")
-PresetWorkspace.PRESET_WORKSPACE_DASHBOARD_COUNT = NumericField("presetWorkspaceDashboardCount", "presetWorkspaceDashboardCount")
-PresetWorkspace.PRESET_WORKSPACE_DATASET_COUNT = NumericField("presetWorkspaceDatasetCount", "presetWorkspaceDatasetCount")
-PresetWorkspace.PRESET_WORKSPACE_ID = NumericField("presetWorkspaceId", "presetWorkspaceId")
-PresetWorkspace.PRESET_WORKSPACE_QUALIFIED_NAME = KeywordTextField("presetWorkspaceQualifiedName", "presetWorkspaceQualifiedName", "presetWorkspaceQualifiedName.text")
-PresetWorkspace.PRESET_DASHBOARD_ID = NumericField("presetDashboardId", "presetDashboardId")
-PresetWorkspace.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField("presetDashboardQualifiedName", "presetDashboardQualifiedName", "presetDashboardQualifiedName.text")
+PresetWorkspace.PRESET_WORKSPACE_PUBLIC_DASHBOARDS_ALLOWED = BooleanField(
+    "presetWorkspacePublicDashboardsAllowed", "presetWorkspacePublicDashboardsAllowed"
+)
+PresetWorkspace.PRESET_WORKSPACE_CLUSTER_ID = NumericField(
+    "presetWorkspaceClusterId", "presetWorkspaceClusterId"
+)
+PresetWorkspace.PRESET_WORKSPACE_DEPLOYMENT_ID = NumericField(
+    "presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId"
+)
+PresetWorkspace.PRESET_WORKSPACE_HOSTNAME = KeywordTextField(
+    "presetWorkspaceHostname", "presetWorkspaceHostname", "presetWorkspaceHostname.text"
+)
+PresetWorkspace.PRESET_WORKSPACE_IS_IN_MAINTENANCE_MODE = BooleanField(
+    "presetWorkspaceIsInMaintenanceMode", "presetWorkspaceIsInMaintenanceMode"
+)
+PresetWorkspace.PRESET_WORKSPACE_REGION = KeywordTextField(
+    "presetWorkspaceRegion", "presetWorkspaceRegion", "presetWorkspaceRegion.text"
+)
+PresetWorkspace.PRESET_WORKSPACE_STATUS = KeywordField(
+    "presetWorkspaceStatus", "presetWorkspaceStatus"
+)
+PresetWorkspace.PRESET_WORKSPACE_DASHBOARD_COUNT = NumericField(
+    "presetWorkspaceDashboardCount", "presetWorkspaceDashboardCount"
+)
+PresetWorkspace.PRESET_WORKSPACE_DATASET_COUNT = NumericField(
+    "presetWorkspaceDatasetCount", "presetWorkspaceDatasetCount"
+)
+PresetWorkspace.PRESET_WORKSPACE_ID = NumericField(
+    "presetWorkspaceId", "presetWorkspaceId"
+)
+PresetWorkspace.PRESET_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
+    "presetWorkspaceQualifiedName",
+    "presetWorkspaceQualifiedName",
+    "presetWorkspaceQualifiedName.text",
+)
+PresetWorkspace.PRESET_DASHBOARD_ID = NumericField(
+    "presetDashboardId", "presetDashboardId"
+)
+PresetWorkspace.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
+    "presetDashboardQualifiedName",
+    "presetDashboardQualifiedName",
+    "presetDashboardQualifiedName.text",
+)
 PresetWorkspace.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 PresetWorkspace.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 PresetWorkspace.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -667,7 +716,9 @@ PresetWorkspace.APPLICATION_FIELD = RelationField("applicationField")
 PresetWorkspace.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 PresetWorkspace.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 PresetWorkspace.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-PresetWorkspace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+PresetWorkspace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 PresetWorkspace.METRICS = RelationField("metrics")
 PresetWorkspace.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 PresetWorkspace.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

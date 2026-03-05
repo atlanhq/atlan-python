@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset

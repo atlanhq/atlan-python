@@ -44,7 +44,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -53,6 +56,7 @@ from .s3_related import RelatedS3Bucket, RelatedS3Object, RelatedS3Prefix
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class S3Prefix(Asset):
@@ -251,7 +255,9 @@ class S3Prefix(Asset):
     s3_objects: list[RelatedS3Object] | None | UnsetType = UNSET
     """S3 objects contained in this prefix."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -270,43 +276,7 @@ class S3Prefix(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.s3_bucket is UNSET:
-                errors.append("s3_bucket is required for creation")
-            if self.s3_bucket_name is UNSET:
-                errors.append("s3_bucket_name is required for creation")
-            if self.s3_bucket_qualified_name is UNSET:
-                errors.append("s3_bucket_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"S3Prefix validation failed: {errors}")
-
-    def minimize(self) -> "S3Prefix":
-        self.validate()
-        return S3Prefix(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedS3Prefix":
-        if self.guid is not UNSET:
-            return RelatedS3Prefix(guid=self.guid)
-        return RelatedS3Prefix(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -358,6 +328,7 @@ class S3Prefix(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class S3PrefixAttributes(AssetAttributes):
     """S3Prefix-specific attributes for nested API format."""
@@ -415,6 +386,7 @@ class S3PrefixAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     """S3Prefix-specific relationship attributes for nested API format."""
@@ -503,7 +475,9 @@ class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     s3_objects: list[RelatedS3Object] | None | UnsetType = UNSET
     """S3 objects contained in this prefix."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -515,6 +489,7 @@ class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class S3PrefixNested(AssetNested):
     """S3Prefix in nested API format for high-performance serialization."""
 
@@ -522,6 +497,7 @@ class S3PrefixNested(AssetNested):
     relationship_attributes: S3PrefixRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: S3PrefixRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: S3PrefixRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -563,6 +539,7 @@ _S3_PREFIX_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_s3_prefix_attrs(attrs: S3PrefixAttributes, obj: S3Prefix) -> None:
     """Populate S3Prefix-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -584,6 +561,7 @@ def _populate_s3_prefix_attrs(attrs: S3PrefixAttributes, obj: S3Prefix) -> None:
     attrs.aws_owner_id = obj.aws_owner_id
     attrs.aws_tags = obj.aws_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_s3_prefix_attrs(attrs: S3PrefixAttributes) -> dict:
     """Extract all S3Prefix attributes from the attrs struct into a flat dict."""
@@ -607,6 +585,7 @@ def _extract_s3_prefix_attrs(attrs: S3PrefixAttributes) -> dict:
     result["aws_tags"] = attrs.aws_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -647,16 +626,19 @@ def _s3_prefix_to_nested(s3_prefix: S3Prefix) -> S3PrefixNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _s3_prefix_from_nested(nested: S3PrefixNested) -> S3Prefix:
     """Convert nested format to flat S3Prefix."""
-    attrs = nested.attributes if nested.attributes is not UNSET else S3PrefixAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else S3PrefixAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _S3_PREFIX_REL_FIELDS,
-        S3PrefixRelationshipAttributes
+        S3PrefixRelationshipAttributes,
     )
     return S3Prefix(
         guid=nested.guid,
@@ -683,6 +665,7 @@ def _s3_prefix_from_nested(nested: S3PrefixNested) -> S3Prefix:
         **merged_rels,
     )
 
+
 def _s3_prefix_to_nested_bytes(s3_prefix: S3Prefix, serde: Serde) -> bytes:
     """Convert flat S3Prefix to nested JSON bytes."""
     return serde.encode(_s3_prefix_to_nested(s3_prefix))
@@ -692,6 +675,7 @@ def _s3_prefix_from_nested_bytes(data: bytes, serde: Serde) -> S3Prefix:
     """Convert nested JSON bytes to flat S3Prefix."""
     nested = serde.decode(data, S3PrefixNested)
     return _s3_prefix_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -704,12 +688,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 S3Prefix.S3_BUCKET_NAME = KeywordField("s3BucketName", "s3BucketName")
-S3Prefix.S3_BUCKET_QUALIFIED_NAME = KeywordField("s3BucketQualifiedName", "s3BucketQualifiedName")
+S3Prefix.S3_BUCKET_QUALIFIED_NAME = KeywordField(
+    "s3BucketQualifiedName", "s3BucketQualifiedName"
+)
 S3Prefix.S3_PREFIX_COUNT = NumericField("s3PrefixCount", "s3PrefixCount")
 S3Prefix.S3_OBJECT_COUNT = NumericField("s3ObjectCount", "s3ObjectCount")
 S3Prefix.S3_ETAG = KeywordTextField("s3ETag", "s3ETag", "s3ETag.text")
 S3Prefix.S3_ENCRYPTION = KeywordField("s3Encryption", "s3Encryption")
-S3Prefix.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField("s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName")
+S3Prefix.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField(
+    "s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName"
+)
 S3Prefix.S3_PREFIX_HIERARCHY = KeywordField("s3PrefixHierarchy", "s3PrefixHierarchy")
 S3Prefix.AWS_ARN = KeywordTextField("awsArn", "awsArn", "awsArn.text")
 S3Prefix.AWS_PARTITION = KeywordField("awsPartition", "awsPartition")
@@ -717,10 +705,14 @@ S3Prefix.AWS_SERVICE = KeywordField("awsService", "awsService")
 S3Prefix.AWS_REGION = KeywordField("awsRegion", "awsRegion")
 S3Prefix.AWS_ACCOUNT_ID = KeywordField("awsAccountId", "awsAccountId")
 S3Prefix.AWS_RESOURCE_ID = KeywordField("awsResourceId", "awsResourceId")
-S3Prefix.AWS_OWNER_NAME = KeywordTextField("awsOwnerName", "awsOwnerName", "awsOwnerName.text")
+S3Prefix.AWS_OWNER_NAME = KeywordTextField(
+    "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+)
 S3Prefix.AWS_OWNER_ID = KeywordField("awsOwnerId", "awsOwnerId")
 S3Prefix.AWS_TAGS = KeywordField("awsTags", "awsTags")
-S3Prefix.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+S3Prefix.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 S3Prefix.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 S3Prefix.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 S3Prefix.ANOMALO_CHECKS = RelationField("anomaloChecks")

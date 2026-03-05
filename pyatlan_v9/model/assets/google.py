@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,15 +37,17 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .cloud_related import RelatedGoogle
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Google(Asset):
@@ -159,7 +160,9 @@ class Google(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -167,30 +170,6 @@ class Google(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Google"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Google validation failed: {errors}")
-
-    def minimize(self) -> "Google":
-        self.validate()
-        return Google(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedGoogle":
-        if self.guid is not UNSET:
-            return RelatedGoogle(guid=self.guid)
-        return RelatedGoogle(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -243,6 +222,7 @@ class Google(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class GoogleAttributes(AssetAttributes):
     """Google-specific attributes for nested API format."""
 
@@ -272,6 +252,7 @@ class GoogleAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class GoogleRelationshipAttributes(AssetRelationshipAttributes):
     """Google-specific relationship attributes for nested API format."""
@@ -324,11 +305,14 @@ class GoogleRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class GoogleNested(AssetNested):
     """Google in nested API format for high-performance serialization."""
@@ -337,6 +321,7 @@ class GoogleNested(AssetNested):
     relationship_attributes: GoogleRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: GoogleRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: GoogleRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -364,6 +349,7 @@ _GOOGLE_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
+
 def _populate_google_attrs(attrs: GoogleAttributes, obj: Google) -> None:
     """Populate Google-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -376,6 +362,7 @@ def _populate_google_attrs(attrs: GoogleAttributes, obj: Google) -> None:
     attrs.google_labels = obj.google_labels
     attrs.google_tags = obj.google_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_google_attrs(attrs: GoogleAttributes) -> dict:
     """Extract all Google attributes from the attrs struct into a flat dict."""
@@ -390,6 +377,7 @@ def _extract_google_attrs(attrs: GoogleAttributes) -> dict:
     result["google_tags"] = attrs.google_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -430,6 +418,7 @@ def _google_to_nested(google: Google) -> GoogleNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _google_from_nested(nested: GoogleNested) -> Google:
     """Convert nested format to flat Google."""
     attrs = nested.attributes if nested.attributes is not UNSET else GoogleAttributes()
@@ -439,7 +428,7 @@ def _google_from_nested(nested: GoogleNested) -> Google:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _GOOGLE_REL_FIELDS,
-        GoogleRelationshipAttributes
+        GoogleRelationshipAttributes,
     )
     return Google(
         guid=nested.guid,
@@ -466,6 +455,7 @@ def _google_from_nested(nested: GoogleNested) -> Google:
         **merged_rels,
     )
 
+
 def _google_to_nested_bytes(google: Google, serde: Serde) -> bytes:
     """Convert flat Google to nested JSON bytes."""
     return serde.encode(_google_to_nested(google))
@@ -475,6 +465,7 @@ def _google_from_nested_bytes(data: bytes, serde: Serde) -> Google:
     """Convert nested JSON bytes to flat Google."""
     nested = serde.decode(data, GoogleNested)
     return _google_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -487,14 +478,20 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Google.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
-Google.GOOGLE_PROJECT_NAME = KeywordTextField("googleProjectName", "googleProjectName", "googleProjectName.text")
-Google.GOOGLE_PROJECT_ID = KeywordTextField("googleProjectId", "googleProjectId", "googleProjectId.text")
+Google.GOOGLE_PROJECT_NAME = KeywordTextField(
+    "googleProjectName", "googleProjectName", "googleProjectName.text"
+)
+Google.GOOGLE_PROJECT_ID = KeywordTextField(
+    "googleProjectId", "googleProjectId", "googleProjectId.text"
+)
 Google.CLOUD_PROJECT_NUMBER = NumericField("cloudProjectNumber", "cloudProjectNumber")
 Google.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
 Google.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
 Google.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
 Google.GOOGLE_TAGS = KeywordField("googleTags", "googleTags")
-Google.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+Google.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 Google.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Google.APPLICATION = RelationField("application")
 Google.APPLICATION_FIELD = RelationField("applicationField")

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .catalog_related import RelatedCatalog
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Catalog(Asset):
@@ -162,7 +163,9 @@ class Catalog(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class Catalog(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Catalog"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Catalog validation failed: {errors}")
-
-    def minimize(self) -> "Catalog":
-        self.validate()
-        return Catalog(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCatalog":
-        if self.guid is not UNSET:
-            return RelatedCatalog(guid=self.guid)
-        return RelatedCatalog(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class Catalog(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CatalogAttributes(AssetAttributes):
     """Catalog-specific attributes for nested API format."""
 
     pass
+
 
 class CatalogRelationshipAttributes(AssetRelationshipAttributes):
     """Catalog-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class CatalogRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,6 +327,7 @@ class CatalogRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CatalogNested(AssetNested):
     """Catalog in nested API format for high-performance serialization."""
 
@@ -351,6 +335,7 @@ class CatalogNested(AssetNested):
     relationship_attributes: CatalogRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: CatalogRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: CatalogRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +373,16 @@ _CATALOG_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_catalog_attrs(attrs: CatalogAttributes, obj: Catalog) -> None:
     """Populate Catalog-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_catalog_attrs(attrs: CatalogAttributes) -> dict:
     """Extract all Catalog attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,6 +423,7 @@ def _catalog_to_nested(catalog: Catalog) -> CatalogNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _catalog_from_nested(nested: CatalogNested) -> Catalog:
     """Convert nested format to flat Catalog."""
     attrs = nested.attributes if nested.attributes is not UNSET else CatalogAttributes()
@@ -444,7 +433,7 @@ def _catalog_from_nested(nested: CatalogNested) -> Catalog:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CATALOG_REL_FIELDS,
-        CatalogRelationshipAttributes
+        CatalogRelationshipAttributes,
     )
     return Catalog(
         guid=nested.guid,
@@ -471,6 +460,7 @@ def _catalog_from_nested(nested: CatalogNested) -> Catalog:
         **merged_rels,
     )
 
+
 def _catalog_to_nested_bytes(catalog: Catalog, serde: Serde) -> bytes:
     """Convert flat Catalog to nested JSON bytes."""
     return serde.encode(_catalog_to_nested(catalog))
@@ -480,6 +470,7 @@ def _catalog_from_nested_bytes(data: bytes, serde: Serde) -> Catalog:
     """Convert nested JSON bytes to flat Catalog."""
     nested = serde.decode(data, CatalogNested)
     return _catalog_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

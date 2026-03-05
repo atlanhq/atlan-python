@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -45,16 +44,24 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .anaplan_related import RelatedAnaplanLineItem, RelatedAnaplanModel, RelatedAnaplanModule, RelatedAnaplanView
+from .anaplan_related import (
+    RelatedAnaplanLineItem,
+    RelatedAnaplanModel,
+    RelatedAnaplanView,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AnaplanModule(Asset):
@@ -205,7 +212,9 @@ class AnaplanModule(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -227,44 +236,6 @@ class AnaplanModule(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.anaplan_model is UNSET:
-                errors.append("anaplan_model is required for creation")
-            if self.anaplan_model_name is UNSET:
-                errors.append("anaplan_model_name is required for creation")
-            if self.anaplan_model_qualified_name is UNSET:
-                errors.append("anaplan_model_qualified_name is required for creation")
-            if self.anaplan_workspace_name is UNSET:
-                errors.append("anaplan_workspace_name is required for creation")
-            if self.anaplan_workspace_qualified_name is UNSET:
-                errors.append("anaplan_workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"AnaplanModule validation failed: {errors}")
-
-    def minimize(self) -> "AnaplanModule":
-        self.validate()
-        return AnaplanModule(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAnaplanModule":
-        if self.guid is not UNSET:
-            return RelatedAnaplanModule(guid=self.guid)
-        return RelatedAnaplanModule(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -357,6 +328,7 @@ class AnaplanModule(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AnaplanModuleAttributes(AssetAttributes):
     """AnaplanModule-specific attributes for nested API format."""
 
@@ -380,6 +352,7 @@ class AnaplanModuleAttributes(AssetAttributes):
 
     anaplan_source_id: str | None | UnsetType = UNSET
     """Id/Guid of the Anaplan asset in the source system."""
+
 
 class AnaplanModuleRelationshipAttributes(AssetRelationshipAttributes):
     """AnaplanModule-specific relationship attributes for nested API format."""
@@ -465,7 +438,9 @@ class AnaplanModuleRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -477,13 +452,19 @@ class AnaplanModuleRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AnaplanModuleNested(AssetNested):
     """AnaplanModule in nested API format for high-performance serialization."""
 
     attributes: AnaplanModuleAttributes | UnsetType = UNSET
     relationship_attributes: AnaplanModuleRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AnaplanModuleRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AnaplanModuleRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: AnaplanModuleRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: AnaplanModuleRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -524,7 +505,10 @@ _ANAPLAN_MODULE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_anaplan_module_attrs(attrs: AnaplanModuleAttributes, obj: AnaplanModule) -> None:
+
+def _populate_anaplan_module_attrs(
+    attrs: AnaplanModuleAttributes, obj: AnaplanModule
+) -> None:
     """Populate AnaplanModule-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.anaplan_workspace_qualified_name = obj.anaplan_workspace_qualified_name
@@ -534,6 +518,7 @@ def _populate_anaplan_module_attrs(attrs: AnaplanModuleAttributes, obj: AnaplanM
     attrs.anaplan_module_qualified_name = obj.anaplan_module_qualified_name
     attrs.anaplan_module_name = obj.anaplan_module_name
     attrs.anaplan_source_id = obj.anaplan_source_id
+
 
 def _extract_anaplan_module_attrs(attrs: AnaplanModuleAttributes) -> dict:
     """Extract all AnaplanModule attributes from the attrs struct into a flat dict."""
@@ -546,6 +531,7 @@ def _extract_anaplan_module_attrs(attrs: AnaplanModuleAttributes) -> dict:
     result["anaplan_module_name"] = attrs.anaplan_module_name
     result["anaplan_source_id"] = attrs.anaplan_source_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -586,16 +572,21 @@ def _anaplan_module_to_nested(anaplan_module: AnaplanModule) -> AnaplanModuleNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _anaplan_module_from_nested(nested: AnaplanModuleNested) -> AnaplanModule:
     """Convert nested format to flat AnaplanModule."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AnaplanModuleAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AnaplanModuleAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ANAPLAN_MODULE_REL_FIELDS,
-        AnaplanModuleRelationshipAttributes
+        AnaplanModuleRelationshipAttributes,
     )
     return AnaplanModule(
         guid=nested.guid,
@@ -622,7 +613,10 @@ def _anaplan_module_from_nested(nested: AnaplanModuleNested) -> AnaplanModule:
         **merged_rels,
     )
 
-def _anaplan_module_to_nested_bytes(anaplan_module: AnaplanModule, serde: Serde) -> bytes:
+
+def _anaplan_module_to_nested_bytes(
+    anaplan_module: AnaplanModule, serde: Serde
+) -> bytes:
     """Convert flat AnaplanModule to nested JSON bytes."""
     return serde.encode(_anaplan_module_to_nested(anaplan_module))
 
@@ -632,6 +626,7 @@ def _anaplan_module_from_nested_bytes(data: bytes, serde: Serde) -> AnaplanModul
     nested = serde.decode(data, AnaplanModuleNested)
     return _anaplan_module_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -640,12 +635,22 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AnaplanModule.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField("anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName")
-AnaplanModule.ANAPLAN_WORKSPACE_NAME = KeywordField("anaplanWorkspaceName", "anaplanWorkspaceName")
-AnaplanModule.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField("anaplanModelQualifiedName", "anaplanModelQualifiedName")
+AnaplanModule.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField(
+    "anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName"
+)
+AnaplanModule.ANAPLAN_WORKSPACE_NAME = KeywordField(
+    "anaplanWorkspaceName", "anaplanWorkspaceName"
+)
+AnaplanModule.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField(
+    "anaplanModelQualifiedName", "anaplanModelQualifiedName"
+)
 AnaplanModule.ANAPLAN_MODEL_NAME = KeywordField("anaplanModelName", "anaplanModelName")
-AnaplanModule.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField("anaplanModuleQualifiedName", "anaplanModuleQualifiedName")
-AnaplanModule.ANAPLAN_MODULE_NAME = KeywordField("anaplanModuleName", "anaplanModuleName")
+AnaplanModule.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField(
+    "anaplanModuleQualifiedName", "anaplanModuleQualifiedName"
+)
+AnaplanModule.ANAPLAN_MODULE_NAME = KeywordField(
+    "anaplanModuleName", "anaplanModuleName"
+)
 AnaplanModule.ANAPLAN_SOURCE_ID = KeywordField("anaplanSourceId", "anaplanSourceId")
 AnaplanModule.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AnaplanModule.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

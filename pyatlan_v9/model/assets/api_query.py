@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,16 +42,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .api_related import RelatedAPIField, RelatedAPIQuery
+from .api_related import RelatedAPIField
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class APIQuery(Asset):
@@ -211,7 +214,9 @@ class APIQuery(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -225,30 +230,6 @@ class APIQuery(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "APIQuery"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"APIQuery validation failed: {errors}")
-
-    def minimize(self) -> "APIQuery":
-        self.validate()
-        return APIQuery(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAPIQuery":
-        if self.guid is not UNSET:
-            return RelatedAPIQuery(guid=self.guid)
-        return RelatedAPIQuery(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -361,6 +342,7 @@ class APIQuery(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class APIQueryAttributes(AssetAttributes):
     """APIQuery-specific attributes for nested API format."""
 
@@ -396,6 +378,7 @@ class APIQueryAttributes(AssetAttributes):
 
     api_object_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true."""
+
 
 class APIQueryRelationshipAttributes(AssetRelationshipAttributes):
     """APIQuery-specific relationship attributes for nested API format."""
@@ -475,7 +458,9 @@ class APIQueryRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -487,6 +472,7 @@ class APIQueryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class APIQueryNested(AssetNested):
     """APIQuery in nested API format for high-performance serialization."""
 
@@ -494,6 +480,7 @@ class APIQueryNested(AssetNested):
     relationship_attributes: APIQueryRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: APIQueryRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: APIQueryRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -532,6 +519,7 @@ _API_QUERY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_api_query_attrs(attrs: APIQueryAttributes, obj: APIQuery) -> None:
     """Populate APIQuery-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -546,6 +534,7 @@ def _populate_api_query_attrs(attrs: APIQueryAttributes, obj: APIQuery) -> None:
     attrs.api_is_auth_optional = obj.api_is_auth_optional
     attrs.api_is_object_reference = obj.api_is_object_reference
     attrs.api_object_qualified_name = obj.api_object_qualified_name
+
 
 def _extract_api_query_attrs(attrs: APIQueryAttributes) -> dict:
     """Extract all APIQuery attributes from the attrs struct into a flat dict."""
@@ -562,6 +551,7 @@ def _extract_api_query_attrs(attrs: APIQueryAttributes) -> dict:
     result["api_is_object_reference"] = attrs.api_is_object_reference
     result["api_object_qualified_name"] = attrs.api_object_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -602,16 +592,19 @@ def _api_query_to_nested(api_query: APIQuery) -> APIQueryNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _api_query_from_nested(nested: APIQueryNested) -> APIQuery:
     """Convert nested format to flat APIQuery."""
-    attrs = nested.attributes if nested.attributes is not UNSET else APIQueryAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else APIQueryAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _API_QUERY_REL_FIELDS,
-        APIQueryRelationshipAttributes
+        APIQueryRelationshipAttributes,
     )
     return APIQuery(
         guid=nested.guid,
@@ -638,6 +631,7 @@ def _api_query_from_nested(nested: APIQueryNested) -> APIQuery:
         **merged_rels,
     )
 
+
 def _api_query_to_nested_bytes(api_query: APIQuery, serde: Serde) -> bytes:
     """Convert flat APIQuery to nested JSON bytes."""
     return serde.encode(_api_query_to_nested(api_query))
@@ -647,6 +641,7 @@ def _api_query_from_nested_bytes(data: bytes, serde: Serde) -> APIQuery:
     """Convert nested JSON bytes to flat APIQuery."""
     nested = serde.decode(data, APIQueryNested)
     return _api_query_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -659,17 +654,29 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-APIQuery.API_INPUT_FIELD_COUNT = NumericField("apiInputFieldCount", "apiInputFieldCount")
-APIQuery.API_QUERY_OUTPUT_TYPE = KeywordField("apiQueryOutputType", "apiQueryOutputType")
-APIQuery.API_QUERY_OUTPUT_TYPE_SECONDARY = KeywordField("apiQueryOutputTypeSecondary", "apiQueryOutputTypeSecondary")
+APIQuery.API_INPUT_FIELD_COUNT = NumericField(
+    "apiInputFieldCount", "apiInputFieldCount"
+)
+APIQuery.API_QUERY_OUTPUT_TYPE = KeywordField(
+    "apiQueryOutputType", "apiQueryOutputType"
+)
+APIQuery.API_QUERY_OUTPUT_TYPE_SECONDARY = KeywordField(
+    "apiQueryOutputTypeSecondary", "apiQueryOutputTypeSecondary"
+)
 APIQuery.API_SPEC_TYPE = KeywordField("apiSpecType", "apiSpecType")
 APIQuery.API_SPEC_VERSION = KeywordField("apiSpecVersion", "apiSpecVersion")
 APIQuery.API_SPEC_NAME = KeywordField("apiSpecName", "apiSpecName")
-APIQuery.API_SPEC_QUALIFIED_NAME = KeywordTextField("apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text")
+APIQuery.API_SPEC_QUALIFIED_NAME = KeywordTextField(
+    "apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text"
+)
 APIQuery.API_EXTERNAL_DOCS = KeywordField("apiExternalDocs", "apiExternalDocs")
 APIQuery.API_IS_AUTH_OPTIONAL = BooleanField("apiIsAuthOptional", "apiIsAuthOptional")
-APIQuery.API_IS_OBJECT_REFERENCE = BooleanField("apiIsObjectReference", "apiIsObjectReference")
-APIQuery.API_OBJECT_QUALIFIED_NAME = KeywordField("apiObjectQualifiedName", "apiObjectQualifiedName")
+APIQuery.API_IS_OBJECT_REFERENCE = BooleanField(
+    "apiIsObjectReference", "apiIsObjectReference"
+)
+APIQuery.API_OBJECT_QUALIFIED_NAME = KeywordField(
+    "apiObjectQualifiedName", "apiObjectQualifiedName"
+)
 APIQuery.API_FIELDS = RelationField("apiFields")
 APIQuery.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 APIQuery.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

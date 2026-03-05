@@ -195,7 +195,7 @@ def test_process_attributes_generate_qualified_name_without_required_parameter_r
 ):
     """Test ProcessAttributes.generate_qualified_name validates required inputs."""
     with pytest.raises(ValueError, match=message):
-        Process.Attributes.generate_qualified_name(
+        Process.generate_qualified_name(
             name=name,
             connection_qualified_name=connection_qualified_name,
             process_id=process_id,
@@ -249,7 +249,7 @@ def test_process_attributes_generate_qualified_name(
     )
 
     assert (
-        Process.Attributes.generate_qualified_name(
+        Process.generate_qualified_name(
             name=name,
             connection_qualified_name=connection_qualified_name,
             process_id=process_id,

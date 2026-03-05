@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .api_related import RelatedAPI
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class API(Asset):
@@ -194,7 +195,9 @@ class API(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -208,30 +211,6 @@ class API(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "API"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"API validation failed: {errors}")
-
-    def minimize(self) -> "API":
-        self.validate()
-        return API(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAPI":
-        if self.guid is not UNSET:
-            return RelatedAPI(guid=self.guid)
-        return RelatedAPI(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -284,6 +263,7 @@ class API(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class APIAttributes(AssetAttributes):
     """API-specific attributes for nested API format."""
 
@@ -310,6 +290,7 @@ class APIAttributes(AssetAttributes):
 
     api_object_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true."""
+
 
 class APIRelationshipAttributes(AssetRelationshipAttributes):
     """API-specific relationship attributes for nested API format."""
@@ -386,7 +367,9 @@ class APIRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -398,6 +381,7 @@ class APIRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class APINested(AssetNested):
     """API in nested API format for high-performance serialization."""
 
@@ -405,6 +389,7 @@ class APINested(AssetNested):
     relationship_attributes: APIRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: APIRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: APIRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -442,6 +427,7 @@ _API_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_api_attrs(attrs: APIAttributes, obj: API) -> None:
     """Populate API-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -453,6 +439,7 @@ def _populate_api_attrs(attrs: APIAttributes, obj: API) -> None:
     attrs.api_is_auth_optional = obj.api_is_auth_optional
     attrs.api_is_object_reference = obj.api_is_object_reference
     attrs.api_object_qualified_name = obj.api_object_qualified_name
+
 
 def _extract_api_attrs(attrs: APIAttributes) -> dict:
     """Extract all API attributes from the attrs struct into a flat dict."""
@@ -466,6 +453,7 @@ def _extract_api_attrs(attrs: APIAttributes) -> dict:
     result["api_is_object_reference"] = attrs.api_is_object_reference
     result["api_object_qualified_name"] = attrs.api_object_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -506,6 +494,7 @@ def _api_to_nested(api: API) -> APINested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _api_from_nested(nested: APINested) -> API:
     """Convert nested format to flat API."""
     attrs = nested.attributes if nested.attributes is not UNSET else APIAttributes()
@@ -515,7 +504,7 @@ def _api_from_nested(nested: APINested) -> API:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _API_REL_FIELDS,
-        APIRelationshipAttributes
+        APIRelationshipAttributes,
     )
     return API(
         guid=nested.guid,
@@ -542,6 +531,7 @@ def _api_from_nested(nested: APINested) -> API:
         **merged_rels,
     )
 
+
 def _api_to_nested_bytes(api: API, serde: Serde) -> bytes:
     """Convert flat API to nested JSON bytes."""
     return serde.encode(_api_to_nested(api))
@@ -551,6 +541,7 @@ def _api_from_nested_bytes(data: bytes, serde: Serde) -> API:
     """Convert nested JSON bytes to flat API."""
     nested = serde.decode(data, APINested)
     return _api_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -565,11 +556,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 API.API_SPEC_TYPE = KeywordField("apiSpecType", "apiSpecType")
 API.API_SPEC_VERSION = KeywordField("apiSpecVersion", "apiSpecVersion")
 API.API_SPEC_NAME = KeywordField("apiSpecName", "apiSpecName")
-API.API_SPEC_QUALIFIED_NAME = KeywordTextField("apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text")
+API.API_SPEC_QUALIFIED_NAME = KeywordTextField(
+    "apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text"
+)
 API.API_EXTERNAL_DOCS = KeywordField("apiExternalDocs", "apiExternalDocs")
 API.API_IS_AUTH_OPTIONAL = BooleanField("apiIsAuthOptional", "apiIsAuthOptional")
-API.API_IS_OBJECT_REFERENCE = BooleanField("apiIsObjectReference", "apiIsObjectReference")
-API.API_OBJECT_QUALIFIED_NAME = KeywordField("apiObjectQualifiedName", "apiObjectQualifiedName")
+API.API_IS_OBJECT_REFERENCE = BooleanField(
+    "apiIsObjectReference", "apiIsObjectReference"
+)
+API.API_OBJECT_QUALIFIED_NAME = KeywordField(
+    "apiObjectQualifiedName", "apiObjectQualifiedName"
+)
 API.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 API.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 API.ANOMALO_CHECKS = RelationField("anomaloChecks")

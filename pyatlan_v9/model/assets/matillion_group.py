@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .matillion_related import RelatedMatillionGroup, RelatedMatillionProject
+from .matillion_related import RelatedMatillionProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MatillionGroup(Asset):
@@ -174,7 +177,9 @@ class MatillionGroup(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -188,30 +193,6 @@ class MatillionGroup(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MatillionGroup"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"MatillionGroup validation failed: {errors}")
-
-    def minimize(self) -> "MatillionGroup":
-        self.validate()
-        return MatillionGroup(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMatillionGroup":
-        if self.guid is not UNSET:
-            return RelatedMatillionGroup(guid=self.guid)
-        return RelatedMatillionGroup(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -264,6 +245,7 @@ class MatillionGroup(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MatillionGroupAttributes(AssetAttributes):
     """MatillionGroup-specific attributes for nested API format."""
 
@@ -272,6 +254,7 @@ class MatillionGroupAttributes(AssetAttributes):
 
     matillion_version: str | None | UnsetType = UNSET
     """Current point in time state of a project."""
+
 
 class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     """MatillionGroup-specific relationship attributes for nested API format."""
@@ -351,7 +334,9 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -363,13 +348,19 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MatillionGroupNested(AssetNested):
     """MatillionGroup in nested API format for high-performance serialization."""
 
     attributes: MatillionGroupAttributes | UnsetType = UNSET
     relationship_attributes: MatillionGroupRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MatillionGroupRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MatillionGroupRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: MatillionGroupRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: MatillionGroupRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -408,11 +399,15 @@ _MATILLION_GROUP_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_matillion_group_attrs(attrs: MatillionGroupAttributes, obj: MatillionGroup) -> None:
+
+def _populate_matillion_group_attrs(
+    attrs: MatillionGroupAttributes, obj: MatillionGroup
+) -> None:
     """Populate MatillionGroup-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.matillion_project_count = obj.matillion_project_count
     attrs.matillion_version = obj.matillion_version
+
 
 def _extract_matillion_group_attrs(attrs: MatillionGroupAttributes) -> dict:
     """Extract all MatillionGroup attributes from the attrs struct into a flat dict."""
@@ -420,6 +415,7 @@ def _extract_matillion_group_attrs(attrs: MatillionGroupAttributes) -> dict:
     result["matillion_project_count"] = attrs.matillion_project_count
     result["matillion_version"] = attrs.matillion_version
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -432,7 +428,9 @@ def _matillion_group_to_nested(matillion_group: MatillionGroup) -> MatillionGrou
     _populate_matillion_group_attrs(attrs, matillion_group)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        matillion_group, _MATILLION_GROUP_REL_FIELDS, MatillionGroupRelationshipAttributes
+        matillion_group,
+        _MATILLION_GROUP_REL_FIELDS,
+        MatillionGroupRelationshipAttributes,
     )
     return MatillionGroupNested(
         guid=matillion_group.guid,
@@ -460,16 +458,21 @@ def _matillion_group_to_nested(matillion_group: MatillionGroup) -> MatillionGrou
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _matillion_group_from_nested(nested: MatillionGroupNested) -> MatillionGroup:
     """Convert nested format to flat MatillionGroup."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MatillionGroupAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MatillionGroupAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MATILLION_GROUP_REL_FIELDS,
-        MatillionGroupRelationshipAttributes
+        MatillionGroupRelationshipAttributes,
     )
     return MatillionGroup(
         guid=nested.guid,
@@ -496,7 +499,10 @@ def _matillion_group_from_nested(nested: MatillionGroupNested) -> MatillionGroup
         **merged_rels,
     )
 
-def _matillion_group_to_nested_bytes(matillion_group: MatillionGroup, serde: Serde) -> bytes:
+
+def _matillion_group_to_nested_bytes(
+    matillion_group: MatillionGroup, serde: Serde
+) -> bytes:
     """Convert flat MatillionGroup to nested JSON bytes."""
     return serde.encode(_matillion_group_to_nested(matillion_group))
 
@@ -505,6 +511,7 @@ def _matillion_group_from_nested_bytes(data: bytes, serde: Serde) -> MatillionGr
     """Convert nested JSON bytes to flat MatillionGroup."""
     nested = serde.decode(data, MatillionGroupNested)
     return _matillion_group_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -515,7 +522,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MatillionGroup.MATILLION_PROJECT_COUNT = NumericField("matillionProjectCount", "matillionProjectCount")
+MatillionGroup.MATILLION_PROJECT_COUNT = NumericField(
+    "matillionProjectCount", "matillionProjectCount"
+)
 MatillionGroup.MATILLION_VERSION = KeywordField("matillionVersion", "matillionVersion")
 MatillionGroup.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MatillionGroup.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -525,7 +534,9 @@ MatillionGroup.APPLICATION_FIELD = RelationField("applicationField")
 MatillionGroup.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MatillionGroup.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MatillionGroup.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MatillionGroup.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MatillionGroup.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MatillionGroup.METRICS = RelationField("metrics")
 MatillionGroup.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MatillionGroup.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

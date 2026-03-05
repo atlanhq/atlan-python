@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .mode_related import RelatedModeChart, RelatedModeQuery, RelatedModeReport
+from .mode_related import RelatedModeChart, RelatedModeReport
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ModeQuery(Asset):
@@ -215,7 +218,9 @@ class ModeQuery(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -237,44 +242,6 @@ class ModeQuery(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.mode_report is UNSET:
-                errors.append("mode_report is required for creation")
-            if self.mode_report_name is UNSET:
-                errors.append("mode_report_name is required for creation")
-            if self.mode_report_qualified_name is UNSET:
-                errors.append("mode_report_qualified_name is required for creation")
-            if self.mode_workspace_name is UNSET:
-                errors.append("mode_workspace_name is required for creation")
-            if self.mode_workspace_qualified_name is UNSET:
-                errors.append("mode_workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"ModeQuery validation failed: {errors}")
-
-    def minimize(self) -> "ModeQuery":
-        self.validate()
-        return ModeQuery(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedModeQuery":
-        if self.guid is not UNSET:
-            return RelatedModeQuery(guid=self.guid)
-        return RelatedModeQuery(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -327,6 +294,7 @@ class ModeQuery(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ModeQueryAttributes(AssetAttributes):
     """ModeQuery-specific attributes for nested API format."""
 
@@ -362,6 +330,7 @@ class ModeQueryAttributes(AssetAttributes):
 
     mode_query_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the query for the Mode asset."""
+
 
 class ModeQueryRelationshipAttributes(AssetRelationshipAttributes):
     """ModeQuery-specific relationship attributes for nested API format."""
@@ -444,7 +413,9 @@ class ModeQueryRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -456,6 +427,7 @@ class ModeQueryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ModeQueryNested(AssetNested):
     """ModeQuery in nested API format for high-performance serialization."""
 
@@ -463,6 +435,7 @@ class ModeQueryNested(AssetNested):
     relationship_attributes: ModeQueryRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: ModeQueryRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: ModeQueryRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -502,6 +475,7 @@ _MODE_QUERY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_mode_query_attrs(attrs: ModeQueryAttributes, obj: ModeQuery) -> None:
     """Populate ModeQuery-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -516,6 +490,7 @@ def _populate_mode_query_attrs(attrs: ModeQueryAttributes, obj: ModeQuery) -> No
     attrs.mode_report_qualified_name = obj.mode_report_qualified_name
     attrs.mode_query_name = obj.mode_query_name
     attrs.mode_query_qualified_name = obj.mode_query_qualified_name
+
 
 def _extract_mode_query_attrs(attrs: ModeQueryAttributes) -> dict:
     """Extract all ModeQuery attributes from the attrs struct into a flat dict."""
@@ -532,6 +507,7 @@ def _extract_mode_query_attrs(attrs: ModeQueryAttributes) -> dict:
     result["mode_query_name"] = attrs.mode_query_name
     result["mode_query_qualified_name"] = attrs.mode_query_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -572,16 +548,19 @@ def _mode_query_to_nested(mode_query: ModeQuery) -> ModeQueryNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _mode_query_from_nested(nested: ModeQueryNested) -> ModeQuery:
     """Convert nested format to flat ModeQuery."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ModeQueryAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ModeQueryAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MODE_QUERY_REL_FIELDS,
-        ModeQueryRelationshipAttributes
+        ModeQueryRelationshipAttributes,
     )
     return ModeQuery(
         guid=nested.guid,
@@ -608,6 +587,7 @@ def _mode_query_from_nested(nested: ModeQueryNested) -> ModeQuery:
         **merged_rels,
     )
 
+
 def _mode_query_to_nested_bytes(mode_query: ModeQuery, serde: Serde) -> bytes:
     """Convert flat ModeQuery to nested JSON bytes."""
     return serde.encode(_mode_query_to_nested(mode_query))
@@ -617,6 +597,7 @@ def _mode_query_from_nested_bytes(data: bytes, serde: Serde) -> ModeQuery:
     """Convert nested JSON bytes to flat ModeQuery."""
     nested = serde.decode(data, ModeQueryNested)
     return _mode_query_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -629,16 +610,28 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 ModeQuery.MODE_RAW_QUERY = KeywordField("modeRawQuery", "modeRawQuery")
-ModeQuery.MODE_REPORT_IMPORT_COUNT = NumericField("modeReportImportCount", "modeReportImportCount")
+ModeQuery.MODE_REPORT_IMPORT_COUNT = NumericField(
+    "modeReportImportCount", "modeReportImportCount"
+)
 ModeQuery.MODE_ID = KeywordField("modeId", "modeId")
 ModeQuery.MODE_TOKEN = KeywordTextField("modeToken", "modeToken", "modeToken.text")
 ModeQuery.MODE_WORKSPACE_NAME = KeywordField("modeWorkspaceName", "modeWorkspaceName")
-ModeQuery.MODE_WORKSPACE_USERNAME = KeywordTextField("modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text")
-ModeQuery.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField("modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName.text")
+ModeQuery.MODE_WORKSPACE_USERNAME = KeywordTextField(
+    "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
+)
+ModeQuery.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName.text",
+)
 ModeQuery.MODE_REPORT_NAME = KeywordField("modeReportName", "modeReportName")
-ModeQuery.MODE_REPORT_QUALIFIED_NAME = KeywordTextField("modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text")
+ModeQuery.MODE_REPORT_QUALIFIED_NAME = KeywordTextField(
+    "modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text"
+)
 ModeQuery.MODE_QUERY_NAME = KeywordField("modeQueryName", "modeQueryName")
-ModeQuery.MODE_QUERY_QUALIFIED_NAME = KeywordTextField("modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text")
+ModeQuery.MODE_QUERY_QUALIFIED_NAME = KeywordTextField(
+    "modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text"
+)
 ModeQuery.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModeQuery.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModeQuery.ANOMALO_CHECKS = RelationField("anomaloChecks")

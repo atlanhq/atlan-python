@@ -39,6 +39,7 @@ class RelatedCosmosMongoDB(RelatedNoSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CosmosMongoDB"
 
+
 class RelatedCosmosMongoDBAccount(RelatedCosmosMongoDB):
     """
     Related entity reference for CosmosMongoDBAccount assets.
@@ -49,57 +50,96 @@ class RelatedCosmosMongoDBAccount(RelatedCosmosMongoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CosmosMongoDBAccount" so it serializes correctly
 
-    cosmos_mongo_db_account_instance_id: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountInstanceId")
+    cosmos_mongo_db_account_instance_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountInstanceId"
+    )
     """The unique identifier for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_database_count: int | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBDatabaseCount")
+    cosmos_mongo_db_database_count: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBDatabaseCount"
+    )
     """Number of databases in this Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_type: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountType")
+    cosmos_mongo_db_account_type: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountType"
+    )
     """The type of the Cosmos MongoDB account, such as RU or VCORE."""
 
-    cosmos_mongo_db_account_subscription_id: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountSubscriptionId")
+    cosmos_mongo_db_account_subscription_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountSubscriptionId"
+    )
     """The ID of the subscription to which the Cosmos MongoDB account belongs."""
 
-    cosmos_mongo_db_account_resource_group: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountResourceGroup")
+    cosmos_mongo_db_account_resource_group: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountResourceGroup"
+    )
     """The resource group that contains the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_document_endpoint: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint")
+    cosmos_mongo_db_account_document_endpoint: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint"
+    )
     """The Document Endpoint URL for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_mongo_endpoint: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountMongoEndpoint")
+    cosmos_mongo_db_account_mongo_endpoint: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountMongoEndpoint"
+    )
     """The MongoDB connection endpoint for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_public_network_access: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountPublicNetworkAccess")
+    cosmos_mongo_db_account_public_network_access: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountPublicNetworkAccess")
+    )
     """The status of public network access for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_automatic_failover: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableAutomaticFailover")
+    cosmos_mongo_db_account_enable_automatic_failover: bool | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableAutomaticFailover")
+    )
     """Indicates whether automatic failover is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_multiple_write_locations: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations")
+    cosmos_mongo_db_account_enable_multiple_write_locations: bool | None | UnsetType = (
+        msgspec.field(
+            default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations"
+        )
+    )
     """Indicates whether multiple write locations are enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_partition_key_monitor: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor")
+    cosmos_mongo_db_account_enable_partition_key_monitor: bool | None | UnsetType = (
+        msgspec.field(
+            default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor"
+        )
+    )
     """Indicates whether partition key monitoring is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_is_virtual_network_filter_enabled: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountIsVirtualNetworkFilterEnabled")
+    cosmos_mongo_db_account_is_virtual_network_filter_enabled: (
+        bool | None | UnsetType
+    ) = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountIsVirtualNetworkFilterEnabled"
+    )
     """Indicates whether the virtual network filter is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_consistency_policy: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy")
+    cosmos_mongo_db_account_consistency_policy: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy"
+    )
     """The consistency policy configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountLocations")
+    cosmos_mongo_db_account_locations: list[str] | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountLocations"
+    )
     """The locations where the Cosmos MongoDB account is available."""
 
-    cosmos_mongo_db_account_read_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountReadLocations")
+    cosmos_mongo_db_account_read_locations: list[str] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountReadLocations")
+    )
     """The read locations configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_write_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountWriteLocations")
+    cosmos_mongo_db_account_write_locations: list[str] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountWriteLocations")
+    )
     """The write locations configured for the Cosmos MongoDB account."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CosmosMongoDBAccount"
+
 
 class RelatedCosmosMongoDBDatabase(RelatedCosmosMongoDB):
     """
@@ -111,12 +151,15 @@ class RelatedCosmosMongoDBDatabase(RelatedCosmosMongoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CosmosMongoDBDatabase" so it serializes correctly
 
-    cosmos_mongo_db_account_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountQualifiedName")
+    cosmos_mongo_db_account_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountQualifiedName"
+    )
     """Unique name of the account in which this database exists."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CosmosMongoDBDatabase"
+
 
 class RelatedCosmosMongoDBCollection(RelatedCosmosMongoDB):
     """
@@ -128,7 +171,9 @@ class RelatedCosmosMongoDBCollection(RelatedCosmosMongoDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CosmosMongoDBCollection" so it serializes correctly
 
-    cosmos_mongo_db_database_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBDatabaseQualifiedName")
+    cosmos_mongo_db_database_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBDatabaseQualifiedName"
+    )
     """Unique name of the database in which this collection exists."""
 
     def __post_init__(self) -> None:

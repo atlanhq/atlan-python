@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .sigma_related import RelatedSigma
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Sigma(Asset):
@@ -186,7 +187,9 @@ class Sigma(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -200,30 +203,6 @@ class Sigma(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Sigma"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Sigma validation failed: {errors}")
-
-    def minimize(self) -> "Sigma":
-        self.validate()
-        return Sigma(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSigma":
-        if self.guid is not UNSET:
-            return RelatedSigma(guid=self.guid)
-        return RelatedSigma(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -276,6 +255,7 @@ class Sigma(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SigmaAttributes(AssetAttributes):
     """Sigma-specific attributes for nested API format."""
 
@@ -296,6 +276,7 @@ class SigmaAttributes(AssetAttributes):
 
     sigma_data_element_name: str | None | UnsetType = UNSET
     """Simple name of the data element in which this asset exists."""
+
 
 class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     """Sigma-specific relationship attributes for nested API format."""
@@ -372,7 +353,9 @@ class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -384,6 +367,7 @@ class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SigmaNested(AssetNested):
     """Sigma in nested API format for high-performance serialization."""
 
@@ -391,6 +375,7 @@ class SigmaNested(AssetNested):
     relationship_attributes: SigmaRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: SigmaRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: SigmaRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -428,6 +413,7 @@ _SIGMA_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_sigma_attrs(attrs: SigmaAttributes, obj: Sigma) -> None:
     """Populate Sigma-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -438,6 +424,7 @@ def _populate_sigma_attrs(attrs: SigmaAttributes, obj: Sigma) -> None:
     attrs.sigma_data_element_qualified_name = obj.sigma_data_element_qualified_name
     attrs.sigma_data_element_name = obj.sigma_data_element_name
 
+
 def _extract_sigma_attrs(attrs: SigmaAttributes) -> dict:
     """Extract all Sigma attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -445,9 +432,12 @@ def _extract_sigma_attrs(attrs: SigmaAttributes) -> dict:
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
     result["sigma_page_qualified_name"] = attrs.sigma_page_qualified_name
     result["sigma_page_name"] = attrs.sigma_page_name
-    result["sigma_data_element_qualified_name"] = attrs.sigma_data_element_qualified_name
+    result["sigma_data_element_qualified_name"] = (
+        attrs.sigma_data_element_qualified_name
+    )
     result["sigma_data_element_name"] = attrs.sigma_data_element_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -488,6 +478,7 @@ def _sigma_to_nested(sigma: Sigma) -> SigmaNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sigma_from_nested(nested: SigmaNested) -> Sigma:
     """Convert nested format to flat Sigma."""
     attrs = nested.attributes if nested.attributes is not UNSET else SigmaAttributes()
@@ -497,7 +488,7 @@ def _sigma_from_nested(nested: SigmaNested) -> Sigma:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SIGMA_REL_FIELDS,
-        SigmaRelationshipAttributes
+        SigmaRelationshipAttributes,
     )
     return Sigma(
         guid=nested.guid,
@@ -524,6 +515,7 @@ def _sigma_from_nested(nested: SigmaNested) -> Sigma:
         **merged_rels,
     )
 
+
 def _sigma_to_nested_bytes(sigma: Sigma, serde: Serde) -> bytes:
     """Convert flat Sigma to nested JSON bytes."""
     return serde.encode(_sigma_to_nested(sigma))
@@ -534,6 +526,7 @@ def _sigma_from_nested_bytes(data: bytes, serde: Serde) -> Sigma:
     nested = serde.decode(data, SigmaNested)
     return _sigma_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -543,12 +536,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Sigma.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField("sigmaWorkbookQualifiedName", "sigmaWorkbookQualifiedName", "sigmaWorkbookQualifiedName.text")
+Sigma.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField(
+    "sigmaWorkbookQualifiedName",
+    "sigmaWorkbookQualifiedName",
+    "sigmaWorkbookQualifiedName.text",
+)
 Sigma.SIGMA_WORKBOOK_NAME = KeywordField("sigmaWorkbookName", "sigmaWorkbookName")
-Sigma.SIGMA_PAGE_QUALIFIED_NAME = KeywordTextField("sigmaPageQualifiedName", "sigmaPageQualifiedName", "sigmaPageQualifiedName.text")
+Sigma.SIGMA_PAGE_QUALIFIED_NAME = KeywordTextField(
+    "sigmaPageQualifiedName", "sigmaPageQualifiedName", "sigmaPageQualifiedName.text"
+)
 Sigma.SIGMA_PAGE_NAME = KeywordField("sigmaPageName", "sigmaPageName")
-Sigma.SIGMA_DATA_ELEMENT_QUALIFIED_NAME = KeywordTextField("sigmaDataElementQualifiedName", "sigmaDataElementQualifiedName", "sigmaDataElementQualifiedName.text")
-Sigma.SIGMA_DATA_ELEMENT_NAME = KeywordField("sigmaDataElementName", "sigmaDataElementName")
+Sigma.SIGMA_DATA_ELEMENT_QUALIFIED_NAME = KeywordTextField(
+    "sigmaDataElementQualifiedName",
+    "sigmaDataElementQualifiedName",
+    "sigmaDataElementQualifiedName.text",
+)
+Sigma.SIGMA_DATA_ELEMENT_NAME = KeywordField(
+    "sigmaDataElementName", "sigmaDataElementName"
+)
 Sigma.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Sigma.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Sigma.ANOMALO_CHECKS = RelationField("anomaloChecks")

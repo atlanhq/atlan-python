@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cognite_related import RelatedCogniteAsset, RelatedCogniteTimeSeries
+from .cognite_related import RelatedCogniteAsset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CogniteTimeSeries(Asset):
@@ -167,7 +170,9 @@ class CogniteTimeSeries(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -186,39 +191,7 @@ class CogniteTimeSeries(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cognite_asset is UNSET:
-                errors.append("cognite_asset is required for creation")
-        if errors:
-            raise ValueError(f"CogniteTimeSeries validation failed: {errors}")
-
-    def minimize(self) -> "CogniteTimeSeries":
-        self.validate()
-        return CogniteTimeSeries(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCogniteTimeSeries":
-        if self.guid is not UNSET:
-            return RelatedCogniteTimeSeries(guid=self.guid)
-        return RelatedCogniteTimeSeries(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -249,7 +222,9 @@ class CogniteTimeSeries(Asset):
         return _cognite_time_series_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> CogniteTimeSeries:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> CogniteTimeSeries:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -271,10 +246,12 @@ class CogniteTimeSeries(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CogniteTimeSeriesAttributes(AssetAttributes):
     """CogniteTimeSeries-specific attributes for nested API format."""
 
     pass
+
 
 class CogniteTimeSeriesRelationshipAttributes(AssetRelationshipAttributes):
     """CogniteTimeSeries-specific relationship attributes for nested API format."""
@@ -354,7 +331,9 @@ class CogniteTimeSeriesRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -366,13 +345,19 @@ class CogniteTimeSeriesRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CogniteTimeSeriesNested(AssetNested):
     """CogniteTimeSeries in nested API format for high-performance serialization."""
 
     attributes: CogniteTimeSeriesAttributes | UnsetType = UNSET
     relationship_attributes: CogniteTimeSeriesRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CogniteTimeSeriesRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CogniteTimeSeriesRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        CogniteTimeSeriesRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        CogniteTimeSeriesRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -411,26 +396,35 @@ _COGNITE_TIME_SERIES_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognite_time_series_attrs(attrs: CogniteTimeSeriesAttributes, obj: CogniteTimeSeries) -> None:
+
+def _populate_cognite_time_series_attrs(
+    attrs: CogniteTimeSeriesAttributes, obj: CogniteTimeSeries
+) -> None:
     """Populate CogniteTimeSeries-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+
 
 def _extract_cognite_time_series_attrs(attrs: CogniteTimeSeriesAttributes) -> dict:
     """Extract all CogniteTimeSeries attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _cognite_time_series_to_nested(cognite_time_series: CogniteTimeSeries) -> CogniteTimeSeriesNested:
+def _cognite_time_series_to_nested(
+    cognite_time_series: CogniteTimeSeries,
+) -> CogniteTimeSeriesNested:
     """Convert flat CogniteTimeSeries to nested format."""
     attrs = CogniteTimeSeriesAttributes()
     _populate_cognite_time_series_attrs(attrs, cognite_time_series)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cognite_time_series, _COGNITE_TIME_SERIES_REL_FIELDS, CogniteTimeSeriesRelationshipAttributes
+        cognite_time_series,
+        _COGNITE_TIME_SERIES_REL_FIELDS,
+        CogniteTimeSeriesRelationshipAttributes,
     )
     return CogniteTimeSeriesNested(
         guid=cognite_time_series.guid,
@@ -458,16 +452,23 @@ def _cognite_time_series_to_nested(cognite_time_series: CogniteTimeSeries) -> Co
         remove_relationship_attributes=remove_rels,
     )
 
-def _cognite_time_series_from_nested(nested: CogniteTimeSeriesNested) -> CogniteTimeSeries:
+
+def _cognite_time_series_from_nested(
+    nested: CogniteTimeSeriesNested,
+) -> CogniteTimeSeries:
     """Convert nested format to flat CogniteTimeSeries."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CogniteTimeSeriesAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CogniteTimeSeriesAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNITE_TIME_SERIES_REL_FIELDS,
-        CogniteTimeSeriesRelationshipAttributes
+        CogniteTimeSeriesRelationshipAttributes,
     )
     return CogniteTimeSeries(
         guid=nested.guid,
@@ -494,15 +495,21 @@ def _cognite_time_series_from_nested(nested: CogniteTimeSeriesNested) -> Cognite
         **merged_rels,
     )
 
-def _cognite_time_series_to_nested_bytes(cognite_time_series: CogniteTimeSeries, serde: Serde) -> bytes:
+
+def _cognite_time_series_to_nested_bytes(
+    cognite_time_series: CogniteTimeSeries, serde: Serde
+) -> bytes:
     """Convert flat CogniteTimeSeries to nested JSON bytes."""
     return serde.encode(_cognite_time_series_to_nested(cognite_time_series))
 
 
-def _cognite_time_series_from_nested_bytes(data: bytes, serde: Serde) -> CogniteTimeSeries:
+def _cognite_time_series_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> CogniteTimeSeries:
     """Convert nested JSON bytes to flat CogniteTimeSeries."""
     nested = serde.decode(data, CogniteTimeSeriesNested)
     return _cognite_time_series_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -518,7 +525,9 @@ CogniteTimeSeries.COGNITE_ASSET = RelationField("cogniteAsset")
 CogniteTimeSeries.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CogniteTimeSeries.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CogniteTimeSeries.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-CogniteTimeSeries.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+CogniteTimeSeries.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 CogniteTimeSeries.METRICS = RelationField("metrics")
 CogniteTimeSeries.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CogniteTimeSeries.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

@@ -44,15 +44,19 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSQL
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .dbt_related import RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSource
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DbtTest(Asset):
@@ -131,10 +135,14 @@ class DbtTest(Asset):
     dbt_test_error: str | None | UnsetType = UNSET
     """Error message in the case of state being "error"."""
 
-    dbt_test_raw_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dbtTestRawSQL")
+    dbt_test_raw_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dbtTestRawSQL"
+    )
     """Raw SQL of the test."""
 
-    dbt_test_compiled_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dbtTestCompiledSQL")
+    dbt_test_compiled_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dbtTestCompiledSQL"
+    )
     """Compiled SQL of the test."""
 
     dbt_test_raw_code: str | None | UnsetType = UNSET
@@ -287,7 +295,9 @@ class DbtTest(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -301,30 +311,6 @@ class DbtTest(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DbtTest"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DbtTest validation failed: {errors}")
-
-    def minimize(self) -> "DbtTest":
-        self.validate()
-        return DbtTest(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbtTest":
-        if self.guid is not UNSET:
-            return RelatedDbtTest(guid=self.guid)
-        return RelatedDbtTest(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -377,6 +363,7 @@ class DbtTest(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DbtTestAttributes(AssetAttributes):
     """DbtTest-specific attributes for nested API format."""
 
@@ -389,10 +376,14 @@ class DbtTestAttributes(AssetAttributes):
     dbt_test_error: str | None | UnsetType = UNSET
     """Error message in the case of state being "error"."""
 
-    dbt_test_raw_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dbtTestRawSQL")
+    dbt_test_raw_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dbtTestRawSQL"
+    )
     """Raw SQL of the test."""
 
-    dbt_test_compiled_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="dbtTestCompiledSQL")
+    dbt_test_compiled_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dbtTestCompiledSQL"
+    )
     """Compiled SQL of the test."""
 
     dbt_test_raw_code: str | None | UnsetType = UNSET
@@ -460,6 +451,7 @@ class DbtTestAttributes(AssetAttributes):
 
     dbt_job_runs: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of latest dbt job runs across all environments."""
+
 
 class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     """DbtTest-specific relationship attributes for nested API format."""
@@ -548,7 +540,9 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -560,6 +554,7 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DbtTestNested(AssetNested):
     """DbtTest in nested API format for high-performance serialization."""
 
@@ -567,6 +562,7 @@ class DbtTestNested(AssetNested):
     relationship_attributes: DbtTestRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DbtTestRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DbtTestRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -608,6 +604,7 @@ _DBT_TEST_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_dbt_test_attrs(attrs: DbtTestAttributes, obj: DbtTest) -> None:
     """Populate DbtTest-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -638,6 +635,7 @@ def _populate_dbt_test_attrs(attrs: DbtTestAttributes, obj: DbtTest) -> None:
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+
 
 def _extract_dbt_test_attrs(attrs: DbtTestAttributes) -> dict:
     """Extract all DbtTest attributes from the attrs struct into a flat dict."""
@@ -670,6 +668,7 @@ def _extract_dbt_test_attrs(attrs: DbtTestAttributes) -> dict:
     result["dbt_semantic_layer_proxy_url"] = attrs.dbt_semantic_layer_proxy_url
     result["dbt_job_runs"] = attrs.dbt_job_runs
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -710,6 +709,7 @@ def _dbt_test_to_nested(dbt_test: DbtTest) -> DbtTestNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_test_from_nested(nested: DbtTestNested) -> DbtTest:
     """Convert nested format to flat DbtTest."""
     attrs = nested.attributes if nested.attributes is not UNSET else DbtTestAttributes()
@@ -719,7 +719,7 @@ def _dbt_test_from_nested(nested: DbtTestNested) -> DbtTest:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_TEST_REL_FIELDS,
-        DbtTestRelationshipAttributes
+        DbtTestRelationshipAttributes,
     )
     return DbtTest(
         guid=nested.guid,
@@ -746,6 +746,7 @@ def _dbt_test_from_nested(nested: DbtTestNested) -> DbtTest:
         **merged_rels,
     )
 
+
 def _dbt_test_to_nested_bytes(dbt_test: DbtTest, serde: Serde) -> bytes:
     """Convert flat DbtTest to nested JSON bytes."""
     return serde.encode(_dbt_test_to_nested(dbt_test))
@@ -755,6 +756,7 @@ def _dbt_test_from_nested_bytes(data: bytes, serde: Serde) -> DbtTest:
     """Convert nested JSON bytes to flat DbtTest."""
     nested = serde.decode(data, DbtTestNested)
     return _dbt_test_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -771,7 +773,9 @@ DbtTest.DBT_TEST_ERROR = KeywordField("dbtTestError", "dbtTestError")
 DbtTest.DBT_TEST_RAW_SQL = KeywordField("dbtTestRawSQL", "dbtTestRawSQL")
 DbtTest.DBT_TEST_COMPILED_SQL = KeywordField("dbtTestCompiledSQL", "dbtTestCompiledSQL")
 DbtTest.DBT_TEST_RAW_CODE = KeywordField("dbtTestRawCode", "dbtTestRawCode")
-DbtTest.DBT_TEST_COMPILED_CODE = KeywordField("dbtTestCompiledCode", "dbtTestCompiledCode")
+DbtTest.DBT_TEST_COMPILED_CODE = KeywordField(
+    "dbtTestCompiledCode", "dbtTestCompiledCode"
+)
 DbtTest.DBT_TEST_LANGUAGE = KeywordField("dbtTestLanguage", "dbtTestLanguage")
 DbtTest.DBT_ALIAS = KeywordField("dbtAlias", "dbtAlias")
 DbtTest.DBT_META = KeywordField("dbtMeta", "dbtMeta")
@@ -782,15 +786,25 @@ DbtTest.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtTest.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtTest.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtTest.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtTest.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+DbtTest.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 DbtTest.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtTest.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtTest.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
+DbtTest.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
 DbtTest.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtTest.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+DbtTest.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 DbtTest.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtTest.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-DbtTest.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+DbtTest.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+DbtTest.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 DbtTest.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtTest.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DbtTest.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

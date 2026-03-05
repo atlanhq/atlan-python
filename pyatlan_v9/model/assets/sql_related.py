@@ -93,7 +93,9 @@ class RelatedSQL(RelatedCatalog):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -102,6 +104,7 @@ class RelatedSQL(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SQL"
+
 
 class RelatedCalculationView(RelatedSQL):
     """
@@ -131,6 +134,7 @@ class RelatedCalculationView(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CalculationView"
+
 
 class RelatedColumn(RelatedSQL):
     """
@@ -350,6 +354,7 @@ class RelatedColumn(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Column"
 
+
 class RelatedDatabase(RelatedSQL):
     """
     Related entity reference for Database assets.
@@ -366,6 +371,7 @@ class RelatedDatabase(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Database"
+
 
 class RelatedFunction(RelatedSQL):
     """
@@ -423,6 +429,7 @@ class RelatedFunction(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Function"
 
+
 class RelatedMaterialisedView(RelatedSQL):
     """
     Related entity reference for MaterialisedView assets.
@@ -472,6 +479,7 @@ class RelatedMaterialisedView(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MaterialisedView"
+
 
 class RelatedProcedure(RelatedSQL):
     """
@@ -523,6 +531,7 @@ class RelatedProcedure(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Procedure"
 
+
 class RelatedQuery(RelatedSQL):
     """
     Related entity reference for Query assets.
@@ -573,6 +582,7 @@ class RelatedQuery(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Query"
 
+
 class RelatedSchema(RelatedSQL):
     """
     Related entity reference for Schema assets.
@@ -598,6 +608,7 @@ class RelatedSchema(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Schema"
+
 
 class RelatedTable(RelatedSQL):
     """
@@ -694,6 +705,7 @@ class RelatedTable(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Table"
 
+
 class RelatedTablePartition(RelatedSQL):
     """
     Related entity reference for TablePartition assets.
@@ -752,6 +764,7 @@ class RelatedTablePartition(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TablePartition"
+
 
 class RelatedView(RelatedSQL):
     """

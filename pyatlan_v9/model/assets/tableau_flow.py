@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .tableau_related import RelatedTableauFlow, RelatedTableauProject
+from .tableau_related import RelatedTableauProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class TableauFlow(Asset):
@@ -196,7 +199,9 @@ class TableauFlow(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -221,40 +226,6 @@ class TableauFlow(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.project is UNSET:
-                errors.append("project is required for creation")
-            if self.project_qualified_name is UNSET:
-                errors.append("project_qualified_name is required for creation")
-            if self.site_qualified_name is UNSET:
-                errors.append("site_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"TableauFlow validation failed: {errors}")
-
-    def minimize(self) -> "TableauFlow":
-        self.validate()
-        return TableauFlow(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTableauFlow":
-        if self.guid is not UNSET:
-            return RelatedTableauFlow(guid=self.guid)
-        return RelatedTableauFlow(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -307,6 +278,7 @@ class TableauFlow(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class TableauFlowAttributes(AssetAttributes):
     """TableauFlow-specific attributes for nested API format."""
 
@@ -333,6 +305,7 @@ class TableauFlowAttributes(AssetAttributes):
 
     tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
 
 class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     """TableauFlow-specific relationship attributes for nested API format."""
@@ -409,7 +382,9 @@ class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -424,13 +399,19 @@ class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     project: RelatedTableauProject | None | UnsetType = UNSET
     """Project in which this flow exists."""
 
+
 class TableauFlowNested(AssetNested):
     """TableauFlow in nested API format for high-performance serialization."""
 
     attributes: TableauFlowAttributes | UnsetType = UNSET
     relationship_attributes: TableauFlowRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: TableauFlowRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: TableauFlowRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: TableauFlowRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: TableauFlowRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -469,7 +450,10 @@ _TABLEAU_FLOW_REL_FIELDS: list[str] = [
     "project",
 ]
 
-def _populate_tableau_flow_attrs(attrs: TableauFlowAttributes, obj: TableauFlow) -> None:
+
+def _populate_tableau_flow_attrs(
+    attrs: TableauFlowAttributes, obj: TableauFlow
+) -> None:
     """Populate TableauFlow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.site_qualified_name = obj.site_qualified_name
@@ -479,7 +463,10 @@ def _populate_tableau_flow_attrs(attrs: TableauFlowAttributes, obj: TableauFlow)
     attrs.input_fields = obj.input_fields
     attrs.output_fields = obj.output_fields
     attrs.output_steps = obj.output_steps
-    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
+    attrs.tableau_project_hierarchy_qualified_names = (
+        obj.tableau_project_hierarchy_qualified_names
+    )
+
 
 def _extract_tableau_flow_attrs(attrs: TableauFlowAttributes) -> dict:
     """Extract all TableauFlow attributes from the attrs struct into a flat dict."""
@@ -491,8 +478,11 @@ def _extract_tableau_flow_attrs(attrs: TableauFlowAttributes) -> dict:
     result["input_fields"] = attrs.input_fields
     result["output_fields"] = attrs.output_fields
     result["output_steps"] = attrs.output_steps
-    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
+    result["tableau_project_hierarchy_qualified_names"] = (
+        attrs.tableau_project_hierarchy_qualified_names
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -533,16 +523,19 @@ def _tableau_flow_to_nested(tableau_flow: TableauFlow) -> TableauFlowNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _tableau_flow_from_nested(nested: TableauFlowNested) -> TableauFlow:
     """Convert nested format to flat TableauFlow."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TableauFlowAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else TableauFlowAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_FLOW_REL_FIELDS,
-        TableauFlowRelationshipAttributes
+        TableauFlowRelationshipAttributes,
     )
     return TableauFlow(
         guid=nested.guid,
@@ -569,6 +562,7 @@ def _tableau_flow_from_nested(nested: TableauFlowNested) -> TableauFlow:
         **merged_rels,
     )
 
+
 def _tableau_flow_to_nested_bytes(tableau_flow: TableauFlow, serde: Serde) -> bytes:
     """Convert flat TableauFlow to nested JSON bytes."""
     return serde.encode(_tableau_flow_to_nested(tableau_flow))
@@ -579,6 +573,7 @@ def _tableau_flow_from_nested_bytes(data: bytes, serde: Serde) -> TableauFlow:
     nested = serde.decode(data, TableauFlowNested)
     return _tableau_flow_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -588,13 +583,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 TableauFlow.SITE_QUALIFIED_NAME = KeywordField("siteQualifiedName", "siteQualifiedName")
-TableauFlow.PROJECT_QUALIFIED_NAME = KeywordField("projectQualifiedName", "projectQualifiedName")
-TableauFlow.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField("topLevelProjectQualifiedName", "topLevelProjectQualifiedName")
+TableauFlow.PROJECT_QUALIFIED_NAME = KeywordField(
+    "projectQualifiedName", "projectQualifiedName"
+)
+TableauFlow.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField(
+    "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+)
 TableauFlow.PROJECT_HIERARCHY = KeywordField("projectHierarchy", "projectHierarchy")
 TableauFlow.INPUT_FIELDS = KeywordField("inputFields", "inputFields")
 TableauFlow.OUTPUT_FIELDS = KeywordField("outputFields", "outputFields")
 TableauFlow.OUTPUT_STEPS = KeywordField("outputSteps", "outputSteps")
-TableauFlow.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
+TableauFlow.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
+    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
+)
 TableauFlow.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TableauFlow.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 TableauFlow.ANOMALO_CHECKS = RelationField("anomaloChecks")

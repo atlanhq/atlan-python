@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,24 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .adf_related import RelatedAdfActivity, RelatedAdfDataflow, RelatedAdfDataset, RelatedAdfLinkedservice, RelatedAdfPipeline
+from .adf_related import (
+    RelatedAdfActivity,
+    RelatedAdfDataflow,
+    RelatedAdfDataset,
+    RelatedAdfPipeline,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AdfLinkedservice(Asset):
@@ -246,7 +254,9 @@ class AdfLinkedservice(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -260,30 +270,6 @@ class AdfLinkedservice(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AdfLinkedservice"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"AdfLinkedservice validation failed: {errors}")
-
-    def minimize(self) -> "AdfLinkedservice":
-        self.validate()
-        return AdfLinkedservice(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAdfLinkedservice":
-        if self.guid is not UNSET:
-            return RelatedAdfLinkedservice(guid=self.guid)
-        return RelatedAdfLinkedservice(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -314,7 +300,9 @@ class AdfLinkedservice(Asset):
         return _adf_linkedservice_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AdfLinkedservice:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> AdfLinkedservice:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -335,6 +323,7 @@ class AdfLinkedservice(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class AdfLinkedserviceAttributes(AssetAttributes):
     """AdfLinkedservice-specific attributes for nested API format."""
@@ -389,6 +378,7 @@ class AdfLinkedserviceAttributes(AssetAttributes):
 
     adf_asset_folder_path: str | None | UnsetType = UNSET
     """Defines the folder path in which this ADF asset exists."""
+
 
 class AdfLinkedserviceRelationshipAttributes(AssetRelationshipAttributes):
     """AdfLinkedservice-specific relationship attributes for nested API format."""
@@ -477,7 +467,9 @@ class AdfLinkedserviceRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -489,13 +481,19 @@ class AdfLinkedserviceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AdfLinkedserviceNested(AssetNested):
     """AdfLinkedservice in nested API format for high-performance serialization."""
 
     attributes: AdfLinkedserviceAttributes | UnsetType = UNSET
     relationship_attributes: AdfLinkedserviceRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AdfLinkedserviceRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AdfLinkedserviceRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        AdfLinkedserviceRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        AdfLinkedserviceRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -537,7 +535,10 @@ _ADF_LINKEDSERVICE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_adf_linkedservice_attrs(attrs: AdfLinkedserviceAttributes, obj: AdfLinkedservice) -> None:
+
+def _populate_adf_linkedservice_attrs(
+    attrs: AdfLinkedserviceAttributes, obj: AdfLinkedservice
+) -> None:
     """Populate AdfLinkedservice-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.adf_linkedservice_type = obj.adf_linkedservice_type
@@ -558,6 +559,7 @@ def _populate_adf_linkedservice_attrs(attrs: AdfLinkedserviceAttributes, obj: Ad
     attrs.adf_factory_name = obj.adf_factory_name
     attrs.adf_asset_folder_path = obj.adf_asset_folder_path
 
+
 def _extract_adf_linkedservice_attrs(attrs: AdfLinkedserviceAttributes) -> dict:
     """Extract all AdfLinkedservice attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -567,10 +569,16 @@ def _extract_adf_linkedservice_attrs(attrs: AdfLinkedserviceAttributes) -> dict:
     result["adf_linkedservice_database_name"] = attrs.adf_linkedservice_database_name
     result["adf_linkedservice_version_above"] = attrs.adf_linkedservice_version_above
     result["adf_linkedservice_version"] = attrs.adf_linkedservice_version
-    result["adf_linkedservice_azure_cloud_type"] = attrs.adf_linkedservice_azure_cloud_type
-    result["adf_linkedservice_credential_type"] = attrs.adf_linkedservice_credential_type
+    result["adf_linkedservice_azure_cloud_type"] = (
+        attrs.adf_linkedservice_azure_cloud_type
+    )
+    result["adf_linkedservice_credential_type"] = (
+        attrs.adf_linkedservice_credential_type
+    )
     result["adf_linkedservice_tenant"] = attrs.adf_linkedservice_tenant
-    result["adf_linkedservice_domain_endpoint"] = attrs.adf_linkedservice_domain_endpoint
+    result["adf_linkedservice_domain_endpoint"] = (
+        attrs.adf_linkedservice_domain_endpoint
+    )
     result["adf_linkedservice_cluster_id"] = attrs.adf_linkedservice_cluster_id
     result["adf_linkedservice_resource_id"] = attrs.adf_linkedservice_resource_id
     result["adf_linkedservice_user_name"] = attrs.adf_linkedservice_user_name
@@ -580,18 +588,23 @@ def _extract_adf_linkedservice_attrs(attrs: AdfLinkedserviceAttributes) -> dict:
     result["adf_asset_folder_path"] = attrs.adf_asset_folder_path
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _adf_linkedservice_to_nested(adf_linkedservice: AdfLinkedservice) -> AdfLinkedserviceNested:
+def _adf_linkedservice_to_nested(
+    adf_linkedservice: AdfLinkedservice,
+) -> AdfLinkedserviceNested:
     """Convert flat AdfLinkedservice to nested format."""
     attrs = AdfLinkedserviceAttributes()
     _populate_adf_linkedservice_attrs(attrs, adf_linkedservice)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        adf_linkedservice, _ADF_LINKEDSERVICE_REL_FIELDS, AdfLinkedserviceRelationshipAttributes
+        adf_linkedservice,
+        _ADF_LINKEDSERVICE_REL_FIELDS,
+        AdfLinkedserviceRelationshipAttributes,
     )
     return AdfLinkedserviceNested(
         guid=adf_linkedservice.guid,
@@ -619,16 +632,21 @@ def _adf_linkedservice_to_nested(adf_linkedservice: AdfLinkedservice) -> AdfLink
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _adf_linkedservice_from_nested(nested: AdfLinkedserviceNested) -> AdfLinkedservice:
     """Convert nested format to flat AdfLinkedservice."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AdfLinkedserviceAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AdfLinkedserviceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADF_LINKEDSERVICE_REL_FIELDS,
-        AdfLinkedserviceRelationshipAttributes
+        AdfLinkedserviceRelationshipAttributes,
     )
     return AdfLinkedservice(
         guid=nested.guid,
@@ -655,7 +673,10 @@ def _adf_linkedservice_from_nested(nested: AdfLinkedserviceNested) -> AdfLinkeds
         **merged_rels,
     )
 
-def _adf_linkedservice_to_nested_bytes(adf_linkedservice: AdfLinkedservice, serde: Serde) -> bytes:
+
+def _adf_linkedservice_to_nested_bytes(
+    adf_linkedservice: AdfLinkedservice, serde: Serde
+) -> bytes:
     """Convert flat AdfLinkedservice to nested JSON bytes."""
     return serde.encode(_adf_linkedservice_to_nested(adf_linkedservice))
 
@@ -664,6 +685,7 @@ def _adf_linkedservice_from_nested_bytes(data: bytes, serde: Serde) -> AdfLinked
     """Convert nested JSON bytes to flat AdfLinkedservice."""
     nested = serde.decode(data, AdfLinkedserviceNested)
     return _adf_linkedservice_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -674,23 +696,55 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AdfLinkedservice.ADF_LINKEDSERVICE_TYPE = KeywordField("adfLinkedserviceType", "adfLinkedserviceType")
-AdfLinkedservice.ADF_LINKEDSERVICE_ANNOTATIONS = KeywordField("adfLinkedserviceAnnotations", "adfLinkedserviceAnnotations")
-AdfLinkedservice.ADF_LINKEDSERVICE_ACCOUNT_NAME = KeywordField("adfLinkedserviceAccountName", "adfLinkedserviceAccountName")
-AdfLinkedservice.ADF_LINKEDSERVICE_DATABASE_NAME = KeywordField("adfLinkedserviceDatabaseName", "adfLinkedserviceDatabaseName")
-AdfLinkedservice.ADF_LINKEDSERVICE_VERSION_ABOVE = BooleanField("adfLinkedserviceVersionAbove", "adfLinkedserviceVersionAbove")
-AdfLinkedservice.ADF_LINKEDSERVICE_VERSION = KeywordField("adfLinkedserviceVersion", "adfLinkedserviceVersion")
-AdfLinkedservice.ADF_LINKEDSERVICE_AZURE_CLOUD_TYPE = KeywordField("adfLinkedserviceAzureCloudType", "adfLinkedserviceAzureCloudType")
-AdfLinkedservice.ADF_LINKEDSERVICE_CREDENTIAL_TYPE = KeywordField("adfLinkedserviceCredentialType", "adfLinkedserviceCredentialType")
-AdfLinkedservice.ADF_LINKEDSERVICE_TENANT = KeywordField("adfLinkedserviceTenant", "adfLinkedserviceTenant")
-AdfLinkedservice.ADF_LINKEDSERVICE_DOMAIN_ENDPOINT = KeywordField("adfLinkedserviceDomainEndpoint", "adfLinkedserviceDomainEndpoint")
-AdfLinkedservice.ADF_LINKEDSERVICE_CLUSTER_ID = KeywordField("adfLinkedserviceClusterId", "adfLinkedserviceClusterId")
-AdfLinkedservice.ADF_LINKEDSERVICE_RESOURCE_ID = KeywordField("adfLinkedserviceResourceId", "adfLinkedserviceResourceId")
-AdfLinkedservice.ADF_LINKEDSERVICE_USER_NAME = KeywordField("adfLinkedserviceUserName", "adfLinkedserviceUserName")
-AdfLinkedservice.ADF_LINKEDSERVICE_WAREHOUSE_NAME = KeywordField("adfLinkedserviceWarehouseName", "adfLinkedserviceWarehouseName")
-AdfLinkedservice.ADF_LINKEDSERVICE_ROLE_NAME = KeywordField("adfLinkedserviceRoleName", "adfLinkedserviceRoleName")
+AdfLinkedservice.ADF_LINKEDSERVICE_TYPE = KeywordField(
+    "adfLinkedserviceType", "adfLinkedserviceType"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_ANNOTATIONS = KeywordField(
+    "adfLinkedserviceAnnotations", "adfLinkedserviceAnnotations"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_ACCOUNT_NAME = KeywordField(
+    "adfLinkedserviceAccountName", "adfLinkedserviceAccountName"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_DATABASE_NAME = KeywordField(
+    "adfLinkedserviceDatabaseName", "adfLinkedserviceDatabaseName"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_VERSION_ABOVE = BooleanField(
+    "adfLinkedserviceVersionAbove", "adfLinkedserviceVersionAbove"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_VERSION = KeywordField(
+    "adfLinkedserviceVersion", "adfLinkedserviceVersion"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_AZURE_CLOUD_TYPE = KeywordField(
+    "adfLinkedserviceAzureCloudType", "adfLinkedserviceAzureCloudType"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_CREDENTIAL_TYPE = KeywordField(
+    "adfLinkedserviceCredentialType", "adfLinkedserviceCredentialType"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_TENANT = KeywordField(
+    "adfLinkedserviceTenant", "adfLinkedserviceTenant"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_DOMAIN_ENDPOINT = KeywordField(
+    "adfLinkedserviceDomainEndpoint", "adfLinkedserviceDomainEndpoint"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_CLUSTER_ID = KeywordField(
+    "adfLinkedserviceClusterId", "adfLinkedserviceClusterId"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_RESOURCE_ID = KeywordField(
+    "adfLinkedserviceResourceId", "adfLinkedserviceResourceId"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_USER_NAME = KeywordField(
+    "adfLinkedserviceUserName", "adfLinkedserviceUserName"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_WAREHOUSE_NAME = KeywordField(
+    "adfLinkedserviceWarehouseName", "adfLinkedserviceWarehouseName"
+)
+AdfLinkedservice.ADF_LINKEDSERVICE_ROLE_NAME = KeywordField(
+    "adfLinkedserviceRoleName", "adfLinkedserviceRoleName"
+)
 AdfLinkedservice.ADF_FACTORY_NAME = KeywordField("adfFactoryName", "adfFactoryName")
-AdfLinkedservice.ADF_ASSET_FOLDER_PATH = KeywordField("adfAssetFolderPath", "adfAssetFolderPath")
+AdfLinkedservice.ADF_ASSET_FOLDER_PATH = KeywordField(
+    "adfAssetFolderPath", "adfAssetFolderPath"
+)
 AdfLinkedservice.ADF_ACTIVITIES = RelationField("adfActivities")
 AdfLinkedservice.ADF_DATAFLOWS = RelationField("adfDataflows")
 AdfLinkedservice.ADF_DATASETS = RelationField("adfDatasets")
@@ -703,7 +757,9 @@ AdfLinkedservice.APPLICATION_FIELD = RelationField("applicationField")
 AdfLinkedservice.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AdfLinkedservice.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AdfLinkedservice.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AdfLinkedservice.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+AdfLinkedservice.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 AdfLinkedservice.METRICS = RelationField("metrics")
 AdfLinkedservice.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AdfLinkedservice.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

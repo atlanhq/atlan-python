@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,15 +50,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sql_related import RelatedCalculationView, RelatedColumn, RelatedSchema
+from .sql_related import RelatedColumn, RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CalculationView(Asset):
@@ -186,7 +195,9 @@ class CalculationView(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -240,7 +251,9 @@ class CalculationView(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -288,7 +301,9 @@ class CalculationView(Asset):
     columns: list[RelatedColumn] | None | UnsetType = UNSET
     """Columns that exist within this sap calculate view."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -310,44 +325,6 @@ class CalculationView(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.atlan_schema is UNSET:
-                errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"CalculationView validation failed: {errors}")
-
-    def minimize(self) -> "CalculationView":
-        self.validate()
-        return CalculationView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCalculationView":
-        if self.guid is not UNSET:
-            return RelatedCalculationView(guid=self.guid)
-        return RelatedCalculationView(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -378,7 +355,9 @@ class CalculationView(Asset):
         return _calculation_view_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> CalculationView:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> CalculationView:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -399,6 +378,7 @@ class CalculationView(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class CalculationViewAttributes(AssetAttributes):
     """CalculationView-specific attributes for nested API format."""
@@ -466,11 +446,14 @@ class CalculationViewAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class CalculationViewRelationshipAttributes(AssetRelationshipAttributes):
     """CalculationView-specific relationship attributes for nested API format."""
@@ -523,7 +506,9 @@ class CalculationViewRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -571,7 +556,9 @@ class CalculationViewRelationshipAttributes(AssetRelationshipAttributes):
     columns: list[RelatedColumn] | None | UnsetType = UNSET
     """Columns that exist within this sap calculate view."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -583,13 +570,19 @@ class CalculationViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CalculationViewNested(AssetNested):
     """CalculationView in nested API format for high-performance serialization."""
 
     attributes: CalculationViewAttributes | UnsetType = UNSET
     relationship_attributes: CalculationViewRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CalculationViewRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CalculationViewRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        CalculationViewRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        CalculationViewRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -635,7 +628,10 @@ _CALCULATION_VIEW_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_calculation_view_attrs(attrs: CalculationViewAttributes, obj: CalculationView) -> None:
+
+def _populate_calculation_view_attrs(
+    attrs: CalculationViewAttributes, obj: CalculationView
+) -> None:
     """Populate CalculationView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.column_count = obj.column_count
@@ -662,6 +658,7 @@ def _populate_calculation_view_attrs(attrs: CalculationViewAttributes, obj: Calc
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_calculation_view_attrs(attrs: CalculationViewAttributes) -> dict:
     """Extract all CalculationView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -686,22 +683,29 @@ def _extract_calculation_view_attrs(attrs: CalculationViewAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _calculation_view_to_nested(calculation_view: CalculationView) -> CalculationViewNested:
+def _calculation_view_to_nested(
+    calculation_view: CalculationView,
+) -> CalculationViewNested:
     """Convert flat CalculationView to nested format."""
     attrs = CalculationViewAttributes()
     _populate_calculation_view_attrs(attrs, calculation_view)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        calculation_view, _CALCULATION_VIEW_REL_FIELDS, CalculationViewRelationshipAttributes
+        calculation_view,
+        _CALCULATION_VIEW_REL_FIELDS,
+        CalculationViewRelationshipAttributes,
     )
     return CalculationViewNested(
         guid=calculation_view.guid,
@@ -729,16 +733,21 @@ def _calculation_view_to_nested(calculation_view: CalculationView) -> Calculatio
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _calculation_view_from_nested(nested: CalculationViewNested) -> CalculationView:
     """Convert nested format to flat CalculationView."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CalculationViewAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CalculationViewAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CALCULATION_VIEW_REL_FIELDS,
-        CalculationViewRelationshipAttributes
+        CalculationViewRelationshipAttributes,
     )
     return CalculationView(
         guid=nested.guid,
@@ -765,7 +774,10 @@ def _calculation_view_from_nested(nested: CalculationViewNested) -> CalculationV
         **merged_rels,
     )
 
-def _calculation_view_to_nested_bytes(calculation_view: CalculationView, serde: Serde) -> bytes:
+
+def _calculation_view_to_nested_bytes(
+    calculation_view: CalculationView, serde: Serde
+) -> bytes:
     """Convert flat CalculationView to nested JSON bytes."""
     return serde.encode(_calculation_view_to_nested(calculation_view))
 
@@ -774,6 +786,7 @@ def _calculation_view_from_nested_bytes(data: bytes, serde: Serde) -> Calculatio
     """Convert nested JSON bytes to flat CalculationView."""
     nested = serde.decode(data, CalculationViewNested)
     return _calculation_view_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -793,20 +806,36 @@ CalculationView.SQL_PACKAGE_ID = KeywordField("sqlPackageId", "sqlPackageId")
 CalculationView.QUERY_COUNT = NumericField("queryCount", "queryCount")
 CalculationView.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 CalculationView.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-CalculationView.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+CalculationView.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 CalculationView.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-CalculationView.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+CalculationView.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 CalculationView.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-CalculationView.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+CalculationView.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 CalculationView.TABLE_NAME = KeywordField("tableName", "tableName")
-CalculationView.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+CalculationView.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 CalculationView.VIEW_NAME = KeywordField("viewName", "viewName")
-CalculationView.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-CalculationView.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-CalculationView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+CalculationView.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+CalculationView.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+CalculationView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 CalculationView.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 CalculationView.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-CalculationView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+CalculationView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 CalculationView.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 CalculationView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CalculationView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -816,7 +845,9 @@ CalculationView.APPLICATION_FIELD = RelationField("applicationField")
 CalculationView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CalculationView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CalculationView.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-CalculationView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+CalculationView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 CalculationView.METRICS = RelationField("metrics")
 CalculationView.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CalculationView.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

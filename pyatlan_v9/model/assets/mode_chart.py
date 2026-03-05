@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .mode_related import RelatedModeChart, RelatedModeQuery
+from .mode_related import RelatedModeQuery
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ModeChart(Asset):
@@ -207,7 +210,9 @@ class ModeChart(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -229,48 +234,6 @@ class ModeChart(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.mode_query is UNSET:
-                errors.append("mode_query is required for creation")
-            if self.mode_query_name is UNSET:
-                errors.append("mode_query_name is required for creation")
-            if self.mode_query_qualified_name is UNSET:
-                errors.append("mode_query_qualified_name is required for creation")
-            if self.mode_report_name is UNSET:
-                errors.append("mode_report_name is required for creation")
-            if self.mode_report_qualified_name is UNSET:
-                errors.append("mode_report_qualified_name is required for creation")
-            if self.mode_workspace_name is UNSET:
-                errors.append("mode_workspace_name is required for creation")
-            if self.mode_workspace_qualified_name is UNSET:
-                errors.append("mode_workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"ModeChart validation failed: {errors}")
-
-    def minimize(self) -> "ModeChart":
-        self.validate()
-        return ModeChart(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedModeChart":
-        if self.guid is not UNSET:
-            return RelatedModeChart(guid=self.guid)
-        return RelatedModeChart(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -323,6 +286,7 @@ class ModeChart(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ModeChartAttributes(AssetAttributes):
     """ModeChart-specific attributes for nested API format."""
 
@@ -355,6 +319,7 @@ class ModeChartAttributes(AssetAttributes):
 
     mode_query_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the query for the Mode asset."""
+
 
 class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     """ModeChart-specific relationship attributes for nested API format."""
@@ -434,7 +399,9 @@ class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -446,6 +413,7 @@ class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ModeChartNested(AssetNested):
     """ModeChart in nested API format for high-performance serialization."""
 
@@ -453,6 +421,7 @@ class ModeChartNested(AssetNested):
     relationship_attributes: ModeChartRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: ModeChartRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: ModeChartRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -491,6 +460,7 @@ _MODE_CHART_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_mode_chart_attrs(attrs: ModeChartAttributes, obj: ModeChart) -> None:
     """Populate ModeChart-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -504,6 +474,7 @@ def _populate_mode_chart_attrs(attrs: ModeChartAttributes, obj: ModeChart) -> No
     attrs.mode_report_qualified_name = obj.mode_report_qualified_name
     attrs.mode_query_name = obj.mode_query_name
     attrs.mode_query_qualified_name = obj.mode_query_qualified_name
+
 
 def _extract_mode_chart_attrs(attrs: ModeChartAttributes) -> dict:
     """Extract all ModeChart attributes from the attrs struct into a flat dict."""
@@ -519,6 +490,7 @@ def _extract_mode_chart_attrs(attrs: ModeChartAttributes) -> dict:
     result["mode_query_name"] = attrs.mode_query_name
     result["mode_query_qualified_name"] = attrs.mode_query_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -559,16 +531,19 @@ def _mode_chart_to_nested(mode_chart: ModeChart) -> ModeChartNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _mode_chart_from_nested(nested: ModeChartNested) -> ModeChart:
     """Convert nested format to flat ModeChart."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ModeChartAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ModeChartAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MODE_CHART_REL_FIELDS,
-        ModeChartRelationshipAttributes
+        ModeChartRelationshipAttributes,
     )
     return ModeChart(
         guid=nested.guid,
@@ -595,6 +570,7 @@ def _mode_chart_from_nested(nested: ModeChartNested) -> ModeChart:
         **merged_rels,
     )
 
+
 def _mode_chart_to_nested_bytes(mode_chart: ModeChart, serde: Serde) -> bytes:
     """Convert flat ModeChart to nested JSON bytes."""
     return serde.encode(_mode_chart_to_nested(mode_chart))
@@ -604,6 +580,7 @@ def _mode_chart_from_nested_bytes(data: bytes, serde: Serde) -> ModeChart:
     """Convert nested JSON bytes to flat ModeChart."""
     nested = serde.decode(data, ModeChartNested)
     return _mode_chart_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -618,12 +595,22 @@ ModeChart.MODE_CHART_TYPE = KeywordField("modeChartType", "modeChartType")
 ModeChart.MODE_ID = KeywordField("modeId", "modeId")
 ModeChart.MODE_TOKEN = KeywordTextField("modeToken", "modeToken", "modeToken.text")
 ModeChart.MODE_WORKSPACE_NAME = KeywordField("modeWorkspaceName", "modeWorkspaceName")
-ModeChart.MODE_WORKSPACE_USERNAME = KeywordTextField("modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text")
-ModeChart.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField("modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName.text")
+ModeChart.MODE_WORKSPACE_USERNAME = KeywordTextField(
+    "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
+)
+ModeChart.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName.text",
+)
 ModeChart.MODE_REPORT_NAME = KeywordField("modeReportName", "modeReportName")
-ModeChart.MODE_REPORT_QUALIFIED_NAME = KeywordTextField("modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text")
+ModeChart.MODE_REPORT_QUALIFIED_NAME = KeywordTextField(
+    "modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text"
+)
 ModeChart.MODE_QUERY_NAME = KeywordField("modeQueryName", "modeQueryName")
-ModeChart.MODE_QUERY_QUALIFIED_NAME = KeywordTextField("modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text")
+ModeChart.MODE_QUERY_QUALIFIED_NAME = KeywordTextField(
+    "modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text"
+)
 ModeChart.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModeChart.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModeChart.ANOMALO_CHECKS = RelationField("anomaloChecks")

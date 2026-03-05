@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .kafka_related import RelatedKafka
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Kafka(Asset):
@@ -162,7 +163,9 @@ class Kafka(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class Kafka(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Kafka"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Kafka validation failed: {errors}")
-
-    def minimize(self) -> "Kafka":
-        self.validate()
-        return Kafka(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedKafka":
-        if self.guid is not UNSET:
-            return RelatedKafka(guid=self.guid)
-        return RelatedKafka(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class Kafka(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class KafkaAttributes(AssetAttributes):
     """Kafka-specific attributes for nested API format."""
 
     pass
+
 
 class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     """Kafka-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,6 +327,7 @@ class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class KafkaNested(AssetNested):
     """Kafka in nested API format for high-performance serialization."""
 
@@ -351,6 +335,7 @@ class KafkaNested(AssetNested):
     relationship_attributes: KafkaRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: KafkaRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: KafkaRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +373,16 @@ _KAFKA_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_kafka_attrs(attrs: KafkaAttributes, obj: Kafka) -> None:
     """Populate Kafka-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_kafka_attrs(attrs: KafkaAttributes) -> dict:
     """Extract all Kafka attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,6 +423,7 @@ def _kafka_to_nested(kafka: Kafka) -> KafkaNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _kafka_from_nested(nested: KafkaNested) -> Kafka:
     """Convert nested format to flat Kafka."""
     attrs = nested.attributes if nested.attributes is not UNSET else KafkaAttributes()
@@ -444,7 +433,7 @@ def _kafka_from_nested(nested: KafkaNested) -> Kafka:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _KAFKA_REL_FIELDS,
-        KafkaRelationshipAttributes
+        KafkaRelationshipAttributes,
     )
     return Kafka(
         guid=nested.guid,
@@ -471,6 +460,7 @@ def _kafka_from_nested(nested: KafkaNested) -> Kafka:
         **merged_rels,
     )
 
+
 def _kafka_to_nested_bytes(kafka: Kafka, serde: Serde) -> bytes:
     """Convert flat Kafka to nested JSON bytes."""
     return serde.encode(_kafka_to_nested(kafka))
@@ -480,6 +470,7 @@ def _kafka_from_nested_bytes(data: bytes, serde: Serde) -> Kafka:
     """Convert nested JSON bytes to flat Kafka."""
     nested = serde.decode(data, KafkaNested)
     return _kafka_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

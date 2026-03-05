@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -48,17 +53,19 @@ from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.utils import validate_required_fields
-from pyatlan_v9.model.assets import Collection
-from pyatlan_v9.model.assets import Folder
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sql_related import RelatedColumn, RelatedQuery, RelatedTable, RelatedView
+from .sql_related import RelatedColumn, RelatedTable, RelatedView
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Query(Asset):
@@ -221,7 +228,9 @@ class Query(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -275,7 +284,9 @@ class Query(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -329,7 +340,9 @@ class Query(Asset):
     columns: list[RelatedColumn] | None | UnsetType = UNSET
     """Columns this query accesses."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -348,39 +361,7 @@ class Query(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.parent is UNSET:
-                errors.append("parent is required for creation")
-        if errors:
-            raise ValueError(f"Query validation failed: {errors}")
-
-    def minimize(self) -> "Query":
-        self.validate()
-        return Query(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQuery":
-        if self.guid is not UNSET:
-            return RelatedQuery(guid=self.guid)
-        return RelatedQuery(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     @classmethod
     def creator(
@@ -390,8 +371,6 @@ class Query(Asset):
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Query":
-        from pyatlan.utils import validate_required_fields
-
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):
             raise ValueError(
@@ -436,8 +415,6 @@ class Query(Asset):
         collection_qualified_name: str,
         parent_qualified_name: str,
     ) -> "Query":
-        from pyatlan.utils import validate_required_fields
-
         validate_required_fields(
             ["name", "collection_qualified_name", "parent_qualified_name"],
             [name, collection_qualified_name, parent_qualified_name],
@@ -462,8 +439,6 @@ class Query(Asset):
     def with_raw_query(self, schema_qualified_name: str, query: str):
         from base64 import b64encode
         from json import dumps
-
-        from pyatlan.model.enums import AtlanConnectorType
 
         _DEFAULT_VARIABLE_SCHEMA = dumps(
             {
@@ -539,6 +514,7 @@ class Query(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class QueryAttributes(AssetAttributes):
     """Query-specific attributes for nested API format."""
@@ -627,11 +603,14 @@ class QueryAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class QueryRelationshipAttributes(AssetRelationshipAttributes):
     """Query-specific relationship attributes for nested API format."""
@@ -684,7 +663,9 @@ class QueryRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -738,7 +719,9 @@ class QueryRelationshipAttributes(AssetRelationshipAttributes):
     columns: list[RelatedColumn] | None | UnsetType = UNSET
     """Columns this query accesses."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -750,6 +733,7 @@ class QueryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class QueryNested(AssetNested):
     """Query in nested API format for high-performance serialization."""
 
@@ -757,6 +741,7 @@ class QueryNested(AssetNested):
     relationship_attributes: QueryRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: QueryRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: QueryRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -804,6 +789,7 @@ _QUERY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_query_attrs(attrs: QueryAttributes, obj: Query) -> None:
     """Populate Query-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -838,6 +824,7 @@ def _populate_query_attrs(attrs: QueryAttributes, obj: Query) -> None:
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_query_attrs(attrs: QueryAttributes) -> dict:
     """Extract all Query attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -869,9 +856,12 @@ def _extract_query_attrs(attrs: QueryAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -912,6 +902,7 @@ def _query_to_nested(query: Query) -> QueryNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _query_from_nested(nested: QueryNested) -> Query:
     """Convert nested format to flat Query."""
     attrs = nested.attributes if nested.attributes is not UNSET else QueryAttributes()
@@ -921,7 +912,7 @@ def _query_from_nested(nested: QueryNested) -> Query:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QUERY_REL_FIELDS,
-        QueryRelationshipAttributes
+        QueryRelationshipAttributes,
     )
     return Query(
         guid=nested.guid,
@@ -948,6 +939,7 @@ def _query_from_nested(nested: QueryNested) -> Query:
         **merged_rels,
     )
 
+
 def _query_to_nested_bytes(query: Query, serde: Serde) -> bytes:
     """Convert flat Query to nested JSON bytes."""
     return serde.encode(_query_to_nested(query))
@@ -957,6 +949,7 @@ def _query_from_nested_bytes(data: bytes, serde: Serde) -> Query:
     """Convert nested JSON bytes to flat Query."""
     nested = serde.decode(data, QueryNested)
     return _query_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -972,21 +965,41 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 Query.RAW_QUERY = KeywordField("rawQuery", "rawQuery")
 Query.LONG_RAW_QUERY = KeywordField("longRawQuery", "longRawQuery")
 Query.RAW_QUERY_TEXT = KeywordField("rawQueryText", "rawQueryText")
-Query.DEFAULT_SCHEMA_QUALIFIED_NAME = KeywordTextField("defaultSchemaQualifiedName", "defaultSchemaQualifiedName", "defaultSchemaQualifiedName.text")
-Query.DEFAULT_DATABASE_QUALIFIED_NAME = KeywordTextField("defaultDatabaseQualifiedName", "defaultDatabaseQualifiedName", "defaultDatabaseQualifiedName.text")
-Query.VARIABLES_SCHEMA_BASE64 = KeywordField("variablesSchemaBase64", "variablesSchemaBase64")
+Query.DEFAULT_SCHEMA_QUALIFIED_NAME = KeywordTextField(
+    "defaultSchemaQualifiedName",
+    "defaultSchemaQualifiedName",
+    "defaultSchemaQualifiedName.text",
+)
+Query.DEFAULT_DATABASE_QUALIFIED_NAME = KeywordTextField(
+    "defaultDatabaseQualifiedName",
+    "defaultDatabaseQualifiedName",
+    "defaultDatabaseQualifiedName.text",
+)
+Query.VARIABLES_SCHEMA_BASE64 = KeywordField(
+    "variablesSchemaBase64", "variablesSchemaBase64"
+)
 Query.IS_PRIVATE = BooleanField("isPrivate", "isPrivate")
 Query.IS_SQL_SNIPPET = BooleanField("isSqlSnippet", "isSqlSnippet")
-Query.PARENT_QUALIFIED_NAME = KeywordTextField("parentQualifiedName", "parentQualifiedName", "parentQualifiedName.text")
-Query.COLLECTION_QUALIFIED_NAME = KeywordTextField("collectionQualifiedName", "collectionQualifiedName", "collectionQualifiedName.text")
+Query.PARENT_QUALIFIED_NAME = KeywordTextField(
+    "parentQualifiedName", "parentQualifiedName", "parentQualifiedName.text"
+)
+Query.COLLECTION_QUALIFIED_NAME = KeywordTextField(
+    "collectionQualifiedName", "collectionQualifiedName", "collectionQualifiedName.text"
+)
 Query.IS_VISUAL_QUERY = BooleanField("isVisualQuery", "isVisualQuery")
-Query.VISUAL_BUILDER_SCHEMA_BASE64 = KeywordField("visualBuilderSchemaBase64", "visualBuilderSchemaBase64")
+Query.VISUAL_BUILDER_SCHEMA_BASE64 = KeywordField(
+    "visualBuilderSchemaBase64", "visualBuilderSchemaBase64"
+)
 Query.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Query.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Query.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Query.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+Query.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 Query.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Query.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+Query.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 Query.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
 Query.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 Query.TABLE_NAME = KeywordField("tableName", "tableName")
@@ -994,10 +1007,14 @@ Query.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedN
 Query.VIEW_NAME = KeywordField("viewName", "viewName")
 Query.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
 Query.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-Query.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+Query.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 Query.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Query.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Query.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+Query.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 Query.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Query.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Query.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -42,15 +41,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .app_related import RelatedApp, RelatedApplication, RelatedApplicationField
+from .app_related import RelatedApplication, RelatedApplicationField
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class App(Asset):
@@ -165,7 +168,9 @@ class App(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -179,30 +184,6 @@ class App(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "App"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"App validation failed: {errors}")
-
-    def minimize(self) -> "App":
-        self.validate()
-        return App(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedApp":
-        if self.guid is not UNSET:
-            return RelatedApp(guid=self.guid)
-        return RelatedApp(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -255,11 +236,13 @@ class App(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AppAttributes(AssetAttributes):
     """App-specific attributes for nested API format."""
 
     app_id: str | None | UnsetType = UNSET
     """Unique identifier for the application asset from the source system."""
+
 
 class AppRelationshipAttributes(AssetRelationshipAttributes):
     """App-specific relationship attributes for nested API format."""
@@ -336,7 +319,9 @@ class AppRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -348,6 +333,7 @@ class AppRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AppNested(AssetNested):
     """App in nested API format for high-performance serialization."""
 
@@ -355,6 +341,7 @@ class AppNested(AssetNested):
     relationship_attributes: AppRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: AppRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: AppRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -392,16 +379,19 @@ _APP_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_app_attrs(attrs: AppAttributes, obj: App) -> None:
     """Populate App-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.app_id = obj.app_id
+
 
 def _extract_app_attrs(attrs: AppAttributes) -> dict:
     """Extract all App attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["app_id"] = attrs.app_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -442,6 +432,7 @@ def _app_to_nested(app: App) -> AppNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _app_from_nested(nested: AppNested) -> App:
     """Convert nested format to flat App."""
     attrs = nested.attributes if nested.attributes is not UNSET else AppAttributes()
@@ -451,7 +442,7 @@ def _app_from_nested(nested: AppNested) -> App:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _APP_REL_FIELDS,
-        AppRelationshipAttributes
+        AppRelationshipAttributes,
     )
     return App(
         guid=nested.guid,
@@ -478,6 +469,7 @@ def _app_from_nested(nested: AppNested) -> App:
         **merged_rels,
     )
 
+
 def _app_to_nested_bytes(app: App, serde: Serde) -> bytes:
     """Convert flat App to nested JSON bytes."""
     return serde.encode(_app_to_nested(app))
@@ -487,6 +479,7 @@ def _app_from_nested_bytes(data: bytes, serde: Serde) -> App:
     """Convert nested JSON bytes to flat App."""
     nested = serde.decode(data, AppNested)
     return _app_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

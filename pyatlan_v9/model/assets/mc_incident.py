@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,7 +43,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -53,6 +55,7 @@ from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MCIncident(Asset):
@@ -211,7 +214,9 @@ class MCIncident(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -230,39 +235,7 @@ class MCIncident(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.mc_monitor is UNSET:
-                errors.append("mc_monitor is required for creation")
-        if errors:
-            raise ValueError(f"MCIncident validation failed: {errors}")
-
-    def minimize(self) -> "MCIncident":
-        self.validate()
-        return MCIncident(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMCIncident":
-        if self.guid is not UNSET:
-            return RelatedMCIncident(guid=self.guid)
-        return RelatedMCIncident(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -315,6 +288,7 @@ class MCIncident(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MCIncidentAttributes(AssetAttributes):
     """MCIncident-specific attributes for nested API format."""
 
@@ -347,6 +321,7 @@ class MCIncidentAttributes(AssetAttributes):
 
     dq_is_part_of_contract: bool | None | UnsetType = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
+
 
 class MCIncidentRelationshipAttributes(AssetRelationshipAttributes):
     """MCIncident-specific relationship attributes for nested API format."""
@@ -429,7 +404,9 @@ class MCIncidentRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -441,6 +418,7 @@ class MCIncidentRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MCIncidentNested(AssetNested):
     """MCIncident in nested API format for high-performance serialization."""
 
@@ -448,6 +426,7 @@ class MCIncidentNested(AssetNested):
     relationship_attributes: MCIncidentRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: MCIncidentRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: MCIncidentRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -487,6 +466,7 @@ _MC_INCIDENT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_mc_incident_attrs(attrs: MCIncidentAttributes, obj: MCIncident) -> None:
     """Populate MCIncident-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -500,6 +480,7 @@ def _populate_mc_incident_attrs(attrs: MCIncidentAttributes, obj: MCIncident) ->
     attrs.mc_labels = obj.mc_labels
     attrs.mc_asset_qualified_names = obj.mc_asset_qualified_names
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
+
 
 def _extract_mc_incident_attrs(attrs: MCIncidentAttributes) -> dict:
     """Extract all MCIncident attributes from the attrs struct into a flat dict."""
@@ -515,6 +496,7 @@ def _extract_mc_incident_attrs(attrs: MCIncidentAttributes) -> dict:
     result["mc_asset_qualified_names"] = attrs.mc_asset_qualified_names
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -555,16 +537,19 @@ def _mc_incident_to_nested(mc_incident: MCIncident) -> MCIncidentNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _mc_incident_from_nested(nested: MCIncidentNested) -> MCIncident:
     """Convert nested format to flat MCIncident."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MCIncidentAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else MCIncidentAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MC_INCIDENT_REL_FIELDS,
-        MCIncidentRelationshipAttributes
+        MCIncidentRelationshipAttributes,
     )
     return MCIncident(
         guid=nested.guid,
@@ -591,6 +576,7 @@ def _mc_incident_from_nested(nested: MCIncidentNested) -> MCIncident:
         **merged_rels,
     )
 
+
 def _mc_incident_to_nested_bytes(mc_incident: MCIncident, serde: Serde) -> bytes:
     """Convert flat MCIncident to nested JSON bytes."""
     return serde.encode(_mc_incident_to_nested(mc_incident))
@@ -600,6 +586,7 @@ def _mc_incident_from_nested_bytes(data: bytes, serde: Serde) -> MCIncident:
     """Convert nested JSON bytes to flat MCIncident."""
     nested = serde.decode(data, MCIncidentNested)
     return _mc_incident_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -612,14 +599,26 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 MCIncident.MC_INCIDENT_ID = KeywordField("mcIncidentId", "mcIncidentId")
 MCIncident.MC_INCIDENT_TYPE = KeywordField("mcIncidentType", "mcIncidentType")
-MCIncident.MC_INCIDENT_SUB_TYPES = KeywordField("mcIncidentSubTypes", "mcIncidentSubTypes")
-MCIncident.MC_INCIDENT_SEVERITY = KeywordField("mcIncidentSeverity", "mcIncidentSeverity")
-MCIncident.MC_INCIDENT_PRIORITY = KeywordField("mcIncidentPriority", "mcIncidentPriority")
+MCIncident.MC_INCIDENT_SUB_TYPES = KeywordField(
+    "mcIncidentSubTypes", "mcIncidentSubTypes"
+)
+MCIncident.MC_INCIDENT_SEVERITY = KeywordField(
+    "mcIncidentSeverity", "mcIncidentSeverity"
+)
+MCIncident.MC_INCIDENT_PRIORITY = KeywordField(
+    "mcIncidentPriority", "mcIncidentPriority"
+)
 MCIncident.MC_INCIDENT_STATE = KeywordField("mcIncidentState", "mcIncidentState")
-MCIncident.MC_INCIDENT_WAREHOUSE = KeywordField("mcIncidentWarehouse", "mcIncidentWarehouse")
+MCIncident.MC_INCIDENT_WAREHOUSE = KeywordField(
+    "mcIncidentWarehouse", "mcIncidentWarehouse"
+)
 MCIncident.MC_LABELS = KeywordField("mcLabels", "mcLabels")
-MCIncident.MC_ASSET_QUALIFIED_NAMES = KeywordField("mcAssetQualifiedNames", "mcAssetQualifiedNames")
-MCIncident.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
+MCIncident.MC_ASSET_QUALIFIED_NAMES = KeywordField(
+    "mcAssetQualifiedNames", "mcAssetQualifiedNames"
+)
+MCIncident.DQ_IS_PART_OF_CONTRACT = BooleanField(
+    "dqIsPartOfContract", "dqIsPartOfContract"
+)
 MCIncident.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MCIncident.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MCIncident.ANOMALO_CHECKS = RelationField("anomaloChecks")

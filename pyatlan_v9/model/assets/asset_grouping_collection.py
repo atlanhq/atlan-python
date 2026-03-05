@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .asset_grouping_related import RelatedAssetGroupingCollection, RelatedAssetGroupingStrategy
+from .asset_grouping_related import RelatedAssetGroupingStrategy
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AssetGroupingCollection(Asset):
@@ -167,7 +170,9 @@ class AssetGroupingCollection(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -186,39 +191,7 @@ class AssetGroupingCollection(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.asset_grouping_strategy is UNSET:
-                errors.append("asset_grouping_strategy is required for creation")
-        if errors:
-            raise ValueError(f"AssetGroupingCollection validation failed: {errors}")
-
-    def minimize(self) -> "AssetGroupingCollection":
-        self.validate()
-        return AssetGroupingCollection(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAssetGroupingCollection":
-        if self.guid is not UNSET:
-            return RelatedAssetGroupingCollection(guid=self.guid)
-        return RelatedAssetGroupingCollection(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -249,7 +222,9 @@ class AssetGroupingCollection(Asset):
         return _asset_grouping_collection_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AssetGroupingCollection:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> AssetGroupingCollection:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -271,10 +246,12 @@ class AssetGroupingCollection(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AssetGroupingCollectionAttributes(AssetAttributes):
     """AssetGroupingCollection-specific attributes for nested API format."""
 
     pass
+
 
 class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes):
     """AssetGroupingCollection-specific relationship attributes for nested API format."""
@@ -354,7 +331,9 @@ class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes)
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -366,13 +345,21 @@ class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes)
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AssetGroupingCollectionNested(AssetNested):
     """AssetGroupingCollection in nested API format for high-performance serialization."""
 
     attributes: AssetGroupingCollectionAttributes | UnsetType = UNSET
-    relationship_attributes: AssetGroupingCollectionRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AssetGroupingCollectionRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AssetGroupingCollectionRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: (
+        AssetGroupingCollectionRelationshipAttributes | UnsetType
+    ) = UNSET
+    append_relationship_attributes: (
+        AssetGroupingCollectionRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        AssetGroupingCollectionRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -411,26 +398,37 @@ _ASSET_GROUPING_COLLECTION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_asset_grouping_collection_attrs(attrs: AssetGroupingCollectionAttributes, obj: AssetGroupingCollection) -> None:
+
+def _populate_asset_grouping_collection_attrs(
+    attrs: AssetGroupingCollectionAttributes, obj: AssetGroupingCollection
+) -> None:
     """Populate AssetGroupingCollection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
-def _extract_asset_grouping_collection_attrs(attrs: AssetGroupingCollectionAttributes) -> dict:
+
+def _extract_asset_grouping_collection_attrs(
+    attrs: AssetGroupingCollectionAttributes,
+) -> dict:
     """Extract all AssetGroupingCollection attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _asset_grouping_collection_to_nested(asset_grouping_collection: AssetGroupingCollection) -> AssetGroupingCollectionNested:
+def _asset_grouping_collection_to_nested(
+    asset_grouping_collection: AssetGroupingCollection,
+) -> AssetGroupingCollectionNested:
     """Convert flat AssetGroupingCollection to nested format."""
     attrs = AssetGroupingCollectionAttributes()
     _populate_asset_grouping_collection_attrs(attrs, asset_grouping_collection)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        asset_grouping_collection, _ASSET_GROUPING_COLLECTION_REL_FIELDS, AssetGroupingCollectionRelationshipAttributes
+        asset_grouping_collection,
+        _ASSET_GROUPING_COLLECTION_REL_FIELDS,
+        AssetGroupingCollectionRelationshipAttributes,
     )
     return AssetGroupingCollectionNested(
         guid=asset_grouping_collection.guid,
@@ -458,16 +456,23 @@ def _asset_grouping_collection_to_nested(asset_grouping_collection: AssetGroupin
         remove_relationship_attributes=remove_rels,
     )
 
-def _asset_grouping_collection_from_nested(nested: AssetGroupingCollectionNested) -> AssetGroupingCollection:
+
+def _asset_grouping_collection_from_nested(
+    nested: AssetGroupingCollectionNested,
+) -> AssetGroupingCollection:
     """Convert nested format to flat AssetGroupingCollection."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AssetGroupingCollectionAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AssetGroupingCollectionAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ASSET_GROUPING_COLLECTION_REL_FIELDS,
-        AssetGroupingCollectionRelationshipAttributes
+        AssetGroupingCollectionRelationshipAttributes,
     )
     return AssetGroupingCollection(
         guid=nested.guid,
@@ -494,15 +499,21 @@ def _asset_grouping_collection_from_nested(nested: AssetGroupingCollectionNested
         **merged_rels,
     )
 
-def _asset_grouping_collection_to_nested_bytes(asset_grouping_collection: AssetGroupingCollection, serde: Serde) -> bytes:
+
+def _asset_grouping_collection_to_nested_bytes(
+    asset_grouping_collection: AssetGroupingCollection, serde: Serde
+) -> bytes:
     """Convert flat AssetGroupingCollection to nested JSON bytes."""
     return serde.encode(_asset_grouping_collection_to_nested(asset_grouping_collection))
 
 
-def _asset_grouping_collection_from_nested_bytes(data: bytes, serde: Serde) -> AssetGroupingCollection:
+def _asset_grouping_collection_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> AssetGroupingCollection:
     """Convert nested JSON bytes to flat AssetGroupingCollection."""
     nested = serde.decode(data, AssetGroupingCollectionNested)
     return _asset_grouping_collection_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -510,18 +521,30 @@ def _asset_grouping_collection_from_nested_bytes(data: bytes, serde: Serde) -> A
 from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
 
 AssetGroupingCollection.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-AssetGroupingCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+AssetGroupingCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 AssetGroupingCollection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AssetGroupingCollection.APPLICATION = RelationField("application")
 AssetGroupingCollection.APPLICATION_FIELD = RelationField("applicationField")
 AssetGroupingCollection.ASSET_GROUPING_STRATEGY = RelationField("assetGroupingStrategy")
-AssetGroupingCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-AssetGroupingCollection.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-AssetGroupingCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AssetGroupingCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+AssetGroupingCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+AssetGroupingCollection.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+AssetGroupingCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+AssetGroupingCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 AssetGroupingCollection.METRICS = RelationField("metrics")
 AssetGroupingCollection.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-AssetGroupingCollection.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+AssetGroupingCollection.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 AssetGroupingCollection.MEANINGS = RelationField("meanings")
 AssetGroupingCollection.MC_MONITORS = RelationField("mcMonitors")
 AssetGroupingCollection.MC_INCIDENTS = RelationField("mcIncidents")
@@ -529,12 +552,18 @@ AssetGroupingCollection.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields
 AssetGroupingCollection.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 AssetGroupingCollection.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 AssetGroupingCollection.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-AssetGroupingCollection.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-AssetGroupingCollection.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+AssetGroupingCollection.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+AssetGroupingCollection.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 AssetGroupingCollection.FILES = RelationField("files")
 AssetGroupingCollection.LINKS = RelationField("links")
 AssetGroupingCollection.README = RelationField("readme")
-AssetGroupingCollection.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+AssetGroupingCollection.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 AssetGroupingCollection.SODA_CHECKS = RelationField("sodaChecks")
 AssetGroupingCollection.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 AssetGroupingCollection.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

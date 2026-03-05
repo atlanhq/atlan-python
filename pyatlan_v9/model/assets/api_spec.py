@@ -43,16 +43,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .api_related import RelatedAPIPath, RelatedAPISpec
+from .api_related import RelatedAPIPath
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class APISpec(Asset):
@@ -108,7 +112,9 @@ class APISpec(Asset):
 
     type_name: Union[str, UnsetType] = "APISpec"
 
-    api_spec_terms_of_service_url: str | None | UnsetType = msgspec.field(default=UNSET, name="apiSpecTermsOfServiceURL")
+    api_spec_terms_of_service_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="apiSpecTermsOfServiceURL"
+    )
     """URL to the terms of service for the API specification."""
 
     api_spec_contact_email: str | None | UnsetType = UNSET
@@ -117,13 +123,17 @@ class APISpec(Asset):
     api_spec_contact_name: str | None | UnsetType = UNSET
     """Name of the contact responsible for the API specification."""
 
-    api_spec_contact_url: str | None | UnsetType = msgspec.field(default=UNSET, name="apiSpecContactURL")
+    api_spec_contact_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="apiSpecContactURL"
+    )
     """URL pointing to the contact information."""
 
     api_spec_license_name: str | None | UnsetType = UNSET
     """Name of the license under which the API specification is available."""
 
-    api_spec_license_url: str | None | UnsetType = msgspec.field(default=UNSET, name="apiSpecLicenseURL")
+    api_spec_license_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="apiSpecLicenseURL"
+    )
     """URL to the license under which the API specification is available."""
 
     api_spec_contract_version: str | None | UnsetType = UNSET
@@ -231,7 +241,9 @@ class APISpec(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -245,30 +257,6 @@ class APISpec(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "APISpec"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"APISpec validation failed: {errors}")
-
-    def minimize(self) -> "APISpec":
-        self.validate()
-        return APISpec(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAPISpec":
-        if self.guid is not UNSET:
-            return RelatedAPISpec(guid=self.guid)
-        return RelatedAPISpec(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -347,10 +335,13 @@ class APISpec(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class APISpecAttributes(AssetAttributes):
     """APISpec-specific attributes for nested API format."""
 
-    api_spec_terms_of_service_url: str | None | UnsetType = msgspec.field(default=UNSET, name="apiSpecTermsOfServiceURL")
+    api_spec_terms_of_service_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="apiSpecTermsOfServiceURL"
+    )
     """URL to the terms of service for the API specification."""
 
     api_spec_contact_email: str | None | UnsetType = UNSET
@@ -359,13 +350,17 @@ class APISpecAttributes(AssetAttributes):
     api_spec_contact_name: str | None | UnsetType = UNSET
     """Name of the contact responsible for the API specification."""
 
-    api_spec_contact_url: str | None | UnsetType = msgspec.field(default=UNSET, name="apiSpecContactURL")
+    api_spec_contact_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="apiSpecContactURL"
+    )
     """URL pointing to the contact information."""
 
     api_spec_license_name: str | None | UnsetType = UNSET
     """Name of the license under which the API specification is available."""
 
-    api_spec_license_url: str | None | UnsetType = msgspec.field(default=UNSET, name="apiSpecLicenseURL")
+    api_spec_license_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="apiSpecLicenseURL"
+    )
     """URL to the license under which the API specification is available."""
 
     api_spec_contract_version: str | None | UnsetType = UNSET
@@ -397,6 +392,7 @@ class APISpecAttributes(AssetAttributes):
 
     api_object_qualified_name: str | None | UnsetType = UNSET
     """Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true."""
+
 
 class APISpecRelationshipAttributes(AssetRelationshipAttributes):
     """APISpec-specific relationship attributes for nested API format."""
@@ -476,7 +472,9 @@ class APISpecRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -488,6 +486,7 @@ class APISpecRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class APISpecNested(AssetNested):
     """APISpec in nested API format for high-performance serialization."""
 
@@ -495,6 +494,7 @@ class APISpecNested(AssetNested):
     relationship_attributes: APISpecRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: APISpecRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: APISpecRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -533,6 +533,7 @@ _API_SPEC_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_api_spec_attrs(attrs: APISpecAttributes, obj: APISpec) -> None:
     """Populate APISpec-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -552,6 +553,7 @@ def _populate_api_spec_attrs(attrs: APISpecAttributes, obj: APISpec) -> None:
     attrs.api_is_auth_optional = obj.api_is_auth_optional
     attrs.api_is_object_reference = obj.api_is_object_reference
     attrs.api_object_qualified_name = obj.api_object_qualified_name
+
 
 def _extract_api_spec_attrs(attrs: APISpecAttributes) -> dict:
     """Extract all APISpec attributes from the attrs struct into a flat dict."""
@@ -573,6 +575,7 @@ def _extract_api_spec_attrs(attrs: APISpecAttributes) -> dict:
     result["api_is_object_reference"] = attrs.api_is_object_reference
     result["api_object_qualified_name"] = attrs.api_object_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -613,6 +616,7 @@ def _api_spec_to_nested(api_spec: APISpec) -> APISpecNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _api_spec_from_nested(nested: APISpecNested) -> APISpec:
     """Convert nested format to flat APISpec."""
     attrs = nested.attributes if nested.attributes is not UNSET else APISpecAttributes()
@@ -622,7 +626,7 @@ def _api_spec_from_nested(nested: APISpecNested) -> APISpec:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _API_SPEC_REL_FIELDS,
-        APISpecRelationshipAttributes
+        APISpecRelationshipAttributes,
     )
     return APISpec(
         guid=nested.guid,
@@ -649,6 +653,7 @@ def _api_spec_from_nested(nested: APISpecNested) -> APISpec:
         **merged_rels,
     )
 
+
 def _api_spec_to_nested_bytes(api_spec: APISpec, serde: Serde) -> bytes:
     """Convert flat APISpec to nested JSON bytes."""
     return serde.encode(_api_spec_to_nested(api_spec))
@@ -658,6 +663,7 @@ def _api_spec_from_nested_bytes(data: bytes, serde: Serde) -> APISpec:
     """Convert nested JSON bytes to flat APISpec."""
     nested = serde.decode(data, APISpecNested)
     return _api_spec_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -669,22 +675,44 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-APISpec.API_SPEC_TERMS_OF_SERVICE_URL = KeywordTextField("apiSpecTermsOfServiceURL", "apiSpecTermsOfServiceURL", "apiSpecTermsOfServiceURL.text")
-APISpec.API_SPEC_CONTACT_EMAIL = KeywordTextField("apiSpecContactEmail", "apiSpecContactEmail", "apiSpecContactEmail.text")
-APISpec.API_SPEC_CONTACT_NAME = KeywordTextField("apiSpecContactName", "apiSpecContactName", "apiSpecContactName.text")
-APISpec.API_SPEC_CONTACT_URL = KeywordTextField("apiSpecContactURL", "apiSpecContactURL", "apiSpecContactURL.text")
+APISpec.API_SPEC_TERMS_OF_SERVICE_URL = KeywordTextField(
+    "apiSpecTermsOfServiceURL",
+    "apiSpecTermsOfServiceURL",
+    "apiSpecTermsOfServiceURL.text",
+)
+APISpec.API_SPEC_CONTACT_EMAIL = KeywordTextField(
+    "apiSpecContactEmail", "apiSpecContactEmail", "apiSpecContactEmail.text"
+)
+APISpec.API_SPEC_CONTACT_NAME = KeywordTextField(
+    "apiSpecContactName", "apiSpecContactName", "apiSpecContactName.text"
+)
+APISpec.API_SPEC_CONTACT_URL = KeywordTextField(
+    "apiSpecContactURL", "apiSpecContactURL", "apiSpecContactURL.text"
+)
 APISpec.API_SPEC_LICENSE_NAME = KeywordField("apiSpecLicenseName", "apiSpecLicenseName")
-APISpec.API_SPEC_LICENSE_URL = KeywordTextField("apiSpecLicenseURL", "apiSpecLicenseURL", "apiSpecLicenseURL.text")
-APISpec.API_SPEC_CONTRACT_VERSION = KeywordField("apiSpecContractVersion", "apiSpecContractVersion")
-APISpec.API_SPEC_SERVICE_ALIAS = KeywordTextField("apiSpecServiceAlias", "apiSpecServiceAlias", "apiSpecServiceAlias.text")
+APISpec.API_SPEC_LICENSE_URL = KeywordTextField(
+    "apiSpecLicenseURL", "apiSpecLicenseURL", "apiSpecLicenseURL.text"
+)
+APISpec.API_SPEC_CONTRACT_VERSION = KeywordField(
+    "apiSpecContractVersion", "apiSpecContractVersion"
+)
+APISpec.API_SPEC_SERVICE_ALIAS = KeywordTextField(
+    "apiSpecServiceAlias", "apiSpecServiceAlias", "apiSpecServiceAlias.text"
+)
 APISpec.API_SPEC_TYPE = KeywordField("apiSpecType", "apiSpecType")
 APISpec.API_SPEC_VERSION = KeywordField("apiSpecVersion", "apiSpecVersion")
 APISpec.API_SPEC_NAME = KeywordField("apiSpecName", "apiSpecName")
-APISpec.API_SPEC_QUALIFIED_NAME = KeywordTextField("apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text")
+APISpec.API_SPEC_QUALIFIED_NAME = KeywordTextField(
+    "apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text"
+)
 APISpec.API_EXTERNAL_DOCS = KeywordField("apiExternalDocs", "apiExternalDocs")
 APISpec.API_IS_AUTH_OPTIONAL = BooleanField("apiIsAuthOptional", "apiIsAuthOptional")
-APISpec.API_IS_OBJECT_REFERENCE = BooleanField("apiIsObjectReference", "apiIsObjectReference")
-APISpec.API_OBJECT_QUALIFIED_NAME = KeywordField("apiObjectQualifiedName", "apiObjectQualifiedName")
+APISpec.API_IS_OBJECT_REFERENCE = BooleanField(
+    "apiIsObjectReference", "apiIsObjectReference"
+)
+APISpec.API_OBJECT_QUALIFIED_NAME = KeywordField(
+    "apiObjectQualifiedName", "apiObjectQualifiedName"
+)
 APISpec.API_PATHS = RelationField("apiPaths")
 APISpec.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 APISpec.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

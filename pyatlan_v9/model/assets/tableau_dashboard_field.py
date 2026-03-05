@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .tableau_related import RelatedTableauDashboard, RelatedTableauDashboardField, RelatedTableauWorksheetField
+from .tableau_related import RelatedTableauDashboard, RelatedTableauWorksheetField
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class TableauDashboardField(Asset):
@@ -145,10 +148,14 @@ class TableauDashboardField(Asset):
     tableau_dashboard_field_bin_size: str | None | UnsetType = UNSET
     """Bin size of this field."""
 
-    tableau_dashboard_field_upstream_columns: list[dict[str, str]] | None | UnsetType = UNSET
+    tableau_dashboard_field_upstream_columns: (
+        list[dict[str, str]] | None | UnsetType
+    ) = UNSET
     """Columns upstream to this field."""
 
-    tableau_dashboard_field_upstream_fields: list[dict[str, str]] | None | UnsetType = UNSET
+    tableau_dashboard_field_upstream_fields: list[dict[str, str]] | None | UnsetType = (
+        UNSET
+    )
     """Fields upstream to this field."""
 
     tableau_dashboard_field_type: str | None | UnsetType = UNSET
@@ -229,7 +236,9 @@ class TableauDashboardField(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -257,42 +266,6 @@ class TableauDashboardField(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.tableau_dashboard is UNSET:
-                errors.append("tableau_dashboard is required for creation")
-            if self.tableau_dashboard_qualified_name is UNSET:
-                errors.append("tableau_dashboard_qualified_name is required for creation")
-            if self.tableau_project_qualified_name is UNSET:
-                errors.append("tableau_project_qualified_name is required for creation")
-            if self.tableau_site_qualified_name is UNSET:
-                errors.append("tableau_site_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"TableauDashboardField validation failed: {errors}")
-
-    def minimize(self) -> "TableauDashboardField":
-        self.validate()
-        return TableauDashboardField(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTableauDashboardField":
-        if self.guid is not UNSET:
-            return RelatedTableauDashboardField(guid=self.guid)
-        return RelatedTableauDashboardField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -323,7 +296,9 @@ class TableauDashboardField(Asset):
         return _tableau_dashboard_field_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> TableauDashboardField:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> TableauDashboardField:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -344,6 +319,7 @@ class TableauDashboardField(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class TableauDashboardFieldAttributes(AssetAttributes):
     """TableauDashboardField-specific attributes for nested API format."""
@@ -384,10 +360,14 @@ class TableauDashboardFieldAttributes(AssetAttributes):
     tableau_dashboard_field_bin_size: str | None | UnsetType = UNSET
     """Bin size of this field."""
 
-    tableau_dashboard_field_upstream_columns: list[dict[str, str]] | None | UnsetType = UNSET
+    tableau_dashboard_field_upstream_columns: (
+        list[dict[str, str]] | None | UnsetType
+    ) = UNSET
     """Columns upstream to this field."""
 
-    tableau_dashboard_field_upstream_fields: list[dict[str, str]] | None | UnsetType = UNSET
+    tableau_dashboard_field_upstream_fields: list[dict[str, str]] | None | UnsetType = (
+        UNSET
+    )
     """Fields upstream to this field."""
 
     tableau_dashboard_field_type: str | None | UnsetType = UNSET
@@ -395,6 +375,7 @@ class TableauDashboardFieldAttributes(AssetAttributes):
 
     tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
 
 class TableauDashboardFieldRelationshipAttributes(AssetRelationshipAttributes):
     """TableauDashboardField-specific relationship attributes for nested API format."""
@@ -471,7 +452,9 @@ class TableauDashboardFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -489,13 +472,21 @@ class TableauDashboardFieldRelationshipAttributes(AssetRelationshipAttributes):
     tableau_dashboard: RelatedTableauDashboard | None | UnsetType = UNSET
     """Dashboard in which this field exists."""
 
+
 class TableauDashboardFieldNested(AssetNested):
     """TableauDashboardField in nested API format for high-performance serialization."""
 
     attributes: TableauDashboardFieldAttributes | UnsetType = UNSET
-    relationship_attributes: TableauDashboardFieldRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: TableauDashboardFieldRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: TableauDashboardFieldRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: TableauDashboardFieldRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        TableauDashboardFieldRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        TableauDashboardFieldRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -535,59 +526,92 @@ _TABLEAU_DASHBOARD_FIELD_REL_FIELDS: list[str] = [
     "tableau_dashboard",
 ]
 
-def _populate_tableau_dashboard_field_attrs(attrs: TableauDashboardFieldAttributes, obj: TableauDashboardField) -> None:
+
+def _populate_tableau_dashboard_field_attrs(
+    attrs: TableauDashboardFieldAttributes, obj: TableauDashboardField
+) -> None:
     """Populate TableauDashboardField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.tableau_site_qualified_name = obj.tableau_site_qualified_name
     attrs.tableau_project_qualified_name = obj.tableau_project_qualified_name
-    attrs.tableau_top_level_project_qualified_name = obj.tableau_top_level_project_qualified_name
+    attrs.tableau_top_level_project_qualified_name = (
+        obj.tableau_top_level_project_qualified_name
+    )
     attrs.tableau_dashboard_qualified_name = obj.tableau_dashboard_qualified_name
     attrs.tableau_project_hierarchy = obj.tableau_project_hierarchy
     attrs.tableau_fully_qualified_name = obj.tableau_fully_qualified_name
-    attrs.tableau_dashboard_field_data_category = obj.tableau_dashboard_field_data_category
+    attrs.tableau_dashboard_field_data_category = (
+        obj.tableau_dashboard_field_data_category
+    )
     attrs.tableau_dashboard_field_role = obj.tableau_dashboard_field_role
     attrs.tableau_dashboard_field_data_type = obj.tableau_dashboard_field_data_type
     attrs.tableau_upstream_tables = obj.tableau_upstream_tables
     attrs.tableau_dashboard_field_formula = obj.tableau_dashboard_field_formula
     attrs.tableau_dashboard_field_bin_size = obj.tableau_dashboard_field_bin_size
-    attrs.tableau_dashboard_field_upstream_columns = obj.tableau_dashboard_field_upstream_columns
-    attrs.tableau_dashboard_field_upstream_fields = obj.tableau_dashboard_field_upstream_fields
+    attrs.tableau_dashboard_field_upstream_columns = (
+        obj.tableau_dashboard_field_upstream_columns
+    )
+    attrs.tableau_dashboard_field_upstream_fields = (
+        obj.tableau_dashboard_field_upstream_fields
+    )
     attrs.tableau_dashboard_field_type = obj.tableau_dashboard_field_type
-    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
+    attrs.tableau_project_hierarchy_qualified_names = (
+        obj.tableau_project_hierarchy_qualified_names
+    )
 
-def _extract_tableau_dashboard_field_attrs(attrs: TableauDashboardFieldAttributes) -> dict:
+
+def _extract_tableau_dashboard_field_attrs(
+    attrs: TableauDashboardFieldAttributes,
+) -> dict:
     """Extract all TableauDashboardField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["tableau_site_qualified_name"] = attrs.tableau_site_qualified_name
     result["tableau_project_qualified_name"] = attrs.tableau_project_qualified_name
-    result["tableau_top_level_project_qualified_name"] = attrs.tableau_top_level_project_qualified_name
+    result["tableau_top_level_project_qualified_name"] = (
+        attrs.tableau_top_level_project_qualified_name
+    )
     result["tableau_dashboard_qualified_name"] = attrs.tableau_dashboard_qualified_name
     result["tableau_project_hierarchy"] = attrs.tableau_project_hierarchy
     result["tableau_fully_qualified_name"] = attrs.tableau_fully_qualified_name
-    result["tableau_dashboard_field_data_category"] = attrs.tableau_dashboard_field_data_category
+    result["tableau_dashboard_field_data_category"] = (
+        attrs.tableau_dashboard_field_data_category
+    )
     result["tableau_dashboard_field_role"] = attrs.tableau_dashboard_field_role
-    result["tableau_dashboard_field_data_type"] = attrs.tableau_dashboard_field_data_type
+    result["tableau_dashboard_field_data_type"] = (
+        attrs.tableau_dashboard_field_data_type
+    )
     result["tableau_upstream_tables"] = attrs.tableau_upstream_tables
     result["tableau_dashboard_field_formula"] = attrs.tableau_dashboard_field_formula
     result["tableau_dashboard_field_bin_size"] = attrs.tableau_dashboard_field_bin_size
-    result["tableau_dashboard_field_upstream_columns"] = attrs.tableau_dashboard_field_upstream_columns
-    result["tableau_dashboard_field_upstream_fields"] = attrs.tableau_dashboard_field_upstream_fields
+    result["tableau_dashboard_field_upstream_columns"] = (
+        attrs.tableau_dashboard_field_upstream_columns
+    )
+    result["tableau_dashboard_field_upstream_fields"] = (
+        attrs.tableau_dashboard_field_upstream_fields
+    )
     result["tableau_dashboard_field_type"] = attrs.tableau_dashboard_field_type
-    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
+    result["tableau_project_hierarchy_qualified_names"] = (
+        attrs.tableau_project_hierarchy_qualified_names
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _tableau_dashboard_field_to_nested(tableau_dashboard_field: TableauDashboardField) -> TableauDashboardFieldNested:
+def _tableau_dashboard_field_to_nested(
+    tableau_dashboard_field: TableauDashboardField,
+) -> TableauDashboardFieldNested:
     """Convert flat TableauDashboardField to nested format."""
     attrs = TableauDashboardFieldAttributes()
     _populate_tableau_dashboard_field_attrs(attrs, tableau_dashboard_field)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        tableau_dashboard_field, _TABLEAU_DASHBOARD_FIELD_REL_FIELDS, TableauDashboardFieldRelationshipAttributes
+        tableau_dashboard_field,
+        _TABLEAU_DASHBOARD_FIELD_REL_FIELDS,
+        TableauDashboardFieldRelationshipAttributes,
     )
     return TableauDashboardFieldNested(
         guid=tableau_dashboard_field.guid,
@@ -615,16 +639,23 @@ def _tableau_dashboard_field_to_nested(tableau_dashboard_field: TableauDashboard
         remove_relationship_attributes=remove_rels,
     )
 
-def _tableau_dashboard_field_from_nested(nested: TableauDashboardFieldNested) -> TableauDashboardField:
+
+def _tableau_dashboard_field_from_nested(
+    nested: TableauDashboardFieldNested,
+) -> TableauDashboardField:
     """Convert nested format to flat TableauDashboardField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TableauDashboardFieldAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else TableauDashboardFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_DASHBOARD_FIELD_REL_FIELDS,
-        TableauDashboardFieldRelationshipAttributes
+        TableauDashboardFieldRelationshipAttributes,
     )
     return TableauDashboardField(
         guid=nested.guid,
@@ -651,15 +682,21 @@ def _tableau_dashboard_field_from_nested(nested: TableauDashboardFieldNested) ->
         **merged_rels,
     )
 
-def _tableau_dashboard_field_to_nested_bytes(tableau_dashboard_field: TableauDashboardField, serde: Serde) -> bytes:
+
+def _tableau_dashboard_field_to_nested_bytes(
+    tableau_dashboard_field: TableauDashboardField, serde: Serde
+) -> bytes:
     """Convert flat TableauDashboardField to nested JSON bytes."""
     return serde.encode(_tableau_dashboard_field_to_nested(tableau_dashboard_field))
 
 
-def _tableau_dashboard_field_from_nested_bytes(data: bytes, serde: Serde) -> TableauDashboardField:
+def _tableau_dashboard_field_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> TableauDashboardField:
     """Convert nested JSON bytes to flat TableauDashboardField."""
     nested = serde.decode(data, TableauDashboardFieldNested)
     return _tableau_dashboard_field_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -670,34 +707,78 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-TableauDashboardField.TABLEAU_SITE_QUALIFIED_NAME = KeywordField("tableauSiteQualifiedName", "tableauSiteQualifiedName")
-TableauDashboardField.TABLEAU_PROJECT_QUALIFIED_NAME = KeywordField("tableauProjectQualifiedName", "tableauProjectQualifiedName")
-TableauDashboardField.TABLEAU_TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField("tableauTopLevelProjectQualifiedName", "tableauTopLevelProjectQualifiedName")
-TableauDashboardField.TABLEAU_DASHBOARD_QUALIFIED_NAME = KeywordField("tableauDashboardQualifiedName", "tableauDashboardQualifiedName")
-TableauDashboardField.TABLEAU_PROJECT_HIERARCHY = KeywordField("tableauProjectHierarchy", "tableauProjectHierarchy")
-TableauDashboardField.TABLEAU_FULLY_QUALIFIED_NAME = KeywordField("tableauFullyQualifiedName", "tableauFullyQualifiedName")
-TableauDashboardField.TABLEAU_DASHBOARD_FIELD_DATA_CATEGORY = KeywordField("tableauDashboardFieldDataCategory", "tableauDashboardFieldDataCategory")
-TableauDashboardField.TABLEAU_DASHBOARD_FIELD_ROLE = KeywordField("tableauDashboardFieldRole", "tableauDashboardFieldRole")
-TableauDashboardField.TABLEAU_DASHBOARD_FIELD_DATA_TYPE = KeywordTextField("tableauDashboardFieldDataType", "tableauDashboardFieldDataType", "tableauDashboardFieldDataType.text")
-TableauDashboardField.TABLEAU_UPSTREAM_TABLES = KeywordField("tableauUpstreamTables", "tableauUpstreamTables")
-TableauDashboardField.TABLEAU_DASHBOARD_FIELD_FORMULA = KeywordField("tableauDashboardFieldFormula", "tableauDashboardFieldFormula")
-TableauDashboardField.TABLEAU_DASHBOARD_FIELD_BIN_SIZE = KeywordField("tableauDashboardFieldBinSize", "tableauDashboardFieldBinSize")
-TableauDashboardField.TABLEAU_DASHBOARD_FIELD_UPSTREAM_COLUMNS = KeywordField("tableauDashboardFieldUpstreamColumns", "tableauDashboardFieldUpstreamColumns")
-TableauDashboardField.TABLEAU_DASHBOARD_FIELD_UPSTREAM_FIELDS = KeywordField("tableauDashboardFieldUpstreamFields", "tableauDashboardFieldUpstreamFields")
-TableauDashboardField.TABLEAU_DASHBOARD_FIELD_TYPE = KeywordField("tableauDashboardFieldType", "tableauDashboardFieldType")
-TableauDashboardField.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
+TableauDashboardField.TABLEAU_SITE_QUALIFIED_NAME = KeywordField(
+    "tableauSiteQualifiedName", "tableauSiteQualifiedName"
+)
+TableauDashboardField.TABLEAU_PROJECT_QUALIFIED_NAME = KeywordField(
+    "tableauProjectQualifiedName", "tableauProjectQualifiedName"
+)
+TableauDashboardField.TABLEAU_TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField(
+    "tableauTopLevelProjectQualifiedName", "tableauTopLevelProjectQualifiedName"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_QUALIFIED_NAME = KeywordField(
+    "tableauDashboardQualifiedName", "tableauDashboardQualifiedName"
+)
+TableauDashboardField.TABLEAU_PROJECT_HIERARCHY = KeywordField(
+    "tableauProjectHierarchy", "tableauProjectHierarchy"
+)
+TableauDashboardField.TABLEAU_FULLY_QUALIFIED_NAME = KeywordField(
+    "tableauFullyQualifiedName", "tableauFullyQualifiedName"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_FIELD_DATA_CATEGORY = KeywordField(
+    "tableauDashboardFieldDataCategory", "tableauDashboardFieldDataCategory"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_FIELD_ROLE = KeywordField(
+    "tableauDashboardFieldRole", "tableauDashboardFieldRole"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_FIELD_DATA_TYPE = KeywordTextField(
+    "tableauDashboardFieldDataType",
+    "tableauDashboardFieldDataType",
+    "tableauDashboardFieldDataType.text",
+)
+TableauDashboardField.TABLEAU_UPSTREAM_TABLES = KeywordField(
+    "tableauUpstreamTables", "tableauUpstreamTables"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_FIELD_FORMULA = KeywordField(
+    "tableauDashboardFieldFormula", "tableauDashboardFieldFormula"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_FIELD_BIN_SIZE = KeywordField(
+    "tableauDashboardFieldBinSize", "tableauDashboardFieldBinSize"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_FIELD_UPSTREAM_COLUMNS = KeywordField(
+    "tableauDashboardFieldUpstreamColumns", "tableauDashboardFieldUpstreamColumns"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_FIELD_UPSTREAM_FIELDS = KeywordField(
+    "tableauDashboardFieldUpstreamFields", "tableauDashboardFieldUpstreamFields"
+)
+TableauDashboardField.TABLEAU_DASHBOARD_FIELD_TYPE = KeywordField(
+    "tableauDashboardFieldType", "tableauDashboardFieldType"
+)
+TableauDashboardField.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
+    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
+)
 TableauDashboardField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-TableauDashboardField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+TableauDashboardField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 TableauDashboardField.ANOMALO_CHECKS = RelationField("anomaloChecks")
 TableauDashboardField.APPLICATION = RelationField("application")
 TableauDashboardField.APPLICATION_FIELD = RelationField("applicationField")
-TableauDashboardField.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+TableauDashboardField.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 TableauDashboardField.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-TableauDashboardField.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-TableauDashboardField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+TableauDashboardField.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+TableauDashboardField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 TableauDashboardField.METRICS = RelationField("metrics")
 TableauDashboardField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-TableauDashboardField.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+TableauDashboardField.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 TableauDashboardField.MEANINGS = RelationField("meanings")
 TableauDashboardField.MC_MONITORS = RelationField("mcMonitors")
 TableauDashboardField.MC_INCIDENTS = RelationField("mcIncidents")
@@ -706,7 +787,9 @@ TableauDashboardField.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 TableauDashboardField.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 TableauDashboardField.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 TableauDashboardField.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-TableauDashboardField.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+TableauDashboardField.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 TableauDashboardField.FILES = RelationField("files")
 TableauDashboardField.LINKS = RelationField("links")
 TableauDashboardField.README = RelationField("readme")

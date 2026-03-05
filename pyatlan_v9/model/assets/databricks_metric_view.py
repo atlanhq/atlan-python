@@ -33,7 +33,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,15 +50,17 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .databricks_related import RelatedDatabricksMetricView
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DatabricksMetricView(Asset):
@@ -175,7 +182,9 @@ class DatabricksMetricView(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -253,7 +262,9 @@ class DatabricksMetricView(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -304,7 +315,9 @@ class DatabricksMetricView(Asset):
     atlan_schema: RelatedSchema | None | UnsetType = UNSET
     """Schema in which this view exists."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -318,30 +331,6 @@ class DatabricksMetricView(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DatabricksMetricView"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DatabricksMetricView validation failed: {errors}")
-
-    def minimize(self) -> "DatabricksMetricView":
-        self.validate()
-        return DatabricksMetricView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDatabricksMetricView":
-        if self.guid is not UNSET:
-            return RelatedDatabricksMetricView(guid=self.guid)
-        return RelatedDatabricksMetricView(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -372,7 +361,9 @@ class DatabricksMetricView(Asset):
         return _databricks_metric_view_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DatabricksMetricView:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DatabricksMetricView:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -393,6 +384,7 @@ class DatabricksMetricView(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DatabricksMetricViewAttributes(AssetAttributes):
     """DatabricksMetricView-specific attributes for nested API format."""
@@ -445,7 +437,9 @@ class DatabricksMetricViewAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -474,6 +468,7 @@ class DatabricksMetricViewAttributes(AssetAttributes):
 
     definition: str | None | UnsetType = UNSET
     """SQL definition of this view."""
+
 
 class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     """DatabricksMetricView-specific relationship attributes for nested API format."""
@@ -526,7 +521,9 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -577,7 +574,9 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     atlan_schema: RelatedSchema | None | UnsetType = UNSET
     """Schema in which this view exists."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -589,13 +588,21 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DatabricksMetricViewNested(AssetNested):
     """DatabricksMetricView in nested API format for high-performance serialization."""
 
     attributes: DatabricksMetricViewAttributes | UnsetType = UNSET
-    relationship_attributes: DatabricksMetricViewRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DatabricksMetricViewRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DatabricksMetricViewRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: DatabricksMetricViewRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        DatabricksMetricViewRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        DatabricksMetricViewRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -642,7 +649,10 @@ _DATABRICKS_METRIC_VIEW_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes, obj: DatabricksMetricView) -> None:
+
+def _populate_databricks_metric_view_attrs(
+    attrs: DatabricksMetricViewAttributes, obj: DatabricksMetricView
+) -> None:
     """Populate DatabricksMetricView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.query_count = obj.query_count
@@ -672,7 +682,10 @@ def _populate_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes
     attrs.is_temporary = obj.is_temporary
     attrs.definition = obj.definition
 
-def _extract_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes) -> dict:
+
+def _extract_databricks_metric_view_attrs(
+    attrs: DatabricksMetricViewAttributes,
+) -> dict:
     """Extract all DatabricksMetricView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["query_count"] = attrs.query_count
@@ -691,7 +704,9 @@ def _extract_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes)
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
@@ -703,18 +718,23 @@ def _extract_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes)
     result["definition"] = attrs.definition
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _databricks_metric_view_to_nested(databricks_metric_view: DatabricksMetricView) -> DatabricksMetricViewNested:
+def _databricks_metric_view_to_nested(
+    databricks_metric_view: DatabricksMetricView,
+) -> DatabricksMetricViewNested:
     """Convert flat DatabricksMetricView to nested format."""
     attrs = DatabricksMetricViewAttributes()
     _populate_databricks_metric_view_attrs(attrs, databricks_metric_view)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_metric_view, _DATABRICKS_METRIC_VIEW_REL_FIELDS, DatabricksMetricViewRelationshipAttributes
+        databricks_metric_view,
+        _DATABRICKS_METRIC_VIEW_REL_FIELDS,
+        DatabricksMetricViewRelationshipAttributes,
     )
     return DatabricksMetricViewNested(
         guid=databricks_metric_view.guid,
@@ -742,16 +762,23 @@ def _databricks_metric_view_to_nested(databricks_metric_view: DatabricksMetricVi
         remove_relationship_attributes=remove_rels,
     )
 
-def _databricks_metric_view_from_nested(nested: DatabricksMetricViewNested) -> DatabricksMetricView:
+
+def _databricks_metric_view_from_nested(
+    nested: DatabricksMetricViewNested,
+) -> DatabricksMetricView:
     """Convert nested format to flat DatabricksMetricView."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksMetricViewAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DatabricksMetricViewAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_METRIC_VIEW_REL_FIELDS,
-        DatabricksMetricViewRelationshipAttributes
+        DatabricksMetricViewRelationshipAttributes,
     )
     return DatabricksMetricView(
         guid=nested.guid,
@@ -778,15 +805,21 @@ def _databricks_metric_view_from_nested(nested: DatabricksMetricViewNested) -> D
         **merged_rels,
     )
 
-def _databricks_metric_view_to_nested_bytes(databricks_metric_view: DatabricksMetricView, serde: Serde) -> bytes:
+
+def _databricks_metric_view_to_nested_bytes(
+    databricks_metric_view: DatabricksMetricView, serde: Serde
+) -> bytes:
     """Convert flat DatabricksMetricView to nested JSON bytes."""
     return serde.encode(_databricks_metric_view_to_nested(databricks_metric_view))
 
 
-def _databricks_metric_view_from_nested_bytes(data: bytes, serde: Serde) -> DatabricksMetricView:
+def _databricks_metric_view_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DatabricksMetricView:
     """Convert nested JSON bytes to flat DatabricksMetricView."""
     nested = serde.decode(data, DatabricksMetricViewNested)
     return _databricks_metric_view_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -801,26 +834,44 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 DatabricksMetricView.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksMetricView.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DatabricksMetricView.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksMetricView.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DatabricksMetricView.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DatabricksMetricView.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksMetricView.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DatabricksMetricView.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DatabricksMetricView.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksMetricView.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DatabricksMetricView.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DatabricksMetricView.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksMetricView.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DatabricksMetricView.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DatabricksMetricView.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksMetricView.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DatabricksMetricView.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DatabricksMetricView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DatabricksMetricView.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DatabricksMetricView.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DatabricksMetricView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DatabricksMetricView.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DatabricksMetricView.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DatabricksMetricView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DatabricksMetricView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DatabricksMetricView.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 DatabricksMetricView.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 DatabricksMetricView.ROW_COUNT = NumericField("rowCount", "rowCount")
 DatabricksMetricView.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
 DatabricksMetricView.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-DatabricksMetricView.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+DatabricksMetricView.QUERY_PREVIEW_CONFIG = KeywordField(
+    "queryPreviewConfig", "queryPreviewConfig"
+)
 DatabricksMetricView.ALIAS = KeywordField("alias", "alias")
 DatabricksMetricView.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 DatabricksMetricView.DEFINITION = KeywordField("definition", "definition")
@@ -831,11 +882,17 @@ DatabricksMetricView.APPLICATION = RelationField("application")
 DatabricksMetricView.APPLICATION_FIELD = RelationField("applicationField")
 DatabricksMetricView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DatabricksMetricView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DatabricksMetricView.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DatabricksMetricView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DatabricksMetricView.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DatabricksMetricView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DatabricksMetricView.METRICS = RelationField("metrics")
 DatabricksMetricView.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DatabricksMetricView.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+DatabricksMetricView.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 DatabricksMetricView.DBT_MODELS = RelationField("dbtModels")
 DatabricksMetricView.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DatabricksMetricView.DBT_TESTS = RelationField("dbtTests")
@@ -850,7 +907,9 @@ DatabricksMetricView.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 DatabricksMetricView.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DatabricksMetricView.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 DatabricksMetricView.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DatabricksMetricView.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+DatabricksMetricView.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 DatabricksMetricView.FILES = RelationField("files")
 DatabricksMetricView.LINKS = RelationField("links")
 DatabricksMetricView.README = RelationField("readme")

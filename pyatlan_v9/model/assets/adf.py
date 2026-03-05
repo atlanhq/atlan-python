@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .adf_related import RelatedADF
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ADF(Asset):
@@ -170,7 +171,9 @@ class ADF(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -184,30 +187,6 @@ class ADF(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ADF"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"ADF validation failed: {errors}")
-
-    def minimize(self) -> "ADF":
-        self.validate()
-        return ADF(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedADF":
-        if self.guid is not UNSET:
-            return RelatedADF(guid=self.guid)
-        return RelatedADF(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -260,6 +239,7 @@ class ADF(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ADFAttributes(AssetAttributes):
     """ADF-specific attributes for nested API format."""
 
@@ -268,6 +248,7 @@ class ADFAttributes(AssetAttributes):
 
     adf_asset_folder_path: str | None | UnsetType = UNSET
     """Defines the folder path in which this ADF asset exists."""
+
 
 class ADFRelationshipAttributes(AssetRelationshipAttributes):
     """ADF-specific relationship attributes for nested API format."""
@@ -344,7 +325,9 @@ class ADFRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -356,6 +339,7 @@ class ADFRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ADFNested(AssetNested):
     """ADF in nested API format for high-performance serialization."""
 
@@ -363,6 +347,7 @@ class ADFNested(AssetNested):
     relationship_attributes: ADFRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: ADFRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: ADFRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -400,11 +385,13 @@ _ADF_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_adf_attrs(attrs: ADFAttributes, obj: ADF) -> None:
     """Populate ADF-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.adf_factory_name = obj.adf_factory_name
     attrs.adf_asset_folder_path = obj.adf_asset_folder_path
+
 
 def _extract_adf_attrs(attrs: ADFAttributes) -> dict:
     """Extract all ADF attributes from the attrs struct into a flat dict."""
@@ -412,6 +399,7 @@ def _extract_adf_attrs(attrs: ADFAttributes) -> dict:
     result["adf_factory_name"] = attrs.adf_factory_name
     result["adf_asset_folder_path"] = attrs.adf_asset_folder_path
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -452,6 +440,7 @@ def _adf_to_nested(adf: ADF) -> ADFNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _adf_from_nested(nested: ADFNested) -> ADF:
     """Convert nested format to flat ADF."""
     attrs = nested.attributes if nested.attributes is not UNSET else ADFAttributes()
@@ -461,7 +450,7 @@ def _adf_from_nested(nested: ADFNested) -> ADF:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADF_REL_FIELDS,
-        ADFRelationshipAttributes
+        ADFRelationshipAttributes,
     )
     return ADF(
         guid=nested.guid,
@@ -488,6 +477,7 @@ def _adf_from_nested(nested: ADFNested) -> ADF:
         **merged_rels,
     )
 
+
 def _adf_to_nested_bytes(adf: ADF, serde: Serde) -> bytes:
     """Convert flat ADF to nested JSON bytes."""
     return serde.encode(_adf_to_nested(adf))
@@ -497,6 +487,7 @@ def _adf_from_nested_bytes(data: bytes, serde: Serde) -> ADF:
     """Convert nested JSON bytes to flat ADF."""
     nested = serde.decode(data, ADFNested)
     return _adf_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

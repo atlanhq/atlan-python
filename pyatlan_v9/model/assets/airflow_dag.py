@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,16 +41,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSpark, RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .airflow_related import RelatedAirflowDag, RelatedAirflowTask
+from .airflow_related import RelatedAirflowTask
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AirflowDag(Asset):
@@ -207,7 +210,9 @@ class AirflowDag(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -224,30 +229,6 @@ class AirflowDag(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AirflowDag"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"AirflowDag validation failed: {errors}")
-
-    def minimize(self) -> "AirflowDag":
-        self.validate()
-        return AirflowDag(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAirflowDag":
-        if self.guid is not UNSET:
-            return RelatedAirflowDag(guid=self.guid)
-        return RelatedAirflowDag(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -330,6 +311,7 @@ class AirflowDag(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AirflowDagAttributes(AssetAttributes):
     """AirflowDag-specific attributes for nested API format."""
 
@@ -362,6 +344,7 @@ class AirflowDagAttributes(AssetAttributes):
 
     airflow_run_open_lineage_state: str | None | UnsetType = UNSET
     """State of the run in OpenLineage."""
+
 
 class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     """AirflowDag-specific relationship attributes for nested API format."""
@@ -441,7 +424,9 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -456,6 +441,7 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     spark_orchestrated_assets: list[RelatedSpark] | None | UnsetType = UNSET
     """Spark assets that are executed by this airflow asset."""
 
+
 class AirflowDagNested(AssetNested):
     """AirflowDag in nested API format for high-performance serialization."""
 
@@ -463,6 +449,7 @@ class AirflowDagNested(AssetNested):
     relationship_attributes: AirflowDagRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: AirflowDagRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: AirflowDagRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -502,6 +489,7 @@ _AIRFLOW_DAG_REL_FIELDS: list[str] = [
     "spark_orchestrated_assets",
 ]
 
+
 def _populate_airflow_dag_attrs(attrs: AirflowDagAttributes, obj: AirflowDag) -> None:
     """Populate AirflowDag-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -515,6 +503,7 @@ def _populate_airflow_dag_attrs(attrs: AirflowDagAttributes, obj: AirflowDag) ->
     attrs.airflow_run_start_time = obj.airflow_run_start_time
     attrs.airflow_run_end_time = obj.airflow_run_end_time
     attrs.airflow_run_open_lineage_state = obj.airflow_run_open_lineage_state
+
 
 def _extract_airflow_dag_attrs(attrs: AirflowDagAttributes) -> dict:
     """Extract all AirflowDag attributes from the attrs struct into a flat dict."""
@@ -530,6 +519,7 @@ def _extract_airflow_dag_attrs(attrs: AirflowDagAttributes) -> dict:
     result["airflow_run_end_time"] = attrs.airflow_run_end_time
     result["airflow_run_open_lineage_state"] = attrs.airflow_run_open_lineage_state
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -570,16 +560,19 @@ def _airflow_dag_to_nested(airflow_dag: AirflowDag) -> AirflowDagNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _airflow_dag_from_nested(nested: AirflowDagNested) -> AirflowDag:
     """Convert nested format to flat AirflowDag."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AirflowDagAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else AirflowDagAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AIRFLOW_DAG_REL_FIELDS,
-        AirflowDagRelationshipAttributes
+        AirflowDagRelationshipAttributes,
     )
     return AirflowDag(
         guid=nested.guid,
@@ -606,6 +599,7 @@ def _airflow_dag_from_nested(nested: AirflowDagNested) -> AirflowDag:
         **merged_rels,
     )
 
+
 def _airflow_dag_to_nested_bytes(airflow_dag: AirflowDag, serde: Serde) -> bytes:
     """Convert flat AirflowDag to nested JSON bytes."""
     return serde.encode(_airflow_dag_to_nested(airflow_dag))
@@ -616,6 +610,7 @@ def _airflow_dag_from_nested_bytes(data: bytes, serde: Serde) -> AirflowDag:
     nested = serde.decode(data, AirflowDagNested)
     return _airflow_dag_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -625,16 +620,26 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AirflowDag.AIRFLOW_DAG_SCHEDULE = KeywordField("airflowDagSchedule", "airflowDagSchedule")
-AirflowDag.AIRFLOW_DAG_SCHEDULE_DELTA = NumericField("airflowDagScheduleDelta", "airflowDagScheduleDelta")
+AirflowDag.AIRFLOW_DAG_SCHEDULE = KeywordField(
+    "airflowDagSchedule", "airflowDagSchedule"
+)
+AirflowDag.AIRFLOW_DAG_SCHEDULE_DELTA = NumericField(
+    "airflowDagScheduleDelta", "airflowDagScheduleDelta"
+)
 AirflowDag.AIRFLOW_TAGS = KeywordField("airflowTags", "airflowTags")
 AirflowDag.AIRFLOW_RUN_VERSION = KeywordField("airflowRunVersion", "airflowRunVersion")
-AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_VERSION = KeywordField("airflowRunOpenLineageVersion", "airflowRunOpenLineageVersion")
+AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_VERSION = KeywordField(
+    "airflowRunOpenLineageVersion", "airflowRunOpenLineageVersion"
+)
 AirflowDag.AIRFLOW_RUN_NAME = KeywordField("airflowRunName", "airflowRunName")
 AirflowDag.AIRFLOW_RUN_TYPE = KeywordField("airflowRunType", "airflowRunType")
-AirflowDag.AIRFLOW_RUN_START_TIME = NumericField("airflowRunStartTime", "airflowRunStartTime")
+AirflowDag.AIRFLOW_RUN_START_TIME = NumericField(
+    "airflowRunStartTime", "airflowRunStartTime"
+)
 AirflowDag.AIRFLOW_RUN_END_TIME = NumericField("airflowRunEndTime", "airflowRunEndTime")
-AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_STATE = KeywordField("airflowRunOpenLineageState", "airflowRunOpenLineageState")
+AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_STATE = KeywordField(
+    "airflowRunOpenLineageState", "airflowRunOpenLineageState"
+)
 AirflowDag.AIRFLOW_TASKS = RelationField("airflowTasks")
 AirflowDag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AirflowDag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

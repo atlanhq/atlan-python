@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,15 +37,17 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .cloud_related import RelatedAzure
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Azure(Asset):
@@ -143,7 +144,9 @@ class Azure(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -151,30 +154,6 @@ class Azure(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Azure"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Azure validation failed: {errors}")
-
-    def minimize(self) -> "Azure":
-        self.validate()
-        return Azure(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAzure":
-        if self.guid is not UNSET:
-            return RelatedAzure(guid=self.guid)
-        return RelatedAzure(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -227,6 +206,7 @@ class Azure(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AzureAttributes(AssetAttributes):
     """Azure-specific attributes for nested API format."""
 
@@ -244,6 +224,7 @@ class AzureAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class AzureRelationshipAttributes(AssetRelationshipAttributes):
     """Azure-specific relationship attributes for nested API format."""
@@ -296,11 +277,14 @@ class AzureRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class AzureNested(AssetNested):
     """Azure in nested API format for high-performance serialization."""
@@ -309,6 +293,7 @@ class AzureNested(AssetNested):
     relationship_attributes: AzureRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: AzureRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: AzureRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -336,6 +321,7 @@ _AZURE_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
+
 def _populate_azure_attrs(attrs: AzureAttributes, obj: Azure) -> None:
     """Populate Azure-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -344,6 +330,7 @@ def _populate_azure_attrs(attrs: AzureAttributes, obj: Azure) -> None:
     attrs.adls_account_secondary_location = obj.adls_account_secondary_location
     attrs.azure_tags = obj.azure_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_azure_attrs(attrs: AzureAttributes) -> dict:
     """Extract all Azure attributes from the attrs struct into a flat dict."""
@@ -354,6 +341,7 @@ def _extract_azure_attrs(attrs: AzureAttributes) -> dict:
     result["azure_tags"] = attrs.azure_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -394,6 +382,7 @@ def _azure_to_nested(azure: Azure) -> AzureNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _azure_from_nested(nested: AzureNested) -> Azure:
     """Convert nested format to flat Azure."""
     attrs = nested.attributes if nested.attributes is not UNSET else AzureAttributes()
@@ -403,7 +392,7 @@ def _azure_from_nested(nested: AzureNested) -> Azure:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AZURE_REL_FIELDS,
-        AzureRelationshipAttributes
+        AzureRelationshipAttributes,
     )
     return Azure(
         guid=nested.guid,
@@ -430,6 +419,7 @@ def _azure_from_nested(nested: AzureNested) -> Azure:
         **merged_rels,
     )
 
+
 def _azure_to_nested_bytes(azure: Azure, serde: Serde) -> bytes:
     """Convert flat Azure to nested JSON bytes."""
     return serde.encode(_azure_to_nested(azure))
@@ -440,6 +430,7 @@ def _azure_from_nested_bytes(data: bytes, serde: Serde) -> Azure:
     nested = serde.decode(data, AzureNested)
     return _azure_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -449,11 +440,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Azure.AZURE_RESOURCE_ID = KeywordTextField("azureResourceId", "azureResourceId", "azureResourceId.text")
+Azure.AZURE_RESOURCE_ID = KeywordTextField(
+    "azureResourceId", "azureResourceId", "azureResourceId.text"
+)
 Azure.AZURE_LOCATION = KeywordField("azureLocation", "azureLocation")
-Azure.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField("adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation")
+Azure.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField(
+    "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+)
 Azure.AZURE_TAGS = KeywordField("azureTags", "azureTags")
-Azure.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+Azure.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 Azure.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Azure.APPLICATION = RelationField("application")
 Azure.APPLICATION_FIELD = RelationField("applicationField")

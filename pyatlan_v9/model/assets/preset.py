@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .preset_related import RelatedPreset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Preset(Asset):
@@ -178,7 +179,9 @@ class Preset(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -192,30 +195,6 @@ class Preset(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Preset"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Preset validation failed: {errors}")
-
-    def minimize(self) -> "Preset":
-        self.validate()
-        return Preset(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedPreset":
-        if self.guid is not UNSET:
-            return RelatedPreset(guid=self.guid)
-        return RelatedPreset(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -268,6 +247,7 @@ class Preset(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class PresetAttributes(AssetAttributes):
     """Preset-specific attributes for nested API format."""
 
@@ -282,6 +262,7 @@ class PresetAttributes(AssetAttributes):
 
     preset_dashboard_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dashboard in which this asset exists."""
+
 
 class PresetRelationshipAttributes(AssetRelationshipAttributes):
     """Preset-specific relationship attributes for nested API format."""
@@ -358,7 +339,9 @@ class PresetRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -370,6 +353,7 @@ class PresetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class PresetNested(AssetNested):
     """Preset in nested API format for high-performance serialization."""
 
@@ -377,6 +361,7 @@ class PresetNested(AssetNested):
     relationship_attributes: PresetRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: PresetRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: PresetRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -414,6 +399,7 @@ _PRESET_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_preset_attrs(attrs: PresetAttributes, obj: Preset) -> None:
     """Populate Preset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -421,6 +407,7 @@ def _populate_preset_attrs(attrs: PresetAttributes, obj: Preset) -> None:
     attrs.preset_workspace_qualified_name = obj.preset_workspace_qualified_name
     attrs.preset_dashboard_id = obj.preset_dashboard_id
     attrs.preset_dashboard_qualified_name = obj.preset_dashboard_qualified_name
+
 
 def _extract_preset_attrs(attrs: PresetAttributes) -> dict:
     """Extract all Preset attributes from the attrs struct into a flat dict."""
@@ -430,6 +417,7 @@ def _extract_preset_attrs(attrs: PresetAttributes) -> dict:
     result["preset_dashboard_id"] = attrs.preset_dashboard_id
     result["preset_dashboard_qualified_name"] = attrs.preset_dashboard_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -470,6 +458,7 @@ def _preset_to_nested(preset: Preset) -> PresetNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _preset_from_nested(nested: PresetNested) -> Preset:
     """Convert nested format to flat Preset."""
     attrs = nested.attributes if nested.attributes is not UNSET else PresetAttributes()
@@ -479,7 +468,7 @@ def _preset_from_nested(nested: PresetNested) -> Preset:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PRESET_REL_FIELDS,
-        PresetRelationshipAttributes
+        PresetRelationshipAttributes,
     )
     return Preset(
         guid=nested.guid,
@@ -506,6 +495,7 @@ def _preset_from_nested(nested: PresetNested) -> Preset:
         **merged_rels,
     )
 
+
 def _preset_to_nested_bytes(preset: Preset, serde: Serde) -> bytes:
     """Convert flat Preset to nested JSON bytes."""
     return serde.encode(_preset_to_nested(preset))
@@ -515,6 +505,7 @@ def _preset_from_nested_bytes(data: bytes, serde: Serde) -> Preset:
     """Convert nested JSON bytes to flat Preset."""
     nested = serde.decode(data, PresetNested)
     return _preset_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -526,9 +517,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Preset.PRESET_WORKSPACE_ID = NumericField("presetWorkspaceId", "presetWorkspaceId")
-Preset.PRESET_WORKSPACE_QUALIFIED_NAME = KeywordTextField("presetWorkspaceQualifiedName", "presetWorkspaceQualifiedName", "presetWorkspaceQualifiedName.text")
+Preset.PRESET_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
+    "presetWorkspaceQualifiedName",
+    "presetWorkspaceQualifiedName",
+    "presetWorkspaceQualifiedName.text",
+)
 Preset.PRESET_DASHBOARD_ID = NumericField("presetDashboardId", "presetDashboardId")
-Preset.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField("presetDashboardQualifiedName", "presetDashboardQualifiedName", "presetDashboardQualifiedName.text")
+Preset.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
+    "presetDashboardQualifiedName",
+    "presetDashboardQualifiedName",
+    "presetDashboardQualifiedName.text",
+)
 Preset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Preset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Preset.ANOMALO_CHECKS = RelationField("anomaloChecks")

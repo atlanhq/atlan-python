@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,7 +42,10 @@ from .referenceable_related import RelatedReferenceable
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -52,6 +54,7 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Link(Asset):
@@ -190,7 +193,9 @@ class Link(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -204,30 +209,6 @@ class Link(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Link"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Link validation failed: {errors}")
-
-    def minimize(self) -> "Link":
-        self.validate()
-        return Link(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLink":
-        if self.guid is not UNSET:
-            return RelatedLink(guid=self.guid)
-        return RelatedLink(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -280,6 +261,7 @@ class Link(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LinkAttributes(AssetAttributes):
     """Link-specific attributes for nested API format."""
 
@@ -300,6 +282,7 @@ class LinkAttributes(AssetAttributes):
 
     resource_metadata: dict[str, str] | None | UnsetType = UNSET
     """Metadata of the resource."""
+
 
 class LinkRelationshipAttributes(AssetRelationshipAttributes):
     """Link-specific relationship attributes for nested API format."""
@@ -379,7 +362,9 @@ class LinkRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -391,6 +376,7 @@ class LinkRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class LinkNested(AssetNested):
     """Link in nested API format for high-performance serialization."""
 
@@ -398,6 +384,7 @@ class LinkNested(AssetNested):
     relationship_attributes: LinkRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: LinkRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: LinkRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -436,6 +423,7 @@ _LINK_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_link_attrs(attrs: LinkAttributes, obj: Link) -> None:
     """Populate Link-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -445,6 +433,7 @@ def _populate_link_attrs(attrs: LinkAttributes, obj: Link) -> None:
     attrs.is_global = obj.is_global
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
+
 
 def _extract_link_attrs(attrs: LinkAttributes) -> dict:
     """Extract all Link attributes from the attrs struct into a flat dict."""
@@ -456,6 +445,7 @@ def _extract_link_attrs(attrs: LinkAttributes) -> dict:
     result["reference"] = attrs.reference
     result["resource_metadata"] = attrs.resource_metadata
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -496,6 +486,7 @@ def _link_to_nested(link: Link) -> LinkNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _link_from_nested(nested: LinkNested) -> Link:
     """Convert nested format to flat Link."""
     attrs = nested.attributes if nested.attributes is not UNSET else LinkAttributes()
@@ -505,7 +496,7 @@ def _link_from_nested(nested: LinkNested) -> Link:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LINK_REL_FIELDS,
-        LinkRelationshipAttributes
+        LinkRelationshipAttributes,
     )
     return Link(
         guid=nested.guid,
@@ -532,6 +523,7 @@ def _link_from_nested(nested: LinkNested) -> Link:
         **merged_rels,
     )
 
+
 def _link_to_nested_bytes(link: Link, serde: Serde) -> bytes:
     """Convert flat Link to nested JSON bytes."""
     return serde.encode(_link_to_nested(link))
@@ -541,6 +533,7 @@ def _link_from_nested_bytes(data: bytes, serde: Serde) -> Link:
     """Convert nested JSON bytes to flat Link."""
     nested = serde.decode(data, LinkNested)
     return _link_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

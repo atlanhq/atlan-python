@@ -1,3 +1,5 @@
+# STDLIB_IMPORT: from typing import TYPE_CHECKING
+# STDLIB_IMPORT: from uuid import uuid4
 # IMPORT: from pyatlan.errors import AtlanError
 # IMPORT: from pyatlan.errors import ErrorCode
 # INTERNAL_IMPORT: from pyatlan.utils import init_guid, validate_required_fields

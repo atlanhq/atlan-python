@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,15 +37,17 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .flow_related import RelatedFlowProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FlowProject(Asset):
@@ -179,7 +180,9 @@ class FlowProject(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -187,30 +190,6 @@ class FlowProject(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "FlowProject"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"FlowProject validation failed: {errors}")
-
-    def minimize(self) -> "FlowProject":
-        self.validate()
-        return FlowProject(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFlowProject":
-        if self.guid is not UNSET:
-            return RelatedFlowProject(guid=self.guid)
-        return RelatedFlowProject(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -263,6 +242,7 @@ class FlowProject(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FlowProjectAttributes(AssetAttributes):
     """FlowProject-specific attributes for nested API format."""
 
@@ -307,6 +287,7 @@ class FlowProjectAttributes(AssetAttributes):
 
     flow_input_parameters: dict[str, str] | None | UnsetType = UNSET
     """Input parameters for the flow run."""
+
 
 class FlowProjectRelationshipAttributes(AssetRelationshipAttributes):
     """FlowProject-specific relationship attributes for nested API format."""
@@ -359,19 +340,27 @@ class FlowProjectRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class FlowProjectNested(AssetNested):
     """FlowProject in nested API format for high-performance serialization."""
 
     attributes: FlowProjectAttributes | UnsetType = UNSET
     relationship_attributes: FlowProjectRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: FlowProjectRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: FlowProjectRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: FlowProjectRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: FlowProjectRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -399,7 +388,10 @@ _FLOW_PROJECT_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
-def _populate_flow_project_attrs(attrs: FlowProjectAttributes, obj: FlowProject) -> None:
+
+def _populate_flow_project_attrs(
+    attrs: FlowProjectAttributes, obj: FlowProject
+) -> None:
     """Populate FlowProject-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.flow_started_at = obj.flow_started_at
@@ -417,6 +409,7 @@ def _populate_flow_project_attrs(attrs: FlowProjectAttributes, obj: FlowProject)
     attrs.flow_error_message = obj.flow_error_message
     attrs.flow_input_parameters = obj.flow_input_parameters
 
+
 def _extract_flow_project_attrs(attrs: FlowProjectAttributes) -> dict:
     """Extract all FlowProject attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -429,12 +422,15 @@ def _extract_flow_project_attrs(attrs: FlowProjectAttributes) -> dict:
     result["flow_folder_name"] = attrs.flow_folder_name
     result["flow_folder_qualified_name"] = attrs.flow_folder_qualified_name
     result["flow_reusable_unit_name"] = attrs.flow_reusable_unit_name
-    result["flow_reusable_unit_qualified_name"] = attrs.flow_reusable_unit_qualified_name
+    result["flow_reusable_unit_qualified_name"] = (
+        attrs.flow_reusable_unit_qualified_name
+    )
     result["flow_id"] = attrs.flow_id
     result["flow_run_id"] = attrs.flow_run_id
     result["flow_error_message"] = attrs.flow_error_message
     result["flow_input_parameters"] = attrs.flow_input_parameters
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -475,16 +471,19 @@ def _flow_project_to_nested(flow_project: FlowProject) -> FlowProjectNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _flow_project_from_nested(nested: FlowProjectNested) -> FlowProject:
     """Convert nested format to flat FlowProject."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FlowProjectAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else FlowProjectAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FLOW_PROJECT_REL_FIELDS,
-        FlowProjectRelationshipAttributes
+        FlowProjectRelationshipAttributes,
     )
     return FlowProject(
         guid=nested.guid,
@@ -511,6 +510,7 @@ def _flow_project_from_nested(nested: FlowProjectNested) -> FlowProject:
         **merged_rels,
     )
 
+
 def _flow_project_to_nested_bytes(flow_project: FlowProject, serde: Serde) -> bytes:
     """Convert flat FlowProject to nested JSON bytes."""
     return serde.encode(_flow_project_to_nested(flow_project))
@@ -520,6 +520,7 @@ def _flow_project_from_nested_bytes(data: bytes, serde: Serde) -> FlowProject:
     """Convert nested JSON bytes to flat FlowProject."""
     nested = serde.decode(data, FlowProjectNested)
     return _flow_project_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -535,16 +536,30 @@ FlowProject.FLOW_STARTED_AT = NumericField("flowStartedAt", "flowStartedAt")
 FlowProject.FLOW_FINISHED_AT = NumericField("flowFinishedAt", "flowFinishedAt")
 FlowProject.FLOW_STATUS = KeywordField("flowStatus", "flowStatus")
 FlowProject.FLOW_SCHEDULE = KeywordField("flowSchedule", "flowSchedule")
-FlowProject.FLOW_PROJECT_NAME = KeywordTextField("flowProjectName", "flowProjectName", "flowProjectName.text")
-FlowProject.FLOW_PROJECT_QUALIFIED_NAME = KeywordField("flowProjectQualifiedName", "flowProjectQualifiedName")
-FlowProject.FLOW_FOLDER_NAME = KeywordTextField("flowFolderName", "flowFolderName", "flowFolderName.text")
-FlowProject.FLOW_FOLDER_QUALIFIED_NAME = KeywordField("flowFolderQualifiedName", "flowFolderQualifiedName")
-FlowProject.FLOW_REUSABLE_UNIT_NAME = KeywordTextField("flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text")
-FlowProject.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField("flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName")
+FlowProject.FLOW_PROJECT_NAME = KeywordTextField(
+    "flowProjectName", "flowProjectName", "flowProjectName.text"
+)
+FlowProject.FLOW_PROJECT_QUALIFIED_NAME = KeywordField(
+    "flowProjectQualifiedName", "flowProjectQualifiedName"
+)
+FlowProject.FLOW_FOLDER_NAME = KeywordTextField(
+    "flowFolderName", "flowFolderName", "flowFolderName.text"
+)
+FlowProject.FLOW_FOLDER_QUALIFIED_NAME = KeywordField(
+    "flowFolderQualifiedName", "flowFolderQualifiedName"
+)
+FlowProject.FLOW_REUSABLE_UNIT_NAME = KeywordTextField(
+    "flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text"
+)
+FlowProject.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField(
+    "flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName"
+)
 FlowProject.FLOW_ID = KeywordField("flowId", "flowId")
 FlowProject.FLOW_RUN_ID = KeywordField("flowRunId", "flowRunId")
 FlowProject.FLOW_ERROR_MESSAGE = KeywordField("flowErrorMessage", "flowErrorMessage")
-FlowProject.FLOW_INPUT_PARAMETERS = KeywordField("flowInputParameters", "flowInputParameters")
+FlowProject.FLOW_INPUT_PARAMETERS = KeywordField(
+    "flowInputParameters", "flowInputParameters"
+)
 FlowProject.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FlowProject.APPLICATION = RelationField("application")
 FlowProject.APPLICATION_FIELD = RelationField("applicationField")

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .fivetran_related import RelatedFivetran
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Fivetran(Asset):
@@ -174,7 +175,9 @@ class Fivetran(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -188,30 +191,6 @@ class Fivetran(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Fivetran"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Fivetran validation failed: {errors}")
-
-    def minimize(self) -> "Fivetran":
-        self.validate()
-        return Fivetran(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFivetran":
-        if self.guid is not UNSET:
-            return RelatedFivetran(guid=self.guid)
-        return RelatedFivetran(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -264,6 +243,7 @@ class Fivetran(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FivetranAttributes(AssetAttributes):
     """Fivetran-specific attributes for nested API format."""
 
@@ -275,6 +255,7 @@ class FivetranAttributes(AssetAttributes):
 
     fivetran_last_sync_records_updated: int | None | UnsetType = UNSET
     """Number of records updated in the latest sync on Fivetran"""
+
 
 class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     """Fivetran-specific relationship attributes for nested API format."""
@@ -351,7 +332,9 @@ class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -363,6 +346,7 @@ class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class FivetranNested(AssetNested):
     """Fivetran in nested API format for high-performance serialization."""
 
@@ -370,6 +354,7 @@ class FivetranNested(AssetNested):
     relationship_attributes: FivetranRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: FivetranRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: FivetranRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -407,6 +392,7 @@ _FIVETRAN_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_fivetran_attrs(attrs: FivetranAttributes, obj: Fivetran) -> None:
     """Populate Fivetran-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -414,13 +400,17 @@ def _populate_fivetran_attrs(attrs: FivetranAttributes, obj: Fivetran) -> None:
     attrs.fivetran_last_sync_status = obj.fivetran_last_sync_status
     attrs.fivetran_last_sync_records_updated = obj.fivetran_last_sync_records_updated
 
+
 def _extract_fivetran_attrs(attrs: FivetranAttributes) -> dict:
     """Extract all Fivetran attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["fivetran_workflow_name"] = attrs.fivetran_workflow_name
     result["fivetran_last_sync_status"] = attrs.fivetran_last_sync_status
-    result["fivetran_last_sync_records_updated"] = attrs.fivetran_last_sync_records_updated
+    result["fivetran_last_sync_records_updated"] = (
+        attrs.fivetran_last_sync_records_updated
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -461,16 +451,19 @@ def _fivetran_to_nested(fivetran: Fivetran) -> FivetranNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _fivetran_from_nested(nested: FivetranNested) -> Fivetran:
     """Convert nested format to flat Fivetran."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FivetranAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else FivetranAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FIVETRAN_REL_FIELDS,
-        FivetranRelationshipAttributes
+        FivetranRelationshipAttributes,
     )
     return Fivetran(
         guid=nested.guid,
@@ -497,6 +490,7 @@ def _fivetran_from_nested(nested: FivetranNested) -> Fivetran:
         **merged_rels,
     )
 
+
 def _fivetran_to_nested_bytes(fivetran: Fivetran, serde: Serde) -> bytes:
     """Convert flat Fivetran to nested JSON bytes."""
     return serde.encode(_fivetran_to_nested(fivetran))
@@ -507,6 +501,7 @@ def _fivetran_from_nested_bytes(data: bytes, serde: Serde) -> Fivetran:
     nested = serde.decode(data, FivetranNested)
     return _fivetran_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -516,9 +511,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Fivetran.FIVETRAN_WORKFLOW_NAME = KeywordField("fivetranWorkflowName", "fivetranWorkflowName")
-Fivetran.FIVETRAN_LAST_SYNC_STATUS = KeywordField("fivetranLastSyncStatus", "fivetranLastSyncStatus")
-Fivetran.FIVETRAN_LAST_SYNC_RECORDS_UPDATED = NumericField("fivetranLastSyncRecordsUpdated", "fivetranLastSyncRecordsUpdated")
+Fivetran.FIVETRAN_WORKFLOW_NAME = KeywordField(
+    "fivetranWorkflowName", "fivetranWorkflowName"
+)
+Fivetran.FIVETRAN_LAST_SYNC_STATUS = KeywordField(
+    "fivetranLastSyncStatus", "fivetranLastSyncStatus"
+)
+Fivetran.FIVETRAN_LAST_SYNC_RECORDS_UPDATED = NumericField(
+    "fivetranLastSyncRecordsUpdated", "fivetranLastSyncRecordsUpdated"
+)
 Fivetran.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Fivetran.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Fivetran.ANOMALO_CHECKS = RelationField("anomaloChecks")

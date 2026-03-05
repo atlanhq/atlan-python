@@ -44,15 +44,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cassandra_related import RelatedCassandraColumn, RelatedCassandraKeyspace, RelatedCassandraView
+from .cassandra_related import RelatedCassandraColumn, RelatedCassandraKeyspace
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CassandraView(Asset):
@@ -119,7 +123,9 @@ class CassandraView(Asset):
     cassandra_view_table_id: str | None | UnsetType = UNSET
     """ID of the base table in the CassandraView."""
 
-    cassandra_view_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewBloomFilterFPChance")
+    cassandra_view_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewBloomFilterFPChance"
+    )
     """False positive chance for the Bloom filter in the CassandraView."""
 
     cassandra_view_caching: dict[str, str] | None | UnsetType = UNSET
@@ -131,16 +137,24 @@ class CassandraView(Asset):
     cassandra_view_compaction: dict[str, str] | None | UnsetType = UNSET
     """Compaction for the CassandraView."""
 
-    cassandra_view_crc_check_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewCRCCheckChance")
+    cassandra_view_crc_check_chance: float | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewCRCCheckChance"
+    )
     """CRC check chance for the CassandraView."""
 
-    cassandra_view_dc_local_read_repair_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewDCLocalReadRepairChance")
+    cassandra_view_dc_local_read_repair_chance: float | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cassandraViewDCLocalReadRepairChance")
+    )
     """DC-local read repair chance for the CassandraView."""
 
-    cassandra_view_default_ttl: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewDefaultTTL")
+    cassandra_view_default_ttl: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewDefaultTTL"
+    )
     """Default time-to-live (TTL) for the CassandraView."""
 
-    cassandra_view_gc_grace_seconds: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewGCGraceSeconds")
+    cassandra_view_gc_grace_seconds: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewGCGraceSeconds"
+    )
     """Grace period for garbage collection in the CassandraView."""
 
     cassandra_view_include_all_columns: bool | None | UnsetType = UNSET
@@ -149,7 +163,9 @@ class CassandraView(Asset):
     cassandra_view_max_index_interval: int | None | UnsetType = UNSET
     """Maximum index interval for the CassandraView."""
 
-    cassandra_view_membtable_flush_period_in_ms: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewMembtableFlushPeriodInMS")
+    cassandra_view_membtable_flush_period_in_ms: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewMembtableFlushPeriodInMS"
+    )
     """Memtable flush period (in milliseconds) for the CassandraView."""
 
     cassandra_view_min_index_interval: int | None | UnsetType = UNSET
@@ -182,7 +198,9 @@ class CassandraView(Asset):
     cassandra_view_qualified_name: str | None | UnsetType = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -263,7 +281,9 @@ class CassandraView(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -282,41 +302,7 @@ class CassandraView(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cassandra_keyspace is UNSET:
-                errors.append("cassandra_keyspace is required for creation")
-            if self.cassandra_keyspace_name is UNSET:
-                errors.append("cassandra_keyspace_name is required for creation")
-        if errors:
-            raise ValueError(f"CassandraView validation failed: {errors}")
-
-    def minimize(self) -> "CassandraView":
-        self.validate()
-        return CassandraView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCassandraView":
-        if self.guid is not UNSET:
-            return RelatedCassandraView(guid=self.guid)
-        return RelatedCassandraView(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -369,13 +355,16 @@ class CassandraView(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CassandraViewAttributes(AssetAttributes):
     """CassandraView-specific attributes for nested API format."""
 
     cassandra_view_table_id: str | None | UnsetType = UNSET
     """ID of the base table in the CassandraView."""
 
-    cassandra_view_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewBloomFilterFPChance")
+    cassandra_view_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewBloomFilterFPChance"
+    )
     """False positive chance for the Bloom filter in the CassandraView."""
 
     cassandra_view_caching: dict[str, str] | None | UnsetType = UNSET
@@ -387,16 +376,24 @@ class CassandraViewAttributes(AssetAttributes):
     cassandra_view_compaction: dict[str, str] | None | UnsetType = UNSET
     """Compaction for the CassandraView."""
 
-    cassandra_view_crc_check_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewCRCCheckChance")
+    cassandra_view_crc_check_chance: float | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewCRCCheckChance"
+    )
     """CRC check chance for the CassandraView."""
 
-    cassandra_view_dc_local_read_repair_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewDCLocalReadRepairChance")
+    cassandra_view_dc_local_read_repair_chance: float | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cassandraViewDCLocalReadRepairChance")
+    )
     """DC-local read repair chance for the CassandraView."""
 
-    cassandra_view_default_ttl: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewDefaultTTL")
+    cassandra_view_default_ttl: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewDefaultTTL"
+    )
     """Default time-to-live (TTL) for the CassandraView."""
 
-    cassandra_view_gc_grace_seconds: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewGCGraceSeconds")
+    cassandra_view_gc_grace_seconds: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewGCGraceSeconds"
+    )
     """Grace period for garbage collection in the CassandraView."""
 
     cassandra_view_include_all_columns: bool | None | UnsetType = UNSET
@@ -405,7 +402,9 @@ class CassandraViewAttributes(AssetAttributes):
     cassandra_view_max_index_interval: int | None | UnsetType = UNSET
     """Maximum index interval for the CassandraView."""
 
-    cassandra_view_membtable_flush_period_in_ms: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewMembtableFlushPeriodInMS")
+    cassandra_view_membtable_flush_period_in_ms: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewMembtableFlushPeriodInMS"
+    )
     """Memtable flush period (in milliseconds) for the CassandraView."""
 
     cassandra_view_min_index_interval: int | None | UnsetType = UNSET
@@ -438,8 +437,11 @@ class CassandraViewAttributes(AssetAttributes):
     cassandra_view_qualified_name: str | None | UnsetType = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
+
 
 class CassandraViewRelationshipAttributes(AssetRelationshipAttributes):
     """CassandraView-specific relationship attributes for nested API format."""
@@ -522,7 +524,9 @@ class CassandraViewRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -534,13 +538,19 @@ class CassandraViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CassandraViewNested(AssetNested):
     """CassandraView in nested API format for high-performance serialization."""
 
     attributes: CassandraViewAttributes | UnsetType = UNSET
     relationship_attributes: CassandraViewRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CassandraViewRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CassandraViewRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: CassandraViewRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: CassandraViewRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -580,21 +590,30 @@ _CASSANDRA_VIEW_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cassandra_view_attrs(attrs: CassandraViewAttributes, obj: CassandraView) -> None:
+
+def _populate_cassandra_view_attrs(
+    attrs: CassandraViewAttributes, obj: CassandraView
+) -> None:
     """Populate CassandraView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cassandra_view_table_id = obj.cassandra_view_table_id
-    attrs.cassandra_view_bloom_filter_fp_chance = obj.cassandra_view_bloom_filter_fp_chance
+    attrs.cassandra_view_bloom_filter_fp_chance = (
+        obj.cassandra_view_bloom_filter_fp_chance
+    )
     attrs.cassandra_view_caching = obj.cassandra_view_caching
     attrs.cassandra_view_comment = obj.cassandra_view_comment
     attrs.cassandra_view_compaction = obj.cassandra_view_compaction
     attrs.cassandra_view_crc_check_chance = obj.cassandra_view_crc_check_chance
-    attrs.cassandra_view_dc_local_read_repair_chance = obj.cassandra_view_dc_local_read_repair_chance
+    attrs.cassandra_view_dc_local_read_repair_chance = (
+        obj.cassandra_view_dc_local_read_repair_chance
+    )
     attrs.cassandra_view_default_ttl = obj.cassandra_view_default_ttl
     attrs.cassandra_view_gc_grace_seconds = obj.cassandra_view_gc_grace_seconds
     attrs.cassandra_view_include_all_columns = obj.cassandra_view_include_all_columns
     attrs.cassandra_view_max_index_interval = obj.cassandra_view_max_index_interval
-    attrs.cassandra_view_membtable_flush_period_in_ms = obj.cassandra_view_membtable_flush_period_in_ms
+    attrs.cassandra_view_membtable_flush_period_in_ms = (
+        obj.cassandra_view_membtable_flush_period_in_ms
+    )
     attrs.cassandra_view_min_index_interval = obj.cassandra_view_min_index_interval
     attrs.cassandra_view_read_repair_interval = obj.cassandra_view_read_repair_interval
     attrs.cassandra_view_query = obj.cassandra_view_query
@@ -607,23 +626,38 @@ def _populate_cassandra_view_attrs(attrs: CassandraViewAttributes, obj: Cassandr
     attrs.cassandra_view_qualified_name = obj.cassandra_view_qualified_name
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
 
+
 def _extract_cassandra_view_attrs(attrs: CassandraViewAttributes) -> dict:
     """Extract all CassandraView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["cassandra_view_table_id"] = attrs.cassandra_view_table_id
-    result["cassandra_view_bloom_filter_fp_chance"] = attrs.cassandra_view_bloom_filter_fp_chance
+    result["cassandra_view_bloom_filter_fp_chance"] = (
+        attrs.cassandra_view_bloom_filter_fp_chance
+    )
     result["cassandra_view_caching"] = attrs.cassandra_view_caching
     result["cassandra_view_comment"] = attrs.cassandra_view_comment
     result["cassandra_view_compaction"] = attrs.cassandra_view_compaction
     result["cassandra_view_crc_check_chance"] = attrs.cassandra_view_crc_check_chance
-    result["cassandra_view_dc_local_read_repair_chance"] = attrs.cassandra_view_dc_local_read_repair_chance
+    result["cassandra_view_dc_local_read_repair_chance"] = (
+        attrs.cassandra_view_dc_local_read_repair_chance
+    )
     result["cassandra_view_default_ttl"] = attrs.cassandra_view_default_ttl
     result["cassandra_view_gc_grace_seconds"] = attrs.cassandra_view_gc_grace_seconds
-    result["cassandra_view_include_all_columns"] = attrs.cassandra_view_include_all_columns
-    result["cassandra_view_max_index_interval"] = attrs.cassandra_view_max_index_interval
-    result["cassandra_view_membtable_flush_period_in_ms"] = attrs.cassandra_view_membtable_flush_period_in_ms
-    result["cassandra_view_min_index_interval"] = attrs.cassandra_view_min_index_interval
-    result["cassandra_view_read_repair_interval"] = attrs.cassandra_view_read_repair_interval
+    result["cassandra_view_include_all_columns"] = (
+        attrs.cassandra_view_include_all_columns
+    )
+    result["cassandra_view_max_index_interval"] = (
+        attrs.cassandra_view_max_index_interval
+    )
+    result["cassandra_view_membtable_flush_period_in_ms"] = (
+        attrs.cassandra_view_membtable_flush_period_in_ms
+    )
+    result["cassandra_view_min_index_interval"] = (
+        attrs.cassandra_view_min_index_interval
+    )
+    result["cassandra_view_read_repair_interval"] = (
+        attrs.cassandra_view_read_repair_interval
+    )
     result["cassandra_view_query"] = attrs.cassandra_view_query
     result["cassandra_view_where_clause"] = attrs.cassandra_view_where_clause
     result["cassandra_view_speculative_retry"] = attrs.cassandra_view_speculative_retry
@@ -634,6 +668,7 @@ def _extract_cassandra_view_attrs(attrs: CassandraViewAttributes) -> dict:
     result["cassandra_view_qualified_name"] = attrs.cassandra_view_qualified_name
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -674,16 +709,21 @@ def _cassandra_view_to_nested(cassandra_view: CassandraView) -> CassandraViewNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cassandra_view_from_nested(nested: CassandraViewNested) -> CassandraView:
     """Convert nested format to flat CassandraView."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CassandraViewAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CassandraViewAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CASSANDRA_VIEW_REL_FIELDS,
-        CassandraViewRelationshipAttributes
+        CassandraViewRelationshipAttributes,
     )
     return CassandraView(
         guid=nested.guid,
@@ -710,7 +750,10 @@ def _cassandra_view_from_nested(nested: CassandraViewNested) -> CassandraView:
         **merged_rels,
     )
 
-def _cassandra_view_to_nested_bytes(cassandra_view: CassandraView, serde: Serde) -> bytes:
+
+def _cassandra_view_to_nested_bytes(
+    cassandra_view: CassandraView, serde: Serde
+) -> bytes:
     """Convert flat CassandraView to nested JSON bytes."""
     return serde.encode(_cassandra_view_to_nested(cassandra_view))
 
@@ -719,6 +762,7 @@ def _cassandra_view_from_nested_bytes(data: bytes, serde: Serde) -> CassandraVie
     """Convert nested JSON bytes to flat CassandraView."""
     nested = serde.decode(data, CassandraViewNested)
     return _cassandra_view_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -730,29 +774,75 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CassandraView.CASSANDRA_VIEW_TABLE_ID = KeywordField("cassandraViewTableId", "cassandraViewTableId")
-CassandraView.CASSANDRA_VIEW_BLOOM_FILTER_FP_CHANCE = NumericField("cassandraViewBloomFilterFPChance", "cassandraViewBloomFilterFPChance")
-CassandraView.CASSANDRA_VIEW_CACHING = KeywordField("cassandraViewCaching", "cassandraViewCaching")
-CassandraView.CASSANDRA_VIEW_COMMENT = KeywordField("cassandraViewComment", "cassandraViewComment")
-CassandraView.CASSANDRA_VIEW_COMPACTION = KeywordField("cassandraViewCompaction", "cassandraViewCompaction")
-CassandraView.CASSANDRA_VIEW_CRC_CHECK_CHANCE = NumericField("cassandraViewCRCCheckChance", "cassandraViewCRCCheckChance")
-CassandraView.CASSANDRA_VIEW_DC_LOCAL_READ_REPAIR_CHANCE = NumericField("cassandraViewDCLocalReadRepairChance", "cassandraViewDCLocalReadRepairChance")
-CassandraView.CASSANDRA_VIEW_DEFAULT_TTL = NumericField("cassandraViewDefaultTTL", "cassandraViewDefaultTTL")
-CassandraView.CASSANDRA_VIEW_GC_GRACE_SECONDS = NumericField("cassandraViewGCGraceSeconds", "cassandraViewGCGraceSeconds")
-CassandraView.CASSANDRA_VIEW_INCLUDE_ALL_COLUMNS = BooleanField("cassandraViewIncludeAllColumns", "cassandraViewIncludeAllColumns")
-CassandraView.CASSANDRA_VIEW_MAX_INDEX_INTERVAL = NumericField("cassandraViewMaxIndexInterval", "cassandraViewMaxIndexInterval")
-CassandraView.CASSANDRA_VIEW_MEMBTABLE_FLUSH_PERIOD_IN_MS = NumericField("cassandraViewMembtableFlushPeriodInMS", "cassandraViewMembtableFlushPeriodInMS")
-CassandraView.CASSANDRA_VIEW_MIN_INDEX_INTERVAL = NumericField("cassandraViewMinIndexInterval", "cassandraViewMinIndexInterval")
-CassandraView.CASSANDRA_VIEW_READ_REPAIR_INTERVAL = NumericField("cassandraViewReadRepairInterval", "cassandraViewReadRepairInterval")
-CassandraView.CASSANDRA_VIEW_QUERY = KeywordField("cassandraViewQuery", "cassandraViewQuery")
-CassandraView.CASSANDRA_VIEW_WHERE_CLAUSE = KeywordField("cassandraViewWhereClause", "cassandraViewWhereClause")
-CassandraView.CASSANDRA_VIEW_SPECULATIVE_RETRY = KeywordField("cassandraViewSpeculativeRetry", "cassandraViewSpeculativeRetry")
-CassandraView.CASSANDRA_KEYSPACE_NAME = KeywordField("cassandraKeyspaceName", "cassandraKeyspaceName")
-CassandraView.CASSANDRA_TABLE_NAME = KeywordField("cassandraTableName", "cassandraTableName")
-CassandraView.CASSANDRA_VIEW_NAME = KeywordField("cassandraViewName", "cassandraViewName")
-CassandraView.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField("cassandraTableQualifiedName", "cassandraTableQualifiedName")
-CassandraView.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField("cassandraViewQualifiedName", "cassandraViewQualifiedName")
-CassandraView.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+CassandraView.CASSANDRA_VIEW_TABLE_ID = KeywordField(
+    "cassandraViewTableId", "cassandraViewTableId"
+)
+CassandraView.CASSANDRA_VIEW_BLOOM_FILTER_FP_CHANCE = NumericField(
+    "cassandraViewBloomFilterFPChance", "cassandraViewBloomFilterFPChance"
+)
+CassandraView.CASSANDRA_VIEW_CACHING = KeywordField(
+    "cassandraViewCaching", "cassandraViewCaching"
+)
+CassandraView.CASSANDRA_VIEW_COMMENT = KeywordField(
+    "cassandraViewComment", "cassandraViewComment"
+)
+CassandraView.CASSANDRA_VIEW_COMPACTION = KeywordField(
+    "cassandraViewCompaction", "cassandraViewCompaction"
+)
+CassandraView.CASSANDRA_VIEW_CRC_CHECK_CHANCE = NumericField(
+    "cassandraViewCRCCheckChance", "cassandraViewCRCCheckChance"
+)
+CassandraView.CASSANDRA_VIEW_DC_LOCAL_READ_REPAIR_CHANCE = NumericField(
+    "cassandraViewDCLocalReadRepairChance", "cassandraViewDCLocalReadRepairChance"
+)
+CassandraView.CASSANDRA_VIEW_DEFAULT_TTL = NumericField(
+    "cassandraViewDefaultTTL", "cassandraViewDefaultTTL"
+)
+CassandraView.CASSANDRA_VIEW_GC_GRACE_SECONDS = NumericField(
+    "cassandraViewGCGraceSeconds", "cassandraViewGCGraceSeconds"
+)
+CassandraView.CASSANDRA_VIEW_INCLUDE_ALL_COLUMNS = BooleanField(
+    "cassandraViewIncludeAllColumns", "cassandraViewIncludeAllColumns"
+)
+CassandraView.CASSANDRA_VIEW_MAX_INDEX_INTERVAL = NumericField(
+    "cassandraViewMaxIndexInterval", "cassandraViewMaxIndexInterval"
+)
+CassandraView.CASSANDRA_VIEW_MEMBTABLE_FLUSH_PERIOD_IN_MS = NumericField(
+    "cassandraViewMembtableFlushPeriodInMS", "cassandraViewMembtableFlushPeriodInMS"
+)
+CassandraView.CASSANDRA_VIEW_MIN_INDEX_INTERVAL = NumericField(
+    "cassandraViewMinIndexInterval", "cassandraViewMinIndexInterval"
+)
+CassandraView.CASSANDRA_VIEW_READ_REPAIR_INTERVAL = NumericField(
+    "cassandraViewReadRepairInterval", "cassandraViewReadRepairInterval"
+)
+CassandraView.CASSANDRA_VIEW_QUERY = KeywordField(
+    "cassandraViewQuery", "cassandraViewQuery"
+)
+CassandraView.CASSANDRA_VIEW_WHERE_CLAUSE = KeywordField(
+    "cassandraViewWhereClause", "cassandraViewWhereClause"
+)
+CassandraView.CASSANDRA_VIEW_SPECULATIVE_RETRY = KeywordField(
+    "cassandraViewSpeculativeRetry", "cassandraViewSpeculativeRetry"
+)
+CassandraView.CASSANDRA_KEYSPACE_NAME = KeywordField(
+    "cassandraKeyspaceName", "cassandraKeyspaceName"
+)
+CassandraView.CASSANDRA_TABLE_NAME = KeywordField(
+    "cassandraTableName", "cassandraTableName"
+)
+CassandraView.CASSANDRA_VIEW_NAME = KeywordField(
+    "cassandraViewName", "cassandraViewName"
+)
+CassandraView.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField(
+    "cassandraTableQualifiedName", "cassandraTableQualifiedName"
+)
+CassandraView.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField(
+    "cassandraViewQualifiedName", "cassandraViewQualifiedName"
+)
+CassandraView.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 CassandraView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CassandraView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CassandraView.ANOMALO_CHECKS = RelationField("anomaloChecks")

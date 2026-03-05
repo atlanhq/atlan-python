@@ -43,15 +43,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .cosmos_mongo_db_related import RelatedCosmosMongoDB
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CosmosMongoDB(Asset):
@@ -91,7 +93,9 @@ class CosmosMongoDB(Asset):
 
     type_name: Union[str, UnsetType] = "CosmosMongoDB"
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -166,7 +170,9 @@ class CosmosMongoDB(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -180,30 +186,6 @@ class CosmosMongoDB(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "CosmosMongoDB"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"CosmosMongoDB validation failed: {errors}")
-
-    def minimize(self) -> "CosmosMongoDB":
-        self.validate()
-        return CosmosMongoDB(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCosmosMongoDB":
-        if self.guid is not UNSET:
-            return RelatedCosmosMongoDB(guid=self.guid)
-        return RelatedCosmosMongoDB(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,11 +238,15 @@ class CosmosMongoDB(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CosmosMongoDBAttributes(AssetAttributes):
     """CosmosMongoDB-specific attributes for nested API format."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
+
 
 class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     """CosmosMongoDB-specific relationship attributes for nested API format."""
@@ -337,7 +323,9 @@ class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -349,13 +337,19 @@ class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CosmosMongoDBNested(AssetNested):
     """CosmosMongoDB in nested API format for high-performance serialization."""
 
     attributes: CosmosMongoDBAttributes | UnsetType = UNSET
     relationship_attributes: CosmosMongoDBRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CosmosMongoDBRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CosmosMongoDBRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: CosmosMongoDBRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: CosmosMongoDBRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -393,16 +387,21 @@ _COSMOS_MONGO_DB_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cosmos_mongo_db_attrs(attrs: CosmosMongoDBAttributes, obj: CosmosMongoDB) -> None:
+
+def _populate_cosmos_mongo_db_attrs(
+    attrs: CosmosMongoDBAttributes, obj: CosmosMongoDB
+) -> None:
     """Populate CosmosMongoDB-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+
 
 def _extract_cosmos_mongo_db_attrs(attrs: CosmosMongoDBAttributes) -> dict:
     """Extract all CosmosMongoDB attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -415,7 +414,9 @@ def _cosmos_mongo_db_to_nested(cosmos_mongo_db: CosmosMongoDB) -> CosmosMongoDBN
     _populate_cosmos_mongo_db_attrs(attrs, cosmos_mongo_db)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cosmos_mongo_db, _COSMOS_MONGO_DB_REL_FIELDS, CosmosMongoDBRelationshipAttributes
+        cosmos_mongo_db,
+        _COSMOS_MONGO_DB_REL_FIELDS,
+        CosmosMongoDBRelationshipAttributes,
     )
     return CosmosMongoDBNested(
         guid=cosmos_mongo_db.guid,
@@ -443,16 +444,21 @@ def _cosmos_mongo_db_to_nested(cosmos_mongo_db: CosmosMongoDB) -> CosmosMongoDBN
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cosmos_mongo_db_from_nested(nested: CosmosMongoDBNested) -> CosmosMongoDB:
     """Convert nested format to flat CosmosMongoDB."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CosmosMongoDBAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CosmosMongoDBAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COSMOS_MONGO_DB_REL_FIELDS,
-        CosmosMongoDBRelationshipAttributes
+        CosmosMongoDBRelationshipAttributes,
     )
     return CosmosMongoDB(
         guid=nested.guid,
@@ -479,7 +485,10 @@ def _cosmos_mongo_db_from_nested(nested: CosmosMongoDBNested) -> CosmosMongoDB:
         **merged_rels,
     )
 
-def _cosmos_mongo_db_to_nested_bytes(cosmos_mongo_db: CosmosMongoDB, serde: Serde) -> bytes:
+
+def _cosmos_mongo_db_to_nested_bytes(
+    cosmos_mongo_db: CosmosMongoDB, serde: Serde
+) -> bytes:
     """Convert flat CosmosMongoDB to nested JSON bytes."""
     return serde.encode(_cosmos_mongo_db_to_nested(cosmos_mongo_db))
 
@@ -489,6 +498,7 @@ def _cosmos_mongo_db_from_nested_bytes(data: bytes, serde: Serde) -> CosmosMongo
     nested = serde.decode(data, CosmosMongoDBNested)
     return _cosmos_mongo_db_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -497,7 +507,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CosmosMongoDB.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+CosmosMongoDB.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 CosmosMongoDB.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CosmosMongoDB.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CosmosMongoDB.ANOMALO_CHECKS = RelationField("anomaloChecks")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,16 +43,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .adls_related import RelatedADLSAccount, RelatedADLSContainer, RelatedADLSObject
+from .adls_related import RelatedADLSAccount, RelatedADLSObject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ADLSContainer(Asset):
@@ -224,7 +227,9 @@ class ADLSContainer(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -243,43 +248,7 @@ class ADLSContainer(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.adls_account is UNSET:
-                errors.append("adls_account is required for creation")
-            if self.adls_account_name is UNSET:
-                errors.append("adls_account_name is required for creation")
-            if self.adls_account_qualified_name is UNSET:
-                errors.append("adls_account_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"ADLSContainer validation failed: {errors}")
-
-    def minimize(self) -> "ADLSContainer":
-        self.validate()
-        return ADLSContainer(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedADLSContainer":
-        if self.guid is not UNSET:
-            return RelatedADLSContainer(guid=self.guid)
-        return RelatedADLSContainer(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     @classmethod
     @init_guid
@@ -378,6 +347,7 @@ class ADLSContainer(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ADLSContainerAttributes(AssetAttributes):
     """ADLSContainer-specific attributes for nested API format."""
 
@@ -419,6 +389,7 @@ class ADLSContainerAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class ADLSContainerRelationshipAttributes(AssetRelationshipAttributes):
     """ADLSContainer-specific relationship attributes for nested API format."""
@@ -501,7 +472,9 @@ class ADLSContainerRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -513,13 +486,19 @@ class ADLSContainerRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ADLSContainerNested(AssetNested):
     """ADLSContainer in nested API format for high-performance serialization."""
 
     attributes: ADLSContainerAttributes | UnsetType = UNSET
     relationship_attributes: ADLSContainerRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ADLSContainerRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: ADLSContainerRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: ADLSContainerRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: ADLSContainerRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -559,14 +538,19 @@ _ADLS_CONTAINER_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_adls_container_attrs(attrs: ADLSContainerAttributes, obj: ADLSContainer) -> None:
+
+def _populate_adls_container_attrs(
+    attrs: ADLSContainerAttributes, obj: ADLSContainer
+) -> None:
     """Populate ADLSContainer-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.adls_container_url = obj.adls_container_url
     attrs.adls_container_lease_state = obj.adls_container_lease_state
     attrs.adls_container_lease_status = obj.adls_container_lease_status
     attrs.adls_container_encryption_scope = obj.adls_container_encryption_scope
-    attrs.adls_container_version_level_immutability_support = obj.adls_container_version_level_immutability_support
+    attrs.adls_container_version_level_immutability_support = (
+        obj.adls_container_version_level_immutability_support
+    )
     attrs.adls_object_count = obj.adls_object_count
     attrs.adls_account_qualified_name = obj.adls_account_qualified_name
     attrs.adls_account_name = obj.adls_account_name
@@ -576,6 +560,7 @@ def _populate_adls_container_attrs(attrs: ADLSContainerAttributes, obj: ADLSCont
     attrs.azure_tags = obj.azure_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
 
+
 def _extract_adls_container_attrs(attrs: ADLSContainerAttributes) -> dict:
     """Extract all ADLSContainer attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -583,7 +568,9 @@ def _extract_adls_container_attrs(attrs: ADLSContainerAttributes) -> dict:
     result["adls_container_lease_state"] = attrs.adls_container_lease_state
     result["adls_container_lease_status"] = attrs.adls_container_lease_status
     result["adls_container_encryption_scope"] = attrs.adls_container_encryption_scope
-    result["adls_container_version_level_immutability_support"] = attrs.adls_container_version_level_immutability_support
+    result["adls_container_version_level_immutability_support"] = (
+        attrs.adls_container_version_level_immutability_support
+    )
     result["adls_object_count"] = attrs.adls_object_count
     result["adls_account_qualified_name"] = attrs.adls_account_qualified_name
     result["adls_account_name"] = attrs.adls_account_name
@@ -593,6 +580,7 @@ def _extract_adls_container_attrs(attrs: ADLSContainerAttributes) -> dict:
     result["azure_tags"] = attrs.azure_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -633,16 +621,21 @@ def _adls_container_to_nested(adls_container: ADLSContainer) -> ADLSContainerNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _adls_container_from_nested(nested: ADLSContainerNested) -> ADLSContainer:
     """Convert nested format to flat ADLSContainer."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ADLSContainerAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ADLSContainerAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADLS_CONTAINER_REL_FIELDS,
-        ADLSContainerRelationshipAttributes
+        ADLSContainerRelationshipAttributes,
     )
     return ADLSContainer(
         guid=nested.guid,
@@ -669,7 +662,10 @@ def _adls_container_from_nested(nested: ADLSContainerNested) -> ADLSContainer:
         **merged_rels,
     )
 
-def _adls_container_to_nested_bytes(adls_container: ADLSContainer, serde: Serde) -> bytes:
+
+def _adls_container_to_nested_bytes(
+    adls_container: ADLSContainer, serde: Serde
+) -> bytes:
     """Convert flat ADLSContainer to nested JSON bytes."""
     return serde.encode(_adls_container_to_nested(adls_container))
 
@@ -678,6 +674,7 @@ def _adls_container_from_nested_bytes(data: bytes, serde: Serde) -> ADLSContaine
     """Convert nested JSON bytes to flat ADLSContainer."""
     nested = serde.decode(data, ADLSContainerNested)
     return _adls_container_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -690,19 +687,40 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ADLSContainer.ADLS_CONTAINER_URL = KeywordTextField("adlsContainerUrl", "adlsContainerUrl", "adlsContainerUrl.text")
-ADLSContainer.ADLS_CONTAINER_LEASE_STATE = KeywordField("adlsContainerLeaseState", "adlsContainerLeaseState")
-ADLSContainer.ADLS_CONTAINER_LEASE_STATUS = KeywordField("adlsContainerLeaseStatus", "adlsContainerLeaseStatus")
-ADLSContainer.ADLS_CONTAINER_ENCRYPTION_SCOPE = KeywordField("adlsContainerEncryptionScope", "adlsContainerEncryptionScope")
-ADLSContainer.ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT = BooleanField("adlsContainerVersionLevelImmutabilitySupport", "adlsContainerVersionLevelImmutabilitySupport")
+ADLSContainer.ADLS_CONTAINER_URL = KeywordTextField(
+    "adlsContainerUrl", "adlsContainerUrl", "adlsContainerUrl.text"
+)
+ADLSContainer.ADLS_CONTAINER_LEASE_STATE = KeywordField(
+    "adlsContainerLeaseState", "adlsContainerLeaseState"
+)
+ADLSContainer.ADLS_CONTAINER_LEASE_STATUS = KeywordField(
+    "adlsContainerLeaseStatus", "adlsContainerLeaseStatus"
+)
+ADLSContainer.ADLS_CONTAINER_ENCRYPTION_SCOPE = KeywordField(
+    "adlsContainerEncryptionScope", "adlsContainerEncryptionScope"
+)
+ADLSContainer.ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT = BooleanField(
+    "adlsContainerVersionLevelImmutabilitySupport",
+    "adlsContainerVersionLevelImmutabilitySupport",
+)
 ADLSContainer.ADLS_OBJECT_COUNT = NumericField("adlsObjectCount", "adlsObjectCount")
-ADLSContainer.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField("adlsAccountQualifiedName", "adlsAccountQualifiedName", "adlsAccountQualifiedName.text")
+ADLSContainer.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField(
+    "adlsAccountQualifiedName",
+    "adlsAccountQualifiedName",
+    "adlsAccountQualifiedName.text",
+)
 ADLSContainer.ADLS_ACCOUNT_NAME = KeywordField("adlsAccountName", "adlsAccountName")
-ADLSContainer.AZURE_RESOURCE_ID = KeywordTextField("azureResourceId", "azureResourceId", "azureResourceId.text")
+ADLSContainer.AZURE_RESOURCE_ID = KeywordTextField(
+    "azureResourceId", "azureResourceId", "azureResourceId.text"
+)
 ADLSContainer.AZURE_LOCATION = KeywordField("azureLocation", "azureLocation")
-ADLSContainer.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField("adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation")
+ADLSContainer.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField(
+    "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+)
 ADLSContainer.AZURE_TAGS = KeywordField("azureTags", "azureTags")
-ADLSContainer.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+ADLSContainer.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 ADLSContainer.ADLS_ACCOUNT = RelationField("adlsAccount")
 ADLSContainer.ADLS_OBJECTS = RelationField("adlsObjects")
 ADLSContainer.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

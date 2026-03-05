@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cube_related import RelatedCubeDimension, RelatedMultiDimensionalDataset
+from .cube_related import RelatedCubeDimension
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MultiDimensionalDataset(Asset):
@@ -190,7 +193,9 @@ class MultiDimensionalDataset(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -204,30 +209,6 @@ class MultiDimensionalDataset(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MultiDimensionalDataset"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"MultiDimensionalDataset validation failed: {errors}")
-
-    def minimize(self) -> "MultiDimensionalDataset":
-        self.validate()
-        return MultiDimensionalDataset(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMultiDimensionalDataset":
-        if self.guid is not UNSET:
-            return RelatedMultiDimensionalDataset(guid=self.guid)
-        return RelatedMultiDimensionalDataset(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -258,7 +239,9 @@ class MultiDimensionalDataset(Asset):
         return _multi_dimensional_dataset_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MultiDimensionalDataset:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MultiDimensionalDataset:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -280,6 +263,7 @@ class MultiDimensionalDataset(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MultiDimensionalDatasetAttributes(AssetAttributes):
     """MultiDimensionalDataset-specific attributes for nested API format."""
 
@@ -300,6 +284,7 @@ class MultiDimensionalDatasetAttributes(AssetAttributes):
 
     cube_hierarchy_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dimension hierarchy in which this asset exists, or empty if it is itself a hierarchy."""
+
 
 class MultiDimensionalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """MultiDimensionalDataset-specific relationship attributes for nested API format."""
@@ -379,7 +364,9 @@ class MultiDimensionalDatasetRelationshipAttributes(AssetRelationshipAttributes)
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -391,13 +378,21 @@ class MultiDimensionalDatasetRelationshipAttributes(AssetRelationshipAttributes)
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MultiDimensionalDatasetNested(AssetNested):
     """MultiDimensionalDataset in nested API format for high-performance serialization."""
 
     attributes: MultiDimensionalDatasetAttributes | UnsetType = UNSET
-    relationship_attributes: MultiDimensionalDatasetRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MultiDimensionalDatasetRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MultiDimensionalDatasetRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: (
+        MultiDimensionalDatasetRelationshipAttributes | UnsetType
+    ) = UNSET
+    append_relationship_attributes: (
+        MultiDimensionalDatasetRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        MultiDimensionalDatasetRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -436,7 +431,10 @@ _MULTI_DIMENSIONAL_DATASET_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_multi_dimensional_dataset_attrs(attrs: MultiDimensionalDatasetAttributes, obj: MultiDimensionalDataset) -> None:
+
+def _populate_multi_dimensional_dataset_attrs(
+    attrs: MultiDimensionalDatasetAttributes, obj: MultiDimensionalDataset
+) -> None:
     """Populate MultiDimensionalDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cube_name = obj.cube_name
@@ -446,7 +444,10 @@ def _populate_multi_dimensional_dataset_attrs(attrs: MultiDimensionalDatasetAttr
     attrs.cube_hierarchy_name = obj.cube_hierarchy_name
     attrs.cube_hierarchy_qualified_name = obj.cube_hierarchy_qualified_name
 
-def _extract_multi_dimensional_dataset_attrs(attrs: MultiDimensionalDatasetAttributes) -> dict:
+
+def _extract_multi_dimensional_dataset_attrs(
+    attrs: MultiDimensionalDatasetAttributes,
+) -> dict:
     """Extract all MultiDimensionalDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["cube_name"] = attrs.cube_name
@@ -457,18 +458,23 @@ def _extract_multi_dimensional_dataset_attrs(attrs: MultiDimensionalDatasetAttri
     result["cube_hierarchy_qualified_name"] = attrs.cube_hierarchy_qualified_name
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _multi_dimensional_dataset_to_nested(multi_dimensional_dataset: MultiDimensionalDataset) -> MultiDimensionalDatasetNested:
+def _multi_dimensional_dataset_to_nested(
+    multi_dimensional_dataset: MultiDimensionalDataset,
+) -> MultiDimensionalDatasetNested:
     """Convert flat MultiDimensionalDataset to nested format."""
     attrs = MultiDimensionalDatasetAttributes()
     _populate_multi_dimensional_dataset_attrs(attrs, multi_dimensional_dataset)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        multi_dimensional_dataset, _MULTI_DIMENSIONAL_DATASET_REL_FIELDS, MultiDimensionalDatasetRelationshipAttributes
+        multi_dimensional_dataset,
+        _MULTI_DIMENSIONAL_DATASET_REL_FIELDS,
+        MultiDimensionalDatasetRelationshipAttributes,
     )
     return MultiDimensionalDatasetNested(
         guid=multi_dimensional_dataset.guid,
@@ -496,16 +502,23 @@ def _multi_dimensional_dataset_to_nested(multi_dimensional_dataset: MultiDimensi
         remove_relationship_attributes=remove_rels,
     )
 
-def _multi_dimensional_dataset_from_nested(nested: MultiDimensionalDatasetNested) -> MultiDimensionalDataset:
+
+def _multi_dimensional_dataset_from_nested(
+    nested: MultiDimensionalDatasetNested,
+) -> MultiDimensionalDataset:
     """Convert nested format to flat MultiDimensionalDataset."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MultiDimensionalDatasetAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MultiDimensionalDatasetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MULTI_DIMENSIONAL_DATASET_REL_FIELDS,
-        MultiDimensionalDatasetRelationshipAttributes
+        MultiDimensionalDatasetRelationshipAttributes,
     )
     return MultiDimensionalDataset(
         guid=nested.guid,
@@ -532,15 +545,21 @@ def _multi_dimensional_dataset_from_nested(nested: MultiDimensionalDatasetNested
         **merged_rels,
     )
 
-def _multi_dimensional_dataset_to_nested_bytes(multi_dimensional_dataset: MultiDimensionalDataset, serde: Serde) -> bytes:
+
+def _multi_dimensional_dataset_to_nested_bytes(
+    multi_dimensional_dataset: MultiDimensionalDataset, serde: Serde
+) -> bytes:
     """Convert flat MultiDimensionalDataset to nested JSON bytes."""
     return serde.encode(_multi_dimensional_dataset_to_nested(multi_dimensional_dataset))
 
 
-def _multi_dimensional_dataset_from_nested_bytes(data: bytes, serde: Serde) -> MultiDimensionalDataset:
+def _multi_dimensional_dataset_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> MultiDimensionalDataset:
     """Convert nested JSON bytes to flat MultiDimensionalDataset."""
     nested = serde.decode(data, MultiDimensionalDatasetNested)
     return _multi_dimensional_dataset_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -551,24 +570,48 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MultiDimensionalDataset.CUBE_NAME = KeywordTextField("cubeName", "cubeName", "cubeName.text")
-MultiDimensionalDataset.CUBE_QUALIFIED_NAME = KeywordField("cubeQualifiedName", "cubeQualifiedName")
-MultiDimensionalDataset.CUBE_DIMENSION_NAME = KeywordTextField("cubeDimensionName", "cubeDimensionName", "cubeDimensionName.text")
-MultiDimensionalDataset.CUBE_DIMENSION_QUALIFIED_NAME = KeywordField("cubeDimensionQualifiedName", "cubeDimensionQualifiedName")
-MultiDimensionalDataset.CUBE_HIERARCHY_NAME = KeywordTextField("cubeHierarchyName", "cubeHierarchyName", "cubeHierarchyName.text")
-MultiDimensionalDataset.CUBE_HIERARCHY_QUALIFIED_NAME = KeywordField("cubeHierarchyQualifiedName", "cubeHierarchyQualifiedName")
+MultiDimensionalDataset.CUBE_NAME = KeywordTextField(
+    "cubeName", "cubeName", "cubeName.text"
+)
+MultiDimensionalDataset.CUBE_QUALIFIED_NAME = KeywordField(
+    "cubeQualifiedName", "cubeQualifiedName"
+)
+MultiDimensionalDataset.CUBE_DIMENSION_NAME = KeywordTextField(
+    "cubeDimensionName", "cubeDimensionName", "cubeDimensionName.text"
+)
+MultiDimensionalDataset.CUBE_DIMENSION_QUALIFIED_NAME = KeywordField(
+    "cubeDimensionQualifiedName", "cubeDimensionQualifiedName"
+)
+MultiDimensionalDataset.CUBE_HIERARCHY_NAME = KeywordTextField(
+    "cubeHierarchyName", "cubeHierarchyName", "cubeHierarchyName.text"
+)
+MultiDimensionalDataset.CUBE_HIERARCHY_QUALIFIED_NAME = KeywordField(
+    "cubeHierarchyQualifiedName", "cubeHierarchyQualifiedName"
+)
 MultiDimensionalDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-MultiDimensionalDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+MultiDimensionalDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 MultiDimensionalDataset.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MultiDimensionalDataset.APPLICATION = RelationField("application")
 MultiDimensionalDataset.APPLICATION_FIELD = RelationField("applicationField")
-MultiDimensionalDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-MultiDimensionalDataset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-MultiDimensionalDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MultiDimensionalDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MultiDimensionalDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+MultiDimensionalDataset.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+MultiDimensionalDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+MultiDimensionalDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MultiDimensionalDataset.METRICS = RelationField("metrics")
 MultiDimensionalDataset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-MultiDimensionalDataset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+MultiDimensionalDataset.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 MultiDimensionalDataset.MEANINGS = RelationField("meanings")
 MultiDimensionalDataset.MC_MONITORS = RelationField("mcMonitors")
 MultiDimensionalDataset.MC_INCIDENTS = RelationField("mcIncidents")
@@ -577,12 +620,18 @@ MultiDimensionalDataset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields
 MultiDimensionalDataset.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 MultiDimensionalDataset.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 MultiDimensionalDataset.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-MultiDimensionalDataset.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-MultiDimensionalDataset.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+MultiDimensionalDataset.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+MultiDimensionalDataset.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 MultiDimensionalDataset.FILES = RelationField("files")
 MultiDimensionalDataset.LINKS = RelationField("links")
 MultiDimensionalDataset.README = RelationField("readme")
-MultiDimensionalDataset.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+MultiDimensionalDataset.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 MultiDimensionalDataset.SODA_CHECKS = RelationField("sodaChecks")
 MultiDimensionalDataset.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 MultiDimensionalDataset.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .domo_related import RelatedDomo
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Domo(Asset):
@@ -170,7 +171,9 @@ class Domo(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -184,30 +187,6 @@ class Domo(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Domo"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Domo validation failed: {errors}")
-
-    def minimize(self) -> "Domo":
-        self.validate()
-        return Domo(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDomo":
-        if self.guid is not UNSET:
-            return RelatedDomo(guid=self.guid)
-        return RelatedDomo(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -260,6 +239,7 @@ class Domo(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DomoAttributes(AssetAttributes):
     """Domo-specific attributes for nested API format."""
 
@@ -268,6 +248,7 @@ class DomoAttributes(AssetAttributes):
 
     domo_owner_id: str | None | UnsetType = UNSET
     """Id of the owner of the Domo dataset."""
+
 
 class DomoRelationshipAttributes(AssetRelationshipAttributes):
     """Domo-specific relationship attributes for nested API format."""
@@ -344,7 +325,9 @@ class DomoRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -356,6 +339,7 @@ class DomoRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DomoNested(AssetNested):
     """Domo in nested API format for high-performance serialization."""
 
@@ -363,6 +347,7 @@ class DomoNested(AssetNested):
     relationship_attributes: DomoRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DomoRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DomoRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -400,11 +385,13 @@ _DOMO_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_domo_attrs(attrs: DomoAttributes, obj: Domo) -> None:
     """Populate Domo-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.domo_id = obj.domo_id
     attrs.domo_owner_id = obj.domo_owner_id
+
 
 def _extract_domo_attrs(attrs: DomoAttributes) -> dict:
     """Extract all Domo attributes from the attrs struct into a flat dict."""
@@ -412,6 +399,7 @@ def _extract_domo_attrs(attrs: DomoAttributes) -> dict:
     result["domo_id"] = attrs.domo_id
     result["domo_owner_id"] = attrs.domo_owner_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -452,6 +440,7 @@ def _domo_to_nested(domo: Domo) -> DomoNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _domo_from_nested(nested: DomoNested) -> Domo:
     """Convert nested format to flat Domo."""
     attrs = nested.attributes if nested.attributes is not UNSET else DomoAttributes()
@@ -461,7 +450,7 @@ def _domo_from_nested(nested: DomoNested) -> Domo:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DOMO_REL_FIELDS,
-        DomoRelationshipAttributes
+        DomoRelationshipAttributes,
     )
     return Domo(
         guid=nested.guid,
@@ -488,6 +477,7 @@ def _domo_from_nested(nested: DomoNested) -> Domo:
         **merged_rels,
     )
 
+
 def _domo_to_nested_bytes(domo: Domo, serde: Serde) -> bytes:
     """Convert flat Domo to nested JSON bytes."""
     return serde.encode(_domo_to_nested(domo))
@@ -497,6 +487,7 @@ def _domo_from_nested_bytes(data: bytes, serde: Serde) -> Domo:
     """Convert nested JSON bytes to flat Domo."""
     nested = serde.decode(data, DomoNested)
     return _domo_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

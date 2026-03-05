@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -66,6 +65,7 @@ class RelatedDremio(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Dremio"
 
+
 class RelatedDremioSpace(RelatedDremio):
     """
     Related entity reference for DremioSpace assets.
@@ -79,6 +79,7 @@ class RelatedDremioSpace(RelatedDremio):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DremioSpace"
+
 
 class RelatedDremioSource(RelatedDremio):
     """
@@ -112,6 +113,7 @@ class RelatedDremioSource(RelatedDremio):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DremioSource"
 
+
 class RelatedDremioFolder(RelatedDremio):
     """
     Related entity reference for DremioFolder assets.
@@ -129,6 +131,7 @@ class RelatedDremioFolder(RelatedDremio):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DremioFolder"
 
+
 class RelatedDremioPhysicalDataset(RelatedDremio):
     """
     Related entity reference for DremioPhysicalDataset assets.
@@ -143,6 +146,7 @@ class RelatedDremioPhysicalDataset(RelatedDremio):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DremioPhysicalDataset"
 
+
 class RelatedDremioVirtualDataset(RelatedDremio):
     """
     Related entity reference for DremioVirtualDataset assets.
@@ -156,6 +160,7 @@ class RelatedDremioVirtualDataset(RelatedDremio):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DremioVirtualDataset"
+
 
 class RelatedDremioColumn(RelatedDremio):
     """

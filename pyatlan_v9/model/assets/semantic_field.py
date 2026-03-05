@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .semantic_related import RelatedSemanticField
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SemanticField(Asset):
@@ -170,7 +171,9 @@ class SemanticField(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -184,30 +187,6 @@ class SemanticField(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SemanticField"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SemanticField validation failed: {errors}")
-
-    def minimize(self) -> "SemanticField":
-        self.validate()
-        return SemanticField(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSemanticField":
-        if self.guid is not UNSET:
-            return RelatedSemanticField(guid=self.guid)
-        return RelatedSemanticField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -260,6 +239,7 @@ class SemanticField(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SemanticFieldAttributes(AssetAttributes):
     """SemanticField-specific attributes for nested API format."""
 
@@ -268,6 +248,7 @@ class SemanticFieldAttributes(AssetAttributes):
 
     semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
+
 
 class SemanticFieldRelationshipAttributes(AssetRelationshipAttributes):
     """SemanticField-specific relationship attributes for nested API format."""
@@ -344,7 +325,9 @@ class SemanticFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -356,13 +339,19 @@ class SemanticFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SemanticFieldNested(AssetNested):
     """SemanticField in nested API format for high-performance serialization."""
 
     attributes: SemanticFieldAttributes | UnsetType = UNSET
     relationship_attributes: SemanticFieldRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SemanticFieldRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SemanticFieldRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: SemanticFieldRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: SemanticFieldRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -400,11 +389,15 @@ _SEMANTIC_FIELD_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_semantic_field_attrs(attrs: SemanticFieldAttributes, obj: SemanticField) -> None:
+
+def _populate_semantic_field_attrs(
+    attrs: SemanticFieldAttributes, obj: SemanticField
+) -> None:
     """Populate SemanticField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
+
 
 def _extract_semantic_field_attrs(attrs: SemanticFieldAttributes) -> dict:
     """Extract all SemanticField attributes from the attrs struct into a flat dict."""
@@ -412,6 +405,7 @@ def _extract_semantic_field_attrs(attrs: SemanticFieldAttributes) -> dict:
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -452,16 +446,21 @@ def _semantic_field_to_nested(semantic_field: SemanticField) -> SemanticFieldNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _semantic_field_from_nested(nested: SemanticFieldNested) -> SemanticField:
     """Convert nested format to flat SemanticField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SemanticFieldAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SemanticFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SEMANTIC_FIELD_REL_FIELDS,
-        SemanticFieldRelationshipAttributes
+        SemanticFieldRelationshipAttributes,
     )
     return SemanticField(
         guid=nested.guid,
@@ -488,7 +487,10 @@ def _semantic_field_from_nested(nested: SemanticFieldNested) -> SemanticField:
         **merged_rels,
     )
 
-def _semantic_field_to_nested_bytes(semantic_field: SemanticField, serde: Serde) -> bytes:
+
+def _semantic_field_to_nested_bytes(
+    semantic_field: SemanticField, serde: Serde
+) -> bytes:
     """Convert flat SemanticField to nested JSON bytes."""
     return serde.encode(_semantic_field_to_nested(semantic_field))
 
@@ -498,6 +500,7 @@ def _semantic_field_from_nested_bytes(data: bytes, serde: Serde) -> SemanticFiel
     nested = serde.decode(data, SemanticFieldNested)
     return _semantic_field_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -506,7 +509,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SemanticField.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
+SemanticField.SEMANTIC_EXPRESSION = KeywordField(
+    "semanticExpression", "semanticExpression"
+)
 SemanticField.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
 SemanticField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SemanticField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

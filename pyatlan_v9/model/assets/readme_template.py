@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -42,15 +41,19 @@ from .referenceable_related import RelatedReferenceable
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .resource_related import RelatedFile, RelatedLink, RelatedReadme, RelatedReadmeTemplate
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ReadmeTemplate(Asset):
@@ -185,7 +188,9 @@ class ReadmeTemplate(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -199,30 +204,6 @@ class ReadmeTemplate(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ReadmeTemplate"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"ReadmeTemplate validation failed: {errors}")
-
-    def minimize(self) -> "ReadmeTemplate":
-        self.validate()
-        return ReadmeTemplate(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedReadmeTemplate":
-        if self.guid is not UNSET:
-            return RelatedReadmeTemplate(guid=self.guid)
-        return RelatedReadmeTemplate(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -275,6 +256,7 @@ class ReadmeTemplate(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ReadmeTemplateAttributes(AssetAttributes):
     """ReadmeTemplate-specific attributes for nested API format."""
 
@@ -295,6 +277,7 @@ class ReadmeTemplateAttributes(AssetAttributes):
 
     resource_metadata: dict[str, str] | None | UnsetType = UNSET
     """Metadata of the resource."""
+
 
 class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     """ReadmeTemplate-specific relationship attributes for nested API format."""
@@ -371,7 +354,9 @@ class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -383,13 +368,19 @@ class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ReadmeTemplateNested(AssetNested):
     """ReadmeTemplate in nested API format for high-performance serialization."""
 
     attributes: ReadmeTemplateAttributes | UnsetType = UNSET
     relationship_attributes: ReadmeTemplateRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ReadmeTemplateRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: ReadmeTemplateRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: ReadmeTemplateRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: ReadmeTemplateRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -427,7 +418,10 @@ _README_TEMPLATE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_readme_template_attrs(attrs: ReadmeTemplateAttributes, obj: ReadmeTemplate) -> None:
+
+def _populate_readme_template_attrs(
+    attrs: ReadmeTemplateAttributes, obj: ReadmeTemplate
+) -> None:
     """Populate ReadmeTemplate-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.icon = obj.icon
@@ -436,6 +430,7 @@ def _populate_readme_template_attrs(attrs: ReadmeTemplateAttributes, obj: Readme
     attrs.is_global = obj.is_global
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
+
 
 def _extract_readme_template_attrs(attrs: ReadmeTemplateAttributes) -> dict:
     """Extract all ReadmeTemplate attributes from the attrs struct into a flat dict."""
@@ -448,6 +443,7 @@ def _extract_readme_template_attrs(attrs: ReadmeTemplateAttributes) -> dict:
     result["resource_metadata"] = attrs.resource_metadata
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
@@ -459,7 +455,9 @@ def _readme_template_to_nested(readme_template: ReadmeTemplate) -> ReadmeTemplat
     _populate_readme_template_attrs(attrs, readme_template)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        readme_template, _README_TEMPLATE_REL_FIELDS, ReadmeTemplateRelationshipAttributes
+        readme_template,
+        _README_TEMPLATE_REL_FIELDS,
+        ReadmeTemplateRelationshipAttributes,
     )
     return ReadmeTemplateNested(
         guid=readme_template.guid,
@@ -487,16 +485,21 @@ def _readme_template_to_nested(readme_template: ReadmeTemplate) -> ReadmeTemplat
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _readme_template_from_nested(nested: ReadmeTemplateNested) -> ReadmeTemplate:
     """Convert nested format to flat ReadmeTemplate."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ReadmeTemplateAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ReadmeTemplateAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _README_TEMPLATE_REL_FIELDS,
-        ReadmeTemplateRelationshipAttributes
+        ReadmeTemplateRelationshipAttributes,
     )
     return ReadmeTemplate(
         guid=nested.guid,
@@ -523,7 +526,10 @@ def _readme_template_from_nested(nested: ReadmeTemplateNested) -> ReadmeTemplate
         **merged_rels,
     )
 
-def _readme_template_to_nested_bytes(readme_template: ReadmeTemplate, serde: Serde) -> bytes:
+
+def _readme_template_to_nested_bytes(
+    readme_template: ReadmeTemplate, serde: Serde
+) -> bytes:
     """Convert flat ReadmeTemplate to nested JSON bytes."""
     return serde.encode(_readme_template_to_nested(readme_template))
 
@@ -532,6 +538,7 @@ def _readme_template_from_nested_bytes(data: bytes, serde: Serde) -> ReadmeTempl
     """Convert nested JSON bytes to flat ReadmeTemplate."""
     nested = serde.decode(data, ReadmeTemplateNested)
     return _readme_template_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -556,7 +563,9 @@ ReadmeTemplate.APPLICATION_FIELD = RelationField("applicationField")
 ReadmeTemplate.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ReadmeTemplate.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ReadmeTemplate.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-ReadmeTemplate.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+ReadmeTemplate.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 ReadmeTemplate.METRICS = RelationField("metrics")
 ReadmeTemplate.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ReadmeTemplate.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

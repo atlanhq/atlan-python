@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cognos_related import RelatedCognosColumn, RelatedCognosExploration, RelatedCognosFolder
+from .cognos_related import RelatedCognosColumn, RelatedCognosFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CognosExploration(Asset):
@@ -207,7 +210,9 @@ class CognosExploration(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -229,36 +234,6 @@ class CognosExploration(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cognos_folder is UNSET:
-                errors.append("cognos_folder is required for creation")
-        if errors:
-            raise ValueError(f"CognosExploration validation failed: {errors}")
-
-    def minimize(self) -> "CognosExploration":
-        self.validate()
-        return CognosExploration(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCognosExploration":
-        if self.guid is not UNSET:
-            return RelatedCognosExploration(guid=self.guid)
-        return RelatedCognosExploration(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -289,7 +264,9 @@ class CognosExploration(Asset):
         return _cognos_exploration_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> CognosExploration:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> CognosExploration:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -310,6 +287,7 @@ class CognosExploration(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class CognosExplorationAttributes(AssetAttributes):
     """CognosExploration-specific attributes for nested API format."""
@@ -340,6 +318,7 @@ class CognosExplorationAttributes(AssetAttributes):
 
     cognos_default_screen_tip: str | None | UnsetType = UNSET
     """Tooltip text present for the Cognos asset."""
+
 
 class CognosExplorationRelationshipAttributes(AssetRelationshipAttributes):
     """CognosExploration-specific relationship attributes for nested API format."""
@@ -422,7 +401,9 @@ class CognosExplorationRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -434,13 +415,19 @@ class CognosExplorationRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CognosExplorationNested(AssetNested):
     """CognosExploration in nested API format for high-performance serialization."""
 
     attributes: CognosExplorationAttributes | UnsetType = UNSET
     relationship_attributes: CognosExplorationRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CognosExplorationRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CognosExplorationRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        CognosExplorationRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        CognosExplorationRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -480,7 +467,10 @@ _COGNOS_EXPLORATION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognos_exploration_attrs(attrs: CognosExplorationAttributes, obj: CognosExploration) -> None:
+
+def _populate_cognos_exploration_attrs(
+    attrs: CognosExplorationAttributes, obj: CognosExploration
+) -> None:
     """Populate CognosExploration-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cognos_id = obj.cognos_id
@@ -492,6 +482,7 @@ def _populate_cognos_exploration_attrs(attrs: CognosExplorationAttributes, obj: 
     attrs.cognos_is_hidden = obj.cognos_is_hidden
     attrs.cognos_is_disabled = obj.cognos_is_disabled
     attrs.cognos_default_screen_tip = obj.cognos_default_screen_tip
+
 
 def _extract_cognos_exploration_attrs(attrs: CognosExplorationAttributes) -> dict:
     """Extract all CognosExploration attributes from the attrs struct into a flat dict."""
@@ -507,18 +498,23 @@ def _extract_cognos_exploration_attrs(attrs: CognosExplorationAttributes) -> dic
     result["cognos_default_screen_tip"] = attrs.cognos_default_screen_tip
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _cognos_exploration_to_nested(cognos_exploration: CognosExploration) -> CognosExplorationNested:
+def _cognos_exploration_to_nested(
+    cognos_exploration: CognosExploration,
+) -> CognosExplorationNested:
     """Convert flat CognosExploration to nested format."""
     attrs = CognosExplorationAttributes()
     _populate_cognos_exploration_attrs(attrs, cognos_exploration)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cognos_exploration, _COGNOS_EXPLORATION_REL_FIELDS, CognosExplorationRelationshipAttributes
+        cognos_exploration,
+        _COGNOS_EXPLORATION_REL_FIELDS,
+        CognosExplorationRelationshipAttributes,
     )
     return CognosExplorationNested(
         guid=cognos_exploration.guid,
@@ -546,16 +542,23 @@ def _cognos_exploration_to_nested(cognos_exploration: CognosExploration) -> Cogn
         remove_relationship_attributes=remove_rels,
     )
 
-def _cognos_exploration_from_nested(nested: CognosExplorationNested) -> CognosExploration:
+
+def _cognos_exploration_from_nested(
+    nested: CognosExplorationNested,
+) -> CognosExploration:
     """Convert nested format to flat CognosExploration."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CognosExplorationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CognosExplorationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNOS_EXPLORATION_REL_FIELDS,
-        CognosExplorationRelationshipAttributes
+        CognosExplorationRelationshipAttributes,
     )
     return CognosExploration(
         guid=nested.guid,
@@ -582,15 +585,21 @@ def _cognos_exploration_from_nested(nested: CognosExplorationNested) -> CognosEx
         **merged_rels,
     )
 
-def _cognos_exploration_to_nested_bytes(cognos_exploration: CognosExploration, serde: Serde) -> bytes:
+
+def _cognos_exploration_to_nested_bytes(
+    cognos_exploration: CognosExploration, serde: Serde
+) -> bytes:
     """Convert flat CognosExploration to nested JSON bytes."""
     return serde.encode(_cognos_exploration_to_nested(cognos_exploration))
 
 
-def _cognos_exploration_from_nested_bytes(data: bytes, serde: Serde) -> CognosExploration:
+def _cognos_exploration_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> CognosExploration:
     """Convert nested JSON bytes to flat CognosExploration."""
     nested = serde.decode(data, CognosExplorationNested)
     return _cognos_exploration_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -604,13 +613,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 CognosExploration.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosExploration.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
-CognosExploration.COGNOS_PARENT_NAME = KeywordTextField("cognosParentName", "cognosParentName", "cognosParentName.text")
-CognosExploration.COGNOS_PARENT_QUALIFIED_NAME = KeywordField("cognosParentQualifiedName", "cognosParentQualifiedName")
+CognosExploration.COGNOS_PARENT_NAME = KeywordTextField(
+    "cognosParentName", "cognosParentName", "cognosParentName.text"
+)
+CognosExploration.COGNOS_PARENT_QUALIFIED_NAME = KeywordField(
+    "cognosParentQualifiedName", "cognosParentQualifiedName"
+)
 CognosExploration.COGNOS_VERSION = KeywordField("cognosVersion", "cognosVersion")
 CognosExploration.COGNOS_TYPE = KeywordField("cognosType", "cognosType")
 CognosExploration.COGNOS_IS_HIDDEN = BooleanField("cognosIsHidden", "cognosIsHidden")
-CognosExploration.COGNOS_IS_DISABLED = BooleanField("cognosIsDisabled", "cognosIsDisabled")
-CognosExploration.COGNOS_DEFAULT_SCREEN_TIP = KeywordField("cognosDefaultScreenTip", "cognosDefaultScreenTip")
+CognosExploration.COGNOS_IS_DISABLED = BooleanField(
+    "cognosIsDisabled", "cognosIsDisabled"
+)
+CognosExploration.COGNOS_DEFAULT_SCREEN_TIP = KeywordField(
+    "cognosDefaultScreenTip", "cognosDefaultScreenTip"
+)
 CognosExploration.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CognosExploration.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CognosExploration.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -621,7 +638,9 @@ CognosExploration.COGNOS_COLUMNS = RelationField("cognosColumns")
 CognosExploration.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CognosExploration.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CognosExploration.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-CognosExploration.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+CognosExploration.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 CognosExploration.METRICS = RelationField("metrics")
 CognosExploration.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CognosExploration.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

@@ -43,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .redash_related import RelatedRedashQuery, RelatedRedashVisualization
+from .redash_related import RelatedRedashVisualization
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class RedashQuery(Asset):
@@ -98,7 +102,9 @@ class RedashQuery(Asset):
 
     type_name: Union[str, UnsetType] = "RedashQuery"
 
-    redash_query_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="redashQuerySQL")
+    redash_query_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="redashQuerySQL"
+    )
     """SQL code of this query."""
 
     redash_query_parameters: str | None | UnsetType = UNSET
@@ -194,7 +200,9 @@ class RedashQuery(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -208,30 +216,6 @@ class RedashQuery(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "RedashQuery"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"RedashQuery validation failed: {errors}")
-
-    def minimize(self) -> "RedashQuery":
-        self.validate()
-        return RedashQuery(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedRedashQuery":
-        if self.guid is not UNSET:
-            return RelatedRedashQuery(guid=self.guid)
-        return RelatedRedashQuery(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -284,10 +268,13 @@ class RedashQuery(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class RedashQueryAttributes(AssetAttributes):
     """RedashQuery-specific attributes for nested API format."""
 
-    redash_query_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="redashQuerySQL")
+    redash_query_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="redashQuerySQL"
+    )
     """SQL code of this query."""
 
     redash_query_parameters: str | None | UnsetType = UNSET
@@ -307,6 +294,7 @@ class RedashQueryAttributes(AssetAttributes):
 
     redash_is_published: bool | None | UnsetType = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
+
 
 class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     """RedashQuery-specific relationship attributes for nested API format."""
@@ -386,7 +374,9 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -398,13 +388,19 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class RedashQueryNested(AssetNested):
     """RedashQuery in nested API format for high-performance serialization."""
 
     attributes: RedashQueryAttributes | UnsetType = UNSET
     relationship_attributes: RedashQueryRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: RedashQueryRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: RedashQueryRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: RedashQueryRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: RedashQueryRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -443,7 +439,10 @@ _REDASH_QUERY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_redash_query_attrs(attrs: RedashQueryAttributes, obj: RedashQuery) -> None:
+
+def _populate_redash_query_attrs(
+    attrs: RedashQueryAttributes, obj: RedashQuery
+) -> None:
     """Populate RedashQuery-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.redash_query_sql = obj.redash_query_sql
@@ -454,17 +453,21 @@ def _populate_redash_query_attrs(attrs: RedashQueryAttributes, obj: RedashQuery)
     attrs.redash_query_schedule_humanized = obj.redash_query_schedule_humanized
     attrs.redash_is_published = obj.redash_is_published
 
+
 def _extract_redash_query_attrs(attrs: RedashQueryAttributes) -> dict:
     """Extract all RedashQuery attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["redash_query_sql"] = attrs.redash_query_sql
     result["redash_query_parameters"] = attrs.redash_query_parameters
     result["redash_query_schedule"] = attrs.redash_query_schedule
-    result["redash_query_last_execution_runtime"] = attrs.redash_query_last_execution_runtime
+    result["redash_query_last_execution_runtime"] = (
+        attrs.redash_query_last_execution_runtime
+    )
     result["redash_query_last_executed_at"] = attrs.redash_query_last_executed_at
     result["redash_query_schedule_humanized"] = attrs.redash_query_schedule_humanized
     result["redash_is_published"] = attrs.redash_is_published
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -505,16 +508,19 @@ def _redash_query_to_nested(redash_query: RedashQuery) -> RedashQueryNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _redash_query_from_nested(nested: RedashQueryNested) -> RedashQuery:
     """Convert nested format to flat RedashQuery."""
-    attrs = nested.attributes if nested.attributes is not UNSET else RedashQueryAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else RedashQueryAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _REDASH_QUERY_REL_FIELDS,
-        RedashQueryRelationshipAttributes
+        RedashQueryRelationshipAttributes,
     )
     return RedashQuery(
         guid=nested.guid,
@@ -541,6 +547,7 @@ def _redash_query_from_nested(nested: RedashQueryNested) -> RedashQuery:
         **merged_rels,
     )
 
+
 def _redash_query_to_nested_bytes(redash_query: RedashQuery, serde: Serde) -> bytes:
     """Convert flat RedashQuery to nested JSON bytes."""
     return serde.encode(_redash_query_to_nested(redash_query))
@@ -550,6 +557,7 @@ def _redash_query_from_nested_bytes(data: bytes, serde: Serde) -> RedashQuery:
     """Convert nested JSON bytes to flat RedashQuery."""
     nested = serde.decode(data, RedashQueryNested)
     return _redash_query_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -563,11 +571,23 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 RedashQuery.REDASH_QUERY_SQL = KeywordField("redashQuerySQL", "redashQuerySQL")
-RedashQuery.REDASH_QUERY_PARAMETERS = KeywordField("redashQueryParameters", "redashQueryParameters")
-RedashQuery.REDASH_QUERY_SCHEDULE = KeywordField("redashQuerySchedule", "redashQuerySchedule")
-RedashQuery.REDASH_QUERY_LAST_EXECUTION_RUNTIME = NumericField("redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime")
-RedashQuery.REDASH_QUERY_LAST_EXECUTED_AT = NumericField("redashQueryLastExecutedAt", "redashQueryLastExecutedAt")
-RedashQuery.REDASH_QUERY_SCHEDULE_HUMANIZED = KeywordTextField("redashQueryScheduleHumanized", "redashQueryScheduleHumanized", "redashQueryScheduleHumanized.text")
+RedashQuery.REDASH_QUERY_PARAMETERS = KeywordField(
+    "redashQueryParameters", "redashQueryParameters"
+)
+RedashQuery.REDASH_QUERY_SCHEDULE = KeywordField(
+    "redashQuerySchedule", "redashQuerySchedule"
+)
+RedashQuery.REDASH_QUERY_LAST_EXECUTION_RUNTIME = NumericField(
+    "redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime"
+)
+RedashQuery.REDASH_QUERY_LAST_EXECUTED_AT = NumericField(
+    "redashQueryLastExecutedAt", "redashQueryLastExecutedAt"
+)
+RedashQuery.REDASH_QUERY_SCHEDULE_HUMANIZED = KeywordTextField(
+    "redashQueryScheduleHumanized",
+    "redashQueryScheduleHumanized",
+    "redashQueryScheduleHumanized.text",
+)
 RedashQuery.REDASH_IS_PUBLISHED = BooleanField("redashIsPublished", "redashIsPublished")
 RedashQuery.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 RedashQuery.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

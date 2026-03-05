@@ -44,15 +44,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .power_bi_related import RelatedPowerBIColumn, RelatedPowerBIMeasure, RelatedPowerBITable
+from .power_bi_related import RelatedPowerBIColumn, RelatedPowerBITable
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class PowerBIMeasure(Asset):
@@ -109,28 +113,44 @@ class PowerBIMeasure(Asset):
     dataset_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dataset in which this measure exists."""
 
-    power_bi_measure_expression: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIMeasureExpression")
+    power_bi_measure_expression: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIMeasureExpression"
+    )
     """DAX expression for this measure."""
 
-    power_bi_is_external_measure: bool | None | UnsetType = msgspec.field(default=UNSET, name="powerBIIsExternalMeasure")
+    power_bi_is_external_measure: bool | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIIsExternalMeasure"
+    )
     """Whether this measure is external (true) or internal (false)."""
 
-    power_bi_is_hidden: bool | None | UnsetType = msgspec.field(default=UNSET, name="powerBIIsHidden")
+    power_bi_is_hidden: bool | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIIsHidden"
+    )
     """Whether this asset is hidden in Power BI (true) or not (false)."""
 
-    power_bi_table_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBITableQualifiedName")
+    power_bi_table_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBITableQualifiedName"
+    )
     """Unique name of the Power BI table in which this asset exists."""
 
-    power_bi_format_string: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIFormatString")
+    power_bi_format_string: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIFormatString"
+    )
     """Format of this asset, as specified in the FORMAT_STRING of the MDX cell property."""
 
-    power_bi_endorsement: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsement")
+    power_bi_endorsement: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsement"
+    )
     """Endorsement status of this asset, in Power BI."""
 
-    power_bi_endorsed_by: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsedBy")
+    power_bi_endorsed_by: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsedBy"
+    )
     """User who endorsed this asset in Power BI."""
 
-    power_bi_endorsed_at: int | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsedAt")
+    power_bi_endorsed_at: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsedAt"
+    )
     """Time at which this asset was endorsed in Power BI."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -187,7 +207,9 @@ class PowerBIMeasure(Asset):
     table: RelatedPowerBITable | None | UnsetType = UNSET
     """Table in which this measure exists."""
 
-    power_bi_columns: list[RelatedPowerBIColumn] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIColumns")
+    power_bi_columns: list[RelatedPowerBIColumn] | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIColumns"
+    )
     """PowerBI Columns that are associated with this PowerBI Measure."""
 
     input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
@@ -211,7 +233,9 @@ class PowerBIMeasure(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -233,42 +257,6 @@ class PowerBIMeasure(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.table is UNSET:
-                errors.append("table is required for creation")
-            if self.power_bi_table_qualified_name is UNSET:
-                errors.append("power_bi_table_qualified_name is required for creation")
-            if self.dataset_qualified_name is UNSET:
-                errors.append("dataset_qualified_name is required for creation")
-            if self.workspace_qualified_name is UNSET:
-                errors.append("workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"PowerBIMeasure validation failed: {errors}")
-
-    def minimize(self) -> "PowerBIMeasure":
-        self.validate()
-        return PowerBIMeasure(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedPowerBIMeasure":
-        if self.guid is not UNSET:
-            return RelatedPowerBIMeasure(guid=self.guid)
-        return RelatedPowerBIMeasure(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -321,6 +309,7 @@ class PowerBIMeasure(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class PowerBIMeasureAttributes(AssetAttributes):
     """PowerBIMeasure-specific attributes for nested API format."""
 
@@ -330,29 +319,46 @@ class PowerBIMeasureAttributes(AssetAttributes):
     dataset_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dataset in which this measure exists."""
 
-    power_bi_measure_expression: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIMeasureExpression")
+    power_bi_measure_expression: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIMeasureExpression"
+    )
     """DAX expression for this measure."""
 
-    power_bi_is_external_measure: bool | None | UnsetType = msgspec.field(default=UNSET, name="powerBIIsExternalMeasure")
+    power_bi_is_external_measure: bool | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIIsExternalMeasure"
+    )
     """Whether this measure is external (true) or internal (false)."""
 
-    power_bi_is_hidden: bool | None | UnsetType = msgspec.field(default=UNSET, name="powerBIIsHidden")
+    power_bi_is_hidden: bool | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIIsHidden"
+    )
     """Whether this asset is hidden in Power BI (true) or not (false)."""
 
-    power_bi_table_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBITableQualifiedName")
+    power_bi_table_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBITableQualifiedName"
+    )
     """Unique name of the Power BI table in which this asset exists."""
 
-    power_bi_format_string: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIFormatString")
+    power_bi_format_string: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIFormatString"
+    )
     """Format of this asset, as specified in the FORMAT_STRING of the MDX cell property."""
 
-    power_bi_endorsement: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsement")
+    power_bi_endorsement: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsement"
+    )
     """Endorsement status of this asset, in Power BI."""
 
-    power_bi_endorsed_by: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsedBy")
+    power_bi_endorsed_by: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsedBy"
+    )
     """User who endorsed this asset in Power BI."""
 
-    power_bi_endorsed_at: int | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsedAt")
+    power_bi_endorsed_at: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsedAt"
+    )
     """Time at which this asset was endorsed in Power BI."""
+
 
 class PowerBIMeasureRelationshipAttributes(AssetRelationshipAttributes):
     """PowerBIMeasure-specific relationship attributes for nested API format."""
@@ -411,7 +417,9 @@ class PowerBIMeasureRelationshipAttributes(AssetRelationshipAttributes):
     table: RelatedPowerBITable | None | UnsetType = UNSET
     """Table in which this measure exists."""
 
-    power_bi_columns: list[RelatedPowerBIColumn] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIColumns")
+    power_bi_columns: list[RelatedPowerBIColumn] | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIColumns"
+    )
     """PowerBI Columns that are associated with this PowerBI Measure."""
 
     input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
@@ -435,7 +443,9 @@ class PowerBIMeasureRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -447,13 +457,19 @@ class PowerBIMeasureRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class PowerBIMeasureNested(AssetNested):
     """PowerBIMeasure in nested API format for high-performance serialization."""
 
     attributes: PowerBIMeasureAttributes | UnsetType = UNSET
     relationship_attributes: PowerBIMeasureRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: PowerBIMeasureRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: PowerBIMeasureRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: PowerBIMeasureRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: PowerBIMeasureRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -493,7 +509,10 @@ _POWER_BI_MEASURE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_power_bi_measure_attrs(attrs: PowerBIMeasureAttributes, obj: PowerBIMeasure) -> None:
+
+def _populate_power_bi_measure_attrs(
+    attrs: PowerBIMeasureAttributes, obj: PowerBIMeasure
+) -> None:
     """Populate PowerBIMeasure-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.workspace_qualified_name = obj.workspace_qualified_name
@@ -506,6 +525,7 @@ def _populate_power_bi_measure_attrs(attrs: PowerBIMeasureAttributes, obj: Power
     attrs.power_bi_endorsement = obj.power_bi_endorsement
     attrs.power_bi_endorsed_by = obj.power_bi_endorsed_by
     attrs.power_bi_endorsed_at = obj.power_bi_endorsed_at
+
 
 def _extract_power_bi_measure_attrs(attrs: PowerBIMeasureAttributes) -> dict:
     """Extract all PowerBIMeasure attributes from the attrs struct into a flat dict."""
@@ -522,18 +542,23 @@ def _extract_power_bi_measure_attrs(attrs: PowerBIMeasureAttributes) -> dict:
     result["power_bi_endorsed_at"] = attrs.power_bi_endorsed_at
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _power_bi_measure_to_nested(power_bi_measure: PowerBIMeasure) -> PowerBIMeasureNested:
+def _power_bi_measure_to_nested(
+    power_bi_measure: PowerBIMeasure,
+) -> PowerBIMeasureNested:
     """Convert flat PowerBIMeasure to nested format."""
     attrs = PowerBIMeasureAttributes()
     _populate_power_bi_measure_attrs(attrs, power_bi_measure)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        power_bi_measure, _POWER_BI_MEASURE_REL_FIELDS, PowerBIMeasureRelationshipAttributes
+        power_bi_measure,
+        _POWER_BI_MEASURE_REL_FIELDS,
+        PowerBIMeasureRelationshipAttributes,
     )
     return PowerBIMeasureNested(
         guid=power_bi_measure.guid,
@@ -561,16 +586,21 @@ def _power_bi_measure_to_nested(power_bi_measure: PowerBIMeasure) -> PowerBIMeas
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _power_bi_measure_from_nested(nested: PowerBIMeasureNested) -> PowerBIMeasure:
     """Convert nested format to flat PowerBIMeasure."""
-    attrs = nested.attributes if nested.attributes is not UNSET else PowerBIMeasureAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else PowerBIMeasureAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _POWER_BI_MEASURE_REL_FIELDS,
-        PowerBIMeasureRelationshipAttributes
+        PowerBIMeasureRelationshipAttributes,
     )
     return PowerBIMeasure(
         guid=nested.guid,
@@ -597,7 +627,10 @@ def _power_bi_measure_from_nested(nested: PowerBIMeasureNested) -> PowerBIMeasur
         **merged_rels,
     )
 
-def _power_bi_measure_to_nested_bytes(power_bi_measure: PowerBIMeasure, serde: Serde) -> bytes:
+
+def _power_bi_measure_to_nested_bytes(
+    power_bi_measure: PowerBIMeasure, serde: Serde
+) -> bytes:
     """Convert flat PowerBIMeasure to nested JSON bytes."""
     return serde.encode(_power_bi_measure_to_nested(power_bi_measure))
 
@@ -606,6 +639,7 @@ def _power_bi_measure_from_nested_bytes(data: bytes, serde: Serde) -> PowerBIMea
     """Convert nested JSON bytes to flat PowerBIMeasure."""
     nested = serde.decode(data, PowerBIMeasureNested)
     return _power_bi_measure_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -618,16 +652,36 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-PowerBIMeasure.WORKSPACE_QUALIFIED_NAME = KeywordField("workspaceQualifiedName", "workspaceQualifiedName")
-PowerBIMeasure.DATASET_QUALIFIED_NAME = KeywordField("datasetQualifiedName", "datasetQualifiedName")
-PowerBIMeasure.POWER_BI_MEASURE_EXPRESSION = KeywordField("powerBIMeasureExpression", "powerBIMeasureExpression")
-PowerBIMeasure.POWER_BI_IS_EXTERNAL_MEASURE = BooleanField("powerBIIsExternalMeasure", "powerBIIsExternalMeasure")
+PowerBIMeasure.WORKSPACE_QUALIFIED_NAME = KeywordField(
+    "workspaceQualifiedName", "workspaceQualifiedName"
+)
+PowerBIMeasure.DATASET_QUALIFIED_NAME = KeywordField(
+    "datasetQualifiedName", "datasetQualifiedName"
+)
+PowerBIMeasure.POWER_BI_MEASURE_EXPRESSION = KeywordField(
+    "powerBIMeasureExpression", "powerBIMeasureExpression"
+)
+PowerBIMeasure.POWER_BI_IS_EXTERNAL_MEASURE = BooleanField(
+    "powerBIIsExternalMeasure", "powerBIIsExternalMeasure"
+)
 PowerBIMeasure.POWER_BI_IS_HIDDEN = BooleanField("powerBIIsHidden", "powerBIIsHidden")
-PowerBIMeasure.POWER_BI_TABLE_QUALIFIED_NAME = KeywordTextField("powerBITableQualifiedName", "powerBITableQualifiedName", "powerBITableQualifiedName.text")
-PowerBIMeasure.POWER_BI_FORMAT_STRING = KeywordField("powerBIFormatString", "powerBIFormatString")
-PowerBIMeasure.POWER_BI_ENDORSEMENT = KeywordField("powerBIEndorsement", "powerBIEndorsement")
-PowerBIMeasure.POWER_BI_ENDORSED_BY = KeywordField("powerBIEndorsedBy", "powerBIEndorsedBy")
-PowerBIMeasure.POWER_BI_ENDORSED_AT = NumericField("powerBIEndorsedAt", "powerBIEndorsedAt")
+PowerBIMeasure.POWER_BI_TABLE_QUALIFIED_NAME = KeywordTextField(
+    "powerBITableQualifiedName",
+    "powerBITableQualifiedName",
+    "powerBITableQualifiedName.text",
+)
+PowerBIMeasure.POWER_BI_FORMAT_STRING = KeywordField(
+    "powerBIFormatString", "powerBIFormatString"
+)
+PowerBIMeasure.POWER_BI_ENDORSEMENT = KeywordField(
+    "powerBIEndorsement", "powerBIEndorsement"
+)
+PowerBIMeasure.POWER_BI_ENDORSED_BY = KeywordField(
+    "powerBIEndorsedBy", "powerBIEndorsedBy"
+)
+PowerBIMeasure.POWER_BI_ENDORSED_AT = NumericField(
+    "powerBIEndorsedAt", "powerBIEndorsedAt"
+)
 PowerBIMeasure.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 PowerBIMeasure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 PowerBIMeasure.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -636,7 +690,9 @@ PowerBIMeasure.APPLICATION_FIELD = RelationField("applicationField")
 PowerBIMeasure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 PowerBIMeasure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 PowerBIMeasure.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-PowerBIMeasure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+PowerBIMeasure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 PowerBIMeasure.METRICS = RelationField("metrics")
 PowerBIMeasure.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 PowerBIMeasure.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

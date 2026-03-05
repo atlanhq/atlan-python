@@ -43,15 +43,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .mongo_db_related import RelatedMongoDB
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MongoDB(Asset):
@@ -91,7 +93,9 @@ class MongoDB(Asset):
 
     type_name: Union[str, UnsetType] = "MongoDB"
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -166,7 +170,9 @@ class MongoDB(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -180,30 +186,6 @@ class MongoDB(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MongoDB"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"MongoDB validation failed: {errors}")
-
-    def minimize(self) -> "MongoDB":
-        self.validate()
-        return MongoDB(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMongoDB":
-        if self.guid is not UNSET:
-            return RelatedMongoDB(guid=self.guid)
-        return RelatedMongoDB(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,11 +238,15 @@ class MongoDB(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MongoDBAttributes(AssetAttributes):
     """MongoDB-specific attributes for nested API format."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
+
 
 class MongoDBRelationshipAttributes(AssetRelationshipAttributes):
     """MongoDB-specific relationship attributes for nested API format."""
@@ -337,7 +323,9 @@ class MongoDBRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -349,6 +337,7 @@ class MongoDBRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MongoDBNested(AssetNested):
     """MongoDB in nested API format for high-performance serialization."""
 
@@ -356,6 +345,7 @@ class MongoDBNested(AssetNested):
     relationship_attributes: MongoDBRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: MongoDBRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: MongoDBRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -393,16 +383,19 @@ _MONGO_DB_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_mongo_db_attrs(attrs: MongoDBAttributes, obj: MongoDB) -> None:
     """Populate MongoDB-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+
 
 def _extract_mongo_db_attrs(attrs: MongoDBAttributes) -> dict:
     """Extract all MongoDB attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -443,6 +436,7 @@ def _mongo_db_to_nested(mongo_db: MongoDB) -> MongoDBNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _mongo_db_from_nested(nested: MongoDBNested) -> MongoDB:
     """Convert nested format to flat MongoDB."""
     attrs = nested.attributes if nested.attributes is not UNSET else MongoDBAttributes()
@@ -452,7 +446,7 @@ def _mongo_db_from_nested(nested: MongoDBNested) -> MongoDB:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MONGO_DB_REL_FIELDS,
-        MongoDBRelationshipAttributes
+        MongoDBRelationshipAttributes,
     )
     return MongoDB(
         guid=nested.guid,
@@ -479,6 +473,7 @@ def _mongo_db_from_nested(nested: MongoDBNested) -> MongoDB:
         **merged_rels,
     )
 
+
 def _mongo_db_to_nested_bytes(mongo_db: MongoDB, serde: Serde) -> bytes:
     """Convert flat MongoDB to nested JSON bytes."""
     return serde.encode(_mongo_db_to_nested(mongo_db))
@@ -489,6 +484,7 @@ def _mongo_db_from_nested_bytes(data: bytes, serde: Serde) -> MongoDB:
     nested = serde.decode(data, MongoDBNested)
     return _mongo_db_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -497,7 +493,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MongoDB.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+MongoDB.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 MongoDB.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MongoDB.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MongoDB.ANOMALO_CHECKS = RelationField("anomaloChecks")

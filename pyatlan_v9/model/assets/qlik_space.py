@@ -43,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .qlik_related import RelatedQlikApp, RelatedQlikDataset, RelatedQlikSpace
+from .qlik_related import RelatedQlikApp, RelatedQlikDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class QlikSpace(Asset):
@@ -206,7 +210,9 @@ class QlikSpace(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -220,30 +226,6 @@ class QlikSpace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "QlikSpace"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"QlikSpace validation failed: {errors}")
-
-    def minimize(self) -> "QlikSpace":
-        self.validate()
-        return QlikSpace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQlikSpace":
-        if self.guid is not UNSET:
-            return RelatedQlikSpace(guid=self.guid)
-        return RelatedQlikSpace(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -296,6 +278,7 @@ class QlikSpace(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class QlikSpaceAttributes(AssetAttributes):
     """QlikSpace-specific attributes for nested API format."""
 
@@ -325,6 +308,7 @@ class QlikSpaceAttributes(AssetAttributes):
 
     qlik_is_published: bool | None | UnsetType = UNSET
     """Whether this asset is published in Qlik (true) or not (false)."""
+
 
 class QlikSpaceRelationshipAttributes(AssetRelationshipAttributes):
     """QlikSpace-specific relationship attributes for nested API format."""
@@ -407,7 +391,9 @@ class QlikSpaceRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -419,6 +405,7 @@ class QlikSpaceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class QlikSpaceNested(AssetNested):
     """QlikSpace in nested API format for high-performance serialization."""
 
@@ -426,6 +413,7 @@ class QlikSpaceNested(AssetNested):
     relationship_attributes: QlikSpaceRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: QlikSpaceRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: QlikSpaceRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -465,6 +453,7 @@ _QLIK_SPACE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> None:
     """Populate QlikSpace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -477,6 +466,7 @@ def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> No
     attrs.qlik_app_qualified_name = obj.qlik_app_qualified_name
     attrs.qlik_owner_id = obj.qlik_owner_id
     attrs.qlik_is_published = obj.qlik_is_published
+
 
 def _extract_qlik_space_attrs(attrs: QlikSpaceAttributes) -> dict:
     """Extract all QlikSpace attributes from the attrs struct into a flat dict."""
@@ -491,6 +481,7 @@ def _extract_qlik_space_attrs(attrs: QlikSpaceAttributes) -> dict:
     result["qlik_owner_id"] = attrs.qlik_owner_id
     result["qlik_is_published"] = attrs.qlik_is_published
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -531,16 +522,19 @@ def _qlik_space_to_nested(qlik_space: QlikSpace) -> QlikSpaceNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _qlik_space_from_nested(nested: QlikSpaceNested) -> QlikSpace:
     """Convert nested format to flat QlikSpace."""
-    attrs = nested.attributes if nested.attributes is not UNSET else QlikSpaceAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else QlikSpaceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QLIK_SPACE_REL_FIELDS,
-        QlikSpaceRelationshipAttributes
+        QlikSpaceRelationshipAttributes,
     )
     return QlikSpace(
         guid=nested.guid,
@@ -567,6 +561,7 @@ def _qlik_space_from_nested(nested: QlikSpaceNested) -> QlikSpace:
         **merged_rels,
     )
 
+
 def _qlik_space_to_nested_bytes(qlik_space: QlikSpace, serde: Serde) -> bytes:
     """Convert flat QlikSpace to nested JSON bytes."""
     return serde.encode(_qlik_space_to_nested(qlik_space))
@@ -576,6 +571,7 @@ def _qlik_space_from_nested_bytes(data: bytes, serde: Serde) -> QlikSpace:
     """Convert nested JSON bytes to flat QlikSpace."""
     nested = serde.decode(data, QlikSpaceNested)
     return _qlik_space_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -591,9 +587,13 @@ QlikSpace.QLIK_TYPE = KeywordField("qlikType", "qlikType")
 QlikSpace.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSpace.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSpace.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")
-QlikSpace.QLIK_SPACE_QUALIFIED_NAME = KeywordTextField("qlikSpaceQualifiedName", "qlikSpaceQualifiedName", "qlikSpaceQualifiedName.text")
+QlikSpace.QLIK_SPACE_QUALIFIED_NAME = KeywordTextField(
+    "qlikSpaceQualifiedName", "qlikSpaceQualifiedName", "qlikSpaceQualifiedName.text"
+)
 QlikSpace.QLIK_APP_ID = KeywordField("qlikAppId", "qlikAppId")
-QlikSpace.QLIK_APP_QUALIFIED_NAME = KeywordTextField("qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text")
+QlikSpace.QLIK_APP_QUALIFIED_NAME = KeywordTextField(
+    "qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text"
+)
 QlikSpace.QLIK_OWNER_ID = KeywordField("qlikOwnerId", "qlikOwnerId")
 QlikSpace.QLIK_IS_PUBLISHED = BooleanField("qlikIsPublished", "qlikIsPublished")
 QlikSpace.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

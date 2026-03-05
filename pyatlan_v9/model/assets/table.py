@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,16 +50,26 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema, RelatedTable, RelatedTablePartition
+from .sql_related import (
+    RelatedColumn,
+    RelatedQuery,
+    RelatedSchema,
+    RelatedTable,
+    RelatedTablePartition,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Table(Asset):
@@ -279,7 +294,9 @@ class Table(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -333,7 +350,9 @@ class Table(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -393,7 +412,9 @@ class Table(Asset):
     partitions: list[RelatedTablePartition] | None | UnsetType = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -415,44 +436,6 @@ class Table(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.atlan_schema is UNSET:
-                errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"Table validation failed: {errors}")
-
-    def minimize(self) -> "Table":
-        self.validate()
-        return Table(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTable":
-        if self.guid is not UNSET:
-            return RelatedTable(guid=self.guid)
-        return RelatedTable(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -579,6 +562,7 @@ class Table(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class TableAttributes(AssetAttributes):
     """Table-specific attributes for nested API format."""
@@ -712,11 +696,14 @@ class TableAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class TableRelationshipAttributes(AssetRelationshipAttributes):
     """Table-specific relationship attributes for nested API format."""
@@ -769,7 +756,9 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -829,7 +818,9 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     partitions: list[RelatedTablePartition] | None | UnsetType = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -841,6 +832,7 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class TableNested(AssetNested):
     """Table in nested API format for high-performance serialization."""
 
@@ -848,6 +840,7 @@ class TableNested(AssetNested):
     relationship_attributes: TableRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: TableRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: TableRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -896,6 +889,7 @@ _TABLE_REL_FIELDS: list[str] = [
     "input_to_spark_jobs",
     "output_from_spark_jobs",
 ]
+
 
 def _populate_table_attrs(attrs: TableAttributes, obj: Table) -> None:
     """Populate Table-specific attributes on the attrs struct."""
@@ -946,6 +940,7 @@ def _populate_table_attrs(attrs: TableAttributes, obj: Table) -> None:
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_table_attrs(attrs: TableAttributes) -> dict:
     """Extract all Table attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -992,9 +987,12 @@ def _extract_table_attrs(attrs: TableAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -1035,6 +1033,7 @@ def _table_to_nested(table: Table) -> TableNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _table_from_nested(nested: TableNested) -> Table:
     """Convert nested format to flat Table."""
     attrs = nested.attributes if nested.attributes is not UNSET else TableAttributes()
@@ -1044,7 +1043,7 @@ def _table_from_nested(nested: TableNested) -> Table:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLE_REL_FIELDS,
-        TableRelationshipAttributes
+        TableRelationshipAttributes,
     )
     return Table(
         guid=nested.guid,
@@ -1071,6 +1070,7 @@ def _table_from_nested(nested: TableNested) -> Table:
         **merged_rels,
     )
 
+
 def _table_to_nested_bytes(table: Table, serde: Serde) -> bytes:
     """Convert flat Table to nested JSON bytes."""
     return serde.encode(_table_to_nested(table))
@@ -1080,6 +1080,7 @@ def _table_from_nested_bytes(data: bytes, serde: Serde) -> Table:
     """Convert nested JSON bytes to flat Table."""
     nested = serde.decode(data, TableNested)
     return _table_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1100,8 +1101,12 @@ Table.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 Table.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
 Table.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
 Table.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
-Table.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
-Table.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
+Table.EXTERNAL_LOCATION_REGION = KeywordField(
+    "externalLocationRegion", "externalLocationRegion"
+)
+Table.EXTERNAL_LOCATION_FORMAT = KeywordField(
+    "externalLocationFormat", "externalLocationFormat"
+)
 Table.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
 Table.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
 Table.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
@@ -1111,19 +1116,33 @@ Table.IS_SHARDED = BooleanField("isSharded", "isSharded")
 Table.SQL_TYPE = KeywordField("sqlType", "sqlType")
 Table.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
 Table.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
-Table.ICEBERG_CATALOG_SOURCE = KeywordField("icebergCatalogSource", "icebergCatalogSource")
-Table.ICEBERG_CATALOG_TABLE_NAME = KeywordField("icebergCatalogTableName", "icebergCatalogTableName")
+Table.ICEBERG_CATALOG_SOURCE = KeywordField(
+    "icebergCatalogSource", "icebergCatalogSource"
+)
+Table.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
+    "icebergCatalogTableName", "icebergCatalogTableName"
+)
 Table.SQL_IMPALA_PARAMETERS = KeywordField("sqlImpalaParameters", "sqlImpalaParameters")
-Table.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField("icebergCatalogTableNamespace", "icebergCatalogTableNamespace")
-Table.SQL_EXTERNAL_VOLUME_NAME = KeywordField("sqlExternalVolumeName", "sqlExternalVolumeName")
-Table.ICEBERG_TABLE_BASE_LOCATION = KeywordField("icebergTableBaseLocation", "icebergTableBaseLocation")
+Table.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
+    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
+)
+Table.SQL_EXTERNAL_VOLUME_NAME = KeywordField(
+    "sqlExternalVolumeName", "sqlExternalVolumeName"
+)
+Table.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
+    "icebergTableBaseLocation", "icebergTableBaseLocation"
+)
 Table.SQL_RETENTION_TIME = NumericField("sqlRetentionTime", "sqlRetentionTime")
 Table.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Table.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Table.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Table.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+Table.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 Table.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Table.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+Table.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 Table.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
 Table.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 Table.TABLE_NAME = KeywordField("tableName", "tableName")
@@ -1131,10 +1150,14 @@ Table.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedN
 Table.VIEW_NAME = KeywordField("viewName", "viewName")
 Table.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
 Table.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-Table.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+Table.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 Table.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Table.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Table.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+Table.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 Table.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Table.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Table.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

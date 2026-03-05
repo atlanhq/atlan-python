@@ -45,16 +45,20 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan.model.utils import construct_object_key
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .adls_related import RelatedADLSContainer, RelatedADLSObject
+from .adls_related import RelatedADLSContainer
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ADLSObject(Asset):
@@ -156,7 +160,9 @@ class ADLSObject(Asset):
     adls_object_content_type: str | None | UnsetType = UNSET
     """Content type of this object."""
 
-    adls_object_content_md5_hash: str | None | UnsetType = msgspec.field(default=UNSET, name="adlsObjectContentMD5Hash")
+    adls_object_content_md5_hash: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="adlsObjectContentMD5Hash"
+    )
     """MD5 hash of this object's contents."""
 
     adls_object_content_language: str | None | UnsetType = UNSET
@@ -273,7 +279,9 @@ class ADLSObject(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -295,44 +303,6 @@ class ADLSObject(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.adls_container is UNSET:
-                errors.append("adls_container is required for creation")
-            if self.adls_container_name is UNSET:
-                errors.append("adls_container_name is required for creation")
-            if self.adls_container_qualified_name is UNSET:
-                errors.append("adls_container_qualified_name is required for creation")
-            if self.adls_account_name is UNSET:
-                errors.append("adls_account_name is required for creation")
-            if self.adls_account_qualified_name is UNSET:
-                errors.append("adls_account_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"ADLSObject validation failed: {errors}")
-
-    def minimize(self) -> "ADLSObject":
-        self.validate()
-        return ADLSObject(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedADLSObject":
-        if self.guid is not UNSET:
-            return RelatedADLSObject(guid=self.guid)
-        return RelatedADLSObject(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -406,7 +376,6 @@ class ADLSObject(Asset):
                 adls_container_qualified_name,
             ],
         )
-        from pyatlan.model.utils import construct_object_key
 
         fields = connection_qualified_name.split("/")
         if len(fields) != 3:
@@ -498,6 +467,7 @@ class ADLSObject(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ADLSObjectAttributes(AssetAttributes):
     """ADLSObject-specific attributes for nested API format."""
 
@@ -537,7 +507,9 @@ class ADLSObjectAttributes(AssetAttributes):
     adls_object_content_type: str | None | UnsetType = UNSET
     """Content type of this object."""
 
-    adls_object_content_md5_hash: str | None | UnsetType = msgspec.field(default=UNSET, name="adlsObjectContentMD5Hash")
+    adls_object_content_md5_hash: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="adlsObjectContentMD5Hash"
+    )
     """MD5 hash of this object's contents."""
 
     adls_object_content_language: str | None | UnsetType = UNSET
@@ -578,6 +550,7 @@ class ADLSObjectAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class ADLSObjectRelationshipAttributes(AssetRelationshipAttributes):
     """ADLSObject-specific relationship attributes for nested API format."""
@@ -657,7 +630,9 @@ class ADLSObjectRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -669,6 +644,7 @@ class ADLSObjectRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ADLSObjectNested(AssetNested):
     """ADLSObject in nested API format for high-performance serialization."""
 
@@ -676,6 +652,7 @@ class ADLSObjectNested(AssetNested):
     relationship_attributes: ADLSObjectRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: ADLSObjectRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: ADLSObjectRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -714,6 +691,7 @@ _ADLS_OBJECT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_adls_object_attrs(attrs: ADLSObjectAttributes, obj: ADLSObject) -> None:
     """Populate ADLSObject-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -723,10 +701,14 @@ def _populate_adls_object_attrs(attrs: ADLSObjectAttributes, obj: ADLSObject) ->
     attrs.adls_object_size = obj.adls_object_size
     attrs.adls_object_key = obj.adls_object_key
     attrs.adls_object_access_tier = obj.adls_object_access_tier
-    attrs.adls_object_access_tier_last_modified_time = obj.adls_object_access_tier_last_modified_time
+    attrs.adls_object_access_tier_last_modified_time = (
+        obj.adls_object_access_tier_last_modified_time
+    )
     attrs.adls_object_archive_status = obj.adls_object_archive_status
     attrs.adls_object_server_encrypted = obj.adls_object_server_encrypted
-    attrs.adls_object_version_level_immutability_support = obj.adls_object_version_level_immutability_support
+    attrs.adls_object_version_level_immutability_support = (
+        obj.adls_object_version_level_immutability_support
+    )
     attrs.adls_object_cache_control = obj.adls_object_cache_control
     attrs.adls_object_content_type = obj.adls_object_content_type
     attrs.adls_object_content_md5_hash = obj.adls_object_content_md5_hash
@@ -744,6 +726,7 @@ def _populate_adls_object_attrs(attrs: ADLSObjectAttributes, obj: ADLSObject) ->
     attrs.azure_tags = obj.azure_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
 
+
 def _extract_adls_object_attrs(attrs: ADLSObjectAttributes) -> dict:
     """Extract all ADLSObject attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -753,10 +736,14 @@ def _extract_adls_object_attrs(attrs: ADLSObjectAttributes) -> dict:
     result["adls_object_size"] = attrs.adls_object_size
     result["adls_object_key"] = attrs.adls_object_key
     result["adls_object_access_tier"] = attrs.adls_object_access_tier
-    result["adls_object_access_tier_last_modified_time"] = attrs.adls_object_access_tier_last_modified_time
+    result["adls_object_access_tier_last_modified_time"] = (
+        attrs.adls_object_access_tier_last_modified_time
+    )
     result["adls_object_archive_status"] = attrs.adls_object_archive_status
     result["adls_object_server_encrypted"] = attrs.adls_object_server_encrypted
-    result["adls_object_version_level_immutability_support"] = attrs.adls_object_version_level_immutability_support
+    result["adls_object_version_level_immutability_support"] = (
+        attrs.adls_object_version_level_immutability_support
+    )
     result["adls_object_cache_control"] = attrs.adls_object_cache_control
     result["adls_object_content_type"] = attrs.adls_object_content_type
     result["adls_object_content_md5_hash"] = attrs.adls_object_content_md5_hash
@@ -774,6 +761,7 @@ def _extract_adls_object_attrs(attrs: ADLSObjectAttributes) -> dict:
     result["azure_tags"] = attrs.azure_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -814,16 +802,19 @@ def _adls_object_to_nested(adls_object: ADLSObject) -> ADLSObjectNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _adls_object_from_nested(nested: ADLSObjectNested) -> ADLSObject:
     """Convert nested format to flat ADLSObject."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ADLSObjectAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ADLSObjectAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADLS_OBJECT_REL_FIELDS,
-        ADLSObjectRelationshipAttributes
+        ADLSObjectRelationshipAttributes,
     )
     return ADLSObject(
         guid=nested.guid,
@@ -850,6 +841,7 @@ def _adls_object_from_nested(nested: ADLSObjectNested) -> ADLSObject:
         **merged_rels,
     )
 
+
 def _adls_object_to_nested_bytes(adls_object: ADLSObject, serde: Serde) -> bytes:
     """Convert flat ADLSObject to nested JSON bytes."""
     return serde.encode(_adls_object_to_nested(adls_object))
@@ -859,6 +851,7 @@ def _adls_object_from_nested_bytes(data: bytes, serde: Serde) -> ADLSObject:
     """Convert nested JSON bytes to flat ADLSObject."""
     nested = serde.decode(data, ADLSObjectNested)
     return _adls_object_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -871,32 +864,79 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ADLSObject.ADLS_OBJECT_URL = KeywordTextField("adlsObjectUrl", "adlsObjectUrl", "adlsObjectUrl.text")
-ADLSObject.ADLS_OBJECT_VERSION_ID = KeywordField("adlsObjectVersionId", "adlsObjectVersionId")
+ADLSObject.ADLS_OBJECT_URL = KeywordTextField(
+    "adlsObjectUrl", "adlsObjectUrl", "adlsObjectUrl.text"
+)
+ADLSObject.ADLS_OBJECT_VERSION_ID = KeywordField(
+    "adlsObjectVersionId", "adlsObjectVersionId"
+)
 ADLSObject.ADLS_OBJECT_TYPE = KeywordField("adlsObjectType", "adlsObjectType")
 ADLSObject.ADLS_OBJECT_SIZE = NumericField("adlsObjectSize", "adlsObjectSize")
-ADLSObject.ADLS_OBJECT_KEY = KeywordTextField("adlsObjectKey", "adlsObjectKey", "adlsObjectKey.text")
-ADLSObject.ADLS_OBJECT_ACCESS_TIER = KeywordField("adlsObjectAccessTier", "adlsObjectAccessTier")
-ADLSObject.ADLS_OBJECT_ACCESS_TIER_LAST_MODIFIED_TIME = NumericField("adlsObjectAccessTierLastModifiedTime", "adlsObjectAccessTierLastModifiedTime")
-ADLSObject.ADLS_OBJECT_ARCHIVE_STATUS = KeywordField("adlsObjectArchiveStatus", "adlsObjectArchiveStatus")
-ADLSObject.ADLS_OBJECT_SERVER_ENCRYPTED = BooleanField("adlsObjectServerEncrypted", "adlsObjectServerEncrypted")
-ADLSObject.ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT = BooleanField("adlsObjectVersionLevelImmutabilitySupport", "adlsObjectVersionLevelImmutabilitySupport")
-ADLSObject.ADLS_OBJECT_CACHE_CONTROL = KeywordField("adlsObjectCacheControl", "adlsObjectCacheControl")
-ADLSObject.ADLS_OBJECT_CONTENT_TYPE = KeywordField("adlsObjectContentType", "adlsObjectContentType")
-ADLSObject.ADLS_OBJECT_CONTENT_MD5_HASH = KeywordField("adlsObjectContentMD5Hash", "adlsObjectContentMD5Hash")
-ADLSObject.ADLS_OBJECT_CONTENT_LANGUAGE = KeywordTextField("adlsObjectContentLanguage", "adlsObjectContentLanguage", "adlsObjectContentLanguage.text")
-ADLSObject.ADLS_OBJECT_LEASE_STATUS = KeywordField("adlsObjectLeaseStatus", "adlsObjectLeaseStatus")
-ADLSObject.ADLS_OBJECT_LEASE_STATE = KeywordField("adlsObjectLeaseState", "adlsObjectLeaseState")
-ADLSObject.ADLS_OBJECT_METADATA = KeywordField("adlsObjectMetadata", "adlsObjectMetadata")
-ADLSObject.ADLS_CONTAINER_QUALIFIED_NAME = KeywordTextField("adlsContainerQualifiedName", "adlsContainerQualifiedName", "adlsContainerQualifiedName.text")
+ADLSObject.ADLS_OBJECT_KEY = KeywordTextField(
+    "adlsObjectKey", "adlsObjectKey", "adlsObjectKey.text"
+)
+ADLSObject.ADLS_OBJECT_ACCESS_TIER = KeywordField(
+    "adlsObjectAccessTier", "adlsObjectAccessTier"
+)
+ADLSObject.ADLS_OBJECT_ACCESS_TIER_LAST_MODIFIED_TIME = NumericField(
+    "adlsObjectAccessTierLastModifiedTime", "adlsObjectAccessTierLastModifiedTime"
+)
+ADLSObject.ADLS_OBJECT_ARCHIVE_STATUS = KeywordField(
+    "adlsObjectArchiveStatus", "adlsObjectArchiveStatus"
+)
+ADLSObject.ADLS_OBJECT_SERVER_ENCRYPTED = BooleanField(
+    "adlsObjectServerEncrypted", "adlsObjectServerEncrypted"
+)
+ADLSObject.ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT = BooleanField(
+    "adlsObjectVersionLevelImmutabilitySupport",
+    "adlsObjectVersionLevelImmutabilitySupport",
+)
+ADLSObject.ADLS_OBJECT_CACHE_CONTROL = KeywordField(
+    "adlsObjectCacheControl", "adlsObjectCacheControl"
+)
+ADLSObject.ADLS_OBJECT_CONTENT_TYPE = KeywordField(
+    "adlsObjectContentType", "adlsObjectContentType"
+)
+ADLSObject.ADLS_OBJECT_CONTENT_MD5_HASH = KeywordField(
+    "adlsObjectContentMD5Hash", "adlsObjectContentMD5Hash"
+)
+ADLSObject.ADLS_OBJECT_CONTENT_LANGUAGE = KeywordTextField(
+    "adlsObjectContentLanguage",
+    "adlsObjectContentLanguage",
+    "adlsObjectContentLanguage.text",
+)
+ADLSObject.ADLS_OBJECT_LEASE_STATUS = KeywordField(
+    "adlsObjectLeaseStatus", "adlsObjectLeaseStatus"
+)
+ADLSObject.ADLS_OBJECT_LEASE_STATE = KeywordField(
+    "adlsObjectLeaseState", "adlsObjectLeaseState"
+)
+ADLSObject.ADLS_OBJECT_METADATA = KeywordField(
+    "adlsObjectMetadata", "adlsObjectMetadata"
+)
+ADLSObject.ADLS_CONTAINER_QUALIFIED_NAME = KeywordTextField(
+    "adlsContainerQualifiedName",
+    "adlsContainerQualifiedName",
+    "adlsContainerQualifiedName.text",
+)
 ADLSObject.ADLS_CONTAINER_NAME = KeywordField("adlsContainerName", "adlsContainerName")
-ADLSObject.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField("adlsAccountQualifiedName", "adlsAccountQualifiedName", "adlsAccountQualifiedName.text")
+ADLSObject.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField(
+    "adlsAccountQualifiedName",
+    "adlsAccountQualifiedName",
+    "adlsAccountQualifiedName.text",
+)
 ADLSObject.ADLS_ACCOUNT_NAME = KeywordField("adlsAccountName", "adlsAccountName")
-ADLSObject.AZURE_RESOURCE_ID = KeywordTextField("azureResourceId", "azureResourceId", "azureResourceId.text")
+ADLSObject.AZURE_RESOURCE_ID = KeywordTextField(
+    "azureResourceId", "azureResourceId", "azureResourceId.text"
+)
 ADLSObject.AZURE_LOCATION = KeywordField("azureLocation", "azureLocation")
-ADLSObject.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField("adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation")
+ADLSObject.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField(
+    "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+)
 ADLSObject.AZURE_TAGS = KeywordField("azureTags", "azureTags")
-ADLSObject.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+ADLSObject.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 ADLSObject.ADLS_CONTAINER = RelationField("adlsContainer")
 ADLSObject.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ADLSObject.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

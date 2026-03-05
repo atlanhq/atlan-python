@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -46,6 +45,7 @@ class RelatedADF(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ADF"
+
 
 class RelatedAdfActivity(RelatedADF):
     """
@@ -118,6 +118,7 @@ class RelatedAdfActivity(RelatedADF):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AdfActivity"
 
+
 class RelatedAdfDataflow(RelatedADF):
     """
     Related entity reference for AdfDataflow assets.
@@ -140,6 +141,7 @@ class RelatedAdfDataflow(RelatedADF):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AdfDataflow"
+
 
 class RelatedAdfDataset(RelatedADF):
     """
@@ -187,6 +189,7 @@ class RelatedAdfDataset(RelatedADF):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AdfDataset"
+
 
 class RelatedAdfLinkedservice(RelatedADF):
     """
@@ -246,6 +249,7 @@ class RelatedAdfLinkedservice(RelatedADF):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AdfLinkedservice"
+
 
 class RelatedAdfPipeline(RelatedADF):
     """

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sap_related import RelatedSapErpAbapProgram, RelatedSapErpComponent, RelatedSapErpFunctionModule
+from .sap_related import RelatedSapErpAbapProgram, RelatedSapErpComponent
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapErpFunctionModule(Asset):
@@ -109,13 +112,17 @@ class SapErpFunctionModule(Asset):
     sap_group: str | None | UnsetType = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
-    sap_erp_function_module_import_params: list[dict[str, str]] | None | UnsetType = UNSET
+    sap_erp_function_module_import_params: list[dict[str, str]] | None | UnsetType = (
+        UNSET
+    )
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
     sap_import_params_count: int | None | UnsetType = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
-    sap_erp_function_module_export_params: list[dict[str, str]] | None | UnsetType = UNSET
+    sap_erp_function_module_export_params: list[dict[str, str]] | None | UnsetType = (
+        UNSET
+    )
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
     sap_export_params_count: int | None | UnsetType = UNSET
@@ -226,7 +233,9 @@ class SapErpFunctionModule(Asset):
     sap_erp_component: RelatedSapErpComponent | None | UnsetType = UNSET
     """SAP ERP Function Modules that are associated with this SAP ERP Component."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -240,30 +249,6 @@ class SapErpFunctionModule(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpFunctionModule"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpFunctionModule validation failed: {errors}")
-
-    def minimize(self) -> "SapErpFunctionModule":
-        self.validate()
-        return SapErpFunctionModule(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpFunctionModule":
-        if self.guid is not UNSET:
-            return RelatedSapErpFunctionModule(guid=self.guid)
-        return RelatedSapErpFunctionModule(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -294,7 +279,9 @@ class SapErpFunctionModule(Asset):
         return _sap_erp_function_module_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SapErpFunctionModule:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SapErpFunctionModule:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -316,19 +303,24 @@ class SapErpFunctionModule(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SapErpFunctionModuleAttributes(AssetAttributes):
     """SapErpFunctionModule-specific attributes for nested API format."""
 
     sap_group: str | None | UnsetType = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
-    sap_erp_function_module_import_params: list[dict[str, str]] | None | UnsetType = UNSET
+    sap_erp_function_module_import_params: list[dict[str, str]] | None | UnsetType = (
+        UNSET
+    )
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
     sap_import_params_count: int | None | UnsetType = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
-    sap_erp_function_module_export_params: list[dict[str, str]] | None | UnsetType = UNSET
+    sap_erp_function_module_export_params: list[dict[str, str]] | None | UnsetType = (
+        UNSET
+    )
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
     sap_export_params_count: int | None | UnsetType = UNSET
@@ -360,6 +352,7 @@ class SapErpFunctionModuleAttributes(AssetAttributes):
 
     sap_field_order: int | None | UnsetType = UNSET
     """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
+
 
 class SapErpFunctionModuleRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpFunctionModule-specific relationship attributes for nested API format."""
@@ -442,7 +435,9 @@ class SapErpFunctionModuleRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_component: RelatedSapErpComponent | None | UnsetType = UNSET
     """SAP ERP Function Modules that are associated with this SAP ERP Component."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -454,13 +449,21 @@ class SapErpFunctionModuleRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SapErpFunctionModuleNested(AssetNested):
     """SapErpFunctionModule in nested API format for high-performance serialization."""
 
     attributes: SapErpFunctionModuleAttributes | UnsetType = UNSET
-    relationship_attributes: SapErpFunctionModuleRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SapErpFunctionModuleRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SapErpFunctionModuleRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: SapErpFunctionModuleRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        SapErpFunctionModuleRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        SapErpFunctionModuleRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -500,16 +503,25 @@ _SAP_ERP_FUNCTION_MODULE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sap_erp_function_module_attrs(attrs: SapErpFunctionModuleAttributes, obj: SapErpFunctionModule) -> None:
+
+def _populate_sap_erp_function_module_attrs(
+    attrs: SapErpFunctionModuleAttributes, obj: SapErpFunctionModule
+) -> None:
     """Populate SapErpFunctionModule-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sap_group = obj.sap_group
-    attrs.sap_erp_function_module_import_params = obj.sap_erp_function_module_import_params
+    attrs.sap_erp_function_module_import_params = (
+        obj.sap_erp_function_module_import_params
+    )
     attrs.sap_import_params_count = obj.sap_import_params_count
-    attrs.sap_erp_function_module_export_params = obj.sap_erp_function_module_export_params
+    attrs.sap_erp_function_module_export_params = (
+        obj.sap_erp_function_module_export_params
+    )
     attrs.sap_export_params_count = obj.sap_export_params_count
     attrs.sap_erp_function_exception_list = obj.sap_erp_function_exception_list
-    attrs.sap_erp_function_exception_list_count = obj.sap_erp_function_exception_list_count
+    attrs.sap_erp_function_exception_list_count = (
+        obj.sap_erp_function_exception_list_count
+    )
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -518,16 +530,25 @@ def _populate_sap_erp_function_module_attrs(attrs: SapErpFunctionModuleAttribute
     attrs.sap_field_count = obj.sap_field_count
     attrs.sap_field_order = obj.sap_field_order
 
-def _extract_sap_erp_function_module_attrs(attrs: SapErpFunctionModuleAttributes) -> dict:
+
+def _extract_sap_erp_function_module_attrs(
+    attrs: SapErpFunctionModuleAttributes,
+) -> dict:
     """Extract all SapErpFunctionModule attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["sap_group"] = attrs.sap_group
-    result["sap_erp_function_module_import_params"] = attrs.sap_erp_function_module_import_params
+    result["sap_erp_function_module_import_params"] = (
+        attrs.sap_erp_function_module_import_params
+    )
     result["sap_import_params_count"] = attrs.sap_import_params_count
-    result["sap_erp_function_module_export_params"] = attrs.sap_erp_function_module_export_params
+    result["sap_erp_function_module_export_params"] = (
+        attrs.sap_erp_function_module_export_params
+    )
     result["sap_export_params_count"] = attrs.sap_export_params_count
     result["sap_erp_function_exception_list"] = attrs.sap_erp_function_exception_list
-    result["sap_erp_function_exception_list_count"] = attrs.sap_erp_function_exception_list_count
+    result["sap_erp_function_exception_list_count"] = (
+        attrs.sap_erp_function_exception_list_count
+    )
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -537,18 +558,23 @@ def _extract_sap_erp_function_module_attrs(attrs: SapErpFunctionModuleAttributes
     result["sap_field_order"] = attrs.sap_field_order
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sap_erp_function_module_to_nested(sap_erp_function_module: SapErpFunctionModule) -> SapErpFunctionModuleNested:
+def _sap_erp_function_module_to_nested(
+    sap_erp_function_module: SapErpFunctionModule,
+) -> SapErpFunctionModuleNested:
     """Convert flat SapErpFunctionModule to nested format."""
     attrs = SapErpFunctionModuleAttributes()
     _populate_sap_erp_function_module_attrs(attrs, sap_erp_function_module)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sap_erp_function_module, _SAP_ERP_FUNCTION_MODULE_REL_FIELDS, SapErpFunctionModuleRelationshipAttributes
+        sap_erp_function_module,
+        _SAP_ERP_FUNCTION_MODULE_REL_FIELDS,
+        SapErpFunctionModuleRelationshipAttributes,
     )
     return SapErpFunctionModuleNested(
         guid=sap_erp_function_module.guid,
@@ -576,16 +602,23 @@ def _sap_erp_function_module_to_nested(sap_erp_function_module: SapErpFunctionMo
         remove_relationship_attributes=remove_rels,
     )
 
-def _sap_erp_function_module_from_nested(nested: SapErpFunctionModuleNested) -> SapErpFunctionModule:
+
+def _sap_erp_function_module_from_nested(
+    nested: SapErpFunctionModuleNested,
+) -> SapErpFunctionModule:
     """Convert nested format to flat SapErpFunctionModule."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapErpFunctionModuleAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SapErpFunctionModuleAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_FUNCTION_MODULE_REL_FIELDS,
-        SapErpFunctionModuleRelationshipAttributes
+        SapErpFunctionModuleRelationshipAttributes,
     )
     return SapErpFunctionModule(
         guid=nested.guid,
@@ -612,15 +645,21 @@ def _sap_erp_function_module_from_nested(nested: SapErpFunctionModuleNested) -> 
         **merged_rels,
     )
 
-def _sap_erp_function_module_to_nested_bytes(sap_erp_function_module: SapErpFunctionModule, serde: Serde) -> bytes:
+
+def _sap_erp_function_module_to_nested_bytes(
+    sap_erp_function_module: SapErpFunctionModule, serde: Serde
+) -> bytes:
     """Convert flat SapErpFunctionModule to nested JSON bytes."""
     return serde.encode(_sap_erp_function_module_to_nested(sap_erp_function_module))
 
 
-def _sap_erp_function_module_from_nested_bytes(data: bytes, serde: Serde) -> SapErpFunctionModule:
+def _sap_erp_function_module_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SapErpFunctionModule:
     """Convert nested JSON bytes to flat SapErpFunctionModule."""
     nested = serde.decode(data, SapErpFunctionModuleNested)
     return _sap_erp_function_module_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -632,16 +671,32 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SapErpFunctionModule.SAP_GROUP = KeywordField("sapGroup", "sapGroup")
-SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS = KeywordField("sapErpFunctionModuleImportParams", "sapErpFunctionModuleImportParams")
-SapErpFunctionModule.SAP_IMPORT_PARAMS_COUNT = NumericField("sapImportParamsCount", "sapImportParamsCount")
-SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS = KeywordField("sapErpFunctionModuleExportParams", "sapErpFunctionModuleExportParams")
-SapErpFunctionModule.SAP_EXPORT_PARAMS_COUNT = NumericField("sapExportParamsCount", "sapExportParamsCount")
-SapErpFunctionModule.SAP_ERP_FUNCTION_EXCEPTION_LIST = KeywordField("sapErpFunctionExceptionList", "sapErpFunctionExceptionList")
-SapErpFunctionModule.SAP_ERP_FUNCTION_EXCEPTION_LIST_COUNT = NumericField("sapErpFunctionExceptionListCount", "sapErpFunctionExceptionListCount")
-SapErpFunctionModule.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
+SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS = KeywordField(
+    "sapErpFunctionModuleImportParams", "sapErpFunctionModuleImportParams"
+)
+SapErpFunctionModule.SAP_IMPORT_PARAMS_COUNT = NumericField(
+    "sapImportParamsCount", "sapImportParamsCount"
+)
+SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS = KeywordField(
+    "sapErpFunctionModuleExportParams", "sapErpFunctionModuleExportParams"
+)
+SapErpFunctionModule.SAP_EXPORT_PARAMS_COUNT = NumericField(
+    "sapExportParamsCount", "sapExportParamsCount"
+)
+SapErpFunctionModule.SAP_ERP_FUNCTION_EXCEPTION_LIST = KeywordField(
+    "sapErpFunctionExceptionList", "sapErpFunctionExceptionList"
+)
+SapErpFunctionModule.SAP_ERP_FUNCTION_EXCEPTION_LIST_COUNT = NumericField(
+    "sapErpFunctionExceptionListCount", "sapErpFunctionExceptionListCount"
+)
+SapErpFunctionModule.SAP_TECHNICAL_NAME = KeywordField(
+    "sapTechnicalName", "sapTechnicalName"
+)
 SapErpFunctionModule.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpFunctionModule.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
-SapErpFunctionModule.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentName")
+SapErpFunctionModule.SAP_COMPONENT_NAME = KeywordField(
+    "sapComponentName", "sapComponentName"
+)
 SapErpFunctionModule.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
 SapErpFunctionModule.SAP_FIELD_COUNT = NumericField("sapFieldCount", "sapFieldCount")
 SapErpFunctionModule.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
@@ -652,11 +707,17 @@ SapErpFunctionModule.APPLICATION = RelationField("application")
 SapErpFunctionModule.APPLICATION_FIELD = RelationField("applicationField")
 SapErpFunctionModule.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SapErpFunctionModule.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SapErpFunctionModule.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SapErpFunctionModule.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SapErpFunctionModule.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+SapErpFunctionModule.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SapErpFunctionModule.METRICS = RelationField("metrics")
 SapErpFunctionModule.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SapErpFunctionModule.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SapErpFunctionModule.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 SapErpFunctionModule.MEANINGS = RelationField("meanings")
 SapErpFunctionModule.MC_MONITORS = RelationField("mcMonitors")
 SapErpFunctionModule.MC_INCIDENTS = RelationField("mcIncidents")
@@ -665,7 +726,9 @@ SapErpFunctionModule.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 SapErpFunctionModule.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SapErpFunctionModule.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 SapErpFunctionModule.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SapErpFunctionModule.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+SapErpFunctionModule.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 SapErpFunctionModule.FILES = RelationField("files")
 SapErpFunctionModule.LINKS = RelationField("links")
 SapErpFunctionModule.README = RelationField("readme")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .dbt_related import RelatedDbtTag
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DbtTag(Asset):
@@ -255,7 +256,9 @@ class DbtTag(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -277,38 +280,6 @@ class DbtTag(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/account/[^/]+/project/[^/]+/tag/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.tag_id is UNSET:
-                errors.append("tag_id is required for creation")
-            if self.tag_allowed_values is UNSET:
-                errors.append("tag_allowed_values is required for creation")
-            if self.mapped_classification_name is UNSET:
-                errors.append("mapped_classification_name is required for creation")
-        if errors:
-            raise ValueError(f"DbtTag validation failed: {errors}")
-
-    def minimize(self) -> "DbtTag":
-        self.validate()
-        return DbtTag(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbtTag":
-        if self.guid is not UNSET:
-            return RelatedDbtTag(guid=self.guid)
-        return RelatedDbtTag(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -360,6 +331,7 @@ class DbtTag(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DbtTagAttributes(AssetAttributes):
     """DbtTag-specific attributes for nested API format."""
@@ -432,6 +404,7 @@ class DbtTagAttributes(AssetAttributes):
 
     mapped_classification_name: str | None | UnsetType = UNSET
     """Name of the classification in Atlan that is mapped to this tag."""
+
 
 class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     """DbtTag-specific relationship attributes for nested API format."""
@@ -508,7 +481,9 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -520,6 +495,7 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DbtTagNested(AssetNested):
     """DbtTag in nested API format for high-performance serialization."""
 
@@ -527,6 +503,7 @@ class DbtTagNested(AssetNested):
     relationship_attributes: DbtTagRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DbtTagRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DbtTagRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -564,6 +541,7 @@ _DBT_TAG_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_dbt_tag_attrs(attrs: DbtTagAttributes, obj: DbtTag) -> None:
     """Populate DbtTag-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -590,6 +568,7 @@ def _populate_dbt_tag_attrs(attrs: DbtTagAttributes, obj: DbtTag) -> None:
     attrs.tag_attributes = obj.tag_attributes
     attrs.tag_allowed_values = obj.tag_allowed_values
     attrs.mapped_classification_name = obj.mapped_classification_name
+
 
 def _extract_dbt_tag_attrs(attrs: DbtTagAttributes) -> dict:
     """Extract all DbtTag attributes from the attrs struct into a flat dict."""
@@ -618,6 +597,7 @@ def _extract_dbt_tag_attrs(attrs: DbtTagAttributes) -> dict:
     result["tag_allowed_values"] = attrs.tag_allowed_values
     result["mapped_classification_name"] = attrs.mapped_classification_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -658,6 +638,7 @@ def _dbt_tag_to_nested(dbt_tag: DbtTag) -> DbtTagNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_tag_from_nested(nested: DbtTagNested) -> DbtTag:
     """Convert nested format to flat DbtTag."""
     attrs = nested.attributes if nested.attributes is not UNSET else DbtTagAttributes()
@@ -667,7 +648,7 @@ def _dbt_tag_from_nested(nested: DbtTagNested) -> DbtTag:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_TAG_REL_FIELDS,
-        DbtTagRelationshipAttributes
+        DbtTagRelationshipAttributes,
     )
     return DbtTag(
         guid=nested.guid,
@@ -694,6 +675,7 @@ def _dbt_tag_from_nested(nested: DbtTagNested) -> DbtTag:
         **merged_rels,
     )
 
+
 def _dbt_tag_to_nested_bytes(dbt_tag: DbtTag, serde: Serde) -> bytes:
     """Convert flat DbtTag to nested JSON bytes."""
     return serde.encode(_dbt_tag_to_nested(dbt_tag))
@@ -703,6 +685,7 @@ def _dbt_tag_from_nested_bytes(data: bytes, serde: Serde) -> DbtTag:
     """Convert nested JSON bytes to flat DbtTag."""
     nested = serde.decode(data, DbtTagNested)
     return _dbt_tag_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -723,20 +706,34 @@ DbtTag.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtTag.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtTag.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtTag.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtTag.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+DbtTag.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 DbtTag.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtTag.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtTag.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
+DbtTag.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
 DbtTag.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtTag.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+DbtTag.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 DbtTag.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtTag.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-DbtTag.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+DbtTag.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+DbtTag.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 DbtTag.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtTag.TAG_ID = KeywordField("tagId", "tagId")
 DbtTag.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
-DbtTag.TAG_ALLOWED_VALUES = KeywordTextField("tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text")
-DbtTag.MAPPED_CLASSIFICATION_NAME = KeywordField("mappedClassificationName", "mappedClassificationName")
+DbtTag.TAG_ALLOWED_VALUES = KeywordTextField(
+    "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+)
+DbtTag.MAPPED_CLASSIFICATION_NAME = KeywordField(
+    "mappedClassificationName", "mappedClassificationName"
+)
 DbtTag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DbtTag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DbtTag.ANOMALO_CHECKS = RelationField("anomaloChecks")

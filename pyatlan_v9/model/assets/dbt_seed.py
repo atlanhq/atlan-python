@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -45,15 +44,19 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSQL
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .dbt_related import RelatedDbtModelColumn, RelatedDbtSeed
+from .dbt_related import RelatedDbtModelColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DbtSeed(Asset):
@@ -256,7 +259,9 @@ class DbtSeed(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -275,39 +280,7 @@ class DbtSeed(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.dbt_seed_sql_assets is UNSET:
-                errors.append("dbt_seed_sql_assets is required for creation")
-        if errors:
-            raise ValueError(f"DbtSeed validation failed: {errors}")
-
-    def minimize(self) -> "DbtSeed":
-        self.validate()
-        return DbtSeed(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbtSeed":
-        if self.guid is not UNSET:
-            return RelatedDbtSeed(guid=self.guid)
-        return RelatedDbtSeed(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -359,6 +332,7 @@ class DbtSeed(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DbtSeedAttributes(AssetAttributes):
     """DbtSeed-specific attributes for nested API format."""
@@ -425,6 +399,7 @@ class DbtSeedAttributes(AssetAttributes):
 
     dbt_job_runs: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of latest dbt job runs across all environments."""
+
 
 class DbtSeedRelationshipAttributes(AssetRelationshipAttributes):
     """DbtSeed-specific relationship attributes for nested API format."""
@@ -507,7 +482,9 @@ class DbtSeedRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -519,6 +496,7 @@ class DbtSeedRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DbtSeedNested(AssetNested):
     """DbtSeed in nested API format for high-performance serialization."""
 
@@ -526,6 +504,7 @@ class DbtSeedNested(AssetNested):
     relationship_attributes: DbtSeedRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DbtSeedRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DbtSeedRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -565,6 +544,7 @@ _DBT_SEED_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_dbt_seed_attrs(attrs: DbtSeedAttributes, obj: DbtSeed) -> None:
     """Populate DbtSeed-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -589,6 +569,7 @@ def _populate_dbt_seed_attrs(attrs: DbtSeedAttributes, obj: DbtSeed) -> None:
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+
 
 def _extract_dbt_seed_attrs(attrs: DbtSeedAttributes) -> dict:
     """Extract all DbtSeed attributes from the attrs struct into a flat dict."""
@@ -615,6 +596,7 @@ def _extract_dbt_seed_attrs(attrs: DbtSeedAttributes) -> dict:
     result["dbt_semantic_layer_proxy_url"] = attrs.dbt_semantic_layer_proxy_url
     result["dbt_job_runs"] = attrs.dbt_job_runs
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -655,6 +637,7 @@ def _dbt_seed_to_nested(dbt_seed: DbtSeed) -> DbtSeedNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_seed_from_nested(nested: DbtSeedNested) -> DbtSeed:
     """Convert nested format to flat DbtSeed."""
     attrs = nested.attributes if nested.attributes is not UNSET else DbtSeedAttributes()
@@ -664,7 +647,7 @@ def _dbt_seed_from_nested(nested: DbtSeedNested) -> DbtSeed:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_SEED_REL_FIELDS,
-        DbtSeedRelationshipAttributes
+        DbtSeedRelationshipAttributes,
     )
     return DbtSeed(
         guid=nested.guid,
@@ -691,6 +674,7 @@ def _dbt_seed_from_nested(nested: DbtSeedNested) -> DbtSeed:
         **merged_rels,
     )
 
+
 def _dbt_seed_to_nested_bytes(dbt_seed: DbtSeed, serde: Serde) -> bytes:
     """Convert flat DbtSeed to nested JSON bytes."""
     return serde.encode(_dbt_seed_to_nested(dbt_seed))
@@ -700,6 +684,7 @@ def _dbt_seed_from_nested_bytes(data: bytes, serde: Serde) -> DbtSeed:
     """Convert nested JSON bytes to flat DbtSeed."""
     nested = serde.decode(data, DbtSeedNested)
     return _dbt_seed_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -721,15 +706,25 @@ DbtSeed.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtSeed.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtSeed.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtSeed.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtSeed.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+DbtSeed.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 DbtSeed.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtSeed.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtSeed.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
+DbtSeed.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
 DbtSeed.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtSeed.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+DbtSeed.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 DbtSeed.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtSeed.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-DbtSeed.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+DbtSeed.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+DbtSeed.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 DbtSeed.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtSeed.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DbtSeed.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

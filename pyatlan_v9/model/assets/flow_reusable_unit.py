@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,15 +37,19 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .flow_related import RelatedFlowDataset, RelatedFlowDatasetOperation, RelatedFlowReusableUnit
+from .flow_related import RelatedFlowDataset, RelatedFlowDatasetOperation
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FlowReusableUnit(Asset):
@@ -199,7 +202,9 @@ class FlowReusableUnit(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -207,30 +212,6 @@ class FlowReusableUnit(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "FlowReusableUnit"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"FlowReusableUnit validation failed: {errors}")
-
-    def minimize(self) -> "FlowReusableUnit":
-        self.validate()
-        return FlowReusableUnit(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFlowReusableUnit":
-        if self.guid is not UNSET:
-            return RelatedFlowReusableUnit(guid=self.guid)
-        return RelatedFlowReusableUnit(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -261,7 +242,9 @@ class FlowReusableUnit(Asset):
         return _flow_reusable_unit_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> FlowReusableUnit:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> FlowReusableUnit:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -282,6 +265,7 @@ class FlowReusableUnit(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class FlowReusableUnitAttributes(AssetAttributes):
     """FlowReusableUnit-specific attributes for nested API format."""
@@ -333,6 +317,7 @@ class FlowReusableUnitAttributes(AssetAttributes):
 
     flow_input_parameters: dict[str, str] | None | UnsetType = UNSET
     """Input parameters for the flow run."""
+
 
 class FlowReusableUnitRelationshipAttributes(AssetRelationshipAttributes):
     """FlowReusableUnit-specific relationship attributes for nested API format."""
@@ -394,19 +379,27 @@ class FlowReusableUnitRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class FlowReusableUnitNested(AssetNested):
     """FlowReusableUnit in nested API format for high-performance serialization."""
 
     attributes: FlowReusableUnitAttributes | UnsetType = UNSET
     relationship_attributes: FlowReusableUnitRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: FlowReusableUnitRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: FlowReusableUnitRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        FlowReusableUnitRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        FlowReusableUnitRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -437,7 +430,10 @@ _FLOW_REUSABLE_UNIT_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
-def _populate_flow_reusable_unit_attrs(attrs: FlowReusableUnitAttributes, obj: FlowReusableUnit) -> None:
+
+def _populate_flow_reusable_unit_attrs(
+    attrs: FlowReusableUnitAttributes, obj: FlowReusableUnit
+) -> None:
     """Populate FlowReusableUnit-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.flow_dataset_count = obj.flow_dataset_count
@@ -457,6 +453,7 @@ def _populate_flow_reusable_unit_attrs(attrs: FlowReusableUnitAttributes, obj: F
     attrs.flow_error_message = obj.flow_error_message
     attrs.flow_input_parameters = obj.flow_input_parameters
 
+
 def _extract_flow_reusable_unit_attrs(attrs: FlowReusableUnitAttributes) -> dict:
     """Extract all FlowReusableUnit attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -471,25 +468,32 @@ def _extract_flow_reusable_unit_attrs(attrs: FlowReusableUnitAttributes) -> dict
     result["flow_folder_name"] = attrs.flow_folder_name
     result["flow_folder_qualified_name"] = attrs.flow_folder_qualified_name
     result["flow_reusable_unit_name"] = attrs.flow_reusable_unit_name
-    result["flow_reusable_unit_qualified_name"] = attrs.flow_reusable_unit_qualified_name
+    result["flow_reusable_unit_qualified_name"] = (
+        attrs.flow_reusable_unit_qualified_name
+    )
     result["flow_id"] = attrs.flow_id
     result["flow_run_id"] = attrs.flow_run_id
     result["flow_error_message"] = attrs.flow_error_message
     result["flow_input_parameters"] = attrs.flow_input_parameters
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _flow_reusable_unit_to_nested(flow_reusable_unit: FlowReusableUnit) -> FlowReusableUnitNested:
+def _flow_reusable_unit_to_nested(
+    flow_reusable_unit: FlowReusableUnit,
+) -> FlowReusableUnitNested:
     """Convert flat FlowReusableUnit to nested format."""
     attrs = FlowReusableUnitAttributes()
     _populate_flow_reusable_unit_attrs(attrs, flow_reusable_unit)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        flow_reusable_unit, _FLOW_REUSABLE_UNIT_REL_FIELDS, FlowReusableUnitRelationshipAttributes
+        flow_reusable_unit,
+        _FLOW_REUSABLE_UNIT_REL_FIELDS,
+        FlowReusableUnitRelationshipAttributes,
     )
     return FlowReusableUnitNested(
         guid=flow_reusable_unit.guid,
@@ -517,16 +521,21 @@ def _flow_reusable_unit_to_nested(flow_reusable_unit: FlowReusableUnit) -> FlowR
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _flow_reusable_unit_from_nested(nested: FlowReusableUnitNested) -> FlowReusableUnit:
     """Convert nested format to flat FlowReusableUnit."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FlowReusableUnitAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else FlowReusableUnitAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FLOW_REUSABLE_UNIT_REL_FIELDS,
-        FlowReusableUnitRelationshipAttributes
+        FlowReusableUnitRelationshipAttributes,
     )
     return FlowReusableUnit(
         guid=nested.guid,
@@ -553,15 +562,21 @@ def _flow_reusable_unit_from_nested(nested: FlowReusableUnitNested) -> FlowReusa
         **merged_rels,
     )
 
-def _flow_reusable_unit_to_nested_bytes(flow_reusable_unit: FlowReusableUnit, serde: Serde) -> bytes:
+
+def _flow_reusable_unit_to_nested_bytes(
+    flow_reusable_unit: FlowReusableUnit, serde: Serde
+) -> bytes:
     """Convert flat FlowReusableUnit to nested JSON bytes."""
     return serde.encode(_flow_reusable_unit_to_nested(flow_reusable_unit))
 
 
-def _flow_reusable_unit_from_nested_bytes(data: bytes, serde: Serde) -> FlowReusableUnit:
+def _flow_reusable_unit_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> FlowReusableUnit:
     """Convert nested JSON bytes to flat FlowReusableUnit."""
     nested = serde.decode(data, FlowReusableUnitNested)
     return _flow_reusable_unit_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -573,22 +588,42 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-FlowReusableUnit.FLOW_DATASET_COUNT = NumericField("flowDatasetCount", "flowDatasetCount")
-FlowReusableUnit.FLOW_CONTROL_OPERATION_COUNT = NumericField("flowControlOperationCount", "flowControlOperationCount")
+FlowReusableUnit.FLOW_DATASET_COUNT = NumericField(
+    "flowDatasetCount", "flowDatasetCount"
+)
+FlowReusableUnit.FLOW_CONTROL_OPERATION_COUNT = NumericField(
+    "flowControlOperationCount", "flowControlOperationCount"
+)
 FlowReusableUnit.FLOW_STARTED_AT = NumericField("flowStartedAt", "flowStartedAt")
 FlowReusableUnit.FLOW_FINISHED_AT = NumericField("flowFinishedAt", "flowFinishedAt")
 FlowReusableUnit.FLOW_STATUS = KeywordField("flowStatus", "flowStatus")
 FlowReusableUnit.FLOW_SCHEDULE = KeywordField("flowSchedule", "flowSchedule")
-FlowReusableUnit.FLOW_PROJECT_NAME = KeywordTextField("flowProjectName", "flowProjectName", "flowProjectName.text")
-FlowReusableUnit.FLOW_PROJECT_QUALIFIED_NAME = KeywordField("flowProjectQualifiedName", "flowProjectQualifiedName")
-FlowReusableUnit.FLOW_FOLDER_NAME = KeywordTextField("flowFolderName", "flowFolderName", "flowFolderName.text")
-FlowReusableUnit.FLOW_FOLDER_QUALIFIED_NAME = KeywordField("flowFolderQualifiedName", "flowFolderQualifiedName")
-FlowReusableUnit.FLOW_REUSABLE_UNIT_NAME = KeywordTextField("flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text")
-FlowReusableUnit.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField("flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName")
+FlowReusableUnit.FLOW_PROJECT_NAME = KeywordTextField(
+    "flowProjectName", "flowProjectName", "flowProjectName.text"
+)
+FlowReusableUnit.FLOW_PROJECT_QUALIFIED_NAME = KeywordField(
+    "flowProjectQualifiedName", "flowProjectQualifiedName"
+)
+FlowReusableUnit.FLOW_FOLDER_NAME = KeywordTextField(
+    "flowFolderName", "flowFolderName", "flowFolderName.text"
+)
+FlowReusableUnit.FLOW_FOLDER_QUALIFIED_NAME = KeywordField(
+    "flowFolderQualifiedName", "flowFolderQualifiedName"
+)
+FlowReusableUnit.FLOW_REUSABLE_UNIT_NAME = KeywordTextField(
+    "flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text"
+)
+FlowReusableUnit.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField(
+    "flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName"
+)
 FlowReusableUnit.FLOW_ID = KeywordField("flowId", "flowId")
 FlowReusableUnit.FLOW_RUN_ID = KeywordField("flowRunId", "flowRunId")
-FlowReusableUnit.FLOW_ERROR_MESSAGE = KeywordField("flowErrorMessage", "flowErrorMessage")
-FlowReusableUnit.FLOW_INPUT_PARAMETERS = KeywordField("flowInputParameters", "flowInputParameters")
+FlowReusableUnit.FLOW_ERROR_MESSAGE = KeywordField(
+    "flowErrorMessage", "flowErrorMessage"
+)
+FlowReusableUnit.FLOW_INPUT_PARAMETERS = KeywordField(
+    "flowInputParameters", "flowInputParameters"
+)
 FlowReusableUnit.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FlowReusableUnit.APPLICATION = RelationField("application")
 FlowReusableUnit.APPLICATION_FIELD = RelationField("applicationField")

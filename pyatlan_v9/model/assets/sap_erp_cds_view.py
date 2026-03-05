@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sap_related import RelatedSapErpCdsView, RelatedSapErpColumn, RelatedSapErpComponent
+from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapErpCdsView(Asset):
@@ -206,7 +209,9 @@ class SapErpCdsView(Asset):
     sap_erp_columns: list[RelatedSapErpColumn] | None | UnsetType = UNSET
     """SAP ERP Columns that exist within this CDS view."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -220,30 +225,6 @@ class SapErpCdsView(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpCdsView"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpCdsView validation failed: {errors}")
-
-    def minimize(self) -> "SapErpCdsView":
-        self.validate()
-        return SapErpCdsView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpCdsView":
-        if self.guid is not UNSET:
-            return RelatedSapErpCdsView(guid=self.guid)
-        return RelatedSapErpCdsView(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -296,6 +277,7 @@ class SapErpCdsView(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SapErpCdsViewAttributes(AssetAttributes):
     """SapErpCdsView-specific attributes for nested API format."""
 
@@ -325,6 +307,7 @@ class SapErpCdsViewAttributes(AssetAttributes):
 
     sap_field_order: int | None | UnsetType = UNSET
     """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
+
 
 class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpCdsView-specific relationship attributes for nested API format."""
@@ -407,7 +390,9 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_columns: list[RelatedSapErpColumn] | None | UnsetType = UNSET
     """SAP ERP Columns that exist within this CDS view."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -419,13 +404,19 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SapErpCdsViewNested(AssetNested):
     """SapErpCdsView in nested API format for high-performance serialization."""
 
     attributes: SapErpCdsViewAttributes | UnsetType = UNSET
     relationship_attributes: SapErpCdsViewRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SapErpCdsViewRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SapErpCdsViewRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: SapErpCdsViewRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: SapErpCdsViewRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -465,7 +456,10 @@ _SAP_ERP_CDS_VIEW_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes, obj: SapErpCdsView) -> None:
+
+def _populate_sap_erp_cds_view_attrs(
+    attrs: SapErpCdsViewAttributes, obj: SapErpCdsView
+) -> None:
     """Populate SapErpCdsView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sap_technical_name = obj.sap_technical_name
@@ -477,6 +471,7 @@ def _populate_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes, obj: SapErp
     attrs.sap_data_type = obj.sap_data_type
     attrs.sap_field_count = obj.sap_field_count
     attrs.sap_field_order = obj.sap_field_order
+
 
 def _extract_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes) -> dict:
     """Extract all SapErpCdsView attributes from the attrs struct into a flat dict."""
@@ -492,6 +487,7 @@ def _extract_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes) -> dict:
     result["sap_field_order"] = attrs.sap_field_order
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
@@ -503,7 +499,9 @@ def _sap_erp_cds_view_to_nested(sap_erp_cds_view: SapErpCdsView) -> SapErpCdsVie
     _populate_sap_erp_cds_view_attrs(attrs, sap_erp_cds_view)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sap_erp_cds_view, _SAP_ERP_CDS_VIEW_REL_FIELDS, SapErpCdsViewRelationshipAttributes
+        sap_erp_cds_view,
+        _SAP_ERP_CDS_VIEW_REL_FIELDS,
+        SapErpCdsViewRelationshipAttributes,
     )
     return SapErpCdsViewNested(
         guid=sap_erp_cds_view.guid,
@@ -531,16 +529,21 @@ def _sap_erp_cds_view_to_nested(sap_erp_cds_view: SapErpCdsView) -> SapErpCdsVie
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sap_erp_cds_view_from_nested(nested: SapErpCdsViewNested) -> SapErpCdsView:
     """Convert nested format to flat SapErpCdsView."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapErpCdsViewAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SapErpCdsViewAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_CDS_VIEW_REL_FIELDS,
-        SapErpCdsViewRelationshipAttributes
+        SapErpCdsViewRelationshipAttributes,
     )
     return SapErpCdsView(
         guid=nested.guid,
@@ -567,7 +570,10 @@ def _sap_erp_cds_view_from_nested(nested: SapErpCdsViewNested) -> SapErpCdsView:
         **merged_rels,
     )
 
-def _sap_erp_cds_view_to_nested_bytes(sap_erp_cds_view: SapErpCdsView, serde: Serde) -> bytes:
+
+def _sap_erp_cds_view_to_nested_bytes(
+    sap_erp_cds_view: SapErpCdsView, serde: Serde
+) -> bytes:
     """Convert flat SapErpCdsView to nested JSON bytes."""
     return serde.encode(_sap_erp_cds_view_to_nested(sap_erp_cds_view))
 
@@ -576,6 +582,7 @@ def _sap_erp_cds_view_from_nested_bytes(data: bytes, serde: Serde) -> SapErpCdsV
     """Convert nested JSON bytes to flat SapErpCdsView."""
     nested = serde.decode(data, SapErpCdsViewNested)
     return _sap_erp_cds_view_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

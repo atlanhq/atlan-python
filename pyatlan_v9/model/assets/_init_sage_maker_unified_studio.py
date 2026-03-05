@@ -20,8 +20,12 @@ from .sage_maker_unified_studio import SageMakerUnifiedStudio
 from .sage_maker_unified_studio_asset import SageMakerUnifiedStudioAsset
 from .sage_maker_unified_studio_asset_schema import SageMakerUnifiedStudioAssetSchema
 from .sage_maker_unified_studio_project import SageMakerUnifiedStudioProject
-from .sage_maker_unified_studio_published_asset import SageMakerUnifiedStudioPublishedAsset
-from .sage_maker_unified_studio_subscribed_asset import SageMakerUnifiedStudioSubscribedAsset
+from .sage_maker_unified_studio_published_asset import (
+    SageMakerUnifiedStudioPublishedAsset,
+)
+from .sage_maker_unified_studio_subscribed_asset import (
+    SageMakerUnifiedStudioSubscribedAsset,
+)
 
 __all__ = [
     "RelatedSageMakerUnifiedStudio",

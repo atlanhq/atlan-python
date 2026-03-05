@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .fabric_related import RelatedFabric
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Fabric(Asset):
@@ -174,7 +175,9 @@ class Fabric(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -188,30 +191,6 @@ class Fabric(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Fabric"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Fabric validation failed: {errors}")
-
-    def minimize(self) -> "Fabric":
-        self.validate()
-        return Fabric(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFabric":
-        if self.guid is not UNSET:
-            return RelatedFabric(guid=self.guid)
-        return RelatedFabric(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -264,6 +243,7 @@ class Fabric(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FabricAttributes(AssetAttributes):
     """Fabric-specific attributes for nested API format."""
 
@@ -275,6 +255,7 @@ class FabricAttributes(AssetAttributes):
 
     fabric_ordinal: int | None | UnsetType = UNSET
     """Order/position of this asset within its parent."""
+
 
 class FabricRelationshipAttributes(AssetRelationshipAttributes):
     """Fabric-specific relationship attributes for nested API format."""
@@ -351,7 +332,9 @@ class FabricRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -363,6 +346,7 @@ class FabricRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class FabricNested(AssetNested):
     """Fabric in nested API format for high-performance serialization."""
 
@@ -370,6 +354,7 @@ class FabricNested(AssetNested):
     relationship_attributes: FabricRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: FabricRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: FabricRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -407,12 +392,14 @@ _FABRIC_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_fabric_attrs(attrs: FabricAttributes, obj: Fabric) -> None:
     """Populate Fabric-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.fabric_column_count = obj.fabric_column_count
     attrs.fabric_data_type = obj.fabric_data_type
     attrs.fabric_ordinal = obj.fabric_ordinal
+
 
 def _extract_fabric_attrs(attrs: FabricAttributes) -> dict:
     """Extract all Fabric attributes from the attrs struct into a flat dict."""
@@ -421,6 +408,7 @@ def _extract_fabric_attrs(attrs: FabricAttributes) -> dict:
     result["fabric_data_type"] = attrs.fabric_data_type
     result["fabric_ordinal"] = attrs.fabric_ordinal
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -461,6 +449,7 @@ def _fabric_to_nested(fabric: Fabric) -> FabricNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _fabric_from_nested(nested: FabricNested) -> Fabric:
     """Convert nested format to flat Fabric."""
     attrs = nested.attributes if nested.attributes is not UNSET else FabricAttributes()
@@ -470,7 +459,7 @@ def _fabric_from_nested(nested: FabricNested) -> Fabric:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FABRIC_REL_FIELDS,
-        FabricRelationshipAttributes
+        FabricRelationshipAttributes,
     )
     return Fabric(
         guid=nested.guid,
@@ -497,6 +486,7 @@ def _fabric_from_nested(nested: FabricNested) -> Fabric:
         **merged_rels,
     )
 
+
 def _fabric_to_nested_bytes(fabric: Fabric, serde: Serde) -> bytes:
     """Convert flat Fabric to nested JSON bytes."""
     return serde.encode(_fabric_to_nested(fabric))
@@ -506,6 +496,7 @@ def _fabric_from_nested_bytes(data: bytes, serde: Serde) -> Fabric:
     """Convert nested JSON bytes to flat Fabric."""
     nested = serde.decode(data, FabricNested)
     return _fabric_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

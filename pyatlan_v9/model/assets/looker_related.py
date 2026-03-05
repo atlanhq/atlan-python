@@ -49,6 +49,7 @@ class RelatedLooker(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Looker"
 
+
 class RelatedLookerDashboard(RelatedLooker):
     """
     Related entity reference for LookerDashboard assets.
@@ -84,6 +85,7 @@ class RelatedLookerDashboard(RelatedLooker):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerDashboard"
 
+
 class RelatedLookerExplore(RelatedLooker):
     """
     Related entity reference for LookerExplore assets.
@@ -113,6 +115,7 @@ class RelatedLookerExplore(RelatedLooker):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerExplore"
 
+
 class RelatedLookerView(RelatedLooker):
     """
     Related entity reference for LookerView assets.
@@ -135,6 +138,7 @@ class RelatedLookerView(RelatedLooker):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerView"
+
 
 class RelatedLookerLook(RelatedLooker):
     """
@@ -180,6 +184,7 @@ class RelatedLookerLook(RelatedLooker):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerLook"
 
+
 class RelatedLookerTile(RelatedLooker):
     """
     Related entity reference for LookerTile assets.
@@ -202,10 +207,14 @@ class RelatedLookerTile(RelatedLooker):
     query_id: int | None | UnsetType = msgspec.field(default=UNSET, name="queryID")
     """(Deprecated) Please use lookerQueryID instead."""
 
-    looker_query_id: str | None | UnsetType = msgspec.field(default=UNSET, name="lookerQueryID")
+    looker_query_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="lookerQueryID"
+    )
     """Identifier of the query for the Look, from Looker."""
 
-    result_maker_id: int | None | UnsetType = msgspec.field(default=UNSET, name="resultMakerID")
+    result_maker_id: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="resultMakerID"
+    )
     """Identifier of the ResultMarkerLookup entry, from Looker."""
 
     subtitle_text: str | None | UnsetType = UNSET
@@ -217,6 +226,7 @@ class RelatedLookerTile(RelatedLooker):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerTile"
+
 
 class RelatedLookerModel(RelatedLooker):
     """
@@ -235,6 +245,7 @@ class RelatedLookerModel(RelatedLooker):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerModel"
 
+
 class RelatedLookerProject(RelatedLooker):
     """
     Related entity reference for LookerProject assets.
@@ -248,6 +259,7 @@ class RelatedLookerProject(RelatedLooker):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerProject"
+
 
 class RelatedLookerQuery(RelatedLooker):
     """
@@ -274,6 +286,7 @@ class RelatedLookerQuery(RelatedLooker):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerQuery"
+
 
 class RelatedLookerField(RelatedLooker):
     """
@@ -328,6 +341,7 @@ class RelatedLookerField(RelatedLooker):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "LookerField"
 
+
 class RelatedLookerFolder(RelatedLooker):
     """
     Related entity reference for LookerFolder assets.
@@ -347,7 +361,9 @@ class RelatedLookerFolder(RelatedLooker):
     source_child_count: int | None | UnsetType = UNSET
     """Number of subfolders in this folder."""
 
-    source_parent_id: int | None | UnsetType = msgspec.field(default=UNSET, name="sourceParentID")
+    source_parent_id: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="sourceParentID"
+    )
     """Identifier of the parent folder of this folder, from Looker."""
 
     def __post_init__(self) -> None:

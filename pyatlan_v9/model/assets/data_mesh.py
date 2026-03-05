@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -42,15 +41,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .data_mesh_related import RelatedDataMesh, RelatedDataProduct
+from .data_mesh_related import RelatedDataProduct
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DataMesh(Asset):
@@ -169,7 +172,9 @@ class DataMesh(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -183,30 +188,6 @@ class DataMesh(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DataMesh"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DataMesh validation failed: {errors}")
-
-    def minimize(self) -> "DataMesh":
-        self.validate()
-        return DataMesh(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataMesh":
-        if self.guid is not UNSET:
-            return RelatedDataMesh(guid=self.guid)
-        return RelatedDataMesh(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -259,6 +240,7 @@ class DataMesh(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DataMeshAttributes(AssetAttributes):
     """DataMesh-specific attributes for nested API format."""
 
@@ -267,6 +249,7 @@ class DataMeshAttributes(AssetAttributes):
 
     super_domain_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level domain in which this asset exists."""
+
 
 class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     """DataMesh-specific relationship attributes for nested API format."""
@@ -343,7 +326,9 @@ class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -355,6 +340,7 @@ class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DataMeshNested(AssetNested):
     """DataMesh in nested API format for high-performance serialization."""
 
@@ -362,6 +348,7 @@ class DataMeshNested(AssetNested):
     relationship_attributes: DataMeshRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DataMeshRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DataMeshRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -399,11 +386,13 @@ _DATA_MESH_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_data_mesh_attrs(attrs: DataMeshAttributes, obj: DataMesh) -> None:
     """Populate DataMesh-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.parent_domain_qualified_name = obj.parent_domain_qualified_name
     attrs.super_domain_qualified_name = obj.super_domain_qualified_name
+
 
 def _extract_data_mesh_attrs(attrs: DataMeshAttributes) -> dict:
     """Extract all DataMesh attributes from the attrs struct into a flat dict."""
@@ -411,6 +400,7 @@ def _extract_data_mesh_attrs(attrs: DataMeshAttributes) -> dict:
     result["parent_domain_qualified_name"] = attrs.parent_domain_qualified_name
     result["super_domain_qualified_name"] = attrs.super_domain_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -451,16 +441,19 @@ def _data_mesh_to_nested(data_mesh: DataMesh) -> DataMeshNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _data_mesh_from_nested(nested: DataMeshNested) -> DataMesh:
     """Convert nested format to flat DataMesh."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DataMeshAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DataMeshAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATA_MESH_REL_FIELDS,
-        DataMeshRelationshipAttributes
+        DataMeshRelationshipAttributes,
     )
     return DataMesh(
         guid=nested.guid,
@@ -487,6 +480,7 @@ def _data_mesh_from_nested(nested: DataMeshNested) -> DataMesh:
         **merged_rels,
     )
 
+
 def _data_mesh_to_nested_bytes(data_mesh: DataMesh, serde: Serde) -> bytes:
     """Convert flat DataMesh to nested JSON bytes."""
     return serde.encode(_data_mesh_to_nested(data_mesh))
@@ -497,6 +491,7 @@ def _data_mesh_from_nested_bytes(data: bytes, serde: Serde) -> DataMesh:
     nested = serde.decode(data, DataMeshNested)
     return _data_mesh_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -505,8 +500,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DataMesh.PARENT_DOMAIN_QUALIFIED_NAME = KeywordTextField("parentDomainQualifiedName", "parentDomainQualifiedName", "parentDomainQualifiedName.text")
-DataMesh.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField("superDomainQualifiedName", "superDomainQualifiedName", "superDomainQualifiedName.text")
+DataMesh.PARENT_DOMAIN_QUALIFIED_NAME = KeywordTextField(
+    "parentDomainQualifiedName",
+    "parentDomainQualifiedName",
+    "parentDomainQualifiedName.text",
+)
+DataMesh.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField(
+    "superDomainQualifiedName",
+    "superDomainQualifiedName",
+    "superDomainQualifiedName.text",
+)
 DataMesh.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataMesh.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataMesh.ANOMALO_CHECKS = RelationField("anomaloChecks")

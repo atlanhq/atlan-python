@@ -34,7 +34,14 @@ from .asset import (
 from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtMetric, RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtMetric,
+    RelatedDbtModel,
+    RelatedDbtModelColumn,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
@@ -47,16 +54,26 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeDynamicTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import RelatedCalculationView, RelatedColumn, RelatedMaterialisedView, RelatedQuery, RelatedTable, RelatedTablePartition, RelatedView
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from .sql_related import (
+    RelatedCalculationView,
+    RelatedColumn,
+    RelatedMaterialisedView,
+    RelatedQuery,
+    RelatedTable,
+    RelatedTablePartition,
+    RelatedView,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .iceberg_related import RelatedIcebergColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class IcebergColumn(Asset):
@@ -263,7 +280,9 @@ class IcebergColumn(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -488,7 +507,9 @@ class IcebergColumn(Asset):
     application_field: RelatedApplicationField | None | UnsetType = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    )
     """Cosmos collection in which this column exists."""
 
     output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
@@ -536,7 +557,9 @@ class IcebergColumn(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: list[RelatedDbtMetric] | None | UnsetType = UNSET
@@ -554,7 +577,9 @@ class IcebergColumn(Asset):
     meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(
+        default=UNSET, name="mongoDBCollection"
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
@@ -620,7 +645,9 @@ class IcebergColumn(Asset):
     queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that access this column."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
@@ -637,33 +664,6 @@ class IcebergColumn(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "IcebergColumn"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if for_creation:
-            if self.order is UNSET:
-                errors.append("order is required for creation")
-        if errors:
-            raise ValueError(f"IcebergColumn validation failed: {errors}")
-
-    def minimize(self) -> "IcebergColumn":
-        self.validate()
-        return IcebergColumn(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedIcebergColumn":
-        if self.guid is not UNSET:
-            return RelatedIcebergColumn(guid=self.guid)
-        return RelatedIcebergColumn(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -715,6 +715,7 @@ class IcebergColumn(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class IcebergColumnAttributes(AssetAttributes):
     """IcebergColumn-specific attributes for nested API format."""
@@ -773,7 +774,9 @@ class IcebergColumnAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -983,6 +986,7 @@ class IcebergColumnAttributes(AssetAttributes):
     column_measure_type: str | None | UnsetType = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
 
+
 class IcebergColumnRelationshipAttributes(AssetRelationshipAttributes):
     """IcebergColumn-specific relationship attributes for nested API format."""
 
@@ -1001,7 +1005,9 @@ class IcebergColumnRelationshipAttributes(AssetRelationshipAttributes):
     application_field: RelatedApplicationField | None | UnsetType = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: RelatedCosmosMongoDBCollection | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    )
     """Cosmos collection in which this column exists."""
 
     output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
@@ -1049,7 +1055,9 @@ class IcebergColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: list[RelatedDbtMetric] | None | UnsetType = UNSET
@@ -1067,7 +1075,9 @@ class IcebergColumnRelationshipAttributes(AssetRelationshipAttributes):
     meanings: list[RelatedAtlasGlossaryTerm] | None | UnsetType = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: RelatedMongoDBCollection | None | UnsetType = msgspec.field(
+        default=UNSET, name="mongoDBCollection"
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: list[RelatedMCMonitor] | None | UnsetType = UNSET
@@ -1133,7 +1143,9 @@ class IcebergColumnRelationshipAttributes(AssetRelationshipAttributes):
     queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that access this column."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     snowflake_dynamic_table: RelatedSnowflakeDynamicTable | None | UnsetType = UNSET
@@ -1148,13 +1160,19 @@ class IcebergColumnRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class IcebergColumnNested(AssetNested):
     """IcebergColumn in nested API format for high-performance serialization."""
 
     attributes: IcebergColumnAttributes | UnsetType = UNSET
     relationship_attributes: IcebergColumnRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: IcebergColumnRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: IcebergColumnRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: IcebergColumnRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: IcebergColumnRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1218,10 +1236,15 @@ _ICEBERG_COLUMN_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_iceberg_column_attrs(attrs: IcebergColumnAttributes, obj: IcebergColumn) -> None:
+
+def _populate_iceberg_column_attrs(
+    attrs: IcebergColumnAttributes, obj: IcebergColumn
+) -> None:
     """Populate IcebergColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.iceberg_parent_namespace_qualified_name = obj.iceberg_parent_namespace_qualified_name
+    attrs.iceberg_parent_namespace_qualified_name = (
+        obj.iceberg_parent_namespace_qualified_name
+    )
     attrs.iceberg_namespace_hierarchy = obj.iceberg_namespace_hierarchy
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
@@ -1310,10 +1333,13 @@ def _populate_iceberg_column_attrs(attrs: IcebergColumnAttributes, obj: IcebergC
     attrs.column_is_measure = obj.column_is_measure
     attrs.column_measure_type = obj.column_measure_type
 
+
 def _extract_iceberg_column_attrs(attrs: IcebergColumnAttributes) -> dict:
     """Extract all IcebergColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["iceberg_parent_namespace_qualified_name"] = attrs.iceberg_parent_namespace_qualified_name
+    result["iceberg_parent_namespace_qualified_name"] = (
+        attrs.iceberg_parent_namespace_qualified_name
+    )
     result["iceberg_namespace_hierarchy"] = attrs.iceberg_namespace_hierarchy
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
@@ -1331,7 +1357,9 @@ def _extract_iceberg_column_attrs(attrs: IcebergColumnAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["data_type"] = attrs.data_type
     result["sub_data_type"] = attrs.sub_data_type
@@ -1362,7 +1390,9 @@ def _extract_iceberg_column_attrs(attrs: IcebergColumnAttributes) -> dict:
     result["parent_column_qualified_name"] = attrs.parent_column_qualified_name
     result["parent_column_name"] = attrs.parent_column_name
     result["column_distinct_values_count"] = attrs.column_distinct_values_count
-    result["column_distinct_values_count_long"] = attrs.column_distinct_values_count_long
+    result["column_distinct_values_count_long"] = (
+        attrs.column_distinct_values_count_long
+    )
     result["column_histogram"] = attrs.column_histogram
     result["column_max"] = attrs.column_max
     result["column_min"] = attrs.column_min
@@ -1375,7 +1405,9 @@ def _extract_iceberg_column_attrs(attrs: IcebergColumnAttributes) -> dict:
     result["column_average"] = attrs.column_average
     result["column_average_length"] = attrs.column_average_length
     result["column_duplicate_values_count"] = attrs.column_duplicate_values_count
-    result["column_duplicate_values_count_long"] = attrs.column_duplicate_values_count_long
+    result["column_duplicate_values_count_long"] = (
+        attrs.column_duplicate_values_count_long
+    )
     result["column_maximum_string_length"] = attrs.column_maximum_string_length
     result["column_maxs"] = attrs.column_maxs
     result["column_minimum_string_length"] = attrs.column_minimum_string_length
@@ -1402,6 +1434,7 @@ def _extract_iceberg_column_attrs(attrs: IcebergColumnAttributes) -> dict:
     result["column_is_measure"] = attrs.column_is_measure
     result["column_measure_type"] = attrs.column_measure_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -1442,16 +1475,21 @@ def _iceberg_column_to_nested(iceberg_column: IcebergColumn) -> IcebergColumnNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _iceberg_column_from_nested(nested: IcebergColumnNested) -> IcebergColumn:
     """Convert nested format to flat IcebergColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else IcebergColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else IcebergColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ICEBERG_COLUMN_REL_FIELDS,
-        IcebergColumnRelationshipAttributes
+        IcebergColumnRelationshipAttributes,
     )
     return IcebergColumn(
         guid=nested.guid,
@@ -1478,7 +1516,10 @@ def _iceberg_column_from_nested(nested: IcebergColumnNested) -> IcebergColumn:
         **merged_rels,
     )
 
-def _iceberg_column_to_nested_bytes(iceberg_column: IcebergColumn, serde: Serde) -> bytes:
+
+def _iceberg_column_to_nested_bytes(
+    iceberg_column: IcebergColumn, serde: Serde
+) -> bytes:
     """Convert flat IcebergColumn to nested JSON bytes."""
     return serde.encode(_iceberg_column_to_nested(iceberg_column))
 
@@ -1487,6 +1528,7 @@ def _iceberg_column_from_nested_bytes(data: bytes, serde: Serde) -> IcebergColum
     """Convert nested JSON bytes to flat IcebergColumn."""
     nested = serde.decode(data, IcebergColumnNested)
     return _iceberg_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1499,34 +1541,62 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-IcebergColumn.ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME = KeywordField("icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName")
-IcebergColumn.ICEBERG_NAMESPACE_HIERARCHY = KeywordField("icebergNamespaceHierarchy", "icebergNamespaceHierarchy")
+IcebergColumn.ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME = KeywordField(
+    "icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName"
+)
+IcebergColumn.ICEBERG_NAMESPACE_HIERARCHY = KeywordField(
+    "icebergNamespaceHierarchy", "icebergNamespaceHierarchy"
+)
 IcebergColumn.QUERY_COUNT = NumericField("queryCount", "queryCount")
 IcebergColumn.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 IcebergColumn.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-IcebergColumn.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+IcebergColumn.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 IcebergColumn.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-IcebergColumn.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+IcebergColumn.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 IcebergColumn.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-IcebergColumn.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+IcebergColumn.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 IcebergColumn.TABLE_NAME = KeywordField("tableName", "tableName")
-IcebergColumn.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+IcebergColumn.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 IcebergColumn.VIEW_NAME = KeywordField("viewName", "viewName")
-IcebergColumn.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-IcebergColumn.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-IcebergColumn.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+IcebergColumn.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+IcebergColumn.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+IcebergColumn.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 IcebergColumn.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 IcebergColumn.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-IcebergColumn.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+IcebergColumn.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 IcebergColumn.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 IcebergColumn.DATA_TYPE = KeywordTextField("dataType", "dataType", "dataType.text")
 IcebergColumn.SUB_DATA_TYPE = KeywordField("subDataType", "subDataType")
-IcebergColumn.COLUMN_COMPRESSION = KeywordField("columnCompression", "columnCompression")
+IcebergColumn.COLUMN_COMPRESSION = KeywordField(
+    "columnCompression", "columnCompression"
+)
 IcebergColumn.COLUMN_ENCODING = KeywordField("columnEncoding", "columnEncoding")
-IcebergColumn.RAW_DATA_TYPE_DEFINITION = KeywordField("rawDataTypeDefinition", "rawDataTypeDefinition")
+IcebergColumn.RAW_DATA_TYPE_DEFINITION = KeywordField(
+    "rawDataTypeDefinition", "rawDataTypeDefinition"
+)
 IcebergColumn.ORDER = NumericField("order", "order")
-IcebergColumn.NESTED_COLUMN_ORDER = KeywordTextField("nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text")
-IcebergColumn.NESTED_COLUMN_COUNT = NumericField("nestedColumnCount", "nestedColumnCount")
+IcebergColumn.NESTED_COLUMN_ORDER = KeywordTextField(
+    "nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text"
+)
+IcebergColumn.NESTED_COLUMN_COUNT = NumericField(
+    "nestedColumnCount", "nestedColumnCount"
+)
 IcebergColumn.COLUMN_HIERARCHY = KeywordField("columnHierarchy", "columnHierarchy")
 IcebergColumn.IS_PARTITION = BooleanField("isPartition", "isPartition")
 IcebergColumn.PARTITION_ORDER = NumericField("partitionOrder", "partitionOrder")
@@ -1545,48 +1615,98 @@ IcebergColumn.IS_NULLABLE = BooleanField("isNullable", "isNullable")
 IcebergColumn.NUMERIC_SCALE = NumericField("numericScale", "numericScale")
 IcebergColumn.MAX_LENGTH = NumericField("maxLength", "maxLength")
 IcebergColumn.VALIDATIONS = KeywordField("validations", "validations")
-IcebergColumn.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField("parentColumnQualifiedName", "parentColumnQualifiedName", "parentColumnQualifiedName.text")
+IcebergColumn.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField(
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName.text",
+)
 IcebergColumn.PARENT_COLUMN_NAME = KeywordField("parentColumnName", "parentColumnName")
-IcebergColumn.COLUMN_DISTINCT_VALUES_COUNT = NumericField("columnDistinctValuesCount", "columnDistinctValuesCount")
-IcebergColumn.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField("columnDistinctValuesCountLong", "columnDistinctValuesCountLong")
+IcebergColumn.COLUMN_DISTINCT_VALUES_COUNT = NumericField(
+    "columnDistinctValuesCount", "columnDistinctValuesCount"
+)
+IcebergColumn.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField(
+    "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
+)
 IcebergColumn.COLUMN_HISTOGRAM = KeywordField("columnHistogram", "columnHistogram")
 IcebergColumn.COLUMN_MAX = NumericField("columnMax", "columnMax")
 IcebergColumn.COLUMN_MIN = NumericField("columnMin", "columnMin")
 IcebergColumn.COLUMN_MEAN = NumericField("columnMean", "columnMean")
 IcebergColumn.COLUMN_SUM = NumericField("columnSum", "columnSum")
 IcebergColumn.COLUMN_MEDIAN = NumericField("columnMedian", "columnMedian")
-IcebergColumn.COLUMN_STANDARD_DEVIATION = NumericField("columnStandardDeviation", "columnStandardDeviation")
-IcebergColumn.COLUMN_UNIQUE_VALUES_COUNT = NumericField("columnUniqueValuesCount", "columnUniqueValuesCount")
-IcebergColumn.COLUMN_UNIQUE_VALUES_COUNT_LONG = NumericField("columnUniqueValuesCountLong", "columnUniqueValuesCountLong")
+IcebergColumn.COLUMN_STANDARD_DEVIATION = NumericField(
+    "columnStandardDeviation", "columnStandardDeviation"
+)
+IcebergColumn.COLUMN_UNIQUE_VALUES_COUNT = NumericField(
+    "columnUniqueValuesCount", "columnUniqueValuesCount"
+)
+IcebergColumn.COLUMN_UNIQUE_VALUES_COUNT_LONG = NumericField(
+    "columnUniqueValuesCountLong", "columnUniqueValuesCountLong"
+)
 IcebergColumn.COLUMN_AVERAGE = NumericField("columnAverage", "columnAverage")
-IcebergColumn.COLUMN_AVERAGE_LENGTH = NumericField("columnAverageLength", "columnAverageLength")
-IcebergColumn.COLUMN_DUPLICATE_VALUES_COUNT = NumericField("columnDuplicateValuesCount", "columnDuplicateValuesCount")
-IcebergColumn.COLUMN_DUPLICATE_VALUES_COUNT_LONG = NumericField("columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong")
-IcebergColumn.COLUMN_MAXIMUM_STRING_LENGTH = NumericField("columnMaximumStringLength", "columnMaximumStringLength")
+IcebergColumn.COLUMN_AVERAGE_LENGTH = NumericField(
+    "columnAverageLength", "columnAverageLength"
+)
+IcebergColumn.COLUMN_DUPLICATE_VALUES_COUNT = NumericField(
+    "columnDuplicateValuesCount", "columnDuplicateValuesCount"
+)
+IcebergColumn.COLUMN_DUPLICATE_VALUES_COUNT_LONG = NumericField(
+    "columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong"
+)
+IcebergColumn.COLUMN_MAXIMUM_STRING_LENGTH = NumericField(
+    "columnMaximumStringLength", "columnMaximumStringLength"
+)
 IcebergColumn.COLUMN_MAXS = KeywordField("columnMaxs", "columnMaxs")
-IcebergColumn.COLUMN_MINIMUM_STRING_LENGTH = NumericField("columnMinimumStringLength", "columnMinimumStringLength")
+IcebergColumn.COLUMN_MINIMUM_STRING_LENGTH = NumericField(
+    "columnMinimumStringLength", "columnMinimumStringLength"
+)
 IcebergColumn.COLUMN_MINS = KeywordField("columnMins", "columnMins")
-IcebergColumn.COLUMN_MISSING_VALUES_COUNT = NumericField("columnMissingValuesCount", "columnMissingValuesCount")
-IcebergColumn.COLUMN_MISSING_VALUES_COUNT_LONG = NumericField("columnMissingValuesCountLong", "columnMissingValuesCountLong")
-IcebergColumn.COLUMN_MISSING_VALUES_PERCENTAGE = NumericField("columnMissingValuesPercentage", "columnMissingValuesPercentage")
-IcebergColumn.COLUMN_UNIQUENESS_PERCENTAGE = NumericField("columnUniquenessPercentage", "columnUniquenessPercentage")
+IcebergColumn.COLUMN_MISSING_VALUES_COUNT = NumericField(
+    "columnMissingValuesCount", "columnMissingValuesCount"
+)
+IcebergColumn.COLUMN_MISSING_VALUES_COUNT_LONG = NumericField(
+    "columnMissingValuesCountLong", "columnMissingValuesCountLong"
+)
+IcebergColumn.COLUMN_MISSING_VALUES_PERCENTAGE = NumericField(
+    "columnMissingValuesPercentage", "columnMissingValuesPercentage"
+)
+IcebergColumn.COLUMN_UNIQUENESS_PERCENTAGE = NumericField(
+    "columnUniquenessPercentage", "columnUniquenessPercentage"
+)
 IcebergColumn.COLUMN_VARIANCE = NumericField("columnVariance", "columnVariance")
 IcebergColumn.COLUMN_TOP_VALUES = KeywordField("columnTopValues", "columnTopValues")
 IcebergColumn.COLUMN_MAX_VALUE = NumericField("columnMaxValue", "columnMaxValue")
 IcebergColumn.COLUMN_MIN_VALUE = NumericField("columnMinValue", "columnMinValue")
 IcebergColumn.COLUMN_MEAN_VALUE = NumericField("columnMeanValue", "columnMeanValue")
 IcebergColumn.COLUMN_SUM_VALUE = NumericField("columnSumValue", "columnSumValue")
-IcebergColumn.COLUMN_MEDIAN_VALUE = NumericField("columnMedianValue", "columnMedianValue")
-IcebergColumn.COLUMN_STANDARD_DEVIATION_VALUE = NumericField("columnStandardDeviationValue", "columnStandardDeviationValue")
-IcebergColumn.COLUMN_AVERAGE_VALUE = NumericField("columnAverageValue", "columnAverageValue")
-IcebergColumn.COLUMN_VARIANCE_VALUE = NumericField("columnVarianceValue", "columnVarianceValue")
-IcebergColumn.COLUMN_AVERAGE_LENGTH_VALUE = NumericField("columnAverageLengthValue", "columnAverageLengthValue")
-IcebergColumn.COLUMN_DISTRIBUTION_HISTOGRAM = KeywordField("columnDistributionHistogram", "columnDistributionHistogram")
+IcebergColumn.COLUMN_MEDIAN_VALUE = NumericField(
+    "columnMedianValue", "columnMedianValue"
+)
+IcebergColumn.COLUMN_STANDARD_DEVIATION_VALUE = NumericField(
+    "columnStandardDeviationValue", "columnStandardDeviationValue"
+)
+IcebergColumn.COLUMN_AVERAGE_VALUE = NumericField(
+    "columnAverageValue", "columnAverageValue"
+)
+IcebergColumn.COLUMN_VARIANCE_VALUE = NumericField(
+    "columnVarianceValue", "columnVarianceValue"
+)
+IcebergColumn.COLUMN_AVERAGE_LENGTH_VALUE = NumericField(
+    "columnAverageLengthValue", "columnAverageLengthValue"
+)
+IcebergColumn.COLUMN_DISTRIBUTION_HISTOGRAM = KeywordField(
+    "columnDistributionHistogram", "columnDistributionHistogram"
+)
 IcebergColumn.COLUMN_DEPTH_LEVEL = NumericField("columnDepthLevel", "columnDepthLevel")
-IcebergColumn.NOSQL_COLLECTION_NAME = KeywordField("nosqlCollectionName", "nosqlCollectionName")
-IcebergColumn.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField("nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName")
+IcebergColumn.NOSQL_COLLECTION_NAME = KeywordField(
+    "nosqlCollectionName", "nosqlCollectionName"
+)
+IcebergColumn.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField(
+    "nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName"
+)
 IcebergColumn.COLUMN_IS_MEASURE = BooleanField("columnIsMeasure", "columnIsMeasure")
-IcebergColumn.COLUMN_MEASURE_TYPE = KeywordField("columnMeasureType", "columnMeasureType")
+IcebergColumn.COLUMN_MEASURE_TYPE = KeywordField(
+    "columnMeasureType", "columnMeasureType"
+)
 IcebergColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 IcebergColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 IcebergColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -1599,7 +1719,9 @@ IcebergColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntiti
 IcebergColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 IcebergColumn.METRICS = RelationField("metrics")
 IcebergColumn.METRIC_TIMESTAMPS = RelationField("metricTimestamps")
-IcebergColumn.DATA_QUALITY_METRIC_DIMENSIONS = RelationField("dataQualityMetricDimensions")
+IcebergColumn.DATA_QUALITY_METRIC_DIMENSIONS = RelationField(
+    "dataQualityMetricDimensions"
+)
 IcebergColumn.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 IcebergColumn.DQ_BASE_COLUMN_RULES = RelationField("dqBaseColumnRules")
 IcebergColumn.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

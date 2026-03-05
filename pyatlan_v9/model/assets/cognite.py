@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .cognite_related import RelatedCognite
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Cognite(Asset):
@@ -162,7 +163,9 @@ class Cognite(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class Cognite(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Cognite"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Cognite validation failed: {errors}")
-
-    def minimize(self) -> "Cognite":
-        self.validate()
-        return Cognite(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCognite":
-        if self.guid is not UNSET:
-            return RelatedCognite(guid=self.guid)
-        return RelatedCognite(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class Cognite(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CogniteAttributes(AssetAttributes):
     """Cognite-specific attributes for nested API format."""
 
     pass
+
 
 class CogniteRelationshipAttributes(AssetRelationshipAttributes):
     """Cognite-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class CogniteRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,6 +327,7 @@ class CogniteRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CogniteNested(AssetNested):
     """Cognite in nested API format for high-performance serialization."""
 
@@ -351,6 +335,7 @@ class CogniteNested(AssetNested):
     relationship_attributes: CogniteRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: CogniteRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: CogniteRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +373,16 @@ _COGNITE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_cognite_attrs(attrs: CogniteAttributes, obj: Cognite) -> None:
     """Populate Cognite-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_cognite_attrs(attrs: CogniteAttributes) -> dict:
     """Extract all Cognite attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,6 +423,7 @@ def _cognite_to_nested(cognite: Cognite) -> CogniteNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognite_from_nested(nested: CogniteNested) -> Cognite:
     """Convert nested format to flat Cognite."""
     attrs = nested.attributes if nested.attributes is not UNSET else CogniteAttributes()
@@ -444,7 +433,7 @@ def _cognite_from_nested(nested: CogniteNested) -> Cognite:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNITE_REL_FIELDS,
-        CogniteRelationshipAttributes
+        CogniteRelationshipAttributes,
     )
     return Cognite(
         guid=nested.guid,
@@ -471,6 +460,7 @@ def _cognite_from_nested(nested: CogniteNested) -> Cognite:
         **merged_rels,
     )
 
+
 def _cognite_to_nested_bytes(cognite: Cognite, serde: Serde) -> bytes:
     """Convert flat Cognite to nested JSON bytes."""
     return serde.encode(_cognite_to_nested(cognite))
@@ -480,6 +470,7 @@ def _cognite_from_nested_bytes(data: bytes, serde: Serde) -> Cognite:
     """Convert nested JSON bytes to flat Cognite."""
     nested = serde.decode(data, CogniteNested)
     return _cognite_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

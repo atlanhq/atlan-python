@@ -1,6 +1,9 @@
+# STDLIB_IMPORT: from typing import Dict, List
 # IMPORT: from pyatlan.model.enums import AIDatasetType, AtlanConnectorType
 # IMPORT: from pyatlan.utils import to_camel_case
 # INTERNAL_IMPORT: from pyatlan.utils import init_guid, validate_required_fields
+# INTERNAL_IMPORT: from pyatlan.model.transform import get_type
+# INTERNAL_IMPORT: from pyatlan.model.assets.process import Process
 
     @classmethod
     @init_guid

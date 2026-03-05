@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,15 +50,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sql_related import RelatedFunction, RelatedSchema
+from .sql_related import RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Function(Asset):
@@ -221,7 +230,9 @@ class Function(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -272,7 +283,9 @@ class Function(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -320,7 +333,9 @@ class Function(Asset):
     sql_processes: list[RelatedProcess] | None | UnsetType = UNSET
     """Processes that utilize this function."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -342,44 +357,6 @@ class Function(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.function_schema is UNSET:
-                errors.append("function_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"Function validation failed: {errors}")
-
-    def minimize(self) -> "Function":
-        self.validate()
-        return Function(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFunction":
-        if self.guid is not UNSET:
-            return RelatedFunction(guid=self.guid)
-        return RelatedFunction(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -431,6 +408,7 @@ class Function(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class FunctionAttributes(AssetAttributes):
     """Function-specific attributes for nested API format."""
@@ -525,8 +503,11 @@ class FunctionAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
+
 
 class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     """Function-specific relationship attributes for nested API format."""
@@ -579,7 +560,9 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -627,7 +610,9 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     sql_processes: list[RelatedProcess] | None | UnsetType = UNSET
     """Processes that utilize this function."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -639,6 +624,7 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class FunctionNested(AssetNested):
     """Function in nested API format for high-performance serialization."""
 
@@ -646,6 +632,7 @@ class FunctionNested(AssetNested):
     relationship_attributes: FunctionRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: FunctionRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: FunctionRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -691,6 +678,7 @@ _FUNCTION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_function_attrs(attrs: FunctionAttributes, obj: Function) -> None:
     """Populate Function-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -726,6 +714,7 @@ def _populate_function_attrs(attrs: FunctionAttributes, obj: Function) -> None:
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
 
+
 def _extract_function_attrs(attrs: FunctionAttributes) -> dict:
     """Extract all Function attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -759,8 +748,11 @@ def _extract_function_attrs(attrs: FunctionAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -801,16 +793,19 @@ def _function_to_nested(function: Function) -> FunctionNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _function_from_nested(nested: FunctionNested) -> Function:
     """Convert nested format to flat Function."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FunctionAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else FunctionAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FUNCTION_REL_FIELDS,
-        FunctionRelationshipAttributes
+        FunctionRelationshipAttributes,
     )
     return Function(
         guid=nested.guid,
@@ -837,6 +832,7 @@ def _function_from_nested(nested: FunctionNested) -> Function:
         **merged_rels,
     )
 
+
 def _function_to_nested_bytes(function: Function, serde: Serde) -> bytes:
     """Convert flat Function to nested JSON bytes."""
     return serde.encode(_function_to_nested(function))
@@ -846,6 +842,7 @@ def _function_from_nested_bytes(data: bytes, serde: Serde) -> Function:
     """Convert nested JSON bytes to flat Function."""
     nested = serde.decode(data, FunctionNested)
     return _function_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -867,28 +864,46 @@ Function.SQL_IS_EXTERNAL = BooleanField("sqlIsExternal", "sqlIsExternal")
 Function.SQL_IS_DMF = BooleanField("sqlIsDMF", "sqlIsDMF")
 Function.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Function.SQL_IS_MEMOIZABLE = BooleanField("sqlIsMemoizable", "sqlIsMemoizable")
-Function.SQL_RUNTIME_VERSION = KeywordTextField("sqlRuntimeVersion", "sqlRuntimeVersion", "sqlRuntimeVersion.text")
-Function.SQL_EXTERNAL_ACCESS_INTEGRATIONS = KeywordField("sqlExternalAccessIntegrations", "sqlExternalAccessIntegrations")
+Function.SQL_RUNTIME_VERSION = KeywordTextField(
+    "sqlRuntimeVersion", "sqlRuntimeVersion", "sqlRuntimeVersion.text"
+)
+Function.SQL_EXTERNAL_ACCESS_INTEGRATIONS = KeywordField(
+    "sqlExternalAccessIntegrations", "sqlExternalAccessIntegrations"
+)
 Function.SQL_SECRETS = KeywordField("sqlSecrets", "sqlSecrets")
 Function.SQL_PACKAGES = KeywordField("sqlPackages", "sqlPackages")
-Function.SQL_INSTALLED_PACKAGES = KeywordField("sqlInstalledPackages", "sqlInstalledPackages")
+Function.SQL_INSTALLED_PACKAGES = KeywordField(
+    "sqlInstalledPackages", "sqlInstalledPackages"
+)
 Function.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Function.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Function.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Function.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+Function.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 Function.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Function.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+Function.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 Function.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Function.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+Function.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 Function.TABLE_NAME = KeywordField("tableName", "tableName")
 Function.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 Function.VIEW_NAME = KeywordField("viewName", "viewName")
 Function.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Function.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-Function.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+Function.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+Function.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 Function.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Function.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Function.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+Function.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 Function.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Function.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Function.ANOMALO_CHECKS = RelationField("anomaloChecks")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -45,16 +44,24 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .anaplan_related import RelatedAnaplanDimension, RelatedAnaplanLineItem, RelatedAnaplanModel, RelatedAnaplanView
+from .anaplan_related import (
+    RelatedAnaplanLineItem,
+    RelatedAnaplanModel,
+    RelatedAnaplanView,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AnaplanDimension(Asset):
@@ -213,7 +220,9 @@ class AnaplanDimension(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -235,44 +244,6 @@ class AnaplanDimension(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.anaplan_model is UNSET:
-                errors.append("anaplan_model is required for creation")
-            if self.anaplan_model_name is UNSET:
-                errors.append("anaplan_model_name is required for creation")
-            if self.anaplan_model_qualified_name is UNSET:
-                errors.append("anaplan_model_qualified_name is required for creation")
-            if self.anaplan_workspace_name is UNSET:
-                errors.append("anaplan_workspace_name is required for creation")
-            if self.anaplan_workspace_qualified_name is UNSET:
-                errors.append("anaplan_workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"AnaplanDimension validation failed: {errors}")
-
-    def minimize(self) -> "AnaplanDimension":
-        self.validate()
-        return AnaplanDimension(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAnaplanDimension":
-        if self.guid is not UNSET:
-            return RelatedAnaplanDimension(guid=self.guid)
-        return RelatedAnaplanDimension(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -352,7 +323,9 @@ class AnaplanDimension(Asset):
         return _anaplan_dimension_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AnaplanDimension:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> AnaplanDimension:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -373,6 +346,7 @@ class AnaplanDimension(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class AnaplanDimensionAttributes(AssetAttributes):
     """AnaplanDimension-specific attributes for nested API format."""
@@ -397,6 +371,7 @@ class AnaplanDimensionAttributes(AssetAttributes):
 
     anaplan_source_id: str | None | UnsetType = UNSET
     """Id/Guid of the Anaplan asset in the source system."""
+
 
 class AnaplanDimensionRelationshipAttributes(AssetRelationshipAttributes):
     """AnaplanDimension-specific relationship attributes for nested API format."""
@@ -488,7 +463,9 @@ class AnaplanDimensionRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -500,13 +477,19 @@ class AnaplanDimensionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AnaplanDimensionNested(AssetNested):
     """AnaplanDimension in nested API format for high-performance serialization."""
 
     attributes: AnaplanDimensionAttributes | UnsetType = UNSET
     relationship_attributes: AnaplanDimensionRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AnaplanDimensionRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AnaplanDimensionRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        AnaplanDimensionRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        AnaplanDimensionRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -549,7 +532,10 @@ _ANAPLAN_DIMENSION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_anaplan_dimension_attrs(attrs: AnaplanDimensionAttributes, obj: AnaplanDimension) -> None:
+
+def _populate_anaplan_dimension_attrs(
+    attrs: AnaplanDimensionAttributes, obj: AnaplanDimension
+) -> None:
     """Populate AnaplanDimension-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.anaplan_workspace_qualified_name = obj.anaplan_workspace_qualified_name
@@ -559,6 +545,7 @@ def _populate_anaplan_dimension_attrs(attrs: AnaplanDimensionAttributes, obj: An
     attrs.anaplan_module_qualified_name = obj.anaplan_module_qualified_name
     attrs.anaplan_module_name = obj.anaplan_module_name
     attrs.anaplan_source_id = obj.anaplan_source_id
+
 
 def _extract_anaplan_dimension_attrs(attrs: AnaplanDimensionAttributes) -> dict:
     """Extract all AnaplanDimension attributes from the attrs struct into a flat dict."""
@@ -572,18 +559,23 @@ def _extract_anaplan_dimension_attrs(attrs: AnaplanDimensionAttributes) -> dict:
     result["anaplan_source_id"] = attrs.anaplan_source_id
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _anaplan_dimension_to_nested(anaplan_dimension: AnaplanDimension) -> AnaplanDimensionNested:
+def _anaplan_dimension_to_nested(
+    anaplan_dimension: AnaplanDimension,
+) -> AnaplanDimensionNested:
     """Convert flat AnaplanDimension to nested format."""
     attrs = AnaplanDimensionAttributes()
     _populate_anaplan_dimension_attrs(attrs, anaplan_dimension)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        anaplan_dimension, _ANAPLAN_DIMENSION_REL_FIELDS, AnaplanDimensionRelationshipAttributes
+        anaplan_dimension,
+        _ANAPLAN_DIMENSION_REL_FIELDS,
+        AnaplanDimensionRelationshipAttributes,
     )
     return AnaplanDimensionNested(
         guid=anaplan_dimension.guid,
@@ -611,16 +603,21 @@ def _anaplan_dimension_to_nested(anaplan_dimension: AnaplanDimension) -> Anaplan
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _anaplan_dimension_from_nested(nested: AnaplanDimensionNested) -> AnaplanDimension:
     """Convert nested format to flat AnaplanDimension."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AnaplanDimensionAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AnaplanDimensionAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ANAPLAN_DIMENSION_REL_FIELDS,
-        AnaplanDimensionRelationshipAttributes
+        AnaplanDimensionRelationshipAttributes,
     )
     return AnaplanDimension(
         guid=nested.guid,
@@ -647,7 +644,10 @@ def _anaplan_dimension_from_nested(nested: AnaplanDimensionNested) -> AnaplanDim
         **merged_rels,
     )
 
-def _anaplan_dimension_to_nested_bytes(anaplan_dimension: AnaplanDimension, serde: Serde) -> bytes:
+
+def _anaplan_dimension_to_nested_bytes(
+    anaplan_dimension: AnaplanDimension, serde: Serde
+) -> bytes:
     """Convert flat AnaplanDimension to nested JSON bytes."""
     return serde.encode(_anaplan_dimension_to_nested(anaplan_dimension))
 
@@ -657,6 +657,7 @@ def _anaplan_dimension_from_nested_bytes(data: bytes, serde: Serde) -> AnaplanDi
     nested = serde.decode(data, AnaplanDimensionNested)
     return _anaplan_dimension_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -665,12 +666,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AnaplanDimension.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField("anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName")
-AnaplanDimension.ANAPLAN_WORKSPACE_NAME = KeywordField("anaplanWorkspaceName", "anaplanWorkspaceName")
-AnaplanDimension.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField("anaplanModelQualifiedName", "anaplanModelQualifiedName")
-AnaplanDimension.ANAPLAN_MODEL_NAME = KeywordField("anaplanModelName", "anaplanModelName")
-AnaplanDimension.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField("anaplanModuleQualifiedName", "anaplanModuleQualifiedName")
-AnaplanDimension.ANAPLAN_MODULE_NAME = KeywordField("anaplanModuleName", "anaplanModuleName")
+AnaplanDimension.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField(
+    "anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName"
+)
+AnaplanDimension.ANAPLAN_WORKSPACE_NAME = KeywordField(
+    "anaplanWorkspaceName", "anaplanWorkspaceName"
+)
+AnaplanDimension.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField(
+    "anaplanModelQualifiedName", "anaplanModelQualifiedName"
+)
+AnaplanDimension.ANAPLAN_MODEL_NAME = KeywordField(
+    "anaplanModelName", "anaplanModelName"
+)
+AnaplanDimension.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField(
+    "anaplanModuleQualifiedName", "anaplanModuleQualifiedName"
+)
+AnaplanDimension.ANAPLAN_MODULE_NAME = KeywordField(
+    "anaplanModuleName", "anaplanModuleName"
+)
 AnaplanDimension.ANAPLAN_SOURCE_ID = KeywordField("anaplanSourceId", "anaplanSourceId")
 AnaplanDimension.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AnaplanDimension.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -685,7 +698,9 @@ AnaplanDimension.APPLICATION_FIELD = RelationField("applicationField")
 AnaplanDimension.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AnaplanDimension.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AnaplanDimension.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AnaplanDimension.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+AnaplanDimension.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 AnaplanDimension.METRICS = RelationField("metrics")
 AnaplanDimension.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AnaplanDimension.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

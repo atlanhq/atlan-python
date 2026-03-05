@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,27 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .micro_strategy_related import RelatedMicroStrategyAttribute, RelatedMicroStrategyColumn, RelatedMicroStrategyCube, RelatedMicroStrategyDocument, RelatedMicroStrategyDossier, RelatedMicroStrategyFact, RelatedMicroStrategyMetric, RelatedMicroStrategyReport
+from .micro_strategy_related import (
+    RelatedMicroStrategyAttribute,
+    RelatedMicroStrategyCube,
+    RelatedMicroStrategyDocument,
+    RelatedMicroStrategyDossier,
+    RelatedMicroStrategyFact,
+    RelatedMicroStrategyMetric,
+    RelatedMicroStrategyReport,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MicroStrategyColumn(Asset):
@@ -279,7 +290,9 @@ class MicroStrategyColumn(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -301,40 +314,6 @@ class MicroStrategyColumn(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.micro_strategy_attribute is UNSET:
-                errors.append("micro_strategy_attribute is required for creation")
-            if self.micro_strategy_project_name is UNSET:
-                errors.append("micro_strategy_project_name is required for creation")
-            if self.micro_strategy_project_qualified_name is UNSET:
-                errors.append("micro_strategy_project_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MicroStrategyColumn validation failed: {errors}")
-
-    def minimize(self) -> "MicroStrategyColumn":
-        self.validate()
-        return MicroStrategyColumn(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMicroStrategyColumn":
-        if self.guid is not UNSET:
-            return RelatedMicroStrategyColumn(guid=self.guid)
-        return RelatedMicroStrategyColumn(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -365,7 +344,9 @@ class MicroStrategyColumn(Asset):
         return _micro_strategy_column_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MicroStrategyColumn:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MicroStrategyColumn:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -386,6 +367,7 @@ class MicroStrategyColumn(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class MicroStrategyColumnAttributes(AssetAttributes):
     """MicroStrategyColumn-specific attributes for nested API format."""
@@ -455,6 +437,7 @@ class MicroStrategyColumnAttributes(AssetAttributes):
 
     micro_strategy_location: list[dict[str, str]] | None | UnsetType = UNSET
     """Location of this asset in MicroStrategy."""
+
 
 class MicroStrategyColumnRelationshipAttributes(AssetRelationshipAttributes):
     """MicroStrategyColumn-specific relationship attributes for nested API format."""
@@ -552,7 +535,9 @@ class MicroStrategyColumnRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -564,13 +549,21 @@ class MicroStrategyColumnRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MicroStrategyColumnNested(AssetNested):
     """MicroStrategyColumn in nested API format for high-performance serialization."""
 
     attributes: MicroStrategyColumnAttributes | UnsetType = UNSET
-    relationship_attributes: MicroStrategyColumnRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MicroStrategyColumnRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MicroStrategyColumnRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: MicroStrategyColumnRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        MicroStrategyColumnRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        MicroStrategyColumnRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -615,31 +608,53 @@ _MICRO_STRATEGY_COLUMN_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_micro_strategy_column_attrs(attrs: MicroStrategyColumnAttributes, obj: MicroStrategyColumn) -> None:
+
+def _populate_micro_strategy_column_attrs(
+    attrs: MicroStrategyColumnAttributes, obj: MicroStrategyColumn
+) -> None:
     """Populate MicroStrategyColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.micro_strategy_column_id = obj.micro_strategy_column_id
     attrs.micro_strategy_column_type = obj.micro_strategy_column_type
     attrs.micro_strategy_data_type = obj.micro_strategy_data_type
-    attrs.micro_strategy_column_attribute_qualified_name = obj.micro_strategy_column_attribute_qualified_name
-    attrs.micro_strategy_column_fact_qualified_name = obj.micro_strategy_column_fact_qualified_name
-    attrs.micro_strategy_column_metric_qualified_name = obj.micro_strategy_column_metric_qualified_name
-    attrs.micro_strategy_column_cube_qualified_name = obj.micro_strategy_column_cube_qualified_name
-    attrs.micro_strategy_column_report_qualified_name = obj.micro_strategy_column_report_qualified_name
-    attrs.micro_strategy_column_dossier_qualified_name = obj.micro_strategy_column_dossier_qualified_name
-    attrs.micro_strategy_column_document_qualified_name = obj.micro_strategy_column_document_qualified_name
+    attrs.micro_strategy_column_attribute_qualified_name = (
+        obj.micro_strategy_column_attribute_qualified_name
+    )
+    attrs.micro_strategy_column_fact_qualified_name = (
+        obj.micro_strategy_column_fact_qualified_name
+    )
+    attrs.micro_strategy_column_metric_qualified_name = (
+        obj.micro_strategy_column_metric_qualified_name
+    )
+    attrs.micro_strategy_column_cube_qualified_name = (
+        obj.micro_strategy_column_cube_qualified_name
+    )
+    attrs.micro_strategy_column_report_qualified_name = (
+        obj.micro_strategy_column_report_qualified_name
+    )
+    attrs.micro_strategy_column_dossier_qualified_name = (
+        obj.micro_strategy_column_dossier_qualified_name
+    )
+    attrs.micro_strategy_column_document_qualified_name = (
+        obj.micro_strategy_column_document_qualified_name
+    )
     attrs.micro_strategy_parent_name = obj.micro_strategy_parent_name
     attrs.micro_strategy_column_expression = obj.micro_strategy_column_expression
-    attrs.micro_strategy_project_qualified_name = obj.micro_strategy_project_qualified_name
+    attrs.micro_strategy_project_qualified_name = (
+        obj.micro_strategy_project_qualified_name
+    )
     attrs.micro_strategy_project_name = obj.micro_strategy_project_name
     attrs.micro_strategy_cube_qualified_names = obj.micro_strategy_cube_qualified_names
     attrs.micro_strategy_cube_names = obj.micro_strategy_cube_names
-    attrs.micro_strategy_report_qualified_names = obj.micro_strategy_report_qualified_names
+    attrs.micro_strategy_report_qualified_names = (
+        obj.micro_strategy_report_qualified_names
+    )
     attrs.micro_strategy_report_names = obj.micro_strategy_report_names
     attrs.micro_strategy_is_certified = obj.micro_strategy_is_certified
     attrs.micro_strategy_certified_by = obj.micro_strategy_certified_by
     attrs.micro_strategy_certified_at = obj.micro_strategy_certified_at
     attrs.micro_strategy_location = obj.micro_strategy_location
+
 
 def _extract_micro_strategy_column_attrs(attrs: MicroStrategyColumnAttributes) -> dict:
     """Extract all MicroStrategyColumn attributes from the attrs struct into a flat dict."""
@@ -647,20 +662,40 @@ def _extract_micro_strategy_column_attrs(attrs: MicroStrategyColumnAttributes) -
     result["micro_strategy_column_id"] = attrs.micro_strategy_column_id
     result["micro_strategy_column_type"] = attrs.micro_strategy_column_type
     result["micro_strategy_data_type"] = attrs.micro_strategy_data_type
-    result["micro_strategy_column_attribute_qualified_name"] = attrs.micro_strategy_column_attribute_qualified_name
-    result["micro_strategy_column_fact_qualified_name"] = attrs.micro_strategy_column_fact_qualified_name
-    result["micro_strategy_column_metric_qualified_name"] = attrs.micro_strategy_column_metric_qualified_name
-    result["micro_strategy_column_cube_qualified_name"] = attrs.micro_strategy_column_cube_qualified_name
-    result["micro_strategy_column_report_qualified_name"] = attrs.micro_strategy_column_report_qualified_name
-    result["micro_strategy_column_dossier_qualified_name"] = attrs.micro_strategy_column_dossier_qualified_name
-    result["micro_strategy_column_document_qualified_name"] = attrs.micro_strategy_column_document_qualified_name
+    result["micro_strategy_column_attribute_qualified_name"] = (
+        attrs.micro_strategy_column_attribute_qualified_name
+    )
+    result["micro_strategy_column_fact_qualified_name"] = (
+        attrs.micro_strategy_column_fact_qualified_name
+    )
+    result["micro_strategy_column_metric_qualified_name"] = (
+        attrs.micro_strategy_column_metric_qualified_name
+    )
+    result["micro_strategy_column_cube_qualified_name"] = (
+        attrs.micro_strategy_column_cube_qualified_name
+    )
+    result["micro_strategy_column_report_qualified_name"] = (
+        attrs.micro_strategy_column_report_qualified_name
+    )
+    result["micro_strategy_column_dossier_qualified_name"] = (
+        attrs.micro_strategy_column_dossier_qualified_name
+    )
+    result["micro_strategy_column_document_qualified_name"] = (
+        attrs.micro_strategy_column_document_qualified_name
+    )
     result["micro_strategy_parent_name"] = attrs.micro_strategy_parent_name
     result["micro_strategy_column_expression"] = attrs.micro_strategy_column_expression
-    result["micro_strategy_project_qualified_name"] = attrs.micro_strategy_project_qualified_name
+    result["micro_strategy_project_qualified_name"] = (
+        attrs.micro_strategy_project_qualified_name
+    )
     result["micro_strategy_project_name"] = attrs.micro_strategy_project_name
-    result["micro_strategy_cube_qualified_names"] = attrs.micro_strategy_cube_qualified_names
+    result["micro_strategy_cube_qualified_names"] = (
+        attrs.micro_strategy_cube_qualified_names
+    )
     result["micro_strategy_cube_names"] = attrs.micro_strategy_cube_names
-    result["micro_strategy_report_qualified_names"] = attrs.micro_strategy_report_qualified_names
+    result["micro_strategy_report_qualified_names"] = (
+        attrs.micro_strategy_report_qualified_names
+    )
     result["micro_strategy_report_names"] = attrs.micro_strategy_report_names
     result["micro_strategy_is_certified"] = attrs.micro_strategy_is_certified
     result["micro_strategy_certified_by"] = attrs.micro_strategy_certified_by
@@ -668,18 +703,23 @@ def _extract_micro_strategy_column_attrs(attrs: MicroStrategyColumnAttributes) -
     result["micro_strategy_location"] = attrs.micro_strategy_location
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _micro_strategy_column_to_nested(micro_strategy_column: MicroStrategyColumn) -> MicroStrategyColumnNested:
+def _micro_strategy_column_to_nested(
+    micro_strategy_column: MicroStrategyColumn,
+) -> MicroStrategyColumnNested:
     """Convert flat MicroStrategyColumn to nested format."""
     attrs = MicroStrategyColumnAttributes()
     _populate_micro_strategy_column_attrs(attrs, micro_strategy_column)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        micro_strategy_column, _MICRO_STRATEGY_COLUMN_REL_FIELDS, MicroStrategyColumnRelationshipAttributes
+        micro_strategy_column,
+        _MICRO_STRATEGY_COLUMN_REL_FIELDS,
+        MicroStrategyColumnRelationshipAttributes,
     )
     return MicroStrategyColumnNested(
         guid=micro_strategy_column.guid,
@@ -707,16 +747,23 @@ def _micro_strategy_column_to_nested(micro_strategy_column: MicroStrategyColumn)
         remove_relationship_attributes=remove_rels,
     )
 
-def _micro_strategy_column_from_nested(nested: MicroStrategyColumnNested) -> MicroStrategyColumn:
+
+def _micro_strategy_column_from_nested(
+    nested: MicroStrategyColumnNested,
+) -> MicroStrategyColumn:
     """Convert nested format to flat MicroStrategyColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MicroStrategyColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MicroStrategyColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MICRO_STRATEGY_COLUMN_REL_FIELDS,
-        MicroStrategyColumnRelationshipAttributes
+        MicroStrategyColumnRelationshipAttributes,
     )
     return MicroStrategyColumn(
         guid=nested.guid,
@@ -743,15 +790,21 @@ def _micro_strategy_column_from_nested(nested: MicroStrategyColumnNested) -> Mic
         **merged_rels,
     )
 
-def _micro_strategy_column_to_nested_bytes(micro_strategy_column: MicroStrategyColumn, serde: Serde) -> bytes:
+
+def _micro_strategy_column_to_nested_bytes(
+    micro_strategy_column: MicroStrategyColumn, serde: Serde
+) -> bytes:
     """Convert flat MicroStrategyColumn to nested JSON bytes."""
     return serde.encode(_micro_strategy_column_to_nested(micro_strategy_column))
 
 
-def _micro_strategy_column_from_nested_bytes(data: bytes, serde: Serde) -> MicroStrategyColumn:
+def _micro_strategy_column_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> MicroStrategyColumn:
     """Convert nested JSON bytes to flat MicroStrategyColumn."""
     nested = serde.decode(data, MicroStrategyColumnNested)
     return _micro_strategy_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -764,28 +817,94 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_ID = KeywordField("microStrategyColumnId", "microStrategyColumnId")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_TYPE = KeywordField("microStrategyColumnType", "microStrategyColumnType")
-MicroStrategyColumn.MICRO_STRATEGY_DATA_TYPE = KeywordField("microStrategyDataType", "microStrategyDataType")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_ATTRIBUTE_QUALIFIED_NAME = KeywordTextField("microStrategyColumnAttributeQualifiedName", "microStrategyColumnAttributeQualifiedName", "microStrategyColumnAttributeQualifiedName.text")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_FACT_QUALIFIED_NAME = KeywordTextField("microStrategyColumnFactQualifiedName", "microStrategyColumnFactQualifiedName", "microStrategyColumnFactQualifiedName.text")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_METRIC_QUALIFIED_NAME = KeywordTextField("microStrategyColumnMetricQualifiedName", "microStrategyColumnMetricQualifiedName", "microStrategyColumnMetricQualifiedName.text")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_CUBE_QUALIFIED_NAME = KeywordTextField("microStrategyColumnCubeQualifiedName", "microStrategyColumnCubeQualifiedName", "microStrategyColumnCubeQualifiedName.text")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_REPORT_QUALIFIED_NAME = KeywordTextField("microStrategyColumnReportQualifiedName", "microStrategyColumnReportQualifiedName", "microStrategyColumnReportQualifiedName.text")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_DOSSIER_QUALIFIED_NAME = KeywordTextField("microStrategyColumnDossierQualifiedName", "microStrategyColumnDossierQualifiedName", "microStrategyColumnDossierQualifiedName.text")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_DOCUMENT_QUALIFIED_NAME = KeywordTextField("microStrategyColumnDocumentQualifiedName", "microStrategyColumnDocumentQualifiedName", "microStrategyColumnDocumentQualifiedName.text")
-MicroStrategyColumn.MICRO_STRATEGY_PARENT_NAME = KeywordField("microStrategyParentName", "microStrategyParentName")
-MicroStrategyColumn.MICRO_STRATEGY_COLUMN_EXPRESSION = KeywordField("microStrategyColumnExpression", "microStrategyColumnExpression")
-MicroStrategyColumn.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField("microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName.text")
-MicroStrategyColumn.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField("microStrategyProjectName", "microStrategyProjectName", "microStrategyProjectName.text")
-MicroStrategyColumn.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField("microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames.text")
-MicroStrategyColumn.MICRO_STRATEGY_CUBE_NAMES = KeywordField("microStrategyCubeNames", "microStrategyCubeNames")
-MicroStrategyColumn.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField("microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames.text")
-MicroStrategyColumn.MICRO_STRATEGY_REPORT_NAMES = KeywordField("microStrategyReportNames", "microStrategyReportNames")
-MicroStrategyColumn.MICRO_STRATEGY_IS_CERTIFIED = BooleanField("microStrategyIsCertified", "microStrategyIsCertified")
-MicroStrategyColumn.MICRO_STRATEGY_CERTIFIED_BY = KeywordField("microStrategyCertifiedBy", "microStrategyCertifiedBy")
-MicroStrategyColumn.MICRO_STRATEGY_CERTIFIED_AT = NumericField("microStrategyCertifiedAt", "microStrategyCertifiedAt")
-MicroStrategyColumn.MICRO_STRATEGY_LOCATION = KeywordField("microStrategyLocation", "microStrategyLocation")
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_ID = KeywordField(
+    "microStrategyColumnId", "microStrategyColumnId"
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_TYPE = KeywordField(
+    "microStrategyColumnType", "microStrategyColumnType"
+)
+MicroStrategyColumn.MICRO_STRATEGY_DATA_TYPE = KeywordField(
+    "microStrategyDataType", "microStrategyDataType"
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_ATTRIBUTE_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyColumnAttributeQualifiedName",
+    "microStrategyColumnAttributeQualifiedName",
+    "microStrategyColumnAttributeQualifiedName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_FACT_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyColumnFactQualifiedName",
+    "microStrategyColumnFactQualifiedName",
+    "microStrategyColumnFactQualifiedName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_METRIC_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyColumnMetricQualifiedName",
+    "microStrategyColumnMetricQualifiedName",
+    "microStrategyColumnMetricQualifiedName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_CUBE_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyColumnCubeQualifiedName",
+    "microStrategyColumnCubeQualifiedName",
+    "microStrategyColumnCubeQualifiedName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_REPORT_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyColumnReportQualifiedName",
+    "microStrategyColumnReportQualifiedName",
+    "microStrategyColumnReportQualifiedName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_DOSSIER_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyColumnDossierQualifiedName",
+    "microStrategyColumnDossierQualifiedName",
+    "microStrategyColumnDossierQualifiedName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_DOCUMENT_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyColumnDocumentQualifiedName",
+    "microStrategyColumnDocumentQualifiedName",
+    "microStrategyColumnDocumentQualifiedName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_PARENT_NAME = KeywordField(
+    "microStrategyParentName", "microStrategyParentName"
+)
+MicroStrategyColumn.MICRO_STRATEGY_COLUMN_EXPRESSION = KeywordField(
+    "microStrategyColumnExpression", "microStrategyColumnExpression"
+)
+MicroStrategyColumn.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField(
+    "microStrategyProjectName",
+    "microStrategyProjectName",
+    "microStrategyProjectName.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_CUBE_NAMES = KeywordField(
+    "microStrategyCubeNames", "microStrategyCubeNames"
+)
+MicroStrategyColumn.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames.text",
+)
+MicroStrategyColumn.MICRO_STRATEGY_REPORT_NAMES = KeywordField(
+    "microStrategyReportNames", "microStrategyReportNames"
+)
+MicroStrategyColumn.MICRO_STRATEGY_IS_CERTIFIED = BooleanField(
+    "microStrategyIsCertified", "microStrategyIsCertified"
+)
+MicroStrategyColumn.MICRO_STRATEGY_CERTIFIED_BY = KeywordField(
+    "microStrategyCertifiedBy", "microStrategyCertifiedBy"
+)
+MicroStrategyColumn.MICRO_STRATEGY_CERTIFIED_AT = NumericField(
+    "microStrategyCertifiedAt", "microStrategyCertifiedAt"
+)
+MicroStrategyColumn.MICRO_STRATEGY_LOCATION = KeywordField(
+    "microStrategyLocation", "microStrategyLocation"
+)
 MicroStrategyColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MicroStrategyColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MicroStrategyColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -793,11 +912,17 @@ MicroStrategyColumn.APPLICATION = RelationField("application")
 MicroStrategyColumn.APPLICATION_FIELD = RelationField("applicationField")
 MicroStrategyColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MicroStrategyColumn.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-MicroStrategyColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MicroStrategyColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MicroStrategyColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+MicroStrategyColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MicroStrategyColumn.METRICS = RelationField("metrics")
 MicroStrategyColumn.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-MicroStrategyColumn.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+MicroStrategyColumn.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 MicroStrategyColumn.MEANINGS = RelationField("meanings")
 MicroStrategyColumn.MICRO_STRATEGY_ATTRIBUTE = RelationField("microStrategyAttribute")
 MicroStrategyColumn.MICRO_STRATEGY_CUBE = RelationField("microStrategyCube")
@@ -813,7 +938,9 @@ MicroStrategyColumn.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 MicroStrategyColumn.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 MicroStrategyColumn.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 MicroStrategyColumn.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-MicroStrategyColumn.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+MicroStrategyColumn.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 MicroStrategyColumn.FILES = RelationField("files")
 MicroStrategyColumn.LINKS = RelationField("links")
 MicroStrategyColumn.README = RelationField("readme")

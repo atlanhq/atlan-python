@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -56,6 +55,7 @@ class RelatedAtlasGlossary(RelatedAsset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AtlasGlossary"
 
+
 class RelatedAtlasGlossaryCategory(RelatedAsset):
     """
     Related entity reference for AtlasGlossaryCategory assets.
@@ -81,6 +81,7 @@ class RelatedAtlasGlossaryCategory(RelatedAsset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AtlasGlossaryCategory"
+
 
 class RelatedAtlasGlossaryTerm(RelatedAsset):
     """

@@ -42,6 +42,7 @@ class RelatedRedash(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Redash"
 
+
 class RelatedRedashVisualization(RelatedRedash):
     """
     Related entity reference for RedashVisualization assets.
@@ -65,6 +66,7 @@ class RelatedRedashVisualization(RelatedRedash):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "RedashVisualization"
 
+
 class RelatedRedashDashboard(RelatedRedash):
     """
     Related entity reference for RedashDashboard assets.
@@ -82,6 +84,7 @@ class RelatedRedashDashboard(RelatedRedash):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "RedashDashboard"
 
+
 class RelatedRedashQuery(RelatedRedash):
     """
     Related entity reference for RedashQuery assets.
@@ -92,7 +95,9 @@ class RelatedRedashQuery(RelatedRedash):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "RedashQuery" so it serializes correctly
 
-    redash_query_sql: str | None | UnsetType = msgspec.field(default=UNSET, name="redashQuerySQL")
+    redash_query_sql: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="redashQuerySQL"
+    )
     """SQL code of this query."""
 
     redash_query_parameters: str | None | UnsetType = UNSET

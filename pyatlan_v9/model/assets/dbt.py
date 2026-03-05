@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .dbt_related import RelatedDbt
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Dbt(Asset):
@@ -238,7 +239,9 @@ class Dbt(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -252,30 +255,6 @@ class Dbt(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Dbt"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Dbt validation failed: {errors}")
-
-    def minimize(self) -> "Dbt":
-        self.validate()
-        return Dbt(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbt":
-        if self.guid is not UNSET:
-            return RelatedDbt(guid=self.guid)
-        return RelatedDbt(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -327,6 +306,7 @@ class Dbt(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DbtAttributes(AssetAttributes):
     """Dbt-specific attributes for nested API format."""
@@ -387,6 +367,7 @@ class DbtAttributes(AssetAttributes):
 
     dbt_job_runs: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of latest dbt job runs across all environments."""
+
 
 class DbtRelationshipAttributes(AssetRelationshipAttributes):
     """Dbt-specific relationship attributes for nested API format."""
@@ -463,7 +444,9 @@ class DbtRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -475,6 +458,7 @@ class DbtRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DbtNested(AssetNested):
     """Dbt in nested API format for high-performance serialization."""
 
@@ -482,6 +466,7 @@ class DbtNested(AssetNested):
     relationship_attributes: DbtRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DbtRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DbtRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -519,6 +504,7 @@ _DBT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_dbt_attrs(attrs: DbtAttributes, obj: Dbt) -> None:
     """Populate Dbt-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -541,6 +527,7 @@ def _populate_dbt_attrs(attrs: DbtAttributes, obj: Dbt) -> None:
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+
 
 def _extract_dbt_attrs(attrs: DbtAttributes) -> dict:
     """Extract all Dbt attributes from the attrs struct into a flat dict."""
@@ -565,6 +552,7 @@ def _extract_dbt_attrs(attrs: DbtAttributes) -> dict:
     result["dbt_semantic_layer_proxy_url"] = attrs.dbt_semantic_layer_proxy_url
     result["dbt_job_runs"] = attrs.dbt_job_runs
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -605,6 +593,7 @@ def _dbt_to_nested(dbt: Dbt) -> DbtNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_from_nested(nested: DbtNested) -> Dbt:
     """Convert nested format to flat Dbt."""
     attrs = nested.attributes if nested.attributes is not UNSET else DbtAttributes()
@@ -614,7 +603,7 @@ def _dbt_from_nested(nested: DbtNested) -> Dbt:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_REL_FIELDS,
-        DbtRelationshipAttributes
+        DbtRelationshipAttributes,
     )
     return Dbt(
         guid=nested.guid,
@@ -641,6 +630,7 @@ def _dbt_from_nested(nested: DbtNested) -> Dbt:
         **merged_rels,
     )
 
+
 def _dbt_to_nested_bytes(dbt: Dbt, serde: Serde) -> bytes:
     """Convert flat Dbt to nested JSON bytes."""
     return serde.encode(_dbt_to_nested(dbt))
@@ -650,6 +640,7 @@ def _dbt_from_nested_bytes(data: bytes, serde: Serde) -> Dbt:
     """Convert nested JSON bytes to flat Dbt."""
     nested = serde.decode(data, DbtNested)
     return _dbt_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -669,15 +660,25 @@ Dbt.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 Dbt.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 Dbt.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 Dbt.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-Dbt.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+Dbt.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 Dbt.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 Dbt.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-Dbt.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
+Dbt.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
 Dbt.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-Dbt.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+Dbt.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 Dbt.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-Dbt.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-Dbt.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+Dbt.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+Dbt.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 Dbt.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 Dbt.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Dbt.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

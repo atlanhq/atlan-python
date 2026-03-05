@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .looker_related import RelatedLookerLook, RelatedLookerModel, RelatedLookerQuery, RelatedLookerTile
+from .looker_related import RelatedLookerLook, RelatedLookerModel, RelatedLookerTile
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class LookerQuery(Asset):
@@ -195,7 +198,9 @@ class LookerQuery(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -217,36 +222,6 @@ class LookerQuery(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.model is UNSET:
-                errors.append("model is required for creation")
-        if errors:
-            raise ValueError(f"LookerQuery validation failed: {errors}")
-
-    def minimize(self) -> "LookerQuery":
-        self.validate()
-        return LookerQuery(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLookerQuery":
-        if self.guid is not UNSET:
-            return RelatedLookerQuery(guid=self.guid)
-        return RelatedLookerQuery(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -299,6 +274,7 @@ class LookerQuery(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LookerQueryAttributes(AssetAttributes):
     """LookerQuery-specific attributes for nested API format."""
 
@@ -316,6 +292,7 @@ class LookerQueryAttributes(AssetAttributes):
 
     looker_slug: str | None | UnsetType = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
+
 
 class LookerQueryRelationshipAttributes(AssetRelationshipAttributes):
     """LookerQuery-specific relationship attributes for nested API format."""
@@ -401,7 +378,9 @@ class LookerQueryRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -413,13 +392,19 @@ class LookerQueryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class LookerQueryNested(AssetNested):
     """LookerQuery in nested API format for high-performance serialization."""
 
     attributes: LookerQueryAttributes | UnsetType = UNSET
     relationship_attributes: LookerQueryRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: LookerQueryRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: LookerQueryRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: LookerQueryRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: LookerQueryRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -460,7 +445,10 @@ _LOOKER_QUERY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_looker_query_attrs(attrs: LookerQueryAttributes, obj: LookerQuery) -> None:
+
+def _populate_looker_query_attrs(
+    attrs: LookerQueryAttributes, obj: LookerQuery
+) -> None:
     """Populate LookerQuery-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.source_definition = obj.source_definition
@@ -468,6 +456,7 @@ def _populate_looker_query_attrs(attrs: LookerQueryAttributes, obj: LookerQuery)
     attrs.source_definition_schema = obj.source_definition_schema
     attrs.fields = obj.fields
     attrs.looker_slug = obj.looker_slug
+
 
 def _extract_looker_query_attrs(attrs: LookerQueryAttributes) -> dict:
     """Extract all LookerQuery attributes from the attrs struct into a flat dict."""
@@ -478,6 +467,7 @@ def _extract_looker_query_attrs(attrs: LookerQueryAttributes) -> dict:
     result["fields"] = attrs.fields
     result["looker_slug"] = attrs.looker_slug
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -518,16 +508,19 @@ def _looker_query_to_nested(looker_query: LookerQuery) -> LookerQueryNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _looker_query_from_nested(nested: LookerQueryNested) -> LookerQuery:
     """Convert nested format to flat LookerQuery."""
-    attrs = nested.attributes if nested.attributes is not UNSET else LookerQueryAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else LookerQueryAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_QUERY_REL_FIELDS,
-        LookerQueryRelationshipAttributes
+        LookerQueryRelationshipAttributes,
     )
     return LookerQuery(
         guid=nested.guid,
@@ -554,6 +547,7 @@ def _looker_query_from_nested(nested: LookerQueryNested) -> LookerQuery:
         **merged_rels,
     )
 
+
 def _looker_query_to_nested_bytes(looker_query: LookerQuery, serde: Serde) -> bytes:
     """Convert flat LookerQuery to nested JSON bytes."""
     return serde.encode(_looker_query_to_nested(looker_query))
@@ -564,6 +558,7 @@ def _looker_query_from_nested_bytes(data: bytes, serde: Serde) -> LookerQuery:
     nested = serde.decode(data, LookerQueryNested)
     return _looker_query_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -573,8 +568,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 LookerQuery.SOURCE_DEFINITION = KeywordField("sourceDefinition", "sourceDefinition")
-LookerQuery.SOURCE_DEFINITION_DATABASE = KeywordField("sourceDefinitionDatabase", "sourceDefinitionDatabase")
-LookerQuery.SOURCE_DEFINITION_SCHEMA = KeywordField("sourceDefinitionSchema", "sourceDefinitionSchema")
+LookerQuery.SOURCE_DEFINITION_DATABASE = KeywordField(
+    "sourceDefinitionDatabase", "sourceDefinitionDatabase"
+)
+LookerQuery.SOURCE_DEFINITION_SCHEMA = KeywordField(
+    "sourceDefinitionSchema", "sourceDefinitionSchema"
+)
 LookerQuery.FIELDS = KeywordField("fields", "fields")
 LookerQuery.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
 LookerQuery.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

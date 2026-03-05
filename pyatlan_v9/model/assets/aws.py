@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,15 +37,17 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .cloud_related import RelatedAWS
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AWS(Asset):
@@ -163,7 +164,9 @@ class AWS(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -171,30 +174,6 @@ class AWS(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AWS"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"AWS validation failed: {errors}")
-
-    def minimize(self) -> "AWS":
-        self.validate()
-        return AWS(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAWS":
-        if self.guid is not UNSET:
-            return RelatedAWS(guid=self.guid)
-        return RelatedAWS(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -247,6 +226,7 @@ class AWS(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AWSAttributes(AssetAttributes):
     """AWS-specific attributes for nested API format."""
 
@@ -279,6 +259,7 @@ class AWSAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class AWSRelationshipAttributes(AssetRelationshipAttributes):
     """AWS-specific relationship attributes for nested API format."""
@@ -331,11 +312,14 @@ class AWSRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class AWSNested(AssetNested):
     """AWS in nested API format for high-performance serialization."""
@@ -344,6 +328,7 @@ class AWSNested(AssetNested):
     relationship_attributes: AWSRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: AWSRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: AWSRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -371,6 +356,7 @@ _AWS_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
+
 def _populate_aws_attrs(attrs: AWSAttributes, obj: AWS) -> None:
     """Populate AWS-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -384,6 +370,7 @@ def _populate_aws_attrs(attrs: AWSAttributes, obj: AWS) -> None:
     attrs.aws_owner_id = obj.aws_owner_id
     attrs.aws_tags = obj.aws_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_aws_attrs(attrs: AWSAttributes) -> dict:
     """Extract all AWS attributes from the attrs struct into a flat dict."""
@@ -399,6 +386,7 @@ def _extract_aws_attrs(attrs: AWSAttributes) -> dict:
     result["aws_tags"] = attrs.aws_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -439,6 +427,7 @@ def _aws_to_nested(aws: AWS) -> AWSNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _aws_from_nested(nested: AWSNested) -> AWS:
     """Convert nested format to flat AWS."""
     attrs = nested.attributes if nested.attributes is not UNSET else AWSAttributes()
@@ -448,7 +437,7 @@ def _aws_from_nested(nested: AWSNested) -> AWS:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AWS_REL_FIELDS,
-        AWSRelationshipAttributes
+        AWSRelationshipAttributes,
     )
     return AWS(
         guid=nested.guid,
@@ -475,6 +464,7 @@ def _aws_from_nested(nested: AWSNested) -> AWS:
         **merged_rels,
     )
 
+
 def _aws_to_nested_bytes(aws: AWS, serde: Serde) -> bytes:
     """Convert flat AWS to nested JSON bytes."""
     return serde.encode(_aws_to_nested(aws))
@@ -484,6 +474,7 @@ def _aws_from_nested_bytes(data: bytes, serde: Serde) -> AWS:
     """Convert nested JSON bytes to flat AWS."""
     nested = serde.decode(data, AWSNested)
     return _aws_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -500,10 +491,14 @@ AWS.AWS_SERVICE = KeywordField("awsService", "awsService")
 AWS.AWS_REGION = KeywordField("awsRegion", "awsRegion")
 AWS.AWS_ACCOUNT_ID = KeywordField("awsAccountId", "awsAccountId")
 AWS.AWS_RESOURCE_ID = KeywordField("awsResourceId", "awsResourceId")
-AWS.AWS_OWNER_NAME = KeywordTextField("awsOwnerName", "awsOwnerName", "awsOwnerName.text")
+AWS.AWS_OWNER_NAME = KeywordTextField(
+    "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+)
 AWS.AWS_OWNER_ID = KeywordField("awsOwnerId", "awsOwnerId")
 AWS.AWS_TAGS = KeywordField("awsTags", "awsTags")
-AWS.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+AWS.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 AWS.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AWS.APPLICATION = RelationField("application")
 AWS.APPLICATION_FIELD = RelationField("applicationField")

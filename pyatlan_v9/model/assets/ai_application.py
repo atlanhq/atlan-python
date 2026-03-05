@@ -45,16 +45,20 @@ from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.utils import to_camel_case
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .ai_related import RelatedAIApplication, RelatedAIModel
+from .ai_related import RelatedAIModel
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AIApplication(Asset):
@@ -109,25 +113,39 @@ class AIApplication(Asset):
     ai_application_development_stage: str | None | UnsetType = UNSET
     """Development stage of the AI application"""
 
-    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIReliabilityAndSafetyConfig"
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     models: list[RelatedAIModel] | None | UnsetType = UNSET
@@ -205,7 +223,9 @@ class AIApplication(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -219,30 +239,6 @@ class AIApplication(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AIApplication"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"AIApplication validation failed: {errors}")
-
-    def minimize(self) -> "AIApplication":
-        self.validate()
-        return AIApplication(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAIApplication":
-        if self.guid is not UNSET:
-            return RelatedAIApplication(guid=self.guid)
-        return RelatedAIApplication(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -332,6 +328,7 @@ class AIApplication(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AIApplicationAttributes(AssetAttributes):
     """AIApplication-specific attributes for nested API format."""
 
@@ -341,26 +338,41 @@ class AIApplicationAttributes(AssetAttributes):
     ai_application_development_stage: str | None | UnsetType = UNSET
     """Development stage of the AI application"""
 
-    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIReliabilityAndSafetyConfig"
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
+
 
 class AIApplicationRelationshipAttributes(AssetRelationshipAttributes):
     """AIApplication-specific relationship attributes for nested API format."""
@@ -440,7 +452,9 @@ class AIApplicationRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -452,13 +466,19 @@ class AIApplicationRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AIApplicationNested(AssetNested):
     """AIApplication in nested API format for high-performance serialization."""
 
     attributes: AIApplicationAttributes | UnsetType = UNSET
     relationship_attributes: AIApplicationRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AIApplicationRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AIApplicationRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: AIApplicationRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: AIApplicationRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -497,7 +517,10 @@ _AI_APPLICATION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_ai_application_attrs(attrs: AIApplicationAttributes, obj: AIApplication) -> None:
+
+def _populate_ai_application_attrs(
+    attrs: AIApplicationAttributes, obj: AIApplication
+) -> None:
     """Populate AIApplication-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.ai_application_version = obj.ai_application_version
@@ -505,10 +528,15 @@ def _populate_ai_application_attrs(attrs: AIApplicationAttributes, obj: AIApplic
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
     attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
-    attrs.ethical_ai_reliability_and_safety_config = obj.ethical_ai_reliability_and_safety_config
+    attrs.ethical_ai_reliability_and_safety_config = (
+        obj.ethical_ai_reliability_and_safety_config
+    )
     attrs.ethical_ai_transparency_config = obj.ethical_ai_transparency_config
     attrs.ethical_ai_accountability_config = obj.ethical_ai_accountability_config
-    attrs.ethical_ai_environmental_consciousness_config = obj.ethical_ai_environmental_consciousness_config
+    attrs.ethical_ai_environmental_consciousness_config = (
+        obj.ethical_ai_environmental_consciousness_config
+    )
+
 
 def _extract_ai_application_attrs(attrs: AIApplicationAttributes) -> dict:
     """Extract all AIApplication attributes from the attrs struct into a flat dict."""
@@ -517,12 +545,19 @@ def _extract_ai_application_attrs(attrs: AIApplicationAttributes) -> dict:
     result["ai_application_development_stage"] = attrs.ai_application_development_stage
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
-    result["ethical_ai_bias_mitigation_config"] = attrs.ethical_ai_bias_mitigation_config
-    result["ethical_ai_reliability_and_safety_config"] = attrs.ethical_ai_reliability_and_safety_config
+    result["ethical_ai_bias_mitigation_config"] = (
+        attrs.ethical_ai_bias_mitigation_config
+    )
+    result["ethical_ai_reliability_and_safety_config"] = (
+        attrs.ethical_ai_reliability_and_safety_config
+    )
     result["ethical_ai_transparency_config"] = attrs.ethical_ai_transparency_config
     result["ethical_ai_accountability_config"] = attrs.ethical_ai_accountability_config
-    result["ethical_ai_environmental_consciousness_config"] = attrs.ethical_ai_environmental_consciousness_config
+    result["ethical_ai_environmental_consciousness_config"] = (
+        attrs.ethical_ai_environmental_consciousness_config
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -563,16 +598,21 @@ def _ai_application_to_nested(ai_application: AIApplication) -> AIApplicationNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _ai_application_from_nested(nested: AIApplicationNested) -> AIApplication:
     """Convert nested format to flat AIApplication."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AIApplicationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AIApplicationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AI_APPLICATION_REL_FIELDS,
-        AIApplicationRelationshipAttributes
+        AIApplicationRelationshipAttributes,
     )
     return AIApplication(
         guid=nested.guid,
@@ -599,7 +639,10 @@ def _ai_application_from_nested(nested: AIApplicationNested) -> AIApplication:
         **merged_rels,
     )
 
-def _ai_application_to_nested_bytes(ai_application: AIApplication, serde: Serde) -> bytes:
+
+def _ai_application_to_nested_bytes(
+    ai_application: AIApplication, serde: Serde
+) -> bytes:
     """Convert flat AIApplication to nested JSON bytes."""
     return serde.encode(_ai_application_to_nested(ai_application))
 
@@ -609,6 +652,7 @@ def _ai_application_from_nested_bytes(data: bytes, serde: Serde) -> AIApplicatio
     nested = serde.decode(data, AIApplicationNested)
     return _ai_application_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -617,15 +661,34 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AIApplication.AI_APPLICATION_VERSION = KeywordField("aiApplicationVersion", "aiApplicationVersion")
-AIApplication.AI_APPLICATION_DEVELOPMENT_STAGE = KeywordField("aiApplicationDevelopmentStage", "aiApplicationDevelopmentStage")
-AIApplication.ETHICAL_AI_PRIVACY_CONFIG = KeywordField("ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig")
-AIApplication.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField("ethicalAIFairnessConfig", "ethicalAIFairnessConfig")
-AIApplication.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField("ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig")
-AIApplication.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField("ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig")
-AIApplication.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField("ethicalAITransparencyConfig", "ethicalAITransparencyConfig")
-AIApplication.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField("ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig")
-AIApplication.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField("ethicalAIEnvironmentalConsciousnessConfig", "ethicalAIEnvironmentalConsciousnessConfig")
+AIApplication.AI_APPLICATION_VERSION = KeywordField(
+    "aiApplicationVersion", "aiApplicationVersion"
+)
+AIApplication.AI_APPLICATION_DEVELOPMENT_STAGE = KeywordField(
+    "aiApplicationDevelopmentStage", "aiApplicationDevelopmentStage"
+)
+AIApplication.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
+    "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
+)
+AIApplication.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField(
+    "ethicalAIFairnessConfig", "ethicalAIFairnessConfig"
+)
+AIApplication.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField(
+    "ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig"
+)
+AIApplication.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField(
+    "ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig"
+)
+AIApplication.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField(
+    "ethicalAITransparencyConfig", "ethicalAITransparencyConfig"
+)
+AIApplication.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField(
+    "ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig"
+)
+AIApplication.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
+    "ethicalAIEnvironmentalConsciousnessConfig",
+    "ethicalAIEnvironmentalConsciousnessConfig",
+)
 AIApplication.MODELS = RelationField("models")
 AIApplication.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AIApplication.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

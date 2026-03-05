@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .redash_related import RelatedRedash
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Redash(Asset):
@@ -166,7 +167,9 @@ class Redash(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -180,30 +183,6 @@ class Redash(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Redash"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Redash validation failed: {errors}")
-
-    def minimize(self) -> "Redash":
-        self.validate()
-        return Redash(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedRedash":
-        if self.guid is not UNSET:
-            return RelatedRedash(guid=self.guid)
-        return RelatedRedash(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,11 +235,13 @@ class Redash(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class RedashAttributes(AssetAttributes):
     """Redash-specific attributes for nested API format."""
 
     redash_is_published: bool | None | UnsetType = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
+
 
 class RedashRelationshipAttributes(AssetRelationshipAttributes):
     """Redash-specific relationship attributes for nested API format."""
@@ -337,7 +318,9 @@ class RedashRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -349,6 +332,7 @@ class RedashRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class RedashNested(AssetNested):
     """Redash in nested API format for high-performance serialization."""
 
@@ -356,6 +340,7 @@ class RedashNested(AssetNested):
     relationship_attributes: RedashRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: RedashRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: RedashRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -393,16 +378,19 @@ _REDASH_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_redash_attrs(attrs: RedashAttributes, obj: Redash) -> None:
     """Populate Redash-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.redash_is_published = obj.redash_is_published
+
 
 def _extract_redash_attrs(attrs: RedashAttributes) -> dict:
     """Extract all Redash attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["redash_is_published"] = attrs.redash_is_published
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -443,6 +431,7 @@ def _redash_to_nested(redash: Redash) -> RedashNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _redash_from_nested(nested: RedashNested) -> Redash:
     """Convert nested format to flat Redash."""
     attrs = nested.attributes if nested.attributes is not UNSET else RedashAttributes()
@@ -452,7 +441,7 @@ def _redash_from_nested(nested: RedashNested) -> Redash:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _REDASH_REL_FIELDS,
-        RedashRelationshipAttributes
+        RedashRelationshipAttributes,
     )
     return Redash(
         guid=nested.guid,
@@ -479,6 +468,7 @@ def _redash_from_nested(nested: RedashNested) -> Redash:
         **merged_rels,
     )
 
+
 def _redash_to_nested_bytes(redash: Redash, serde: Serde) -> bytes:
     """Convert flat Redash to nested JSON bytes."""
     return serde.encode(_redash_to_nested(redash))
@@ -488,6 +478,7 @@ def _redash_from_nested_bytes(data: bytes, serde: Serde) -> Redash:
     """Convert nested JSON bytes to flat Redash."""
     nested = serde.decode(data, RedashNested)
     return _redash_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

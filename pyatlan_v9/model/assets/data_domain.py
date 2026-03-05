@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,7 +42,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
@@ -53,6 +55,7 @@ from .data_mesh_related import RelatedDataDomain, RelatedDataProduct, RelatedSta
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DataDomain(Asset):
@@ -187,7 +190,9 @@ class DataDomain(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -201,30 +206,6 @@ class DataDomain(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DataDomain"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DataDomain validation failed: {errors}")
-
-    def minimize(self) -> "DataDomain":
-        self.validate()
-        return DataDomain(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataDomain":
-        if self.guid is not UNSET:
-            return RelatedDataDomain(guid=self.guid)
-        return RelatedDataDomain(qualified_name=self.qualified_name)
 
     @classmethod
     def _get_super_domain_qualified_name(
@@ -338,6 +319,7 @@ class DataDomain(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DataDomainAttributes(AssetAttributes):
     """DataDomain-specific attributes for nested API format."""
 
@@ -346,6 +328,7 @@ class DataDomainAttributes(AssetAttributes):
 
     super_domain_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the top-level domain in which this asset exists."""
+
 
 class DataDomainRelationshipAttributes(AssetRelationshipAttributes):
     """DataDomain-specific relationship attributes for nested API format."""
@@ -434,7 +417,9 @@ class DataDomainRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -446,6 +431,7 @@ class DataDomainRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DataDomainNested(AssetNested):
     """DataDomain in nested API format for high-performance serialization."""
 
@@ -453,6 +439,7 @@ class DataDomainNested(AssetNested):
     relationship_attributes: DataDomainRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DataDomainRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DataDomainRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -494,11 +481,13 @@ _DATA_DOMAIN_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_data_domain_attrs(attrs: DataDomainAttributes, obj: DataDomain) -> None:
     """Populate DataDomain-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.parent_domain_qualified_name = obj.parent_domain_qualified_name
     attrs.super_domain_qualified_name = obj.super_domain_qualified_name
+
 
 def _extract_data_domain_attrs(attrs: DataDomainAttributes) -> dict:
     """Extract all DataDomain attributes from the attrs struct into a flat dict."""
@@ -506,6 +495,7 @@ def _extract_data_domain_attrs(attrs: DataDomainAttributes) -> dict:
     result["parent_domain_qualified_name"] = attrs.parent_domain_qualified_name
     result["super_domain_qualified_name"] = attrs.super_domain_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -546,16 +536,19 @@ def _data_domain_to_nested(data_domain: DataDomain) -> DataDomainNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _data_domain_from_nested(nested: DataDomainNested) -> DataDomain:
     """Convert nested format to flat DataDomain."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DataDomainAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DataDomainAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATA_DOMAIN_REL_FIELDS,
-        DataDomainRelationshipAttributes
+        DataDomainRelationshipAttributes,
     )
     return DataDomain(
         guid=nested.guid,
@@ -582,6 +575,7 @@ def _data_domain_from_nested(nested: DataDomainNested) -> DataDomain:
         **merged_rels,
     )
 
+
 def _data_domain_to_nested_bytes(data_domain: DataDomain, serde: Serde) -> bytes:
     """Convert flat DataDomain to nested JSON bytes."""
     return serde.encode(_data_domain_to_nested(data_domain))
@@ -592,6 +586,7 @@ def _data_domain_from_nested_bytes(data: bytes, serde: Serde) -> DataDomain:
     nested = serde.decode(data, DataDomainNested)
     return _data_domain_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -600,8 +595,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DataDomain.PARENT_DOMAIN_QUALIFIED_NAME = KeywordTextField("parentDomainQualifiedName", "parentDomainQualifiedName", "parentDomainQualifiedName.text")
-DataDomain.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField("superDomainQualifiedName", "superDomainQualifiedName", "superDomainQualifiedName.text")
+DataDomain.PARENT_DOMAIN_QUALIFIED_NAME = KeywordTextField(
+    "parentDomainQualifiedName",
+    "parentDomainQualifiedName",
+    "parentDomainQualifiedName.text",
+)
+DataDomain.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField(
+    "superDomainQualifiedName",
+    "superDomainQualifiedName",
+    "superDomainQualifiedName.text",
+)
 DataDomain.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataDomain.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataDomain.ANOMALO_CHECKS = RelationField("anomaloChecks")

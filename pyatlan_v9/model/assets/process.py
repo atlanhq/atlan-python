@@ -50,16 +50,20 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .process_related import RelatedColumnProcess, RelatedProcess
+from .process_related import RelatedColumnProcess
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Process(Asset):
@@ -176,7 +180,9 @@ class Process(Asset):
     mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
     """"""
 
-    power_bi_dataflow: RelatedPowerBIDataflow | None | UnsetType = msgspec.field(default=UNSET, name="powerBIDataflow")
+    power_bi_dataflow: RelatedPowerBIDataflow | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIDataflow"
+    )
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: list[RelatedCatalog] | None | UnsetType = UNSET
@@ -209,7 +215,9 @@ class Process(Asset):
     sql_functions: list[RelatedFunction] | None | UnsetType = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -220,30 +228,6 @@ class Process(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Process"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Process validation failed: {errors}")
-
-    def minimize(self) -> "Process":
-        self.validate()
-        return Process(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedProcess":
-        if self.guid is not UNSET:
-            return RelatedProcess(guid=self.guid)
-        return RelatedProcess(qualified_name=self.qualified_name)
 
     @staticmethod
     def _extract_guid(relationship: Any) -> Union[str, None]:
@@ -411,10 +395,10 @@ class Process(Asset):
         return _process_from_nested_bytes(json_data, serde)
 
 
-
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class ProcessAttributes(AssetAttributes):
     """Process-specific attributes for nested API format."""
@@ -436,6 +420,7 @@ class ProcessAttributes(AssetAttributes):
 
     ai_dataset_type: str | None | UnsetType = UNSET
     """Dataset type for AI Model - dataset process."""
+
 
 class ProcessRelationshipAttributes(AssetRelationshipAttributes):
     """Process-specific relationship attributes for nested API format."""
@@ -491,7 +476,9 @@ class ProcessRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
     """"""
 
-    power_bi_dataflow: RelatedPowerBIDataflow | None | UnsetType = msgspec.field(default=UNSET, name="powerBIDataflow")
+    power_bi_dataflow: RelatedPowerBIDataflow | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIDataflow"
+    )
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: list[RelatedCatalog] | None | UnsetType = UNSET
@@ -524,7 +511,9 @@ class ProcessRelationshipAttributes(AssetRelationshipAttributes):
     sql_functions: list[RelatedFunction] | None | UnsetType = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -533,6 +522,7 @@ class ProcessRelationshipAttributes(AssetRelationshipAttributes):
     spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ProcessNested(AssetNested):
     """Process in nested API format for high-performance serialization."""
 
@@ -540,6 +530,7 @@ class ProcessNested(AssetNested):
     relationship_attributes: ProcessRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: ProcessRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: ProcessRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -580,26 +571,33 @@ _PROCESS_REL_FIELDS: list[str] = [
     "spark_jobs",
 ]
 
+
 def _populate_process_attrs(attrs: ProcessAttributes, obj: Process) -> None:
     """Populate Process-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.code = obj.code
     attrs.sql = obj.sql
-    attrs.parent_connection_process_qualified_name = obj.parent_connection_process_qualified_name
+    attrs.parent_connection_process_qualified_name = (
+        obj.parent_connection_process_qualified_name
+    )
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
+
 
 def _extract_process_attrs(attrs: ProcessAttributes) -> dict:
     """Extract all Process attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["code"] = attrs.code
     result["sql"] = attrs.sql
-    result["parent_connection_process_qualified_name"] = attrs.parent_connection_process_qualified_name
+    result["parent_connection_process_qualified_name"] = (
+        attrs.parent_connection_process_qualified_name
+    )
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -640,6 +638,7 @@ def _process_to_nested(process: Process) -> ProcessNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _process_from_nested(nested: ProcessNested) -> Process:
     """Convert nested format to flat Process."""
     attrs = nested.attributes if nested.attributes is not UNSET else ProcessAttributes()
@@ -649,7 +648,7 @@ def _process_from_nested(nested: ProcessNested) -> Process:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PROCESS_REL_FIELDS,
-        ProcessRelationshipAttributes
+        ProcessRelationshipAttributes,
     )
     return Process(
         guid=nested.guid,
@@ -676,6 +675,7 @@ def _process_from_nested(nested: ProcessNested) -> Process:
         **merged_rels,
     )
 
+
 def _process_to_nested_bytes(process: Process, serde: Serde) -> bytes:
     """Convert flat Process to nested JSON bytes."""
     return serde.encode(_process_to_nested(process))
@@ -685,6 +685,7 @@ def _process_from_nested_bytes(data: bytes, serde: Serde) -> Process:
     """Convert nested JSON bytes to flat Process."""
     nested = serde.decode(data, ProcessNested)
     return _process_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -696,9 +697,13 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 Process.CODE = KeywordField("code", "code")
 Process.SQL = KeywordField("sql", "sql")
-Process.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField("parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName")
+Process.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField(
+    "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
+)
 Process.AST = KeywordField("ast", "ast")
-Process.ADDITIONAL_ETL_CONTEXT = KeywordField("additionalEtlContext", "additionalEtlContext")
+Process.ADDITIONAL_ETL_CONTEXT = KeywordField(
+    "additionalEtlContext", "additionalEtlContext"
+)
 Process.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 Process.ADF_ACTIVITY = RelationField("adfActivity")
 Process.AIRFLOW_TASKS = RelationField("airflowTasks")
@@ -731,4 +736,3 @@ Process.SQL_FUNCTIONS = RelationField("sqlFunctions")
 Process.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 Process.SODA_CHECKS = RelationField("sodaChecks")
 Process.SPARK_JOBS = RelationField("sparkJobs")
-Process.Attributes = Process  # backward-compat alias for Process.Attributes.generate_qualified_name

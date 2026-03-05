@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent, RelatedSapErpTable
+from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapErpTable(Asset):
@@ -206,7 +209,9 @@ class SapErpTable(Asset):
     sap_erp_component: RelatedSapErpComponent | None | UnsetType = UNSET
     """SAP ERP Tables that are associated with this SAP ERP Component."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -220,30 +225,6 @@ class SapErpTable(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpTable"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpTable validation failed: {errors}")
-
-    def minimize(self) -> "SapErpTable":
-        self.validate()
-        return SapErpTable(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpTable":
-        if self.guid is not UNSET:
-            return RelatedSapErpTable(guid=self.guid)
-        return RelatedSapErpTable(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -296,6 +277,7 @@ class SapErpTable(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SapErpTableAttributes(AssetAttributes):
     """SapErpTable-specific attributes for nested API format."""
 
@@ -325,6 +307,7 @@ class SapErpTableAttributes(AssetAttributes):
 
     sap_field_order: int | None | UnsetType = UNSET
     """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
+
 
 class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpTable-specific relationship attributes for nested API format."""
@@ -407,7 +390,9 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_component: RelatedSapErpComponent | None | UnsetType = UNSET
     """SAP ERP Tables that are associated with this SAP ERP Component."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -419,13 +404,19 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SapErpTableNested(AssetNested):
     """SapErpTable in nested API format for high-performance serialization."""
 
     attributes: SapErpTableAttributes | UnsetType = UNSET
     relationship_attributes: SapErpTableRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SapErpTableRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SapErpTableRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: SapErpTableRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: SapErpTableRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -465,7 +456,10 @@ _SAP_ERP_TABLE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sap_erp_table_attrs(attrs: SapErpTableAttributes, obj: SapErpTable) -> None:
+
+def _populate_sap_erp_table_attrs(
+    attrs: SapErpTableAttributes, obj: SapErpTable
+) -> None:
     """Populate SapErpTable-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sap_erp_table_type = obj.sap_erp_table_type
@@ -477,6 +471,7 @@ def _populate_sap_erp_table_attrs(attrs: SapErpTableAttributes, obj: SapErpTable
     attrs.sap_data_type = obj.sap_data_type
     attrs.sap_field_count = obj.sap_field_count
     attrs.sap_field_order = obj.sap_field_order
+
 
 def _extract_sap_erp_table_attrs(attrs: SapErpTableAttributes) -> dict:
     """Extract all SapErpTable attributes from the attrs struct into a flat dict."""
@@ -491,6 +486,7 @@ def _extract_sap_erp_table_attrs(attrs: SapErpTableAttributes) -> dict:
     result["sap_field_count"] = attrs.sap_field_count
     result["sap_field_order"] = attrs.sap_field_order
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -531,16 +527,19 @@ def _sap_erp_table_to_nested(sap_erp_table: SapErpTable) -> SapErpTableNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sap_erp_table_from_nested(nested: SapErpTableNested) -> SapErpTable:
     """Convert nested format to flat SapErpTable."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapErpTableAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else SapErpTableAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_TABLE_REL_FIELDS,
-        SapErpTableRelationshipAttributes
+        SapErpTableRelationshipAttributes,
     )
     return SapErpTable(
         guid=nested.guid,
@@ -567,6 +566,7 @@ def _sap_erp_table_from_nested(nested: SapErpTableNested) -> SapErpTable:
         **merged_rels,
     )
 
+
 def _sap_erp_table_to_nested_bytes(sap_erp_table: SapErpTable, serde: Serde) -> bytes:
     """Convert flat SapErpTable to nested JSON bytes."""
     return serde.encode(_sap_erp_table_to_nested(sap_erp_table))
@@ -576,6 +576,7 @@ def _sap_erp_table_from_nested_bytes(data: bytes, serde: Serde) -> SapErpTable:
     """Convert nested JSON bytes to flat SapErpTable."""
     nested = serde.decode(data, SapErpTableNested)
     return _sap_erp_table_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -587,7 +588,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SapErpTable.SAP_ERP_TABLE_TYPE = KeywordField("sapErpTableType", "sapErpTableType")
-SapErpTable.SAP_ERP_TABLE_DELIVERY_CLASS = KeywordField("sapErpTableDeliveryClass", "sapErpTableDeliveryClass")
+SapErpTable.SAP_ERP_TABLE_DELIVERY_CLASS = KeywordField(
+    "sapErpTableDeliveryClass", "sapErpTableDeliveryClass"
+)
 SapErpTable.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
 SapErpTable.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpTable.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .metabase_related import RelatedMetabase
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Metabase(Asset):
@@ -170,7 +171,9 @@ class Metabase(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -184,30 +187,6 @@ class Metabase(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Metabase"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Metabase validation failed: {errors}")
-
-    def minimize(self) -> "Metabase":
-        self.validate()
-        return Metabase(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMetabase":
-        if self.guid is not UNSET:
-            return RelatedMetabase(guid=self.guid)
-        return RelatedMetabase(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -260,6 +239,7 @@ class Metabase(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MetabaseAttributes(AssetAttributes):
     """Metabase-specific attributes for nested API format."""
 
@@ -268,6 +248,7 @@ class MetabaseAttributes(AssetAttributes):
 
     metabase_collection_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the Metabase collection in which this asset exists."""
+
 
 class MetabaseRelationshipAttributes(AssetRelationshipAttributes):
     """Metabase-specific relationship attributes for nested API format."""
@@ -344,7 +325,9 @@ class MetabaseRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -356,6 +339,7 @@ class MetabaseRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MetabaseNested(AssetNested):
     """Metabase in nested API format for high-performance serialization."""
 
@@ -363,6 +347,7 @@ class MetabaseNested(AssetNested):
     relationship_attributes: MetabaseRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: MetabaseRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: MetabaseRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -400,18 +385,23 @@ _METABASE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_metabase_attrs(attrs: MetabaseAttributes, obj: Metabase) -> None:
     """Populate Metabase-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.metabase_collection_name = obj.metabase_collection_name
     attrs.metabase_collection_qualified_name = obj.metabase_collection_qualified_name
 
+
 def _extract_metabase_attrs(attrs: MetabaseAttributes) -> dict:
     """Extract all Metabase attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["metabase_collection_name"] = attrs.metabase_collection_name
-    result["metabase_collection_qualified_name"] = attrs.metabase_collection_qualified_name
+    result["metabase_collection_qualified_name"] = (
+        attrs.metabase_collection_qualified_name
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -452,16 +442,19 @@ def _metabase_to_nested(metabase: Metabase) -> MetabaseNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _metabase_from_nested(nested: MetabaseNested) -> Metabase:
     """Convert nested format to flat Metabase."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MetabaseAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else MetabaseAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _METABASE_REL_FIELDS,
-        MetabaseRelationshipAttributes
+        MetabaseRelationshipAttributes,
     )
     return Metabase(
         guid=nested.guid,
@@ -488,6 +481,7 @@ def _metabase_from_nested(nested: MetabaseNested) -> Metabase:
         **merged_rels,
     )
 
+
 def _metabase_to_nested_bytes(metabase: Metabase, serde: Serde) -> bytes:
     """Convert flat Metabase to nested JSON bytes."""
     return serde.encode(_metabase_to_nested(metabase))
@@ -498,6 +492,7 @@ def _metabase_from_nested_bytes(data: bytes, serde: Serde) -> Metabase:
     nested = serde.decode(data, MetabaseNested)
     return _metabase_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -507,8 +502,14 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Metabase.METABASE_COLLECTION_NAME = KeywordField("metabaseCollectionName", "metabaseCollectionName")
-Metabase.METABASE_COLLECTION_QUALIFIED_NAME = KeywordTextField("metabaseCollectionQualifiedName", "metabaseCollectionQualifiedName", "metabaseCollectionQualifiedName.text")
+Metabase.METABASE_COLLECTION_NAME = KeywordField(
+    "metabaseCollectionName", "metabaseCollectionName"
+)
+Metabase.METABASE_COLLECTION_QUALIFIED_NAME = KeywordTextField(
+    "metabaseCollectionQualifiedName",
+    "metabaseCollectionQualifiedName",
+    "metabaseCollectionQualifiedName.text",
+)
 Metabase.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Metabase.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Metabase.ANOMALO_CHECKS = RelationField("anomaloChecks")

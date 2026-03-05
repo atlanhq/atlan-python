@@ -35,30 +35,45 @@ class RelatedAI(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AI" so it serializes correctly
 
-    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIReliabilityAndSafetyConfig"
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: str | None | UnsetType = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AI"
+
 
 class RelatedAIApplication(RelatedAI):
     """
@@ -80,6 +95,7 @@ class RelatedAIApplication(RelatedAI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AIApplication"
 
+
 class RelatedAIModel(RelatedAI):
     """
     Related entity reference for AIModel assets.
@@ -90,7 +106,9 @@ class RelatedAIModel(RelatedAI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AIModel" so it serializes correctly
 
-    ai_model_datasets_dsl: str | None | UnsetType = msgspec.field(default=UNSET, name="aiModelDatasetsDSL")
+    ai_model_datasets_dsl: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="aiModelDatasetsDSL"
+    )
     """Search DSL used to define which assets/datasets are part of the AI model."""
 
     ai_model_status: str | None | UnsetType = UNSET
@@ -102,6 +120,7 @@ class RelatedAIModel(RelatedAI):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AIModel"
+
 
 class RelatedAIModelVersion(RelatedAI):
     """

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .data_studio_related import RelatedDataStudio
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DataStudio(Asset):
@@ -198,7 +199,9 @@ class DataStudio(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -212,30 +215,6 @@ class DataStudio(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DataStudio"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DataStudio validation failed: {errors}")
-
-    def minimize(self) -> "DataStudio":
-        self.validate()
-        return DataStudio(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataStudio":
-        if self.guid is not UNSET:
-            return RelatedDataStudio(guid=self.guid)
-        return RelatedDataStudio(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -288,6 +267,7 @@ class DataStudio(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DataStudioAttributes(AssetAttributes):
     """DataStudio-specific attributes for nested API format."""
 
@@ -317,6 +297,7 @@ class DataStudioAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class DataStudioRelationshipAttributes(AssetRelationshipAttributes):
     """DataStudio-specific relationship attributes for nested API format."""
@@ -393,7 +374,9 @@ class DataStudioRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -405,6 +388,7 @@ class DataStudioRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DataStudioNested(AssetNested):
     """DataStudio in nested API format for high-performance serialization."""
 
@@ -412,6 +396,7 @@ class DataStudioNested(AssetNested):
     relationship_attributes: DataStudioRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DataStudioRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DataStudioRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -449,6 +434,7 @@ _DATA_STUDIO_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_data_studio_attrs(attrs: DataStudioAttributes, obj: DataStudio) -> None:
     """Populate DataStudio-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -461,6 +447,7 @@ def _populate_data_studio_attrs(attrs: DataStudioAttributes, obj: DataStudio) ->
     attrs.google_labels = obj.google_labels
     attrs.google_tags = obj.google_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_data_studio_attrs(attrs: DataStudioAttributes) -> dict:
     """Extract all DataStudio attributes from the attrs struct into a flat dict."""
@@ -475,6 +462,7 @@ def _extract_data_studio_attrs(attrs: DataStudioAttributes) -> dict:
     result["google_tags"] = attrs.google_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -515,16 +503,19 @@ def _data_studio_to_nested(data_studio: DataStudio) -> DataStudioNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _data_studio_from_nested(nested: DataStudioNested) -> DataStudio:
     """Convert nested format to flat DataStudio."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DataStudioAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DataStudioAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATA_STUDIO_REL_FIELDS,
-        DataStudioRelationshipAttributes
+        DataStudioRelationshipAttributes,
     )
     return DataStudio(
         guid=nested.guid,
@@ -551,6 +542,7 @@ def _data_studio_from_nested(nested: DataStudioNested) -> DataStudio:
         **merged_rels,
     )
 
+
 def _data_studio_to_nested_bytes(data_studio: DataStudio, serde: Serde) -> bytes:
     """Convert flat DataStudio to nested JSON bytes."""
     return serde.encode(_data_studio_to_nested(data_studio))
@@ -560,6 +552,7 @@ def _data_studio_from_nested_bytes(data: bytes, serde: Serde) -> DataStudio:
     """Convert nested JSON bytes to flat DataStudio."""
     nested = serde.decode(data, DataStudioNested)
     return _data_studio_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -572,14 +565,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 DataStudio.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
-DataStudio.GOOGLE_PROJECT_NAME = KeywordTextField("googleProjectName", "googleProjectName", "googleProjectName.text")
-DataStudio.GOOGLE_PROJECT_ID = KeywordTextField("googleProjectId", "googleProjectId", "googleProjectId.text")
-DataStudio.GOOGLE_PROJECT_NUMBER = NumericField("googleProjectNumber", "googleProjectNumber")
+DataStudio.GOOGLE_PROJECT_NAME = KeywordTextField(
+    "googleProjectName", "googleProjectName", "googleProjectName.text"
+)
+DataStudio.GOOGLE_PROJECT_ID = KeywordTextField(
+    "googleProjectId", "googleProjectId", "googleProjectId.text"
+)
+DataStudio.GOOGLE_PROJECT_NUMBER = NumericField(
+    "googleProjectNumber", "googleProjectNumber"
+)
 DataStudio.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
-DataStudio.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
+DataStudio.GOOGLE_LOCATION_TYPE = KeywordField(
+    "googleLocationType", "googleLocationType"
+)
 DataStudio.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
 DataStudio.GOOGLE_TAGS = KeywordField("googleTags", "googleTags")
-DataStudio.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+DataStudio.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 DataStudio.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataStudio.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataStudio.ANOMALO_CHECKS = RelationField("anomaloChecks")

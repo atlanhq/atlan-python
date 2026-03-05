@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -39,15 +38,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .sql_related import RelatedQuery
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .namespace_related import RelatedFolder, RelatedNamespace
+from .namespace_related import RelatedFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Namespace(Asset):
@@ -132,7 +135,9 @@ class Namespace(Asset):
     children_queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -140,30 +145,6 @@ class Namespace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Namespace"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Namespace validation failed: {errors}")
-
-    def minimize(self) -> "Namespace":
-        self.validate()
-        return Namespace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedNamespace":
-        if self.guid is not UNSET:
-            return RelatedNamespace(guid=self.guid)
-        return RelatedNamespace(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -216,10 +197,12 @@ class Namespace(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class NamespaceAttributes(AssetAttributes):
     """Namespace-specific attributes for nested API format."""
 
     pass
+
 
 class NamespaceRelationshipAttributes(AssetRelationshipAttributes):
     """Namespace-specific relationship attributes for nested API format."""
@@ -278,11 +261,14 @@ class NamespaceRelationshipAttributes(AssetRelationshipAttributes):
     children_queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class NamespaceNested(AssetNested):
     """Namespace in nested API format for high-performance serialization."""
@@ -291,6 +277,7 @@ class NamespaceNested(AssetNested):
     relationship_attributes: NamespaceRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: NamespaceRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: NamespaceRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -320,13 +307,16 @@ _NAMESPACE_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
+
 def _populate_namespace_attrs(attrs: NamespaceAttributes, obj: Namespace) -> None:
     """Populate Namespace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_namespace_attrs(attrs: NamespaceAttributes) -> dict:
     """Extract all Namespace attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -367,16 +357,19 @@ def _namespace_to_nested(namespace: Namespace) -> NamespaceNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _namespace_from_nested(nested: NamespaceNested) -> Namespace:
     """Convert nested format to flat Namespace."""
-    attrs = nested.attributes if nested.attributes is not UNSET else NamespaceAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else NamespaceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _NAMESPACE_REL_FIELDS,
-        NamespaceRelationshipAttributes
+        NamespaceRelationshipAttributes,
     )
     return Namespace(
         guid=nested.guid,
@@ -403,6 +396,7 @@ def _namespace_from_nested(nested: NamespaceNested) -> Namespace:
         **merged_rels,
     )
 
+
 def _namespace_to_nested_bytes(namespace: Namespace, serde: Serde) -> bytes:
     """Convert flat Namespace to nested JSON bytes."""
     return serde.encode(_namespace_to_nested(namespace))
@@ -412,6 +406,7 @@ def _namespace_from_nested_bytes(data: bytes, serde: Serde) -> Namespace:
     """Convert nested JSON bytes to flat Namespace."""
     nested = serde.decode(data, NamespaceNested)
     return _namespace_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

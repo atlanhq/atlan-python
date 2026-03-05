@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -42,15 +41,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .anomalo_related import RelatedAnomalo, RelatedAnomaloCheck
+from .anomalo_related import RelatedAnomaloCheck
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Anomalo(Asset):
@@ -165,7 +168,9 @@ class Anomalo(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -179,30 +184,6 @@ class Anomalo(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Anomalo"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Anomalo validation failed: {errors}")
-
-    def minimize(self) -> "Anomalo":
-        self.validate()
-        return Anomalo(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAnomalo":
-        if self.guid is not UNSET:
-            return RelatedAnomalo(guid=self.guid)
-        return RelatedAnomalo(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -255,11 +236,13 @@ class Anomalo(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AnomaloAttributes(AssetAttributes):
     """Anomalo-specific attributes for nested API format."""
 
     dq_is_part_of_contract: bool | None | UnsetType = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
+
 
 class AnomaloRelationshipAttributes(AssetRelationshipAttributes):
     """Anomalo-specific relationship attributes for nested API format."""
@@ -336,7 +319,9 @@ class AnomaloRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -348,6 +333,7 @@ class AnomaloRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AnomaloNested(AssetNested):
     """Anomalo in nested API format for high-performance serialization."""
 
@@ -355,6 +341,7 @@ class AnomaloNested(AssetNested):
     relationship_attributes: AnomaloRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: AnomaloRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: AnomaloRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -392,16 +379,19 @@ _ANOMALO_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_anomalo_attrs(attrs: AnomaloAttributes, obj: Anomalo) -> None:
     """Populate Anomalo-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
+
 
 def _extract_anomalo_attrs(attrs: AnomaloAttributes) -> dict:
     """Extract all Anomalo attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -442,6 +432,7 @@ def _anomalo_to_nested(anomalo: Anomalo) -> AnomaloNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _anomalo_from_nested(nested: AnomaloNested) -> Anomalo:
     """Convert nested format to flat Anomalo."""
     attrs = nested.attributes if nested.attributes is not UNSET else AnomaloAttributes()
@@ -451,7 +442,7 @@ def _anomalo_from_nested(nested: AnomaloNested) -> Anomalo:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ANOMALO_REL_FIELDS,
-        AnomaloRelationshipAttributes
+        AnomaloRelationshipAttributes,
     )
     return Anomalo(
         guid=nested.guid,
@@ -478,6 +469,7 @@ def _anomalo_from_nested(nested: AnomaloNested) -> Anomalo:
         **merged_rels,
     )
 
+
 def _anomalo_to_nested_bytes(anomalo: Anomalo, serde: Serde) -> bytes:
     """Convert flat Anomalo to nested JSON bytes."""
     return serde.encode(_anomalo_to_nested(anomalo))
@@ -488,6 +480,7 @@ def _anomalo_from_nested_bytes(data: bytes, serde: Serde) -> Anomalo:
     nested = serde.decode(data, AnomaloNested)
     return _anomalo_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -496,7 +489,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Anomalo.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
+Anomalo.DQ_IS_PART_OF_CONTRACT = BooleanField(
+    "dqIsPartOfContract", "dqIsPartOfContract"
+)
 Anomalo.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Anomalo.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Anomalo.ANOMALO_CHECKS = RelationField("anomaloChecks")

@@ -43,15 +43,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .document_db_related import RelatedDocumentDB
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DocumentDB(Asset):
@@ -91,7 +93,9 @@ class DocumentDB(Asset):
 
     type_name: Union[str, UnsetType] = "DocumentDB"
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -166,7 +170,9 @@ class DocumentDB(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -180,30 +186,6 @@ class DocumentDB(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DocumentDB"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DocumentDB validation failed: {errors}")
-
-    def minimize(self) -> "DocumentDB":
-        self.validate()
-        return DocumentDB(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDocumentDB":
-        if self.guid is not UNSET:
-            return RelatedDocumentDB(guid=self.guid)
-        return RelatedDocumentDB(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,11 +238,15 @@ class DocumentDB(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DocumentDBAttributes(AssetAttributes):
     """DocumentDB-specific attributes for nested API format."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
+
 
 class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     """DocumentDB-specific relationship attributes for nested API format."""
@@ -337,7 +323,9 @@ class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -349,6 +337,7 @@ class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DocumentDBNested(AssetNested):
     """DocumentDB in nested API format for high-performance serialization."""
 
@@ -356,6 +345,7 @@ class DocumentDBNested(AssetNested):
     relationship_attributes: DocumentDBRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DocumentDBRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DocumentDBRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -393,16 +383,19 @@ _DOCUMENT_DB_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_document_db_attrs(attrs: DocumentDBAttributes, obj: DocumentDB) -> None:
     """Populate DocumentDB-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+
 
 def _extract_document_db_attrs(attrs: DocumentDBAttributes) -> dict:
     """Extract all DocumentDB attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -443,16 +436,19 @@ def _document_db_to_nested(document_db: DocumentDB) -> DocumentDBNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _document_db_from_nested(nested: DocumentDBNested) -> DocumentDB:
     """Convert nested format to flat DocumentDB."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DocumentDBAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DocumentDBAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DOCUMENT_DB_REL_FIELDS,
-        DocumentDBRelationshipAttributes
+        DocumentDBRelationshipAttributes,
     )
     return DocumentDB(
         guid=nested.guid,
@@ -479,6 +475,7 @@ def _document_db_from_nested(nested: DocumentDBNested) -> DocumentDB:
         **merged_rels,
     )
 
+
 def _document_db_to_nested_bytes(document_db: DocumentDB, serde: Serde) -> bytes:
     """Convert flat DocumentDB to nested JSON bytes."""
     return serde.encode(_document_db_to_nested(document_db))
@@ -489,6 +486,7 @@ def _document_db_from_nested_bytes(data: bytes, serde: Serde) -> DocumentDB:
     nested = serde.decode(data, DocumentDBNested)
     return _document_db_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -497,7 +495,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DocumentDB.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+DocumentDB.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 DocumentDB.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DocumentDB.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DocumentDB.ANOMALO_CHECKS = RelationField("anomaloChecks")

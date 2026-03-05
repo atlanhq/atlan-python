@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -73,6 +72,7 @@ class RelatedCognos(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Cognos"
 
+
 class RelatedCognosDashboard(RelatedCognos):
     """
     Related entity reference for CognosDashboard assets.
@@ -86,6 +86,7 @@ class RelatedCognosDashboard(RelatedCognos):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosDashboard"
+
 
 class RelatedCognosDatasource(RelatedCognos):
     """
@@ -104,6 +105,7 @@ class RelatedCognosDatasource(RelatedCognos):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosDatasource"
 
+
 class RelatedCognosExploration(RelatedCognos):
     """
     Related entity reference for CognosExploration assets.
@@ -118,6 +120,7 @@ class RelatedCognosExploration(RelatedCognos):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosExploration"
 
+
 class RelatedCognosFile(RelatedCognos):
     """
     Related entity reference for CognosFile assets.
@@ -131,6 +134,7 @@ class RelatedCognosFile(RelatedCognos):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosFile"
+
 
 class RelatedCognosFolder(RelatedCognos):
     """
@@ -152,6 +156,7 @@ class RelatedCognosFolder(RelatedCognos):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosFolder"
 
+
 class RelatedCognosModule(RelatedCognos):
     """
     Related entity reference for CognosModule assets.
@@ -165,6 +170,7 @@ class RelatedCognosModule(RelatedCognos):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosModule"
+
 
 class RelatedCognosPackage(RelatedCognos):
     """
@@ -180,6 +186,7 @@ class RelatedCognosPackage(RelatedCognos):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosPackage"
 
+
 class RelatedCognosReport(RelatedCognos):
     """
     Related entity reference for CognosReport assets.
@@ -193,6 +200,7 @@ class RelatedCognosReport(RelatedCognos):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosReport"
+
 
 class RelatedCognosColumn(RelatedCognos):
     """
@@ -216,6 +224,7 @@ class RelatedCognosColumn(RelatedCognos):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CognosColumn"
+
 
 class RelatedCognosDataset(RelatedCognos):
     """

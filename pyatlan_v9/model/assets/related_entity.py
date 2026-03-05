@@ -55,6 +55,10 @@ class RelatedEntity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="ca
     unique_attributes: Union[dict[str, Any], UnsetType] = UNSET
     """Unique attributes that can identify this entity (e.g., qualifiedName)."""
 
+    # Relationship-specific attributes
+    relationship_attributes: Union[dict[str, Any], None, UnsetType] = UNSET
+    """Attributes of the relationship itself (e.g., description, status, etc.)."""
+
     # Display and status
     display_text: Union[str, UnsetType] = UNSET
     """Display text for this related entity (e.g., "Annual Recurring Revenue")."""
@@ -71,10 +75,6 @@ class RelatedEntity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="ca
 
     relationship_type: Union[str, UnsetType] = UNSET
     """Type name of the relationship (e.g., "AtlasGlossaryRelatedTerm")."""
-
-    # Relationship-specific attributes (the nested object with typeName + attributes)
-    relationship_attributes: Union[dict[str, Any], None, UnsetType] = UNSET
-    """Attributes of the relationship itself (e.g., description, status, etc.)."""
 
     # Save semantic (not serialized to JSON, used internally)
     semantic: Union[SaveSemantic, UnsetType] = UNSET

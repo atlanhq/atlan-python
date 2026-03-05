@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -52,6 +51,7 @@ class RelatedTag(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Tag"
 
+
 class RelatedTagAttachment(RelatedTag):
     """
     Related entity reference for TagAttachment assets.
@@ -71,6 +71,7 @@ class RelatedTagAttachment(RelatedTag):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TagAttachment"
+
 
 class RelatedSourceTag(RelatedTag):
     """

@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -44,6 +43,7 @@ class RelatedForm(RelatedAsset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Form"
+
 
 class RelatedResponse(RelatedForm):
     """

@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,16 +50,26 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema, RelatedTable, RelatedTablePartition
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from .sql_related import (
+    RelatedColumn,
+    RelatedQuery,
+    RelatedSchema,
+    RelatedTable,
+    RelatedTablePartition,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .starburst_related import RelatedStarburstDataset, RelatedStarburstDatasetColumn
+from .starburst_related import RelatedStarburstDatasetColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class StarburstDataset(Asset):
@@ -224,7 +239,9 @@ class StarburstDataset(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -359,7 +376,9 @@ class StarburstDataset(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -419,7 +438,9 @@ class StarburstDataset(Asset):
     partitions: list[RelatedTablePartition] | None | UnsetType = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -434,7 +455,9 @@ class StarburstDataset(Asset):
     starburst_data_product: RelatedDataProduct | None | UnsetType = UNSET
     """Data product that publishes this dataset."""
 
-    starburst_dataset_columns: list[RelatedStarburstDatasetColumn] | None | UnsetType = UNSET
+    starburst_dataset_columns: (
+        list[RelatedStarburstDatasetColumn] | None | UnsetType
+    ) = UNSET
     """Columns that exist within this dataset."""
 
     def __post_init__(self) -> None:
@@ -444,37 +467,7 @@ class StarburstDataset(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"StarburstDataset validation failed: {errors}")
-
-    def minimize(self) -> "StarburstDataset":
-        self.validate()
-        return StarburstDataset(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedStarburstDataset":
-        if self.guid is not UNSET:
-            return RelatedStarburstDataset(guid=self.guid)
-        return RelatedStarburstDataset(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -505,7 +498,9 @@ class StarburstDataset(Asset):
         return _starburst_dataset_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> StarburstDataset:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> StarburstDataset:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -526,6 +521,7 @@ class StarburstDataset(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class StarburstDatasetAttributes(AssetAttributes):
     """StarburstDataset-specific attributes for nested API format."""
@@ -596,7 +592,9 @@ class StarburstDatasetAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -683,6 +681,7 @@ class StarburstDatasetAttributes(AssetAttributes):
     table_retention_time: int | None | UnsetType = UNSET
     """Data retention time in days."""
 
+
 class StarburstDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """StarburstDataset-specific relationship attributes for nested API format."""
 
@@ -734,7 +733,9 @@ class StarburstDatasetRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -794,7 +795,9 @@ class StarburstDatasetRelationshipAttributes(AssetRelationshipAttributes):
     partitions: list[RelatedTablePartition] | None | UnsetType = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -809,16 +812,24 @@ class StarburstDatasetRelationshipAttributes(AssetRelationshipAttributes):
     starburst_data_product: RelatedDataProduct | None | UnsetType = UNSET
     """Data product that publishes this dataset."""
 
-    starburst_dataset_columns: list[RelatedStarburstDatasetColumn] | None | UnsetType = UNSET
+    starburst_dataset_columns: (
+        list[RelatedStarburstDatasetColumn] | None | UnsetType
+    ) = UNSET
     """Columns that exist within this dataset."""
+
 
 class StarburstDatasetNested(AssetNested):
     """StarburstDataset in nested API format for high-performance serialization."""
 
     attributes: StarburstDatasetAttributes | UnsetType = UNSET
     relationship_attributes: StarburstDatasetRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: StarburstDatasetRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: StarburstDatasetRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        StarburstDatasetRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        StarburstDatasetRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -870,7 +881,10 @@ _STARBURST_DATASET_REL_FIELDS: list[str] = [
     "starburst_dataset_columns",
 ]
 
-def _populate_starburst_dataset_attrs(attrs: StarburstDatasetAttributes, obj: StarburstDataset) -> None:
+
+def _populate_starburst_dataset_attrs(
+    attrs: StarburstDatasetAttributes, obj: StarburstDataset
+) -> None:
     """Populate StarburstDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.starburst_is_materialized = obj.starburst_is_materialized
@@ -925,6 +939,7 @@ def _populate_starburst_dataset_attrs(attrs: StarburstDatasetAttributes, obj: St
     attrs.iceberg_table_base_location = obj.iceberg_table_base_location
     attrs.table_retention_time = obj.table_retention_time
 
+
 def _extract_starburst_dataset_attrs(attrs: StarburstDatasetAttributes) -> dict:
     """Extract all StarburstDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -950,7 +965,9 @@ def _extract_starburst_dataset_attrs(attrs: StarburstDatasetAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
@@ -981,18 +998,23 @@ def _extract_starburst_dataset_attrs(attrs: StarburstDatasetAttributes) -> dict:
     result["table_retention_time"] = attrs.table_retention_time
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _starburst_dataset_to_nested(starburst_dataset: StarburstDataset) -> StarburstDatasetNested:
+def _starburst_dataset_to_nested(
+    starburst_dataset: StarburstDataset,
+) -> StarburstDatasetNested:
     """Convert flat StarburstDataset to nested format."""
     attrs = StarburstDatasetAttributes()
     _populate_starburst_dataset_attrs(attrs, starburst_dataset)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        starburst_dataset, _STARBURST_DATASET_REL_FIELDS, StarburstDatasetRelationshipAttributes
+        starburst_dataset,
+        _STARBURST_DATASET_REL_FIELDS,
+        StarburstDatasetRelationshipAttributes,
     )
     return StarburstDatasetNested(
         guid=starburst_dataset.guid,
@@ -1020,16 +1042,21 @@ def _starburst_dataset_to_nested(starburst_dataset: StarburstDataset) -> Starbur
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _starburst_dataset_from_nested(nested: StarburstDatasetNested) -> StarburstDataset:
     """Convert nested format to flat StarburstDataset."""
-    attrs = nested.attributes if nested.attributes is not UNSET else StarburstDatasetAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else StarburstDatasetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _STARBURST_DATASET_REL_FIELDS,
-        StarburstDatasetRelationshipAttributes
+        StarburstDatasetRelationshipAttributes,
     )
     return StarburstDataset(
         guid=nested.guid,
@@ -1056,7 +1083,10 @@ def _starburst_dataset_from_nested(nested: StarburstDatasetNested) -> StarburstD
         **merged_rels,
     )
 
-def _starburst_dataset_to_nested_bytes(starburst_dataset: StarburstDataset, serde: Serde) -> bytes:
+
+def _starburst_dataset_to_nested_bytes(
+    starburst_dataset: StarburstDataset, serde: Serde
+) -> bytes:
     """Convert flat StarburstDataset to nested JSON bytes."""
     return serde.encode(_starburst_dataset_to_nested(starburst_dataset))
 
@@ -1065,6 +1095,7 @@ def _starburst_dataset_from_nested_bytes(data: bytes, serde: Serde) -> Starburst
     """Convert nested JSON bytes to flat StarburstDataset."""
     nested = serde.decode(data, StarburstDatasetNested)
     return _starburst_dataset_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1076,57 +1107,115 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-StarburstDataset.STARBURST_IS_MATERIALIZED = BooleanField("starburstIsMaterialized", "starburstIsMaterialized")
-StarburstDataset.STARBURST_SQL_QUALIFIED_NAME = KeywordField("starburstSqlQualifiedName", "starburstSqlQualifiedName")
-StarburstDataset.STARBURST_VIEW_DEFINITION = KeywordField("starburstViewDefinition", "starburstViewDefinition")
-StarburstDataset.STARBURST_DATA_PRODUCT_NAME = KeywordField("starburstDataProductName", "starburstDataProductName")
-StarburstDataset.STARBURST_DATASET_QUALIFIED_NAME = KeywordField("starburstDatasetQualifiedName", "starburstDatasetQualifiedName")
-StarburstDataset.STARBURST_DATASET_NAME = KeywordField("starburstDatasetName", "starburstDatasetName")
+StarburstDataset.STARBURST_IS_MATERIALIZED = BooleanField(
+    "starburstIsMaterialized", "starburstIsMaterialized"
+)
+StarburstDataset.STARBURST_SQL_QUALIFIED_NAME = KeywordField(
+    "starburstSqlQualifiedName", "starburstSqlQualifiedName"
+)
+StarburstDataset.STARBURST_VIEW_DEFINITION = KeywordField(
+    "starburstViewDefinition", "starburstViewDefinition"
+)
+StarburstDataset.STARBURST_DATA_PRODUCT_NAME = KeywordField(
+    "starburstDataProductName", "starburstDataProductName"
+)
+StarburstDataset.STARBURST_DATASET_QUALIFIED_NAME = KeywordField(
+    "starburstDatasetQualifiedName", "starburstDatasetQualifiedName"
+)
+StarburstDataset.STARBURST_DATASET_NAME = KeywordField(
+    "starburstDatasetName", "starburstDatasetName"
+)
 StarburstDataset.QUERY_COUNT = NumericField("queryCount", "queryCount")
 StarburstDataset.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 StarburstDataset.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-StarburstDataset.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+StarburstDataset.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 StarburstDataset.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-StarburstDataset.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+StarburstDataset.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 StarburstDataset.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-StarburstDataset.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+StarburstDataset.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 StarburstDataset.TABLE_NAME = KeywordField("tableName", "tableName")
-StarburstDataset.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+StarburstDataset.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 StarburstDataset.VIEW_NAME = KeywordField("viewName", "viewName")
-StarburstDataset.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-StarburstDataset.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-StarburstDataset.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+StarburstDataset.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+StarburstDataset.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+StarburstDataset.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 StarburstDataset.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 StarburstDataset.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-StarburstDataset.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+StarburstDataset.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 StarburstDataset.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 StarburstDataset.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 StarburstDataset.ROW_COUNT = NumericField("rowCount", "rowCount")
 StarburstDataset.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
-StarburstDataset.TABLE_OBJECT_COUNT = NumericField("tableObjectCount", "tableObjectCount")
+StarburstDataset.TABLE_OBJECT_COUNT = NumericField(
+    "tableObjectCount", "tableObjectCount"
+)
 StarburstDataset.ALIAS = KeywordField("alias", "alias")
 StarburstDataset.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 StarburstDataset.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-StarburstDataset.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
-StarburstDataset.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
-StarburstDataset.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
-StarburstDataset.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
+StarburstDataset.QUERY_PREVIEW_CONFIG = KeywordField(
+    "queryPreviewConfig", "queryPreviewConfig"
+)
+StarburstDataset.EXTERNAL_LOCATION = KeywordField(
+    "externalLocation", "externalLocation"
+)
+StarburstDataset.EXTERNAL_LOCATION_REGION = KeywordField(
+    "externalLocationRegion", "externalLocationRegion"
+)
+StarburstDataset.EXTERNAL_LOCATION_FORMAT = KeywordField(
+    "externalLocationFormat", "externalLocationFormat"
+)
 StarburstDataset.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-StarburstDataset.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
+StarburstDataset.PARTITION_STRATEGY = KeywordField(
+    "partitionStrategy", "partitionStrategy"
+)
 StarburstDataset.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
 StarburstDataset.TABLE_DEFINITION = KeywordField("tableDefinition", "tableDefinition")
 StarburstDataset.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 StarburstDataset.IS_SHARDED = BooleanField("isSharded", "isSharded")
 StarburstDataset.TABLE_TYPE = KeywordField("tableType", "tableType")
-StarburstDataset.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
-StarburstDataset.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
-StarburstDataset.ICEBERG_CATALOG_SOURCE = KeywordField("icebergCatalogSource", "icebergCatalogSource")
-StarburstDataset.ICEBERG_CATALOG_TABLE_NAME = KeywordField("icebergCatalogTableName", "icebergCatalogTableName")
-StarburstDataset.TABLE_IMPALA_PARAMETERS = KeywordField("tableImpalaParameters", "tableImpalaParameters")
-StarburstDataset.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField("icebergCatalogTableNamespace", "icebergCatalogTableNamespace")
-StarburstDataset.TABLE_EXTERNAL_VOLUME_NAME = KeywordField("tableExternalVolumeName", "tableExternalVolumeName")
-StarburstDataset.ICEBERG_TABLE_BASE_LOCATION = KeywordField("icebergTableBaseLocation", "icebergTableBaseLocation")
-StarburstDataset.TABLE_RETENTION_TIME = NumericField("tableRetentionTime", "tableRetentionTime")
+StarburstDataset.ICEBERG_CATALOG_NAME = KeywordField(
+    "icebergCatalogName", "icebergCatalogName"
+)
+StarburstDataset.ICEBERG_TABLE_TYPE = KeywordField(
+    "icebergTableType", "icebergTableType"
+)
+StarburstDataset.ICEBERG_CATALOG_SOURCE = KeywordField(
+    "icebergCatalogSource", "icebergCatalogSource"
+)
+StarburstDataset.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
+    "icebergCatalogTableName", "icebergCatalogTableName"
+)
+StarburstDataset.TABLE_IMPALA_PARAMETERS = KeywordField(
+    "tableImpalaParameters", "tableImpalaParameters"
+)
+StarburstDataset.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
+    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
+)
+StarburstDataset.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
+    "tableExternalVolumeName", "tableExternalVolumeName"
+)
+StarburstDataset.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
+    "icebergTableBaseLocation", "icebergTableBaseLocation"
+)
+StarburstDataset.TABLE_RETENTION_TIME = NumericField(
+    "tableRetentionTime", "tableRetentionTime"
+)
 StarburstDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 StarburstDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 StarburstDataset.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -1135,7 +1224,9 @@ StarburstDataset.APPLICATION_FIELD = RelationField("applicationField")
 StarburstDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 StarburstDataset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 StarburstDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-StarburstDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+StarburstDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 StarburstDataset.METRICS = RelationField("metrics")
 StarburstDataset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 StarburstDataset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

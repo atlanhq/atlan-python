@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .tableau_related import RelatedTableau
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Tableau(Asset):
@@ -166,7 +167,9 @@ class Tableau(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -180,30 +183,6 @@ class Tableau(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Tableau"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Tableau validation failed: {errors}")
-
-    def minimize(self) -> "Tableau":
-        self.validate()
-        return Tableau(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTableau":
-        if self.guid is not UNSET:
-            return RelatedTableau(guid=self.guid)
-        return RelatedTableau(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,11 +235,13 @@ class Tableau(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class TableauAttributes(AssetAttributes):
     """Tableau-specific attributes for nested API format."""
 
     tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
 
 class TableauRelationshipAttributes(AssetRelationshipAttributes):
     """Tableau-specific relationship attributes for nested API format."""
@@ -337,7 +318,9 @@ class TableauRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -349,6 +332,7 @@ class TableauRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class TableauNested(AssetNested):
     """Tableau in nested API format for high-performance serialization."""
 
@@ -356,6 +340,7 @@ class TableauNested(AssetNested):
     relationship_attributes: TableauRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: TableauRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: TableauRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -393,16 +378,23 @@ _TABLEAU_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_tableau_attrs(attrs: TableauAttributes, obj: Tableau) -> None:
     """Populate Tableau-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
+    attrs.tableau_project_hierarchy_qualified_names = (
+        obj.tableau_project_hierarchy_qualified_names
+    )
+
 
 def _extract_tableau_attrs(attrs: TableauAttributes) -> dict:
     """Extract all Tableau attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
+    result["tableau_project_hierarchy_qualified_names"] = (
+        attrs.tableau_project_hierarchy_qualified_names
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -443,6 +435,7 @@ def _tableau_to_nested(tableau: Tableau) -> TableauNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _tableau_from_nested(nested: TableauNested) -> Tableau:
     """Convert nested format to flat Tableau."""
     attrs = nested.attributes if nested.attributes is not UNSET else TableauAttributes()
@@ -452,7 +445,7 @@ def _tableau_from_nested(nested: TableauNested) -> Tableau:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_REL_FIELDS,
-        TableauRelationshipAttributes
+        TableauRelationshipAttributes,
     )
     return Tableau(
         guid=nested.guid,
@@ -479,6 +472,7 @@ def _tableau_from_nested(nested: TableauNested) -> Tableau:
         **merged_rels,
     )
 
+
 def _tableau_to_nested_bytes(tableau: Tableau, serde: Serde) -> bytes:
     """Convert flat Tableau to nested JSON bytes."""
     return serde.encode(_tableau_to_nested(tableau))
@@ -489,6 +483,7 @@ def _tableau_from_nested_bytes(data: bytes, serde: Serde) -> Tableau:
     nested = serde.decode(data, TableauNested)
     return _tableau_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -497,7 +492,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Tableau.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
+Tableau.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
+    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
+)
 Tableau.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Tableau.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Tableau.ANOMALO_CHECKS = RelationField("anomaloChecks")

@@ -43,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .power_bi_related import RelatedPowerBIApp, RelatedPowerBIDashboard, RelatedPowerBIReport
+from .power_bi_related import RelatedPowerBIDashboard, RelatedPowerBIReport
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class PowerBIApp(Asset):
@@ -101,31 +105,49 @@ class PowerBIApp(Asset):
 
     type_name: Union[str, UnsetType] = "PowerBIApp"
 
-    power_bi_app_id: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIAppId")
+    power_bi_app_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIAppId"
+    )
     """Unique ID of the PowerBI App in the PowerBI Assets Ecosystem."""
 
-    power_bi_app_users: list[dict[str, str]] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIAppUsers")
+    power_bi_app_users: list[dict[str, str]] | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIAppUsers"
+    )
     """List of users and their permission access for a PowerBI App."""
 
-    power_bi_app_groups: list[dict[str, str]] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIAppGroups")
+    power_bi_app_groups: list[dict[str, str]] | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIAppGroups"
+    )
     """List of groups and their permission access for a PowerBI App."""
 
-    power_bi_is_hidden: bool | None | UnsetType = msgspec.field(default=UNSET, name="powerBIIsHidden")
+    power_bi_is_hidden: bool | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIIsHidden"
+    )
     """Whether this asset is hidden in Power BI (true) or not (false)."""
 
-    power_bi_table_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBITableQualifiedName")
+    power_bi_table_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBITableQualifiedName"
+    )
     """Unique name of the Power BI table in which this asset exists."""
 
-    power_bi_format_string: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIFormatString")
+    power_bi_format_string: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIFormatString"
+    )
     """Format of this asset, as specified in the FORMAT_STRING of the MDX cell property."""
 
-    power_bi_endorsement: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsement")
+    power_bi_endorsement: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsement"
+    )
     """Endorsement status of this asset, in Power BI."""
 
-    power_bi_endorsed_by: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsedBy")
+    power_bi_endorsed_by: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsedBy"
+    )
     """User who endorsed this asset in Power BI."""
 
-    power_bi_endorsed_at: int | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsedAt")
+    power_bi_endorsed_at: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsedAt"
+    )
     """Time at which this asset was endorsed in Power BI."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -179,10 +201,14 @@ class PowerBIApp(Asset):
     partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
     """Partial objects contained in the asset."""
 
-    power_bi_reports: list[RelatedPowerBIReport] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIReports")
+    power_bi_reports: list[RelatedPowerBIReport] | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIReports"
+    )
     """PowerBI Reports that associates with this PowerBI App."""
 
-    power_bi_dashboards: list[RelatedPowerBIDashboard] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIDashboards")
+    power_bi_dashboards: list[RelatedPowerBIDashboard] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="powerBIDashboards")
+    )
     """PowerBI Dashboards that associates with this PowerBI App."""
 
     input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
@@ -206,7 +232,9 @@ class PowerBIApp(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -220,30 +248,6 @@ class PowerBIApp(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "PowerBIApp"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"PowerBIApp validation failed: {errors}")
-
-    def minimize(self) -> "PowerBIApp":
-        self.validate()
-        return PowerBIApp(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedPowerBIApp":
-        if self.guid is not UNSET:
-            return RelatedPowerBIApp(guid=self.guid)
-        return RelatedPowerBIApp(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -296,35 +300,55 @@ class PowerBIApp(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class PowerBIAppAttributes(AssetAttributes):
     """PowerBIApp-specific attributes for nested API format."""
 
-    power_bi_app_id: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIAppId")
+    power_bi_app_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIAppId"
+    )
     """Unique ID of the PowerBI App in the PowerBI Assets Ecosystem."""
 
-    power_bi_app_users: list[dict[str, str]] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIAppUsers")
+    power_bi_app_users: list[dict[str, str]] | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIAppUsers"
+    )
     """List of users and their permission access for a PowerBI App."""
 
-    power_bi_app_groups: list[dict[str, str]] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIAppGroups")
+    power_bi_app_groups: list[dict[str, str]] | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIAppGroups"
+    )
     """List of groups and their permission access for a PowerBI App."""
 
-    power_bi_is_hidden: bool | None | UnsetType = msgspec.field(default=UNSET, name="powerBIIsHidden")
+    power_bi_is_hidden: bool | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIIsHidden"
+    )
     """Whether this asset is hidden in Power BI (true) or not (false)."""
 
-    power_bi_table_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBITableQualifiedName")
+    power_bi_table_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBITableQualifiedName"
+    )
     """Unique name of the Power BI table in which this asset exists."""
 
-    power_bi_format_string: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIFormatString")
+    power_bi_format_string: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIFormatString"
+    )
     """Format of this asset, as specified in the FORMAT_STRING of the MDX cell property."""
 
-    power_bi_endorsement: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsement")
+    power_bi_endorsement: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsement"
+    )
     """Endorsement status of this asset, in Power BI."""
 
-    power_bi_endorsed_by: str | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsedBy")
+    power_bi_endorsed_by: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsedBy"
+    )
     """User who endorsed this asset in Power BI."""
 
-    power_bi_endorsed_at: int | None | UnsetType = msgspec.field(default=UNSET, name="powerBIEndorsedAt")
+    power_bi_endorsed_at: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIEndorsedAt"
+    )
     """Time at which this asset was endorsed in Power BI."""
+
 
 class PowerBIAppRelationshipAttributes(AssetRelationshipAttributes):
     """PowerBIApp-specific relationship attributes for nested API format."""
@@ -380,10 +404,14 @@ class PowerBIAppRelationshipAttributes(AssetRelationshipAttributes):
     partial_child_objects: list[RelatedPartialObject] | None | UnsetType = UNSET
     """Partial objects contained in the asset."""
 
-    power_bi_reports: list[RelatedPowerBIReport] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIReports")
+    power_bi_reports: list[RelatedPowerBIReport] | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIReports"
+    )
     """PowerBI Reports that associates with this PowerBI App."""
 
-    power_bi_dashboards: list[RelatedPowerBIDashboard] | None | UnsetType = msgspec.field(default=UNSET, name="powerBIDashboards")
+    power_bi_dashboards: list[RelatedPowerBIDashboard] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="powerBIDashboards")
+    )
     """PowerBI Dashboards that associates with this PowerBI App."""
 
     input_to_processes: list[RelatedProcess] | None | UnsetType = UNSET
@@ -407,7 +435,9 @@ class PowerBIAppRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -419,6 +449,7 @@ class PowerBIAppRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class PowerBIAppNested(AssetNested):
     """PowerBIApp in nested API format for high-performance serialization."""
 
@@ -426,6 +457,7 @@ class PowerBIAppNested(AssetNested):
     relationship_attributes: PowerBIAppRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: PowerBIAppRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: PowerBIAppRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -465,6 +497,7 @@ _POWER_BI_APP_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_power_bi_app_attrs(attrs: PowerBIAppAttributes, obj: PowerBIApp) -> None:
     """Populate PowerBIApp-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -477,6 +510,7 @@ def _populate_power_bi_app_attrs(attrs: PowerBIAppAttributes, obj: PowerBIApp) -
     attrs.power_bi_endorsement = obj.power_bi_endorsement
     attrs.power_bi_endorsed_by = obj.power_bi_endorsed_by
     attrs.power_bi_endorsed_at = obj.power_bi_endorsed_at
+
 
 def _extract_power_bi_app_attrs(attrs: PowerBIAppAttributes) -> dict:
     """Extract all PowerBIApp attributes from the attrs struct into a flat dict."""
@@ -491,6 +525,7 @@ def _extract_power_bi_app_attrs(attrs: PowerBIAppAttributes) -> dict:
     result["power_bi_endorsed_by"] = attrs.power_bi_endorsed_by
     result["power_bi_endorsed_at"] = attrs.power_bi_endorsed_at
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -531,16 +566,19 @@ def _power_bi_app_to_nested(power_bi_app: PowerBIApp) -> PowerBIAppNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _power_bi_app_from_nested(nested: PowerBIAppNested) -> PowerBIApp:
     """Convert nested format to flat PowerBIApp."""
-    attrs = nested.attributes if nested.attributes is not UNSET else PowerBIAppAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else PowerBIAppAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _POWER_BI_APP_REL_FIELDS,
-        PowerBIAppRelationshipAttributes
+        PowerBIAppRelationshipAttributes,
     )
     return PowerBIApp(
         guid=nested.guid,
@@ -567,6 +605,7 @@ def _power_bi_app_from_nested(nested: PowerBIAppNested) -> PowerBIApp:
         **merged_rels,
     )
 
+
 def _power_bi_app_to_nested_bytes(power_bi_app: PowerBIApp, serde: Serde) -> bytes:
     """Convert flat PowerBIApp to nested JSON bytes."""
     return serde.encode(_power_bi_app_to_nested(power_bi_app))
@@ -576,6 +615,7 @@ def _power_bi_app_from_nested_bytes(data: bytes, serde: Serde) -> PowerBIApp:
     """Convert nested JSON bytes to flat PowerBIApp."""
     nested = serde.decode(data, PowerBIAppNested)
     return _power_bi_app_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -592,9 +632,17 @@ PowerBIApp.POWER_BI_APP_ID = KeywordField("powerBIAppId", "powerBIAppId")
 PowerBIApp.POWER_BI_APP_USERS = KeywordField("powerBIAppUsers", "powerBIAppUsers")
 PowerBIApp.POWER_BI_APP_GROUPS = KeywordField("powerBIAppGroups", "powerBIAppGroups")
 PowerBIApp.POWER_BI_IS_HIDDEN = BooleanField("powerBIIsHidden", "powerBIIsHidden")
-PowerBIApp.POWER_BI_TABLE_QUALIFIED_NAME = KeywordTextField("powerBITableQualifiedName", "powerBITableQualifiedName", "powerBITableQualifiedName.text")
-PowerBIApp.POWER_BI_FORMAT_STRING = KeywordField("powerBIFormatString", "powerBIFormatString")
-PowerBIApp.POWER_BI_ENDORSEMENT = KeywordField("powerBIEndorsement", "powerBIEndorsement")
+PowerBIApp.POWER_BI_TABLE_QUALIFIED_NAME = KeywordTextField(
+    "powerBITableQualifiedName",
+    "powerBITableQualifiedName",
+    "powerBITableQualifiedName.text",
+)
+PowerBIApp.POWER_BI_FORMAT_STRING = KeywordField(
+    "powerBIFormatString", "powerBIFormatString"
+)
+PowerBIApp.POWER_BI_ENDORSEMENT = KeywordField(
+    "powerBIEndorsement", "powerBIEndorsement"
+)
 PowerBIApp.POWER_BI_ENDORSED_BY = KeywordField("powerBIEndorsedBy", "powerBIEndorsedBy")
 PowerBIApp.POWER_BI_ENDORSED_AT = NumericField("powerBIEndorsedAt", "powerBIEndorsedAt")
 PowerBIApp.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

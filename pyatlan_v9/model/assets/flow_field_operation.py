@@ -48,15 +48,19 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .flow_related import RelatedFlowControlOperation, RelatedFlowFieldOperation
+from .flow_related import RelatedFlowControlOperation
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FlowFieldOperation(Asset):
@@ -230,7 +234,9 @@ class FlowFieldOperation(Asset):
     mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
     """"""
 
-    power_bi_dataflow: RelatedPowerBIDataflow | None | UnsetType = msgspec.field(default=UNSET, name="powerBIDataflow")
+    power_bi_dataflow: RelatedPowerBIDataflow | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIDataflow"
+    )
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: list[RelatedCatalog] | None | UnsetType = UNSET
@@ -266,7 +272,9 @@ class FlowFieldOperation(Asset):
     sql_functions: list[RelatedFunction] | None | UnsetType = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -277,30 +285,6 @@ class FlowFieldOperation(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "FlowFieldOperation"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"FlowFieldOperation validation failed: {errors}")
-
-    def minimize(self) -> "FlowFieldOperation":
-        self.validate()
-        return FlowFieldOperation(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFlowFieldOperation":
-        if self.guid is not UNSET:
-            return RelatedFlowFieldOperation(guid=self.guid)
-        return RelatedFlowFieldOperation(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -331,7 +315,9 @@ class FlowFieldOperation(Asset):
         return _flow_field_operation_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> FlowFieldOperation:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> FlowFieldOperation:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -352,6 +338,7 @@ class FlowFieldOperation(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class FlowFieldOperationAttributes(AssetAttributes):
     """FlowFieldOperation-specific attributes for nested API format."""
@@ -416,6 +403,7 @@ class FlowFieldOperationAttributes(AssetAttributes):
     ai_dataset_type: str | None | UnsetType = UNSET
     """Dataset type for AI Model - dataset process."""
 
+
 class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     """FlowFieldOperation-specific relationship attributes for nested API format."""
 
@@ -470,7 +458,9 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: list[RelatedMCIncident] | None | UnsetType = UNSET
     """"""
 
-    power_bi_dataflow: RelatedPowerBIDataflow | None | UnsetType = msgspec.field(default=UNSET, name="powerBIDataflow")
+    power_bi_dataflow: RelatedPowerBIDataflow | None | UnsetType = msgspec.field(
+        default=UNSET, name="powerBIDataflow"
+    )
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: list[RelatedCatalog] | None | UnsetType = UNSET
@@ -506,7 +496,9 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     sql_functions: list[RelatedFunction] | None | UnsetType = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -515,13 +507,21 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class FlowFieldOperationNested(AssetNested):
     """FlowFieldOperation in nested API format for high-performance serialization."""
 
     attributes: FlowFieldOperationAttributes | UnsetType = UNSET
-    relationship_attributes: FlowFieldOperationRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: FlowFieldOperationRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: FlowFieldOperationRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: FlowFieldOperationRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        FlowFieldOperationRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        FlowFieldOperationRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -563,7 +563,10 @@ _FLOW_FIELD_OPERATION_REL_FIELDS: list[str] = [
     "spark_jobs",
 ]
 
-def _populate_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes, obj: FlowFieldOperation) -> None:
+
+def _populate_flow_field_operation_attrs(
+    attrs: FlowFieldOperationAttributes, obj: FlowFieldOperation
+) -> None:
     """Populate FlowFieldOperation-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.flow_started_at = obj.flow_started_at
@@ -582,10 +585,13 @@ def _populate_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes, ob
     attrs.flow_input_parameters = obj.flow_input_parameters
     attrs.code = obj.code
     attrs.sql = obj.sql
-    attrs.parent_connection_process_qualified_name = obj.parent_connection_process_qualified_name
+    attrs.parent_connection_process_qualified_name = (
+        obj.parent_connection_process_qualified_name
+    )
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
+
 
 def _extract_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes) -> dict:
     """Extract all FlowFieldOperation attributes from the attrs struct into a flat dict."""
@@ -599,31 +605,40 @@ def _extract_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes) -> 
     result["flow_folder_name"] = attrs.flow_folder_name
     result["flow_folder_qualified_name"] = attrs.flow_folder_qualified_name
     result["flow_reusable_unit_name"] = attrs.flow_reusable_unit_name
-    result["flow_reusable_unit_qualified_name"] = attrs.flow_reusable_unit_qualified_name
+    result["flow_reusable_unit_qualified_name"] = (
+        attrs.flow_reusable_unit_qualified_name
+    )
     result["flow_id"] = attrs.flow_id
     result["flow_run_id"] = attrs.flow_run_id
     result["flow_error_message"] = attrs.flow_error_message
     result["flow_input_parameters"] = attrs.flow_input_parameters
     result["code"] = attrs.code
     result["sql"] = attrs.sql
-    result["parent_connection_process_qualified_name"] = attrs.parent_connection_process_qualified_name
+    result["parent_connection_process_qualified_name"] = (
+        attrs.parent_connection_process_qualified_name
+    )
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _flow_field_operation_to_nested(flow_field_operation: FlowFieldOperation) -> FlowFieldOperationNested:
+def _flow_field_operation_to_nested(
+    flow_field_operation: FlowFieldOperation,
+) -> FlowFieldOperationNested:
     """Convert flat FlowFieldOperation to nested format."""
     attrs = FlowFieldOperationAttributes()
     _populate_flow_field_operation_attrs(attrs, flow_field_operation)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        flow_field_operation, _FLOW_FIELD_OPERATION_REL_FIELDS, FlowFieldOperationRelationshipAttributes
+        flow_field_operation,
+        _FLOW_FIELD_OPERATION_REL_FIELDS,
+        FlowFieldOperationRelationshipAttributes,
     )
     return FlowFieldOperationNested(
         guid=flow_field_operation.guid,
@@ -651,16 +666,23 @@ def _flow_field_operation_to_nested(flow_field_operation: FlowFieldOperation) ->
         remove_relationship_attributes=remove_rels,
     )
 
-def _flow_field_operation_from_nested(nested: FlowFieldOperationNested) -> FlowFieldOperation:
+
+def _flow_field_operation_from_nested(
+    nested: FlowFieldOperationNested,
+) -> FlowFieldOperation:
     """Convert nested format to flat FlowFieldOperation."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FlowFieldOperationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else FlowFieldOperationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FLOW_FIELD_OPERATION_REL_FIELDS,
-        FlowFieldOperationRelationshipAttributes
+        FlowFieldOperationRelationshipAttributes,
     )
     return FlowFieldOperation(
         guid=nested.guid,
@@ -687,15 +709,21 @@ def _flow_field_operation_from_nested(nested: FlowFieldOperationNested) -> FlowF
         **merged_rels,
     )
 
-def _flow_field_operation_to_nested_bytes(flow_field_operation: FlowFieldOperation, serde: Serde) -> bytes:
+
+def _flow_field_operation_to_nested_bytes(
+    flow_field_operation: FlowFieldOperation, serde: Serde
+) -> bytes:
     """Convert flat FlowFieldOperation to nested JSON bytes."""
     return serde.encode(_flow_field_operation_to_nested(flow_field_operation))
 
 
-def _flow_field_operation_from_nested_bytes(data: bytes, serde: Serde) -> FlowFieldOperation:
+def _flow_field_operation_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> FlowFieldOperation:
     """Convert nested JSON bytes to flat FlowFieldOperation."""
     nested = serde.decode(data, FlowFieldOperationNested)
     return _flow_field_operation_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -711,21 +739,41 @@ FlowFieldOperation.FLOW_STARTED_AT = NumericField("flowStartedAt", "flowStartedA
 FlowFieldOperation.FLOW_FINISHED_AT = NumericField("flowFinishedAt", "flowFinishedAt")
 FlowFieldOperation.FLOW_STATUS = KeywordField("flowStatus", "flowStatus")
 FlowFieldOperation.FLOW_SCHEDULE = KeywordField("flowSchedule", "flowSchedule")
-FlowFieldOperation.FLOW_PROJECT_NAME = KeywordTextField("flowProjectName", "flowProjectName", "flowProjectName.text")
-FlowFieldOperation.FLOW_PROJECT_QUALIFIED_NAME = KeywordField("flowProjectQualifiedName", "flowProjectQualifiedName")
-FlowFieldOperation.FLOW_FOLDER_NAME = KeywordTextField("flowFolderName", "flowFolderName", "flowFolderName.text")
-FlowFieldOperation.FLOW_FOLDER_QUALIFIED_NAME = KeywordField("flowFolderQualifiedName", "flowFolderQualifiedName")
-FlowFieldOperation.FLOW_REUSABLE_UNIT_NAME = KeywordTextField("flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text")
-FlowFieldOperation.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField("flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName")
+FlowFieldOperation.FLOW_PROJECT_NAME = KeywordTextField(
+    "flowProjectName", "flowProjectName", "flowProjectName.text"
+)
+FlowFieldOperation.FLOW_PROJECT_QUALIFIED_NAME = KeywordField(
+    "flowProjectQualifiedName", "flowProjectQualifiedName"
+)
+FlowFieldOperation.FLOW_FOLDER_NAME = KeywordTextField(
+    "flowFolderName", "flowFolderName", "flowFolderName.text"
+)
+FlowFieldOperation.FLOW_FOLDER_QUALIFIED_NAME = KeywordField(
+    "flowFolderQualifiedName", "flowFolderQualifiedName"
+)
+FlowFieldOperation.FLOW_REUSABLE_UNIT_NAME = KeywordTextField(
+    "flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text"
+)
+FlowFieldOperation.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField(
+    "flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName"
+)
 FlowFieldOperation.FLOW_ID = KeywordField("flowId", "flowId")
 FlowFieldOperation.FLOW_RUN_ID = KeywordField("flowRunId", "flowRunId")
-FlowFieldOperation.FLOW_ERROR_MESSAGE = KeywordField("flowErrorMessage", "flowErrorMessage")
-FlowFieldOperation.FLOW_INPUT_PARAMETERS = KeywordField("flowInputParameters", "flowInputParameters")
+FlowFieldOperation.FLOW_ERROR_MESSAGE = KeywordField(
+    "flowErrorMessage", "flowErrorMessage"
+)
+FlowFieldOperation.FLOW_INPUT_PARAMETERS = KeywordField(
+    "flowInputParameters", "flowInputParameters"
+)
 FlowFieldOperation.CODE = KeywordField("code", "code")
 FlowFieldOperation.SQL = KeywordField("sql", "sql")
-FlowFieldOperation.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField("parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName")
+FlowFieldOperation.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField(
+    "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
+)
 FlowFieldOperation.AST = KeywordField("ast", "ast")
-FlowFieldOperation.ADDITIONAL_ETL_CONTEXT = KeywordField("additionalEtlContext", "additionalEtlContext")
+FlowFieldOperation.ADDITIONAL_ETL_CONTEXT = KeywordField(
+    "additionalEtlContext", "additionalEtlContext"
+)
 FlowFieldOperation.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 FlowFieldOperation.ADF_ACTIVITY = RelationField("adfActivity")
 FlowFieldOperation.AIRFLOW_TASKS = RelationField("airflowTasks")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .matillion_related import RelatedMatillionComponent, RelatedMatillionJob
+from .matillion_related import RelatedMatillionJob
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MatillionComponent(Asset):
@@ -207,7 +210,9 @@ class MatillionComponent(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -229,40 +234,6 @@ class MatillionComponent(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.matillion_job is UNSET:
-                errors.append("matillion_job is required for creation")
-            if self.matillion_job_name is UNSET:
-                errors.append("matillion_job_name is required for creation")
-            if self.matillion_job_qualified_name is UNSET:
-                errors.append("matillion_job_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MatillionComponent validation failed: {errors}")
-
-    def minimize(self) -> "MatillionComponent":
-        self.validate()
-        return MatillionComponent(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMatillionComponent":
-        if self.guid is not UNSET:
-            return RelatedMatillionComponent(guid=self.guid)
-        return RelatedMatillionComponent(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -293,7 +264,9 @@ class MatillionComponent(Asset):
         return _matillion_component_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MatillionComponent:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MatillionComponent:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -314,6 +287,7 @@ class MatillionComponent(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class MatillionComponentAttributes(AssetAttributes):
     """MatillionComponent-specific attributes for nested API format."""
@@ -344,6 +318,7 @@ class MatillionComponentAttributes(AssetAttributes):
 
     matillion_version: str | None | UnsetType = UNSET
     """Current point in time state of a project."""
+
 
 class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     """MatillionComponent-specific relationship attributes for nested API format."""
@@ -426,7 +401,9 @@ class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -438,13 +415,21 @@ class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MatillionComponentNested(AssetNested):
     """MatillionComponent in nested API format for high-performance serialization."""
 
     attributes: MatillionComponentAttributes | UnsetType = UNSET
-    relationship_attributes: MatillionComponentRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MatillionComponentRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MatillionComponentRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: MatillionComponentRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        MatillionComponentRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        MatillionComponentRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -484,45 +469,64 @@ _MATILLION_COMPONENT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_matillion_component_attrs(attrs: MatillionComponentAttributes, obj: MatillionComponent) -> None:
+
+def _populate_matillion_component_attrs(
+    attrs: MatillionComponentAttributes, obj: MatillionComponent
+) -> None:
     """Populate MatillionComponent-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.matillion_component_id = obj.matillion_component_id
-    attrs.matillion_component_implementation_id = obj.matillion_component_implementation_id
+    attrs.matillion_component_implementation_id = (
+        obj.matillion_component_implementation_id
+    )
     attrs.matillion_component_linked_job = obj.matillion_component_linked_job
     attrs.matillion_component_last_run_status = obj.matillion_component_last_run_status
-    attrs.matillion_component_last_five_run_status = obj.matillion_component_last_five_run_status
+    attrs.matillion_component_last_five_run_status = (
+        obj.matillion_component_last_five_run_status
+    )
     attrs.matillion_component_sqls = obj.matillion_component_sqls
     attrs.matillion_job_name = obj.matillion_job_name
     attrs.matillion_job_qualified_name = obj.matillion_job_qualified_name
     attrs.matillion_version = obj.matillion_version
 
+
 def _extract_matillion_component_attrs(attrs: MatillionComponentAttributes) -> dict:
     """Extract all MatillionComponent attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["matillion_component_id"] = attrs.matillion_component_id
-    result["matillion_component_implementation_id"] = attrs.matillion_component_implementation_id
+    result["matillion_component_implementation_id"] = (
+        attrs.matillion_component_implementation_id
+    )
     result["matillion_component_linked_job"] = attrs.matillion_component_linked_job
-    result["matillion_component_last_run_status"] = attrs.matillion_component_last_run_status
-    result["matillion_component_last_five_run_status"] = attrs.matillion_component_last_five_run_status
+    result["matillion_component_last_run_status"] = (
+        attrs.matillion_component_last_run_status
+    )
+    result["matillion_component_last_five_run_status"] = (
+        attrs.matillion_component_last_five_run_status
+    )
     result["matillion_component_sqls"] = attrs.matillion_component_sqls
     result["matillion_job_name"] = attrs.matillion_job_name
     result["matillion_job_qualified_name"] = attrs.matillion_job_qualified_name
     result["matillion_version"] = attrs.matillion_version
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _matillion_component_to_nested(matillion_component: MatillionComponent) -> MatillionComponentNested:
+def _matillion_component_to_nested(
+    matillion_component: MatillionComponent,
+) -> MatillionComponentNested:
     """Convert flat MatillionComponent to nested format."""
     attrs = MatillionComponentAttributes()
     _populate_matillion_component_attrs(attrs, matillion_component)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        matillion_component, _MATILLION_COMPONENT_REL_FIELDS, MatillionComponentRelationshipAttributes
+        matillion_component,
+        _MATILLION_COMPONENT_REL_FIELDS,
+        MatillionComponentRelationshipAttributes,
     )
     return MatillionComponentNested(
         guid=matillion_component.guid,
@@ -550,16 +554,23 @@ def _matillion_component_to_nested(matillion_component: MatillionComponent) -> M
         remove_relationship_attributes=remove_rels,
     )
 
-def _matillion_component_from_nested(nested: MatillionComponentNested) -> MatillionComponent:
+
+def _matillion_component_from_nested(
+    nested: MatillionComponentNested,
+) -> MatillionComponent:
     """Convert nested format to flat MatillionComponent."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MatillionComponentAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MatillionComponentAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MATILLION_COMPONENT_REL_FIELDS,
-        MatillionComponentRelationshipAttributes
+        MatillionComponentRelationshipAttributes,
     )
     return MatillionComponent(
         guid=nested.guid,
@@ -586,15 +597,21 @@ def _matillion_component_from_nested(nested: MatillionComponentNested) -> Matill
         **merged_rels,
     )
 
-def _matillion_component_to_nested_bytes(matillion_component: MatillionComponent, serde: Serde) -> bytes:
+
+def _matillion_component_to_nested_bytes(
+    matillion_component: MatillionComponent, serde: Serde
+) -> bytes:
     """Convert flat MatillionComponent to nested JSON bytes."""
     return serde.encode(_matillion_component_to_nested(matillion_component))
 
 
-def _matillion_component_from_nested_bytes(data: bytes, serde: Serde) -> MatillionComponent:
+def _matillion_component_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> MatillionComponent:
     """Convert nested JSON bytes to flat MatillionComponent."""
     nested = serde.decode(data, MatillionComponentNested)
     return _matillion_component_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -605,15 +622,35 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MatillionComponent.MATILLION_COMPONENT_ID = KeywordField("matillionComponentId", "matillionComponentId")
-MatillionComponent.MATILLION_COMPONENT_IMPLEMENTATION_ID = KeywordField("matillionComponentImplementationId", "matillionComponentImplementationId")
-MatillionComponent.MATILLION_COMPONENT_LINKED_JOB = KeywordField("matillionComponentLinkedJob", "matillionComponentLinkedJob")
-MatillionComponent.MATILLION_COMPONENT_LAST_RUN_STATUS = KeywordField("matillionComponentLastRunStatus", "matillionComponentLastRunStatus")
-MatillionComponent.MATILLION_COMPONENT_LAST_FIVE_RUN_STATUS = KeywordField("matillionComponentLastFiveRunStatus", "matillionComponentLastFiveRunStatus")
-MatillionComponent.MATILLION_COMPONENT_SQLS = KeywordField("matillionComponentSqls", "matillionComponentSqls")
-MatillionComponent.MATILLION_JOB_NAME = KeywordTextField("matillionJobName", "matillionJobName", "matillionJobName.text")
-MatillionComponent.MATILLION_JOB_QUALIFIED_NAME = KeywordTextField("matillionJobQualifiedName", "matillionJobQualifiedName", "matillionJobQualifiedName.text")
-MatillionComponent.MATILLION_VERSION = KeywordField("matillionVersion", "matillionVersion")
+MatillionComponent.MATILLION_COMPONENT_ID = KeywordField(
+    "matillionComponentId", "matillionComponentId"
+)
+MatillionComponent.MATILLION_COMPONENT_IMPLEMENTATION_ID = KeywordField(
+    "matillionComponentImplementationId", "matillionComponentImplementationId"
+)
+MatillionComponent.MATILLION_COMPONENT_LINKED_JOB = KeywordField(
+    "matillionComponentLinkedJob", "matillionComponentLinkedJob"
+)
+MatillionComponent.MATILLION_COMPONENT_LAST_RUN_STATUS = KeywordField(
+    "matillionComponentLastRunStatus", "matillionComponentLastRunStatus"
+)
+MatillionComponent.MATILLION_COMPONENT_LAST_FIVE_RUN_STATUS = KeywordField(
+    "matillionComponentLastFiveRunStatus", "matillionComponentLastFiveRunStatus"
+)
+MatillionComponent.MATILLION_COMPONENT_SQLS = KeywordField(
+    "matillionComponentSqls", "matillionComponentSqls"
+)
+MatillionComponent.MATILLION_JOB_NAME = KeywordTextField(
+    "matillionJobName", "matillionJobName", "matillionJobName.text"
+)
+MatillionComponent.MATILLION_JOB_QUALIFIED_NAME = KeywordTextField(
+    "matillionJobQualifiedName",
+    "matillionJobQualifiedName",
+    "matillionJobQualifiedName.text",
+)
+MatillionComponent.MATILLION_VERSION = KeywordField(
+    "matillionVersion", "matillionVersion"
+)
 MatillionComponent.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MatillionComponent.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MatillionComponent.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -621,8 +658,12 @@ MatillionComponent.APPLICATION = RelationField("application")
 MatillionComponent.APPLICATION_FIELD = RelationField("applicationField")
 MatillionComponent.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MatillionComponent.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-MatillionComponent.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MatillionComponent.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MatillionComponent.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+MatillionComponent.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MatillionComponent.METRICS = RelationField("metrics")
 MatillionComponent.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MatillionComponent.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

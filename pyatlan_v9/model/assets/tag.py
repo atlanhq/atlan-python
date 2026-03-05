@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .tag_related import RelatedTag
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Tag(Asset):
@@ -178,7 +179,9 @@ class Tag(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -192,37 +195,6 @@ class Tag(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Tag"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if for_creation:
-            if self.tag_id is UNSET:
-                errors.append("tag_id is required for creation")
-            if self.tag_allowed_values is UNSET:
-                errors.append("tag_allowed_values is required for creation")
-            if self.mapped_classification_name is UNSET:
-                errors.append("mapped_classification_name is required for creation")
-        if errors:
-            raise ValueError(f"Tag validation failed: {errors}")
-
-    def minimize(self) -> "Tag":
-        self.validate()
-        return Tag(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTag":
-        if self.guid is not UNSET:
-            return RelatedTag(guid=self.guid)
-        return RelatedTag(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -275,6 +247,7 @@ class Tag(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class TagAttributes(AssetAttributes):
     """Tag-specific attributes for nested API format."""
 
@@ -289,6 +262,7 @@ class TagAttributes(AssetAttributes):
 
     mapped_classification_name: str | None | UnsetType = UNSET
     """Name of the classification in Atlan that is mapped to this tag."""
+
 
 class TagRelationshipAttributes(AssetRelationshipAttributes):
     """Tag-specific relationship attributes for nested API format."""
@@ -365,7 +339,9 @@ class TagRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -377,6 +353,7 @@ class TagRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class TagNested(AssetNested):
     """Tag in nested API format for high-performance serialization."""
 
@@ -384,6 +361,7 @@ class TagNested(AssetNested):
     relationship_attributes: TagRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: TagRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: TagRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -421,6 +399,7 @@ _TAG_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_tag_attrs(attrs: TagAttributes, obj: Tag) -> None:
     """Populate Tag-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -428,6 +407,7 @@ def _populate_tag_attrs(attrs: TagAttributes, obj: Tag) -> None:
     attrs.tag_attributes = obj.tag_attributes
     attrs.tag_allowed_values = obj.tag_allowed_values
     attrs.mapped_classification_name = obj.mapped_classification_name
+
 
 def _extract_tag_attrs(attrs: TagAttributes) -> dict:
     """Extract all Tag attributes from the attrs struct into a flat dict."""
@@ -437,6 +417,7 @@ def _extract_tag_attrs(attrs: TagAttributes) -> dict:
     result["tag_allowed_values"] = attrs.tag_allowed_values
     result["mapped_classification_name"] = attrs.mapped_classification_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -477,6 +458,7 @@ def _tag_to_nested(tag: Tag) -> TagNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _tag_from_nested(nested: TagNested) -> Tag:
     """Convert nested format to flat Tag."""
     attrs = nested.attributes if nested.attributes is not UNSET else TagAttributes()
@@ -486,7 +468,7 @@ def _tag_from_nested(nested: TagNested) -> Tag:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TAG_REL_FIELDS,
-        TagRelationshipAttributes
+        TagRelationshipAttributes,
     )
     return Tag(
         guid=nested.guid,
@@ -513,6 +495,7 @@ def _tag_from_nested(nested: TagNested) -> Tag:
         **merged_rels,
     )
 
+
 def _tag_to_nested_bytes(tag: Tag, serde: Serde) -> bytes:
     """Convert flat Tag to nested JSON bytes."""
     return serde.encode(_tag_to_nested(tag))
@@ -522,6 +505,7 @@ def _tag_from_nested_bytes(data: bytes, serde: Serde) -> Tag:
     """Convert nested JSON bytes to flat Tag."""
     nested = serde.decode(data, TagNested)
     return _tag_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -534,8 +518,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 Tag.TAG_ID = KeywordField("tagId", "tagId")
 Tag.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
-Tag.TAG_ALLOWED_VALUES = KeywordTextField("tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text")
-Tag.MAPPED_CLASSIFICATION_NAME = KeywordField("mappedClassificationName", "mappedClassificationName")
+Tag.TAG_ALLOWED_VALUES = KeywordTextField(
+    "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+)
+Tag.MAPPED_CLASSIFICATION_NAME = KeywordField(
+    "mappedClassificationName", "mappedClassificationName"
+)
 Tag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Tag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Tag.ANOMALO_CHECKS = RelationField("anomaloChecks")

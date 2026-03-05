@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -45,15 +44,23 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .atlan_app_related import RelatedAtlanApp, RelatedAtlanAppTool, RelatedAtlanAppWorkflow
+from .atlan_app_related import (
+    RelatedAtlanApp,
+    RelatedAtlanAppTool,
+    RelatedAtlanAppWorkflow,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AtlanAppWorkflow(Asset):
@@ -224,7 +231,9 @@ class AtlanAppWorkflow(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -243,41 +252,7 @@ class AtlanAppWorkflow(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.atlan_app_name is UNSET:
-                errors.append("atlan_app_name is required for creation")
-            if self.atlan_app_qualified_name is UNSET:
-                errors.append("atlan_app_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"AtlanAppWorkflow validation failed: {errors}")
-
-    def minimize(self) -> "AtlanAppWorkflow":
-        self.validate()
-        return AtlanAppWorkflow(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAtlanAppWorkflow":
-        if self.guid is not UNSET:
-            return RelatedAtlanAppWorkflow(guid=self.guid)
-        return RelatedAtlanAppWorkflow(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -308,7 +283,9 @@ class AtlanAppWorkflow(Asset):
         return _atlan_app_workflow_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AtlanAppWorkflow:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> AtlanAppWorkflow:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -329,6 +306,7 @@ class AtlanAppWorkflow(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class AtlanAppWorkflowAttributes(AssetAttributes):
     """AtlanAppWorkflow-specific attributes for nested API format."""
@@ -365,6 +343,7 @@ class AtlanAppWorkflowAttributes(AssetAttributes):
 
     app_id: str | None | UnsetType = UNSET
     """Unique identifier for the application asset from the source system."""
+
 
 class AtlanAppWorkflowRelationshipAttributes(AssetRelationshipAttributes):
     """AtlanAppWorkflow-specific relationship attributes for nested API format."""
@@ -453,7 +432,9 @@ class AtlanAppWorkflowRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -465,13 +446,19 @@ class AtlanAppWorkflowRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AtlanAppWorkflowNested(AssetNested):
     """AtlanAppWorkflow in nested API format for high-performance serialization."""
 
     attributes: AtlanAppWorkflowAttributes | UnsetType = UNSET
     relationship_attributes: AtlanAppWorkflowRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AtlanAppWorkflowRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AtlanAppWorkflowRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        AtlanAppWorkflowRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        AtlanAppWorkflowRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -513,7 +500,10 @@ _ATLAN_APP_WORKFLOW_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_atlan_app_workflow_attrs(attrs: AtlanAppWorkflowAttributes, obj: AtlanAppWorkflow) -> None:
+
+def _populate_atlan_app_workflow_attrs(
+    attrs: AtlanAppWorkflowAttributes, obj: AtlanAppWorkflow
+) -> None:
     """Populate AtlanAppWorkflow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.atlan_app_version = obj.atlan_app_version
@@ -527,6 +517,7 @@ def _populate_atlan_app_workflow_attrs(attrs: AtlanAppWorkflowAttributes, obj: A
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
     attrs.app_id = obj.app_id
+
 
 def _extract_atlan_app_workflow_attrs(attrs: AtlanAppWorkflowAttributes) -> dict:
     """Extract all AtlanAppWorkflow attributes from the attrs struct into a flat dict."""
@@ -544,18 +535,23 @@ def _extract_atlan_app_workflow_attrs(attrs: AtlanAppWorkflowAttributes) -> dict
     result["app_id"] = attrs.app_id
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _atlan_app_workflow_to_nested(atlan_app_workflow: AtlanAppWorkflow) -> AtlanAppWorkflowNested:
+def _atlan_app_workflow_to_nested(
+    atlan_app_workflow: AtlanAppWorkflow,
+) -> AtlanAppWorkflowNested:
     """Convert flat AtlanAppWorkflow to nested format."""
     attrs = AtlanAppWorkflowAttributes()
     _populate_atlan_app_workflow_attrs(attrs, atlan_app_workflow)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        atlan_app_workflow, _ATLAN_APP_WORKFLOW_REL_FIELDS, AtlanAppWorkflowRelationshipAttributes
+        atlan_app_workflow,
+        _ATLAN_APP_WORKFLOW_REL_FIELDS,
+        AtlanAppWorkflowRelationshipAttributes,
     )
     return AtlanAppWorkflowNested(
         guid=atlan_app_workflow.guid,
@@ -583,16 +579,21 @@ def _atlan_app_workflow_to_nested(atlan_app_workflow: AtlanAppWorkflow) -> Atlan
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _atlan_app_workflow_from_nested(nested: AtlanAppWorkflowNested) -> AtlanAppWorkflow:
     """Convert nested format to flat AtlanAppWorkflow."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AtlanAppWorkflowAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AtlanAppWorkflowAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ATLAN_APP_WORKFLOW_REL_FIELDS,
-        AtlanAppWorkflowRelationshipAttributes
+        AtlanAppWorkflowRelationshipAttributes,
     )
     return AtlanAppWorkflow(
         guid=nested.guid,
@@ -619,15 +620,21 @@ def _atlan_app_workflow_from_nested(nested: AtlanAppWorkflowNested) -> AtlanAppW
         **merged_rels,
     )
 
-def _atlan_app_workflow_to_nested_bytes(atlan_app_workflow: AtlanAppWorkflow, serde: Serde) -> bytes:
+
+def _atlan_app_workflow_to_nested_bytes(
+    atlan_app_workflow: AtlanAppWorkflow, serde: Serde
+) -> bytes:
     """Convert flat AtlanAppWorkflow to nested JSON bytes."""
     return serde.encode(_atlan_app_workflow_to_nested(atlan_app_workflow))
 
 
-def _atlan_app_workflow_from_nested_bytes(data: bytes, serde: Serde) -> AtlanAppWorkflow:
+def _atlan_app_workflow_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> AtlanAppWorkflow:
     """Convert nested JSON bytes to flat AtlanAppWorkflow."""
     nested = serde.decode(data, AtlanAppWorkflowNested)
     return _atlan_app_workflow_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -642,10 +649,16 @@ AtlanAppWorkflow.ATLAN_APP_VERSION = KeywordField("atlanAppVersion", "atlanAppVe
 AtlanAppWorkflow.ATLAN_APP_SLUG = KeywordField("atlanAppSlug", "atlanAppSlug")
 AtlanAppWorkflow.ATLAN_APP_DAG = TextField("atlanAppDag", "atlanAppDag")
 AtlanAppWorkflow.ATLAN_APP_STATUS = KeywordField("atlanAppStatus", "atlanAppStatus")
-AtlanAppWorkflow.ATLAN_APP_ERROR_HANDLING = KeywordField("atlanAppErrorHandling", "atlanAppErrorHandling")
-AtlanAppWorkflow.ATLAN_APP_OWNERSHIP = KeywordField("atlanAppOwnership", "atlanAppOwnership")
+AtlanAppWorkflow.ATLAN_APP_ERROR_HANDLING = KeywordField(
+    "atlanAppErrorHandling", "atlanAppErrorHandling"
+)
+AtlanAppWorkflow.ATLAN_APP_OWNERSHIP = KeywordField(
+    "atlanAppOwnership", "atlanAppOwnership"
+)
 AtlanAppWorkflow.ATLAN_APP_TRIGGERS = TextField("atlanAppTriggers", "atlanAppTriggers")
-AtlanAppWorkflow.ATLAN_APP_QUALIFIED_NAME = KeywordField("atlanAppQualifiedName", "atlanAppQualifiedName")
+AtlanAppWorkflow.ATLAN_APP_QUALIFIED_NAME = KeywordField(
+    "atlanAppQualifiedName", "atlanAppQualifiedName"
+)
 AtlanAppWorkflow.ATLAN_APP_NAME = KeywordField("atlanAppName", "atlanAppName")
 AtlanAppWorkflow.ATLAN_APP_METADATA = TextField("atlanAppMetadata", "atlanAppMetadata")
 AtlanAppWorkflow.APP_ID = KeywordField("appId", "appId")
@@ -661,7 +674,9 @@ AtlanAppWorkflow.ATLAN_APP_WORKFLOW_RUNS = RelationField("atlanAppWorkflowRuns")
 AtlanAppWorkflow.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AtlanAppWorkflow.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AtlanAppWorkflow.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AtlanAppWorkflow.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+AtlanAppWorkflow.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 AtlanAppWorkflow.METRICS = RelationField("metrics")
 AtlanAppWorkflow.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AtlanAppWorkflow.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

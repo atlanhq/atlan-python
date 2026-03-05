@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sigma_related import RelatedSigmaDataElement, RelatedSigmaDataElementField
+from .sigma_related import RelatedSigmaDataElement
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SigmaDataElementField(Asset):
@@ -196,7 +199,9 @@ class SigmaDataElementField(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     sigma_data_element: RelatedSigmaDataElement | None | UnsetType = UNSET
@@ -221,48 +226,6 @@ class SigmaDataElementField(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.sigma_data_element is UNSET:
-                errors.append("sigma_data_element is required for creation")
-            if self.sigma_data_element_name is UNSET:
-                errors.append("sigma_data_element_name is required for creation")
-            if self.sigma_data_element_qualified_name is UNSET:
-                errors.append("sigma_data_element_qualified_name is required for creation")
-            if self.sigma_page_name is UNSET:
-                errors.append("sigma_page_name is required for creation")
-            if self.sigma_page_qualified_name is UNSET:
-                errors.append("sigma_page_qualified_name is required for creation")
-            if self.sigma_workbook_name is UNSET:
-                errors.append("sigma_workbook_name is required for creation")
-            if self.sigma_workbook_qualified_name is UNSET:
-                errors.append("sigma_workbook_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SigmaDataElementField validation failed: {errors}")
-
-    def minimize(self) -> "SigmaDataElementField":
-        self.validate()
-        return SigmaDataElementField(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSigmaDataElementField":
-        if self.guid is not UNSET:
-            return RelatedSigmaDataElementField(guid=self.guid)
-        return RelatedSigmaDataElementField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -293,7 +256,9 @@ class SigmaDataElementField(Asset):
         return _sigma_data_element_field_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SigmaDataElementField:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SigmaDataElementField:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -314,6 +279,7 @@ class SigmaDataElementField(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class SigmaDataElementFieldAttributes(AssetAttributes):
     """SigmaDataElementField-specific attributes for nested API format."""
@@ -341,6 +307,7 @@ class SigmaDataElementFieldAttributes(AssetAttributes):
 
     sigma_data_element_name: str | None | UnsetType = UNSET
     """Simple name of the data element in which this asset exists."""
+
 
 class SigmaDataElementFieldRelationshipAttributes(AssetRelationshipAttributes):
     """SigmaDataElementField-specific relationship attributes for nested API format."""
@@ -417,7 +384,9 @@ class SigmaDataElementFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     sigma_data_element: RelatedSigmaDataElement | None | UnsetType = UNSET
@@ -432,13 +401,21 @@ class SigmaDataElementFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SigmaDataElementFieldNested(AssetNested):
     """SigmaDataElementField in nested API format for high-performance serialization."""
 
     attributes: SigmaDataElementFieldAttributes | UnsetType = UNSET
-    relationship_attributes: SigmaDataElementFieldRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SigmaDataElementFieldRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SigmaDataElementFieldRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: SigmaDataElementFieldRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        SigmaDataElementFieldRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        SigmaDataElementFieldRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -477,7 +454,10 @@ _SIGMA_DATA_ELEMENT_FIELD_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sigma_data_element_field_attrs(attrs: SigmaDataElementFieldAttributes, obj: SigmaDataElementField) -> None:
+
+def _populate_sigma_data_element_field_attrs(
+    attrs: SigmaDataElementFieldAttributes, obj: SigmaDataElementField
+) -> None:
     """Populate SigmaDataElementField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sigma_is_hidden = obj.sigma_is_hidden
@@ -489,7 +469,10 @@ def _populate_sigma_data_element_field_attrs(attrs: SigmaDataElementFieldAttribu
     attrs.sigma_data_element_qualified_name = obj.sigma_data_element_qualified_name
     attrs.sigma_data_element_name = obj.sigma_data_element_name
 
-def _extract_sigma_data_element_field_attrs(attrs: SigmaDataElementFieldAttributes) -> dict:
+
+def _extract_sigma_data_element_field_attrs(
+    attrs: SigmaDataElementFieldAttributes,
+) -> dict:
     """Extract all SigmaDataElementField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["sigma_is_hidden"] = attrs.sigma_is_hidden
@@ -498,22 +481,29 @@ def _extract_sigma_data_element_field_attrs(attrs: SigmaDataElementFieldAttribut
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
     result["sigma_page_qualified_name"] = attrs.sigma_page_qualified_name
     result["sigma_page_name"] = attrs.sigma_page_name
-    result["sigma_data_element_qualified_name"] = attrs.sigma_data_element_qualified_name
+    result["sigma_data_element_qualified_name"] = (
+        attrs.sigma_data_element_qualified_name
+    )
     result["sigma_data_element_name"] = attrs.sigma_data_element_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sigma_data_element_field_to_nested(sigma_data_element_field: SigmaDataElementField) -> SigmaDataElementFieldNested:
+def _sigma_data_element_field_to_nested(
+    sigma_data_element_field: SigmaDataElementField,
+) -> SigmaDataElementFieldNested:
     """Convert flat SigmaDataElementField to nested format."""
     attrs = SigmaDataElementFieldAttributes()
     _populate_sigma_data_element_field_attrs(attrs, sigma_data_element_field)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sigma_data_element_field, _SIGMA_DATA_ELEMENT_FIELD_REL_FIELDS, SigmaDataElementFieldRelationshipAttributes
+        sigma_data_element_field,
+        _SIGMA_DATA_ELEMENT_FIELD_REL_FIELDS,
+        SigmaDataElementFieldRelationshipAttributes,
     )
     return SigmaDataElementFieldNested(
         guid=sigma_data_element_field.guid,
@@ -541,16 +531,23 @@ def _sigma_data_element_field_to_nested(sigma_data_element_field: SigmaDataEleme
         remove_relationship_attributes=remove_rels,
     )
 
-def _sigma_data_element_field_from_nested(nested: SigmaDataElementFieldNested) -> SigmaDataElementField:
+
+def _sigma_data_element_field_from_nested(
+    nested: SigmaDataElementFieldNested,
+) -> SigmaDataElementField:
     """Convert nested format to flat SigmaDataElementField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SigmaDataElementFieldAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SigmaDataElementFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SIGMA_DATA_ELEMENT_FIELD_REL_FIELDS,
-        SigmaDataElementFieldRelationshipAttributes
+        SigmaDataElementFieldRelationshipAttributes,
     )
     return SigmaDataElementField(
         guid=nested.guid,
@@ -577,15 +574,21 @@ def _sigma_data_element_field_from_nested(nested: SigmaDataElementFieldNested) -
         **merged_rels,
     )
 
-def _sigma_data_element_field_to_nested_bytes(sigma_data_element_field: SigmaDataElementField, serde: Serde) -> bytes:
+
+def _sigma_data_element_field_to_nested_bytes(
+    sigma_data_element_field: SigmaDataElementField, serde: Serde
+) -> bytes:
     """Convert flat SigmaDataElementField to nested JSON bytes."""
     return serde.encode(_sigma_data_element_field_to_nested(sigma_data_element_field))
 
 
-def _sigma_data_element_field_from_nested_bytes(data: bytes, serde: Serde) -> SigmaDataElementField:
+def _sigma_data_element_field_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SigmaDataElementField:
     """Convert nested JSON bytes to flat SigmaDataElementField."""
     nested = serde.decode(data, SigmaDataElementFieldNested)
     return _sigma_data_element_field_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -598,25 +601,51 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SigmaDataElementField.SIGMA_IS_HIDDEN = BooleanField("sigmaIsHidden", "sigmaIsHidden")
-SigmaDataElementField.SIGMA_DATA_ELEMENT_FIELD_FORMULA = KeywordField("sigmaDataElementFieldFormula", "sigmaDataElementFieldFormula")
-SigmaDataElementField.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField("sigmaWorkbookQualifiedName", "sigmaWorkbookQualifiedName", "sigmaWorkbookQualifiedName.text")
-SigmaDataElementField.SIGMA_WORKBOOK_NAME = KeywordField("sigmaWorkbookName", "sigmaWorkbookName")
-SigmaDataElementField.SIGMA_PAGE_QUALIFIED_NAME = KeywordTextField("sigmaPageQualifiedName", "sigmaPageQualifiedName", "sigmaPageQualifiedName.text")
+SigmaDataElementField.SIGMA_DATA_ELEMENT_FIELD_FORMULA = KeywordField(
+    "sigmaDataElementFieldFormula", "sigmaDataElementFieldFormula"
+)
+SigmaDataElementField.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField(
+    "sigmaWorkbookQualifiedName",
+    "sigmaWorkbookQualifiedName",
+    "sigmaWorkbookQualifiedName.text",
+)
+SigmaDataElementField.SIGMA_WORKBOOK_NAME = KeywordField(
+    "sigmaWorkbookName", "sigmaWorkbookName"
+)
+SigmaDataElementField.SIGMA_PAGE_QUALIFIED_NAME = KeywordTextField(
+    "sigmaPageQualifiedName", "sigmaPageQualifiedName", "sigmaPageQualifiedName.text"
+)
 SigmaDataElementField.SIGMA_PAGE_NAME = KeywordField("sigmaPageName", "sigmaPageName")
-SigmaDataElementField.SIGMA_DATA_ELEMENT_QUALIFIED_NAME = KeywordTextField("sigmaDataElementQualifiedName", "sigmaDataElementQualifiedName", "sigmaDataElementQualifiedName.text")
-SigmaDataElementField.SIGMA_DATA_ELEMENT_NAME = KeywordField("sigmaDataElementName", "sigmaDataElementName")
+SigmaDataElementField.SIGMA_DATA_ELEMENT_QUALIFIED_NAME = KeywordTextField(
+    "sigmaDataElementQualifiedName",
+    "sigmaDataElementQualifiedName",
+    "sigmaDataElementQualifiedName.text",
+)
+SigmaDataElementField.SIGMA_DATA_ELEMENT_NAME = KeywordField(
+    "sigmaDataElementName", "sigmaDataElementName"
+)
 SigmaDataElementField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SigmaDataElementField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+SigmaDataElementField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 SigmaDataElementField.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SigmaDataElementField.APPLICATION = RelationField("application")
 SigmaDataElementField.APPLICATION_FIELD = RelationField("applicationField")
-SigmaDataElementField.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+SigmaDataElementField.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 SigmaDataElementField.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SigmaDataElementField.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SigmaDataElementField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SigmaDataElementField.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+SigmaDataElementField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SigmaDataElementField.METRICS = RelationField("metrics")
 SigmaDataElementField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SigmaDataElementField.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SigmaDataElementField.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 SigmaDataElementField.MEANINGS = RelationField("meanings")
 SigmaDataElementField.MC_MONITORS = RelationField("mcMonitors")
 SigmaDataElementField.MC_INCIDENTS = RelationField("mcIncidents")
@@ -625,7 +654,9 @@ SigmaDataElementField.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 SigmaDataElementField.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SigmaDataElementField.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 SigmaDataElementField.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SigmaDataElementField.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+SigmaDataElementField.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 SigmaDataElementField.FILES = RelationField("files")
 SigmaDataElementField.LINKS = RelationField("links")
 SigmaDataElementField.README = RelationField("readme")

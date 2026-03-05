@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .mode_related import RelatedModeCollection, RelatedModeQuery, RelatedModeReport
+from .mode_related import RelatedModeCollection, RelatedModeQuery
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ModeReport(Asset):
@@ -239,7 +242,9 @@ class ModeReport(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -261,40 +266,6 @@ class ModeReport(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.mode_collections is UNSET:
-                errors.append("mode_collections is required for creation")
-            if self.mode_workspace_name is UNSET:
-                errors.append("mode_workspace_name is required for creation")
-            if self.mode_workspace_qualified_name is UNSET:
-                errors.append("mode_workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"ModeReport validation failed: {errors}")
-
-    def minimize(self) -> "ModeReport":
-        self.validate()
-        return ModeReport(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedModeReport":
-        if self.guid is not UNSET:
-            return RelatedModeReport(guid=self.guid)
-        return RelatedModeReport(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -346,6 +317,7 @@ class ModeReport(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class ModeReportAttributes(AssetAttributes):
     """ModeReport-specific attributes for nested API format."""
@@ -400,6 +372,7 @@ class ModeReportAttributes(AssetAttributes):
 
     mode_query_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the query for the Mode asset."""
+
 
 class ModeReportRelationshipAttributes(AssetRelationshipAttributes):
     """ModeReport-specific relationship attributes for nested API format."""
@@ -482,7 +455,9 @@ class ModeReportRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -494,6 +469,7 @@ class ModeReportRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ModeReportNested(AssetNested):
     """ModeReport in nested API format for high-performance serialization."""
 
@@ -501,6 +477,7 @@ class ModeReportNested(AssetNested):
     relationship_attributes: ModeReportRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: ModeReportRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: ModeReportRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -540,6 +517,7 @@ _MODE_REPORT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_mode_report_attrs(attrs: ModeReportAttributes, obj: ModeReport) -> None:
     """Populate ModeReport-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -560,6 +538,7 @@ def _populate_mode_report_attrs(attrs: ModeReportAttributes, obj: ModeReport) ->
     attrs.mode_report_qualified_name = obj.mode_report_qualified_name
     attrs.mode_query_name = obj.mode_query_name
     attrs.mode_query_qualified_name = obj.mode_query_qualified_name
+
 
 def _extract_mode_report_attrs(attrs: ModeReportAttributes) -> dict:
     """Extract all ModeReport attributes from the attrs struct into a flat dict."""
@@ -582,6 +561,7 @@ def _extract_mode_report_attrs(attrs: ModeReportAttributes) -> dict:
     result["mode_query_name"] = attrs.mode_query_name
     result["mode_query_qualified_name"] = attrs.mode_query_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -622,16 +602,19 @@ def _mode_report_to_nested(mode_report: ModeReport) -> ModeReportNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _mode_report_from_nested(nested: ModeReportNested) -> ModeReport:
     """Convert nested format to flat ModeReport."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ModeReportAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ModeReportAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MODE_REPORT_REL_FIELDS,
-        ModeReportRelationshipAttributes
+        ModeReportRelationshipAttributes,
     )
     return ModeReport(
         guid=nested.guid,
@@ -658,6 +641,7 @@ def _mode_report_from_nested(nested: ModeReportNested) -> ModeReport:
         **merged_rels,
     )
 
+
 def _mode_report_to_nested_bytes(mode_report: ModeReport, serde: Serde) -> bytes:
     """Convert flat ModeReport to nested JSON bytes."""
     return serde.encode(_mode_report_to_nested(mode_report))
@@ -667,6 +651,7 @@ def _mode_report_from_nested_bytes(data: bytes, serde: Serde) -> ModeReport:
     """Convert nested JSON bytes to flat ModeReport."""
     nested = serde.decode(data, ModeReportNested)
     return _mode_report_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -679,8 +664,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ModeReport.MODE_COLLECTION_TOKEN = KeywordField("modeCollectionToken", "modeCollectionToken")
-ModeReport.MODE_REPORT_PUBLISHED_AT = NumericField("modeReportPublishedAt", "modeReportPublishedAt")
+ModeReport.MODE_COLLECTION_TOKEN = KeywordField(
+    "modeCollectionToken", "modeCollectionToken"
+)
+ModeReport.MODE_REPORT_PUBLISHED_AT = NumericField(
+    "modeReportPublishedAt", "modeReportPublishedAt"
+)
 ModeReport.MODE_QUERY_COUNT = NumericField("modeQueryCount", "modeQueryCount")
 ModeReport.MODE_CHART_COUNT = NumericField("modeChartCount", "modeChartCount")
 ModeReport.MODE_QUERY_PREVIEW = KeywordField("modeQueryPreview", "modeQueryPreview")
@@ -690,12 +679,22 @@ ModeReport.MODE_IS_ARCHIVED = BooleanField("modeIsArchived", "modeIsArchived")
 ModeReport.MODE_ID = KeywordField("modeId", "modeId")
 ModeReport.MODE_TOKEN = KeywordTextField("modeToken", "modeToken", "modeToken.text")
 ModeReport.MODE_WORKSPACE_NAME = KeywordField("modeWorkspaceName", "modeWorkspaceName")
-ModeReport.MODE_WORKSPACE_USERNAME = KeywordTextField("modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text")
-ModeReport.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField("modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName.text")
+ModeReport.MODE_WORKSPACE_USERNAME = KeywordTextField(
+    "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
+)
+ModeReport.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName.text",
+)
 ModeReport.MODE_REPORT_NAME = KeywordField("modeReportName", "modeReportName")
-ModeReport.MODE_REPORT_QUALIFIED_NAME = KeywordTextField("modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text")
+ModeReport.MODE_REPORT_QUALIFIED_NAME = KeywordTextField(
+    "modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text"
+)
 ModeReport.MODE_QUERY_NAME = KeywordField("modeQueryName", "modeQueryName")
-ModeReport.MODE_QUERY_QUALIFIED_NAME = KeywordTextField("modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text")
+ModeReport.MODE_QUERY_QUALIFIED_NAME = KeywordTextField(
+    "modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text"
+)
 ModeReport.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModeReport.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModeReport.ANOMALO_CHECKS = RelationField("anomaloChecks")

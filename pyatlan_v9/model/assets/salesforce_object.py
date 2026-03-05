@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .salesforce_related import RelatedSalesforceField, RelatedSalesforceObject, RelatedSalesforceOrganization
+from .salesforce_related import RelatedSalesforceField, RelatedSalesforceOrganization
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SalesforceObject(Asset):
@@ -199,7 +202,9 @@ class SalesforceObject(Asset):
     lookup_fields: list[RelatedSalesforceField] | None | UnsetType = UNSET
     """"""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -218,41 +223,7 @@ class SalesforceObject(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.organization is UNSET:
-                errors.append("organization is required for creation")
-            if self.organization_qualified_name is UNSET:
-                errors.append("organization_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SalesforceObject validation failed: {errors}")
-
-    def minimize(self) -> "SalesforceObject":
-        self.validate()
-        return SalesforceObject(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSalesforceObject":
-        if self.guid is not UNSET:
-            return RelatedSalesforceObject(guid=self.guid)
-        return RelatedSalesforceObject(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -283,7 +254,9 @@ class SalesforceObject(Asset):
         return _salesforce_object_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SalesforceObject:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SalesforceObject:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -305,6 +278,7 @@ class SalesforceObject(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SalesforceObjectAttributes(AssetAttributes):
     """SalesforceObject-specific attributes for nested API format."""
 
@@ -325,6 +299,7 @@ class SalesforceObjectAttributes(AssetAttributes):
 
     api_name: str | None | UnsetType = UNSET
     """Name of this asset in the Salesforce API."""
+
 
 class SalesforceObjectRelationshipAttributes(AssetRelationshipAttributes):
     """SalesforceObject-specific relationship attributes for nested API format."""
@@ -410,7 +385,9 @@ class SalesforceObjectRelationshipAttributes(AssetRelationshipAttributes):
     lookup_fields: list[RelatedSalesforceField] | None | UnsetType = UNSET
     """"""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -422,13 +399,19 @@ class SalesforceObjectRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SalesforceObjectNested(AssetNested):
     """SalesforceObject in nested API format for high-performance serialization."""
 
     attributes: SalesforceObjectAttributes | UnsetType = UNSET
     relationship_attributes: SalesforceObjectRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SalesforceObjectRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SalesforceObjectRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        SalesforceObjectRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        SalesforceObjectRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -469,7 +452,10 @@ _SALESFORCE_OBJECT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_salesforce_object_attrs(attrs: SalesforceObjectAttributes, obj: SalesforceObject) -> None:
+
+def _populate_salesforce_object_attrs(
+    attrs: SalesforceObjectAttributes, obj: SalesforceObject
+) -> None:
     """Populate SalesforceObject-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.is_custom = obj.is_custom
@@ -478,6 +464,7 @@ def _populate_salesforce_object_attrs(attrs: SalesforceObjectAttributes, obj: Sa
     attrs.field_count = obj.field_count
     attrs.organization_qualified_name = obj.organization_qualified_name
     attrs.api_name = obj.api_name
+
 
 def _extract_salesforce_object_attrs(attrs: SalesforceObjectAttributes) -> dict:
     """Extract all SalesforceObject attributes from the attrs struct into a flat dict."""
@@ -490,18 +477,23 @@ def _extract_salesforce_object_attrs(attrs: SalesforceObjectAttributes) -> dict:
     result["api_name"] = attrs.api_name
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _salesforce_object_to_nested(salesforce_object: SalesforceObject) -> SalesforceObjectNested:
+def _salesforce_object_to_nested(
+    salesforce_object: SalesforceObject,
+) -> SalesforceObjectNested:
     """Convert flat SalesforceObject to nested format."""
     attrs = SalesforceObjectAttributes()
     _populate_salesforce_object_attrs(attrs, salesforce_object)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        salesforce_object, _SALESFORCE_OBJECT_REL_FIELDS, SalesforceObjectRelationshipAttributes
+        salesforce_object,
+        _SALESFORCE_OBJECT_REL_FIELDS,
+        SalesforceObjectRelationshipAttributes,
     )
     return SalesforceObjectNested(
         guid=salesforce_object.guid,
@@ -529,16 +521,21 @@ def _salesforce_object_to_nested(salesforce_object: SalesforceObject) -> Salesfo
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _salesforce_object_from_nested(nested: SalesforceObjectNested) -> SalesforceObject:
     """Convert nested format to flat SalesforceObject."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SalesforceObjectAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SalesforceObjectAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SALESFORCE_OBJECT_REL_FIELDS,
-        SalesforceObjectRelationshipAttributes
+        SalesforceObjectRelationshipAttributes,
     )
     return SalesforceObject(
         guid=nested.guid,
@@ -565,7 +562,10 @@ def _salesforce_object_from_nested(nested: SalesforceObjectNested) -> Salesforce
         **merged_rels,
     )
 
-def _salesforce_object_to_nested_bytes(salesforce_object: SalesforceObject, serde: Serde) -> bytes:
+
+def _salesforce_object_to_nested_bytes(
+    salesforce_object: SalesforceObject, serde: Serde
+) -> bytes:
     """Convert flat SalesforceObject to nested JSON bytes."""
     return serde.encode(_salesforce_object_to_nested(salesforce_object))
 
@@ -574,6 +574,7 @@ def _salesforce_object_from_nested_bytes(data: bytes, serde: Serde) -> Salesforc
     """Convert nested JSON bytes to flat SalesforceObject."""
     nested = serde.decode(data, SalesforceObjectNested)
     return _salesforce_object_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -589,7 +590,9 @@ SalesforceObject.IS_CUSTOM = BooleanField("isCustom", "isCustom")
 SalesforceObject.IS_MERGABLE = BooleanField("isMergable", "isMergable")
 SalesforceObject.IS_QUERYABLE = BooleanField("isQueryable", "isQueryable")
 SalesforceObject.FIELD_COUNT = NumericField("fieldCount", "fieldCount")
-SalesforceObject.ORGANIZATION_QUALIFIED_NAME = KeywordField("organizationQualifiedName", "organizationQualifiedName")
+SalesforceObject.ORGANIZATION_QUALIFIED_NAME = KeywordField(
+    "organizationQualifiedName", "organizationQualifiedName"
+)
 SalesforceObject.API_NAME = KeywordField("apiName", "apiName")
 SalesforceObject.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SalesforceObject.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -599,7 +602,9 @@ SalesforceObject.APPLICATION_FIELD = RelationField("applicationField")
 SalesforceObject.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SalesforceObject.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SalesforceObject.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SalesforceObject.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SalesforceObject.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SalesforceObject.METRICS = RelationField("metrics")
 SalesforceObject.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SalesforceObject.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

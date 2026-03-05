@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .catalog_related import RelatedEventStore
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class EventStore(Asset):
@@ -162,7 +163,9 @@ class EventStore(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class EventStore(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "EventStore"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"EventStore validation failed: {errors}")
-
-    def minimize(self) -> "EventStore":
-        self.validate()
-        return EventStore(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedEventStore":
-        if self.guid is not UNSET:
-            return RelatedEventStore(guid=self.guid)
-        return RelatedEventStore(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class EventStore(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class EventStoreAttributes(AssetAttributes):
     """EventStore-specific attributes for nested API format."""
 
     pass
+
 
 class EventStoreRelationshipAttributes(AssetRelationshipAttributes):
     """EventStore-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class EventStoreRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,6 +327,7 @@ class EventStoreRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class EventStoreNested(AssetNested):
     """EventStore in nested API format for high-performance serialization."""
 
@@ -351,6 +335,7 @@ class EventStoreNested(AssetNested):
     relationship_attributes: EventStoreRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: EventStoreRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: EventStoreRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +373,16 @@ _EVENT_STORE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_event_store_attrs(attrs: EventStoreAttributes, obj: EventStore) -> None:
     """Populate EventStore-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_event_store_attrs(attrs: EventStoreAttributes) -> dict:
     """Extract all EventStore attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,16 +423,19 @@ def _event_store_to_nested(event_store: EventStore) -> EventStoreNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _event_store_from_nested(nested: EventStoreNested) -> EventStore:
     """Convert nested format to flat EventStore."""
-    attrs = nested.attributes if nested.attributes is not UNSET else EventStoreAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else EventStoreAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _EVENT_STORE_REL_FIELDS,
-        EventStoreRelationshipAttributes
+        EventStoreRelationshipAttributes,
     )
     return EventStore(
         guid=nested.guid,
@@ -471,6 +462,7 @@ def _event_store_from_nested(nested: EventStoreNested) -> EventStore:
         **merged_rels,
     )
 
+
 def _event_store_to_nested_bytes(event_store: EventStore, serde: Serde) -> bytes:
     """Convert flat EventStore to nested JSON bytes."""
     return serde.encode(_event_store_to_nested(event_store))
@@ -480,6 +472,7 @@ def _event_store_from_nested_bytes(data: bytes, serde: Serde) -> EventStore:
     """Convert nested JSON bytes to flat EventStore."""
     nested = serde.decode(data, EventStoreNested)
     return _event_store_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

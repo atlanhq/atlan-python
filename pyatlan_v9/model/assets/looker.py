@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .looker_related import RelatedLooker
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Looker(Asset):
@@ -166,7 +167,9 @@ class Looker(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -180,30 +183,6 @@ class Looker(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Looker"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Looker validation failed: {errors}")
-
-    def minimize(self) -> "Looker":
-        self.validate()
-        return Looker(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLooker":
-        if self.guid is not UNSET:
-            return RelatedLooker(guid=self.guid)
-        return RelatedLooker(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,11 +235,13 @@ class Looker(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LookerAttributes(AssetAttributes):
     """Looker-specific attributes for nested API format."""
 
     looker_slug: str | None | UnsetType = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
+
 
 class LookerRelationshipAttributes(AssetRelationshipAttributes):
     """Looker-specific relationship attributes for nested API format."""
@@ -337,7 +318,9 @@ class LookerRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -349,6 +332,7 @@ class LookerRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class LookerNested(AssetNested):
     """Looker in nested API format for high-performance serialization."""
 
@@ -356,6 +340,7 @@ class LookerNested(AssetNested):
     relationship_attributes: LookerRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: LookerRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: LookerRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -393,16 +378,19 @@ _LOOKER_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_looker_attrs(attrs: LookerAttributes, obj: Looker) -> None:
     """Populate Looker-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.looker_slug = obj.looker_slug
+
 
 def _extract_looker_attrs(attrs: LookerAttributes) -> dict:
     """Extract all Looker attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["looker_slug"] = attrs.looker_slug
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -443,6 +431,7 @@ def _looker_to_nested(looker: Looker) -> LookerNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _looker_from_nested(nested: LookerNested) -> Looker:
     """Convert nested format to flat Looker."""
     attrs = nested.attributes if nested.attributes is not UNSET else LookerAttributes()
@@ -452,7 +441,7 @@ def _looker_from_nested(nested: LookerNested) -> Looker:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_REL_FIELDS,
-        LookerRelationshipAttributes
+        LookerRelationshipAttributes,
     )
     return Looker(
         guid=nested.guid,
@@ -479,6 +468,7 @@ def _looker_from_nested(nested: LookerNested) -> Looker:
         **merged_rels,
     )
 
+
 def _looker_to_nested_bytes(looker: Looker, serde: Serde) -> bytes:
     """Convert flat Looker to nested JSON bytes."""
     return serde.encode(_looker_to_nested(looker))
@@ -488,6 +478,7 @@ def _looker_from_nested_bytes(data: bytes, serde: Serde) -> Looker:
     """Convert nested JSON bytes to flat Looker."""
     nested = serde.decode(data, LookerNested)
     return _looker_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,25 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .tableau_related import RelatedTableauCalculatedField, RelatedTableauDashboard, RelatedTableauDatasourceField, RelatedTableauWorkbook, RelatedTableauWorksheet, RelatedTableauWorksheetField
+from .tableau_related import (
+    RelatedTableauCalculatedField,
+    RelatedTableauDashboard,
+    RelatedTableauDatasourceField,
+    RelatedTableauWorkbook,
+    RelatedTableauWorksheetField,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class TableauWorksheet(Asset):
@@ -192,7 +201,9 @@ class TableauWorksheet(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -210,7 +221,9 @@ class TableauWorksheet(Asset):
     datasource_fields: list[RelatedTableauDatasourceField] | None | UnsetType = UNSET
     """Datasource fields this worksheet uses."""
 
-    tableau_worksheet_fields: list[RelatedTableauWorksheetField] | None | UnsetType = UNSET
+    tableau_worksheet_fields: list[RelatedTableauWorksheetField] | None | UnsetType = (
+        UNSET
+    )
     """Fields that exist within this worksheet."""
 
     calculated_fields: list[RelatedTableauCalculatedField] | None | UnsetType = UNSET
@@ -229,42 +242,6 @@ class TableauWorksheet(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.workbook is UNSET:
-                errors.append("workbook is required for creation")
-            if self.workbook_qualified_name is UNSET:
-                errors.append("workbook_qualified_name is required for creation")
-            if self.project_qualified_name is UNSET:
-                errors.append("project_qualified_name is required for creation")
-            if self.site_qualified_name is UNSET:
-                errors.append("site_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"TableauWorksheet validation failed: {errors}")
-
-    def minimize(self) -> "TableauWorksheet":
-        self.validate()
-        return TableauWorksheet(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTableauWorksheet":
-        if self.guid is not UNSET:
-            return RelatedTableauWorksheet(guid=self.guid)
-        return RelatedTableauWorksheet(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -295,7 +272,9 @@ class TableauWorksheet(Asset):
         return _tableau_worksheet_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> TableauWorksheet:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> TableauWorksheet:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -317,6 +296,7 @@ class TableauWorksheet(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class TableauWorksheetAttributes(AssetAttributes):
     """TableauWorksheet-specific attributes for nested API format."""
 
@@ -337,6 +317,7 @@ class TableauWorksheetAttributes(AssetAttributes):
 
     tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
 
 class TableauWorksheetRelationshipAttributes(AssetRelationshipAttributes):
     """TableauWorksheet-specific relationship attributes for nested API format."""
@@ -413,7 +394,9 @@ class TableauWorksheetRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -431,7 +414,9 @@ class TableauWorksheetRelationshipAttributes(AssetRelationshipAttributes):
     datasource_fields: list[RelatedTableauDatasourceField] | None | UnsetType = UNSET
     """Datasource fields this worksheet uses."""
 
-    tableau_worksheet_fields: list[RelatedTableauWorksheetField] | None | UnsetType = UNSET
+    tableau_worksheet_fields: list[RelatedTableauWorksheetField] | None | UnsetType = (
+        UNSET
+    )
     """Fields that exist within this worksheet."""
 
     calculated_fields: list[RelatedTableauCalculatedField] | None | UnsetType = UNSET
@@ -440,13 +425,19 @@ class TableauWorksheetRelationshipAttributes(AssetRelationshipAttributes):
     workbook: RelatedTableauWorkbook | None | UnsetType = UNSET
     """Workbook in which this worksheet exists."""
 
+
 class TableauWorksheetNested(AssetNested):
     """TableauWorksheet in nested API format for high-performance serialization."""
 
     attributes: TableauWorksheetAttributes | UnsetType = UNSET
     relationship_attributes: TableauWorksheetRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: TableauWorksheetRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: TableauWorksheetRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        TableauWorksheetRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        TableauWorksheetRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -489,7 +480,10 @@ _TABLEAU_WORKSHEET_REL_FIELDS: list[str] = [
     "workbook",
 ]
 
-def _populate_tableau_worksheet_attrs(attrs: TableauWorksheetAttributes, obj: TableauWorksheet) -> None:
+
+def _populate_tableau_worksheet_attrs(
+    attrs: TableauWorksheetAttributes, obj: TableauWorksheet
+) -> None:
     """Populate TableauWorksheet-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.site_qualified_name = obj.site_qualified_name
@@ -497,7 +491,10 @@ def _populate_tableau_worksheet_attrs(attrs: TableauWorksheetAttributes, obj: Ta
     attrs.top_level_project_qualified_name = obj.top_level_project_qualified_name
     attrs.project_hierarchy = obj.project_hierarchy
     attrs.workbook_qualified_name = obj.workbook_qualified_name
-    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
+    attrs.tableau_project_hierarchy_qualified_names = (
+        obj.tableau_project_hierarchy_qualified_names
+    )
+
 
 def _extract_tableau_worksheet_attrs(attrs: TableauWorksheetAttributes) -> dict:
     """Extract all TableauWorksheet attributes from the attrs struct into a flat dict."""
@@ -507,21 +504,28 @@ def _extract_tableau_worksheet_attrs(attrs: TableauWorksheetAttributes) -> dict:
     result["top_level_project_qualified_name"] = attrs.top_level_project_qualified_name
     result["project_hierarchy"] = attrs.project_hierarchy
     result["workbook_qualified_name"] = attrs.workbook_qualified_name
-    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
+    result["tableau_project_hierarchy_qualified_names"] = (
+        attrs.tableau_project_hierarchy_qualified_names
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _tableau_worksheet_to_nested(tableau_worksheet: TableauWorksheet) -> TableauWorksheetNested:
+def _tableau_worksheet_to_nested(
+    tableau_worksheet: TableauWorksheet,
+) -> TableauWorksheetNested:
     """Convert flat TableauWorksheet to nested format."""
     attrs = TableauWorksheetAttributes()
     _populate_tableau_worksheet_attrs(attrs, tableau_worksheet)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        tableau_worksheet, _TABLEAU_WORKSHEET_REL_FIELDS, TableauWorksheetRelationshipAttributes
+        tableau_worksheet,
+        _TABLEAU_WORKSHEET_REL_FIELDS,
+        TableauWorksheetRelationshipAttributes,
     )
     return TableauWorksheetNested(
         guid=tableau_worksheet.guid,
@@ -549,16 +553,21 @@ def _tableau_worksheet_to_nested(tableau_worksheet: TableauWorksheet) -> Tableau
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _tableau_worksheet_from_nested(nested: TableauWorksheetNested) -> TableauWorksheet:
     """Convert nested format to flat TableauWorksheet."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TableauWorksheetAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else TableauWorksheetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_WORKSHEET_REL_FIELDS,
-        TableauWorksheetRelationshipAttributes
+        TableauWorksheetRelationshipAttributes,
     )
     return TableauWorksheet(
         guid=nested.guid,
@@ -585,7 +594,10 @@ def _tableau_worksheet_from_nested(nested: TableauWorksheetNested) -> TableauWor
         **merged_rels,
     )
 
-def _tableau_worksheet_to_nested_bytes(tableau_worksheet: TableauWorksheet, serde: Serde) -> bytes:
+
+def _tableau_worksheet_to_nested_bytes(
+    tableau_worksheet: TableauWorksheet, serde: Serde
+) -> bytes:
     """Convert flat TableauWorksheet to nested JSON bytes."""
     return serde.encode(_tableau_worksheet_to_nested(tableau_worksheet))
 
@@ -595,6 +607,7 @@ def _tableau_worksheet_from_nested_bytes(data: bytes, serde: Serde) -> TableauWo
     nested = serde.decode(data, TableauWorksheetNested)
     return _tableau_worksheet_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -603,12 +616,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-TableauWorksheet.SITE_QUALIFIED_NAME = KeywordField("siteQualifiedName", "siteQualifiedName")
-TableauWorksheet.PROJECT_QUALIFIED_NAME = KeywordField("projectQualifiedName", "projectQualifiedName")
-TableauWorksheet.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField("topLevelProjectQualifiedName", "topLevelProjectQualifiedName")
-TableauWorksheet.PROJECT_HIERARCHY = KeywordField("projectHierarchy", "projectHierarchy")
-TableauWorksheet.WORKBOOK_QUALIFIED_NAME = KeywordField("workbookQualifiedName", "workbookQualifiedName")
-TableauWorksheet.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
+TableauWorksheet.SITE_QUALIFIED_NAME = KeywordField(
+    "siteQualifiedName", "siteQualifiedName"
+)
+TableauWorksheet.PROJECT_QUALIFIED_NAME = KeywordField(
+    "projectQualifiedName", "projectQualifiedName"
+)
+TableauWorksheet.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField(
+    "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+)
+TableauWorksheet.PROJECT_HIERARCHY = KeywordField(
+    "projectHierarchy", "projectHierarchy"
+)
+TableauWorksheet.WORKBOOK_QUALIFIED_NAME = KeywordField(
+    "workbookQualifiedName", "workbookQualifiedName"
+)
+TableauWorksheet.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
+    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
+)
 TableauWorksheet.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TableauWorksheet.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 TableauWorksheet.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -617,7 +642,9 @@ TableauWorksheet.APPLICATION_FIELD = RelationField("applicationField")
 TableauWorksheet.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 TableauWorksheet.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 TableauWorksheet.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-TableauWorksheet.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+TableauWorksheet.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 TableauWorksheet.METRICS = RelationField("metrics")
 TableauWorksheet.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 TableauWorksheet.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

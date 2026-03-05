@@ -43,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cosmos_mongo_db_related import RelatedCosmosMongoDBAccount, RelatedCosmosMongoDBDatabase
+from .cosmos_mongo_db_related import RelatedCosmosMongoDBDatabase
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CosmosMongoDBAccount(Asset):
@@ -108,55 +112,95 @@ class CosmosMongoDBAccount(Asset):
 
     type_name: Union[str, UnsetType] = "CosmosMongoDBAccount"
 
-    cosmos_mongo_db_account_instance_id: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountInstanceId")
+    cosmos_mongo_db_account_instance_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountInstanceId"
+    )
     """The unique identifier for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_database_count: int | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBDatabaseCount")
+    cosmos_mongo_db_database_count: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBDatabaseCount"
+    )
     """Number of databases in this Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_type: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountType")
+    cosmos_mongo_db_account_type: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountType"
+    )
     """The type of the Cosmos MongoDB account, such as RU or VCORE."""
 
-    cosmos_mongo_db_account_subscription_id: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountSubscriptionId")
+    cosmos_mongo_db_account_subscription_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountSubscriptionId"
+    )
     """The ID of the subscription to which the Cosmos MongoDB account belongs."""
 
-    cosmos_mongo_db_account_resource_group: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountResourceGroup")
+    cosmos_mongo_db_account_resource_group: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountResourceGroup"
+    )
     """The resource group that contains the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_document_endpoint: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint")
+    cosmos_mongo_db_account_document_endpoint: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint"
+    )
     """The Document Endpoint URL for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_mongo_endpoint: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountMongoEndpoint")
+    cosmos_mongo_db_account_mongo_endpoint: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountMongoEndpoint"
+    )
     """The MongoDB connection endpoint for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_public_network_access: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountPublicNetworkAccess")
+    cosmos_mongo_db_account_public_network_access: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountPublicNetworkAccess")
+    )
     """The status of public network access for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_automatic_failover: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableAutomaticFailover")
+    cosmos_mongo_db_account_enable_automatic_failover: bool | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableAutomaticFailover")
+    )
     """Indicates whether automatic failover is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_multiple_write_locations: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations")
+    cosmos_mongo_db_account_enable_multiple_write_locations: bool | None | UnsetType = (
+        msgspec.field(
+            default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations"
+        )
+    )
     """Indicates whether multiple write locations are enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_partition_key_monitor: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor")
+    cosmos_mongo_db_account_enable_partition_key_monitor: bool | None | UnsetType = (
+        msgspec.field(
+            default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor"
+        )
+    )
     """Indicates whether partition key monitoring is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_is_virtual_network_filter_enabled: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountIsVirtualNetworkFilterEnabled")
+    cosmos_mongo_db_account_is_virtual_network_filter_enabled: (
+        bool | None | UnsetType
+    ) = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountIsVirtualNetworkFilterEnabled"
+    )
     """Indicates whether the virtual network filter is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_consistency_policy: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy")
+    cosmos_mongo_db_account_consistency_policy: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy"
+    )
     """The consistency policy configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountLocations")
+    cosmos_mongo_db_account_locations: list[str] | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountLocations"
+    )
     """The locations where the Cosmos MongoDB account is available."""
 
-    cosmos_mongo_db_account_read_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountReadLocations")
+    cosmos_mongo_db_account_read_locations: list[str] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountReadLocations")
+    )
     """The read locations configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_write_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountWriteLocations")
+    cosmos_mongo_db_account_write_locations: list[str] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountWriteLocations")
+    )
     """The write locations configured for the Cosmos MongoDB account."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -174,7 +218,9 @@ class CosmosMongoDBAccount(Asset):
     application_field: RelatedApplicationField | None | UnsetType = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_databases: list[RelatedCosmosMongoDBDatabase] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
+    cosmos_mongo_db_databases: list[RelatedCosmosMongoDBDatabase] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
+    )
     """Databases that exist within this account."""
 
     output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
@@ -234,7 +280,9 @@ class CosmosMongoDBAccount(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -248,30 +296,6 @@ class CosmosMongoDBAccount(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "CosmosMongoDBAccount"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"CosmosMongoDBAccount validation failed: {errors}")
-
-    def minimize(self) -> "CosmosMongoDBAccount":
-        self.validate()
-        return CosmosMongoDBAccount(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCosmosMongoDBAccount":
-        if self.guid is not UNSET:
-            return RelatedCosmosMongoDBAccount(guid=self.guid)
-        return RelatedCosmosMongoDBAccount(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -302,7 +326,9 @@ class CosmosMongoDBAccount(Asset):
         return _cosmos_mongo_db_account_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> CosmosMongoDBAccount:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> CosmosMongoDBAccount:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -324,59 +350,101 @@ class CosmosMongoDBAccount(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CosmosMongoDBAccountAttributes(AssetAttributes):
     """CosmosMongoDBAccount-specific attributes for nested API format."""
 
-    cosmos_mongo_db_account_instance_id: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountInstanceId")
+    cosmos_mongo_db_account_instance_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountInstanceId"
+    )
     """The unique identifier for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_database_count: int | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBDatabaseCount")
+    cosmos_mongo_db_database_count: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBDatabaseCount"
+    )
     """Number of databases in this Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_type: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountType")
+    cosmos_mongo_db_account_type: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountType"
+    )
     """The type of the Cosmos MongoDB account, such as RU or VCORE."""
 
-    cosmos_mongo_db_account_subscription_id: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountSubscriptionId")
+    cosmos_mongo_db_account_subscription_id: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountSubscriptionId"
+    )
     """The ID of the subscription to which the Cosmos MongoDB account belongs."""
 
-    cosmos_mongo_db_account_resource_group: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountResourceGroup")
+    cosmos_mongo_db_account_resource_group: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountResourceGroup"
+    )
     """The resource group that contains the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_document_endpoint: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint")
+    cosmos_mongo_db_account_document_endpoint: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountDocumentEndpoint"
+    )
     """The Document Endpoint URL for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_mongo_endpoint: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountMongoEndpoint")
+    cosmos_mongo_db_account_mongo_endpoint: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountMongoEndpoint"
+    )
     """The MongoDB connection endpoint for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_public_network_access: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountPublicNetworkAccess")
+    cosmos_mongo_db_account_public_network_access: str | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountPublicNetworkAccess")
+    )
     """The status of public network access for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_automatic_failover: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableAutomaticFailover")
+    cosmos_mongo_db_account_enable_automatic_failover: bool | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableAutomaticFailover")
+    )
     """Indicates whether automatic failover is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_multiple_write_locations: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations")
+    cosmos_mongo_db_account_enable_multiple_write_locations: bool | None | UnsetType = (
+        msgspec.field(
+            default=UNSET, name="cosmosMongoDBAccountEnableMultipleWriteLocations"
+        )
+    )
     """Indicates whether multiple write locations are enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_enable_partition_key_monitor: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor")
+    cosmos_mongo_db_account_enable_partition_key_monitor: bool | None | UnsetType = (
+        msgspec.field(
+            default=UNSET, name="cosmosMongoDBAccountEnablePartitionKeyMonitor"
+        )
+    )
     """Indicates whether partition key monitoring is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_is_virtual_network_filter_enabled: bool | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountIsVirtualNetworkFilterEnabled")
+    cosmos_mongo_db_account_is_virtual_network_filter_enabled: (
+        bool | None | UnsetType
+    ) = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountIsVirtualNetworkFilterEnabled"
+    )
     """Indicates whether the virtual network filter is enabled for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_consistency_policy: str | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy")
+    cosmos_mongo_db_account_consistency_policy: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountConsistencyPolicy"
+    )
     """The consistency policy configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountLocations")
+    cosmos_mongo_db_account_locations: list[str] | None | UnsetType = msgspec.field(
+        default=UNSET, name="cosmosMongoDBAccountLocations"
+    )
     """The locations where the Cosmos MongoDB account is available."""
 
-    cosmos_mongo_db_account_read_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountReadLocations")
+    cosmos_mongo_db_account_read_locations: list[str] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountReadLocations")
+    )
     """The read locations configured for the Cosmos MongoDB account."""
 
-    cosmos_mongo_db_account_write_locations: list[str] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBAccountWriteLocations")
+    cosmos_mongo_db_account_write_locations: list[str] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBAccountWriteLocations")
+    )
     """The write locations configured for the Cosmos MongoDB account."""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
+
 
 class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
     """CosmosMongoDBAccount-specific relationship attributes for nested API format."""
@@ -396,7 +464,9 @@ class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
     application_field: RelatedApplicationField | None | UnsetType = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_databases: list[RelatedCosmosMongoDBDatabase] | None | UnsetType = msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
+    cosmos_mongo_db_databases: list[RelatedCosmosMongoDBDatabase] | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
+    )
     """Databases that exist within this account."""
 
     output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
@@ -456,7 +526,9 @@ class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -468,13 +540,21 @@ class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CosmosMongoDBAccountNested(AssetNested):
     """CosmosMongoDBAccount in nested API format for high-performance serialization."""
 
     attributes: CosmosMongoDBAccountAttributes | UnsetType = UNSET
-    relationship_attributes: CosmosMongoDBAccountRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CosmosMongoDBAccountRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CosmosMongoDBAccountRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: CosmosMongoDBAccountRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        CosmosMongoDBAccountRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        CosmosMongoDBAccountRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -513,61 +593,124 @@ _COSMOS_MONGO_DB_ACCOUNT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cosmos_mongo_db_account_attrs(attrs: CosmosMongoDBAccountAttributes, obj: CosmosMongoDBAccount) -> None:
+
+def _populate_cosmos_mongo_db_account_attrs(
+    attrs: CosmosMongoDBAccountAttributes, obj: CosmosMongoDBAccount
+) -> None:
     """Populate CosmosMongoDBAccount-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cosmos_mongo_db_account_instance_id = obj.cosmos_mongo_db_account_instance_id
     attrs.cosmos_mongo_db_database_count = obj.cosmos_mongo_db_database_count
     attrs.cosmos_mongo_db_account_type = obj.cosmos_mongo_db_account_type
-    attrs.cosmos_mongo_db_account_subscription_id = obj.cosmos_mongo_db_account_subscription_id
-    attrs.cosmos_mongo_db_account_resource_group = obj.cosmos_mongo_db_account_resource_group
-    attrs.cosmos_mongo_db_account_document_endpoint = obj.cosmos_mongo_db_account_document_endpoint
-    attrs.cosmos_mongo_db_account_mongo_endpoint = obj.cosmos_mongo_db_account_mongo_endpoint
-    attrs.cosmos_mongo_db_account_public_network_access = obj.cosmos_mongo_db_account_public_network_access
-    attrs.cosmos_mongo_db_account_enable_automatic_failover = obj.cosmos_mongo_db_account_enable_automatic_failover
-    attrs.cosmos_mongo_db_account_enable_multiple_write_locations = obj.cosmos_mongo_db_account_enable_multiple_write_locations
-    attrs.cosmos_mongo_db_account_enable_partition_key_monitor = obj.cosmos_mongo_db_account_enable_partition_key_monitor
-    attrs.cosmos_mongo_db_account_is_virtual_network_filter_enabled = obj.cosmos_mongo_db_account_is_virtual_network_filter_enabled
-    attrs.cosmos_mongo_db_account_consistency_policy = obj.cosmos_mongo_db_account_consistency_policy
+    attrs.cosmos_mongo_db_account_subscription_id = (
+        obj.cosmos_mongo_db_account_subscription_id
+    )
+    attrs.cosmos_mongo_db_account_resource_group = (
+        obj.cosmos_mongo_db_account_resource_group
+    )
+    attrs.cosmos_mongo_db_account_document_endpoint = (
+        obj.cosmos_mongo_db_account_document_endpoint
+    )
+    attrs.cosmos_mongo_db_account_mongo_endpoint = (
+        obj.cosmos_mongo_db_account_mongo_endpoint
+    )
+    attrs.cosmos_mongo_db_account_public_network_access = (
+        obj.cosmos_mongo_db_account_public_network_access
+    )
+    attrs.cosmos_mongo_db_account_enable_automatic_failover = (
+        obj.cosmos_mongo_db_account_enable_automatic_failover
+    )
+    attrs.cosmos_mongo_db_account_enable_multiple_write_locations = (
+        obj.cosmos_mongo_db_account_enable_multiple_write_locations
+    )
+    attrs.cosmos_mongo_db_account_enable_partition_key_monitor = (
+        obj.cosmos_mongo_db_account_enable_partition_key_monitor
+    )
+    attrs.cosmos_mongo_db_account_is_virtual_network_filter_enabled = (
+        obj.cosmos_mongo_db_account_is_virtual_network_filter_enabled
+    )
+    attrs.cosmos_mongo_db_account_consistency_policy = (
+        obj.cosmos_mongo_db_account_consistency_policy
+    )
     attrs.cosmos_mongo_db_account_locations = obj.cosmos_mongo_db_account_locations
-    attrs.cosmos_mongo_db_account_read_locations = obj.cosmos_mongo_db_account_read_locations
-    attrs.cosmos_mongo_db_account_write_locations = obj.cosmos_mongo_db_account_write_locations
+    attrs.cosmos_mongo_db_account_read_locations = (
+        obj.cosmos_mongo_db_account_read_locations
+    )
+    attrs.cosmos_mongo_db_account_write_locations = (
+        obj.cosmos_mongo_db_account_write_locations
+    )
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
 
-def _extract_cosmos_mongo_db_account_attrs(attrs: CosmosMongoDBAccountAttributes) -> dict:
+
+def _extract_cosmos_mongo_db_account_attrs(
+    attrs: CosmosMongoDBAccountAttributes,
+) -> dict:
     """Extract all CosmosMongoDBAccount attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cosmos_mongo_db_account_instance_id"] = attrs.cosmos_mongo_db_account_instance_id
+    result["cosmos_mongo_db_account_instance_id"] = (
+        attrs.cosmos_mongo_db_account_instance_id
+    )
     result["cosmos_mongo_db_database_count"] = attrs.cosmos_mongo_db_database_count
     result["cosmos_mongo_db_account_type"] = attrs.cosmos_mongo_db_account_type
-    result["cosmos_mongo_db_account_subscription_id"] = attrs.cosmos_mongo_db_account_subscription_id
-    result["cosmos_mongo_db_account_resource_group"] = attrs.cosmos_mongo_db_account_resource_group
-    result["cosmos_mongo_db_account_document_endpoint"] = attrs.cosmos_mongo_db_account_document_endpoint
-    result["cosmos_mongo_db_account_mongo_endpoint"] = attrs.cosmos_mongo_db_account_mongo_endpoint
-    result["cosmos_mongo_db_account_public_network_access"] = attrs.cosmos_mongo_db_account_public_network_access
-    result["cosmos_mongo_db_account_enable_automatic_failover"] = attrs.cosmos_mongo_db_account_enable_automatic_failover
-    result["cosmos_mongo_db_account_enable_multiple_write_locations"] = attrs.cosmos_mongo_db_account_enable_multiple_write_locations
-    result["cosmos_mongo_db_account_enable_partition_key_monitor"] = attrs.cosmos_mongo_db_account_enable_partition_key_monitor
-    result["cosmos_mongo_db_account_is_virtual_network_filter_enabled"] = attrs.cosmos_mongo_db_account_is_virtual_network_filter_enabled
-    result["cosmos_mongo_db_account_consistency_policy"] = attrs.cosmos_mongo_db_account_consistency_policy
-    result["cosmos_mongo_db_account_locations"] = attrs.cosmos_mongo_db_account_locations
-    result["cosmos_mongo_db_account_read_locations"] = attrs.cosmos_mongo_db_account_read_locations
-    result["cosmos_mongo_db_account_write_locations"] = attrs.cosmos_mongo_db_account_write_locations
+    result["cosmos_mongo_db_account_subscription_id"] = (
+        attrs.cosmos_mongo_db_account_subscription_id
+    )
+    result["cosmos_mongo_db_account_resource_group"] = (
+        attrs.cosmos_mongo_db_account_resource_group
+    )
+    result["cosmos_mongo_db_account_document_endpoint"] = (
+        attrs.cosmos_mongo_db_account_document_endpoint
+    )
+    result["cosmos_mongo_db_account_mongo_endpoint"] = (
+        attrs.cosmos_mongo_db_account_mongo_endpoint
+    )
+    result["cosmos_mongo_db_account_public_network_access"] = (
+        attrs.cosmos_mongo_db_account_public_network_access
+    )
+    result["cosmos_mongo_db_account_enable_automatic_failover"] = (
+        attrs.cosmos_mongo_db_account_enable_automatic_failover
+    )
+    result["cosmos_mongo_db_account_enable_multiple_write_locations"] = (
+        attrs.cosmos_mongo_db_account_enable_multiple_write_locations
+    )
+    result["cosmos_mongo_db_account_enable_partition_key_monitor"] = (
+        attrs.cosmos_mongo_db_account_enable_partition_key_monitor
+    )
+    result["cosmos_mongo_db_account_is_virtual_network_filter_enabled"] = (
+        attrs.cosmos_mongo_db_account_is_virtual_network_filter_enabled
+    )
+    result["cosmos_mongo_db_account_consistency_policy"] = (
+        attrs.cosmos_mongo_db_account_consistency_policy
+    )
+    result["cosmos_mongo_db_account_locations"] = (
+        attrs.cosmos_mongo_db_account_locations
+    )
+    result["cosmos_mongo_db_account_read_locations"] = (
+        attrs.cosmos_mongo_db_account_read_locations
+    )
+    result["cosmos_mongo_db_account_write_locations"] = (
+        attrs.cosmos_mongo_db_account_write_locations
+    )
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _cosmos_mongo_db_account_to_nested(cosmos_mongo_db_account: CosmosMongoDBAccount) -> CosmosMongoDBAccountNested:
+def _cosmos_mongo_db_account_to_nested(
+    cosmos_mongo_db_account: CosmosMongoDBAccount,
+) -> CosmosMongoDBAccountNested:
     """Convert flat CosmosMongoDBAccount to nested format."""
     attrs = CosmosMongoDBAccountAttributes()
     _populate_cosmos_mongo_db_account_attrs(attrs, cosmos_mongo_db_account)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cosmos_mongo_db_account, _COSMOS_MONGO_DB_ACCOUNT_REL_FIELDS, CosmosMongoDBAccountRelationshipAttributes
+        cosmos_mongo_db_account,
+        _COSMOS_MONGO_DB_ACCOUNT_REL_FIELDS,
+        CosmosMongoDBAccountRelationshipAttributes,
     )
     return CosmosMongoDBAccountNested(
         guid=cosmos_mongo_db_account.guid,
@@ -595,16 +738,23 @@ def _cosmos_mongo_db_account_to_nested(cosmos_mongo_db_account: CosmosMongoDBAcc
         remove_relationship_attributes=remove_rels,
     )
 
-def _cosmos_mongo_db_account_from_nested(nested: CosmosMongoDBAccountNested) -> CosmosMongoDBAccount:
+
+def _cosmos_mongo_db_account_from_nested(
+    nested: CosmosMongoDBAccountNested,
+) -> CosmosMongoDBAccount:
     """Convert nested format to flat CosmosMongoDBAccount."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CosmosMongoDBAccountAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CosmosMongoDBAccountAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COSMOS_MONGO_DB_ACCOUNT_REL_FIELDS,
-        CosmosMongoDBAccountRelationshipAttributes
+        CosmosMongoDBAccountRelationshipAttributes,
     )
     return CosmosMongoDBAccount(
         guid=nested.guid,
@@ -631,15 +781,21 @@ def _cosmos_mongo_db_account_from_nested(nested: CosmosMongoDBAccountNested) -> 
         **merged_rels,
     )
 
-def _cosmos_mongo_db_account_to_nested_bytes(cosmos_mongo_db_account: CosmosMongoDBAccount, serde: Serde) -> bytes:
+
+def _cosmos_mongo_db_account_to_nested_bytes(
+    cosmos_mongo_db_account: CosmosMongoDBAccount, serde: Serde
+) -> bytes:
     """Convert flat CosmosMongoDBAccount to nested JSON bytes."""
     return serde.encode(_cosmos_mongo_db_account_to_nested(cosmos_mongo_db_account))
 
 
-def _cosmos_mongo_db_account_from_nested_bytes(data: bytes, serde: Serde) -> CosmosMongoDBAccount:
+def _cosmos_mongo_db_account_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> CosmosMongoDBAccount:
     """Convert nested JSON bytes to flat CosmosMongoDBAccount."""
     nested = serde.decode(data, CosmosMongoDBAccountNested)
     return _cosmos_mongo_db_account_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -651,23 +807,67 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_INSTANCE_ID = KeywordField("cosmosMongoDBAccountInstanceId", "cosmosMongoDBAccountInstanceId")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_DATABASE_COUNT = NumericField("cosmosMongoDBDatabaseCount", "cosmosMongoDBDatabaseCount")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_TYPE = KeywordField("cosmosMongoDBAccountType", "cosmosMongoDBAccountType")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_SUBSCRIPTION_ID = KeywordField("cosmosMongoDBAccountSubscriptionId", "cosmosMongoDBAccountSubscriptionId")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_RESOURCE_GROUP = KeywordField("cosmosMongoDBAccountResourceGroup", "cosmosMongoDBAccountResourceGroup")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_DOCUMENT_ENDPOINT = KeywordField("cosmosMongoDBAccountDocumentEndpoint", "cosmosMongoDBAccountDocumentEndpoint")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_MONGO_ENDPOINT = KeywordField("cosmosMongoDBAccountMongoEndpoint", "cosmosMongoDBAccountMongoEndpoint")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_PUBLIC_NETWORK_ACCESS = KeywordField("cosmosMongoDBAccountPublicNetworkAccess", "cosmosMongoDBAccountPublicNetworkAccess")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_ENABLE_AUTOMATIC_FAILOVER = BooleanField("cosmosMongoDBAccountEnableAutomaticFailover", "cosmosMongoDBAccountEnableAutomaticFailover")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_ENABLE_MULTIPLE_WRITE_LOCATIONS = BooleanField("cosmosMongoDBAccountEnableMultipleWriteLocations", "cosmosMongoDBAccountEnableMultipleWriteLocations")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_ENABLE_PARTITION_KEY_MONITOR = BooleanField("cosmosMongoDBAccountEnablePartitionKeyMonitor", "cosmosMongoDBAccountEnablePartitionKeyMonitor")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_IS_VIRTUAL_NETWORK_FILTER_ENABLED = BooleanField("cosmosMongoDBAccountIsVirtualNetworkFilterEnabled", "cosmosMongoDBAccountIsVirtualNetworkFilterEnabled")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_CONSISTENCY_POLICY = KeywordField("cosmosMongoDBAccountConsistencyPolicy", "cosmosMongoDBAccountConsistencyPolicy")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_LOCATIONS = KeywordField("cosmosMongoDBAccountLocations", "cosmosMongoDBAccountLocations")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_READ_LOCATIONS = KeywordField("cosmosMongoDBAccountReadLocations", "cosmosMongoDBAccountReadLocations")
-CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_WRITE_LOCATIONS = KeywordField("cosmosMongoDBAccountWriteLocations", "cosmosMongoDBAccountWriteLocations")
-CosmosMongoDBAccount.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_INSTANCE_ID = KeywordField(
+    "cosmosMongoDBAccountInstanceId", "cosmosMongoDBAccountInstanceId"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_DATABASE_COUNT = NumericField(
+    "cosmosMongoDBDatabaseCount", "cosmosMongoDBDatabaseCount"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_TYPE = KeywordField(
+    "cosmosMongoDBAccountType", "cosmosMongoDBAccountType"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_SUBSCRIPTION_ID = KeywordField(
+    "cosmosMongoDBAccountSubscriptionId", "cosmosMongoDBAccountSubscriptionId"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_RESOURCE_GROUP = KeywordField(
+    "cosmosMongoDBAccountResourceGroup", "cosmosMongoDBAccountResourceGroup"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_DOCUMENT_ENDPOINT = KeywordField(
+    "cosmosMongoDBAccountDocumentEndpoint", "cosmosMongoDBAccountDocumentEndpoint"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_MONGO_ENDPOINT = KeywordField(
+    "cosmosMongoDBAccountMongoEndpoint", "cosmosMongoDBAccountMongoEndpoint"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_PUBLIC_NETWORK_ACCESS = KeywordField(
+    "cosmosMongoDBAccountPublicNetworkAccess", "cosmosMongoDBAccountPublicNetworkAccess"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_ENABLE_AUTOMATIC_FAILOVER = BooleanField(
+    "cosmosMongoDBAccountEnableAutomaticFailover",
+    "cosmosMongoDBAccountEnableAutomaticFailover",
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_ENABLE_MULTIPLE_WRITE_LOCATIONS = (
+    BooleanField(
+        "cosmosMongoDBAccountEnableMultipleWriteLocations",
+        "cosmosMongoDBAccountEnableMultipleWriteLocations",
+    )
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_ENABLE_PARTITION_KEY_MONITOR = (
+    BooleanField(
+        "cosmosMongoDBAccountEnablePartitionKeyMonitor",
+        "cosmosMongoDBAccountEnablePartitionKeyMonitor",
+    )
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_IS_VIRTUAL_NETWORK_FILTER_ENABLED = (
+    BooleanField(
+        "cosmosMongoDBAccountIsVirtualNetworkFilterEnabled",
+        "cosmosMongoDBAccountIsVirtualNetworkFilterEnabled",
+    )
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_CONSISTENCY_POLICY = KeywordField(
+    "cosmosMongoDBAccountConsistencyPolicy", "cosmosMongoDBAccountConsistencyPolicy"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_LOCATIONS = KeywordField(
+    "cosmosMongoDBAccountLocations", "cosmosMongoDBAccountLocations"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_READ_LOCATIONS = KeywordField(
+    "cosmosMongoDBAccountReadLocations", "cosmosMongoDBAccountReadLocations"
+)
+CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_WRITE_LOCATIONS = KeywordField(
+    "cosmosMongoDBAccountWriteLocations", "cosmosMongoDBAccountWriteLocations"
+)
+CosmosMongoDBAccount.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 CosmosMongoDBAccount.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CosmosMongoDBAccount.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CosmosMongoDBAccount.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -676,11 +876,17 @@ CosmosMongoDBAccount.APPLICATION_FIELD = RelationField("applicationField")
 CosmosMongoDBAccount.COSMOS_MONGO_DB_DATABASES = RelationField("cosmosMongoDBDatabases")
 CosmosMongoDBAccount.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CosmosMongoDBAccount.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-CosmosMongoDBAccount.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-CosmosMongoDBAccount.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+CosmosMongoDBAccount.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+CosmosMongoDBAccount.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 CosmosMongoDBAccount.METRICS = RelationField("metrics")
 CosmosMongoDBAccount.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-CosmosMongoDBAccount.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+CosmosMongoDBAccount.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 CosmosMongoDBAccount.MEANINGS = RelationField("meanings")
 CosmosMongoDBAccount.MC_MONITORS = RelationField("mcMonitors")
 CosmosMongoDBAccount.MC_INCIDENTS = RelationField("mcIncidents")
@@ -689,7 +895,9 @@ CosmosMongoDBAccount.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 CosmosMongoDBAccount.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 CosmosMongoDBAccount.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 CosmosMongoDBAccount.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-CosmosMongoDBAccount.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+CosmosMongoDBAccount.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 CosmosMongoDBAccount.FILES = RelationField("files")
 CosmosMongoDBAccount.LINKS = RelationField("links")
 CosmosMongoDBAccount.README = RelationField("readme")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,22 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .azure_service_bus_related import RelatedAzureServiceBusNamespace, RelatedAzureServiceBusSchema, RelatedAzureServiceBusTopic
+from .azure_service_bus_related import (
+    RelatedAzureServiceBusNamespace,
+    RelatedAzureServiceBusSchema,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AzureServiceBusTopic(Asset):
@@ -120,10 +126,14 @@ class AzureServiceBusTopic(Asset):
     application_field: RelatedApplicationField | None | UnsetType = UNSET
     """ApplicationField owning the Asset."""
 
-    azure_service_bus_schemas: list[RelatedAzureServiceBusSchema] | None | UnsetType = UNSET
+    azure_service_bus_schemas: list[RelatedAzureServiceBusSchema] | None | UnsetType = (
+        UNSET
+    )
     """AzureServiceBusSchema assets contained within this AzureServiceBusTopic."""
 
-    azure_service_bus_namespace: RelatedAzureServiceBusNamespace | None | UnsetType = UNSET
+    azure_service_bus_namespace: RelatedAzureServiceBusNamespace | None | UnsetType = (
+        UNSET
+    )
     """AzureServiceBusNamespace asset containing this AzureServiceBusTopic."""
 
     output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
@@ -183,7 +193,9 @@ class AzureServiceBusTopic(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -202,43 +214,7 @@ class AzureServiceBusTopic(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.azure_service_bus_namespace is UNSET:
-                errors.append("azure_service_bus_namespace is required for creation")
-            if self.azure_service_bus_namespace_name is UNSET:
-                errors.append("azure_service_bus_namespace_name is required for creation")
-            if self.azure_service_bus_namespace_qualified_name is UNSET:
-                errors.append("azure_service_bus_namespace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"AzureServiceBusTopic validation failed: {errors}")
-
-    def minimize(self) -> "AzureServiceBusTopic":
-        self.validate()
-        return AzureServiceBusTopic(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAzureServiceBusTopic":
-        if self.guid is not UNSET:
-            return RelatedAzureServiceBusTopic(guid=self.guid)
-        return RelatedAzureServiceBusTopic(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -269,7 +245,9 @@ class AzureServiceBusTopic(Asset):
         return _azure_service_bus_topic_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AzureServiceBusTopic:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> AzureServiceBusTopic:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -291,6 +269,7 @@ class AzureServiceBusTopic(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AzureServiceBusTopicAttributes(AssetAttributes):
     """AzureServiceBusTopic-specific attributes for nested API format."""
 
@@ -302,6 +281,7 @@ class AzureServiceBusTopicAttributes(AssetAttributes):
 
     azure_service_bus_schema_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the AzureServiceBus Schema in which this asset exists."""
+
 
 class AzureServiceBusTopicRelationshipAttributes(AssetRelationshipAttributes):
     """AzureServiceBusTopic-specific relationship attributes for nested API format."""
@@ -321,10 +301,14 @@ class AzureServiceBusTopicRelationshipAttributes(AssetRelationshipAttributes):
     application_field: RelatedApplicationField | None | UnsetType = UNSET
     """ApplicationField owning the Asset."""
 
-    azure_service_bus_schemas: list[RelatedAzureServiceBusSchema] | None | UnsetType = UNSET
+    azure_service_bus_schemas: list[RelatedAzureServiceBusSchema] | None | UnsetType = (
+        UNSET
+    )
     """AzureServiceBusSchema assets contained within this AzureServiceBusTopic."""
 
-    azure_service_bus_namespace: RelatedAzureServiceBusNamespace | None | UnsetType = UNSET
+    azure_service_bus_namespace: RelatedAzureServiceBusNamespace | None | UnsetType = (
+        UNSET
+    )
     """AzureServiceBusNamespace asset containing this AzureServiceBusTopic."""
 
     output_port_data_products: list[RelatedDataProduct] | None | UnsetType = UNSET
@@ -384,7 +368,9 @@ class AzureServiceBusTopicRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -396,13 +382,21 @@ class AzureServiceBusTopicRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AzureServiceBusTopicNested(AssetNested):
     """AzureServiceBusTopic in nested API format for high-performance serialization."""
 
     attributes: AzureServiceBusTopicAttributes | UnsetType = UNSET
-    relationship_attributes: AzureServiceBusTopicRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AzureServiceBusTopicRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AzureServiceBusTopicRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: AzureServiceBusTopicRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        AzureServiceBusTopicRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        AzureServiceBusTopicRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -442,33 +436,52 @@ _AZURE_SERVICE_BUS_TOPIC_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_azure_service_bus_topic_attrs(attrs: AzureServiceBusTopicAttributes, obj: AzureServiceBusTopic) -> None:
+
+def _populate_azure_service_bus_topic_attrs(
+    attrs: AzureServiceBusTopicAttributes, obj: AzureServiceBusTopic
+) -> None:
     """Populate AzureServiceBusTopic-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.azure_service_bus_namespace_qualified_name = obj.azure_service_bus_namespace_qualified_name
+    attrs.azure_service_bus_namespace_qualified_name = (
+        obj.azure_service_bus_namespace_qualified_name
+    )
     attrs.azure_service_bus_namespace_name = obj.azure_service_bus_namespace_name
-    attrs.azure_service_bus_schema_qualified_name = obj.azure_service_bus_schema_qualified_name
+    attrs.azure_service_bus_schema_qualified_name = (
+        obj.azure_service_bus_schema_qualified_name
+    )
 
-def _extract_azure_service_bus_topic_attrs(attrs: AzureServiceBusTopicAttributes) -> dict:
+
+def _extract_azure_service_bus_topic_attrs(
+    attrs: AzureServiceBusTopicAttributes,
+) -> dict:
     """Extract all AzureServiceBusTopic attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["azure_service_bus_namespace_qualified_name"] = attrs.azure_service_bus_namespace_qualified_name
+    result["azure_service_bus_namespace_qualified_name"] = (
+        attrs.azure_service_bus_namespace_qualified_name
+    )
     result["azure_service_bus_namespace_name"] = attrs.azure_service_bus_namespace_name
-    result["azure_service_bus_schema_qualified_name"] = attrs.azure_service_bus_schema_qualified_name
+    result["azure_service_bus_schema_qualified_name"] = (
+        attrs.azure_service_bus_schema_qualified_name
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _azure_service_bus_topic_to_nested(azure_service_bus_topic: AzureServiceBusTopic) -> AzureServiceBusTopicNested:
+def _azure_service_bus_topic_to_nested(
+    azure_service_bus_topic: AzureServiceBusTopic,
+) -> AzureServiceBusTopicNested:
     """Convert flat AzureServiceBusTopic to nested format."""
     attrs = AzureServiceBusTopicAttributes()
     _populate_azure_service_bus_topic_attrs(attrs, azure_service_bus_topic)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        azure_service_bus_topic, _AZURE_SERVICE_BUS_TOPIC_REL_FIELDS, AzureServiceBusTopicRelationshipAttributes
+        azure_service_bus_topic,
+        _AZURE_SERVICE_BUS_TOPIC_REL_FIELDS,
+        AzureServiceBusTopicRelationshipAttributes,
     )
     return AzureServiceBusTopicNested(
         guid=azure_service_bus_topic.guid,
@@ -496,16 +509,23 @@ def _azure_service_bus_topic_to_nested(azure_service_bus_topic: AzureServiceBusT
         remove_relationship_attributes=remove_rels,
     )
 
-def _azure_service_bus_topic_from_nested(nested: AzureServiceBusTopicNested) -> AzureServiceBusTopic:
+
+def _azure_service_bus_topic_from_nested(
+    nested: AzureServiceBusTopicNested,
+) -> AzureServiceBusTopic:
     """Convert nested format to flat AzureServiceBusTopic."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AzureServiceBusTopicAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AzureServiceBusTopicAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AZURE_SERVICE_BUS_TOPIC_REL_FIELDS,
-        AzureServiceBusTopicRelationshipAttributes
+        AzureServiceBusTopicRelationshipAttributes,
     )
     return AzureServiceBusTopic(
         guid=nested.guid,
@@ -532,15 +552,21 @@ def _azure_service_bus_topic_from_nested(nested: AzureServiceBusTopicNested) -> 
         **merged_rels,
     )
 
-def _azure_service_bus_topic_to_nested_bytes(azure_service_bus_topic: AzureServiceBusTopic, serde: Serde) -> bytes:
+
+def _azure_service_bus_topic_to_nested_bytes(
+    azure_service_bus_topic: AzureServiceBusTopic, serde: Serde
+) -> bytes:
     """Convert flat AzureServiceBusTopic to nested JSON bytes."""
     return serde.encode(_azure_service_bus_topic_to_nested(azure_service_bus_topic))
 
 
-def _azure_service_bus_topic_from_nested_bytes(data: bytes, serde: Serde) -> AzureServiceBusTopic:
+def _azure_service_bus_topic_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> AzureServiceBusTopic:
     """Convert nested JSON bytes to flat AzureServiceBusTopic."""
     nested = serde.decode(data, AzureServiceBusTopicNested)
     return _azure_service_bus_topic_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -551,23 +577,39 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AzureServiceBusTopic.AZURE_SERVICE_BUS_NAMESPACE_QUALIFIED_NAME = KeywordField("azureServiceBusNamespaceQualifiedName", "azureServiceBusNamespaceQualifiedName")
-AzureServiceBusTopic.AZURE_SERVICE_BUS_NAMESPACE_NAME = KeywordTextField("azureServiceBusNamespaceName", "azureServiceBusNamespaceName", "azureServiceBusNamespaceName.text")
-AzureServiceBusTopic.AZURE_SERVICE_BUS_SCHEMA_QUALIFIED_NAME = KeywordField("azureServiceBusSchemaQualifiedName", "azureServiceBusSchemaQualifiedName")
+AzureServiceBusTopic.AZURE_SERVICE_BUS_NAMESPACE_QUALIFIED_NAME = KeywordField(
+    "azureServiceBusNamespaceQualifiedName", "azureServiceBusNamespaceQualifiedName"
+)
+AzureServiceBusTopic.AZURE_SERVICE_BUS_NAMESPACE_NAME = KeywordTextField(
+    "azureServiceBusNamespaceName",
+    "azureServiceBusNamespaceName",
+    "azureServiceBusNamespaceName.text",
+)
+AzureServiceBusTopic.AZURE_SERVICE_BUS_SCHEMA_QUALIFIED_NAME = KeywordField(
+    "azureServiceBusSchemaQualifiedName", "azureServiceBusSchemaQualifiedName"
+)
 AzureServiceBusTopic.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AzureServiceBusTopic.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AzureServiceBusTopic.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AzureServiceBusTopic.APPLICATION = RelationField("application")
 AzureServiceBusTopic.APPLICATION_FIELD = RelationField("applicationField")
 AzureServiceBusTopic.AZURE_SERVICE_BUS_SCHEMAS = RelationField("azureServiceBusSchemas")
-AzureServiceBusTopic.AZURE_SERVICE_BUS_NAMESPACE = RelationField("azureServiceBusNamespace")
+AzureServiceBusTopic.AZURE_SERVICE_BUS_NAMESPACE = RelationField(
+    "azureServiceBusNamespace"
+)
 AzureServiceBusTopic.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AzureServiceBusTopic.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-AzureServiceBusTopic.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AzureServiceBusTopic.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+AzureServiceBusTopic.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+AzureServiceBusTopic.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 AzureServiceBusTopic.METRICS = RelationField("metrics")
 AzureServiceBusTopic.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-AzureServiceBusTopic.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+AzureServiceBusTopic.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 AzureServiceBusTopic.MEANINGS = RelationField("meanings")
 AzureServiceBusTopic.MC_MONITORS = RelationField("mcMonitors")
 AzureServiceBusTopic.MC_INCIDENTS = RelationField("mcIncidents")
@@ -576,7 +618,9 @@ AzureServiceBusTopic.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 AzureServiceBusTopic.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 AzureServiceBusTopic.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 AzureServiceBusTopic.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-AzureServiceBusTopic.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+AzureServiceBusTopic.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 AzureServiceBusTopic.FILES = RelationField("files")
 AzureServiceBusTopic.LINKS = RelationField("links")
 AzureServiceBusTopic.README = RelationField("readme")

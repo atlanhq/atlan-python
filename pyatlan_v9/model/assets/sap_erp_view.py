@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent, RelatedSapErpView
+from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapErpView(Asset):
@@ -206,7 +209,9 @@ class SapErpView(Asset):
     sap_erp_columns: list[RelatedSapErpColumn] | None | UnsetType = UNSET
     """SAP ERP Columns that exist within this view."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -220,30 +225,6 @@ class SapErpView(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpView"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpView validation failed: {errors}")
-
-    def minimize(self) -> "SapErpView":
-        self.validate()
-        return SapErpView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpView":
-        if self.guid is not UNSET:
-            return RelatedSapErpView(guid=self.guid)
-        return RelatedSapErpView(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -296,6 +277,7 @@ class SapErpView(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SapErpViewAttributes(AssetAttributes):
     """SapErpView-specific attributes for nested API format."""
 
@@ -325,6 +307,7 @@ class SapErpViewAttributes(AssetAttributes):
 
     sap_field_order: int | None | UnsetType = UNSET
     """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
+
 
 class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpView-specific relationship attributes for nested API format."""
@@ -407,7 +390,9 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_columns: list[RelatedSapErpColumn] | None | UnsetType = UNSET
     """SAP ERP Columns that exist within this view."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -419,6 +404,7 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SapErpViewNested(AssetNested):
     """SapErpView in nested API format for high-performance serialization."""
 
@@ -426,6 +412,7 @@ class SapErpViewNested(AssetNested):
     relationship_attributes: SapErpViewRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: SapErpViewRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: SapErpViewRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -465,6 +452,7 @@ _SAP_ERP_VIEW_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_sap_erp_view_attrs(attrs: SapErpViewAttributes, obj: SapErpView) -> None:
     """Populate SapErpView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -477,6 +465,7 @@ def _populate_sap_erp_view_attrs(attrs: SapErpViewAttributes, obj: SapErpView) -
     attrs.sap_data_type = obj.sap_data_type
     attrs.sap_field_count = obj.sap_field_count
     attrs.sap_field_order = obj.sap_field_order
+
 
 def _extract_sap_erp_view_attrs(attrs: SapErpViewAttributes) -> dict:
     """Extract all SapErpView attributes from the attrs struct into a flat dict."""
@@ -491,6 +480,7 @@ def _extract_sap_erp_view_attrs(attrs: SapErpViewAttributes) -> dict:
     result["sap_field_count"] = attrs.sap_field_count
     result["sap_field_order"] = attrs.sap_field_order
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -531,16 +521,19 @@ def _sap_erp_view_to_nested(sap_erp_view: SapErpView) -> SapErpViewNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sap_erp_view_from_nested(nested: SapErpViewNested) -> SapErpView:
     """Convert nested format to flat SapErpView."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapErpViewAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else SapErpViewAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_VIEW_REL_FIELDS,
-        SapErpViewRelationshipAttributes
+        SapErpViewRelationshipAttributes,
     )
     return SapErpView(
         guid=nested.guid,
@@ -567,6 +560,7 @@ def _sap_erp_view_from_nested(nested: SapErpViewNested) -> SapErpView:
         **merged_rels,
     )
 
+
 def _sap_erp_view_to_nested_bytes(sap_erp_view: SapErpView, serde: Serde) -> bytes:
     """Convert flat SapErpView to nested JSON bytes."""
     return serde.encode(_sap_erp_view_to_nested(sap_erp_view))
@@ -576,6 +570,7 @@ def _sap_erp_view_from_nested_bytes(data: bytes, serde: Serde) -> SapErpView:
     """Convert nested JSON bytes to flat SapErpView."""
     nested = serde.decode(data, SapErpViewNested)
     return _sap_erp_view_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

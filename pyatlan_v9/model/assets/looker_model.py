@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,25 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .looker_related import RelatedLookerExplore, RelatedLookerField, RelatedLookerLook, RelatedLookerModel, RelatedLookerProject, RelatedLookerQuery
+from .looker_related import (
+    RelatedLookerExplore,
+    RelatedLookerField,
+    RelatedLookerLook,
+    RelatedLookerProject,
+    RelatedLookerQuery,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class LookerModel(Asset):
@@ -191,7 +200,9 @@ class LookerModel(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -210,41 +221,7 @@ class LookerModel(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.project is UNSET:
-                errors.append("project is required for creation")
-            if self.project_name is UNSET:
-                errors.append("project_name is required for creation")
-        if errors:
-            raise ValueError(f"LookerModel validation failed: {errors}")
-
-    def minimize(self) -> "LookerModel":
-        self.validate()
-        return LookerModel(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLookerModel":
-        if self.guid is not UNSET:
-            return RelatedLookerModel(guid=self.guid)
-        return RelatedLookerModel(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -297,6 +274,7 @@ class LookerModel(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LookerModelAttributes(AssetAttributes):
     """LookerModel-specific attributes for nested API format."""
 
@@ -305,6 +283,7 @@ class LookerModelAttributes(AssetAttributes):
 
     looker_slug: str | None | UnsetType = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
+
 
 class LookerModelRelationshipAttributes(AssetRelationshipAttributes):
     """LookerModel-specific relationship attributes for nested API format."""
@@ -396,7 +375,9 @@ class LookerModelRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -408,13 +389,19 @@ class LookerModelRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class LookerModelNested(AssetNested):
     """LookerModel in nested API format for high-performance serialization."""
 
     attributes: LookerModelAttributes | UnsetType = UNSET
     relationship_attributes: LookerModelRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: LookerModelRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: LookerModelRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: LookerModelRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: LookerModelRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -457,11 +444,15 @@ _LOOKER_MODEL_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_looker_model_attrs(attrs: LookerModelAttributes, obj: LookerModel) -> None:
+
+def _populate_looker_model_attrs(
+    attrs: LookerModelAttributes, obj: LookerModel
+) -> None:
     """Populate LookerModel-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.project_name = obj.project_name
     attrs.looker_slug = obj.looker_slug
+
 
 def _extract_looker_model_attrs(attrs: LookerModelAttributes) -> dict:
     """Extract all LookerModel attributes from the attrs struct into a flat dict."""
@@ -469,6 +460,7 @@ def _extract_looker_model_attrs(attrs: LookerModelAttributes) -> dict:
     result["project_name"] = attrs.project_name
     result["looker_slug"] = attrs.looker_slug
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -509,16 +501,19 @@ def _looker_model_to_nested(looker_model: LookerModel) -> LookerModelNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _looker_model_from_nested(nested: LookerModelNested) -> LookerModel:
     """Convert nested format to flat LookerModel."""
-    attrs = nested.attributes if nested.attributes is not UNSET else LookerModelAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else LookerModelAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_MODEL_REL_FIELDS,
-        LookerModelRelationshipAttributes
+        LookerModelRelationshipAttributes,
     )
     return LookerModel(
         guid=nested.guid,
@@ -545,6 +540,7 @@ def _looker_model_from_nested(nested: LookerModelNested) -> LookerModel:
         **merged_rels,
     )
 
+
 def _looker_model_to_nested_bytes(looker_model: LookerModel, serde: Serde) -> bytes:
     """Convert flat LookerModel to nested JSON bytes."""
     return serde.encode(_looker_model_to_nested(looker_model))
@@ -554,6 +550,7 @@ def _looker_model_from_nested_bytes(data: bytes, serde: Serde) -> LookerModel:
     """Convert nested JSON bytes to flat LookerModel."""
     nested = serde.decode(data, LookerModelNested)
     return _looker_model_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

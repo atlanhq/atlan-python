@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .data_quality_related import RelatedDataQuality
@@ -36,6 +35,7 @@ class RelatedAnomalo(RelatedDataQuality):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Anomalo"
+
 
 class RelatedAnomaloCheck(RelatedAnomalo):
     """

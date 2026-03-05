@@ -44,15 +44,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .qlik_related import RelatedQlikApp, RelatedQlikChart, RelatedQlikColumn, RelatedQlikSheet
+from .qlik_related import RelatedQlikApp, RelatedQlikChart, RelatedQlikColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class QlikSheet(Asset):
@@ -211,7 +215,9 @@ class QlikSheet(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -233,40 +239,6 @@ class QlikSheet(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.qlik_app is UNSET:
-                errors.append("qlik_app is required for creation")
-            if self.qlik_app_qualified_name is UNSET:
-                errors.append("qlik_app_qualified_name is required for creation")
-            if self.qlik_space_qualified_name is UNSET:
-                errors.append("qlik_space_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"QlikSheet validation failed: {errors}")
-
-    def minimize(self) -> "QlikSheet":
-        self.validate()
-        return QlikSheet(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQlikSheet":
-        if self.guid is not UNSET:
-            return RelatedQlikSheet(guid=self.guid)
-        return RelatedQlikSheet(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -319,6 +291,7 @@ class QlikSheet(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class QlikSheetAttributes(AssetAttributes):
     """QlikSheet-specific attributes for nested API format."""
 
@@ -348,6 +321,7 @@ class QlikSheetAttributes(AssetAttributes):
 
     qlik_is_published: bool | None | UnsetType = UNSET
     """Whether this asset is published in Qlik (true) or not (false)."""
+
 
 class QlikSheetRelationshipAttributes(AssetRelationshipAttributes):
     """QlikSheet-specific relationship attributes for nested API format."""
@@ -433,7 +407,9 @@ class QlikSheetRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -445,6 +421,7 @@ class QlikSheetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class QlikSheetNested(AssetNested):
     """QlikSheet in nested API format for high-performance serialization."""
 
@@ -452,6 +429,7 @@ class QlikSheetNested(AssetNested):
     relationship_attributes: QlikSheetRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: QlikSheetRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: QlikSheetRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -492,6 +470,7 @@ _QLIK_SHEET_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_qlik_sheet_attrs(attrs: QlikSheetAttributes, obj: QlikSheet) -> None:
     """Populate QlikSheet-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -504,6 +483,7 @@ def _populate_qlik_sheet_attrs(attrs: QlikSheetAttributes, obj: QlikSheet) -> No
     attrs.qlik_app_qualified_name = obj.qlik_app_qualified_name
     attrs.qlik_owner_id = obj.qlik_owner_id
     attrs.qlik_is_published = obj.qlik_is_published
+
 
 def _extract_qlik_sheet_attrs(attrs: QlikSheetAttributes) -> dict:
     """Extract all QlikSheet attributes from the attrs struct into a flat dict."""
@@ -518,6 +498,7 @@ def _extract_qlik_sheet_attrs(attrs: QlikSheetAttributes) -> dict:
     result["qlik_owner_id"] = attrs.qlik_owner_id
     result["qlik_is_published"] = attrs.qlik_is_published
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -558,16 +539,19 @@ def _qlik_sheet_to_nested(qlik_sheet: QlikSheet) -> QlikSheetNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _qlik_sheet_from_nested(nested: QlikSheetNested) -> QlikSheet:
     """Convert nested format to flat QlikSheet."""
-    attrs = nested.attributes if nested.attributes is not UNSET else QlikSheetAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else QlikSheetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QLIK_SHEET_REL_FIELDS,
-        QlikSheetRelationshipAttributes
+        QlikSheetRelationshipAttributes,
     )
     return QlikSheet(
         guid=nested.guid,
@@ -594,6 +578,7 @@ def _qlik_sheet_from_nested(nested: QlikSheetNested) -> QlikSheet:
         **merged_rels,
     )
 
+
 def _qlik_sheet_to_nested_bytes(qlik_sheet: QlikSheet, serde: Serde) -> bytes:
     """Convert flat QlikSheet to nested JSON bytes."""
     return serde.encode(_qlik_sheet_to_nested(qlik_sheet))
@@ -603,6 +588,7 @@ def _qlik_sheet_from_nested_bytes(data: bytes, serde: Serde) -> QlikSheet:
     """Convert nested JSON bytes to flat QlikSheet."""
     nested = serde.decode(data, QlikSheetNested)
     return _qlik_sheet_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -618,9 +604,13 @@ QlikSheet.QLIK_IS_APPROVED = BooleanField("qlikIsApproved", "qlikIsApproved")
 QlikSheet.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSheet.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSheet.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")
-QlikSheet.QLIK_SPACE_QUALIFIED_NAME = KeywordTextField("qlikSpaceQualifiedName", "qlikSpaceQualifiedName", "qlikSpaceQualifiedName.text")
+QlikSheet.QLIK_SPACE_QUALIFIED_NAME = KeywordTextField(
+    "qlikSpaceQualifiedName", "qlikSpaceQualifiedName", "qlikSpaceQualifiedName.text"
+)
 QlikSheet.QLIK_APP_ID = KeywordField("qlikAppId", "qlikAppId")
-QlikSheet.QLIK_APP_QUALIFIED_NAME = KeywordTextField("qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text")
+QlikSheet.QLIK_APP_QUALIFIED_NAME = KeywordTextField(
+    "qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text"
+)
 QlikSheet.QLIK_OWNER_ID = KeywordField("qlikOwnerId", "qlikOwnerId")
 QlikSheet.QLIK_IS_PUBLISHED = BooleanField("qlikIsPublished", "qlikIsPublished")
 QlikSheet.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

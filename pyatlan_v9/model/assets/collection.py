@@ -15,8 +15,8 @@ This module provides:
 from __future__ import annotations
 
 from typing import Any, ClassVar, Union
+from uuid import uuid4
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,16 +41,20 @@ from .soda_related import RelatedSodaCheck
 from .sql_related import RelatedQuery
 from pyatlan.errors import AtlanError
 from pyatlan.errors import ErrorCode
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .namespace_related import RelatedCollection, RelatedFolder
+from .namespace_related import RelatedFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Collection(Asset):
@@ -143,7 +147,9 @@ class Collection(Asset):
     children_queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -151,30 +157,6 @@ class Collection(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Collection"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Collection validation failed: {errors}")
-
-    def minimize(self) -> "Collection":
-        self.validate()
-        return Collection(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCollection":
-        if self.guid is not UNSET:
-            return RelatedCollection(guid=self.guid)
-        return RelatedCollection(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -187,8 +169,6 @@ class Collection(Asset):
 
     @classmethod
     def _generate_qualified_name(cls, client: "AtlanClient") -> str:
-        from pyatlan.errors import AtlanError
-
         try:
             username = client.user.get_current().username
             return f"default/collection/{username}/{uuid4()}"
@@ -248,6 +228,7 @@ class Collection(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CollectionAttributes(AssetAttributes):
     """Collection-specific attributes for nested API format."""
 
@@ -256,6 +237,7 @@ class CollectionAttributes(AssetAttributes):
 
     icon_type: str | None | UnsetType = UNSET
     """Type of image used to represent the collection (for example, an emoji)."""
+
 
 class CollectionRelationshipAttributes(AssetRelationshipAttributes):
     """Collection-specific relationship attributes for nested API format."""
@@ -314,11 +296,14 @@ class CollectionRelationshipAttributes(AssetRelationshipAttributes):
     children_queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class CollectionNested(AssetNested):
     """Collection in nested API format for high-performance serialization."""
@@ -327,6 +312,7 @@ class CollectionNested(AssetNested):
     relationship_attributes: CollectionRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: CollectionRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: CollectionRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -356,11 +342,13 @@ _COLLECTION_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
+
 def _populate_collection_attrs(attrs: CollectionAttributes, obj: Collection) -> None:
     """Populate Collection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.icon = obj.icon
     attrs.icon_type = obj.icon_type
+
 
 def _extract_collection_attrs(attrs: CollectionAttributes) -> dict:
     """Extract all Collection attributes from the attrs struct into a flat dict."""
@@ -368,6 +356,7 @@ def _extract_collection_attrs(attrs: CollectionAttributes) -> dict:
     result["icon"] = attrs.icon
     result["icon_type"] = attrs.icon_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -408,16 +397,19 @@ def _collection_to_nested(collection: Collection) -> CollectionNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _collection_from_nested(nested: CollectionNested) -> Collection:
     """Convert nested format to flat Collection."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CollectionAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else CollectionAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COLLECTION_REL_FIELDS,
-        CollectionRelationshipAttributes
+        CollectionRelationshipAttributes,
     )
     return Collection(
         guid=nested.guid,
@@ -444,6 +436,7 @@ def _collection_from_nested(nested: CollectionNested) -> Collection:
         **merged_rels,
     )
 
+
 def _collection_to_nested_bytes(collection: Collection, serde: Serde) -> bytes:
     """Convert flat Collection to nested JSON bytes."""
     return serde.encode(_collection_to_nested(collection))
@@ -453,6 +446,7 @@ def _collection_from_nested_bytes(data: bytes, serde: Serde) -> Collection:
     """Convert nested JSON bytes to flat Collection."""
     nested = serde.decode(data, CollectionNested)
     return _collection_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

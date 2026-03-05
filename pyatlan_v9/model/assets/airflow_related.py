@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -62,6 +61,7 @@ class RelatedAirflow(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Airflow"
 
+
 class RelatedAirflowDag(RelatedAirflow):
     """
     Related entity reference for AirflowDag assets.
@@ -81,6 +81,7 @@ class RelatedAirflowDag(RelatedAirflow):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AirflowDag"
+
 
 class RelatedAirflowTask(RelatedAirflow):
     """

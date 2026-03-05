@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,23 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sisense_related import RelatedSisenseDashboard, RelatedSisenseFolder, RelatedSisenseWidget
+from .sisense_related import (
+    RelatedSisenseDashboard,
+    RelatedSisenseFolder,
+    RelatedSisenseWidget,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SisenseFolder(Asset):
@@ -171,7 +178,9 @@ class SisenseFolder(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     sisense_child_folders: list[RelatedSisenseFolder] | None | UnsetType = UNSET
@@ -202,37 +211,7 @@ class SisenseFolder(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SisenseFolder validation failed: {errors}")
-
-    def minimize(self) -> "SisenseFolder":
-        self.validate()
-        return SisenseFolder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSisenseFolder":
-        if self.guid is not UNSET:
-            return RelatedSisenseFolder(guid=self.guid)
-        return RelatedSisenseFolder(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -285,11 +264,13 @@ class SisenseFolder(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SisenseFolderAttributes(AssetAttributes):
     """SisenseFolder-specific attributes for nested API format."""
 
     sisense_folder_parent_folder_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the parent folder in which this folder exists."""
+
 
 class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     """SisenseFolder-specific relationship attributes for nested API format."""
@@ -366,7 +347,9 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     sisense_child_folders: list[RelatedSisenseFolder] | None | UnsetType = UNSET
@@ -390,13 +373,19 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SisenseFolderNested(AssetNested):
     """SisenseFolder in nested API format for high-performance serialization."""
 
     attributes: SisenseFolderAttributes | UnsetType = UNSET
     relationship_attributes: SisenseFolderRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SisenseFolderRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SisenseFolderRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: SisenseFolderRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: SisenseFolderRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -438,16 +427,25 @@ _SISENSE_FOLDER_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sisense_folder_attrs(attrs: SisenseFolderAttributes, obj: SisenseFolder) -> None:
+
+def _populate_sisense_folder_attrs(
+    attrs: SisenseFolderAttributes, obj: SisenseFolder
+) -> None:
     """Populate SisenseFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sisense_folder_parent_folder_qualified_name = obj.sisense_folder_parent_folder_qualified_name
+    attrs.sisense_folder_parent_folder_qualified_name = (
+        obj.sisense_folder_parent_folder_qualified_name
+    )
+
 
 def _extract_sisense_folder_attrs(attrs: SisenseFolderAttributes) -> dict:
     """Extract all SisenseFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sisense_folder_parent_folder_qualified_name"] = attrs.sisense_folder_parent_folder_qualified_name
+    result["sisense_folder_parent_folder_qualified_name"] = (
+        attrs.sisense_folder_parent_folder_qualified_name
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -488,16 +486,21 @@ def _sisense_folder_to_nested(sisense_folder: SisenseFolder) -> SisenseFolderNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sisense_folder_from_nested(nested: SisenseFolderNested) -> SisenseFolder:
     """Convert nested format to flat SisenseFolder."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SisenseFolderAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SisenseFolderAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SISENSE_FOLDER_REL_FIELDS,
-        SisenseFolderRelationshipAttributes
+        SisenseFolderRelationshipAttributes,
     )
     return SisenseFolder(
         guid=nested.guid,
@@ -524,7 +527,10 @@ def _sisense_folder_from_nested(nested: SisenseFolderNested) -> SisenseFolder:
         **merged_rels,
     )
 
-def _sisense_folder_to_nested_bytes(sisense_folder: SisenseFolder, serde: Serde) -> bytes:
+
+def _sisense_folder_to_nested_bytes(
+    sisense_folder: SisenseFolder, serde: Serde
+) -> bytes:
     """Convert flat SisenseFolder to nested JSON bytes."""
     return serde.encode(_sisense_folder_to_nested(sisense_folder))
 
@@ -534,6 +540,7 @@ def _sisense_folder_from_nested_bytes(data: bytes, serde: Serde) -> SisenseFolde
     nested = serde.decode(data, SisenseFolderNested)
     return _sisense_folder_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -542,7 +549,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SisenseFolder.SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME = KeywordTextField("sisenseFolderParentFolderQualifiedName", "sisenseFolderParentFolderQualifiedName", "sisenseFolderParentFolderQualifiedName.text")
+SisenseFolder.SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME = KeywordTextField(
+    "sisenseFolderParentFolderQualifiedName",
+    "sisenseFolderParentFolderQualifiedName",
+    "sisenseFolderParentFolderQualifiedName.text",
+)
 SisenseFolder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SisenseFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SisenseFolder.ANOMALO_CHECKS = RelationField("anomaloChecks")

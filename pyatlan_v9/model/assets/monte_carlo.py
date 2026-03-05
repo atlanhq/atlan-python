@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -42,15 +41,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor, RelatedMonteCarlo
+from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MonteCarlo(Asset):
@@ -173,7 +176,9 @@ class MonteCarlo(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -187,30 +192,6 @@ class MonteCarlo(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MonteCarlo"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"MonteCarlo validation failed: {errors}")
-
-    def minimize(self) -> "MonteCarlo":
-        self.validate()
-        return MonteCarlo(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMonteCarlo":
-        if self.guid is not UNSET:
-            return RelatedMonteCarlo(guid=self.guid)
-        return RelatedMonteCarlo(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -263,6 +244,7 @@ class MonteCarlo(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MonteCarloAttributes(AssetAttributes):
     """MonteCarlo-specific attributes for nested API format."""
 
@@ -274,6 +256,7 @@ class MonteCarloAttributes(AssetAttributes):
 
     dq_is_part_of_contract: bool | None | UnsetType = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
+
 
 class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     """MonteCarlo-specific relationship attributes for nested API format."""
@@ -350,7 +333,9 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -362,6 +347,7 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MonteCarloNested(AssetNested):
     """MonteCarlo in nested API format for high-performance serialization."""
 
@@ -369,6 +355,7 @@ class MonteCarloNested(AssetNested):
     relationship_attributes: MonteCarloRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: MonteCarloRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: MonteCarloRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -406,12 +393,14 @@ _MONTE_CARLO_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_monte_carlo_attrs(attrs: MonteCarloAttributes, obj: MonteCarlo) -> None:
     """Populate MonteCarlo-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.mc_labels = obj.mc_labels
     attrs.mc_asset_qualified_names = obj.mc_asset_qualified_names
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
+
 
 def _extract_monte_carlo_attrs(attrs: MonteCarloAttributes) -> dict:
     """Extract all MonteCarlo attributes from the attrs struct into a flat dict."""
@@ -420,6 +409,7 @@ def _extract_monte_carlo_attrs(attrs: MonteCarloAttributes) -> dict:
     result["mc_asset_qualified_names"] = attrs.mc_asset_qualified_names
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -460,16 +450,19 @@ def _monte_carlo_to_nested(monte_carlo: MonteCarlo) -> MonteCarloNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _monte_carlo_from_nested(nested: MonteCarloNested) -> MonteCarlo:
     """Convert nested format to flat MonteCarlo."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MonteCarloAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else MonteCarloAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MONTE_CARLO_REL_FIELDS,
-        MonteCarloRelationshipAttributes
+        MonteCarloRelationshipAttributes,
     )
     return MonteCarlo(
         guid=nested.guid,
@@ -496,6 +489,7 @@ def _monte_carlo_from_nested(nested: MonteCarloNested) -> MonteCarlo:
         **merged_rels,
     )
 
+
 def _monte_carlo_to_nested_bytes(monte_carlo: MonteCarlo, serde: Serde) -> bytes:
     """Convert flat MonteCarlo to nested JSON bytes."""
     return serde.encode(_monte_carlo_to_nested(monte_carlo))
@@ -505,6 +499,7 @@ def _monte_carlo_from_nested_bytes(data: bytes, serde: Serde) -> MonteCarlo:
     """Convert nested JSON bytes to flat MonteCarlo."""
     nested = serde.decode(data, MonteCarloNested)
     return _monte_carlo_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -516,8 +511,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 MonteCarlo.MC_LABELS = KeywordField("mcLabels", "mcLabels")
-MonteCarlo.MC_ASSET_QUALIFIED_NAMES = KeywordField("mcAssetQualifiedNames", "mcAssetQualifiedNames")
-MonteCarlo.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
+MonteCarlo.MC_ASSET_QUALIFIED_NAMES = KeywordField(
+    "mcAssetQualifiedNames", "mcAssetQualifiedNames"
+)
+MonteCarlo.DQ_IS_PART_OF_CONTRACT = BooleanField(
+    "dqIsPartOfContract", "dqIsPartOfContract"
+)
 MonteCarlo.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MonteCarlo.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MonteCarlo.ANOMALO_CHECKS = RelationField("anomaloChecks")

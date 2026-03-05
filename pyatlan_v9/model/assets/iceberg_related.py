@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -48,6 +47,7 @@ class RelatedIceberg(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Iceberg"
 
+
 class RelatedIcebergCatalog(RelatedIceberg):
     """
     Related entity reference for IcebergCatalog assets.
@@ -77,6 +77,7 @@ class RelatedIcebergCatalog(RelatedIceberg):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "IcebergCatalog"
 
+
 class RelatedIcebergNamespace(RelatedIceberg):
     """
     Related entity reference for IcebergNamespace assets.
@@ -90,6 +91,7 @@ class RelatedIcebergNamespace(RelatedIceberg):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "IcebergNamespace"
+
 
 class RelatedIcebergTable(RelatedIceberg):
     """
@@ -119,6 +121,7 @@ class RelatedIcebergTable(RelatedIceberg):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "IcebergTable"
+
 
 class RelatedIcebergColumn(RelatedIceberg):
     """

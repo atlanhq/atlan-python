@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,16 +43,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .kafka_related import RelatedKafkaConsumerGroup, RelatedKafkaTopic
+from .kafka_related import RelatedKafkaTopic
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class KafkaConsumerGroup(Asset):
@@ -97,7 +100,9 @@ class KafkaConsumerGroup(Asset):
 
     type_name: Union[str, UnsetType] = "KafkaConsumerGroup"
 
-    kafka_consumer_group_topic_consumption_properties: list[dict[str, Any]] | None | UnsetType = UNSET
+    kafka_consumer_group_topic_consumption_properties: (
+        list[dict[str, Any]] | None | UnsetType
+    ) = UNSET
     """List of consumption properties for Kafka topics, for this consumer group."""
 
     kafka_consumer_group_member_count: int | None | UnsetType = UNSET
@@ -184,7 +189,9 @@ class KafkaConsumerGroup(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -206,40 +213,6 @@ class KafkaConsumerGroup(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/consumer-group/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.kafka_topics is UNSET:
-                errors.append("kafka_topics is required for creation")
-            if self.kafka_topic_names is UNSET:
-                errors.append("kafka_topic_names is required for creation")
-            if self.kafka_topic_qualified_names is UNSET:
-                errors.append("kafka_topic_qualified_names is required for creation")
-        if errors:
-            raise ValueError(f"KafkaConsumerGroup validation failed: {errors}")
-
-    def minimize(self) -> "KafkaConsumerGroup":
-        self.validate()
-        return KafkaConsumerGroup(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedKafkaConsumerGroup":
-        if self.guid is not UNSET:
-            return RelatedKafkaConsumerGroup(guid=self.guid)
-        return RelatedKafkaConsumerGroup(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -306,7 +279,9 @@ class KafkaConsumerGroup(Asset):
         return _kafka_consumer_group_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> KafkaConsumerGroup:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> KafkaConsumerGroup:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -328,10 +303,13 @@ class KafkaConsumerGroup(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class KafkaConsumerGroupAttributes(AssetAttributes):
     """KafkaConsumerGroup-specific attributes for nested API format."""
 
-    kafka_consumer_group_topic_consumption_properties: list[dict[str, Any]] | None | UnsetType = UNSET
+    kafka_consumer_group_topic_consumption_properties: (
+        list[dict[str, Any]] | None | UnsetType
+    ) = UNSET
     """List of consumption properties for Kafka topics, for this consumer group."""
 
     kafka_consumer_group_member_count: int | None | UnsetType = UNSET
@@ -342,6 +320,7 @@ class KafkaConsumerGroupAttributes(AssetAttributes):
 
     kafka_topic_qualified_names: list[str] | None | UnsetType = UNSET
     """Unique names of the topics consumed by this consumer group."""
+
 
 class KafkaConsumerGroupRelationshipAttributes(AssetRelationshipAttributes):
     """KafkaConsumerGroup-specific relationship attributes for nested API format."""
@@ -421,7 +400,9 @@ class KafkaConsumerGroupRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -433,13 +414,21 @@ class KafkaConsumerGroupRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class KafkaConsumerGroupNested(AssetNested):
     """KafkaConsumerGroup in nested API format for high-performance serialization."""
 
     attributes: KafkaConsumerGroupAttributes | UnsetType = UNSET
-    relationship_attributes: KafkaConsumerGroupRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: KafkaConsumerGroupRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: KafkaConsumerGroupRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: KafkaConsumerGroupRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        KafkaConsumerGroupRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        KafkaConsumerGroupRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -478,35 +467,50 @@ _KAFKA_CONSUMER_GROUP_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_kafka_consumer_group_attrs(attrs: KafkaConsumerGroupAttributes, obj: KafkaConsumerGroup) -> None:
+
+def _populate_kafka_consumer_group_attrs(
+    attrs: KafkaConsumerGroupAttributes, obj: KafkaConsumerGroup
+) -> None:
     """Populate KafkaConsumerGroup-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.kafka_consumer_group_topic_consumption_properties = obj.kafka_consumer_group_topic_consumption_properties
+    attrs.kafka_consumer_group_topic_consumption_properties = (
+        obj.kafka_consumer_group_topic_consumption_properties
+    )
     attrs.kafka_consumer_group_member_count = obj.kafka_consumer_group_member_count
     attrs.kafka_topic_names = obj.kafka_topic_names
     attrs.kafka_topic_qualified_names = obj.kafka_topic_qualified_names
 
+
 def _extract_kafka_consumer_group_attrs(attrs: KafkaConsumerGroupAttributes) -> dict:
     """Extract all KafkaConsumerGroup attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["kafka_consumer_group_topic_consumption_properties"] = attrs.kafka_consumer_group_topic_consumption_properties
-    result["kafka_consumer_group_member_count"] = attrs.kafka_consumer_group_member_count
+    result["kafka_consumer_group_topic_consumption_properties"] = (
+        attrs.kafka_consumer_group_topic_consumption_properties
+    )
+    result["kafka_consumer_group_member_count"] = (
+        attrs.kafka_consumer_group_member_count
+    )
     result["kafka_topic_names"] = attrs.kafka_topic_names
     result["kafka_topic_qualified_names"] = attrs.kafka_topic_qualified_names
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _kafka_consumer_group_to_nested(kafka_consumer_group: KafkaConsumerGroup) -> KafkaConsumerGroupNested:
+def _kafka_consumer_group_to_nested(
+    kafka_consumer_group: KafkaConsumerGroup,
+) -> KafkaConsumerGroupNested:
     """Convert flat KafkaConsumerGroup to nested format."""
     attrs = KafkaConsumerGroupAttributes()
     _populate_kafka_consumer_group_attrs(attrs, kafka_consumer_group)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        kafka_consumer_group, _KAFKA_CONSUMER_GROUP_REL_FIELDS, KafkaConsumerGroupRelationshipAttributes
+        kafka_consumer_group,
+        _KAFKA_CONSUMER_GROUP_REL_FIELDS,
+        KafkaConsumerGroupRelationshipAttributes,
     )
     return KafkaConsumerGroupNested(
         guid=kafka_consumer_group.guid,
@@ -534,16 +538,23 @@ def _kafka_consumer_group_to_nested(kafka_consumer_group: KafkaConsumerGroup) ->
         remove_relationship_attributes=remove_rels,
     )
 
-def _kafka_consumer_group_from_nested(nested: KafkaConsumerGroupNested) -> KafkaConsumerGroup:
+
+def _kafka_consumer_group_from_nested(
+    nested: KafkaConsumerGroupNested,
+) -> KafkaConsumerGroup:
     """Convert nested format to flat KafkaConsumerGroup."""
-    attrs = nested.attributes if nested.attributes is not UNSET else KafkaConsumerGroupAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else KafkaConsumerGroupAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _KAFKA_CONSUMER_GROUP_REL_FIELDS,
-        KafkaConsumerGroupRelationshipAttributes
+        KafkaConsumerGroupRelationshipAttributes,
     )
     return KafkaConsumerGroup(
         guid=nested.guid,
@@ -570,15 +581,21 @@ def _kafka_consumer_group_from_nested(nested: KafkaConsumerGroupNested) -> Kafka
         **merged_rels,
     )
 
-def _kafka_consumer_group_to_nested_bytes(kafka_consumer_group: KafkaConsumerGroup, serde: Serde) -> bytes:
+
+def _kafka_consumer_group_to_nested_bytes(
+    kafka_consumer_group: KafkaConsumerGroup, serde: Serde
+) -> bytes:
     """Convert flat KafkaConsumerGroup to nested JSON bytes."""
     return serde.encode(_kafka_consumer_group_to_nested(kafka_consumer_group))
 
 
-def _kafka_consumer_group_from_nested_bytes(data: bytes, serde: Serde) -> KafkaConsumerGroup:
+def _kafka_consumer_group_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> KafkaConsumerGroup:
     """Convert nested JSON bytes to flat KafkaConsumerGroup."""
     nested = serde.decode(data, KafkaConsumerGroupNested)
     return _kafka_consumer_group_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -589,10 +606,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-KafkaConsumerGroup.KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES = KeywordField("kafkaConsumerGroupTopicConsumptionProperties", "kafkaConsumerGroupTopicConsumptionProperties")
-KafkaConsumerGroup.KAFKA_CONSUMER_GROUP_MEMBER_COUNT = NumericField("kafkaConsumerGroupMemberCount", "kafkaConsumerGroupMemberCount")
-KafkaConsumerGroup.KAFKA_TOPIC_NAMES = KeywordField("kafkaTopicNames", "kafkaTopicNames")
-KafkaConsumerGroup.KAFKA_TOPIC_QUALIFIED_NAMES = KeywordField("kafkaTopicQualifiedNames", "kafkaTopicQualifiedNames")
+KafkaConsumerGroup.KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES = KeywordField(
+    "kafkaConsumerGroupTopicConsumptionProperties",
+    "kafkaConsumerGroupTopicConsumptionProperties",
+)
+KafkaConsumerGroup.KAFKA_CONSUMER_GROUP_MEMBER_COUNT = NumericField(
+    "kafkaConsumerGroupMemberCount", "kafkaConsumerGroupMemberCount"
+)
+KafkaConsumerGroup.KAFKA_TOPIC_NAMES = KeywordField(
+    "kafkaTopicNames", "kafkaTopicNames"
+)
+KafkaConsumerGroup.KAFKA_TOPIC_QUALIFIED_NAMES = KeywordField(
+    "kafkaTopicQualifiedNames", "kafkaTopicQualifiedNames"
+)
 KafkaConsumerGroup.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 KafkaConsumerGroup.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 KafkaConsumerGroup.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -600,8 +626,12 @@ KafkaConsumerGroup.APPLICATION = RelationField("application")
 KafkaConsumerGroup.APPLICATION_FIELD = RelationField("applicationField")
 KafkaConsumerGroup.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 KafkaConsumerGroup.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-KafkaConsumerGroup.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-KafkaConsumerGroup.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+KafkaConsumerGroup.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+KafkaConsumerGroup.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 KafkaConsumerGroup.METRICS = RelationField("metrics")
 KafkaConsumerGroup.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 KafkaConsumerGroup.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

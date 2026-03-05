@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,23 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .tableau_related import RelatedTableauCalculatedField, RelatedTableauDatasource, RelatedTableauWorksheet, RelatedTableauWorksheetField
+from .tableau_related import (
+    RelatedTableauDatasource,
+    RelatedTableauWorksheet,
+    RelatedTableauWorksheetField,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class TableauCalculatedField(Asset):
@@ -214,7 +221,9 @@ class TableauCalculatedField(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -246,42 +255,6 @@ class TableauCalculatedField(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
 
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.datasource is UNSET:
-                errors.append("datasource is required for creation")
-            if self.datasource_qualified_name is UNSET:
-                errors.append("datasource_qualified_name is required for creation")
-            if self.project_qualified_name is UNSET:
-                errors.append("project_qualified_name is required for creation")
-            if self.site_qualified_name is UNSET:
-                errors.append("site_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"TableauCalculatedField validation failed: {errors}")
-
-    def minimize(self) -> "TableauCalculatedField":
-        self.validate()
-        return TableauCalculatedField(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTableauCalculatedField":
-        if self.guid is not UNSET:
-            return RelatedTableauCalculatedField(guid=self.guid)
-        return RelatedTableauCalculatedField(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -311,7 +284,9 @@ class TableauCalculatedField(Asset):
         return _tableau_calculated_field_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> TableauCalculatedField:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> TableauCalculatedField:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -332,6 +307,7 @@ class TableauCalculatedField(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class TableauCalculatedFieldAttributes(AssetAttributes):
     """TableauCalculatedField-specific attributes for nested API format."""
@@ -371,6 +347,7 @@ class TableauCalculatedFieldAttributes(AssetAttributes):
 
     tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
 
 class TableauCalculatedFieldRelationshipAttributes(AssetRelationshipAttributes):
     """TableauCalculatedField-specific relationship attributes for nested API format."""
@@ -447,7 +424,9 @@ class TableauCalculatedFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -468,13 +447,21 @@ class TableauCalculatedFieldRelationshipAttributes(AssetRelationshipAttributes):
     worksheets: list[RelatedTableauWorksheet] | None | UnsetType = UNSET
     """Worksheets that use this calculated field."""
 
+
 class TableauCalculatedFieldNested(AssetNested):
     """TableauCalculatedField in nested API format for high-performance serialization."""
 
     attributes: TableauCalculatedFieldAttributes | UnsetType = UNSET
-    relationship_attributes: TableauCalculatedFieldRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: TableauCalculatedFieldRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: TableauCalculatedFieldRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: (
+        TableauCalculatedFieldRelationshipAttributes | UnsetType
+    ) = UNSET
+    append_relationship_attributes: (
+        TableauCalculatedFieldRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        TableauCalculatedFieldRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -515,7 +502,10 @@ _TABLEAU_CALCULATED_FIELD_REL_FIELDS: list[str] = [
     "worksheets",
 ]
 
-def _populate_tableau_calculated_field_attrs(attrs: TableauCalculatedFieldAttributes, obj: TableauCalculatedField) -> None:
+
+def _populate_tableau_calculated_field_attrs(
+    attrs: TableauCalculatedFieldAttributes, obj: TableauCalculatedField
+) -> None:
     """Populate TableauCalculatedField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.site_qualified_name = obj.site_qualified_name
@@ -529,9 +519,14 @@ def _populate_tableau_calculated_field_attrs(attrs: TableauCalculatedFieldAttrib
     attrs.tableau_data_type = obj.tableau_data_type
     attrs.formula = obj.formula
     attrs.upstream_fields = obj.upstream_fields
-    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
+    attrs.tableau_project_hierarchy_qualified_names = (
+        obj.tableau_project_hierarchy_qualified_names
+    )
 
-def _extract_tableau_calculated_field_attrs(attrs: TableauCalculatedFieldAttributes) -> dict:
+
+def _extract_tableau_calculated_field_attrs(
+    attrs: TableauCalculatedFieldAttributes,
+) -> dict:
     """Extract all TableauCalculatedField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["site_qualified_name"] = attrs.site_qualified_name
@@ -545,21 +540,28 @@ def _extract_tableau_calculated_field_attrs(attrs: TableauCalculatedFieldAttribu
     result["tableau_data_type"] = attrs.tableau_data_type
     result["formula"] = attrs.formula
     result["upstream_fields"] = attrs.upstream_fields
-    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
+    result["tableau_project_hierarchy_qualified_names"] = (
+        attrs.tableau_project_hierarchy_qualified_names
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _tableau_calculated_field_to_nested(tableau_calculated_field: TableauCalculatedField) -> TableauCalculatedFieldNested:
+def _tableau_calculated_field_to_nested(
+    tableau_calculated_field: TableauCalculatedField,
+) -> TableauCalculatedFieldNested:
     """Convert flat TableauCalculatedField to nested format."""
     attrs = TableauCalculatedFieldAttributes()
     _populate_tableau_calculated_field_attrs(attrs, tableau_calculated_field)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        tableau_calculated_field, _TABLEAU_CALCULATED_FIELD_REL_FIELDS, TableauCalculatedFieldRelationshipAttributes
+        tableau_calculated_field,
+        _TABLEAU_CALCULATED_FIELD_REL_FIELDS,
+        TableauCalculatedFieldRelationshipAttributes,
     )
     return TableauCalculatedFieldNested(
         guid=tableau_calculated_field.guid,
@@ -587,16 +589,23 @@ def _tableau_calculated_field_to_nested(tableau_calculated_field: TableauCalcula
         remove_relationship_attributes=remove_rels,
     )
 
-def _tableau_calculated_field_from_nested(nested: TableauCalculatedFieldNested) -> TableauCalculatedField:
+
+def _tableau_calculated_field_from_nested(
+    nested: TableauCalculatedFieldNested,
+) -> TableauCalculatedField:
     """Convert nested format to flat TableauCalculatedField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TableauCalculatedFieldAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else TableauCalculatedFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_CALCULATED_FIELD_REL_FIELDS,
-        TableauCalculatedFieldRelationshipAttributes
+        TableauCalculatedFieldRelationshipAttributes,
     )
     return TableauCalculatedField(
         guid=nested.guid,
@@ -623,15 +632,21 @@ def _tableau_calculated_field_from_nested(nested: TableauCalculatedFieldNested) 
         **merged_rels,
     )
 
-def _tableau_calculated_field_to_nested_bytes(tableau_calculated_field: TableauCalculatedField, serde: Serde) -> bytes:
+
+def _tableau_calculated_field_to_nested_bytes(
+    tableau_calculated_field: TableauCalculatedField, serde: Serde
+) -> bytes:
     """Convert flat TableauCalculatedField to nested JSON bytes."""
     return serde.encode(_tableau_calculated_field_to_nested(tableau_calculated_field))
 
 
-def _tableau_calculated_field_from_nested_bytes(data: bytes, serde: Serde) -> TableauCalculatedField:
+def _tableau_calculated_field_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> TableauCalculatedField:
     """Convert nested JSON bytes to flat TableauCalculatedField."""
     nested = serde.decode(data, TableauCalculatedFieldNested)
     return _tableau_calculated_field_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -642,30 +657,58 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-TableauCalculatedField.SITE_QUALIFIED_NAME = KeywordField("siteQualifiedName", "siteQualifiedName")
-TableauCalculatedField.PROJECT_QUALIFIED_NAME = KeywordField("projectQualifiedName", "projectQualifiedName")
-TableauCalculatedField.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField("topLevelProjectQualifiedName", "topLevelProjectQualifiedName")
-TableauCalculatedField.WORKBOOK_QUALIFIED_NAME = KeywordField("workbookQualifiedName", "workbookQualifiedName")
-TableauCalculatedField.DATASOURCE_QUALIFIED_NAME = KeywordField("datasourceQualifiedName", "datasourceQualifiedName")
-TableauCalculatedField.PROJECT_HIERARCHY = KeywordField("projectHierarchy", "projectHierarchy")
+TableauCalculatedField.SITE_QUALIFIED_NAME = KeywordField(
+    "siteQualifiedName", "siteQualifiedName"
+)
+TableauCalculatedField.PROJECT_QUALIFIED_NAME = KeywordField(
+    "projectQualifiedName", "projectQualifiedName"
+)
+TableauCalculatedField.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField(
+    "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+)
+TableauCalculatedField.WORKBOOK_QUALIFIED_NAME = KeywordField(
+    "workbookQualifiedName", "workbookQualifiedName"
+)
+TableauCalculatedField.DATASOURCE_QUALIFIED_NAME = KeywordField(
+    "datasourceQualifiedName", "datasourceQualifiedName"
+)
+TableauCalculatedField.PROJECT_HIERARCHY = KeywordField(
+    "projectHierarchy", "projectHierarchy"
+)
 TableauCalculatedField.DATA_CATEGORY = KeywordField("dataCategory", "dataCategory")
 TableauCalculatedField.ROLE = KeywordField("role", "role")
-TableauCalculatedField.TABLEAU_DATA_TYPE = KeywordTextField("tableauDataType", "tableauDataType", "tableauDataType.text")
+TableauCalculatedField.TABLEAU_DATA_TYPE = KeywordTextField(
+    "tableauDataType", "tableauDataType", "tableauDataType.text"
+)
 TableauCalculatedField.FORMULA = KeywordField("formula", "formula")
-TableauCalculatedField.UPSTREAM_FIELDS = KeywordField("upstreamFields", "upstreamFields")
-TableauCalculatedField.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
+TableauCalculatedField.UPSTREAM_FIELDS = KeywordField(
+    "upstreamFields", "upstreamFields"
+)
+TableauCalculatedField.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
+    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
+)
 TableauCalculatedField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-TableauCalculatedField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+TableauCalculatedField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 TableauCalculatedField.ANOMALO_CHECKS = RelationField("anomaloChecks")
 TableauCalculatedField.APPLICATION = RelationField("application")
 TableauCalculatedField.APPLICATION_FIELD = RelationField("applicationField")
-TableauCalculatedField.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+TableauCalculatedField.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 TableauCalculatedField.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-TableauCalculatedField.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-TableauCalculatedField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+TableauCalculatedField.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+TableauCalculatedField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 TableauCalculatedField.METRICS = RelationField("metrics")
 TableauCalculatedField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-TableauCalculatedField.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+TableauCalculatedField.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 TableauCalculatedField.MEANINGS = RelationField("meanings")
 TableauCalculatedField.MC_MONITORS = RelationField("mcMonitors")
 TableauCalculatedField.MC_INCIDENTS = RelationField("mcIncidents")
@@ -674,14 +717,20 @@ TableauCalculatedField.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObject
 TableauCalculatedField.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 TableauCalculatedField.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 TableauCalculatedField.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-TableauCalculatedField.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+TableauCalculatedField.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 TableauCalculatedField.FILES = RelationField("files")
 TableauCalculatedField.LINKS = RelationField("links")
 TableauCalculatedField.README = RelationField("readme")
-TableauCalculatedField.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+TableauCalculatedField.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 TableauCalculatedField.SODA_CHECKS = RelationField("sodaChecks")
 TableauCalculatedField.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 TableauCalculatedField.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-TableauCalculatedField.TABLEAU_WORKSHEET_FIELDS = RelationField("tableauWorksheetFields")
+TableauCalculatedField.TABLEAU_WORKSHEET_FIELDS = RelationField(
+    "tableauWorksheetFields"
+)
 TableauCalculatedField.DATASOURCE = RelationField("datasource")
 TableauCalculatedField.WORKSHEETS = RelationField("worksheets")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cognos_related import RelatedCognosColumn, RelatedCognosFile, RelatedCognosFolder
+from .cognos_related import RelatedCognosColumn, RelatedCognosFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CognosFile(Asset):
@@ -207,7 +210,9 @@ class CognosFile(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -229,36 +234,6 @@ class CognosFile(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cognos_folder is UNSET:
-                errors.append("cognos_folder is required for creation")
-        if errors:
-            raise ValueError(f"CognosFile validation failed: {errors}")
-
-    def minimize(self) -> "CognosFile":
-        self.validate()
-        return CognosFile(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCognosFile":
-        if self.guid is not UNSET:
-            return RelatedCognosFile(guid=self.guid)
-        return RelatedCognosFile(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -311,6 +286,7 @@ class CognosFile(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CognosFileAttributes(AssetAttributes):
     """CognosFile-specific attributes for nested API format."""
 
@@ -340,6 +316,7 @@ class CognosFileAttributes(AssetAttributes):
 
     cognos_default_screen_tip: str | None | UnsetType = UNSET
     """Tooltip text present for the Cognos asset."""
+
 
 class CognosFileRelationshipAttributes(AssetRelationshipAttributes):
     """CognosFile-specific relationship attributes for nested API format."""
@@ -422,7 +399,9 @@ class CognosFileRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -434,6 +413,7 @@ class CognosFileRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CognosFileNested(AssetNested):
     """CognosFile in nested API format for high-performance serialization."""
 
@@ -441,6 +421,7 @@ class CognosFileNested(AssetNested):
     relationship_attributes: CognosFileRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: CognosFileRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: CognosFileRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -480,6 +461,7 @@ _COGNOS_FILE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_cognos_file_attrs(attrs: CognosFileAttributes, obj: CognosFile) -> None:
     """Populate CognosFile-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -492,6 +474,7 @@ def _populate_cognos_file_attrs(attrs: CognosFileAttributes, obj: CognosFile) ->
     attrs.cognos_is_hidden = obj.cognos_is_hidden
     attrs.cognos_is_disabled = obj.cognos_is_disabled
     attrs.cognos_default_screen_tip = obj.cognos_default_screen_tip
+
 
 def _extract_cognos_file_attrs(attrs: CognosFileAttributes) -> dict:
     """Extract all CognosFile attributes from the attrs struct into a flat dict."""
@@ -506,6 +489,7 @@ def _extract_cognos_file_attrs(attrs: CognosFileAttributes) -> dict:
     result["cognos_is_disabled"] = attrs.cognos_is_disabled
     result["cognos_default_screen_tip"] = attrs.cognos_default_screen_tip
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -546,16 +530,19 @@ def _cognos_file_to_nested(cognos_file: CognosFile) -> CognosFileNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognos_file_from_nested(nested: CognosFileNested) -> CognosFile:
     """Convert nested format to flat CognosFile."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CognosFileAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else CognosFileAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNOS_FILE_REL_FIELDS,
-        CognosFileRelationshipAttributes
+        CognosFileRelationshipAttributes,
     )
     return CognosFile(
         guid=nested.guid,
@@ -582,6 +569,7 @@ def _cognos_file_from_nested(nested: CognosFileNested) -> CognosFile:
         **merged_rels,
     )
 
+
 def _cognos_file_to_nested_bytes(cognos_file: CognosFile, serde: Serde) -> bytes:
     """Convert flat CognosFile to nested JSON bytes."""
     return serde.encode(_cognos_file_to_nested(cognos_file))
@@ -591,6 +579,7 @@ def _cognos_file_from_nested_bytes(data: bytes, serde: Serde) -> CognosFile:
     """Convert nested JSON bytes to flat CognosFile."""
     nested = serde.decode(data, CognosFileNested)
     return _cognos_file_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -604,13 +593,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 CognosFile.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosFile.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
-CognosFile.COGNOS_PARENT_NAME = KeywordTextField("cognosParentName", "cognosParentName", "cognosParentName.text")
-CognosFile.COGNOS_PARENT_QUALIFIED_NAME = KeywordField("cognosParentQualifiedName", "cognosParentQualifiedName")
+CognosFile.COGNOS_PARENT_NAME = KeywordTextField(
+    "cognosParentName", "cognosParentName", "cognosParentName.text"
+)
+CognosFile.COGNOS_PARENT_QUALIFIED_NAME = KeywordField(
+    "cognosParentQualifiedName", "cognosParentQualifiedName"
+)
 CognosFile.COGNOS_VERSION = KeywordField("cognosVersion", "cognosVersion")
 CognosFile.COGNOS_TYPE = KeywordField("cognosType", "cognosType")
 CognosFile.COGNOS_IS_HIDDEN = BooleanField("cognosIsHidden", "cognosIsHidden")
 CognosFile.COGNOS_IS_DISABLED = BooleanField("cognosIsDisabled", "cognosIsDisabled")
-CognosFile.COGNOS_DEFAULT_SCREEN_TIP = KeywordField("cognosDefaultScreenTip", "cognosDefaultScreenTip")
+CognosFile.COGNOS_DEFAULT_SCREEN_TIP = KeywordField(
+    "cognosDefaultScreenTip", "cognosDefaultScreenTip"
+)
 CognosFile.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CognosFile.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CognosFile.ANOMALO_CHECKS = RelationField("anomaloChecks")

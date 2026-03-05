@@ -46,6 +46,7 @@ class RelatedFivetran(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Fivetran"
 
+
 class RelatedFivetranConnector(RelatedFivetran):
     """
     Related entity reference for FivetranConnector assets.
@@ -104,7 +105,9 @@ class RelatedFivetranConnector(RelatedFivetran):
     fivetran_type: str | None | UnsetType = UNSET
     """Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc."""
 
-    fivetran_url: str | None | UnsetType = msgspec.field(default=UNSET, name="fivetranURL")
+    fivetran_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="fivetranURL"
+    )
     """URL to open the connector details on Fivetran"""
 
     fivetran_destination_name: str | None | UnsetType = UNSET
@@ -113,7 +116,9 @@ class RelatedFivetranConnector(RelatedFivetran):
     fivetran_destination_type: str | None | UnsetType = UNSET
     """Type of destination on Fivetran. Eg: redshift, bigquery etc."""
 
-    fivetran_destination_url: str | None | UnsetType = msgspec.field(default=UNSET, name="fivetranDestinationURL")
+    fivetran_destination_url: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="fivetranDestinationURL"
+    )
     """URL to open the destination details on Fivetran"""
 
     fivetran_sync_setup_on: int | None | UnsetType = UNSET
@@ -140,28 +145,42 @@ class RelatedFivetranConnector(RelatedFivetran):
     fivetran_monthly_active_rows_total: int | None | UnsetType = UNSET
     """Total Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_monthly_active_rows_change_percentage_free: float | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_change_percentage_free: float | None | UnsetType = (
+        UNSET
+    )
     """Increase in the percentage of free MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_change_percentage_paid: float | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_change_percentage_paid: float | None | UnsetType = (
+        UNSET
+    )
     """Increase in the percentage of paid MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_change_percentage_total: float | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_change_percentage_total: float | None | UnsetType = (
+        UNSET
+    )
     """Increase in the percentage of total MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_free_percentage_of_account: float | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_free_percentage_of_account: (
+        float | None | UnsetType
+    ) = UNSET
     """Percentage of the account's total free MAR used by this connector"""
 
-    fivetran_monthly_active_rows_paid_percentage_of_account: float | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_paid_percentage_of_account: (
+        float | None | UnsetType
+    ) = UNSET
     """Percentage of the account's total paid MAR used by this connector"""
 
-    fivetran_monthly_active_rows_total_percentage_of_account: float | None | UnsetType = UNSET
+    fivetran_monthly_active_rows_total_percentage_of_account: (
+        float | None | UnsetType
+    ) = UNSET
     """Percentage of the account's total MAR used by this connector"""
 
     fivetran_total_tables_synced: int | None | UnsetType = UNSET
     """Total number of tables synced by this connector"""
 
-    fivetran_connector_top_tables_by_mar: str | None | UnsetType = msgspec.field(default=UNSET, name="fivetranConnectorTopTablesByMAR")
+    fivetran_connector_top_tables_by_mar: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="fivetranConnectorTopTablesByMAR"
+    )
     """Total five tables sorted by MAR synced by this connector"""
 
     fivetran_usage_cost: float | None | UnsetType = UNSET

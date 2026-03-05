@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,28 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cognos_related import RelatedCognosDashboard, RelatedCognosDataset, RelatedCognosExploration, RelatedCognosFile, RelatedCognosFolder, RelatedCognosModule, RelatedCognosPackage, RelatedCognosReport
+from .cognos_related import (
+    RelatedCognosDashboard,
+    RelatedCognosDataset,
+    RelatedCognosExploration,
+    RelatedCognosFile,
+    RelatedCognosFolder,
+    RelatedCognosModule,
+    RelatedCognosPackage,
+    RelatedCognosReport,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CognosFolder(Asset):
@@ -243,7 +255,9 @@ class CognosFolder(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -262,37 +276,7 @@ class CognosFolder(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"CognosFolder validation failed: {errors}")
-
-    def minimize(self) -> "CognosFolder":
-        self.validate()
-        return CognosFolder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCognosFolder":
-        if self.guid is not UNSET:
-            return RelatedCognosFolder(guid=self.guid)
-        return RelatedCognosFolder(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -345,6 +329,7 @@ class CognosFolder(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CognosFolderAttributes(AssetAttributes):
     """CognosFolder-specific attributes for nested API format."""
 
@@ -380,6 +365,7 @@ class CognosFolderAttributes(AssetAttributes):
 
     cognos_default_screen_tip: str | None | UnsetType = UNSET
     """Tooltip text present for the Cognos asset."""
+
 
 class CognosFolderRelationshipAttributes(AssetRelationshipAttributes):
     """CognosFolder-specific relationship attributes for nested API format."""
@@ -483,7 +469,9 @@ class CognosFolderRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -495,13 +483,19 @@ class CognosFolderRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CognosFolderNested(AssetNested):
     """CognosFolder in nested API format for high-performance serialization."""
 
     attributes: CognosFolderAttributes | UnsetType = UNSET
     relationship_attributes: CognosFolderRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CognosFolderRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CognosFolderRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: CognosFolderRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: CognosFolderRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -548,7 +542,10 @@ _COGNOS_FOLDER_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognos_folder_attrs(attrs: CognosFolderAttributes, obj: CognosFolder) -> None:
+
+def _populate_cognos_folder_attrs(
+    attrs: CognosFolderAttributes, obj: CognosFolder
+) -> None:
     """Populate CognosFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cognos_sub_folder_count = obj.cognos_sub_folder_count
@@ -562,6 +559,7 @@ def _populate_cognos_folder_attrs(attrs: CognosFolderAttributes, obj: CognosFold
     attrs.cognos_is_hidden = obj.cognos_is_hidden
     attrs.cognos_is_disabled = obj.cognos_is_disabled
     attrs.cognos_default_screen_tip = obj.cognos_default_screen_tip
+
 
 def _extract_cognos_folder_attrs(attrs: CognosFolderAttributes) -> dict:
     """Extract all CognosFolder attributes from the attrs struct into a flat dict."""
@@ -578,6 +576,7 @@ def _extract_cognos_folder_attrs(attrs: CognosFolderAttributes) -> dict:
     result["cognos_is_disabled"] = attrs.cognos_is_disabled
     result["cognos_default_screen_tip"] = attrs.cognos_default_screen_tip
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -618,16 +617,21 @@ def _cognos_folder_to_nested(cognos_folder: CognosFolder) -> CognosFolderNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognos_folder_from_nested(nested: CognosFolderNested) -> CognosFolder:
     """Convert nested format to flat CognosFolder."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CognosFolderAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CognosFolderAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNOS_FOLDER_REL_FIELDS,
-        CognosFolderRelationshipAttributes
+        CognosFolderRelationshipAttributes,
     )
     return CognosFolder(
         guid=nested.guid,
@@ -654,6 +658,7 @@ def _cognos_folder_from_nested(nested: CognosFolderNested) -> CognosFolder:
         **merged_rels,
     )
 
+
 def _cognos_folder_to_nested_bytes(cognos_folder: CognosFolder, serde: Serde) -> bytes:
     """Convert flat CognosFolder to nested JSON bytes."""
     return serde.encode(_cognos_folder_to_nested(cognos_folder))
@@ -663,6 +668,7 @@ def _cognos_folder_from_nested_bytes(data: bytes, serde: Serde) -> CognosFolder:
     """Convert nested JSON bytes to flat CognosFolder."""
     nested = serde.decode(data, CognosFolderNested)
     return _cognos_folder_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -675,17 +681,27 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CognosFolder.COGNOS_SUB_FOLDER_COUNT = NumericField("cognosSubFolderCount", "cognosSubFolderCount")
-CognosFolder.COGNOS_CHILD_OBJECTS_COUNT = NumericField("cognosChildObjectsCount", "cognosChildObjectsCount")
+CognosFolder.COGNOS_SUB_FOLDER_COUNT = NumericField(
+    "cognosSubFolderCount", "cognosSubFolderCount"
+)
+CognosFolder.COGNOS_CHILD_OBJECTS_COUNT = NumericField(
+    "cognosChildObjectsCount", "cognosChildObjectsCount"
+)
 CognosFolder.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosFolder.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
-CognosFolder.COGNOS_PARENT_NAME = KeywordTextField("cognosParentName", "cognosParentName", "cognosParentName.text")
-CognosFolder.COGNOS_PARENT_QUALIFIED_NAME = KeywordField("cognosParentQualifiedName", "cognosParentQualifiedName")
+CognosFolder.COGNOS_PARENT_NAME = KeywordTextField(
+    "cognosParentName", "cognosParentName", "cognosParentName.text"
+)
+CognosFolder.COGNOS_PARENT_QUALIFIED_NAME = KeywordField(
+    "cognosParentQualifiedName", "cognosParentQualifiedName"
+)
 CognosFolder.COGNOS_VERSION = KeywordField("cognosVersion", "cognosVersion")
 CognosFolder.COGNOS_TYPE = KeywordField("cognosType", "cognosType")
 CognosFolder.COGNOS_IS_HIDDEN = BooleanField("cognosIsHidden", "cognosIsHidden")
 CognosFolder.COGNOS_IS_DISABLED = BooleanField("cognosIsDisabled", "cognosIsDisabled")
-CognosFolder.COGNOS_DEFAULT_SCREEN_TIP = KeywordField("cognosDefaultScreenTip", "cognosDefaultScreenTip")
+CognosFolder.COGNOS_DEFAULT_SCREEN_TIP = KeywordField(
+    "cognosDefaultScreenTip", "cognosDefaultScreenTip"
+)
 CognosFolder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CognosFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CognosFolder.ANOMALO_CHECKS = RelationField("anomaloChecks")

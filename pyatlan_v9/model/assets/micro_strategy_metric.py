@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,27 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .micro_strategy_related import RelatedMicroStrategyAttribute, RelatedMicroStrategyColumn, RelatedMicroStrategyCube, RelatedMicroStrategyFact, RelatedMicroStrategyMetric, RelatedMicroStrategyProject, RelatedMicroStrategyReport
+from .micro_strategy_related import (
+    RelatedMicroStrategyAttribute,
+    RelatedMicroStrategyColumn,
+    RelatedMicroStrategyCube,
+    RelatedMicroStrategyFact,
+    RelatedMicroStrategyMetric,
+    RelatedMicroStrategyProject,
+    RelatedMicroStrategyReport,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MicroStrategyMetric(Asset):
@@ -209,16 +220,22 @@ class MicroStrategyMetric(Asset):
     micro_strategy_project: RelatedMicroStrategyProject | None | UnsetType = UNSET
     """Project in which this metric exists."""
 
-    micro_strategy_attributes: list[RelatedMicroStrategyAttribute] | None | UnsetType = UNSET
+    micro_strategy_attributes: (
+        list[RelatedMicroStrategyAttribute] | None | UnsetType
+    ) = UNSET
     """Attributes this metric uses."""
 
     micro_strategy_facts: list[RelatedMicroStrategyFact] | None | UnsetType = UNSET
     """Facts this metric uses."""
 
-    micro_strategy_metric_children: list[RelatedMicroStrategyMetric] | None | UnsetType = UNSET
+    micro_strategy_metric_children: (
+        list[RelatedMicroStrategyMetric] | None | UnsetType
+    ) = UNSET
     """Child metrics of this metric."""
 
-    micro_strategy_metric_parents: list[RelatedMicroStrategyMetric] | None | UnsetType = UNSET
+    micro_strategy_metric_parents: (
+        list[RelatedMicroStrategyMetric] | None | UnsetType
+    ) = UNSET
     """Parent metrics to this metric."""
 
     micro_strategy_cubes: list[RelatedMicroStrategyCube] | None | UnsetType = UNSET
@@ -263,7 +280,9 @@ class MicroStrategyMetric(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -282,43 +301,7 @@ class MicroStrategyMetric(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.micro_strategy_project is UNSET:
-                errors.append("micro_strategy_project is required for creation")
-            if self.micro_strategy_project_name is UNSET:
-                errors.append("micro_strategy_project_name is required for creation")
-            if self.micro_strategy_project_qualified_name is UNSET:
-                errors.append("micro_strategy_project_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MicroStrategyMetric validation failed: {errors}")
-
-    def minimize(self) -> "MicroStrategyMetric":
-        self.validate()
-        return MicroStrategyMetric(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMicroStrategyMetric":
-        if self.guid is not UNSET:
-            return RelatedMicroStrategyMetric(guid=self.guid)
-        return RelatedMicroStrategyMetric(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -349,7 +332,9 @@ class MicroStrategyMetric(Asset):
         return _micro_strategy_metric_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MicroStrategyMetric:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MicroStrategyMetric:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -370,6 +355,7 @@ class MicroStrategyMetric(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class MicroStrategyMetricAttributes(AssetAttributes):
     """MicroStrategyMetric-specific attributes for nested API format."""
@@ -425,6 +411,7 @@ class MicroStrategyMetricAttributes(AssetAttributes):
     micro_strategy_location: list[dict[str, str]] | None | UnsetType = UNSET
     """Location of this asset in MicroStrategy."""
 
+
 class MicroStrategyMetricRelationshipAttributes(AssetRelationshipAttributes):
     """MicroStrategyMetric-specific relationship attributes for nested API format."""
 
@@ -470,16 +457,22 @@ class MicroStrategyMetricRelationshipAttributes(AssetRelationshipAttributes):
     micro_strategy_project: RelatedMicroStrategyProject | None | UnsetType = UNSET
     """Project in which this metric exists."""
 
-    micro_strategy_attributes: list[RelatedMicroStrategyAttribute] | None | UnsetType = UNSET
+    micro_strategy_attributes: (
+        list[RelatedMicroStrategyAttribute] | None | UnsetType
+    ) = UNSET
     """Attributes this metric uses."""
 
     micro_strategy_facts: list[RelatedMicroStrategyFact] | None | UnsetType = UNSET
     """Facts this metric uses."""
 
-    micro_strategy_metric_children: list[RelatedMicroStrategyMetric] | None | UnsetType = UNSET
+    micro_strategy_metric_children: (
+        list[RelatedMicroStrategyMetric] | None | UnsetType
+    ) = UNSET
     """Child metrics of this metric."""
 
-    micro_strategy_metric_parents: list[RelatedMicroStrategyMetric] | None | UnsetType = UNSET
+    micro_strategy_metric_parents: (
+        list[RelatedMicroStrategyMetric] | None | UnsetType
+    ) = UNSET
     """Parent metrics to this metric."""
 
     micro_strategy_cubes: list[RelatedMicroStrategyCube] | None | UnsetType = UNSET
@@ -524,7 +517,9 @@ class MicroStrategyMetricRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -536,13 +531,21 @@ class MicroStrategyMetricRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MicroStrategyMetricNested(AssetNested):
     """MicroStrategyMetric in nested API format for high-performance serialization."""
 
     attributes: MicroStrategyMetricAttributes | UnsetType = UNSET
-    relationship_attributes: MicroStrategyMetricRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MicroStrategyMetricRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MicroStrategyMetricRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: MicroStrategyMetricRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        MicroStrategyMetricRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        MicroStrategyMetricRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -588,42 +591,68 @@ _MICRO_STRATEGY_METRIC_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_micro_strategy_metric_attrs(attrs: MicroStrategyMetricAttributes, obj: MicroStrategyMetric) -> None:
+
+def _populate_micro_strategy_metric_attrs(
+    attrs: MicroStrategyMetricAttributes, obj: MicroStrategyMetric
+) -> None:
     """Populate MicroStrategyMetric-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.micro_strategy_metric_expression = obj.micro_strategy_metric_expression
-    attrs.micro_strategy_attribute_qualified_names = obj.micro_strategy_attribute_qualified_names
+    attrs.micro_strategy_attribute_qualified_names = (
+        obj.micro_strategy_attribute_qualified_names
+    )
     attrs.micro_strategy_attribute_names = obj.micro_strategy_attribute_names
     attrs.micro_strategy_fact_qualified_names = obj.micro_strategy_fact_qualified_names
     attrs.micro_strategy_fact_names = obj.micro_strategy_fact_names
-    attrs.micro_strategy_metric_parent_qualified_names = obj.micro_strategy_metric_parent_qualified_names
+    attrs.micro_strategy_metric_parent_qualified_names = (
+        obj.micro_strategy_metric_parent_qualified_names
+    )
     attrs.micro_strategy_metric_parent_names = obj.micro_strategy_metric_parent_names
-    attrs.micro_strategy_project_qualified_name = obj.micro_strategy_project_qualified_name
+    attrs.micro_strategy_project_qualified_name = (
+        obj.micro_strategy_project_qualified_name
+    )
     attrs.micro_strategy_project_name = obj.micro_strategy_project_name
     attrs.micro_strategy_cube_qualified_names = obj.micro_strategy_cube_qualified_names
     attrs.micro_strategy_cube_names = obj.micro_strategy_cube_names
-    attrs.micro_strategy_report_qualified_names = obj.micro_strategy_report_qualified_names
+    attrs.micro_strategy_report_qualified_names = (
+        obj.micro_strategy_report_qualified_names
+    )
     attrs.micro_strategy_report_names = obj.micro_strategy_report_names
     attrs.micro_strategy_is_certified = obj.micro_strategy_is_certified
     attrs.micro_strategy_certified_by = obj.micro_strategy_certified_by
     attrs.micro_strategy_certified_at = obj.micro_strategy_certified_at
     attrs.micro_strategy_location = obj.micro_strategy_location
 
+
 def _extract_micro_strategy_metric_attrs(attrs: MicroStrategyMetricAttributes) -> dict:
     """Extract all MicroStrategyMetric attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["micro_strategy_metric_expression"] = attrs.micro_strategy_metric_expression
-    result["micro_strategy_attribute_qualified_names"] = attrs.micro_strategy_attribute_qualified_names
+    result["micro_strategy_attribute_qualified_names"] = (
+        attrs.micro_strategy_attribute_qualified_names
+    )
     result["micro_strategy_attribute_names"] = attrs.micro_strategy_attribute_names
-    result["micro_strategy_fact_qualified_names"] = attrs.micro_strategy_fact_qualified_names
+    result["micro_strategy_fact_qualified_names"] = (
+        attrs.micro_strategy_fact_qualified_names
+    )
     result["micro_strategy_fact_names"] = attrs.micro_strategy_fact_names
-    result["micro_strategy_metric_parent_qualified_names"] = attrs.micro_strategy_metric_parent_qualified_names
-    result["micro_strategy_metric_parent_names"] = attrs.micro_strategy_metric_parent_names
-    result["micro_strategy_project_qualified_name"] = attrs.micro_strategy_project_qualified_name
+    result["micro_strategy_metric_parent_qualified_names"] = (
+        attrs.micro_strategy_metric_parent_qualified_names
+    )
+    result["micro_strategy_metric_parent_names"] = (
+        attrs.micro_strategy_metric_parent_names
+    )
+    result["micro_strategy_project_qualified_name"] = (
+        attrs.micro_strategy_project_qualified_name
+    )
     result["micro_strategy_project_name"] = attrs.micro_strategy_project_name
-    result["micro_strategy_cube_qualified_names"] = attrs.micro_strategy_cube_qualified_names
+    result["micro_strategy_cube_qualified_names"] = (
+        attrs.micro_strategy_cube_qualified_names
+    )
     result["micro_strategy_cube_names"] = attrs.micro_strategy_cube_names
-    result["micro_strategy_report_qualified_names"] = attrs.micro_strategy_report_qualified_names
+    result["micro_strategy_report_qualified_names"] = (
+        attrs.micro_strategy_report_qualified_names
+    )
     result["micro_strategy_report_names"] = attrs.micro_strategy_report_names
     result["micro_strategy_is_certified"] = attrs.micro_strategy_is_certified
     result["micro_strategy_certified_by"] = attrs.micro_strategy_certified_by
@@ -631,18 +660,23 @@ def _extract_micro_strategy_metric_attrs(attrs: MicroStrategyMetricAttributes) -
     result["micro_strategy_location"] = attrs.micro_strategy_location
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _micro_strategy_metric_to_nested(micro_strategy_metric: MicroStrategyMetric) -> MicroStrategyMetricNested:
+def _micro_strategy_metric_to_nested(
+    micro_strategy_metric: MicroStrategyMetric,
+) -> MicroStrategyMetricNested:
     """Convert flat MicroStrategyMetric to nested format."""
     attrs = MicroStrategyMetricAttributes()
     _populate_micro_strategy_metric_attrs(attrs, micro_strategy_metric)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        micro_strategy_metric, _MICRO_STRATEGY_METRIC_REL_FIELDS, MicroStrategyMetricRelationshipAttributes
+        micro_strategy_metric,
+        _MICRO_STRATEGY_METRIC_REL_FIELDS,
+        MicroStrategyMetricRelationshipAttributes,
     )
     return MicroStrategyMetricNested(
         guid=micro_strategy_metric.guid,
@@ -670,16 +704,23 @@ def _micro_strategy_metric_to_nested(micro_strategy_metric: MicroStrategyMetric)
         remove_relationship_attributes=remove_rels,
     )
 
-def _micro_strategy_metric_from_nested(nested: MicroStrategyMetricNested) -> MicroStrategyMetric:
+
+def _micro_strategy_metric_from_nested(
+    nested: MicroStrategyMetricNested,
+) -> MicroStrategyMetric:
     """Convert nested format to flat MicroStrategyMetric."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MicroStrategyMetricAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MicroStrategyMetricAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MICRO_STRATEGY_METRIC_REL_FIELDS,
-        MicroStrategyMetricRelationshipAttributes
+        MicroStrategyMetricRelationshipAttributes,
     )
     return MicroStrategyMetric(
         guid=nested.guid,
@@ -706,15 +747,21 @@ def _micro_strategy_metric_from_nested(nested: MicroStrategyMetricNested) -> Mic
         **merged_rels,
     )
 
-def _micro_strategy_metric_to_nested_bytes(micro_strategy_metric: MicroStrategyMetric, serde: Serde) -> bytes:
+
+def _micro_strategy_metric_to_nested_bytes(
+    micro_strategy_metric: MicroStrategyMetric, serde: Serde
+) -> bytes:
     """Convert flat MicroStrategyMetric to nested JSON bytes."""
     return serde.encode(_micro_strategy_metric_to_nested(micro_strategy_metric))
 
 
-def _micro_strategy_metric_from_nested_bytes(data: bytes, serde: Serde) -> MicroStrategyMetric:
+def _micro_strategy_metric_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> MicroStrategyMetric:
     """Convert nested JSON bytes to flat MicroStrategyMetric."""
     nested = serde.decode(data, MicroStrategyMetricNested)
     return _micro_strategy_metric_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -727,23 +774,71 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MicroStrategyMetric.MICRO_STRATEGY_METRIC_EXPRESSION = KeywordField("microStrategyMetricExpression", "microStrategyMetricExpression")
-MicroStrategyMetric.MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES = KeywordTextField("microStrategyAttributeQualifiedNames", "microStrategyAttributeQualifiedNames", "microStrategyAttributeQualifiedNames.text")
-MicroStrategyMetric.MICRO_STRATEGY_ATTRIBUTE_NAMES = KeywordField("microStrategyAttributeNames", "microStrategyAttributeNames")
-MicroStrategyMetric.MICRO_STRATEGY_FACT_QUALIFIED_NAMES = KeywordTextField("microStrategyFactQualifiedNames", "microStrategyFactQualifiedNames", "microStrategyFactQualifiedNames.text")
-MicroStrategyMetric.MICRO_STRATEGY_FACT_NAMES = KeywordField("microStrategyFactNames", "microStrategyFactNames")
-MicroStrategyMetric.MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES = KeywordTextField("microStrategyMetricParentQualifiedNames", "microStrategyMetricParentQualifiedNames", "microStrategyMetricParentQualifiedNames.text")
-MicroStrategyMetric.MICRO_STRATEGY_METRIC_PARENT_NAMES = KeywordField("microStrategyMetricParentNames", "microStrategyMetricParentNames")
-MicroStrategyMetric.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField("microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName.text")
-MicroStrategyMetric.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField("microStrategyProjectName", "microStrategyProjectName", "microStrategyProjectName.text")
-MicroStrategyMetric.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField("microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames.text")
-MicroStrategyMetric.MICRO_STRATEGY_CUBE_NAMES = KeywordField("microStrategyCubeNames", "microStrategyCubeNames")
-MicroStrategyMetric.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField("microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames.text")
-MicroStrategyMetric.MICRO_STRATEGY_REPORT_NAMES = KeywordField("microStrategyReportNames", "microStrategyReportNames")
-MicroStrategyMetric.MICRO_STRATEGY_IS_CERTIFIED = BooleanField("microStrategyIsCertified", "microStrategyIsCertified")
-MicroStrategyMetric.MICRO_STRATEGY_CERTIFIED_BY = KeywordField("microStrategyCertifiedBy", "microStrategyCertifiedBy")
-MicroStrategyMetric.MICRO_STRATEGY_CERTIFIED_AT = NumericField("microStrategyCertifiedAt", "microStrategyCertifiedAt")
-MicroStrategyMetric.MICRO_STRATEGY_LOCATION = KeywordField("microStrategyLocation", "microStrategyLocation")
+MicroStrategyMetric.MICRO_STRATEGY_METRIC_EXPRESSION = KeywordField(
+    "microStrategyMetricExpression", "microStrategyMetricExpression"
+)
+MicroStrategyMetric.MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyAttributeQualifiedNames",
+    "microStrategyAttributeQualifiedNames",
+    "microStrategyAttributeQualifiedNames.text",
+)
+MicroStrategyMetric.MICRO_STRATEGY_ATTRIBUTE_NAMES = KeywordField(
+    "microStrategyAttributeNames", "microStrategyAttributeNames"
+)
+MicroStrategyMetric.MICRO_STRATEGY_FACT_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyFactQualifiedNames",
+    "microStrategyFactQualifiedNames",
+    "microStrategyFactQualifiedNames.text",
+)
+MicroStrategyMetric.MICRO_STRATEGY_FACT_NAMES = KeywordField(
+    "microStrategyFactNames", "microStrategyFactNames"
+)
+MicroStrategyMetric.MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyMetricParentQualifiedNames",
+    "microStrategyMetricParentQualifiedNames",
+    "microStrategyMetricParentQualifiedNames.text",
+)
+MicroStrategyMetric.MICRO_STRATEGY_METRIC_PARENT_NAMES = KeywordField(
+    "microStrategyMetricParentNames", "microStrategyMetricParentNames"
+)
+MicroStrategyMetric.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName.text",
+)
+MicroStrategyMetric.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField(
+    "microStrategyProjectName",
+    "microStrategyProjectName",
+    "microStrategyProjectName.text",
+)
+MicroStrategyMetric.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames.text",
+)
+MicroStrategyMetric.MICRO_STRATEGY_CUBE_NAMES = KeywordField(
+    "microStrategyCubeNames", "microStrategyCubeNames"
+)
+MicroStrategyMetric.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames.text",
+)
+MicroStrategyMetric.MICRO_STRATEGY_REPORT_NAMES = KeywordField(
+    "microStrategyReportNames", "microStrategyReportNames"
+)
+MicroStrategyMetric.MICRO_STRATEGY_IS_CERTIFIED = BooleanField(
+    "microStrategyIsCertified", "microStrategyIsCertified"
+)
+MicroStrategyMetric.MICRO_STRATEGY_CERTIFIED_BY = KeywordField(
+    "microStrategyCertifiedBy", "microStrategyCertifiedBy"
+)
+MicroStrategyMetric.MICRO_STRATEGY_CERTIFIED_AT = NumericField(
+    "microStrategyCertifiedAt", "microStrategyCertifiedAt"
+)
+MicroStrategyMetric.MICRO_STRATEGY_LOCATION = KeywordField(
+    "microStrategyLocation", "microStrategyLocation"
+)
 MicroStrategyMetric.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MicroStrategyMetric.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MicroStrategyMetric.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -751,17 +846,27 @@ MicroStrategyMetric.APPLICATION = RelationField("application")
 MicroStrategyMetric.APPLICATION_FIELD = RelationField("applicationField")
 MicroStrategyMetric.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MicroStrategyMetric.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-MicroStrategyMetric.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MicroStrategyMetric.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MicroStrategyMetric.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+MicroStrategyMetric.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MicroStrategyMetric.METRICS = RelationField("metrics")
 MicroStrategyMetric.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-MicroStrategyMetric.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+MicroStrategyMetric.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 MicroStrategyMetric.MEANINGS = RelationField("meanings")
 MicroStrategyMetric.MICRO_STRATEGY_PROJECT = RelationField("microStrategyProject")
 MicroStrategyMetric.MICRO_STRATEGY_ATTRIBUTES = RelationField("microStrategyAttributes")
 MicroStrategyMetric.MICRO_STRATEGY_FACTS = RelationField("microStrategyFacts")
-MicroStrategyMetric.MICRO_STRATEGY_METRIC_CHILDREN = RelationField("microStrategyMetricChildren")
-MicroStrategyMetric.MICRO_STRATEGY_METRIC_PARENTS = RelationField("microStrategyMetricParents")
+MicroStrategyMetric.MICRO_STRATEGY_METRIC_CHILDREN = RelationField(
+    "microStrategyMetricChildren"
+)
+MicroStrategyMetric.MICRO_STRATEGY_METRIC_PARENTS = RelationField(
+    "microStrategyMetricParents"
+)
 MicroStrategyMetric.MICRO_STRATEGY_CUBES = RelationField("microStrategyCubes")
 MicroStrategyMetric.MICRO_STRATEGY_REPORTS = RelationField("microStrategyReports")
 MicroStrategyMetric.MICRO_STRATEGY_COLUMNS = RelationField("microStrategyColumns")
@@ -772,7 +877,9 @@ MicroStrategyMetric.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 MicroStrategyMetric.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 MicroStrategyMetric.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 MicroStrategyMetric.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-MicroStrategyMetric.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+MicroStrategyMetric.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 MicroStrategyMetric.FILES = RelationField("files")
 MicroStrategyMetric.LINKS = RelationField("links")
 MicroStrategyMetric.README = RelationField("readme")

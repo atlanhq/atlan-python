@@ -34,7 +34,9 @@ class RelatedPartial(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Partial" so it serializes correctly
 
-    partial_structure_json: str | None | UnsetType = msgspec.field(default=UNSET, name="partialStructureJSON")
+    partial_structure_json: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="partialStructureJSON"
+    )
     """Complete JSON structure of this partial asset, as a string."""
 
     partial_resolved_type_name: str | None | UnsetType = UNSET
@@ -53,6 +55,7 @@ class RelatedPartial(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Partial"
 
+
 class RelatedPartialObject(RelatedPartial):
     """
     Related entity reference for PartialObject assets.
@@ -66,6 +69,7 @@ class RelatedPartialObject(RelatedPartial):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PartialObject"
+
 
 class RelatedPartialField(RelatedPartial):
     """

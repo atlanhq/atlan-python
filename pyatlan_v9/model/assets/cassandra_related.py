@@ -56,6 +56,7 @@ class RelatedCassandra(RelatedNoSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Cassandra"
 
+
 class RelatedCassandraColumn(RelatedCassandra):
     """
     Related entity reference for CassandraColumn assets.
@@ -91,6 +92,7 @@ class RelatedCassandraColumn(RelatedCassandra):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CassandraColumn"
 
+
 class RelatedCassandraIndex(RelatedCassandra):
     """
     Related entity reference for CassandraIndex assets.
@@ -113,6 +115,7 @@ class RelatedCassandraIndex(RelatedCassandra):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CassandraIndex"
+
 
 class RelatedCassandraKeyspace(RelatedCassandra):
     """
@@ -140,6 +143,7 @@ class RelatedCassandraKeyspace(RelatedCassandra):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CassandraKeyspace"
 
+
 class RelatedCassandraTable(RelatedCassandra):
     """
     Related entity reference for CassandraTable assets.
@@ -150,7 +154,9 @@ class RelatedCassandraTable(RelatedCassandra):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CassandraTable" so it serializes correctly
 
-    cassandra_table_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraTableBloomFilterFPChance")
+    cassandra_table_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraTableBloomFilterFPChance"
+    )
     """Bloom filter false positive chance for the CassandraTable."""
 
     cassandra_table_caching: dict[str, str] | None | UnsetType = UNSET
@@ -165,19 +171,27 @@ class RelatedCassandraTable(RelatedCassandra):
     cassandra_table_compression: dict[str, str] | None | UnsetType = UNSET
     """Compression used for the CassandraTable in Cassandra."""
 
-    cassandra_table_crc_check_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraTableCRCCheckChance")
+    cassandra_table_crc_check_chance: float | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraTableCRCCheckChance"
+    )
     """CRC check chance for the CassandraTable."""
 
-    cassandra_table_dc_local_read_repair_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
+    cassandra_table_dc_local_read_repair_chance: float | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
+    )
     """Local read repair chance in Cassandra."""
 
-    cassandra_table_default_ttl: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraTableDefaultTTL")
+    cassandra_table_default_ttl: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraTableDefaultTTL"
+    )
     """Default time-to-live for the CassandraTable in Cassandra."""
 
     cassandra_table_flags: list[str] | None | UnsetType = UNSET
     """Flags associated with the CassandraTable."""
 
-    cassandra_table_gc_grace_seconds: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraTableGCGraceSeconds")
+    cassandra_table_gc_grace_seconds: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraTableGCGraceSeconds"
+    )
     """Grace period for garbage collection in the CassandraTable."""
 
     cassandra_table_id: str | None | UnsetType = UNSET
@@ -208,6 +222,7 @@ class RelatedCassandraTable(RelatedCassandra):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CassandraTable"
 
+
 class RelatedCassandraView(RelatedCassandra):
     """
     Related entity reference for CassandraView assets.
@@ -221,7 +236,9 @@ class RelatedCassandraView(RelatedCassandra):
     cassandra_view_table_id: str | None | UnsetType = UNSET
     """ID of the base table in the CassandraView."""
 
-    cassandra_view_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewBloomFilterFPChance")
+    cassandra_view_bloom_filter_fp_chance: float | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewBloomFilterFPChance"
+    )
     """False positive chance for the Bloom filter in the CassandraView."""
 
     cassandra_view_caching: dict[str, str] | None | UnsetType = UNSET
@@ -233,16 +250,24 @@ class RelatedCassandraView(RelatedCassandra):
     cassandra_view_compaction: dict[str, str] | None | UnsetType = UNSET
     """Compaction for the CassandraView."""
 
-    cassandra_view_crc_check_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewCRCCheckChance")
+    cassandra_view_crc_check_chance: float | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewCRCCheckChance"
+    )
     """CRC check chance for the CassandraView."""
 
-    cassandra_view_dc_local_read_repair_chance: float | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewDCLocalReadRepairChance")
+    cassandra_view_dc_local_read_repair_chance: float | None | UnsetType = (
+        msgspec.field(default=UNSET, name="cassandraViewDCLocalReadRepairChance")
+    )
     """DC-local read repair chance for the CassandraView."""
 
-    cassandra_view_default_ttl: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewDefaultTTL")
+    cassandra_view_default_ttl: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewDefaultTTL"
+    )
     """Default time-to-live (TTL) for the CassandraView."""
 
-    cassandra_view_gc_grace_seconds: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewGCGraceSeconds")
+    cassandra_view_gc_grace_seconds: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewGCGraceSeconds"
+    )
     """Grace period for garbage collection in the CassandraView."""
 
     cassandra_view_include_all_columns: bool | None | UnsetType = UNSET
@@ -251,7 +276,9 @@ class RelatedCassandraView(RelatedCassandra):
     cassandra_view_max_index_interval: int | None | UnsetType = UNSET
     """Maximum index interval for the CassandraView."""
 
-    cassandra_view_membtable_flush_period_in_ms: int | None | UnsetType = msgspec.field(default=UNSET, name="cassandraViewMembtableFlushPeriodInMS")
+    cassandra_view_membtable_flush_period_in_ms: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="cassandraViewMembtableFlushPeriodInMS"
+    )
     """Memtable flush period (in milliseconds) for the CassandraView."""
 
     cassandra_view_min_index_interval: int | None | UnsetType = UNSET

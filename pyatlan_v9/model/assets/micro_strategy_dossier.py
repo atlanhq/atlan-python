@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,23 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .micro_strategy_related import RelatedMicroStrategyColumn, RelatedMicroStrategyDossier, RelatedMicroStrategyProject, RelatedMicroStrategyVisualization
+from .micro_strategy_related import (
+    RelatedMicroStrategyColumn,
+    RelatedMicroStrategyProject,
+    RelatedMicroStrategyVisualization,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MicroStrategyDossier(Asset):
@@ -180,7 +187,9 @@ class MicroStrategyDossier(Asset):
     micro_strategy_project: RelatedMicroStrategyProject | None | UnsetType = UNSET
     """Project in which this dossier exists."""
 
-    micro_strategy_visualizations: list[RelatedMicroStrategyVisualization] | None | UnsetType = UNSET
+    micro_strategy_visualizations: (
+        list[RelatedMicroStrategyVisualization] | None | UnsetType
+    ) = UNSET
     """Visualizations that exist within this dossier."""
 
     micro_strategy_columns: list[RelatedMicroStrategyColumn] | None | UnsetType = UNSET
@@ -219,7 +228,9 @@ class MicroStrategyDossier(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -238,43 +249,7 @@ class MicroStrategyDossier(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.micro_strategy_project is UNSET:
-                errors.append("micro_strategy_project is required for creation")
-            if self.micro_strategy_project_name is UNSET:
-                errors.append("micro_strategy_project_name is required for creation")
-            if self.micro_strategy_project_qualified_name is UNSET:
-                errors.append("micro_strategy_project_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MicroStrategyDossier validation failed: {errors}")
-
-    def minimize(self) -> "MicroStrategyDossier":
-        self.validate()
-        return MicroStrategyDossier(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMicroStrategyDossier":
-        if self.guid is not UNSET:
-            return RelatedMicroStrategyDossier(guid=self.guid)
-        return RelatedMicroStrategyDossier(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -305,7 +280,9 @@ class MicroStrategyDossier(Asset):
         return _micro_strategy_dossier_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MicroStrategyDossier:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MicroStrategyDossier:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -326,6 +303,7 @@ class MicroStrategyDossier(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class MicroStrategyDossierAttributes(AssetAttributes):
     """MicroStrategyDossier-specific attributes for nested API format."""
@@ -362,6 +340,7 @@ class MicroStrategyDossierAttributes(AssetAttributes):
 
     micro_strategy_location: list[dict[str, str]] | None | UnsetType = UNSET
     """Location of this asset in MicroStrategy."""
+
 
 class MicroStrategyDossierRelationshipAttributes(AssetRelationshipAttributes):
     """MicroStrategyDossier-specific relationship attributes for nested API format."""
@@ -408,7 +387,9 @@ class MicroStrategyDossierRelationshipAttributes(AssetRelationshipAttributes):
     micro_strategy_project: RelatedMicroStrategyProject | None | UnsetType = UNSET
     """Project in which this dossier exists."""
 
-    micro_strategy_visualizations: list[RelatedMicroStrategyVisualization] | None | UnsetType = UNSET
+    micro_strategy_visualizations: (
+        list[RelatedMicroStrategyVisualization] | None | UnsetType
+    ) = UNSET
     """Visualizations that exist within this dossier."""
 
     micro_strategy_columns: list[RelatedMicroStrategyColumn] | None | UnsetType = UNSET
@@ -447,7 +428,9 @@ class MicroStrategyDossierRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -459,13 +442,21 @@ class MicroStrategyDossierRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MicroStrategyDossierNested(AssetNested):
     """MicroStrategyDossier in nested API format for high-performance serialization."""
 
     attributes: MicroStrategyDossierAttributes | UnsetType = UNSET
-    relationship_attributes: MicroStrategyDossierRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MicroStrategyDossierRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MicroStrategyDossierRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: MicroStrategyDossierRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        MicroStrategyDossierRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        MicroStrategyDossierRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -506,30 +497,50 @@ _MICRO_STRATEGY_DOSSIER_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_micro_strategy_dossier_attrs(attrs: MicroStrategyDossierAttributes, obj: MicroStrategyDossier) -> None:
+
+def _populate_micro_strategy_dossier_attrs(
+    attrs: MicroStrategyDossierAttributes, obj: MicroStrategyDossier
+) -> None:
     """Populate MicroStrategyDossier-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.micro_strategy_dossier_chapter_names = obj.micro_strategy_dossier_chapter_names
-    attrs.micro_strategy_project_qualified_name = obj.micro_strategy_project_qualified_name
+    attrs.micro_strategy_dossier_chapter_names = (
+        obj.micro_strategy_dossier_chapter_names
+    )
+    attrs.micro_strategy_project_qualified_name = (
+        obj.micro_strategy_project_qualified_name
+    )
     attrs.micro_strategy_project_name = obj.micro_strategy_project_name
     attrs.micro_strategy_cube_qualified_names = obj.micro_strategy_cube_qualified_names
     attrs.micro_strategy_cube_names = obj.micro_strategy_cube_names
-    attrs.micro_strategy_report_qualified_names = obj.micro_strategy_report_qualified_names
+    attrs.micro_strategy_report_qualified_names = (
+        obj.micro_strategy_report_qualified_names
+    )
     attrs.micro_strategy_report_names = obj.micro_strategy_report_names
     attrs.micro_strategy_is_certified = obj.micro_strategy_is_certified
     attrs.micro_strategy_certified_by = obj.micro_strategy_certified_by
     attrs.micro_strategy_certified_at = obj.micro_strategy_certified_at
     attrs.micro_strategy_location = obj.micro_strategy_location
 
-def _extract_micro_strategy_dossier_attrs(attrs: MicroStrategyDossierAttributes) -> dict:
+
+def _extract_micro_strategy_dossier_attrs(
+    attrs: MicroStrategyDossierAttributes,
+) -> dict:
     """Extract all MicroStrategyDossier attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["micro_strategy_dossier_chapter_names"] = attrs.micro_strategy_dossier_chapter_names
-    result["micro_strategy_project_qualified_name"] = attrs.micro_strategy_project_qualified_name
+    result["micro_strategy_dossier_chapter_names"] = (
+        attrs.micro_strategy_dossier_chapter_names
+    )
+    result["micro_strategy_project_qualified_name"] = (
+        attrs.micro_strategy_project_qualified_name
+    )
     result["micro_strategy_project_name"] = attrs.micro_strategy_project_name
-    result["micro_strategy_cube_qualified_names"] = attrs.micro_strategy_cube_qualified_names
+    result["micro_strategy_cube_qualified_names"] = (
+        attrs.micro_strategy_cube_qualified_names
+    )
     result["micro_strategy_cube_names"] = attrs.micro_strategy_cube_names
-    result["micro_strategy_report_qualified_names"] = attrs.micro_strategy_report_qualified_names
+    result["micro_strategy_report_qualified_names"] = (
+        attrs.micro_strategy_report_qualified_names
+    )
     result["micro_strategy_report_names"] = attrs.micro_strategy_report_names
     result["micro_strategy_is_certified"] = attrs.micro_strategy_is_certified
     result["micro_strategy_certified_by"] = attrs.micro_strategy_certified_by
@@ -537,18 +548,23 @@ def _extract_micro_strategy_dossier_attrs(attrs: MicroStrategyDossierAttributes)
     result["micro_strategy_location"] = attrs.micro_strategy_location
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _micro_strategy_dossier_to_nested(micro_strategy_dossier: MicroStrategyDossier) -> MicroStrategyDossierNested:
+def _micro_strategy_dossier_to_nested(
+    micro_strategy_dossier: MicroStrategyDossier,
+) -> MicroStrategyDossierNested:
     """Convert flat MicroStrategyDossier to nested format."""
     attrs = MicroStrategyDossierAttributes()
     _populate_micro_strategy_dossier_attrs(attrs, micro_strategy_dossier)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        micro_strategy_dossier, _MICRO_STRATEGY_DOSSIER_REL_FIELDS, MicroStrategyDossierRelationshipAttributes
+        micro_strategy_dossier,
+        _MICRO_STRATEGY_DOSSIER_REL_FIELDS,
+        MicroStrategyDossierRelationshipAttributes,
     )
     return MicroStrategyDossierNested(
         guid=micro_strategy_dossier.guid,
@@ -576,16 +592,23 @@ def _micro_strategy_dossier_to_nested(micro_strategy_dossier: MicroStrategyDossi
         remove_relationship_attributes=remove_rels,
     )
 
-def _micro_strategy_dossier_from_nested(nested: MicroStrategyDossierNested) -> MicroStrategyDossier:
+
+def _micro_strategy_dossier_from_nested(
+    nested: MicroStrategyDossierNested,
+) -> MicroStrategyDossier:
     """Convert nested format to flat MicroStrategyDossier."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MicroStrategyDossierAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MicroStrategyDossierAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MICRO_STRATEGY_DOSSIER_REL_FIELDS,
-        MicroStrategyDossierRelationshipAttributes
+        MicroStrategyDossierRelationshipAttributes,
     )
     return MicroStrategyDossier(
         guid=nested.guid,
@@ -612,15 +635,21 @@ def _micro_strategy_dossier_from_nested(nested: MicroStrategyDossierNested) -> M
         **merged_rels,
     )
 
-def _micro_strategy_dossier_to_nested_bytes(micro_strategy_dossier: MicroStrategyDossier, serde: Serde) -> bytes:
+
+def _micro_strategy_dossier_to_nested_bytes(
+    micro_strategy_dossier: MicroStrategyDossier, serde: Serde
+) -> bytes:
     """Convert flat MicroStrategyDossier to nested JSON bytes."""
     return serde.encode(_micro_strategy_dossier_to_nested(micro_strategy_dossier))
 
 
-def _micro_strategy_dossier_from_nested_bytes(data: bytes, serde: Serde) -> MicroStrategyDossier:
+def _micro_strategy_dossier_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> MicroStrategyDossier:
     """Convert nested JSON bytes to flat MicroStrategyDossier."""
     nested = serde.decode(data, MicroStrategyDossierNested)
     return _micro_strategy_dossier_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -633,17 +662,47 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MicroStrategyDossier.MICRO_STRATEGY_DOSSIER_CHAPTER_NAMES = KeywordField("microStrategyDossierChapterNames", "microStrategyDossierChapterNames")
-MicroStrategyDossier.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField("microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName.text")
-MicroStrategyDossier.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField("microStrategyProjectName", "microStrategyProjectName", "microStrategyProjectName.text")
-MicroStrategyDossier.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField("microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames.text")
-MicroStrategyDossier.MICRO_STRATEGY_CUBE_NAMES = KeywordField("microStrategyCubeNames", "microStrategyCubeNames")
-MicroStrategyDossier.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField("microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames.text")
-MicroStrategyDossier.MICRO_STRATEGY_REPORT_NAMES = KeywordField("microStrategyReportNames", "microStrategyReportNames")
-MicroStrategyDossier.MICRO_STRATEGY_IS_CERTIFIED = BooleanField("microStrategyIsCertified", "microStrategyIsCertified")
-MicroStrategyDossier.MICRO_STRATEGY_CERTIFIED_BY = KeywordField("microStrategyCertifiedBy", "microStrategyCertifiedBy")
-MicroStrategyDossier.MICRO_STRATEGY_CERTIFIED_AT = NumericField("microStrategyCertifiedAt", "microStrategyCertifiedAt")
-MicroStrategyDossier.MICRO_STRATEGY_LOCATION = KeywordField("microStrategyLocation", "microStrategyLocation")
+MicroStrategyDossier.MICRO_STRATEGY_DOSSIER_CHAPTER_NAMES = KeywordField(
+    "microStrategyDossierChapterNames", "microStrategyDossierChapterNames"
+)
+MicroStrategyDossier.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName.text",
+)
+MicroStrategyDossier.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField(
+    "microStrategyProjectName",
+    "microStrategyProjectName",
+    "microStrategyProjectName.text",
+)
+MicroStrategyDossier.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames.text",
+)
+MicroStrategyDossier.MICRO_STRATEGY_CUBE_NAMES = KeywordField(
+    "microStrategyCubeNames", "microStrategyCubeNames"
+)
+MicroStrategyDossier.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames.text",
+)
+MicroStrategyDossier.MICRO_STRATEGY_REPORT_NAMES = KeywordField(
+    "microStrategyReportNames", "microStrategyReportNames"
+)
+MicroStrategyDossier.MICRO_STRATEGY_IS_CERTIFIED = BooleanField(
+    "microStrategyIsCertified", "microStrategyIsCertified"
+)
+MicroStrategyDossier.MICRO_STRATEGY_CERTIFIED_BY = KeywordField(
+    "microStrategyCertifiedBy", "microStrategyCertifiedBy"
+)
+MicroStrategyDossier.MICRO_STRATEGY_CERTIFIED_AT = NumericField(
+    "microStrategyCertifiedAt", "microStrategyCertifiedAt"
+)
+MicroStrategyDossier.MICRO_STRATEGY_LOCATION = KeywordField(
+    "microStrategyLocation", "microStrategyLocation"
+)
 MicroStrategyDossier.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MicroStrategyDossier.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MicroStrategyDossier.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -651,14 +710,22 @@ MicroStrategyDossier.APPLICATION = RelationField("application")
 MicroStrategyDossier.APPLICATION_FIELD = RelationField("applicationField")
 MicroStrategyDossier.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MicroStrategyDossier.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-MicroStrategyDossier.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MicroStrategyDossier.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MicroStrategyDossier.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+MicroStrategyDossier.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MicroStrategyDossier.METRICS = RelationField("metrics")
 MicroStrategyDossier.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-MicroStrategyDossier.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+MicroStrategyDossier.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 MicroStrategyDossier.MEANINGS = RelationField("meanings")
 MicroStrategyDossier.MICRO_STRATEGY_PROJECT = RelationField("microStrategyProject")
-MicroStrategyDossier.MICRO_STRATEGY_VISUALIZATIONS = RelationField("microStrategyVisualizations")
+MicroStrategyDossier.MICRO_STRATEGY_VISUALIZATIONS = RelationField(
+    "microStrategyVisualizations"
+)
 MicroStrategyDossier.MICRO_STRATEGY_COLUMNS = RelationField("microStrategyColumns")
 MicroStrategyDossier.MC_MONITORS = RelationField("mcMonitors")
 MicroStrategyDossier.MC_INCIDENTS = RelationField("mcIncidents")
@@ -667,7 +734,9 @@ MicroStrategyDossier.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 MicroStrategyDossier.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 MicroStrategyDossier.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 MicroStrategyDossier.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-MicroStrategyDossier.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+MicroStrategyDossier.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 MicroStrategyDossier.FILES = RelationField("files")
 MicroStrategyDossier.LINKS = RelationField("links")
 MicroStrategyDossier.README = RelationField("readme")

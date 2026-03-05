@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .sisense_related import RelatedSisenseDatamodel, RelatedSisenseDatamodelTable, RelatedSisenseWidget
+from .sisense_related import RelatedSisenseDatamodel, RelatedSisenseWidget
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SisenseDatamodelTable(Asset):
@@ -197,7 +200,9 @@ class SisenseDatamodelTable(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     sisense_datamodel: RelatedSisenseDatamodel | None | UnsetType = UNSET
@@ -222,41 +227,7 @@ class SisenseDatamodelTable(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.sisense_datamodel is UNSET:
-                errors.append("sisense_datamodel is required for creation")
-            if self.sisense_datamodel_qualified_name is UNSET:
-                errors.append("sisense_datamodel_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SisenseDatamodelTable validation failed: {errors}")
-
-    def minimize(self) -> "SisenseDatamodelTable":
-        self.validate()
-        return SisenseDatamodelTable(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSisenseDatamodelTable":
-        if self.guid is not UNSET:
-            return RelatedSisenseDatamodelTable(guid=self.guid)
-        return RelatedSisenseDatamodelTable(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -287,7 +258,9 @@ class SisenseDatamodelTable(Asset):
         return _sisense_datamodel_table_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SisenseDatamodelTable:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SisenseDatamodelTable:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -308,6 +281,7 @@ class SisenseDatamodelTable(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class SisenseDatamodelTableAttributes(AssetAttributes):
     """SisenseDatamodelTable-specific attributes for nested API format."""
@@ -335,6 +309,7 @@ class SisenseDatamodelTableAttributes(AssetAttributes):
 
     sisense_live_query_settings: str | None | UnsetType = UNSET
     """JSON specifying the LiveQuery settings of this datamodel table."""
+
 
 class SisenseDatamodelTableRelationshipAttributes(AssetRelationshipAttributes):
     """SisenseDatamodelTable-specific relationship attributes for nested API format."""
@@ -411,7 +386,9 @@ class SisenseDatamodelTableRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     sisense_datamodel: RelatedSisenseDatamodel | None | UnsetType = UNSET
@@ -429,13 +406,21 @@ class SisenseDatamodelTableRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SisenseDatamodelTableNested(AssetNested):
     """SisenseDatamodelTable in nested API format for high-performance serialization."""
 
     attributes: SisenseDatamodelTableAttributes | UnsetType = UNSET
-    relationship_attributes: SisenseDatamodelTableRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SisenseDatamodelTableRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SisenseDatamodelTableRelationshipAttributes | UnsetType = UNSET
+    relationship_attributes: SisenseDatamodelTableRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    append_relationship_attributes: (
+        SisenseDatamodelTableRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        SisenseDatamodelTableRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -475,7 +460,10 @@ _SISENSE_DATAMODEL_TABLE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sisense_datamodel_table_attrs(attrs: SisenseDatamodelTableAttributes, obj: SisenseDatamodelTable) -> None:
+
+def _populate_sisense_datamodel_table_attrs(
+    attrs: SisenseDatamodelTableAttributes, obj: SisenseDatamodelTable
+) -> None:
     """Populate SisenseDatamodelTable-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sisense_datamodel_qualified_name = obj.sisense_datamodel_qualified_name
@@ -487,31 +475,41 @@ def _populate_sisense_datamodel_table_attrs(attrs: SisenseDatamodelTableAttribut
     attrs.sisense_schedule = obj.sisense_schedule
     attrs.sisense_live_query_settings = obj.sisense_live_query_settings
 
-def _extract_sisense_datamodel_table_attrs(attrs: SisenseDatamodelTableAttributes) -> dict:
+
+def _extract_sisense_datamodel_table_attrs(
+    attrs: SisenseDatamodelTableAttributes,
+) -> dict:
     """Extract all SisenseDatamodelTable attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["sisense_datamodel_qualified_name"] = attrs.sisense_datamodel_qualified_name
     result["sisense_column_count"] = attrs.sisense_column_count
     result["sisense_type"] = attrs.sisense_type
-    result["sisense_datamodel_table_expression"] = attrs.sisense_datamodel_table_expression
+    result["sisense_datamodel_table_expression"] = (
+        attrs.sisense_datamodel_table_expression
+    )
     result["sisense_is_materialized"] = attrs.sisense_is_materialized
     result["sisense_is_hidden"] = attrs.sisense_is_hidden
     result["sisense_schedule"] = attrs.sisense_schedule
     result["sisense_live_query_settings"] = attrs.sisense_live_query_settings
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sisense_datamodel_table_to_nested(sisense_datamodel_table: SisenseDatamodelTable) -> SisenseDatamodelTableNested:
+def _sisense_datamodel_table_to_nested(
+    sisense_datamodel_table: SisenseDatamodelTable,
+) -> SisenseDatamodelTableNested:
     """Convert flat SisenseDatamodelTable to nested format."""
     attrs = SisenseDatamodelTableAttributes()
     _populate_sisense_datamodel_table_attrs(attrs, sisense_datamodel_table)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sisense_datamodel_table, _SISENSE_DATAMODEL_TABLE_REL_FIELDS, SisenseDatamodelTableRelationshipAttributes
+        sisense_datamodel_table,
+        _SISENSE_DATAMODEL_TABLE_REL_FIELDS,
+        SisenseDatamodelTableRelationshipAttributes,
     )
     return SisenseDatamodelTableNested(
         guid=sisense_datamodel_table.guid,
@@ -539,16 +537,23 @@ def _sisense_datamodel_table_to_nested(sisense_datamodel_table: SisenseDatamodel
         remove_relationship_attributes=remove_rels,
     )
 
-def _sisense_datamodel_table_from_nested(nested: SisenseDatamodelTableNested) -> SisenseDatamodelTable:
+
+def _sisense_datamodel_table_from_nested(
+    nested: SisenseDatamodelTableNested,
+) -> SisenseDatamodelTable:
     """Convert nested format to flat SisenseDatamodelTable."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SisenseDatamodelTableAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SisenseDatamodelTableAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SISENSE_DATAMODEL_TABLE_REL_FIELDS,
-        SisenseDatamodelTableRelationshipAttributes
+        SisenseDatamodelTableRelationshipAttributes,
     )
     return SisenseDatamodelTable(
         guid=nested.guid,
@@ -575,15 +580,21 @@ def _sisense_datamodel_table_from_nested(nested: SisenseDatamodelTableNested) ->
         **merged_rels,
     )
 
-def _sisense_datamodel_table_to_nested_bytes(sisense_datamodel_table: SisenseDatamodelTable, serde: Serde) -> bytes:
+
+def _sisense_datamodel_table_to_nested_bytes(
+    sisense_datamodel_table: SisenseDatamodelTable, serde: Serde
+) -> bytes:
     """Convert flat SisenseDatamodelTable to nested JSON bytes."""
     return serde.encode(_sisense_datamodel_table_to_nested(sisense_datamodel_table))
 
 
-def _sisense_datamodel_table_from_nested_bytes(data: bytes, serde: Serde) -> SisenseDatamodelTable:
+def _sisense_datamodel_table_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SisenseDatamodelTable:
     """Convert nested JSON bytes to flat SisenseDatamodelTable."""
     nested = serde.decode(data, SisenseDatamodelTableNested)
     return _sisense_datamodel_table_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -596,26 +607,52 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SisenseDatamodelTable.SISENSE_DATAMODEL_QUALIFIED_NAME = KeywordTextField("sisenseDatamodelQualifiedName", "sisenseDatamodelQualifiedName", "sisenseDatamodelQualifiedName.text")
-SisenseDatamodelTable.SISENSE_COLUMN_COUNT = NumericField("sisenseColumnCount", "sisenseColumnCount")
+SisenseDatamodelTable.SISENSE_DATAMODEL_QUALIFIED_NAME = KeywordTextField(
+    "sisenseDatamodelQualifiedName",
+    "sisenseDatamodelQualifiedName",
+    "sisenseDatamodelQualifiedName.text",
+)
+SisenseDatamodelTable.SISENSE_COLUMN_COUNT = NumericField(
+    "sisenseColumnCount", "sisenseColumnCount"
+)
 SisenseDatamodelTable.SISENSE_TYPE = KeywordField("sisenseType", "sisenseType")
-SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_EXPRESSION = KeywordField("sisenseDatamodelTableExpression", "sisenseDatamodelTableExpression")
-SisenseDatamodelTable.SISENSE_IS_MATERIALIZED = BooleanField("sisenseIsMaterialized", "sisenseIsMaterialized")
-SisenseDatamodelTable.SISENSE_IS_HIDDEN = BooleanField("sisenseIsHidden", "sisenseIsHidden")
-SisenseDatamodelTable.SISENSE_SCHEDULE = KeywordField("sisenseSchedule", "sisenseSchedule")
-SisenseDatamodelTable.SISENSE_LIVE_QUERY_SETTINGS = KeywordField("sisenseLiveQuerySettings", "sisenseLiveQuerySettings")
+SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_EXPRESSION = KeywordField(
+    "sisenseDatamodelTableExpression", "sisenseDatamodelTableExpression"
+)
+SisenseDatamodelTable.SISENSE_IS_MATERIALIZED = BooleanField(
+    "sisenseIsMaterialized", "sisenseIsMaterialized"
+)
+SisenseDatamodelTable.SISENSE_IS_HIDDEN = BooleanField(
+    "sisenseIsHidden", "sisenseIsHidden"
+)
+SisenseDatamodelTable.SISENSE_SCHEDULE = KeywordField(
+    "sisenseSchedule", "sisenseSchedule"
+)
+SisenseDatamodelTable.SISENSE_LIVE_QUERY_SETTINGS = KeywordField(
+    "sisenseLiveQuerySettings", "sisenseLiveQuerySettings"
+)
 SisenseDatamodelTable.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SisenseDatamodelTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+SisenseDatamodelTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 SisenseDatamodelTable.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SisenseDatamodelTable.APPLICATION = RelationField("application")
 SisenseDatamodelTable.APPLICATION_FIELD = RelationField("applicationField")
-SisenseDatamodelTable.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+SisenseDatamodelTable.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 SisenseDatamodelTable.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SisenseDatamodelTable.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SisenseDatamodelTable.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SisenseDatamodelTable.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+SisenseDatamodelTable.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SisenseDatamodelTable.METRICS = RelationField("metrics")
 SisenseDatamodelTable.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SisenseDatamodelTable.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SisenseDatamodelTable.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 SisenseDatamodelTable.MEANINGS = RelationField("meanings")
 SisenseDatamodelTable.MC_MONITORS = RelationField("mcMonitors")
 SisenseDatamodelTable.MC_INCIDENTS = RelationField("mcIncidents")
@@ -624,7 +661,9 @@ SisenseDatamodelTable.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 SisenseDatamodelTable.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SisenseDatamodelTable.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 SisenseDatamodelTable.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SisenseDatamodelTable.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+SisenseDatamodelTable.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 SisenseDatamodelTable.FILES = RelationField("files")
 SisenseDatamodelTable.LINKS = RelationField("links")
 SisenseDatamodelTable.README = RelationField("readme")

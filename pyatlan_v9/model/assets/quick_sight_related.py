@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -52,6 +51,7 @@ class RelatedQuickSight(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSight"
 
+
 class RelatedQuickSightDashboardVisual(RelatedQuickSight):
     """
     Related entity reference for QuickSightDashboardVisual assets.
@@ -68,6 +68,7 @@ class RelatedQuickSightDashboardVisual(RelatedQuickSight):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightDashboardVisual"
+
 
 class RelatedQuickSightDataset(RelatedQuickSight):
     """
@@ -89,6 +90,7 @@ class RelatedQuickSightDataset(RelatedQuickSight):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightDataset"
 
+
 class RelatedQuickSightDatasetField(RelatedQuickSight):
     """
     Related entity reference for QuickSightDatasetField assets.
@@ -109,6 +111,7 @@ class RelatedQuickSightDatasetField(RelatedQuickSight):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightDatasetField"
 
+
 class RelatedQuickSightFolder(RelatedQuickSight):
     """
     Related entity reference for QuickSightFolder assets.
@@ -128,6 +131,7 @@ class RelatedQuickSightFolder(RelatedQuickSight):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightFolder"
+
 
 class RelatedQuickSightAnalysis(RelatedQuickSight):
     """
@@ -155,6 +159,7 @@ class RelatedQuickSightAnalysis(RelatedQuickSight):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightAnalysis"
 
+
 class RelatedQuickSightAnalysisVisual(RelatedQuickSight):
     """
     Related entity reference for QuickSightAnalysisVisual assets.
@@ -171,6 +176,7 @@ class RelatedQuickSightAnalysisVisual(RelatedQuickSight):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightAnalysisVisual"
+
 
 class RelatedQuickSightDashboard(RelatedQuickSight):
     """

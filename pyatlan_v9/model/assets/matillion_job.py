@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .matillion_related import RelatedMatillionComponent, RelatedMatillionJob, RelatedMatillionProject
+from .matillion_related import RelatedMatillionComponent, RelatedMatillionProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MatillionJob(Asset):
@@ -199,7 +202,9 @@ class MatillionJob(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -221,40 +226,6 @@ class MatillionJob(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.matillion_project is UNSET:
-                errors.append("matillion_project is required for creation")
-            if self.matillion_project_name is UNSET:
-                errors.append("matillion_project_name is required for creation")
-            if self.matillion_project_qualified_name is UNSET:
-                errors.append("matillion_project_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MatillionJob validation failed: {errors}")
-
-    def minimize(self) -> "MatillionJob":
-        self.validate()
-        return MatillionJob(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMatillionJob":
-        if self.guid is not UNSET:
-            return RelatedMatillionJob(guid=self.guid)
-        return RelatedMatillionJob(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -307,6 +278,7 @@ class MatillionJob(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MatillionJobAttributes(AssetAttributes):
     """MatillionJob-specific attributes for nested API format."""
 
@@ -330,6 +302,7 @@ class MatillionJobAttributes(AssetAttributes):
 
     matillion_version: str | None | UnsetType = UNSET
     """Current point in time state of a project."""
+
 
 class MatillionJobRelationshipAttributes(AssetRelationshipAttributes):
     """MatillionJob-specific relationship attributes for nested API format."""
@@ -412,7 +385,9 @@ class MatillionJobRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -424,13 +399,19 @@ class MatillionJobRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class MatillionJobNested(AssetNested):
     """MatillionJob in nested API format for high-performance serialization."""
 
     attributes: MatillionJobAttributes | UnsetType = UNSET
     relationship_attributes: MatillionJobRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: MatillionJobRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: MatillionJobRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: MatillionJobRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: MatillionJobRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -470,7 +451,10 @@ _MATILLION_JOB_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_matillion_job_attrs(attrs: MatillionJobAttributes, obj: MatillionJob) -> None:
+
+def _populate_matillion_job_attrs(
+    attrs: MatillionJobAttributes, obj: MatillionJob
+) -> None:
     """Populate MatillionJob-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.matillion_job_type = obj.matillion_job_type
@@ -480,6 +464,7 @@ def _populate_matillion_job_attrs(attrs: MatillionJobAttributes, obj: MatillionJ
     attrs.matillion_project_name = obj.matillion_project_name
     attrs.matillion_project_qualified_name = obj.matillion_project_qualified_name
     attrs.matillion_version = obj.matillion_version
+
 
 def _extract_matillion_job_attrs(attrs: MatillionJobAttributes) -> dict:
     """Extract all MatillionJob attributes from the attrs struct into a flat dict."""
@@ -492,6 +477,7 @@ def _extract_matillion_job_attrs(attrs: MatillionJobAttributes) -> dict:
     result["matillion_project_qualified_name"] = attrs.matillion_project_qualified_name
     result["matillion_version"] = attrs.matillion_version
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -532,16 +518,21 @@ def _matillion_job_to_nested(matillion_job: MatillionJob) -> MatillionJobNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _matillion_job_from_nested(nested: MatillionJobNested) -> MatillionJob:
     """Convert nested format to flat MatillionJob."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MatillionJobAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MatillionJobAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MATILLION_JOB_REL_FIELDS,
-        MatillionJobRelationshipAttributes
+        MatillionJobRelationshipAttributes,
     )
     return MatillionJob(
         guid=nested.guid,
@@ -568,6 +559,7 @@ def _matillion_job_from_nested(nested: MatillionJobNested) -> MatillionJob:
         **merged_rels,
     )
 
+
 def _matillion_job_to_nested_bytes(matillion_job: MatillionJob, serde: Serde) -> bytes:
     """Convert flat MatillionJob to nested JSON bytes."""
     return serde.encode(_matillion_job_to_nested(matillion_job))
@@ -577,6 +569,7 @@ def _matillion_job_from_nested_bytes(data: bytes, serde: Serde) -> MatillionJob:
     """Convert nested JSON bytes to flat MatillionJob."""
     nested = serde.decode(data, MatillionJobNested)
     return _matillion_job_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -589,11 +582,23 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 MatillionJob.MATILLION_JOB_TYPE = KeywordField("matillionJobType", "matillionJobType")
-MatillionJob.MATILLION_JOB_PATH = KeywordTextField("matillionJobPath", "matillionJobPath", "matillionJobPath.text")
-MatillionJob.MATILLION_JOB_COMPONENT_COUNT = NumericField("matillionJobComponentCount", "matillionJobComponentCount")
-MatillionJob.MATILLION_JOB_SCHEDULE = KeywordField("matillionJobSchedule", "matillionJobSchedule")
-MatillionJob.MATILLION_PROJECT_NAME = KeywordTextField("matillionProjectName", "matillionProjectName", "matillionProjectName.text")
-MatillionJob.MATILLION_PROJECT_QUALIFIED_NAME = KeywordTextField("matillionProjectQualifiedName", "matillionProjectQualifiedName", "matillionProjectQualifiedName.text")
+MatillionJob.MATILLION_JOB_PATH = KeywordTextField(
+    "matillionJobPath", "matillionJobPath", "matillionJobPath.text"
+)
+MatillionJob.MATILLION_JOB_COMPONENT_COUNT = NumericField(
+    "matillionJobComponentCount", "matillionJobComponentCount"
+)
+MatillionJob.MATILLION_JOB_SCHEDULE = KeywordField(
+    "matillionJobSchedule", "matillionJobSchedule"
+)
+MatillionJob.MATILLION_PROJECT_NAME = KeywordTextField(
+    "matillionProjectName", "matillionProjectName", "matillionProjectName.text"
+)
+MatillionJob.MATILLION_PROJECT_QUALIFIED_NAME = KeywordTextField(
+    "matillionProjectQualifiedName",
+    "matillionProjectQualifiedName",
+    "matillionProjectQualifiedName.text",
+)
 MatillionJob.MATILLION_VERSION = KeywordField("matillionVersion", "matillionVersion")
 MatillionJob.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MatillionJob.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

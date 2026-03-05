@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -38,6 +37,7 @@ class RelatedNamespace(RelatedAsset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Namespace"
 
+
 class RelatedCollection(RelatedNamespace):
     """
     Related entity reference for Collection assets.
@@ -57,6 +57,7 @@ class RelatedCollection(RelatedNamespace):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Collection"
+
 
 class RelatedFolder(RelatedNamespace):
     """

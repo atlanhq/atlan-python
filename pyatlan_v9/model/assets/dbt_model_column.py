@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -45,15 +44,19 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .dbt_related import RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSeed, RelatedDbtTest
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtTest
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DbtModelColumn(Asset):
@@ -272,7 +275,9 @@ class DbtModelColumn(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -294,38 +299,6 @@ class DbtModelColumn(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.dbt_model is UNSET:
-                errors.append("dbt_model is required for creation")
-            if self.dbt_model_qualified_name is UNSET:
-                errors.append("dbt_model_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"DbtModelColumn validation failed: {errors}")
-
-    def minimize(self) -> "DbtModelColumn":
-        self.validate()
-        return DbtModelColumn(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbtModelColumn":
-        if self.guid is not UNSET:
-            return RelatedDbtModelColumn(guid=self.guid)
-        return RelatedDbtModelColumn(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -377,6 +350,7 @@ class DbtModelColumn(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DbtModelColumnAttributes(AssetAttributes):
     """DbtModelColumn-specific attributes for nested API format."""
@@ -446,6 +420,7 @@ class DbtModelColumnAttributes(AssetAttributes):
 
     dbt_job_runs: list[dict[str, Any]] | None | UnsetType = UNSET
     """List of latest dbt job runs across all environments."""
+
 
 class DbtModelColumnRelationshipAttributes(AssetRelationshipAttributes):
     """DbtModelColumn-specific relationship attributes for nested API format."""
@@ -537,7 +512,9 @@ class DbtModelColumnRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -549,13 +526,19 @@ class DbtModelColumnRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DbtModelColumnNested(AssetNested):
     """DbtModelColumn in nested API format for high-performance serialization."""
 
     attributes: DbtModelColumnAttributes | UnsetType = UNSET
     relationship_attributes: DbtModelColumnRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DbtModelColumnRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DbtModelColumnRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: DbtModelColumnRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: DbtModelColumnRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -598,7 +581,10 @@ _DBT_MODEL_COLUMN_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_dbt_model_column_attrs(attrs: DbtModelColumnAttributes, obj: DbtModelColumn) -> None:
+
+def _populate_dbt_model_column_attrs(
+    attrs: DbtModelColumnAttributes, obj: DbtModelColumn
+) -> None:
     """Populate DbtModelColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dbt_model_qualified_name = obj.dbt_model_qualified_name
@@ -623,6 +609,7 @@ def _populate_dbt_model_column_attrs(attrs: DbtModelColumnAttributes, obj: DbtMo
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+
 
 def _extract_dbt_model_column_attrs(attrs: DbtModelColumnAttributes) -> dict:
     """Extract all DbtModelColumn attributes from the attrs struct into a flat dict."""
@@ -651,18 +638,23 @@ def _extract_dbt_model_column_attrs(attrs: DbtModelColumnAttributes) -> dict:
     result["dbt_job_runs"] = attrs.dbt_job_runs
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _dbt_model_column_to_nested(dbt_model_column: DbtModelColumn) -> DbtModelColumnNested:
+def _dbt_model_column_to_nested(
+    dbt_model_column: DbtModelColumn,
+) -> DbtModelColumnNested:
     """Convert flat DbtModelColumn to nested format."""
     attrs = DbtModelColumnAttributes()
     _populate_dbt_model_column_attrs(attrs, dbt_model_column)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        dbt_model_column, _DBT_MODEL_COLUMN_REL_FIELDS, DbtModelColumnRelationshipAttributes
+        dbt_model_column,
+        _DBT_MODEL_COLUMN_REL_FIELDS,
+        DbtModelColumnRelationshipAttributes,
     )
     return DbtModelColumnNested(
         guid=dbt_model_column.guid,
@@ -690,16 +682,21 @@ def _dbt_model_column_to_nested(dbt_model_column: DbtModelColumn) -> DbtModelCol
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_model_column_from_nested(nested: DbtModelColumnNested) -> DbtModelColumn:
     """Convert nested format to flat DbtModelColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DbtModelColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DbtModelColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_MODEL_COLUMN_REL_FIELDS,
-        DbtModelColumnRelationshipAttributes
+        DbtModelColumnRelationshipAttributes,
     )
     return DbtModelColumn(
         guid=nested.guid,
@@ -726,7 +723,10 @@ def _dbt_model_column_from_nested(nested: DbtModelColumnNested) -> DbtModelColum
         **merged_rels,
     )
 
-def _dbt_model_column_to_nested_bytes(dbt_model_column: DbtModelColumn, serde: Serde) -> bytes:
+
+def _dbt_model_column_to_nested_bytes(
+    dbt_model_column: DbtModelColumn, serde: Serde
+) -> bytes:
     """Convert flat DbtModelColumn to nested JSON bytes."""
     return serde.encode(_dbt_model_column_to_nested(dbt_model_column))
 
@@ -735,6 +735,7 @@ def _dbt_model_column_from_nested_bytes(data: bytes, serde: Serde) -> DbtModelCo
     """Convert nested JSON bytes to flat DbtModelColumn."""
     nested = serde.decode(data, DbtModelColumnNested)
     return _dbt_model_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -746,9 +747,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DbtModelColumn.DBT_MODEL_QUALIFIED_NAME = KeywordTextField("dbtModelQualifiedName", "dbtModelQualifiedName", "dbtModelQualifiedName.text")
-DbtModelColumn.DBT_MODEL_COLUMN_DATA_TYPE = KeywordField("dbtModelColumnDataType", "dbtModelColumnDataType")
-DbtModelColumn.DBT_MODEL_COLUMN_ORDER = NumericField("dbtModelColumnOrder", "dbtModelColumnOrder")
+DbtModelColumn.DBT_MODEL_QUALIFIED_NAME = KeywordTextField(
+    "dbtModelQualifiedName", "dbtModelQualifiedName", "dbtModelQualifiedName.text"
+)
+DbtModelColumn.DBT_MODEL_COLUMN_DATA_TYPE = KeywordField(
+    "dbtModelColumnDataType", "dbtModelColumnDataType"
+)
+DbtModelColumn.DBT_MODEL_COLUMN_ORDER = NumericField(
+    "dbtModelColumnOrder", "dbtModelColumnOrder"
+)
 DbtModelColumn.DBT_ALIAS = KeywordField("dbtAlias", "dbtAlias")
 DbtModelColumn.DBT_META = KeywordField("dbtMeta", "dbtMeta")
 DbtModelColumn.DBT_UNIQUE_ID = KeywordField("dbtUniqueId", "dbtUniqueId")
@@ -758,15 +765,27 @@ DbtModelColumn.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName
 DbtModelColumn.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtModelColumn.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtModelColumn.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtModelColumn.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+DbtModelColumn.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 DbtModelColumn.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtModelColumn.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtModelColumn.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
-DbtModelColumn.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtModelColumn.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+DbtModelColumn.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
+DbtModelColumn.DBT_ENVIRONMENT_NAME = KeywordField(
+    "dbtEnvironmentName", "dbtEnvironmentName"
+)
+DbtModelColumn.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 DbtModelColumn.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtModelColumn.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-DbtModelColumn.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+DbtModelColumn.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+DbtModelColumn.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 DbtModelColumn.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtModelColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DbtModelColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -776,7 +795,9 @@ DbtModelColumn.APPLICATION_FIELD = RelationField("applicationField")
 DbtModelColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DbtModelColumn.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DbtModelColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DbtModelColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DbtModelColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DbtModelColumn.METRICS = RelationField("metrics")
 DbtModelColumn.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DbtModelColumn.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .domo_related import RelatedDomoCard, RelatedDomoDataset, RelatedDomoDatasetColumn
+from .domo_related import RelatedDomoCard, RelatedDomoDatasetColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DomoDataset(Asset):
@@ -198,7 +201,9 @@ class DomoDataset(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -212,30 +217,6 @@ class DomoDataset(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DomoDataset"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DomoDataset validation failed: {errors}")
-
-    def minimize(self) -> "DomoDataset":
-        self.validate()
-        return DomoDataset(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDomoDataset":
-        if self.guid is not UNSET:
-            return RelatedDomoDataset(guid=self.guid)
-        return RelatedDomoDataset(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -288,6 +269,7 @@ class DomoDataset(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DomoDatasetAttributes(AssetAttributes):
     """DomoDataset-specific attributes for nested API format."""
 
@@ -311,6 +293,7 @@ class DomoDatasetAttributes(AssetAttributes):
 
     domo_owner_id: str | None | UnsetType = UNSET
     """Id of the owner of the Domo dataset."""
+
 
 class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """DomoDataset-specific relationship attributes for nested API format."""
@@ -393,7 +376,9 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -405,13 +390,19 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DomoDatasetNested(AssetNested):
     """DomoDataset in nested API format for high-performance serialization."""
 
     attributes: DomoDatasetAttributes | UnsetType = UNSET
     relationship_attributes: DomoDatasetRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DomoDatasetRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DomoDatasetRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: DomoDatasetRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: DomoDatasetRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -451,7 +442,10 @@ _DOMO_DATASET_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_domo_dataset_attrs(attrs: DomoDatasetAttributes, obj: DomoDataset) -> None:
+
+def _populate_domo_dataset_attrs(
+    attrs: DomoDatasetAttributes, obj: DomoDataset
+) -> None:
     """Populate DomoDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.domo_dataset_row_count = obj.domo_dataset_row_count
@@ -461,6 +455,7 @@ def _populate_domo_dataset_attrs(attrs: DomoDatasetAttributes, obj: DomoDataset)
     attrs.domo_dataset_last_run = obj.domo_dataset_last_run
     attrs.domo_id = obj.domo_id
     attrs.domo_owner_id = obj.domo_owner_id
+
 
 def _extract_domo_dataset_attrs(attrs: DomoDatasetAttributes) -> dict:
     """Extract all DomoDataset attributes from the attrs struct into a flat dict."""
@@ -473,6 +468,7 @@ def _extract_domo_dataset_attrs(attrs: DomoDatasetAttributes) -> dict:
     result["domo_id"] = attrs.domo_id
     result["domo_owner_id"] = attrs.domo_owner_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -513,16 +509,19 @@ def _domo_dataset_to_nested(domo_dataset: DomoDataset) -> DomoDatasetNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _domo_dataset_from_nested(nested: DomoDatasetNested) -> DomoDataset:
     """Convert nested format to flat DomoDataset."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DomoDatasetAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DomoDatasetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DOMO_DATASET_REL_FIELDS,
-        DomoDatasetRelationshipAttributes
+        DomoDatasetRelationshipAttributes,
     )
     return DomoDataset(
         guid=nested.guid,
@@ -549,6 +548,7 @@ def _domo_dataset_from_nested(nested: DomoDatasetNested) -> DomoDataset:
         **merged_rels,
     )
 
+
 def _domo_dataset_to_nested_bytes(domo_dataset: DomoDataset, serde: Serde) -> bytes:
     """Convert flat DomoDataset to nested JSON bytes."""
     return serde.encode(_domo_dataset_to_nested(domo_dataset))
@@ -558,6 +558,7 @@ def _domo_dataset_from_nested_bytes(data: bytes, serde: Serde) -> DomoDataset:
     """Convert nested JSON bytes to flat DomoDataset."""
     nested = serde.decode(data, DomoDatasetNested)
     return _domo_dataset_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -569,11 +570,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DomoDataset.DOMO_DATASET_ROW_COUNT = NumericField("domoDatasetRowCount", "domoDatasetRowCount")
-DomoDataset.DOMO_DATASET_COLUMN_COUNT = NumericField("domoDatasetColumnCount", "domoDatasetColumnCount")
-DomoDataset.DOMO_DATASET_TYPE = KeywordTextField("domoDatasetType", "domoDatasetType", "domoDatasetType.text")
-DomoDataset.DOMO_DATASET_CARD_COUNT = NumericField("domoDatasetCardCount", "domoDatasetCardCount")
-DomoDataset.DOMO_DATASET_LAST_RUN = KeywordField("domoDatasetLastRun", "domoDatasetLastRun")
+DomoDataset.DOMO_DATASET_ROW_COUNT = NumericField(
+    "domoDatasetRowCount", "domoDatasetRowCount"
+)
+DomoDataset.DOMO_DATASET_COLUMN_COUNT = NumericField(
+    "domoDatasetColumnCount", "domoDatasetColumnCount"
+)
+DomoDataset.DOMO_DATASET_TYPE = KeywordTextField(
+    "domoDatasetType", "domoDatasetType", "domoDatasetType.text"
+)
+DomoDataset.DOMO_DATASET_CARD_COUNT = NumericField(
+    "domoDatasetCardCount", "domoDatasetCardCount"
+)
+DomoDataset.DOMO_DATASET_LAST_RUN = KeywordField(
+    "domoDatasetLastRun", "domoDatasetLastRun"
+)
 DomoDataset.DOMO_ID = KeywordField("domoId", "domoId")
 DomoDataset.DOMO_OWNER_ID = KeywordField("domoOwnerId", "domoOwnerId")
 DomoDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .fabric_related import RelatedFabricActivity, RelatedFabricDataPipeline
+from .fabric_related import RelatedFabricDataPipeline
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FabricActivity(Asset):
@@ -191,7 +194,9 @@ class FabricActivity(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -213,38 +218,6 @@ class FabricActivity(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.fabric_data_pipeline is UNSET:
-                errors.append("fabric_data_pipeline is required for creation")
-            if self.fabric_data_pipeline_qualified_name is UNSET:
-                errors.append("fabric_data_pipeline_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"FabricActivity validation failed: {errors}")
-
-    def minimize(self) -> "FabricActivity":
-        self.validate()
-        return FabricActivity(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFabricActivity":
-        if self.guid is not UNSET:
-            return RelatedFabricActivity(guid=self.guid)
-        return RelatedFabricActivity(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -297,6 +270,7 @@ class FabricActivity(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FabricActivityAttributes(AssetAttributes):
     """FabricActivity-specific attributes for nested API format."""
 
@@ -314,6 +288,7 @@ class FabricActivityAttributes(AssetAttributes):
 
     fabric_ordinal: int | None | UnsetType = UNSET
     """Order/position of this asset within its parent."""
+
 
 class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     """FabricActivity-specific relationship attributes for nested API format."""
@@ -396,7 +371,9 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -408,13 +385,19 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class FabricActivityNested(AssetNested):
     """FabricActivity in nested API format for high-performance serialization."""
 
     attributes: FabricActivityAttributes | UnsetType = UNSET
     relationship_attributes: FabricActivityRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: FabricActivityRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: FabricActivityRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: FabricActivityRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: FabricActivityRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -454,7 +437,10 @@ _FABRIC_ACTIVITY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_fabric_activity_attrs(attrs: FabricActivityAttributes, obj: FabricActivity) -> None:
+
+def _populate_fabric_activity_attrs(
+    attrs: FabricActivityAttributes, obj: FabricActivity
+) -> None:
     """Populate FabricActivity-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.fabric_data_pipeline_qualified_name = obj.fabric_data_pipeline_qualified_name
@@ -463,15 +449,19 @@ def _populate_fabric_activity_attrs(attrs: FabricActivityAttributes, obj: Fabric
     attrs.fabric_data_type = obj.fabric_data_type
     attrs.fabric_ordinal = obj.fabric_ordinal
 
+
 def _extract_fabric_activity_attrs(attrs: FabricActivityAttributes) -> dict:
     """Extract all FabricActivity attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["fabric_data_pipeline_qualified_name"] = attrs.fabric_data_pipeline_qualified_name
+    result["fabric_data_pipeline_qualified_name"] = (
+        attrs.fabric_data_pipeline_qualified_name
+    )
     result["fabric_activity_type"] = attrs.fabric_activity_type
     result["fabric_column_count"] = attrs.fabric_column_count
     result["fabric_data_type"] = attrs.fabric_data_type
     result["fabric_ordinal"] = attrs.fabric_ordinal
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -484,7 +474,9 @@ def _fabric_activity_to_nested(fabric_activity: FabricActivity) -> FabricActivit
     _populate_fabric_activity_attrs(attrs, fabric_activity)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        fabric_activity, _FABRIC_ACTIVITY_REL_FIELDS, FabricActivityRelationshipAttributes
+        fabric_activity,
+        _FABRIC_ACTIVITY_REL_FIELDS,
+        FabricActivityRelationshipAttributes,
     )
     return FabricActivityNested(
         guid=fabric_activity.guid,
@@ -512,16 +504,21 @@ def _fabric_activity_to_nested(fabric_activity: FabricActivity) -> FabricActivit
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _fabric_activity_from_nested(nested: FabricActivityNested) -> FabricActivity:
     """Convert nested format to flat FabricActivity."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FabricActivityAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else FabricActivityAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FABRIC_ACTIVITY_REL_FIELDS,
-        FabricActivityRelationshipAttributes
+        FabricActivityRelationshipAttributes,
     )
     return FabricActivity(
         guid=nested.guid,
@@ -548,7 +545,10 @@ def _fabric_activity_from_nested(nested: FabricActivityNested) -> FabricActivity
         **merged_rels,
     )
 
-def _fabric_activity_to_nested_bytes(fabric_activity: FabricActivity, serde: Serde) -> bytes:
+
+def _fabric_activity_to_nested_bytes(
+    fabric_activity: FabricActivity, serde: Serde
+) -> bytes:
     """Convert flat FabricActivity to nested JSON bytes."""
     return serde.encode(_fabric_activity_to_nested(fabric_activity))
 
@@ -557,6 +557,7 @@ def _fabric_activity_from_nested_bytes(data: bytes, serde: Serde) -> FabricActiv
     """Convert nested JSON bytes to flat FabricActivity."""
     nested = serde.decode(data, FabricActivityNested)
     return _fabric_activity_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -567,9 +568,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-FabricActivity.FABRIC_DATA_PIPELINE_QUALIFIED_NAME = KeywordField("fabricDataPipelineQualifiedName", "fabricDataPipelineQualifiedName")
-FabricActivity.FABRIC_ACTIVITY_TYPE = KeywordField("fabricActivityType", "fabricActivityType")
-FabricActivity.FABRIC_COLUMN_COUNT = NumericField("fabricColumnCount", "fabricColumnCount")
+FabricActivity.FABRIC_DATA_PIPELINE_QUALIFIED_NAME = KeywordField(
+    "fabricDataPipelineQualifiedName", "fabricDataPipelineQualifiedName"
+)
+FabricActivity.FABRIC_ACTIVITY_TYPE = KeywordField(
+    "fabricActivityType", "fabricActivityType"
+)
+FabricActivity.FABRIC_COLUMN_COUNT = NumericField(
+    "fabricColumnCount", "fabricColumnCount"
+)
 FabricActivity.FABRIC_DATA_TYPE = KeywordField("fabricDataType", "fabricDataType")
 FabricActivity.FABRIC_ORDINAL = NumericField("fabricOrdinal", "fabricOrdinal")
 FabricActivity.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -580,7 +587,9 @@ FabricActivity.APPLICATION_FIELD = RelationField("applicationField")
 FabricActivity.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 FabricActivity.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 FabricActivity.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-FabricActivity.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+FabricActivity.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 FabricActivity.METRICS = RelationField("metrics")
 FabricActivity.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 FabricActivity.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

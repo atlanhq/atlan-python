@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,27 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .looker_related import RelatedLookerDashboard, RelatedLookerExplore, RelatedLookerField, RelatedLookerLook, RelatedLookerModel, RelatedLookerProject, RelatedLookerTile, RelatedLookerView
+from .looker_related import (
+    RelatedLookerDashboard,
+    RelatedLookerExplore,
+    RelatedLookerLook,
+    RelatedLookerModel,
+    RelatedLookerProject,
+    RelatedLookerTile,
+    RelatedLookerView,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class LookerField(Asset):
@@ -247,7 +258,9 @@ class LookerField(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -269,40 +282,6 @@ class LookerField(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.model is UNSET:
-                errors.append("model is required for creation")
-            if self.model_name is UNSET:
-                errors.append("model_name is required for creation")
-            if self.project_name is UNSET:
-                errors.append("project_name is required for creation")
-        if errors:
-            raise ValueError(f"LookerField validation failed: {errors}")
-
-    def minimize(self) -> "LookerField":
-        self.validate()
-        return LookerField(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLookerField":
-        if self.guid is not UNSET:
-            return RelatedLookerField(guid=self.guid)
-        return RelatedLookerField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -355,6 +334,7 @@ class LookerField(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LookerFieldAttributes(AssetAttributes):
     """LookerField-specific attributes for nested API format."""
 
@@ -399,6 +379,7 @@ class LookerFieldAttributes(AssetAttributes):
 
     looker_slug: str | None | UnsetType = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
+
 
 class LookerFieldRelationshipAttributes(AssetRelationshipAttributes):
     """LookerField-specific relationship attributes for nested API format."""
@@ -496,7 +477,9 @@ class LookerFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -508,13 +491,19 @@ class LookerFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class LookerFieldNested(AssetNested):
     """LookerField in nested API format for high-performance serialization."""
 
     attributes: LookerFieldAttributes | UnsetType = UNSET
     relationship_attributes: LookerFieldRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: LookerFieldRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: LookerFieldRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: LookerFieldRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: LookerFieldRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -559,7 +548,10 @@ _LOOKER_FIELD_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_looker_field_attrs(attrs: LookerFieldAttributes, obj: LookerField) -> None:
+
+def _populate_looker_field_attrs(
+    attrs: LookerFieldAttributes, obj: LookerField
+) -> None:
     """Populate LookerField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.project_name = obj.project_name
@@ -577,6 +569,7 @@ def _populate_looker_field_attrs(attrs: LookerFieldAttributes, obj: LookerField)
     attrs.looker_field_refinement_line_number = obj.looker_field_refinement_line_number
     attrs.looker_slug = obj.looker_slug
 
+
 def _extract_looker_field_attrs(attrs: LookerFieldAttributes) -> dict:
     """Extract all LookerField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -591,10 +584,15 @@ def _extract_looker_field_attrs(attrs: LookerFieldAttributes) -> dict:
     result["looker_field_data_type"] = attrs.looker_field_data_type
     result["looker_times_used"] = attrs.looker_times_used
     result["looker_field_is_refined"] = attrs.looker_field_is_refined
-    result["looker_field_refinement_file_path"] = attrs.looker_field_refinement_file_path
-    result["looker_field_refinement_line_number"] = attrs.looker_field_refinement_line_number
+    result["looker_field_refinement_file_path"] = (
+        attrs.looker_field_refinement_file_path
+    )
+    result["looker_field_refinement_line_number"] = (
+        attrs.looker_field_refinement_line_number
+    )
     result["looker_slug"] = attrs.looker_slug
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -635,16 +633,19 @@ def _looker_field_to_nested(looker_field: LookerField) -> LookerFieldNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _looker_field_from_nested(nested: LookerFieldNested) -> LookerField:
     """Convert nested format to flat LookerField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else LookerFieldAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else LookerFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_FIELD_REL_FIELDS,
-        LookerFieldRelationshipAttributes
+        LookerFieldRelationshipAttributes,
     )
     return LookerField(
         guid=nested.guid,
@@ -671,6 +672,7 @@ def _looker_field_from_nested(nested: LookerFieldNested) -> LookerField:
         **merged_rels,
     )
 
+
 def _looker_field_to_nested_bytes(looker_field: LookerField, serde: Serde) -> bytes:
     """Convert flat LookerField to nested JSON bytes."""
     return serde.encode(_looker_field_to_nested(looker_field))
@@ -680,6 +682,7 @@ def _looker_field_from_nested_bytes(data: bytes, serde: Serde) -> LookerField:
     """Convert nested JSON bytes to flat LookerField."""
     nested = serde.decode(data, LookerFieldNested)
     return _looker_field_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -693,18 +696,40 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 LookerField.PROJECT_NAME = KeywordField("projectName", "projectName")
-LookerField.LOOKER_EXPLORE_QUALIFIED_NAME = KeywordTextField("lookerExploreQualifiedName", "lookerExploreQualifiedName", "lookerExploreQualifiedName.text")
-LookerField.LOOKER_VIEW_QUALIFIED_NAME = KeywordTextField("lookerViewQualifiedName", "lookerViewQualifiedName", "lookerViewQualifiedName.text")
-LookerField.LOOKER_TILE_QUALIFIED_NAME = KeywordTextField("lookerTileQualifiedName", "lookerTileQualifiedName", "lookerTileQualifiedName.text")
-LookerField.LOOKER_LOOK_QUALIFIED_NAME = KeywordTextField("lookerLookQualifiedName", "lookerLookQualifiedName", "lookerLookQualifiedName.text")
-LookerField.LOOKER_DASHBOARD_QUALIFIED_NAME = KeywordTextField("lookerDashboardQualifiedName", "lookerDashboardQualifiedName", "lookerDashboardQualifiedName.text")
+LookerField.LOOKER_EXPLORE_QUALIFIED_NAME = KeywordTextField(
+    "lookerExploreQualifiedName",
+    "lookerExploreQualifiedName",
+    "lookerExploreQualifiedName.text",
+)
+LookerField.LOOKER_VIEW_QUALIFIED_NAME = KeywordTextField(
+    "lookerViewQualifiedName", "lookerViewQualifiedName", "lookerViewQualifiedName.text"
+)
+LookerField.LOOKER_TILE_QUALIFIED_NAME = KeywordTextField(
+    "lookerTileQualifiedName", "lookerTileQualifiedName", "lookerTileQualifiedName.text"
+)
+LookerField.LOOKER_LOOK_QUALIFIED_NAME = KeywordTextField(
+    "lookerLookQualifiedName", "lookerLookQualifiedName", "lookerLookQualifiedName.text"
+)
+LookerField.LOOKER_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
+    "lookerDashboardQualifiedName",
+    "lookerDashboardQualifiedName",
+    "lookerDashboardQualifiedName.text",
+)
 LookerField.MODEL_NAME = KeywordField("modelName", "modelName")
 LookerField.SOURCE_DEFINITION = KeywordField("sourceDefinition", "sourceDefinition")
-LookerField.LOOKER_FIELD_DATA_TYPE = KeywordField("lookerFieldDataType", "lookerFieldDataType")
+LookerField.LOOKER_FIELD_DATA_TYPE = KeywordField(
+    "lookerFieldDataType", "lookerFieldDataType"
+)
 LookerField.LOOKER_TIMES_USED = NumericField("lookerTimesUsed", "lookerTimesUsed")
-LookerField.LOOKER_FIELD_IS_REFINED = BooleanField("lookerFieldIsRefined", "lookerFieldIsRefined")
-LookerField.LOOKER_FIELD_REFINEMENT_FILE_PATH = KeywordField("lookerFieldRefinementFilePath", "lookerFieldRefinementFilePath")
-LookerField.LOOKER_FIELD_REFINEMENT_LINE_NUMBER = KeywordField("lookerFieldRefinementLineNumber", "lookerFieldRefinementLineNumber")
+LookerField.LOOKER_FIELD_IS_REFINED = BooleanField(
+    "lookerFieldIsRefined", "lookerFieldIsRefined"
+)
+LookerField.LOOKER_FIELD_REFINEMENT_FILE_PATH = KeywordField(
+    "lookerFieldRefinementFilePath", "lookerFieldRefinementFilePath"
+)
+LookerField.LOOKER_FIELD_REFINEMENT_LINE_NUMBER = KeywordField(
+    "lookerFieldRefinementLineNumber", "lookerFieldRefinementLineNumber"
+)
 LookerField.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
 LookerField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 LookerField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

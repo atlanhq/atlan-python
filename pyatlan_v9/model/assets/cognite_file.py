@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cognite_related import RelatedCogniteAsset, RelatedCogniteFile
+from .cognite_related import RelatedCogniteAsset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CogniteFile(Asset):
@@ -167,7 +170,9 @@ class CogniteFile(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -186,39 +191,7 @@ class CogniteFile(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cognite_asset is UNSET:
-                errors.append("cognite_asset is required for creation")
-        if errors:
-            raise ValueError(f"CogniteFile validation failed: {errors}")
-
-    def minimize(self) -> "CogniteFile":
-        self.validate()
-        return CogniteFile(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCogniteFile":
-        if self.guid is not UNSET:
-            return RelatedCogniteFile(guid=self.guid)
-        return RelatedCogniteFile(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -271,10 +244,12 @@ class CogniteFile(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CogniteFileAttributes(AssetAttributes):
     """CogniteFile-specific attributes for nested API format."""
 
     pass
+
 
 class CogniteFileRelationshipAttributes(AssetRelationshipAttributes):
     """CogniteFile-specific relationship attributes for nested API format."""
@@ -354,7 +329,9 @@ class CogniteFileRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -366,13 +343,19 @@ class CogniteFileRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CogniteFileNested(AssetNested):
     """CogniteFile in nested API format for high-performance serialization."""
 
     attributes: CogniteFileAttributes | UnsetType = UNSET
     relationship_attributes: CogniteFileRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CogniteFileRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CogniteFileRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: CogniteFileRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: CogniteFileRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -411,13 +394,18 @@ _COGNITE_FILE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognite_file_attrs(attrs: CogniteFileAttributes, obj: CogniteFile) -> None:
+
+def _populate_cognite_file_attrs(
+    attrs: CogniteFileAttributes, obj: CogniteFile
+) -> None:
     """Populate CogniteFile-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+
 
 def _extract_cognite_file_attrs(attrs: CogniteFileAttributes) -> dict:
     """Extract all CogniteFile attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -458,16 +446,19 @@ def _cognite_file_to_nested(cognite_file: CogniteFile) -> CogniteFileNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognite_file_from_nested(nested: CogniteFileNested) -> CogniteFile:
     """Convert nested format to flat CogniteFile."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CogniteFileAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else CogniteFileAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNITE_FILE_REL_FIELDS,
-        CogniteFileRelationshipAttributes
+        CogniteFileRelationshipAttributes,
     )
     return CogniteFile(
         guid=nested.guid,
@@ -494,6 +485,7 @@ def _cognite_file_from_nested(nested: CogniteFileNested) -> CogniteFile:
         **merged_rels,
     )
 
+
 def _cognite_file_to_nested_bytes(cognite_file: CogniteFile, serde: Serde) -> bytes:
     """Convert flat CogniteFile to nested JSON bytes."""
     return serde.encode(_cognite_file_to_nested(cognite_file))
@@ -503,6 +495,7 @@ def _cognite_file_from_nested_bytes(data: bytes, serde: Serde) -> CogniteFile:
     """Convert nested JSON bytes to flat CogniteFile."""
     nested = serde.decode(data, CogniteFileNested)
     return _cognite_file_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

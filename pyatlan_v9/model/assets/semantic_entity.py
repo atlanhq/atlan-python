@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .semantic_related import RelatedSemanticEntity, RelatedSemanticModel
+from .semantic_related import RelatedSemanticModel
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SemanticEntity(Asset):
@@ -172,7 +175,9 @@ class SemanticEntity(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_model: RelatedSemanticModel | None | UnsetType = UNSET
@@ -194,39 +199,7 @@ class SemanticEntity(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.semantic_model is UNSET:
-                errors.append("semantic_model is required for creation")
-        if errors:
-            raise ValueError(f"SemanticEntity validation failed: {errors}")
-
-    def minimize(self) -> "SemanticEntity":
-        self.validate()
-        return SemanticEntity(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSemanticEntity":
-        if self.guid is not UNSET:
-            return RelatedSemanticEntity(guid=self.guid)
-        return RelatedSemanticEntity(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -279,6 +252,7 @@ class SemanticEntity(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SemanticEntityAttributes(AssetAttributes):
     """SemanticEntity-specific attributes for nested API format."""
 
@@ -287,6 +261,7 @@ class SemanticEntityAttributes(AssetAttributes):
 
     semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
+
 
 class SemanticEntityRelationshipAttributes(AssetRelationshipAttributes):
     """SemanticEntity-specific relationship attributes for nested API format."""
@@ -363,7 +338,9 @@ class SemanticEntityRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_model: RelatedSemanticModel | None | UnsetType = UNSET
@@ -378,13 +355,19 @@ class SemanticEntityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SemanticEntityNested(AssetNested):
     """SemanticEntity in nested API format for high-performance serialization."""
 
     attributes: SemanticEntityAttributes | UnsetType = UNSET
     relationship_attributes: SemanticEntityRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SemanticEntityRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SemanticEntityRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: SemanticEntityRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: SemanticEntityRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -423,11 +406,15 @@ _SEMANTIC_ENTITY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_semantic_entity_attrs(attrs: SemanticEntityAttributes, obj: SemanticEntity) -> None:
+
+def _populate_semantic_entity_attrs(
+    attrs: SemanticEntityAttributes, obj: SemanticEntity
+) -> None:
     """Populate SemanticEntity-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
+
 
 def _extract_semantic_entity_attrs(attrs: SemanticEntityAttributes) -> dict:
     """Extract all SemanticEntity attributes from the attrs struct into a flat dict."""
@@ -435,6 +422,7 @@ def _extract_semantic_entity_attrs(attrs: SemanticEntityAttributes) -> dict:
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -447,7 +435,9 @@ def _semantic_entity_to_nested(semantic_entity: SemanticEntity) -> SemanticEntit
     _populate_semantic_entity_attrs(attrs, semantic_entity)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        semantic_entity, _SEMANTIC_ENTITY_REL_FIELDS, SemanticEntityRelationshipAttributes
+        semantic_entity,
+        _SEMANTIC_ENTITY_REL_FIELDS,
+        SemanticEntityRelationshipAttributes,
     )
     return SemanticEntityNested(
         guid=semantic_entity.guid,
@@ -475,16 +465,21 @@ def _semantic_entity_to_nested(semantic_entity: SemanticEntity) -> SemanticEntit
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _semantic_entity_from_nested(nested: SemanticEntityNested) -> SemanticEntity:
     """Convert nested format to flat SemanticEntity."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SemanticEntityAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SemanticEntityAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SEMANTIC_ENTITY_REL_FIELDS,
-        SemanticEntityRelationshipAttributes
+        SemanticEntityRelationshipAttributes,
     )
     return SemanticEntity(
         guid=nested.guid,
@@ -511,7 +506,10 @@ def _semantic_entity_from_nested(nested: SemanticEntityNested) -> SemanticEntity
         **merged_rels,
     )
 
-def _semantic_entity_to_nested_bytes(semantic_entity: SemanticEntity, serde: Serde) -> bytes:
+
+def _semantic_entity_to_nested_bytes(
+    semantic_entity: SemanticEntity, serde: Serde
+) -> bytes:
     """Convert flat SemanticEntity to nested JSON bytes."""
     return serde.encode(_semantic_entity_to_nested(semantic_entity))
 
@@ -521,6 +519,7 @@ def _semantic_entity_from_nested_bytes(data: bytes, serde: Serde) -> SemanticEnt
     nested = serde.decode(data, SemanticEntityNested)
     return _semantic_entity_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -529,7 +528,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SemanticEntity.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
+SemanticEntity.SEMANTIC_EXPRESSION = KeywordField(
+    "semanticExpression", "semanticExpression"
+)
 SemanticEntity.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
 SemanticEntity.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SemanticEntity.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -539,7 +540,9 @@ SemanticEntity.APPLICATION_FIELD = RelationField("applicationField")
 SemanticEntity.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SemanticEntity.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SemanticEntity.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SemanticEntity.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SemanticEntity.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SemanticEntity.METRICS = RelationField("metrics")
 SemanticEntity.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SemanticEntity.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

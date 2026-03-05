@@ -43,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cassandra_related import RelatedCassandraKeyspace, RelatedCassandraTable, RelatedCassandraView
+from .cassandra_related import RelatedCassandraTable, RelatedCassandraView
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CassandraKeyspace(Asset):
@@ -129,7 +133,9 @@ class CassandraKeyspace(Asset):
     cassandra_view_qualified_name: str | None | UnsetType = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: list[RelatedAirflowTask] | None | UnsetType = UNSET
@@ -210,7 +216,9 @@ class CassandraKeyspace(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -224,30 +232,6 @@ class CassandraKeyspace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "CassandraKeyspace"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"CassandraKeyspace validation failed: {errors}")
-
-    def minimize(self) -> "CassandraKeyspace":
-        self.validate()
-        return CassandraKeyspace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCassandraKeyspace":
-        if self.guid is not UNSET:
-            return RelatedCassandraKeyspace(guid=self.guid)
-        return RelatedCassandraKeyspace(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -278,7 +262,9 @@ class CassandraKeyspace(Asset):
         return _cassandra_keyspace_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> CassandraKeyspace:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> CassandraKeyspace:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -299,6 +285,7 @@ class CassandraKeyspace(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class CassandraKeyspaceAttributes(AssetAttributes):
     """CassandraKeyspace-specific attributes for nested API format."""
@@ -330,8 +317,11 @@ class CassandraKeyspaceAttributes(AssetAttributes):
     cassandra_view_qualified_name: str | None | UnsetType = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: str | None | UnsetType = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
+
 
 class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     """CassandraKeyspace-specific relationship attributes for nested API format."""
@@ -414,7 +404,9 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -426,13 +418,19 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CassandraKeyspaceNested(AssetNested):
     """CassandraKeyspace in nested API format for high-performance serialization."""
 
     attributes: CassandraKeyspaceAttributes | UnsetType = UNSET
     relationship_attributes: CassandraKeyspaceRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CassandraKeyspaceRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CassandraKeyspaceRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        CassandraKeyspaceRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        CassandraKeyspaceRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -472,7 +470,10 @@ _CASSANDRA_KEYSPACE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes, obj: CassandraKeyspace) -> None:
+
+def _populate_cassandra_keyspace_attrs(
+    attrs: CassandraKeyspaceAttributes, obj: CassandraKeyspace
+) -> None:
     """Populate CassandraKeyspace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cassandra_keyspace_durable_writes = obj.cassandra_keyspace_durable_writes
@@ -486,10 +487,13 @@ def _populate_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes, obj: 
     attrs.cassandra_view_qualified_name = obj.cassandra_view_qualified_name
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
 
+
 def _extract_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes) -> dict:
     """Extract all CassandraKeyspace attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cassandra_keyspace_durable_writes"] = attrs.cassandra_keyspace_durable_writes
+    result["cassandra_keyspace_durable_writes"] = (
+        attrs.cassandra_keyspace_durable_writes
+    )
     result["cassandra_keyspace_replication"] = attrs.cassandra_keyspace_replication
     result["cassandra_keyspace_virtual"] = attrs.cassandra_keyspace_virtual
     result["cassandra_keyspace_query"] = attrs.cassandra_keyspace_query
@@ -501,18 +505,23 @@ def _extract_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes) -> dic
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _cassandra_keyspace_to_nested(cassandra_keyspace: CassandraKeyspace) -> CassandraKeyspaceNested:
+def _cassandra_keyspace_to_nested(
+    cassandra_keyspace: CassandraKeyspace,
+) -> CassandraKeyspaceNested:
     """Convert flat CassandraKeyspace to nested format."""
     attrs = CassandraKeyspaceAttributes()
     _populate_cassandra_keyspace_attrs(attrs, cassandra_keyspace)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cassandra_keyspace, _CASSANDRA_KEYSPACE_REL_FIELDS, CassandraKeyspaceRelationshipAttributes
+        cassandra_keyspace,
+        _CASSANDRA_KEYSPACE_REL_FIELDS,
+        CassandraKeyspaceRelationshipAttributes,
     )
     return CassandraKeyspaceNested(
         guid=cassandra_keyspace.guid,
@@ -540,16 +549,23 @@ def _cassandra_keyspace_to_nested(cassandra_keyspace: CassandraKeyspace) -> Cass
         remove_relationship_attributes=remove_rels,
     )
 
-def _cassandra_keyspace_from_nested(nested: CassandraKeyspaceNested) -> CassandraKeyspace:
+
+def _cassandra_keyspace_from_nested(
+    nested: CassandraKeyspaceNested,
+) -> CassandraKeyspace:
     """Convert nested format to flat CassandraKeyspace."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CassandraKeyspaceAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CassandraKeyspaceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CASSANDRA_KEYSPACE_REL_FIELDS,
-        CassandraKeyspaceRelationshipAttributes
+        CassandraKeyspaceRelationshipAttributes,
     )
     return CassandraKeyspace(
         guid=nested.guid,
@@ -576,15 +592,21 @@ def _cassandra_keyspace_from_nested(nested: CassandraKeyspaceNested) -> Cassandr
         **merged_rels,
     )
 
-def _cassandra_keyspace_to_nested_bytes(cassandra_keyspace: CassandraKeyspace, serde: Serde) -> bytes:
+
+def _cassandra_keyspace_to_nested_bytes(
+    cassandra_keyspace: CassandraKeyspace, serde: Serde
+) -> bytes:
     """Convert flat CassandraKeyspace to nested JSON bytes."""
     return serde.encode(_cassandra_keyspace_to_nested(cassandra_keyspace))
 
 
-def _cassandra_keyspace_from_nested_bytes(data: bytes, serde: Serde) -> CassandraKeyspace:
+def _cassandra_keyspace_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> CassandraKeyspace:
     """Convert nested JSON bytes to flat CassandraKeyspace."""
     nested = serde.decode(data, CassandraKeyspaceNested)
     return _cassandra_keyspace_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -595,16 +617,36 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CassandraKeyspace.CASSANDRA_KEYSPACE_DURABLE_WRITES = BooleanField("cassandraKeyspaceDurableWrites", "cassandraKeyspaceDurableWrites")
-CassandraKeyspace.CASSANDRA_KEYSPACE_REPLICATION = KeywordField("cassandraKeyspaceReplication", "cassandraKeyspaceReplication")
-CassandraKeyspace.CASSANDRA_KEYSPACE_VIRTUAL = BooleanField("cassandraKeyspaceVirtual", "cassandraKeyspaceVirtual")
-CassandraKeyspace.CASSANDRA_KEYSPACE_QUERY = KeywordField("cassandraKeyspaceQuery", "cassandraKeyspaceQuery")
-CassandraKeyspace.CASSANDRA_KEYSPACE_NAME = KeywordField("cassandraKeyspaceName", "cassandraKeyspaceName")
-CassandraKeyspace.CASSANDRA_TABLE_NAME = KeywordField("cassandraTableName", "cassandraTableName")
-CassandraKeyspace.CASSANDRA_VIEW_NAME = KeywordField("cassandraViewName", "cassandraViewName")
-CassandraKeyspace.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField("cassandraTableQualifiedName", "cassandraTableQualifiedName")
-CassandraKeyspace.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField("cassandraViewQualifiedName", "cassandraViewQualifiedName")
-CassandraKeyspace.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+CassandraKeyspace.CASSANDRA_KEYSPACE_DURABLE_WRITES = BooleanField(
+    "cassandraKeyspaceDurableWrites", "cassandraKeyspaceDurableWrites"
+)
+CassandraKeyspace.CASSANDRA_KEYSPACE_REPLICATION = KeywordField(
+    "cassandraKeyspaceReplication", "cassandraKeyspaceReplication"
+)
+CassandraKeyspace.CASSANDRA_KEYSPACE_VIRTUAL = BooleanField(
+    "cassandraKeyspaceVirtual", "cassandraKeyspaceVirtual"
+)
+CassandraKeyspace.CASSANDRA_KEYSPACE_QUERY = KeywordField(
+    "cassandraKeyspaceQuery", "cassandraKeyspaceQuery"
+)
+CassandraKeyspace.CASSANDRA_KEYSPACE_NAME = KeywordField(
+    "cassandraKeyspaceName", "cassandraKeyspaceName"
+)
+CassandraKeyspace.CASSANDRA_TABLE_NAME = KeywordField(
+    "cassandraTableName", "cassandraTableName"
+)
+CassandraKeyspace.CASSANDRA_VIEW_NAME = KeywordField(
+    "cassandraViewName", "cassandraViewName"
+)
+CassandraKeyspace.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField(
+    "cassandraTableQualifiedName", "cassandraTableQualifiedName"
+)
+CassandraKeyspace.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField(
+    "cassandraViewQualifiedName", "cassandraViewQualifiedName"
+)
+CassandraKeyspace.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 CassandraKeyspace.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CassandraKeyspace.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CassandraKeyspace.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -615,7 +657,9 @@ CassandraKeyspace.CASSANDRA_VIEWS = RelationField("cassandraViews")
 CassandraKeyspace.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CassandraKeyspace.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CassandraKeyspace.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-CassandraKeyspace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+CassandraKeyspace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 CassandraKeyspace.METRICS = RelationField("metrics")
 CassandraKeyspace.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CassandraKeyspace.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

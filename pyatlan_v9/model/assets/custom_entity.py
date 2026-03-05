@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,7 +43,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
@@ -54,6 +56,7 @@ from .custom_related import RelatedCustomEntity
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CustomEntity(Asset):
@@ -184,7 +187,9 @@ class CustomEntity(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -203,37 +208,7 @@ class CustomEntity(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"CustomEntity validation failed: {errors}")
-
-    def minimize(self) -> "CustomEntity":
-        self.validate()
-        return CustomEntity(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCustomEntity":
-        if self.guid is not UNSET:
-            return RelatedCustomEntity(guid=self.guid)
-        return RelatedCustomEntity(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     @classmethod
     @init_guid
@@ -316,11 +291,13 @@ class CustomEntity(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CustomEntityAttributes(AssetAttributes):
     """CustomEntity-specific attributes for nested API format."""
 
     custom_children_subtype: str | None | UnsetType = UNSET
     """Label of the children column for this asset type."""
+
 
 class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     """CustomEntity-specific relationship attributes for nested API format."""
@@ -409,7 +386,9 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -421,13 +400,19 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CustomEntityNested(AssetNested):
     """CustomEntity in nested API format for high-performance serialization."""
 
     attributes: CustomEntityAttributes | UnsetType = UNSET
     relationship_attributes: CustomEntityRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CustomEntityRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CustomEntityRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: CustomEntityRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: CustomEntityRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -469,16 +454,21 @@ _CUSTOM_ENTITY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_custom_entity_attrs(attrs: CustomEntityAttributes, obj: CustomEntity) -> None:
+
+def _populate_custom_entity_attrs(
+    attrs: CustomEntityAttributes, obj: CustomEntity
+) -> None:
     """Populate CustomEntity-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.custom_children_subtype = obj.custom_children_subtype
+
 
 def _extract_custom_entity_attrs(attrs: CustomEntityAttributes) -> dict:
     """Extract all CustomEntity attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["custom_children_subtype"] = attrs.custom_children_subtype
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -519,16 +509,21 @@ def _custom_entity_to_nested(custom_entity: CustomEntity) -> CustomEntityNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _custom_entity_from_nested(nested: CustomEntityNested) -> CustomEntity:
     """Convert nested format to flat CustomEntity."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CustomEntityAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CustomEntityAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CUSTOM_ENTITY_REL_FIELDS,
-        CustomEntityRelationshipAttributes
+        CustomEntityRelationshipAttributes,
     )
     return CustomEntity(
         guid=nested.guid,
@@ -555,6 +550,7 @@ def _custom_entity_from_nested(nested: CustomEntityNested) -> CustomEntity:
         **merged_rels,
     )
 
+
 def _custom_entity_to_nested_bytes(custom_entity: CustomEntity, serde: Serde) -> bytes:
     """Convert flat CustomEntity to nested JSON bytes."""
     return serde.encode(_custom_entity_to_nested(custom_entity))
@@ -565,6 +561,7 @@ def _custom_entity_from_nested_bytes(data: bytes, serde: Serde) -> CustomEntity:
     nested = serde.decode(data, CustomEntityNested)
     return _custom_entity_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -573,7 +570,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CustomEntity.CUSTOM_CHILDREN_SUBTYPE = KeywordField("customChildrenSubtype", "customChildrenSubtype")
+CustomEntity.CUSTOM_CHILDREN_SUBTYPE = KeywordField(
+    "customChildrenSubtype", "customChildrenSubtype"
+)
 CustomEntity.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CustomEntity.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CustomEntity.ANOMALO_CHECKS = RelationField("anomaloChecks")

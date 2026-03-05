@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,7 +43,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -53,6 +55,7 @@ from .cube_related import RelatedCube, RelatedCubeDimension, RelatedCubeHierarch
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CubeDimension(Asset):
@@ -203,7 +206,9 @@ class CubeDimension(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -222,43 +227,7 @@ class CubeDimension(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cube is UNSET:
-                errors.append("cube is required for creation")
-            if self.cube_name is UNSET:
-                errors.append("cube_name is required for creation")
-            if self.cube_qualified_name is UNSET:
-                errors.append("cube_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"CubeDimension validation failed: {errors}")
-
-    def minimize(self) -> "CubeDimension":
-        self.validate()
-        return CubeDimension(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCubeDimension":
-        if self.guid is not UNSET:
-            return RelatedCubeDimension(guid=self.guid)
-        return RelatedCubeDimension(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -311,6 +280,7 @@ class CubeDimension(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CubeDimensionAttributes(AssetAttributes):
     """CubeDimension-specific attributes for nested API format."""
 
@@ -334,6 +304,7 @@ class CubeDimensionAttributes(AssetAttributes):
 
     cube_hierarchy_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the dimension hierarchy in which this asset exists, or empty if it is itself a hierarchy."""
+
 
 class CubeDimensionRelationshipAttributes(AssetRelationshipAttributes):
     """CubeDimension-specific relationship attributes for nested API format."""
@@ -419,7 +390,9 @@ class CubeDimensionRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -431,13 +404,19 @@ class CubeDimensionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CubeDimensionNested(AssetNested):
     """CubeDimension in nested API format for high-performance serialization."""
 
     attributes: CubeDimensionAttributes | UnsetType = UNSET
     relationship_attributes: CubeDimensionRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CubeDimensionRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CubeDimensionRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: CubeDimensionRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: CubeDimensionRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -478,7 +457,10 @@ _CUBE_DIMENSION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cube_dimension_attrs(attrs: CubeDimensionAttributes, obj: CubeDimension) -> None:
+
+def _populate_cube_dimension_attrs(
+    attrs: CubeDimensionAttributes, obj: CubeDimension
+) -> None:
     """Populate CubeDimension-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cube_hierarchy_count = obj.cube_hierarchy_count
@@ -488,6 +470,7 @@ def _populate_cube_dimension_attrs(attrs: CubeDimensionAttributes, obj: CubeDime
     attrs.cube_dimension_qualified_name = obj.cube_dimension_qualified_name
     attrs.cube_hierarchy_name = obj.cube_hierarchy_name
     attrs.cube_hierarchy_qualified_name = obj.cube_hierarchy_qualified_name
+
 
 def _extract_cube_dimension_attrs(attrs: CubeDimensionAttributes) -> dict:
     """Extract all CubeDimension attributes from the attrs struct into a flat dict."""
@@ -500,6 +483,7 @@ def _extract_cube_dimension_attrs(attrs: CubeDimensionAttributes) -> dict:
     result["cube_hierarchy_name"] = attrs.cube_hierarchy_name
     result["cube_hierarchy_qualified_name"] = attrs.cube_hierarchy_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -540,16 +524,21 @@ def _cube_dimension_to_nested(cube_dimension: CubeDimension) -> CubeDimensionNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cube_dimension_from_nested(nested: CubeDimensionNested) -> CubeDimension:
     """Convert nested format to flat CubeDimension."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CubeDimensionAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CubeDimensionAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CUBE_DIMENSION_REL_FIELDS,
-        CubeDimensionRelationshipAttributes
+        CubeDimensionRelationshipAttributes,
     )
     return CubeDimension(
         guid=nested.guid,
@@ -576,7 +565,10 @@ def _cube_dimension_from_nested(nested: CubeDimensionNested) -> CubeDimension:
         **merged_rels,
     )
 
-def _cube_dimension_to_nested_bytes(cube_dimension: CubeDimension, serde: Serde) -> bytes:
+
+def _cube_dimension_to_nested_bytes(
+    cube_dimension: CubeDimension, serde: Serde
+) -> bytes:
     """Convert flat CubeDimension to nested JSON bytes."""
     return serde.encode(_cube_dimension_to_nested(cube_dimension))
 
@@ -585,6 +577,7 @@ def _cube_dimension_from_nested_bytes(data: bytes, serde: Serde) -> CubeDimensio
     """Convert nested JSON bytes to flat CubeDimension."""
     nested = serde.decode(data, CubeDimensionNested)
     return _cube_dimension_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -596,13 +589,25 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CubeDimension.CUBE_HIERARCHY_COUNT = NumericField("cubeHierarchyCount", "cubeHierarchyCount")
+CubeDimension.CUBE_HIERARCHY_COUNT = NumericField(
+    "cubeHierarchyCount", "cubeHierarchyCount"
+)
 CubeDimension.CUBE_NAME = KeywordTextField("cubeName", "cubeName", "cubeName.text")
-CubeDimension.CUBE_QUALIFIED_NAME = KeywordField("cubeQualifiedName", "cubeQualifiedName")
-CubeDimension.CUBE_DIMENSION_NAME = KeywordTextField("cubeDimensionName", "cubeDimensionName", "cubeDimensionName.text")
-CubeDimension.CUBE_DIMENSION_QUALIFIED_NAME = KeywordField("cubeDimensionQualifiedName", "cubeDimensionQualifiedName")
-CubeDimension.CUBE_HIERARCHY_NAME = KeywordTextField("cubeHierarchyName", "cubeHierarchyName", "cubeHierarchyName.text")
-CubeDimension.CUBE_HIERARCHY_QUALIFIED_NAME = KeywordField("cubeHierarchyQualifiedName", "cubeHierarchyQualifiedName")
+CubeDimension.CUBE_QUALIFIED_NAME = KeywordField(
+    "cubeQualifiedName", "cubeQualifiedName"
+)
+CubeDimension.CUBE_DIMENSION_NAME = KeywordTextField(
+    "cubeDimensionName", "cubeDimensionName", "cubeDimensionName.text"
+)
+CubeDimension.CUBE_DIMENSION_QUALIFIED_NAME = KeywordField(
+    "cubeDimensionQualifiedName", "cubeDimensionQualifiedName"
+)
+CubeDimension.CUBE_HIERARCHY_NAME = KeywordTextField(
+    "cubeHierarchyName", "cubeHierarchyName", "cubeHierarchyName.text"
+)
+CubeDimension.CUBE_HIERARCHY_QUALIFIED_NAME = KeywordField(
+    "cubeHierarchyQualifiedName", "cubeHierarchyQualifiedName"
+)
 CubeDimension.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CubeDimension.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CubeDimension.ANOMALO_CHECKS = RelationField("anomaloChecks")

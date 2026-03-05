@@ -43,15 +43,23 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .looker_related import RelatedLookerDashboard, RelatedLookerFolder, RelatedLookerLook
+from .looker_related import (
+    RelatedLookerDashboard,
+    RelatedLookerFolder,
+    RelatedLookerLook,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class LookerFolder(Asset):
@@ -108,7 +116,9 @@ class LookerFolder(Asset):
     source_child_count: int | None | UnsetType = UNSET
     """Number of subfolders in this folder."""
 
-    source_parent_id: int | None | UnsetType = msgspec.field(default=UNSET, name="sourceParentID")
+    source_parent_id: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="sourceParentID"
+    )
     """Identifier of the parent folder of this folder, from Looker."""
 
     looker_slug: str | None | UnsetType = UNSET
@@ -198,7 +208,9 @@ class LookerFolder(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -212,30 +224,6 @@ class LookerFolder(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "LookerFolder"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"LookerFolder validation failed: {errors}")
-
-    def minimize(self) -> "LookerFolder":
-        self.validate()
-        return LookerFolder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLookerFolder":
-        if self.guid is not UNSET:
-            return RelatedLookerFolder(guid=self.guid)
-        return RelatedLookerFolder(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -288,6 +276,7 @@ class LookerFolder(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LookerFolderAttributes(AssetAttributes):
     """LookerFolder-specific attributes for nested API format."""
 
@@ -300,11 +289,14 @@ class LookerFolderAttributes(AssetAttributes):
     source_child_count: int | None | UnsetType = UNSET
     """Number of subfolders in this folder."""
 
-    source_parent_id: int | None | UnsetType = msgspec.field(default=UNSET, name="sourceParentID")
+    source_parent_id: int | None | UnsetType = msgspec.field(
+        default=UNSET, name="sourceParentID"
+    )
     """Identifier of the parent folder of this folder, from Looker."""
 
     looker_slug: str | None | UnsetType = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
+
 
 class LookerFolderRelationshipAttributes(AssetRelationshipAttributes):
     """LookerFolder-specific relationship attributes for nested API format."""
@@ -393,7 +385,9 @@ class LookerFolderRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -405,13 +399,19 @@ class LookerFolderRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class LookerFolderNested(AssetNested):
     """LookerFolder in nested API format for high-performance serialization."""
 
     attributes: LookerFolderAttributes | UnsetType = UNSET
     relationship_attributes: LookerFolderRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: LookerFolderRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: LookerFolderRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: LookerFolderRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: LookerFolderRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -453,7 +453,10 @@ _LOOKER_FOLDER_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_looker_folder_attrs(attrs: LookerFolderAttributes, obj: LookerFolder) -> None:
+
+def _populate_looker_folder_attrs(
+    attrs: LookerFolderAttributes, obj: LookerFolder
+) -> None:
     """Populate LookerFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.source_content_metadata_id = obj.source_content_metadata_id
@@ -461,6 +464,7 @@ def _populate_looker_folder_attrs(attrs: LookerFolderAttributes, obj: LookerFold
     attrs.source_child_count = obj.source_child_count
     attrs.source_parent_id = obj.source_parent_id
     attrs.looker_slug = obj.looker_slug
+
 
 def _extract_looker_folder_attrs(attrs: LookerFolderAttributes) -> dict:
     """Extract all LookerFolder attributes from the attrs struct into a flat dict."""
@@ -471,6 +475,7 @@ def _extract_looker_folder_attrs(attrs: LookerFolderAttributes) -> dict:
     result["source_parent_id"] = attrs.source_parent_id
     result["looker_slug"] = attrs.looker_slug
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -511,16 +516,21 @@ def _looker_folder_to_nested(looker_folder: LookerFolder) -> LookerFolderNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _looker_folder_from_nested(nested: LookerFolderNested) -> LookerFolder:
     """Convert nested format to flat LookerFolder."""
-    attrs = nested.attributes if nested.attributes is not UNSET else LookerFolderAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else LookerFolderAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_FOLDER_REL_FIELDS,
-        LookerFolderRelationshipAttributes
+        LookerFolderRelationshipAttributes,
     )
     return LookerFolder(
         guid=nested.guid,
@@ -547,6 +557,7 @@ def _looker_folder_from_nested(nested: LookerFolderNested) -> LookerFolder:
         **merged_rels,
     )
 
+
 def _looker_folder_to_nested_bytes(looker_folder: LookerFolder, serde: Serde) -> bytes:
     """Convert flat LookerFolder to nested JSON bytes."""
     return serde.encode(_looker_folder_to_nested(looker_folder))
@@ -557,6 +568,7 @@ def _looker_folder_from_nested_bytes(data: bytes, serde: Serde) -> LookerFolder:
     nested = serde.decode(data, LookerFolderNested)
     return _looker_folder_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -566,7 +578,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-LookerFolder.SOURCE_CONTENT_METADATA_ID = NumericField("sourceContentMetadataId", "sourceContentMetadataId")
+LookerFolder.SOURCE_CONTENT_METADATA_ID = NumericField(
+    "sourceContentMetadataId", "sourceContentMetadataId"
+)
 LookerFolder.SOURCE_CREATOR_ID = NumericField("sourceCreatorId", "sourceCreatorId")
 LookerFolder.SOURCE_CHILD_COUNT = NumericField("sourceChildCount", "sourceChildCount")
 LookerFolder.SOURCE_PARENT_ID = NumericField("sourceParentID", "sourceParentID")

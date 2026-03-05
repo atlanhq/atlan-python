@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .catalog_related import RelatedSaaS
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SaaS(Asset):
@@ -162,7 +163,9 @@ class SaaS(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class SaaS(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SaaS"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SaaS validation failed: {errors}")
-
-    def minimize(self) -> "SaaS":
-        self.validate()
-        return SaaS(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSaaS":
-        if self.guid is not UNSET:
-            return RelatedSaaS(guid=self.guid)
-        return RelatedSaaS(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class SaaS(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SaaSAttributes(AssetAttributes):
     """SaaS-specific attributes for nested API format."""
 
     pass
+
 
 class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     """SaaS-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,6 +327,7 @@ class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SaaSNested(AssetNested):
     """SaaS in nested API format for high-performance serialization."""
 
@@ -351,6 +335,7 @@ class SaaSNested(AssetNested):
     relationship_attributes: SaaSRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: SaaSRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: SaaSRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +373,16 @@ _SAA_S_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_saa_s_attrs(attrs: SaaSAttributes, obj: SaaS) -> None:
     """Populate SaaS-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_saa_s_attrs(attrs: SaaSAttributes) -> dict:
     """Extract all SaaS attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,6 +423,7 @@ def _saa_s_to_nested(saa_s: SaaS) -> SaaSNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _saa_s_from_nested(nested: SaaSNested) -> SaaS:
     """Convert nested format to flat SaaS."""
     attrs = nested.attributes if nested.attributes is not UNSET else SaaSAttributes()
@@ -444,7 +433,7 @@ def _saa_s_from_nested(nested: SaaSNested) -> SaaS:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAA_S_REL_FIELDS,
-        SaaSRelationshipAttributes
+        SaaSRelationshipAttributes,
     )
     return SaaS(
         guid=nested.guid,
@@ -471,6 +460,7 @@ def _saa_s_from_nested(nested: SaaSNested) -> SaaS:
         **merged_rels,
     )
 
+
 def _saa_s_to_nested_bytes(saa_s: SaaS, serde: Serde) -> bytes:
     """Convert flat SaaS to nested JSON bytes."""
     return serde.encode(_saa_s_to_nested(saa_s))
@@ -480,6 +470,7 @@ def _saa_s_from_nested_bytes(data: bytes, serde: Serde) -> SaaS:
     """Convert nested JSON bytes to flat SaaS."""
     nested = serde.decode(data, SaaSNested)
     return _saa_s_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

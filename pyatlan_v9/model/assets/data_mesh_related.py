@@ -46,6 +46,7 @@ class RelatedDataMesh(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataMesh"
 
+
 class RelatedStakeholderTitle(RelatedDataMesh):
     """
     Related entity reference for StakeholderTitle assets.
@@ -60,6 +61,7 @@ class RelatedStakeholderTitle(RelatedDataMesh):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "StakeholderTitle"
 
+
 class RelatedDataDomain(RelatedDataMesh):
     """
     Related entity reference for DataDomain assets.
@@ -73,6 +75,7 @@ class RelatedDataDomain(RelatedDataMesh):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataDomain"
+
 
 class RelatedDataProduct(RelatedDataMesh):
     """
@@ -108,7 +111,9 @@ class RelatedDataProduct(RelatedDataMesh):
     daap_visibility: str | None | UnsetType = UNSET
     """Visibility of a data product."""
 
-    data_product_assets_dsl: str | None | UnsetType = msgspec.field(default=UNSET, name="dataProductAssetsDSL")
+    data_product_assets_dsl: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="dataProductAssetsDSL"
+    )
     """Search DSL used to define which assets are part of this data product."""
 
     data_product_assets_playbook_filter: str | None | UnsetType = UNSET
@@ -138,6 +143,7 @@ class RelatedDataProduct(RelatedDataMesh):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataProduct"
+
 
 class RelatedStakeholder(RelatedDataMesh):
     """

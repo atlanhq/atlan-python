@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -60,6 +59,7 @@ class RelatedSigma(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Sigma"
 
+
 class RelatedSigmaDataElement(RelatedSigma):
     """
     Related entity reference for SigmaDataElement assets.
@@ -83,6 +83,7 @@ class RelatedSigmaDataElement(RelatedSigma):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SigmaDataElement"
 
+
 class RelatedSigmaDataElementField(RelatedSigma):
     """
     Related entity reference for SigmaDataElementField assets.
@@ -103,6 +104,7 @@ class RelatedSigmaDataElementField(RelatedSigma):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SigmaDataElementField"
 
+
 class RelatedSigmaDataset(RelatedSigma):
     """
     Related entity reference for SigmaDataset assets.
@@ -119,6 +121,7 @@ class RelatedSigmaDataset(RelatedSigma):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SigmaDataset"
+
 
 class RelatedSigmaDatasetColumn(RelatedSigma):
     """
@@ -140,6 +143,7 @@ class RelatedSigmaDatasetColumn(RelatedSigma):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SigmaDatasetColumn"
 
+
 class RelatedSigmaPage(RelatedSigma):
     """
     Related entity reference for SigmaPage assets.
@@ -156,6 +160,7 @@ class RelatedSigmaPage(RelatedSigma):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SigmaPage"
+
 
 class RelatedSigmaWorkbook(RelatedSigma):
     """

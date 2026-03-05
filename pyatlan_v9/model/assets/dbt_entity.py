@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,17 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .semantic_related import RelatedSemanticModel
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .dbt_related import RelatedDbtEntity
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DbtEntity(Asset):
@@ -252,7 +253,9 @@ class DbtEntity(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_model: RelatedSemanticModel | None | UnsetType = UNSET
@@ -269,30 +272,6 @@ class DbtEntity(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DbtEntity"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DbtEntity validation failed: {errors}")
-
-    def minimize(self) -> "DbtEntity":
-        self.validate()
-        return DbtEntity(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbtEntity":
-        if self.guid is not UNSET:
-            return RelatedDbtEntity(guid=self.guid)
-        return RelatedDbtEntity(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -344,6 +323,7 @@ class DbtEntity(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DbtEntityAttributes(AssetAttributes):
     """DbtEntity-specific attributes for nested API format."""
@@ -413,6 +393,7 @@ class DbtEntityAttributes(AssetAttributes):
 
     semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
+
 
 class DbtEntityRelationshipAttributes(AssetRelationshipAttributes):
     """DbtEntity-specific relationship attributes for nested API format."""
@@ -489,7 +470,9 @@ class DbtEntityRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_model: RelatedSemanticModel | None | UnsetType = UNSET
@@ -504,6 +487,7 @@ class DbtEntityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DbtEntityNested(AssetNested):
     """DbtEntity in nested API format for high-performance serialization."""
 
@@ -511,6 +495,7 @@ class DbtEntityNested(AssetNested):
     relationship_attributes: DbtEntityRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DbtEntityRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DbtEntityRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -549,6 +534,7 @@ _DBT_ENTITY_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_dbt_entity_attrs(attrs: DbtEntityAttributes, obj: DbtEntity) -> None:
     """Populate DbtEntity-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -575,10 +561,13 @@ def _populate_dbt_entity_attrs(attrs: DbtEntityAttributes, obj: DbtEntity) -> No
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
 
+
 def _extract_dbt_entity_attrs(attrs: DbtEntityAttributes) -> dict:
     """Extract all DbtEntity attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dbt_semantic_model_qualified_name"] = attrs.dbt_semantic_model_qualified_name
+    result["dbt_semantic_model_qualified_name"] = (
+        attrs.dbt_semantic_model_qualified_name
+    )
     result["dbt_alias"] = attrs.dbt_alias
     result["dbt_meta"] = attrs.dbt_meta
     result["dbt_unique_id"] = attrs.dbt_unique_id
@@ -601,6 +590,7 @@ def _extract_dbt_entity_attrs(attrs: DbtEntityAttributes) -> dict:
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -641,16 +631,19 @@ def _dbt_entity_to_nested(dbt_entity: DbtEntity) -> DbtEntityNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_entity_from_nested(nested: DbtEntityNested) -> DbtEntity:
     """Convert nested format to flat DbtEntity."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DbtEntityAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DbtEntityAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_ENTITY_REL_FIELDS,
-        DbtEntityRelationshipAttributes
+        DbtEntityRelationshipAttributes,
     )
     return DbtEntity(
         guid=nested.guid,
@@ -677,6 +670,7 @@ def _dbt_entity_from_nested(nested: DbtEntityNested) -> DbtEntity:
         **merged_rels,
     )
 
+
 def _dbt_entity_to_nested_bytes(dbt_entity: DbtEntity, serde: Serde) -> bytes:
     """Convert flat DbtEntity to nested JSON bytes."""
     return serde.encode(_dbt_entity_to_nested(dbt_entity))
@@ -687,6 +681,7 @@ def _dbt_entity_from_nested_bytes(data: bytes, serde: Serde) -> DbtEntity:
     nested = serde.decode(data, DbtEntityNested)
     return _dbt_entity_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -696,7 +691,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DbtEntity.DBT_SEMANTIC_MODEL_QUALIFIED_NAME = KeywordField("dbtSemanticModelQualifiedName", "dbtSemanticModelQualifiedName")
+DbtEntity.DBT_SEMANTIC_MODEL_QUALIFIED_NAME = KeywordField(
+    "dbtSemanticModelQualifiedName", "dbtSemanticModelQualifiedName"
+)
 DbtEntity.DBT_ALIAS = KeywordField("dbtAlias", "dbtAlias")
 DbtEntity.DBT_META = KeywordField("dbtMeta", "dbtMeta")
 DbtEntity.DBT_UNIQUE_ID = KeywordField("dbtUniqueId", "dbtUniqueId")
@@ -706,15 +703,27 @@ DbtEntity.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtEntity.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtEntity.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtEntity.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtEntity.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+DbtEntity.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 DbtEntity.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtEntity.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtEntity.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
-DbtEntity.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtEntity.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+DbtEntity.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
+DbtEntity.DBT_ENVIRONMENT_NAME = KeywordField(
+    "dbtEnvironmentName", "dbtEnvironmentName"
+)
+DbtEntity.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 DbtEntity.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtEntity.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-DbtEntity.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+DbtEntity.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+DbtEntity.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 DbtEntity.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtEntity.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
 DbtEntity.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")

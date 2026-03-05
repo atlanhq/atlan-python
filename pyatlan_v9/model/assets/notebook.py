@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .notebook_related import RelatedNotebook
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Notebook(Asset):
@@ -162,7 +163,9 @@ class Notebook(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class Notebook(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Notebook"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Notebook validation failed: {errors}")
-
-    def minimize(self) -> "Notebook":
-        self.validate()
-        return Notebook(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedNotebook":
-        if self.guid is not UNSET:
-            return RelatedNotebook(guid=self.guid)
-        return RelatedNotebook(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class Notebook(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class NotebookAttributes(AssetAttributes):
     """Notebook-specific attributes for nested API format."""
 
     pass
+
 
 class NotebookRelationshipAttributes(AssetRelationshipAttributes):
     """Notebook-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class NotebookRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,6 +327,7 @@ class NotebookRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class NotebookNested(AssetNested):
     """Notebook in nested API format for high-performance serialization."""
 
@@ -351,6 +335,7 @@ class NotebookNested(AssetNested):
     relationship_attributes: NotebookRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: NotebookRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: NotebookRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +373,16 @@ _NOTEBOOK_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_notebook_attrs(attrs: NotebookAttributes, obj: Notebook) -> None:
     """Populate Notebook-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_notebook_attrs(attrs: NotebookAttributes) -> dict:
     """Extract all Notebook attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,16 +423,19 @@ def _notebook_to_nested(notebook: Notebook) -> NotebookNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _notebook_from_nested(nested: NotebookNested) -> Notebook:
     """Convert nested format to flat Notebook."""
-    attrs = nested.attributes if nested.attributes is not UNSET else NotebookAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else NotebookAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _NOTEBOOK_REL_FIELDS,
-        NotebookRelationshipAttributes
+        NotebookRelationshipAttributes,
     )
     return Notebook(
         guid=nested.guid,
@@ -471,6 +462,7 @@ def _notebook_from_nested(nested: NotebookNested) -> Notebook:
         **merged_rels,
     )
 
+
 def _notebook_to_nested_bytes(notebook: Notebook, serde: Serde) -> bytes:
     """Convert flat Notebook to nested JSON bytes."""
     return serde.encode(_notebook_to_nested(notebook))
@@ -480,6 +472,7 @@ def _notebook_from_nested_bytes(data: bytes, serde: Serde) -> Notebook:
     """Convert nested JSON bytes to flat Notebook."""
     nested = serde.decode(data, NotebookNested)
     return _notebook_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

@@ -33,7 +33,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .fabric_related import RelatedFabricWorkspace
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -46,15 +51,17 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSchema
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .iceberg_related import RelatedIcebergCatalog
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class IcebergCatalog(Asset):
@@ -196,7 +203,9 @@ class IcebergCatalog(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -253,7 +262,9 @@ class IcebergCatalog(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -301,7 +312,9 @@ class IcebergCatalog(Asset):
     schemas: list[RelatedSchema] | None | UnsetType = UNSET
     """Schemas that exist within this database."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -315,30 +328,6 @@ class IcebergCatalog(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "IcebergCatalog"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"IcebergCatalog validation failed: {errors}")
-
-    def minimize(self) -> "IcebergCatalog":
-        self.validate()
-        return IcebergCatalog(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedIcebergCatalog":
-        if self.guid is not UNSET:
-            return RelatedIcebergCatalog(guid=self.guid)
-        return RelatedIcebergCatalog(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -390,6 +379,7 @@ class IcebergCatalog(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class IcebergCatalogAttributes(AssetAttributes):
     """IcebergCatalog-specific attributes for nested API format."""
@@ -463,7 +453,9 @@ class IcebergCatalogAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -471,6 +463,7 @@ class IcebergCatalogAttributes(AssetAttributes):
 
     schema_count: int | None | UnsetType = UNSET
     """Number of schemas in this database."""
+
 
 class IcebergCatalogRelationshipAttributes(AssetRelationshipAttributes):
     """IcebergCatalog-specific relationship attributes for nested API format."""
@@ -523,7 +516,9 @@ class IcebergCatalogRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -571,7 +566,9 @@ class IcebergCatalogRelationshipAttributes(AssetRelationshipAttributes):
     schemas: list[RelatedSchema] | None | UnsetType = UNSET
     """Schemas that exist within this database."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -583,13 +580,19 @@ class IcebergCatalogRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class IcebergCatalogNested(AssetNested):
     """IcebergCatalog in nested API format for high-performance serialization."""
 
     attributes: IcebergCatalogAttributes | UnsetType = UNSET
     relationship_attributes: IcebergCatalogRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: IcebergCatalogRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: IcebergCatalogRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: IcebergCatalogRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: IcebergCatalogRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -635,7 +638,10 @@ _ICEBERG_CATALOG_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_iceberg_catalog_attrs(attrs: IcebergCatalogAttributes, obj: IcebergCatalog) -> None:
+
+def _populate_iceberg_catalog_attrs(
+    attrs: IcebergCatalogAttributes, obj: IcebergCatalog
+) -> None:
     """Populate IcebergCatalog-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.iceberg_catalog_type = obj.iceberg_catalog_type
@@ -643,7 +649,9 @@ def _populate_iceberg_catalog_attrs(attrs: IcebergCatalogAttributes, obj: Iceber
     attrs.iceberg_warehouse = obj.iceberg_warehouse
     attrs.iceberg_scope = obj.iceberg_scope
     attrs.iceberg_catalog_properties = obj.iceberg_catalog_properties
-    attrs.iceberg_parent_namespace_qualified_name = obj.iceberg_parent_namespace_qualified_name
+    attrs.iceberg_parent_namespace_qualified_name = (
+        obj.iceberg_parent_namespace_qualified_name
+    )
     attrs.iceberg_namespace_hierarchy = obj.iceberg_namespace_hierarchy
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
@@ -665,6 +673,7 @@ def _populate_iceberg_catalog_attrs(attrs: IcebergCatalogAttributes, obj: Iceber
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.schema_count = obj.schema_count
 
+
 def _extract_iceberg_catalog_attrs(attrs: IcebergCatalogAttributes) -> dict:
     """Extract all IcebergCatalog attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -673,7 +682,9 @@ def _extract_iceberg_catalog_attrs(attrs: IcebergCatalogAttributes) -> dict:
     result["iceberg_warehouse"] = attrs.iceberg_warehouse
     result["iceberg_scope"] = attrs.iceberg_scope
     result["iceberg_catalog_properties"] = attrs.iceberg_catalog_properties
-    result["iceberg_parent_namespace_qualified_name"] = attrs.iceberg_parent_namespace_qualified_name
+    result["iceberg_parent_namespace_qualified_name"] = (
+        attrs.iceberg_parent_namespace_qualified_name
+    )
     result["iceberg_namespace_hierarchy"] = attrs.iceberg_namespace_hierarchy
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
@@ -691,10 +702,13 @@ def _extract_iceberg_catalog_attrs(attrs: IcebergCatalogAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["schema_count"] = attrs.schema_count
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -707,7 +721,9 @@ def _iceberg_catalog_to_nested(iceberg_catalog: IcebergCatalog) -> IcebergCatalo
     _populate_iceberg_catalog_attrs(attrs, iceberg_catalog)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        iceberg_catalog, _ICEBERG_CATALOG_REL_FIELDS, IcebergCatalogRelationshipAttributes
+        iceberg_catalog,
+        _ICEBERG_CATALOG_REL_FIELDS,
+        IcebergCatalogRelationshipAttributes,
     )
     return IcebergCatalogNested(
         guid=iceberg_catalog.guid,
@@ -735,16 +751,21 @@ def _iceberg_catalog_to_nested(iceberg_catalog: IcebergCatalog) -> IcebergCatalo
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _iceberg_catalog_from_nested(nested: IcebergCatalogNested) -> IcebergCatalog:
     """Convert nested format to flat IcebergCatalog."""
-    attrs = nested.attributes if nested.attributes is not UNSET else IcebergCatalogAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else IcebergCatalogAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ICEBERG_CATALOG_REL_FIELDS,
-        IcebergCatalogRelationshipAttributes
+        IcebergCatalogRelationshipAttributes,
     )
     return IcebergCatalog(
         guid=nested.guid,
@@ -771,7 +792,10 @@ def _iceberg_catalog_from_nested(nested: IcebergCatalogNested) -> IcebergCatalog
         **merged_rels,
     )
 
-def _iceberg_catalog_to_nested_bytes(iceberg_catalog: IcebergCatalog, serde: Serde) -> bytes:
+
+def _iceberg_catalog_to_nested_bytes(
+    iceberg_catalog: IcebergCatalog, serde: Serde
+) -> bytes:
     """Convert flat IcebergCatalog to nested JSON bytes."""
     return serde.encode(_iceberg_catalog_to_nested(iceberg_catalog))
 
@@ -780,6 +804,7 @@ def _iceberg_catalog_from_nested_bytes(data: bytes, serde: Serde) -> IcebergCata
     """Convert nested JSON bytes to flat IcebergCatalog."""
     nested = serde.decode(data, IcebergCatalogNested)
     return _iceberg_catalog_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -791,30 +816,54 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-IcebergCatalog.ICEBERG_CATALOG_TYPE = KeywordField("icebergCatalogType", "icebergCatalogType")
+IcebergCatalog.ICEBERG_CATALOG_TYPE = KeywordField(
+    "icebergCatalogType", "icebergCatalogType"
+)
 IcebergCatalog.ICEBERG_URI = KeywordField("icebergUri", "icebergUri")
 IcebergCatalog.ICEBERG_WAREHOUSE = KeywordField("icebergWarehouse", "icebergWarehouse")
 IcebergCatalog.ICEBERG_SCOPE = KeywordField("icebergScope", "icebergScope")
-IcebergCatalog.ICEBERG_CATALOG_PROPERTIES = KeywordField("icebergCatalogProperties", "icebergCatalogProperties")
-IcebergCatalog.ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME = KeywordField("icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName")
-IcebergCatalog.ICEBERG_NAMESPACE_HIERARCHY = KeywordField("icebergNamespaceHierarchy", "icebergNamespaceHierarchy")
+IcebergCatalog.ICEBERG_CATALOG_PROPERTIES = KeywordField(
+    "icebergCatalogProperties", "icebergCatalogProperties"
+)
+IcebergCatalog.ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME = KeywordField(
+    "icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName"
+)
+IcebergCatalog.ICEBERG_NAMESPACE_HIERARCHY = KeywordField(
+    "icebergNamespaceHierarchy", "icebergNamespaceHierarchy"
+)
 IcebergCatalog.QUERY_COUNT = NumericField("queryCount", "queryCount")
 IcebergCatalog.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 IcebergCatalog.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-IcebergCatalog.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+IcebergCatalog.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 IcebergCatalog.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-IcebergCatalog.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+IcebergCatalog.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 IcebergCatalog.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-IcebergCatalog.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+IcebergCatalog.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 IcebergCatalog.TABLE_NAME = KeywordField("tableName", "tableName")
-IcebergCatalog.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+IcebergCatalog.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 IcebergCatalog.VIEW_NAME = KeywordField("viewName", "viewName")
-IcebergCatalog.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-IcebergCatalog.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-IcebergCatalog.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+IcebergCatalog.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+IcebergCatalog.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+IcebergCatalog.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 IcebergCatalog.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 IcebergCatalog.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-IcebergCatalog.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+IcebergCatalog.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 IcebergCatalog.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 IcebergCatalog.SCHEMA_COUNT = NumericField("schemaCount", "schemaCount")
 IcebergCatalog.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -825,7 +874,9 @@ IcebergCatalog.APPLICATION_FIELD = RelationField("applicationField")
 IcebergCatalog.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 IcebergCatalog.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 IcebergCatalog.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-IcebergCatalog.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+IcebergCatalog.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 IcebergCatalog.METRICS = RelationField("metrics")
 IcebergCatalog.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 IcebergCatalog.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,16 +43,20 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .kafka_related import RelatedKafkaConsumerGroup, RelatedKafkaTopic
+from .kafka_related import RelatedKafkaConsumerGroup
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class KafkaTopic(Asset):
@@ -208,7 +211,9 @@ class KafkaTopic(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -227,34 +232,7 @@ class KafkaTopic(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/topic/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if errors:
-            raise ValueError(f"KafkaTopic validation failed: {errors}")
-
-    def minimize(self) -> "KafkaTopic":
-        self.validate()
-        return KafkaTopic(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedKafkaTopic":
-        if self.guid is not UNSET:
-            return RelatedKafkaTopic(guid=self.guid)
-        return RelatedKafkaTopic(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/topic/[^/]+$")
 
     @classmethod
     @init_guid
@@ -337,6 +315,7 @@ class KafkaTopic(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class KafkaTopicAttributes(AssetAttributes):
     """KafkaTopic-specific attributes for nested API format."""
 
@@ -369,6 +348,7 @@ class KafkaTopicAttributes(AssetAttributes):
 
     kafka_topic_log_cleanup_policy: str | None | UnsetType = UNSET
     """Comma seperated Cleanup policy for this topic."""
+
 
 class KafkaTopicRelationshipAttributes(AssetRelationshipAttributes):
     """KafkaTopic-specific relationship attributes for nested API format."""
@@ -448,7 +428,9 @@ class KafkaTopicRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -460,6 +442,7 @@ class KafkaTopicRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class KafkaTopicNested(AssetNested):
     """KafkaTopic in nested API format for high-performance serialization."""
 
@@ -467,6 +450,7 @@ class KafkaTopicNested(AssetNested):
     relationship_attributes: KafkaTopicRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: KafkaTopicRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: KafkaTopicRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -505,6 +489,7 @@ _KAFKA_TOPIC_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_kafka_topic_attrs(attrs: KafkaTopicAttributes, obj: KafkaTopic) -> None:
     """Populate KafkaTopic-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -518,6 +503,7 @@ def _populate_kafka_topic_attrs(attrs: KafkaTopicAttributes, obj: KafkaTopic) ->
     attrs.kafka_topic_record_count = obj.kafka_topic_record_count
     attrs.kafka_topic_cleanup_policy = obj.kafka_topic_cleanup_policy
     attrs.kafka_topic_log_cleanup_policy = obj.kafka_topic_log_cleanup_policy
+
 
 def _extract_kafka_topic_attrs(attrs: KafkaTopicAttributes) -> dict:
     """Extract all KafkaTopic attributes from the attrs struct into a flat dict."""
@@ -533,6 +519,7 @@ def _extract_kafka_topic_attrs(attrs: KafkaTopicAttributes) -> dict:
     result["kafka_topic_cleanup_policy"] = attrs.kafka_topic_cleanup_policy
     result["kafka_topic_log_cleanup_policy"] = attrs.kafka_topic_log_cleanup_policy
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -573,16 +560,19 @@ def _kafka_topic_to_nested(kafka_topic: KafkaTopic) -> KafkaTopicNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _kafka_topic_from_nested(nested: KafkaTopicNested) -> KafkaTopic:
     """Convert nested format to flat KafkaTopic."""
-    attrs = nested.attributes if nested.attributes is not UNSET else KafkaTopicAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else KafkaTopicAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _KAFKA_TOPIC_REL_FIELDS,
-        KafkaTopicRelationshipAttributes
+        KafkaTopicRelationshipAttributes,
     )
     return KafkaTopic(
         guid=nested.guid,
@@ -609,6 +599,7 @@ def _kafka_topic_from_nested(nested: KafkaTopicNested) -> KafkaTopic:
         **merged_rels,
     )
 
+
 def _kafka_topic_to_nested_bytes(kafka_topic: KafkaTopic, serde: Serde) -> bytes:
     """Convert flat KafkaTopic to nested JSON bytes."""
     return serde.encode(_kafka_topic_to_nested(kafka_topic))
@@ -618,6 +609,7 @@ def _kafka_topic_from_nested_bytes(data: bytes, serde: Serde) -> KafkaTopic:
     """Convert nested JSON bytes to flat KafkaTopic."""
     nested = serde.decode(data, KafkaTopicNested)
     return _kafka_topic_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -629,16 +621,36 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-KafkaTopic.KAFKA_TOPIC_IS_INTERNAL = BooleanField("kafkaTopicIsInternal", "kafkaTopicIsInternal")
-KafkaTopic.KAFKA_TOPIC_COMPRESSION_TYPE = KeywordField("kafkaTopicCompressionType", "kafkaTopicCompressionType")
-KafkaTopic.KAFKA_TOPIC_REPLICATION_FACTOR = NumericField("kafkaTopicReplicationFactor", "kafkaTopicReplicationFactor")
-KafkaTopic.KAFKA_TOPIC_SEGMENT_BYTES = NumericField("kafkaTopicSegmentBytes", "kafkaTopicSegmentBytes")
-KafkaTopic.KAFKA_TOPIC_RETENTION_TIME_IN_MS = NumericField("kafkaTopicRetentionTimeInMs", "kafkaTopicRetentionTimeInMs")
-KafkaTopic.KAFKA_TOPIC_PARTITIONS_COUNT = NumericField("kafkaTopicPartitionsCount", "kafkaTopicPartitionsCount")
-KafkaTopic.KAFKA_TOPIC_SIZE_IN_BYTES = NumericField("kafkaTopicSizeInBytes", "kafkaTopicSizeInBytes")
-KafkaTopic.KAFKA_TOPIC_RECORD_COUNT = NumericField("kafkaTopicRecordCount", "kafkaTopicRecordCount")
-KafkaTopic.KAFKA_TOPIC_CLEANUP_POLICY = KeywordField("kafkaTopicCleanupPolicy", "kafkaTopicCleanupPolicy")
-KafkaTopic.KAFKA_TOPIC_LOG_CLEANUP_POLICY = KeywordField("kafkaTopicLogCleanupPolicy", "kafkaTopicLogCleanupPolicy")
+KafkaTopic.KAFKA_TOPIC_IS_INTERNAL = BooleanField(
+    "kafkaTopicIsInternal", "kafkaTopicIsInternal"
+)
+KafkaTopic.KAFKA_TOPIC_COMPRESSION_TYPE = KeywordField(
+    "kafkaTopicCompressionType", "kafkaTopicCompressionType"
+)
+KafkaTopic.KAFKA_TOPIC_REPLICATION_FACTOR = NumericField(
+    "kafkaTopicReplicationFactor", "kafkaTopicReplicationFactor"
+)
+KafkaTopic.KAFKA_TOPIC_SEGMENT_BYTES = NumericField(
+    "kafkaTopicSegmentBytes", "kafkaTopicSegmentBytes"
+)
+KafkaTopic.KAFKA_TOPIC_RETENTION_TIME_IN_MS = NumericField(
+    "kafkaTopicRetentionTimeInMs", "kafkaTopicRetentionTimeInMs"
+)
+KafkaTopic.KAFKA_TOPIC_PARTITIONS_COUNT = NumericField(
+    "kafkaTopicPartitionsCount", "kafkaTopicPartitionsCount"
+)
+KafkaTopic.KAFKA_TOPIC_SIZE_IN_BYTES = NumericField(
+    "kafkaTopicSizeInBytes", "kafkaTopicSizeInBytes"
+)
+KafkaTopic.KAFKA_TOPIC_RECORD_COUNT = NumericField(
+    "kafkaTopicRecordCount", "kafkaTopicRecordCount"
+)
+KafkaTopic.KAFKA_TOPIC_CLEANUP_POLICY = KeywordField(
+    "kafkaTopicCleanupPolicy", "kafkaTopicCleanupPolicy"
+)
+KafkaTopic.KAFKA_TOPIC_LOG_CLEANUP_POLICY = KeywordField(
+    "kafkaTopicLogCleanupPolicy", "kafkaTopicLogCleanupPolicy"
+)
 KafkaTopic.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 KafkaTopic.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 KafkaTopic.ANOMALO_CHECKS = RelationField("anomaloChecks")

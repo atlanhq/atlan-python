@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,17 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .semantic_related import RelatedSemanticModel
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .dbt_related import RelatedDbtMeasure
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DbtMeasure(Asset):
@@ -252,7 +253,9 @@ class DbtMeasure(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_model: RelatedSemanticModel | None | UnsetType = UNSET
@@ -269,30 +272,6 @@ class DbtMeasure(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DbtMeasure"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DbtMeasure validation failed: {errors}")
-
-    def minimize(self) -> "DbtMeasure":
-        self.validate()
-        return DbtMeasure(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbtMeasure":
-        if self.guid is not UNSET:
-            return RelatedDbtMeasure(guid=self.guid)
-        return RelatedDbtMeasure(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -344,6 +323,7 @@ class DbtMeasure(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DbtMeasureAttributes(AssetAttributes):
     """DbtMeasure-specific attributes for nested API format."""
@@ -413,6 +393,7 @@ class DbtMeasureAttributes(AssetAttributes):
 
     semantic_type: str | None | UnsetType = UNSET
     """Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity)."""
+
 
 class DbtMeasureRelationshipAttributes(AssetRelationshipAttributes):
     """DbtMeasure-specific relationship attributes for nested API format."""
@@ -489,7 +470,9 @@ class DbtMeasureRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     semantic_model: RelatedSemanticModel | None | UnsetType = UNSET
@@ -504,6 +487,7 @@ class DbtMeasureRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DbtMeasureNested(AssetNested):
     """DbtMeasure in nested API format for high-performance serialization."""
 
@@ -511,6 +495,7 @@ class DbtMeasureNested(AssetNested):
     relationship_attributes: DbtMeasureRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DbtMeasureRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DbtMeasureRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -549,6 +534,7 @@ _DBT_MEASURE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_dbt_measure_attrs(attrs: DbtMeasureAttributes, obj: DbtMeasure) -> None:
     """Populate DbtMeasure-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -575,10 +561,13 @@ def _populate_dbt_measure_attrs(attrs: DbtMeasureAttributes, obj: DbtMeasure) ->
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
 
+
 def _extract_dbt_measure_attrs(attrs: DbtMeasureAttributes) -> dict:
     """Extract all DbtMeasure attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dbt_semantic_model_qualified_name"] = attrs.dbt_semantic_model_qualified_name
+    result["dbt_semantic_model_qualified_name"] = (
+        attrs.dbt_semantic_model_qualified_name
+    )
     result["dbt_alias"] = attrs.dbt_alias
     result["dbt_meta"] = attrs.dbt_meta
     result["dbt_unique_id"] = attrs.dbt_unique_id
@@ -601,6 +590,7 @@ def _extract_dbt_measure_attrs(attrs: DbtMeasureAttributes) -> dict:
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -641,16 +631,19 @@ def _dbt_measure_to_nested(dbt_measure: DbtMeasure) -> DbtMeasureNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_measure_from_nested(nested: DbtMeasureNested) -> DbtMeasure:
     """Convert nested format to flat DbtMeasure."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DbtMeasureAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DbtMeasureAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_MEASURE_REL_FIELDS,
-        DbtMeasureRelationshipAttributes
+        DbtMeasureRelationshipAttributes,
     )
     return DbtMeasure(
         guid=nested.guid,
@@ -677,6 +670,7 @@ def _dbt_measure_from_nested(nested: DbtMeasureNested) -> DbtMeasure:
         **merged_rels,
     )
 
+
 def _dbt_measure_to_nested_bytes(dbt_measure: DbtMeasure, serde: Serde) -> bytes:
     """Convert flat DbtMeasure to nested JSON bytes."""
     return serde.encode(_dbt_measure_to_nested(dbt_measure))
@@ -687,6 +681,7 @@ def _dbt_measure_from_nested_bytes(data: bytes, serde: Serde) -> DbtMeasure:
     nested = serde.decode(data, DbtMeasureNested)
     return _dbt_measure_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -696,7 +691,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DbtMeasure.DBT_SEMANTIC_MODEL_QUALIFIED_NAME = KeywordField("dbtSemanticModelQualifiedName", "dbtSemanticModelQualifiedName")
+DbtMeasure.DBT_SEMANTIC_MODEL_QUALIFIED_NAME = KeywordField(
+    "dbtSemanticModelQualifiedName", "dbtSemanticModelQualifiedName"
+)
 DbtMeasure.DBT_ALIAS = KeywordField("dbtAlias", "dbtAlias")
 DbtMeasure.DBT_META = KeywordField("dbtMeta", "dbtMeta")
 DbtMeasure.DBT_UNIQUE_ID = KeywordField("dbtUniqueId", "dbtUniqueId")
@@ -706,17 +703,31 @@ DbtMeasure.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtMeasure.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtMeasure.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtMeasure.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtMeasure.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+DbtMeasure.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 DbtMeasure.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtMeasure.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtMeasure.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
-DbtMeasure.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtMeasure.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+DbtMeasure.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
+DbtMeasure.DBT_ENVIRONMENT_NAME = KeywordField(
+    "dbtEnvironmentName", "dbtEnvironmentName"
+)
+DbtMeasure.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 DbtMeasure.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtMeasure.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-DbtMeasure.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+DbtMeasure.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+DbtMeasure.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 DbtMeasure.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
-DbtMeasure.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
+DbtMeasure.SEMANTIC_EXPRESSION = KeywordField(
+    "semanticExpression", "semanticExpression"
+)
 DbtMeasure.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
 DbtMeasure.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DbtMeasure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

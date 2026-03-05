@@ -11,7 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -55,6 +54,7 @@ class RelatedThoughtspot(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Thoughtspot"
 
+
 class RelatedThoughtspotAnswer(RelatedThoughtspot):
     """
     Related entity reference for ThoughtspotAnswer assets.
@@ -68,6 +68,7 @@ class RelatedThoughtspotAnswer(RelatedThoughtspot):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ThoughtspotAnswer"
+
 
 class RelatedThoughtspotDashlet(RelatedThoughtspot):
     """
@@ -89,6 +90,7 @@ class RelatedThoughtspotDashlet(RelatedThoughtspot):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ThoughtspotDashlet"
 
+
 class RelatedThoughtspotLiveboard(RelatedThoughtspot):
     """
     Related entity reference for ThoughtspotLiveboard assets.
@@ -102,6 +104,7 @@ class RelatedThoughtspotLiveboard(RelatedThoughtspot):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ThoughtspotLiveboard"
+
 
 class RelatedThoughtspotTable(RelatedThoughtspot):
     """
@@ -117,6 +120,7 @@ class RelatedThoughtspotTable(RelatedThoughtspot):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ThoughtspotTable"
 
+
 class RelatedThoughtspotView(RelatedThoughtspot):
     """
     Related entity reference for ThoughtspotView assets.
@@ -131,6 +135,7 @@ class RelatedThoughtspotView(RelatedThoughtspot):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ThoughtspotView"
 
+
 class RelatedThoughtspotWorksheet(RelatedThoughtspot):
     """
     Related entity reference for ThoughtspotWorksheet assets.
@@ -144,6 +149,7 @@ class RelatedThoughtspotWorksheet(RelatedThoughtspot):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ThoughtspotWorksheet"
+
 
 class RelatedThoughtspotColumn(RelatedThoughtspot):
     """

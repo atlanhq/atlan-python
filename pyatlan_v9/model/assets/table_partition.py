@@ -34,7 +34,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,7 +50,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
@@ -55,6 +63,7 @@ from .sql_related import RelatedColumn, RelatedTable, RelatedTablePartition
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class TablePartition(Asset):
@@ -229,7 +238,9 @@ class TablePartition(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -283,7 +294,9 @@ class TablePartition(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -337,7 +350,9 @@ class TablePartition(Asset):
     parent_table_partition: RelatedTablePartition | None | UnsetType = UNSET
     """Partition in which this partition exists."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -359,48 +374,6 @@ class TablePartition(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.parent_table is UNSET:
-                errors.append("parent_table is required for creation")
-            if self.table_name is UNSET:
-                errors.append("table_name is required for creation")
-            if self.table_qualified_name is UNSET:
-                errors.append("table_qualified_name is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"TablePartition validation failed: {errors}")
-
-    def minimize(self) -> "TablePartition":
-        self.validate()
-        return TablePartition(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTablePartition":
-        if self.guid is not UNSET:
-            return RelatedTablePartition(guid=self.guid)
-        return RelatedTablePartition(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -559,6 +532,7 @@ class TablePartition(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class TablePartitionAttributes(AssetAttributes):
     """TablePartition-specific attributes for nested API format."""
 
@@ -655,11 +629,14 @@ class TablePartitionAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     """TablePartition-specific relationship attributes for nested API format."""
@@ -712,7 +689,9 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -766,7 +745,9 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     parent_table_partition: RelatedTablePartition | None | UnsetType = UNSET
     """Partition in which this partition exists."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -778,13 +759,19 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class TablePartitionNested(AssetNested):
     """TablePartition in nested API format for high-performance serialization."""
 
     attributes: TablePartitionAttributes | UnsetType = UNSET
     relationship_attributes: TablePartitionRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: TablePartitionRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: TablePartitionRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: TablePartitionRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: TablePartitionRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -832,7 +819,10 @@ _TABLE_PARTITION_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_table_partition_attrs(attrs: TablePartitionAttributes, obj: TablePartition) -> None:
+
+def _populate_table_partition_attrs(
+    attrs: TablePartitionAttributes, obj: TablePartition
+) -> None:
     """Populate TablePartition-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.constraint = obj.constraint
@@ -869,6 +859,7 @@ def _populate_table_partition_attrs(attrs: TablePartitionAttributes, obj: TableP
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_table_partition_attrs(attrs: TablePartitionAttributes) -> dict:
     """Extract all TablePartition attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -903,9 +894,12 @@ def _extract_table_partition_attrs(attrs: TablePartitionAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -918,7 +912,9 @@ def _table_partition_to_nested(table_partition: TablePartition) -> TablePartitio
     _populate_table_partition_attrs(attrs, table_partition)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        table_partition, _TABLE_PARTITION_REL_FIELDS, TablePartitionRelationshipAttributes
+        table_partition,
+        _TABLE_PARTITION_REL_FIELDS,
+        TablePartitionRelationshipAttributes,
     )
     return TablePartitionNested(
         guid=table_partition.guid,
@@ -946,16 +942,21 @@ def _table_partition_to_nested(table_partition: TablePartition) -> TablePartitio
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _table_partition_from_nested(nested: TablePartitionNested) -> TablePartition:
     """Convert nested format to flat TablePartition."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TablePartitionAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else TablePartitionAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLE_PARTITION_REL_FIELDS,
-        TablePartitionRelationshipAttributes
+        TablePartitionRelationshipAttributes,
     )
     return TablePartition(
         guid=nested.guid,
@@ -982,7 +983,10 @@ def _table_partition_from_nested(nested: TablePartitionNested) -> TablePartition
         **merged_rels,
     )
 
-def _table_partition_to_nested_bytes(table_partition: TablePartition, serde: Serde) -> bytes:
+
+def _table_partition_to_nested_bytes(
+    table_partition: TablePartition, serde: Serde
+) -> bytes:
     """Convert flat TablePartition to nested JSON bytes."""
     return serde.encode(_table_partition_to_nested(table_partition))
 
@@ -991,6 +995,7 @@ def _table_partition_from_nested_bytes(data: bytes, serde: Serde) -> TablePartit
     """Convert nested JSON bytes to flat TablePartition."""
     nested = serde.decode(data, TablePartitionNested)
     return _table_partition_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1009,31 +1014,55 @@ TablePartition.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
 TablePartition.ALIAS = KeywordField("alias", "alias")
 TablePartition.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 TablePartition.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-TablePartition.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+TablePartition.QUERY_PREVIEW_CONFIG = KeywordField(
+    "queryPreviewConfig", "queryPreviewConfig"
+)
 TablePartition.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
-TablePartition.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
-TablePartition.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
+TablePartition.EXTERNAL_LOCATION_REGION = KeywordField(
+    "externalLocationRegion", "externalLocationRegion"
+)
+TablePartition.EXTERNAL_LOCATION_FORMAT = KeywordField(
+    "externalLocationFormat", "externalLocationFormat"
+)
 TablePartition.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-TablePartition.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
+TablePartition.PARTITION_STRATEGY = KeywordField(
+    "partitionStrategy", "partitionStrategy"
+)
 TablePartition.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
 TablePartition.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 TablePartition.QUERY_COUNT = NumericField("queryCount", "queryCount")
 TablePartition.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 TablePartition.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-TablePartition.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+TablePartition.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 TablePartition.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-TablePartition.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+TablePartition.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 TablePartition.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-TablePartition.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+TablePartition.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 TablePartition.TABLE_NAME = KeywordField("tableName", "tableName")
-TablePartition.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+TablePartition.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 TablePartition.VIEW_NAME = KeywordField("viewName", "viewName")
-TablePartition.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-TablePartition.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-TablePartition.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+TablePartition.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+TablePartition.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+TablePartition.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 TablePartition.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 TablePartition.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-TablePartition.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+TablePartition.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 TablePartition.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 TablePartition.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TablePartition.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -1043,7 +1072,9 @@ TablePartition.APPLICATION_FIELD = RelationField("applicationField")
 TablePartition.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 TablePartition.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 TablePartition.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-TablePartition.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+TablePartition.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 TablePartition.METRICS = RelationField("metrics")
 TablePartition.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 TablePartition.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

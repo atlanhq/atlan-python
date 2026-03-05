@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .domo_related import RelatedDomoDataset, RelatedDomoDatasetColumn
+from .domo_related import RelatedDomoDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DomoDatasetColumn(Asset):
@@ -191,7 +194,9 @@ class DomoDatasetColumn(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -210,41 +215,7 @@ class DomoDatasetColumn(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.domo_dataset is UNSET:
-                errors.append("domo_dataset is required for creation")
-            if self.domo_dataset_qualified_name is UNSET:
-                errors.append("domo_dataset_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"DomoDatasetColumn validation failed: {errors}")
-
-    def minimize(self) -> "DomoDatasetColumn":
-        self.validate()
-        return DomoDatasetColumn(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDomoDatasetColumn":
-        if self.guid is not UNSET:
-            return RelatedDomoDatasetColumn(guid=self.guid)
-        return RelatedDomoDatasetColumn(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -275,7 +246,9 @@ class DomoDatasetColumn(Asset):
         return _domo_dataset_column_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DomoDatasetColumn:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DomoDatasetColumn:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -297,6 +270,7 @@ class DomoDatasetColumn(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DomoDatasetColumnAttributes(AssetAttributes):
     """DomoDatasetColumn-specific attributes for nested API format."""
 
@@ -317,6 +291,7 @@ class DomoDatasetColumnAttributes(AssetAttributes):
 
     domo_owner_id: str | None | UnsetType = UNSET
     """Id of the owner of the Domo dataset."""
+
 
 class DomoDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
     """DomoDatasetColumn-specific relationship attributes for nested API format."""
@@ -396,7 +371,9 @@ class DomoDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -408,13 +385,19 @@ class DomoDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DomoDatasetColumnNested(AssetNested):
     """DomoDatasetColumn in nested API format for high-performance serialization."""
 
     attributes: DomoDatasetColumnAttributes | UnsetType = UNSET
     relationship_attributes: DomoDatasetColumnRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: DomoDatasetColumnRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: DomoDatasetColumnRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        DomoDatasetColumnRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        DomoDatasetColumnRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -453,7 +436,10 @@ _DOMO_DATASET_COLUMN_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_domo_dataset_column_attrs(attrs: DomoDatasetColumnAttributes, obj: DomoDatasetColumn) -> None:
+
+def _populate_domo_dataset_column_attrs(
+    attrs: DomoDatasetColumnAttributes, obj: DomoDatasetColumn
+) -> None:
     """Populate DomoDatasetColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.domo_dataset_column_type = obj.domo_dataset_column_type
@@ -463,29 +449,37 @@ def _populate_domo_dataset_column_attrs(attrs: DomoDatasetColumnAttributes, obj:
     attrs.domo_id = obj.domo_id
     attrs.domo_owner_id = obj.domo_owner_id
 
+
 def _extract_domo_dataset_column_attrs(attrs: DomoDatasetColumnAttributes) -> dict:
     """Extract all DomoDatasetColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["domo_dataset_column_type"] = attrs.domo_dataset_column_type
     result["domo_dataset_qualified_name"] = attrs.domo_dataset_qualified_name
     result["domo_dataset_column_expression"] = attrs.domo_dataset_column_expression
-    result["domo_dataset_column_is_calculated"] = attrs.domo_dataset_column_is_calculated
+    result["domo_dataset_column_is_calculated"] = (
+        attrs.domo_dataset_column_is_calculated
+    )
     result["domo_id"] = attrs.domo_id
     result["domo_owner_id"] = attrs.domo_owner_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _domo_dataset_column_to_nested(domo_dataset_column: DomoDatasetColumn) -> DomoDatasetColumnNested:
+def _domo_dataset_column_to_nested(
+    domo_dataset_column: DomoDatasetColumn,
+) -> DomoDatasetColumnNested:
     """Convert flat DomoDatasetColumn to nested format."""
     attrs = DomoDatasetColumnAttributes()
     _populate_domo_dataset_column_attrs(attrs, domo_dataset_column)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        domo_dataset_column, _DOMO_DATASET_COLUMN_REL_FIELDS, DomoDatasetColumnRelationshipAttributes
+        domo_dataset_column,
+        _DOMO_DATASET_COLUMN_REL_FIELDS,
+        DomoDatasetColumnRelationshipAttributes,
     )
     return DomoDatasetColumnNested(
         guid=domo_dataset_column.guid,
@@ -513,16 +507,23 @@ def _domo_dataset_column_to_nested(domo_dataset_column: DomoDatasetColumn) -> Do
         remove_relationship_attributes=remove_rels,
     )
 
-def _domo_dataset_column_from_nested(nested: DomoDatasetColumnNested) -> DomoDatasetColumn:
+
+def _domo_dataset_column_from_nested(
+    nested: DomoDatasetColumnNested,
+) -> DomoDatasetColumn:
     """Convert nested format to flat DomoDatasetColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DomoDatasetColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DomoDatasetColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DOMO_DATASET_COLUMN_REL_FIELDS,
-        DomoDatasetColumnRelationshipAttributes
+        DomoDatasetColumnRelationshipAttributes,
     )
     return DomoDatasetColumn(
         guid=nested.guid,
@@ -549,15 +550,21 @@ def _domo_dataset_column_from_nested(nested: DomoDatasetColumnNested) -> DomoDat
         **merged_rels,
     )
 
-def _domo_dataset_column_to_nested_bytes(domo_dataset_column: DomoDatasetColumn, serde: Serde) -> bytes:
+
+def _domo_dataset_column_to_nested_bytes(
+    domo_dataset_column: DomoDatasetColumn, serde: Serde
+) -> bytes:
     """Convert flat DomoDatasetColumn to nested JSON bytes."""
     return serde.encode(_domo_dataset_column_to_nested(domo_dataset_column))
 
 
-def _domo_dataset_column_from_nested_bytes(data: bytes, serde: Serde) -> DomoDatasetColumn:
+def _domo_dataset_column_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DomoDatasetColumn:
     """Convert nested JSON bytes to flat DomoDatasetColumn."""
     nested = serde.decode(data, DomoDatasetColumnNested)
     return _domo_dataset_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -568,10 +575,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DomoDatasetColumn.DOMO_DATASET_COLUMN_TYPE = KeywordField("domoDatasetColumnType", "domoDatasetColumnType")
-DomoDatasetColumn.DOMO_DATASET_QUALIFIED_NAME = KeywordField("domoDatasetQualifiedName", "domoDatasetQualifiedName")
-DomoDatasetColumn.DOMO_DATASET_COLUMN_EXPRESSION = KeywordField("domoDatasetColumnExpression", "domoDatasetColumnExpression")
-DomoDatasetColumn.DOMO_DATASET_COLUMN_IS_CALCULATED = BooleanField("domoDatasetColumnIsCalculated", "domoDatasetColumnIsCalculated")
+DomoDatasetColumn.DOMO_DATASET_COLUMN_TYPE = KeywordField(
+    "domoDatasetColumnType", "domoDatasetColumnType"
+)
+DomoDatasetColumn.DOMO_DATASET_QUALIFIED_NAME = KeywordField(
+    "domoDatasetQualifiedName", "domoDatasetQualifiedName"
+)
+DomoDatasetColumn.DOMO_DATASET_COLUMN_EXPRESSION = KeywordField(
+    "domoDatasetColumnExpression", "domoDatasetColumnExpression"
+)
+DomoDatasetColumn.DOMO_DATASET_COLUMN_IS_CALCULATED = BooleanField(
+    "domoDatasetColumnIsCalculated", "domoDatasetColumnIsCalculated"
+)
 DomoDatasetColumn.DOMO_ID = KeywordField("domoId", "domoId")
 DomoDatasetColumn.DOMO_OWNER_ID = KeywordField("domoOwnerId", "domoOwnerId")
 DomoDatasetColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -582,7 +597,9 @@ DomoDatasetColumn.APPLICATION_FIELD = RelationField("applicationField")
 DomoDatasetColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DomoDatasetColumn.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DomoDatasetColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DomoDatasetColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DomoDatasetColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DomoDatasetColumn.METRICS = RelationField("metrics")
 DomoDatasetColumn.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DomoDatasetColumn.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

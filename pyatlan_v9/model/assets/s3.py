@@ -43,15 +43,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .s3_related import RelatedS3
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class S3(Asset):
@@ -218,7 +220,9 @@ class S3(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -232,30 +236,6 @@ class S3(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "S3"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"S3 validation failed: {errors}")
-
-    def minimize(self) -> "S3":
-        self.validate()
-        return S3(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedS3":
-        if self.guid is not UNSET:
-            return RelatedS3(guid=self.guid)
-        return RelatedS3(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -308,6 +288,7 @@ class S3(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class S3Attributes(AssetAttributes):
     """S3-specific attributes for nested API format."""
 
@@ -352,6 +333,7 @@ class S3Attributes(AssetAttributes):
 
     cloud_uniform_resource_name: str | None | UnsetType = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class S3RelationshipAttributes(AssetRelationshipAttributes):
     """S3-specific relationship attributes for nested API format."""
@@ -428,7 +410,9 @@ class S3RelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -440,6 +424,7 @@ class S3RelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class S3Nested(AssetNested):
     """S3 in nested API format for high-performance serialization."""
 
@@ -447,6 +432,7 @@ class S3Nested(AssetNested):
     relationship_attributes: S3RelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: S3RelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: S3RelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -484,6 +470,7 @@ _S3_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_s3_attrs(attrs: S3Attributes, obj: S3) -> None:
     """Populate S3-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -501,6 +488,7 @@ def _populate_s3_attrs(attrs: S3Attributes, obj: S3) -> None:
     attrs.aws_owner_id = obj.aws_owner_id
     attrs.aws_tags = obj.aws_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_s3_attrs(attrs: S3Attributes) -> dict:
     """Extract all S3 attributes from the attrs struct into a flat dict."""
@@ -520,6 +508,7 @@ def _extract_s3_attrs(attrs: S3Attributes) -> dict:
     result["aws_tags"] = attrs.aws_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -560,6 +549,7 @@ def _s3_to_nested(s3: S3) -> S3Nested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _s3_from_nested(nested: S3Nested) -> S3:
     """Convert nested format to flat S3."""
     attrs = nested.attributes if nested.attributes is not UNSET else S3Attributes()
@@ -569,7 +559,7 @@ def _s3_from_nested(nested: S3Nested) -> S3:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _S3_REL_FIELDS,
-        S3RelationshipAttributes
+        S3RelationshipAttributes,
     )
     return S3(
         guid=nested.guid,
@@ -596,6 +586,7 @@ def _s3_from_nested(nested: S3Nested) -> S3:
         **merged_rels,
     )
 
+
 def _s3_to_nested_bytes(s3: S3, serde: Serde) -> bytes:
     """Convert flat S3 to nested JSON bytes."""
     return serde.encode(_s3_to_nested(s3))
@@ -605,6 +596,7 @@ def _s3_from_nested_bytes(data: bytes, serde: Serde) -> S3:
     """Convert nested JSON bytes to flat S3."""
     nested = serde.decode(data, S3Nested)
     return _s3_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -617,7 +609,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 S3.S3_ETAG = KeywordTextField("s3ETag", "s3ETag", "s3ETag.text")
 S3.S3_ENCRYPTION = KeywordField("s3Encryption", "s3Encryption")
-S3.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField("s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName")
+S3.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField(
+    "s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName"
+)
 S3.S3_PREFIX_HIERARCHY = KeywordField("s3PrefixHierarchy", "s3PrefixHierarchy")
 S3.AWS_ARN = KeywordTextField("awsArn", "awsArn", "awsArn.text")
 S3.AWS_PARTITION = KeywordField("awsPartition", "awsPartition")
@@ -625,10 +619,14 @@ S3.AWS_SERVICE = KeywordField("awsService", "awsService")
 S3.AWS_REGION = KeywordField("awsRegion", "awsRegion")
 S3.AWS_ACCOUNT_ID = KeywordField("awsAccountId", "awsAccountId")
 S3.AWS_RESOURCE_ID = KeywordField("awsResourceId", "awsResourceId")
-S3.AWS_OWNER_NAME = KeywordTextField("awsOwnerName", "awsOwnerName", "awsOwnerName.text")
+S3.AWS_OWNER_NAME = KeywordTextField(
+    "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+)
 S3.AWS_OWNER_ID = KeywordField("awsOwnerId", "awsOwnerId")
 S3.AWS_TAGS = KeywordField("awsTags", "awsTags")
-S3.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+S3.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 S3.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 S3.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 S3.ANOMALO_CHECKS = RelationField("anomaloChecks")

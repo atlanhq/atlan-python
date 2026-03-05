@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from typing import Any
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -56,6 +55,7 @@ class RelatedResource(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Resource"
 
+
 class Related__internal(RelatedResource):
     """
     Related entity reference for __internal assets.
@@ -69,6 +69,7 @@ class Related__internal(RelatedResource):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "__internal"
+
 
 class RelatedBadge(RelatedResource):
     """
@@ -90,6 +91,7 @@ class RelatedBadge(RelatedResource):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Badge"
 
+
 class RelatedFile(RelatedResource):
     """
     Related entity reference for File assets.
@@ -109,6 +111,7 @@ class RelatedFile(RelatedResource):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "File"
+
 
 class RelatedLink(RelatedResource):
     """
@@ -130,6 +133,7 @@ class RelatedLink(RelatedResource):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Link"
 
+
 class RelatedReadme(RelatedResource):
     """
     Related entity reference for Readme assets.
@@ -143,6 +147,7 @@ class RelatedReadme(RelatedResource):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Readme"
+
 
 class RelatedReadmeTemplate(RelatedResource):
     """

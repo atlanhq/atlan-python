@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,8 +40,10 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .sql_related import RelatedQuery
 from pyatlan.utils import validate_required_fields
-from pyatlan_v9.model.assets import Collection
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
@@ -51,6 +52,7 @@ from .namespace_related import RelatedFolder, RelatedNamespace
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Folder(Asset):
@@ -147,7 +149,9 @@ class Folder(Asset):
     children_queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -160,39 +164,7 @@ class Folder(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.parent is UNSET:
-                errors.append("parent is required for creation")
-        if errors:
-            raise ValueError(f"Folder validation failed: {errors}")
-
-    def minimize(self) -> "Folder":
-        self.validate()
-        return Folder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFolder":
-        if self.guid is not UNSET:
-            return RelatedFolder(guid=self.guid)
-        return RelatedFolder(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     @classmethod
     def creator(
@@ -202,8 +174,6 @@ class Folder(Asset):
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Folder":
-        from pyatlan.utils import validate_required_fields
-
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):
             raise ValueError(
@@ -288,6 +258,7 @@ class Folder(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FolderAttributes(AssetAttributes):
     """Folder-specific attributes for nested API format."""
 
@@ -296,6 +267,7 @@ class FolderAttributes(AssetAttributes):
 
     collection_qualified_name: str | None | UnsetType = UNSET
     """Unique name of the collection in which this folder exists."""
+
 
 class FolderRelationshipAttributes(AssetRelationshipAttributes):
     """Folder-specific relationship attributes for nested API format."""
@@ -357,11 +329,14 @@ class FolderRelationshipAttributes(AssetRelationshipAttributes):
     children_queries: list[RelatedQuery] | None | UnsetType = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
     """"""
+
 
 class FolderNested(AssetNested):
     """Folder in nested API format for high-performance serialization."""
@@ -370,6 +345,7 @@ class FolderNested(AssetNested):
     relationship_attributes: FolderRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: FolderRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: FolderRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -400,11 +376,13 @@ _FOLDER_REL_FIELDS: list[str] = [
     "soda_checks",
 ]
 
+
 def _populate_folder_attrs(attrs: FolderAttributes, obj: Folder) -> None:
     """Populate Folder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.parent_qualified_name = obj.parent_qualified_name
     attrs.collection_qualified_name = obj.collection_qualified_name
+
 
 def _extract_folder_attrs(attrs: FolderAttributes) -> dict:
     """Extract all Folder attributes from the attrs struct into a flat dict."""
@@ -412,6 +390,7 @@ def _extract_folder_attrs(attrs: FolderAttributes) -> dict:
     result["parent_qualified_name"] = attrs.parent_qualified_name
     result["collection_qualified_name"] = attrs.collection_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -452,6 +431,7 @@ def _folder_to_nested(folder: Folder) -> FolderNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _folder_from_nested(nested: FolderNested) -> Folder:
     """Convert nested format to flat Folder."""
     attrs = nested.attributes if nested.attributes is not UNSET else FolderAttributes()
@@ -461,7 +441,7 @@ def _folder_from_nested(nested: FolderNested) -> Folder:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FOLDER_REL_FIELDS,
-        FolderRelationshipAttributes
+        FolderRelationshipAttributes,
     )
     return Folder(
         guid=nested.guid,
@@ -488,6 +468,7 @@ def _folder_from_nested(nested: FolderNested) -> Folder:
         **merged_rels,
     )
 
+
 def _folder_to_nested_bytes(folder: Folder, serde: Serde) -> bytes:
     """Convert flat Folder to nested JSON bytes."""
     return serde.encode(_folder_to_nested(folder))
@@ -498,6 +479,7 @@ def _folder_from_nested_bytes(data: bytes, serde: Serde) -> Folder:
     nested = serde.decode(data, FolderNested)
     return _folder_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -506,8 +488,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Folder.PARENT_QUALIFIED_NAME = KeywordTextField("parentQualifiedName", "parentQualifiedName", "parentQualifiedName.text")
-Folder.COLLECTION_QUALIFIED_NAME = KeywordTextField("collectionQualifiedName", "collectionQualifiedName", "collectionQualifiedName.text")
+Folder.PARENT_QUALIFIED_NAME = KeywordTextField(
+    "parentQualifiedName", "parentQualifiedName", "parentQualifiedName.text"
+)
+Folder.COLLECTION_QUALIFIED_NAME = KeywordTextField(
+    "collectionQualifiedName", "collectionQualifiedName", "collectionQualifiedName.text"
+)
 Folder.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Folder.APPLICATION = RelationField("application")
 Folder.APPLICATION_FIELD = RelationField("applicationField")

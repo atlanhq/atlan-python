@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .catalog_related import RelatedObjectStore
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ObjectStore(Asset):
@@ -162,7 +163,9 @@ class ObjectStore(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -176,30 +179,6 @@ class ObjectStore(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ObjectStore"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"ObjectStore validation failed: {errors}")
-
-    def minimize(self) -> "ObjectStore":
-        self.validate()
-        return ObjectStore(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedObjectStore":
-        if self.guid is not UNSET:
-            return RelatedObjectStore(guid=self.guid)
-        return RelatedObjectStore(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,10 +231,12 @@ class ObjectStore(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ObjectStoreAttributes(AssetAttributes):
     """ObjectStore-specific attributes for nested API format."""
 
     pass
+
 
 class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     """ObjectStore-specific relationship attributes for nested API format."""
@@ -332,7 +313,9 @@ class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -344,13 +327,19 @@ class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ObjectStoreNested(AssetNested):
     """ObjectStore in nested API format for high-performance serialization."""
 
     attributes: ObjectStoreAttributes | UnsetType = UNSET
     relationship_attributes: ObjectStoreRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ObjectStoreRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: ObjectStoreRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: ObjectStoreRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: ObjectStoreRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -388,13 +377,18 @@ _OBJECT_STORE_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_object_store_attrs(attrs: ObjectStoreAttributes, obj: ObjectStore) -> None:
+
+def _populate_object_store_attrs(
+    attrs: ObjectStoreAttributes, obj: ObjectStore
+) -> None:
     """Populate ObjectStore-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+
 
 def _extract_object_store_attrs(attrs: ObjectStoreAttributes) -> dict:
     """Extract all ObjectStore attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,16 +429,19 @@ def _object_store_to_nested(object_store: ObjectStore) -> ObjectStoreNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _object_store_from_nested(nested: ObjectStoreNested) -> ObjectStore:
     """Convert nested format to flat ObjectStore."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ObjectStoreAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ObjectStoreAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _OBJECT_STORE_REL_FIELDS,
-        ObjectStoreRelationshipAttributes
+        ObjectStoreRelationshipAttributes,
     )
     return ObjectStore(
         guid=nested.guid,
@@ -471,6 +468,7 @@ def _object_store_from_nested(nested: ObjectStoreNested) -> ObjectStore:
         **merged_rels,
     )
 
+
 def _object_store_to_nested_bytes(object_store: ObjectStore, serde: Serde) -> bytes:
     """Convert flat ObjectStore to nested JSON bytes."""
     return serde.encode(_object_store_to_nested(object_store))
@@ -480,6 +478,7 @@ def _object_store_from_nested_bytes(data: bytes, serde: Serde) -> ObjectStore:
     """Convert nested JSON bytes to flat ObjectStore."""
     nested = serde.decode(data, ObjectStoreNested)
     return _object_store_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

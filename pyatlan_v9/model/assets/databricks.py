@@ -33,7 +33,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -44,15 +49,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .databricks_related import RelatedDatabricks
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Databricks(Asset):
@@ -163,7 +170,9 @@ class Databricks(Asset):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
@@ -217,7 +226,9 @@ class Databricks(Asset):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -259,7 +270,9 @@ class Databricks(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -273,30 +286,6 @@ class Databricks(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Databricks"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Databricks validation failed: {errors}")
-
-    def minimize(self) -> "Databricks":
-        self.validate()
-        return Databricks(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDatabricks":
-        if self.guid is not UNSET:
-            return RelatedDatabricks(guid=self.guid)
-        return RelatedDatabricks(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -349,6 +338,7 @@ class Databricks(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DatabricksAttributes(AssetAttributes):
     """Databricks-specific attributes for nested API format."""
 
@@ -400,11 +390,14 @@ class DatabricksAttributes(AssetAttributes):
     last_profiled_at: int | None | UnsetType = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: str | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: bool | None | UnsetType = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class DatabricksRelationshipAttributes(AssetRelationshipAttributes):
     """Databricks-specific relationship attributes for nested API format."""
@@ -457,7 +450,9 @@ class DatabricksRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: list[RelatedDbtSource] | None | UnsetType = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: list[RelatedDbtSource] | None | UnsetType = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: list[RelatedDbtSeed] | None | UnsetType = UNSET
@@ -499,7 +494,9 @@ class DatabricksRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -511,6 +508,7 @@ class DatabricksRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class DatabricksNested(AssetNested):
     """Databricks in nested API format for high-performance serialization."""
 
@@ -518,6 +516,7 @@ class DatabricksNested(AssetNested):
     relationship_attributes: DatabricksRelationshipAttributes | UnsetType = UNSET
     append_relationship_attributes: DatabricksRelationshipAttributes | UnsetType = UNSET
     remove_relationship_attributes: DatabricksRelationshipAttributes | UnsetType = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -561,6 +560,7 @@ _DATABRICKS_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_databricks_attrs(attrs: DatabricksAttributes, obj: Databricks) -> None:
     """Populate Databricks-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -583,6 +583,7 @@ def _populate_databricks_attrs(attrs: DatabricksAttributes, obj: Databricks) -> 
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_databricks_attrs(attrs: DatabricksAttributes) -> dict:
     """Extract all Databricks attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -602,9 +603,12 @@ def _extract_databricks_attrs(attrs: DatabricksAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -645,16 +649,19 @@ def _databricks_to_nested(databricks: Databricks) -> DatabricksNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _databricks_from_nested(nested: DatabricksNested) -> Databricks:
     """Convert nested format to flat Databricks."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DatabricksAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_REL_FIELDS,
-        DatabricksRelationshipAttributes
+        DatabricksRelationshipAttributes,
     )
     return Databricks(
         guid=nested.guid,
@@ -681,6 +688,7 @@ def _databricks_from_nested(nested: DatabricksNested) -> Databricks:
         **merged_rels,
     )
 
+
 def _databricks_to_nested_bytes(databricks: Databricks, serde: Serde) -> bytes:
     """Convert flat Databricks to nested JSON bytes."""
     return serde.encode(_databricks_to_nested(databricks))
@@ -690,6 +698,7 @@ def _databricks_from_nested_bytes(data: bytes, serde: Serde) -> Databricks:
     """Convert nested JSON bytes to flat Databricks."""
     nested = serde.decode(data, DatabricksNested)
     return _databricks_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -704,20 +713,34 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 Databricks.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Databricks.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Databricks.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Databricks.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+Databricks.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 Databricks.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Databricks.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+Databricks.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 Databricks.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Databricks.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+Databricks.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 Databricks.TABLE_NAME = KeywordField("tableName", "tableName")
-Databricks.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+Databricks.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 Databricks.VIEW_NAME = KeywordField("viewName", "viewName")
 Databricks.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Databricks.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-Databricks.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+Databricks.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+Databricks.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 Databricks.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Databricks.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Databricks.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+Databricks.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 Databricks.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Databricks.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Databricks.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

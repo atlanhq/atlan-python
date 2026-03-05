@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .tableau_related import RelatedTableauProject, RelatedTableauSite
+from .tableau_related import RelatedTableauProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class TableauSite(Asset):
@@ -167,7 +170,9 @@ class TableauSite(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -184,30 +189,6 @@ class TableauSite(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "TableauSite"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"TableauSite validation failed: {errors}")
-
-    def minimize(self) -> "TableauSite":
-        self.validate()
-        return TableauSite(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTableauSite":
-        if self.guid is not UNSET:
-            return RelatedTableauSite(guid=self.guid)
-        return RelatedTableauSite(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -260,11 +241,13 @@ class TableauSite(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class TableauSiteAttributes(AssetAttributes):
     """TableauSite-specific attributes for nested API format."""
 
     tableau_project_hierarchy_qualified_names: list[str] | None | UnsetType = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
 
 class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     """TableauSite-specific relationship attributes for nested API format."""
@@ -341,7 +324,9 @@ class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -356,13 +341,19 @@ class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     projects: list[RelatedTableauProject] | None | UnsetType = UNSET
     """Projects that exist within this site."""
 
+
 class TableauSiteNested(AssetNested):
     """TableauSite in nested API format for high-performance serialization."""
 
     attributes: TableauSiteAttributes | UnsetType = UNSET
     relationship_attributes: TableauSiteRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: TableauSiteRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: TableauSiteRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: TableauSiteRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: TableauSiteRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -401,16 +392,25 @@ _TABLEAU_SITE_REL_FIELDS: list[str] = [
     "projects",
 ]
 
-def _populate_tableau_site_attrs(attrs: TableauSiteAttributes, obj: TableauSite) -> None:
+
+def _populate_tableau_site_attrs(
+    attrs: TableauSiteAttributes, obj: TableauSite
+) -> None:
     """Populate TableauSite-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
+    attrs.tableau_project_hierarchy_qualified_names = (
+        obj.tableau_project_hierarchy_qualified_names
+    )
+
 
 def _extract_tableau_site_attrs(attrs: TableauSiteAttributes) -> dict:
     """Extract all TableauSite attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
+    result["tableau_project_hierarchy_qualified_names"] = (
+        attrs.tableau_project_hierarchy_qualified_names
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -451,16 +451,19 @@ def _tableau_site_to_nested(tableau_site: TableauSite) -> TableauSiteNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _tableau_site_from_nested(nested: TableauSiteNested) -> TableauSite:
     """Convert nested format to flat TableauSite."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TableauSiteAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else TableauSiteAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_SITE_REL_FIELDS,
-        TableauSiteRelationshipAttributes
+        TableauSiteRelationshipAttributes,
     )
     return TableauSite(
         guid=nested.guid,
@@ -487,6 +490,7 @@ def _tableau_site_from_nested(nested: TableauSiteNested) -> TableauSite:
         **merged_rels,
     )
 
+
 def _tableau_site_to_nested_bytes(tableau_site: TableauSite, serde: Serde) -> bytes:
     """Convert flat TableauSite to nested JSON bytes."""
     return serde.encode(_tableau_site_to_nested(tableau_site))
@@ -497,6 +501,7 @@ def _tableau_site_from_nested_bytes(data: bytes, serde: Serde) -> TableauSite:
     nested = serde.decode(data, TableauSiteNested)
     return _tableau_site_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -505,7 +510,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-TableauSite.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
+TableauSite.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
+    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
+)
 TableauSite.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TableauSite.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 TableauSite.ANOMALO_CHECKS = RelationField("anomaloChecks")

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -43,15 +42,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-
-from .thoughtspot_related import RelatedThoughtspot
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Thoughtspot(Asset):
@@ -178,7 +179,9 @@ class Thoughtspot(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -192,30 +195,6 @@ class Thoughtspot(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Thoughtspot"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Thoughtspot validation failed: {errors}")
-
-    def minimize(self) -> "Thoughtspot":
-        self.validate()
-        return Thoughtspot(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedThoughtspot":
-        if self.guid is not UNSET:
-            return RelatedThoughtspot(guid=self.guid)
-        return RelatedThoughtspot(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -268,6 +247,7 @@ class Thoughtspot(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ThoughtspotAttributes(AssetAttributes):
     """Thoughtspot-specific attributes for nested API format."""
 
@@ -282,6 +262,7 @@ class ThoughtspotAttributes(AssetAttributes):
 
     thoughtspot_column_count: int | None | UnsetType = UNSET
     """Number of columns."""
+
 
 class ThoughtspotRelationshipAttributes(AssetRelationshipAttributes):
     """Thoughtspot-specific relationship attributes for nested API format."""
@@ -358,7 +339,9 @@ class ThoughtspotRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -370,13 +353,19 @@ class ThoughtspotRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class ThoughtspotNested(AssetNested):
     """Thoughtspot in nested API format for high-performance serialization."""
 
     attributes: ThoughtspotAttributes | UnsetType = UNSET
     relationship_attributes: ThoughtspotRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: ThoughtspotRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: ThoughtspotRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: ThoughtspotRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: ThoughtspotRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -414,6 +403,7 @@ _THOUGHTSPOT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_thoughtspot_attrs(attrs: ThoughtspotAttributes, obj: Thoughtspot) -> None:
     """Populate Thoughtspot-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -421,6 +411,7 @@ def _populate_thoughtspot_attrs(attrs: ThoughtspotAttributes, obj: Thoughtspot) 
     attrs.thoughtspot_question_text = obj.thoughtspot_question_text
     attrs.thoughtspot_join_count = obj.thoughtspot_join_count
     attrs.thoughtspot_column_count = obj.thoughtspot_column_count
+
 
 def _extract_thoughtspot_attrs(attrs: ThoughtspotAttributes) -> dict:
     """Extract all Thoughtspot attributes from the attrs struct into a flat dict."""
@@ -430,6 +421,7 @@ def _extract_thoughtspot_attrs(attrs: ThoughtspotAttributes) -> dict:
     result["thoughtspot_join_count"] = attrs.thoughtspot_join_count
     result["thoughtspot_column_count"] = attrs.thoughtspot_column_count
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -470,16 +462,19 @@ def _thoughtspot_to_nested(thoughtspot: Thoughtspot) -> ThoughtspotNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _thoughtspot_from_nested(nested: ThoughtspotNested) -> Thoughtspot:
     """Convert nested format to flat Thoughtspot."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ThoughtspotAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ThoughtspotAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _THOUGHTSPOT_REL_FIELDS,
-        ThoughtspotRelationshipAttributes
+        ThoughtspotRelationshipAttributes,
     )
     return Thoughtspot(
         guid=nested.guid,
@@ -506,6 +501,7 @@ def _thoughtspot_from_nested(nested: ThoughtspotNested) -> Thoughtspot:
         **merged_rels,
     )
 
+
 def _thoughtspot_to_nested_bytes(thoughtspot: Thoughtspot, serde: Serde) -> bytes:
     """Convert flat Thoughtspot to nested JSON bytes."""
     return serde.encode(_thoughtspot_to_nested(thoughtspot))
@@ -516,6 +512,7 @@ def _thoughtspot_from_nested_bytes(data: bytes, serde: Serde) -> Thoughtspot:
     nested = serde.decode(data, ThoughtspotNested)
     return _thoughtspot_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -525,10 +522,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Thoughtspot.THOUGHTSPOT_CHART_TYPE = KeywordField("thoughtspotChartType", "thoughtspotChartType")
-Thoughtspot.THOUGHTSPOT_QUESTION_TEXT = KeywordField("thoughtspotQuestionText", "thoughtspotQuestionText")
-Thoughtspot.THOUGHTSPOT_JOIN_COUNT = NumericField("thoughtspotJoinCount", "thoughtspotJoinCount")
-Thoughtspot.THOUGHTSPOT_COLUMN_COUNT = NumericField("thoughtspotColumnCount", "thoughtspotColumnCount")
+Thoughtspot.THOUGHTSPOT_CHART_TYPE = KeywordField(
+    "thoughtspotChartType", "thoughtspotChartType"
+)
+Thoughtspot.THOUGHTSPOT_QUESTION_TEXT = KeywordField(
+    "thoughtspotQuestionText", "thoughtspotQuestionText"
+)
+Thoughtspot.THOUGHTSPOT_JOIN_COUNT = NumericField(
+    "thoughtspotJoinCount", "thoughtspotJoinCount"
+)
+Thoughtspot.THOUGHTSPOT_COLUMN_COUNT = NumericField(
+    "thoughtspotColumnCount", "thoughtspotColumnCount"
+)
 Thoughtspot.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Thoughtspot.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Thoughtspot.ANOMALO_CHECKS = RelationField("anomaloChecks")

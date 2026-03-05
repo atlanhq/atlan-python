@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,19 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .cognite_related import RelatedCogniteAsset, RelatedCogniteEvent
+from .cognite_related import RelatedCogniteAsset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CogniteEvent(Asset):
@@ -167,7 +170,9 @@ class CogniteEvent(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -186,39 +191,7 @@ class CogniteEvent(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cognite_asset is UNSET:
-                errors.append("cognite_asset is required for creation")
-        if errors:
-            raise ValueError(f"CogniteEvent validation failed: {errors}")
-
-    def minimize(self) -> "CogniteEvent":
-        self.validate()
-        return CogniteEvent(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCogniteEvent":
-        if self.guid is not UNSET:
-            return RelatedCogniteEvent(guid=self.guid)
-        return RelatedCogniteEvent(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -271,10 +244,12 @@ class CogniteEvent(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CogniteEventAttributes(AssetAttributes):
     """CogniteEvent-specific attributes for nested API format."""
 
     pass
+
 
 class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     """CogniteEvent-specific relationship attributes for nested API format."""
@@ -354,7 +329,9 @@ class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -366,13 +343,19 @@ class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class CogniteEventNested(AssetNested):
     """CogniteEvent in nested API format for high-performance serialization."""
 
     attributes: CogniteEventAttributes | UnsetType = UNSET
     relationship_attributes: CogniteEventRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: CogniteEventRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: CogniteEventRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: CogniteEventRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: CogniteEventRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -411,13 +394,18 @@ _COGNITE_EVENT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognite_event_attrs(attrs: CogniteEventAttributes, obj: CogniteEvent) -> None:
+
+def _populate_cognite_event_attrs(
+    attrs: CogniteEventAttributes, obj: CogniteEvent
+) -> None:
     """Populate CogniteEvent-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+
 
 def _extract_cognite_event_attrs(attrs: CogniteEventAttributes) -> dict:
     """Extract all CogniteEvent attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -458,16 +446,21 @@ def _cognite_event_to_nested(cognite_event: CogniteEvent) -> CogniteEventNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognite_event_from_nested(nested: CogniteEventNested) -> CogniteEvent:
     """Convert nested format to flat CogniteEvent."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CogniteEventAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CogniteEventAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNITE_EVENT_REL_FIELDS,
-        CogniteEventRelationshipAttributes
+        CogniteEventRelationshipAttributes,
     )
     return CogniteEvent(
         guid=nested.guid,
@@ -494,6 +487,7 @@ def _cognite_event_from_nested(nested: CogniteEventNested) -> CogniteEvent:
         **merged_rels,
     )
 
+
 def _cognite_event_to_nested_bytes(cognite_event: CogniteEvent, serde: Serde) -> bytes:
     """Convert flat CogniteEvent to nested JSON bytes."""
     return serde.encode(_cognite_event_to_nested(cognite_event))
@@ -503,6 +497,7 @@ def _cognite_event_from_nested_bytes(data: bytes, serde: Serde) -> CogniteEvent:
     """Convert nested JSON bytes to flat CogniteEvent."""
     nested = serde.decode(data, CogniteEventNested)
     return _cognite_event_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

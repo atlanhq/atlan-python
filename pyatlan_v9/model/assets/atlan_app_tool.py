@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,23 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .atlan_app_related import RelatedAtlanApp, RelatedAtlanAppTool, RelatedAtlanAppWorkflow
+from .atlan_app_related import (
+    RelatedAtlanApp,
+    RelatedAtlanAppTool,
+    RelatedAtlanAppWorkflow,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AtlanAppTool(Asset):
@@ -207,7 +214,9 @@ class AtlanAppTool(Asset):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -226,41 +235,7 @@ class AtlanAppTool(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.atlan_app_name is UNSET:
-                errors.append("atlan_app_name is required for creation")
-            if self.atlan_app_qualified_name is UNSET:
-                errors.append("atlan_app_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"AtlanAppTool validation failed: {errors}")
-
-    def minimize(self) -> "AtlanAppTool":
-        self.validate()
-        return AtlanAppTool(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAtlanAppTool":
-        if self.guid is not UNSET:
-            return RelatedAtlanAppTool(guid=self.guid)
-        return RelatedAtlanAppTool(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -313,6 +288,7 @@ class AtlanAppTool(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AtlanAppToolAttributes(AssetAttributes):
     """AtlanAppTool-specific attributes for nested API format."""
 
@@ -339,6 +315,7 @@ class AtlanAppToolAttributes(AssetAttributes):
 
     app_id: str | None | UnsetType = UNSET
     """Unique identifier for the application asset from the source system."""
+
 
 class AtlanAppToolRelationshipAttributes(AssetRelationshipAttributes):
     """AtlanAppTool-specific relationship attributes for nested API format."""
@@ -424,7 +401,9 @@ class AtlanAppToolRelationshipAttributes(AssetRelationshipAttributes):
     readme: RelatedReadme | None | UnsetType = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -436,13 +415,19 @@ class AtlanAppToolRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class AtlanAppToolNested(AssetNested):
     """AtlanAppTool in nested API format for high-performance serialization."""
 
     attributes: AtlanAppToolAttributes | UnsetType = UNSET
     relationship_attributes: AtlanAppToolRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: AtlanAppToolRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: AtlanAppToolRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: AtlanAppToolRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+    remove_relationship_attributes: AtlanAppToolRelationshipAttributes | UnsetType = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -483,7 +468,10 @@ _ATLAN_APP_TOOL_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_atlan_app_tool_attrs(attrs: AtlanAppToolAttributes, obj: AtlanAppTool) -> None:
+
+def _populate_atlan_app_tool_attrs(
+    attrs: AtlanAppToolAttributes, obj: AtlanAppTool
+) -> None:
     """Populate AtlanAppTool-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.atlan_app_input_schema = obj.atlan_app_input_schema
@@ -494,6 +482,7 @@ def _populate_atlan_app_tool_attrs(attrs: AtlanAppToolAttributes, obj: AtlanAppT
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
     attrs.app_id = obj.app_id
+
 
 def _extract_atlan_app_tool_attrs(attrs: AtlanAppToolAttributes) -> dict:
     """Extract all AtlanAppTool attributes from the attrs struct into a flat dict."""
@@ -507,6 +496,7 @@ def _extract_atlan_app_tool_attrs(attrs: AtlanAppToolAttributes) -> dict:
     result["atlan_app_metadata"] = attrs.atlan_app_metadata
     result["app_id"] = attrs.app_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -547,16 +537,21 @@ def _atlan_app_tool_to_nested(atlan_app_tool: AtlanAppTool) -> AtlanAppToolNeste
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _atlan_app_tool_from_nested(nested: AtlanAppToolNested) -> AtlanAppTool:
     """Convert nested format to flat AtlanAppTool."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AtlanAppToolAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AtlanAppToolAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ATLAN_APP_TOOL_REL_FIELDS,
-        AtlanAppToolRelationshipAttributes
+        AtlanAppToolRelationshipAttributes,
     )
     return AtlanAppTool(
         guid=nested.guid,
@@ -583,7 +578,10 @@ def _atlan_app_tool_from_nested(nested: AtlanAppToolNested) -> AtlanAppTool:
         **merged_rels,
     )
 
-def _atlan_app_tool_to_nested_bytes(atlan_app_tool: AtlanAppTool, serde: Serde) -> bytes:
+
+def _atlan_app_tool_to_nested_bytes(
+    atlan_app_tool: AtlanAppTool, serde: Serde
+) -> bytes:
     """Convert flat AtlanAppTool to nested JSON bytes."""
     return serde.encode(_atlan_app_tool_to_nested(atlan_app_tool))
 
@@ -592,6 +590,7 @@ def _atlan_app_tool_from_nested_bytes(data: bytes, serde: Serde) -> AtlanAppTool
     """Convert nested JSON bytes to flat AtlanAppTool."""
     nested = serde.decode(data, AtlanAppToolNested)
     return _atlan_app_tool_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -602,11 +601,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-AtlanAppTool.ATLAN_APP_INPUT_SCHEMA = TextField("atlanAppInputSchema", "atlanAppInputSchema")
-AtlanAppTool.ATLAN_APP_OUTPUT_SCHEMA = TextField("atlanAppOutputSchema", "atlanAppOutputSchema")
-AtlanAppTool.ATLAN_APP_TASK_QUEUE = KeywordField("atlanAppTaskQueue", "atlanAppTaskQueue")
+AtlanAppTool.ATLAN_APP_INPUT_SCHEMA = TextField(
+    "atlanAppInputSchema", "atlanAppInputSchema"
+)
+AtlanAppTool.ATLAN_APP_OUTPUT_SCHEMA = TextField(
+    "atlanAppOutputSchema", "atlanAppOutputSchema"
+)
+AtlanAppTool.ATLAN_APP_TASK_QUEUE = KeywordField(
+    "atlanAppTaskQueue", "atlanAppTaskQueue"
+)
 AtlanAppTool.ATLAN_APP_CATEGORY = KeywordField("atlanAppCategory", "atlanAppCategory")
-AtlanAppTool.ATLAN_APP_QUALIFIED_NAME = KeywordField("atlanAppQualifiedName", "atlanAppQualifiedName")
+AtlanAppTool.ATLAN_APP_QUALIFIED_NAME = KeywordField(
+    "atlanAppQualifiedName", "atlanAppQualifiedName"
+)
 AtlanAppTool.ATLAN_APP_NAME = KeywordField("atlanAppName", "atlanAppName")
 AtlanAppTool.ATLAN_APP_METADATA = TextField("atlanAppMetadata", "atlanAppMetadata")
 AtlanAppTool.APP_ID = KeywordField("appId", "appId")

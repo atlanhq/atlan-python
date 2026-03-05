@@ -17,7 +17,6 @@ from __future__ import annotations
 import re
 from typing import Any, ClassVar, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .airflow_related import RelatedAirflowTask
@@ -44,15 +43,22 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .salesforce_related import RelatedSalesforceDashboard, RelatedSalesforceOrganization, RelatedSalesforceReport
+from .salesforce_related import (
+    RelatedSalesforceDashboard,
+    RelatedSalesforceOrganization,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SalesforceReport(Asset):
@@ -191,7 +197,9 @@ class SalesforceReport(Asset):
     dashboards: list[RelatedSalesforceDashboard] | None | UnsetType = UNSET
     """"""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -210,41 +218,7 @@ class SalesforceReport(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
-    def validate(self, for_creation: bool = False) -> None:
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.organization is UNSET:
-                errors.append("organization is required for creation")
-            if self.organization_qualified_name is UNSET:
-                errors.append("organization_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SalesforceReport validation failed: {errors}")
-
-    def minimize(self) -> "SalesforceReport":
-        self.validate()
-        return SalesforceReport(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSalesforceReport":
-        if self.guid is not UNSET:
-            return RelatedSalesforceReport(guid=self.guid)
-        return RelatedSalesforceReport(qualified_name=self.qualified_name)
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -275,7 +249,9 @@ class SalesforceReport(Asset):
         return _salesforce_report_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SalesforceReport:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SalesforceReport:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -297,6 +273,7 @@ class SalesforceReport(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SalesforceReportAttributes(AssetAttributes):
     """SalesforceReport-specific attributes for nested API format."""
 
@@ -314,6 +291,7 @@ class SalesforceReportAttributes(AssetAttributes):
 
     api_name: str | None | UnsetType = UNSET
     """Name of this asset in the Salesforce API."""
+
 
 class SalesforceReportRelationshipAttributes(AssetRelationshipAttributes):
     """SalesforceReport-specific relationship attributes for nested API format."""
@@ -396,7 +374,9 @@ class SalesforceReportRelationshipAttributes(AssetRelationshipAttributes):
     dashboards: list[RelatedSalesforceDashboard] | None | UnsetType = UNSET
     """"""
 
-    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = UNSET
+    schema_registry_subjects: list[RelatedSchemaRegistrySubject] | None | UnsetType = (
+        UNSET
+    )
     """"""
 
     soda_checks: list[RelatedSodaCheck] | None | UnsetType = UNSET
@@ -408,13 +388,19 @@ class SalesforceReportRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: list[RelatedSparkJob] | None | UnsetType = UNSET
     """"""
 
+
 class SalesforceReportNested(AssetNested):
     """SalesforceReport in nested API format for high-performance serialization."""
 
     attributes: SalesforceReportAttributes | UnsetType = UNSET
     relationship_attributes: SalesforceReportRelationshipAttributes | UnsetType = UNSET
-    append_relationship_attributes: SalesforceReportRelationshipAttributes | UnsetType = UNSET
-    remove_relationship_attributes: SalesforceReportRelationshipAttributes | UnsetType = UNSET
+    append_relationship_attributes: (
+        SalesforceReportRelationshipAttributes | UnsetType
+    ) = UNSET
+    remove_relationship_attributes: (
+        SalesforceReportRelationshipAttributes | UnsetType
+    ) = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -454,7 +440,10 @@ _SALESFORCE_REPORT_REL_FIELDS: list[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_salesforce_report_attrs(attrs: SalesforceReportAttributes, obj: SalesforceReport) -> None:
+
+def _populate_salesforce_report_attrs(
+    attrs: SalesforceReportAttributes, obj: SalesforceReport
+) -> None:
     """Populate SalesforceReport-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.source_id = obj.source_id
@@ -462,6 +451,7 @@ def _populate_salesforce_report_attrs(attrs: SalesforceReportAttributes, obj: Sa
     attrs.detail_columns = obj.detail_columns
     attrs.organization_qualified_name = obj.organization_qualified_name
     attrs.api_name = obj.api_name
+
 
 def _extract_salesforce_report_attrs(attrs: SalesforceReportAttributes) -> dict:
     """Extract all SalesforceReport attributes from the attrs struct into a flat dict."""
@@ -473,18 +463,23 @@ def _extract_salesforce_report_attrs(attrs: SalesforceReportAttributes) -> dict:
     result["api_name"] = attrs.api_name
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _salesforce_report_to_nested(salesforce_report: SalesforceReport) -> SalesforceReportNested:
+def _salesforce_report_to_nested(
+    salesforce_report: SalesforceReport,
+) -> SalesforceReportNested:
     """Convert flat SalesforceReport to nested format."""
     attrs = SalesforceReportAttributes()
     _populate_salesforce_report_attrs(attrs, salesforce_report)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        salesforce_report, _SALESFORCE_REPORT_REL_FIELDS, SalesforceReportRelationshipAttributes
+        salesforce_report,
+        _SALESFORCE_REPORT_REL_FIELDS,
+        SalesforceReportRelationshipAttributes,
     )
     return SalesforceReportNested(
         guid=salesforce_report.guid,
@@ -512,16 +507,21 @@ def _salesforce_report_to_nested(salesforce_report: SalesforceReport) -> Salesfo
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _salesforce_report_from_nested(nested: SalesforceReportNested) -> SalesforceReport:
     """Convert nested format to flat SalesforceReport."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SalesforceReportAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SalesforceReportAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SALESFORCE_REPORT_REL_FIELDS,
-        SalesforceReportRelationshipAttributes
+        SalesforceReportRelationshipAttributes,
     )
     return SalesforceReport(
         guid=nested.guid,
@@ -548,7 +548,10 @@ def _salesforce_report_from_nested(nested: SalesforceReportNested) -> Salesforce
         **merged_rels,
     )
 
-def _salesforce_report_to_nested_bytes(salesforce_report: SalesforceReport, serde: Serde) -> bytes:
+
+def _salesforce_report_to_nested_bytes(
+    salesforce_report: SalesforceReport, serde: Serde
+) -> bytes:
     """Convert flat SalesforceReport to nested JSON bytes."""
     return serde.encode(_salesforce_report_to_nested(salesforce_report))
 
@@ -557,6 +560,7 @@ def _salesforce_report_from_nested_bytes(data: bytes, serde: Serde) -> Salesforc
     """Convert nested JSON bytes to flat SalesforceReport."""
     nested = serde.decode(data, SalesforceReportNested)
     return _salesforce_report_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -569,7 +573,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 SalesforceReport.SOURCE_ID = KeywordField("sourceId", "sourceId")
 SalesforceReport.REPORT_TYPE = KeywordField("reportType", "reportType")
 SalesforceReport.DETAIL_COLUMNS = KeywordField("detailColumns", "detailColumns")
-SalesforceReport.ORGANIZATION_QUALIFIED_NAME = KeywordField("organizationQualifiedName", "organizationQualifiedName")
+SalesforceReport.ORGANIZATION_QUALIFIED_NAME = KeywordField(
+    "organizationQualifiedName", "organizationQualifiedName"
+)
 SalesforceReport.API_NAME = KeywordField("apiName", "apiName")
 SalesforceReport.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SalesforceReport.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -579,7 +585,9 @@ SalesforceReport.APPLICATION_FIELD = RelationField("applicationField")
 SalesforceReport.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SalesforceReport.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SalesforceReport.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SalesforceReport.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SalesforceReport.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SalesforceReport.METRICS = RelationField("metrics")
 SalesforceReport.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SalesforceReport.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
