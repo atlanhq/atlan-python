@@ -16,7 +16,6 @@ from pyatlan.client.constants import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan_v9.model.enums import AtlanTypeCategory
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.typedef import (
     AtlanTagDef,
     CustomMetadataDef,
@@ -27,6 +26,7 @@ from pyatlan_v9.model.typedef import (
     TypeDef,
     TypeDefResponse,
 )
+from pyatlan_v9.validate import validate_arguments
 
 _TYPE_DEF_MAP = {
     AtlanTypeCategory.ENUM: EnumDef,
@@ -152,11 +152,9 @@ class V9TypeDefClient:
         :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
-        raw_json = self._client._call_api(
-            CREATE_TYPE_DEFS, request_obj=payload        )
+        raw_json = self._client._call_api(CREATE_TYPE_DEFS, request_obj=payload)
         self._refresh_caches(typedef)
         return msgspec.convert(raw_json, TypeDefResponse, strict=False)
-
 
     @validate_arguments
     def updater(self, typedef: TypeDef) -> TypeDefResponse:
@@ -173,11 +171,9 @@ class V9TypeDefClient:
         :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
-        raw_json = self._client._call_api(
-            UPDATE_TYPE_DEFS, request_obj=payload        )
+        raw_json = self._client._call_api(UPDATE_TYPE_DEFS, request_obj=payload)
         self._refresh_caches(typedef)
         return msgspec.convert(raw_json, TypeDefResponse, strict=False)
-
 
     @validate_arguments
     def purge(self, name: str, typedef_type: type) -> None:

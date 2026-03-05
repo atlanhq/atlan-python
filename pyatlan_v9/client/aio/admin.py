@@ -11,7 +11,6 @@ from pyatlan.client.common import (
     AsyncApiCaller,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.aio.keycloak_events import (
     AsyncAdminEventResponse,
     AsyncKeycloakEventResponse,
@@ -22,6 +21,7 @@ from pyatlan_v9.model.keycloak_events import (
     KeycloakEvent,
     KeycloakEventRequest,
 )
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncAdminClient:
@@ -80,9 +80,7 @@ class V9AsyncAdminClient:
         :raises AtlanError: on any API communication issue
         """
         endpoint, query_params = AdminGetAdminEvents.prepare_request(admin_request)
-        raw_json = await self._client._call_api(
-            endpoint, query_params=query_params
-        )
+        raw_json = await self._client._call_api(endpoint, query_params=query_params)
         if raw_json:
             events = msgspec.convert(raw_json, list[AdminEvent], strict=False)
         else:

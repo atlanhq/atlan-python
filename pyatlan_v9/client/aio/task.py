@@ -5,10 +5,10 @@ from __future__ import annotations
 
 from pyatlan.client.common import AsyncApiCaller, TaskSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.client.task import _parse_tasks
 from pyatlan_v9.model.aio.task import AsyncTaskSearchResponse
 from pyatlan_v9.model.task import TaskSearchRequest
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncTaskClient:

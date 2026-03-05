@@ -26,8 +26,7 @@ from pyatlan_v9.model.conversion_utils import (
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import get_type
-from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.model.transform import get_type, register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .ai_related import RelatedAIApplication, RelatedAIModelVersion

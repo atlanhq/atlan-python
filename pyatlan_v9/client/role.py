@@ -6,8 +6,8 @@ import msgspec
 
 from pyatlan.client.common import ApiCaller, RoleGet, RoleGetAll
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.role import RoleResponse
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9RoleClient:

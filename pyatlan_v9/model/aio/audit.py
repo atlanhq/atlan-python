@@ -97,7 +97,10 @@ class AsyncAuditSearchResults:
             self._entity_audits = []
             return None
         try:
-            from pyatlan_v9.client.audit import _normalize_ms_timestamps, _AUDIT_TS_FIELDS
+            from pyatlan_v9.client.audit import (
+                _AUDIT_TS_FIELDS,
+                _normalize_ms_timestamps,
+            )
 
             self._entity_audits = [
                 msgspec.convert(

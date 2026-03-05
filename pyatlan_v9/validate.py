@@ -122,6 +122,7 @@ def _validate_constrained_str(value: Any, hint: type) -> Tuple[Any, Optional[str
     regex = getattr(hint, "regex", None)
     if regex is not None:
         import re
+
         if not re.match(regex, value):
             return value, f"string does not match regex '{regex}'"
     return value, None

@@ -10,18 +10,17 @@ from pyatlan.client.common import (
     CredentialGet,
     CredentialGetAll,
     CredentialPurge,
-    CredentialTest,
     CredentialTestAndUpdate,
 )
 from pyatlan.client.constants import TEST_CREDENTIAL
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.credential import (
     Credential,
     CredentialListResponse,
     CredentialResponse,
     CredentialTestResponse,
 )
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9CredentialClient:
@@ -59,7 +58,6 @@ class V9CredentialClient:
             request_obj=credential,
         )
         return msgspec.convert(raw_json, CredentialResponse, strict=False)
-
 
     @validate_arguments
     def get(self, guid: str) -> CredentialResponse:

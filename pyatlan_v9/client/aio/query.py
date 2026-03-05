@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from pyatlan.client.common import AsyncApiCaller, QueryStream
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.query import QueryRequest, QueryResponse
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncQueryClient:

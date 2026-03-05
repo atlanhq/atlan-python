@@ -7,7 +7,6 @@ from typing import Union
 
 from pyatlan.client.common import AsyncApiCaller, SearchLogSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.client.search_log import (
     UNIQUE_ASSETS,
     UNIQUE_USERS,
@@ -16,10 +15,8 @@ from pyatlan_v9.client.search_log import (
     _parse_user_views,
 )
 from pyatlan_v9.model.aio.search_log import AsyncSearchLogResults
-from pyatlan_v9.model.search_log import (
-    SearchLogRequest,
-    SearchLogViewResults,
-)
+from pyatlan_v9.model.search_log import SearchLogRequest, SearchLogViewResults
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncSearchLogClient:

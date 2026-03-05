@@ -5,18 +5,11 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Optional, Set, Union
+from typing import Any, ClassVar, Set, Union
 from warnings import warn
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    build_attributes_kwargs,
-    build_flat_kwargs,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 from pyatlan.model.enums import (
     AuthPolicyCategory,
     AuthPolicyResourceCategory,
@@ -26,6 +19,13 @@ from pyatlan.model.enums import (
     PersonaGlossaryAction,
     PersonaMetadataAction,
 )
+from pyatlan_v9.model.conversion_utils import (
+    build_attributes_kwargs,
+    build_flat_kwargs,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .asset import Asset, AssetAttributes, AssetNested
@@ -36,7 +36,6 @@ from .auth_policy import AuthPolicy
 class Persona(Asset):
     """Persona asset in Atlan — an access-control construct scoping
     visibility for users/groups across connections and glossaries."""
-
 
     PERSONA_GROUPS: ClassVar[Any] = None
     PERSONA_USERS: ClassVar[Any] = None
@@ -218,9 +217,7 @@ class Persona(Asset):
         return policy
 
     def trim_to_required(self) -> "Persona":
-        return Persona.updater(
-            qualified_name=self.qualified_name, name=self.name
-        )
+        return Persona.updater(qualified_name=self.qualified_name, name=self.name)
 
     def to_json(self, nested: bool = True, serde: Serde | None = None) -> str:
         if serde is None:
@@ -319,9 +316,7 @@ def _persona_to_nested(persona: Persona) -> PersonaNested:
 
 
 def _persona_from_nested(nested: PersonaNested) -> Persona:
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else PersonaAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else PersonaAttributes()
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,

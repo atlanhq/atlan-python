@@ -19,13 +19,12 @@ from pyatlan.client.constants import (
 )
 from pyatlan.errors import ErrorCode
 from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan_v9.model.aio.group import AsyncGroupResponse
+from pyatlan_v9.model.aio.user import AsyncUserResponse
 from pyatlan_v9.model.assets import Asset
 from pyatlan_v9.model.fluent_search import FluentSearch
-from pyatlan_v9.model.response import AssetMutationResponse
-from pyatlan.validate import validate_arguments
-from pyatlan_v9.model.aio.group import AsyncGroupResponse
 from pyatlan_v9.model.group import AtlanGroup, GroupRequest
-from pyatlan_v9.model.aio.user import AsyncUserResponse
+from pyatlan_v9.model.response import AssetMutationResponse
 from pyatlan_v9.model.user import (
     AddToGroupsRequest,
     AtlanUser,
@@ -35,6 +34,7 @@ from pyatlan_v9.model.user import (
     UserMinimalResponse,
     UserRequest,
 )
+from pyatlan_v9.validate import validate_arguments
 
 _USER_COLUMNS = [
     "firstName",
@@ -110,18 +110,14 @@ class V9AsyncUserClient:
                 role_id := self._client.role_cache.get_id_for_name(role_name)
             ) and user.email:
                 to_create.append(
-                    CreateUser(
-                        email=user.email, role_name=role_name, role_id=role_id
-                    )
+                    CreateUser(email=user.email, role_name=role_name, role_id=role_id)
                 )
         payload = CreateUserRequest(users=to_create)
-        await self._client._call_api(
-            CREATE_USERS, request_obj=payload        )
+        await self._client._call_api(CREATE_USERS, request_obj=payload)
         if return_info:
             emails = [cu.email for cu in to_create]
             return await self.get_by_emails(emails=emails)
         return None
-
 
     @validate_arguments
     async def updater(
@@ -140,10 +136,8 @@ class V9AsyncUserClient:
         :raises AtlanError: on any API communication issue
         """
         endpoint = UPDATE_USER.format_path_with_params(guid)
-        raw_json = await self._client._call_api(
-            endpoint, request_obj=user        )
+        raw_json = await self._client._call_api(endpoint, request_obj=user)
         return msgspec.convert(raw_json, UserMinimalResponse, strict=False)
-
 
     @validate_arguments
     async def change_role(
@@ -160,8 +154,7 @@ class V9AsyncUserClient:
         """
         payload = ChangeRoleRequest(role_id=role_id)
         endpoint = CHANGE_USER_ROLE.format_path({"user_guid": guid})
-        await self._client._call_api(
-            endpoint, request_obj=payload        )
+        await self._client._call_api(endpoint, request_obj=payload)
 
     async def get_current(
         self,
@@ -314,8 +307,7 @@ class V9AsyncUserClient:
         """
         payload = AddToGroupsRequest(groups=group_ids)
         endpoint = ADD_USER_TO_GROUPS.format_path({"user_guid": guid})
-        await self._client._call_api(
-            endpoint, request_obj=payload        )
+        await self._client._call_api(endpoint, request_obj=payload)
 
     @validate_arguments
     async def get_groups(

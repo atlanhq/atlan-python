@@ -7,8 +7,8 @@ import json
 import logging
 import time
 from typing import (
-    Any,
     TYPE_CHECKING,
+    Any,
     Callable,
     Dict,
     List,
@@ -30,6 +30,20 @@ from tenacity import (
     wait_fixed,
 )
 
+# ---------------------------------------------------------------------------
+# Re-export legacy utility classes that don't need migration
+# (they are plain Python classes, not Pydantic models)
+# ---------------------------------------------------------------------------
+from pyatlan.client.asset import (  # noqa: F401
+    AssetIdentity,
+    Batch,
+    CategoryHierarchy,
+    CustomMetadataHandling,
+    FailedBatch,
+    IndexSearchResults,
+    LineageListResults,
+    SearchResults,
+)
 from pyatlan.client.common import (
     ApiCaller,
     DeleteByGuid,
@@ -61,28 +75,30 @@ from pyatlan.client.common import (
     UpdateCertificate,
     UpdateCustomMetadataAttributes,
 )
-from pyatlan.client.constants import (
-    BULK_UPDATE,
-    DELETE_ENTITIES_BY_GUIDS,
-)
+from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
 from pyatlan.errors import AtlanError, ErrorCode, NotFoundError, PermissionError
+from pyatlan.model.fields.atlan_fields import AtlanField
+from pyatlan.utils import unflatten_custom_metadata_for_entity
+from pyatlan_v9.model.aggregation import Aggregations
 from pyatlan_v9.model.assets import (
     Asset,
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
     Connection,
-    Database,
     DataDomain,
     DataProduct,
-    MaterialisedView,
     Persona,
     Purpose,
-    Referenceable,
-    Schema,
-    Table,
-    View,
 )
+from pyatlan_v9.model.core import (
+    Announcement,
+    AtlanRequest,
+    AtlanTag,
+    AtlanTagName,
+    BulkRequest,
+)
+from pyatlan_v9.model.custom_metadata import CustomMetadataDict
 from pyatlan_v9.model.enums import (
     AtlanConnectorType,
     AtlanDeleteType,
@@ -92,39 +108,11 @@ from pyatlan_v9.model.enums import (
     SaveSemantic,
     SortOrder,
 )
-from pyatlan.model.fields.atlan_fields import AtlanField
-from pyatlan.utils import unflatten_custom_metadata_for_entity
-from pyatlan.validate import validate_arguments
-
-from pyatlan_v9.model.aggregation import Aggregations
-from pyatlan_v9.model.core import (
-    Announcement,
-    AssetRequest,
-    AtlanRequest,
-    AtlanTag,
-    AtlanTagName,
-    BulkRequest,
-)
-from pyatlan_v9.model.custom_metadata import CustomMetadataDict
 from pyatlan_v9.model.lineage import LineageListRequest
 from pyatlan_v9.model.response import AssetMutationResponse, MutatedEntities
 from pyatlan_v9.model.search import IndexSearchRequest, Query
 from pyatlan_v9.model.transform import from_atlas_format
-
-# ---------------------------------------------------------------------------
-# Re-export legacy utility classes that don't need migration
-# (they are plain Python classes, not Pydantic models)
-# ---------------------------------------------------------------------------
-from pyatlan.client.asset import (  # noqa: F401
-    AssetIdentity,
-    Batch,
-    CategoryHierarchy,
-    CustomMetadataHandling,
-    FailedBatch,
-    IndexSearchResults,
-    LineageListResults,
-    SearchResults,
-)
+from pyatlan_v9.validate import validate_arguments
 
 if TYPE_CHECKING:
     from pyatlan_v9.client.atlan import AtlanClient
@@ -143,7 +131,9 @@ def _custom_metadata_payload(custom_metadata_request: Any) -> Any:
     root_payload = getattr(custom_metadata_request, "__root__", None)
     if root_payload is not None:
         return root_payload
-    if hasattr(custom_metadata_request, "dict") and callable(custom_metadata_request.dict):
+    if hasattr(custom_metadata_request, "dict") and callable(
+        custom_metadata_request.dict
+    ):
         return custom_metadata_request.dict(by_alias=True, exclude_none=True)
     return custom_metadata_request
 
@@ -209,7 +199,6 @@ def _parse_aggregations_v9(raw: Dict) -> Optional[Aggregations]:
     Nested aggregations inside buckets are recursively parsed.
     """
     from pyatlan_v9.model.aggregation import (
-        AggregationBucketDetails,
         AggregationBucketResult,
         AggregationHitsResult,
         AggregationMetricResult,
@@ -1162,7 +1151,7 @@ class V9AssetClient:
         retrieved_asset = _get_asset_with_retry()
 
         # Prepare the asset updater using the v9 model directly
-        from pyatlan_v9.model.assets import AtlasGlossaryTerm, AtlasGlossaryCategory
+        from pyatlan_v9.model.assets import AtlasGlossaryCategory, AtlasGlossaryTerm
 
         if asset_type in (AtlasGlossaryTerm, AtlasGlossaryCategory):
             updated_asset = asset_type.updater(

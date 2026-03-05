@@ -21,9 +21,8 @@ from pyatlan.errors import ErrorCode
 from pyatlan.model.fields.atlan_fields import KeywordField
 from pyatlan_v9.model.assets import Asset
 from pyatlan_v9.model.fluent_search import FluentSearch
-from pyatlan_v9.model.response import AssetMutationResponse
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.group import AtlanGroup, GroupRequest, GroupResponse
+from pyatlan_v9.model.response import AssetMutationResponse
 from pyatlan_v9.model.user import (
     AddToGroupsRequest,
     AtlanUser,
@@ -34,6 +33,7 @@ from pyatlan_v9.model.user import (
     UserRequest,
     UserResponse,
 )
+from pyatlan_v9.validate import validate_arguments
 
 _USER_COLUMNS = [
     "firstName",
@@ -110,9 +110,7 @@ class V9UserClient:
                 role_id := self._client.role_cache.get_id_for_name(role_name)
             ) and user.email:
                 to_create.append(
-                    CreateUser(
-                        email=user.email, role_name=role_name, role_id=role_id
-                    )
+                    CreateUser(email=user.email, role_name=role_name, role_id=role_id)
                 )
         payload = CreateUserRequest(users=to_create)
         self._client._call_api(CREATE_USERS, request_obj=payload)
@@ -120,7 +118,6 @@ class V9UserClient:
             emails = [cu.email for cu in to_create]
             return self.get_by_emails(emails=emails)
         return None
-
 
     @validate_arguments
     def updater(
@@ -139,10 +136,8 @@ class V9UserClient:
         :raises AtlanError: on any API communication issue
         """
         endpoint = UPDATE_USER.format_path_with_params(guid)
-        raw_json = self._client._call_api(
-            endpoint, request_obj=user        )
+        raw_json = self._client._call_api(endpoint, request_obj=user)
         return msgspec.convert(raw_json, UserMinimalResponse, strict=False)
-
 
     @validate_arguments
     def change_role(

@@ -5,10 +5,10 @@ from __future__ import annotations
 
 from pyatlan.client.common import AsyncApiCaller, AuditSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.client.audit import _parse_entity_audits
 from pyatlan_v9.model.aio.audit import AsyncAuditSearchResults
 from pyatlan_v9.model.audit import AuditSearchRequest
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncAuditClient:

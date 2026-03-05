@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import json as json_lib
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 import msgspec
 
@@ -102,8 +102,9 @@ class DSL(msgspec.Struct, kw_only=True):
     size: int = 300
     aggregations: Dict[str, Aggregation] = msgspec.field(default_factory=dict)
     track_total_hits: Optional[bool] = True
-    post_filter: Optional[Union[Dict[str, Any], Query]] = None
-    query: Optional[Union[Dict[str, Any], Query]] = None
+    # Any: from JSON we get dict; from FluentSearch we get Query. Both serialize via _serialize_value.
+    post_filter: Optional[Any] = None
+    query: Optional[Any] = None
     req_class_name: Optional[str] = None
     sort: List[SortItem] = msgspec.field(default_factory=list)
 

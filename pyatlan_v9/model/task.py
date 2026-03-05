@@ -75,7 +75,9 @@ class AtlanTask(msgspec.Struct, kw_only=True, rename="camel"):
     """Number of times the task has been attempted."""
     status: Union[AtlanTaskStatus, None] = None
     """Status of the task."""
-    classification_id: Union[str, None] = None
+    classification_id: Union[str, None] = msgspec.field(
+        default=None, name="tagTypeName"
+    )
     entity_guid: Union[str, None] = None
     """Unique identifier of the asset the task originated from."""
 
@@ -107,7 +109,9 @@ class TaskSearchRequest(msgspec.Struct, kw_only=True):
         exclude_unset: bool = False,
     ) -> str:
         """Serialize TaskSearchRequest to JSON string."""
-        return json_lib.dumps(self.to_dict(by_alias=by_alias, exclude_none=exclude_none))
+        return json_lib.dumps(
+            self.to_dict(by_alias=by_alias, exclude_none=exclude_none)
+        )
 
 
 class TaskSearchResponse:

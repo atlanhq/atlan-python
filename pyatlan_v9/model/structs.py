@@ -572,7 +572,9 @@ class PopularityInsights(msgspec.Struct, kw_only=True, rename="camel", frozen=Fa
     def __post_init__(self):
         """Convert date/datetime to epoch milliseconds if needed."""
         if isinstance(self.record_last_timestamp, datetime):
-            self.record_last_timestamp = int(self.record_last_timestamp.timestamp() * 1000)
+            self.record_last_timestamp = int(
+                self.record_last_timestamp.timestamp() * 1000
+            )
         elif isinstance(self.record_last_timestamp, date):
             dt = datetime.combine(self.record_last_timestamp, datetime.min.time())
             self.record_last_timestamp = int(dt.timestamp() * 1000)

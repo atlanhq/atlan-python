@@ -24,7 +24,6 @@ from pyatlan_v9.model.conversion_utils import (
     merge_relationships,
 )
 from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.structs import PopularityInsights
 
 from .referenceable import (
     Referenceable,

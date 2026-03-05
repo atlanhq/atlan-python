@@ -10,7 +10,6 @@ from typing import (
     TYPE_CHECKING,
     Awaitable,
     Callable,
-    Dict,
     List,
     Optional,
     Type,
@@ -22,14 +21,13 @@ from warnings import warn
 
 import msgspec
 from tenacity import (
-    RetryError,
     retry,
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
-    wait_fixed,
 )
 
+from pyatlan.client.asset import CategoryHierarchy
 from pyatlan.client.common import (
     DeleteByGuid,
     FindCategoryFastByName,
@@ -60,16 +58,13 @@ from pyatlan.client.common import (
     UpdateCertificate,
     UpdateCustomMetadataAttributes,
 )
-from pyatlan.client.constants import (
-    BULK_UPDATE,
-    DELETE_ENTITIES_BY_GUIDS,
-)
-from pyatlan.errors import AtlanError, ErrorCode, NotFoundError, PermissionError
+from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
+from pyatlan.errors import ErrorCode, NotFoundError, PermissionError
 from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.utils import unflatten_custom_metadata_for_entity
-from pyatlan.validate import validate_arguments
-
+from pyatlan_v9.model.aggregation import Aggregations
+from pyatlan_v9.model.aio.core import AsyncAtlanRequest
 from pyatlan_v9.model.assets import (
     Asset,
     AtlasGlossary,
@@ -81,6 +76,14 @@ from pyatlan_v9.model.assets import (
     Persona,
     Purpose,
 )
+from pyatlan_v9.model.core import (
+    Announcement,
+    AtlanRequest,
+    AtlanTag,
+    AtlanTagName,
+    BulkRequest,
+)
+from pyatlan_v9.model.custom_metadata import CustomMetadataDict
 from pyatlan_v9.model.enums import (
     AtlanConnectorType,
     AtlanDeleteType,
@@ -88,27 +91,16 @@ from pyatlan_v9.model.enums import (
     DataQualityScheduleType,
     EntityStatus,
     SaveSemantic,
+    SortOrder,
 )
-from pyatlan_v9.model.aggregation import Aggregations
-from pyatlan_v9.model.aio.core import AsyncAtlanRequest
-from pyatlan_v9.model.core import (
-    Announcement,
-    AssetRequest,
-    AtlanRequest,
-    AtlanTag,
-    AtlanTagName,
-    BulkRequest,
-)
-from pyatlan_v9.model.custom_metadata import CustomMetadataDict
 from pyatlan_v9.model.lineage import LineageListRequest
 from pyatlan_v9.model.response import AssetMutationResponse, MutatedEntities
 from pyatlan_v9.model.search import IndexSearchRequest, Query
 from pyatlan_v9.model.transform import from_atlas_format
-
-from pyatlan.client.asset import CategoryHierarchy
+from pyatlan_v9.validate import validate_arguments
 
 if TYPE_CHECKING:
-    from pyatlan.client.common import AsyncApiCaller
+    pass
 
 LOGGER = logging.getLogger(__name__)
 
@@ -129,7 +121,9 @@ def _custom_metadata_payload(custom_metadata_request):
     root_payload = getattr(custom_metadata_request, "__root__", None)
     if root_payload is not None:
         return root_payload
-    if hasattr(custom_metadata_request, "dict") and callable(custom_metadata_request.dict):
+    if hasattr(custom_metadata_request, "dict") and callable(
+        custom_metadata_request.dict
+    ):
         return custom_metadata_request.dict(by_alias=True, exclude_none=True)
     return custom_metadata_request
 
@@ -148,19 +142,13 @@ def _parse_mutation_response(raw_json: dict) -> AssetMutationResponse:
     if me_raw := raw_json.get("mutatedEntities"):
         mutated = MutatedEntities(
             CREATE=(
-                _parse_entities_v9(me_raw["CREATE"])
-                if me_raw.get("CREATE")
-                else None
+                _parse_entities_v9(me_raw["CREATE"]) if me_raw.get("CREATE") else None
             ),
             UPDATE=(
-                _parse_entities_v9(me_raw["UPDATE"])
-                if me_raw.get("UPDATE")
-                else None
+                _parse_entities_v9(me_raw["UPDATE"]) if me_raw.get("UPDATE") else None
             ),
             DELETE=(
-                _parse_entities_v9(me_raw["DELETE"])
-                if me_raw.get("DELETE")
-                else None
+                _parse_entities_v9(me_raw["DELETE"]) if me_raw.get("DELETE") else None
             ),
             PARTIAL_UPDATE=(
                 _parse_entities_v9(me_raw["PARTIAL_UPDATE"])
@@ -187,15 +175,58 @@ def _parse_aggregations_v9(raw: dict) -> Aggregations:
         AggregationMetricResult,
     )
 
+    def _parse_nested(bucket_dict: dict) -> "Aggregations | None":
+        """Parse nested aggregation results inside a bucket, recursively."""
+        nested: dict = {}
+        known_keys = {
+            "key",
+            "doc_count",
+            "key_as_string",
+            "max_matching_length",
+            "to",
+            "to_as_string",
+            "from",
+            "from_as_string",
+        }
+        for k, v in bucket_dict.items():
+            if k in known_keys or not isinstance(v, dict):
+                continue
+            try:
+                if "buckets" in v:
+                    result = msgspec.convert(v, AggregationBucketResult, strict=False)
+                    raw_inner = v.get("buckets", [])
+                    for i, inner in enumerate(result.buckets):
+                        if i < len(raw_inner):
+                            try:
+                                inner.nested_results = _parse_nested(raw_inner[i])
+                            except Exception:
+                                pass
+                    nested[k] = result
+                elif "hits" in v:
+                    nested[k] = msgspec.convert(v, AggregationHitsResult, strict=False)
+                elif "value" in v:
+                    nested[k] = msgspec.convert(
+                        v, AggregationMetricResult, strict=False
+                    )
+            except Exception:
+                pass
+        return Aggregations(data=nested) if nested else None
+
     parsed: dict = {}
     for key, value in raw.items():
         if not isinstance(value, dict):
             continue
         try:
             if "buckets" in value:
-                parsed[key] = msgspec.convert(
-                    value, AggregationBucketResult, strict=False
-                )
+                result = msgspec.convert(value, AggregationBucketResult, strict=False)
+                raw_buckets = value.get("buckets", [])
+                for i, bucket in enumerate(result.buckets):
+                    if i < len(raw_buckets):
+                        try:
+                            bucket.nested_results = _parse_nested(raw_buckets[i])
+                        except Exception:
+                            pass
+                parsed[key] = result
             elif "hits" in value:
                 parsed[key] = msgspec.convert(
                     value, AggregationHitsResult, strict=False
@@ -324,8 +355,12 @@ def _make_bulk_request_payload(entities: list, client) -> dict:
 
 async def _make_bulk_request_payload_async(entities: list, client) -> dict:
     """Async version: serialize entities into API-ready dict with tag retranslation."""
+    from pyatlan_v9.client.asset import _normalize_meanings_for_mutation
+
     bulk = BulkRequest(entities=entities)
     request_dict = bulk.to_dict()
+    for entity in request_dict.get("entities", []):
+        _normalize_meanings_for_mutation(entity)
     async_request = AsyncAtlanRequest(instance=request_dict, client=client)
     await async_request.retranslate()
     return async_request.translated
@@ -368,7 +403,9 @@ class V9AsyncAssetClient:
     # Search
     # ------------------------------------------------------------------
 
-    async def search(self, criteria: IndexSearchRequest, bulk=False) -> V9AsyncIndexSearchResults:
+    async def search(
+        self, criteria: IndexSearchRequest, bulk=False
+    ) -> V9AsyncIndexSearchResults:
         """
         Search for assets using the provided criteria.
 
@@ -627,9 +664,7 @@ class V9AsyncAssetClient:
             guid, min_ext_info, ignore_relationships
         )
         raw_json = await self._client._call_api(endpoint_path, query_params)
-        return _process_get_response_v9(
-            raw_json, guid, asset_type, by_guid=True
-        )
+        return _process_get_response_v9(raw_json, guid, asset_type, by_guid=True)
 
     @validate_arguments
     async def retrieve_minimal(
@@ -715,10 +750,10 @@ class V9AsyncAssetClient:
             asset.validate_required()
             await asset.flush_custom_metadata_async(client=self._client)
 
-        request_payload = await _make_bulk_request_payload_async(
-            entities, self._client
+        request_payload = await _make_bulk_request_payload_async(entities, self._client)
+        raw_json = await self._client._call_api(
+            BULK_UPDATE, query_params, request_payload
         )
-        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request_payload)
         response = _parse_mutation_response(raw_json)
 
         if connections_created := response.assets_created(Connection):
@@ -845,10 +880,10 @@ class V9AsyncAssetClient:
             asset.validate_required()
             await asset.flush_custom_metadata_async(self._client)
 
-        request_payload = await _make_bulk_request_payload_async(
-            entities, self._client
+        request_payload = await _make_bulk_request_payload_async(entities, self._client)
+        raw_json = await self._client._call_api(
+            BULK_UPDATE, query_params, request_payload
         )
-        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request_payload)
         return _parse_mutation_response(raw_json)
 
     @validate_arguments
@@ -991,10 +1026,10 @@ class V9AsyncAssetClient:
         for restored in entities:
             await restored.flush_custom_metadata_async(self._client)
 
-        request_payload = await _make_bulk_request_payload_async(
-            entities, self._client
+        request_payload = await _make_bulk_request_payload_async(entities, self._client)
+        raw_json = await self._client._call_api(
+            BULK_UPDATE, query_params, request_payload
         )
-        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request_payload)
         return _parse_mutation_response(raw_json)
 
     # ------------------------------------------------------------------
@@ -1573,7 +1608,21 @@ class V9AsyncAssetClient:
         updated_asset = asset_type.updater(
             qualified_name=first_result.qualified_name, name=first_result.name
         )
-        processed_terms = ManageTerms.process_terms_with_semantic(terms, save_semantic)
+        processed_terms: list[AtlasGlossaryTerm] = []
+        for term in terms:
+            if getattr(term, "guid", None):
+                processed_terms.append(
+                    AtlasGlossaryTerm.ref_by_guid(
+                        guid=term.guid, semantic=save_semantic
+                    )
+                )
+            elif getattr(term, "qualified_name", None):
+                processed_terms.append(
+                    AtlasGlossaryTerm.ref_by_qualified_name(
+                        qualified_name=term.qualified_name,
+                        semantic=save_semantic,
+                    )
+                )
         updated_asset.assigned_terms = processed_terms
         response = await self.save(entity=updated_asset)
         return ManageTerms.process_save_response(response, asset_type, updated_asset)
@@ -1863,10 +1912,27 @@ class V9AsyncAssetClient:
         :param related_attributes: attributes to retrieve for each related asset in the hierarchy
         :returns: a traversable category hierarchy
         """
+        from pyatlan.model.search import Term as SearchTerm
+        from pyatlan_v9.model.fluent_search import FluentSearch
+
         GetHierarchy.validate_glossary(glossary)
-        request = GetHierarchy.prepare_search_request(
-            glossary, attributes, related_attributes
+        if attributes is None:
+            attributes = []
+        if related_attributes is None:
+            related_attributes = []
+        search = (
+            FluentSearch.select()
+            .where(AtlasGlossaryCategory.ANCHOR.eq(glossary.qualified_name))
+            .where(SearchTerm.with_type_name("AtlasGlossaryCategory"))
+            .include_on_results(AtlasGlossaryCategory.PARENT_CATEGORY)
+            .page_size(20)
+            .sort(AtlasGlossaryCategory.NAME.order(SortOrder.ASCENDING))
         )
+        for field in attributes:
+            search = search.include_on_results(field)
+        for field in related_attributes:
+            search = search.include_on_relations(field)
+        request = search.to_request()
         response = await self.search(request)
         return await GetHierarchy.process_async_search_results(response, glossary)
 

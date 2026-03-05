@@ -16,8 +16,8 @@ from pyatlan.client.constants import (
     UPDATE_GROUP,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.aio.group import AsyncGroupResponse
+from pyatlan_v9.model.aio.user import AsyncUserResponse
 from pyatlan_v9.model.group import (
     AtlanGroup,
     CreateGroupRequest,
@@ -25,8 +25,8 @@ from pyatlan_v9.model.group import (
     GroupRequest,
     RemoveFromGroupRequest,
 )
-from pyatlan_v9.model.aio.user import AsyncUserResponse
 from pyatlan_v9.model.user import AtlanUser, UserRequest
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncGroupClient:
@@ -60,10 +60,8 @@ class V9AsyncGroupClient:
         payload = CreateGroupRequest(group=group)
         if user_ids:
             payload.users = user_ids
-        raw_json = await self._client._call_api(
-            CREATE_GROUP, request_obj=payload        )
+        raw_json = await self._client._call_api(CREATE_GROUP, request_obj=payload)
         return msgspec.convert(raw_json, CreateGroupResponse, strict=False)
-
 
     @validate_arguments
     async def updater(self, group: AtlanGroup) -> None:
@@ -75,7 +73,6 @@ class V9AsyncGroupClient:
         """
         endpoint = UPDATE_GROUP.format_path_with_params(group.id)
         await self._client._call_api(endpoint, request_obj=group)
-
 
     @validate_arguments
     async def purge(self, guid: str) -> None:

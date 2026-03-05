@@ -86,8 +86,8 @@ class AsyncSearchLogResults:
             return None
         try:
             from pyatlan_v9.client.search_log import (
-                _normalize_ms_timestamps_copy,
                 _LOG_TS_FIELDS,
+                _normalize_ms_timestamps_copy,
             )
 
             self._log_entries = [
@@ -167,8 +167,7 @@ class AsyncSearchLogResults:
     def presorted_by_timestamp(sorts: Optional[list]) -> bool:
         if sorts and isinstance(sorts[0], SortItem):
             return (
-                sorts[0].field == "createdAt"
-                and sorts[0].order == SortOrder.ASCENDING
+                sorts[0].field == "createdAt" and sorts[0].order == SortOrder.ASCENDING
             )
         return False
 

@@ -37,7 +37,8 @@ from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
 from pyatlan.client.common import CONNECTION_RETRY
 from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
-from pyatlan_v9.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
+from pyatlan.model.core import AtlanObject as LegacyAtlanObject
+from pyatlan.model.core import AtlanRequest as LegacyAtlanRequest
 from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import (
     API,
@@ -66,6 +67,7 @@ from pyatlan_v9.client.aio.typedef import V9AsyncTypeDefClient
 from pyatlan_v9.client.aio.user import V9AsyncUserClient
 from pyatlan_v9.client.aio.workflow import V9AsyncWorkflowClient
 from pyatlan_v9.client.transport import PyatlanAsyncTransport
+from pyatlan_v9.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
 from pyatlan_v9.model.atlan_image import AtlanImage
 from pyatlan_v9.model.enums import AtlanTypeCategory
 from pyatlan_v9.model.query import ParsedQuery, QueryParserRequest
@@ -372,22 +374,31 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
         if request_obj is not None:
             if api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
+            elif isinstance(request_obj, LegacyAtlanObject):
+                # Use legacy serialization so request body matches legacy client exactly
+                params["data"] = LegacyAtlanRequest(
+                    instance=request_obj, client=self
+                ).json()
             elif hasattr(request_obj, "to_dict") and callable(request_obj.to_dict):
                 params["data"] = json.dumps(request_obj.to_dict())
             elif isinstance(request_obj, (dict, list)):
                 params["data"] = json.dumps(request_obj)
             elif isinstance(request_obj, msgspec.Struct):
                 async_request = AsyncAtlanRequest(
-                    instance=request_obj, client=self  # type: ignore[arg-type]
+                    instance=request_obj,
+                    client=self,  # type: ignore[arg-type]
                 )
                 params["data"] = await async_request.json()
             elif hasattr(request_obj, "to_json") and callable(request_obj.to_json):
                 async_request = AsyncAtlanRequest(
-                    instance=request_obj, client=self  # type: ignore[arg-type]
+                    instance=request_obj,
+                    client=self,  # type: ignore[arg-type]
                 )
                 params["data"] = await async_request.json()
             elif hasattr(request_obj, "__root__"):
                 params["data"] = json.dumps(request_obj.__root__)
+            elif hasattr(request_obj, "json") and hasattr(request_obj, "__fields__"):
+                params["data"] = request_obj.json(by_alias=True, exclude_none=True)
             else:
                 params["data"] = json.dumps(request_obj)
         return params
@@ -584,9 +595,7 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
                         == ErrorCode.AUTHENTICATION_PASSTHROUGH.http_error_code
                     ):
                         try:
-                            LOGGER.debug(
-                                "Starting async 401 automatic token refresh."
-                            )
+                            LOGGER.debug("Starting async 401 automatic token refresh.")
                             return await self._handle_401_token_refresh(
                                 api,
                                 path,
@@ -702,9 +711,7 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
         post_data = generator.get_post_data()
         api.produces = f"multipart/form-data; boundary={generator.boundary}"
         path = self._create_path(api)
-        params = await self._create_params(
-            api, query_params=None, request_obj=None
-        )
+        params = await self._create_params(api, query_params=None, request_obj=None)
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return await self._call_api_internal(api, path, params, binary_data=post_data)

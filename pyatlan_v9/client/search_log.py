@@ -9,7 +9,6 @@ import msgspec
 
 from pyatlan.client.common import ApiCaller, SearchLogSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.search_log import (
     AssetViews,
     SearchLogEntry,
@@ -18,6 +17,7 @@ from pyatlan_v9.model.search_log import (
     SearchLogViewResults,
     UserViews,
 )
+from pyatlan_v9.validate import validate_arguments
 
 UNIQUE_USERS = "uniqueUsers"
 UNIQUE_ASSETS = "uniqueAssets"
@@ -36,9 +36,7 @@ def _normalize_ms_timestamp(val):
 
 def _parse_user_views(raw_json: dict) -> List[UserViews]:
     """Parse user views from aggregation buckets using msgspec."""
-    buckets = (
-        raw_json.get("aggregations", {}).get(UNIQUE_USERS, {}).get("buckets", [])
-    )
+    buckets = raw_json.get("aggregations", {}).get(UNIQUE_USERS, {}).get("buckets", [])
     mapped = [
         {
             "username": b.get("key", ""),
@@ -55,9 +53,7 @@ def _parse_user_views(raw_json: dict) -> List[UserViews]:
 
 def _parse_asset_views(raw_json: dict) -> List[AssetViews]:
     """Parse asset views from aggregation buckets using msgspec."""
-    buckets = (
-        raw_json.get("aggregations", {}).get(UNIQUE_ASSETS, {}).get("buckets", [])
-    )
+    buckets = raw_json.get("aggregations", {}).get(UNIQUE_ASSETS, {}).get("buckets", [])
     mapped = [
         {
             "guid": b.get("key", ""),

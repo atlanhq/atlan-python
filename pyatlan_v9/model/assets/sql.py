@@ -356,10 +356,6 @@ SQL.DATABASE_NAME = KeywordTextField(
 SQL.DATABASE_QUALIFIED_NAME = KeywordField(
     "databaseQualifiedName", "databaseQualifiedName"
 )
-SQL.SCHEMA_NAME = KeywordTextField(
-    "schemaName", "schemaName.keyword", "schemaName"
-)
-SQL.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+SQL.SCHEMA_NAME = KeywordTextField("schemaName", "schemaName.keyword", "schemaName")
+SQL.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 SQL.IS_PROFILED = BooleanField("isProfiled", "isProfiled")

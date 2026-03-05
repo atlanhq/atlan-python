@@ -17,13 +17,13 @@ from pyatlan.client.common import (
 )
 from pyatlan.client.constants import CREATE_OAUTH_CLIENT
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.aio.oauth_client import AsyncOAuthClientListResponse
 from pyatlan_v9.model.oauth_client import (
     OAuthClientCreateResponse,
     OAuthClientRequest,
     OAuthClientResponse,
 )
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncOAuthClient:
@@ -110,7 +110,6 @@ class V9AsyncOAuthClient:
         raw_json = await self._client._call_api(endpoint, request_obj=request_obj)
         return msgspec.convert(raw_json, OAuthClientResponse, strict=False)
 
-
     @validate_arguments
     async def purge(self, client_id: str) -> None:
         """
@@ -169,4 +168,3 @@ class V9AsyncOAuthClient:
             CREATE_OAUTH_CLIENT.format_path_with_params(), request_obj=request
         )
         return msgspec.convert(raw_json, OAuthClientCreateResponse, strict=False)
-

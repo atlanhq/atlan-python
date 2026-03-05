@@ -17,7 +17,7 @@ from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
 # ---------------------------------------------------------------------------
 from pyatlan.model.lineage import DirectedPair, LineageGraph  # noqa: F401
 from pyatlan.utils import validate_type
-from pyatlan.validate import validate_arguments
+from pyatlan_v9.validate import validate_arguments
 
 # ---------------------------------------------------------------------------
 # msgspec.Struct models — genuine Pydantic → msgspec migrations

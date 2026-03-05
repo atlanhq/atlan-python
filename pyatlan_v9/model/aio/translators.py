@@ -85,9 +85,7 @@ class AsyncAtlanTagTranslator(AsyncBaseTranslator):
                 if not attributes or not attributes.get(attr_id):
                     continue
                 classification[self._SOURCE_ATTACHMENTS] = [
-                    msgspec.convert(
-                        source_tag["attributes"], type=SourceTagAttachment
-                    )
+                    msgspec.convert(source_tag["attributes"], type=SourceTagAttachment)
                     for source_tag in attributes.get(attr_id)
                     if isinstance(source_tag, dict) and source_tag.get("attributes")
                 ]

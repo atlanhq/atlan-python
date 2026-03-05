@@ -8,7 +8,7 @@ from typing import Any, AsyncGenerator, Union
 import msgspec
 
 from pyatlan.errors import ErrorCode
-from pyatlan_v9.model.user import AtlanUser, UserRequest
+from pyatlan_v9.model.user import AtlanUser
 
 
 class AsyncUserResponse(msgspec.Struct, kw_only=True, rename="camel"):

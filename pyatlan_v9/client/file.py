@@ -5,8 +5,8 @@ from __future__ import annotations
 
 from pyatlan.client.common import ApiCaller, FileDownload, FilePresignedUrl, FileUpload
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.file import PresignedURLRequest
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9FileClient:

@@ -15,9 +15,8 @@ from pyatlan.client.constants import (
     UPDATE_TYPE_DEFS,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan_v9.model.enums import AtlanTypeCategory
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.client.typedef import _build_typedef_request, _create_typedef_from_json
+from pyatlan_v9.model.enums import AtlanTypeCategory
 from pyatlan_v9.model.typedef import (
     AtlanTagDef,
     CustomMetadataDef,
@@ -25,6 +24,7 @@ from pyatlan_v9.model.typedef import (
     TypeDef,
     TypeDefResponse,
 )
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncTypeDefClient:
@@ -111,11 +111,9 @@ class V9AsyncTypeDefClient:
         :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
-        raw_json = await self._client._call_api(
-            CREATE_TYPE_DEFS, request_obj=payload        )
+        raw_json = await self._client._call_api(CREATE_TYPE_DEFS, request_obj=payload)
         await self._refresh_caches(typedef)
         return msgspec.convert(raw_json, TypeDefResponse, strict=False)
-
 
     @validate_arguments
     async def updater(self, typedef: TypeDef) -> TypeDefResponse:
@@ -132,11 +130,9 @@ class V9AsyncTypeDefClient:
         :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
-        raw_json = await self._client._call_api(
-            UPDATE_TYPE_DEFS, request_obj=payload        )
+        raw_json = await self._client._call_api(UPDATE_TYPE_DEFS, request_obj=payload)
         await self._refresh_caches(typedef)
         return msgspec.convert(raw_json, TypeDefResponse, strict=False)
-
 
     @validate_arguments
     async def purge(self, name: str, typedef_type: type) -> None:
@@ -152,11 +148,15 @@ class V9AsyncTypeDefClient:
         :raises AtlanError: on any API communication issue
         """
         if typedef_type == CustomMetadataDef:
-            internal_name = await self._client.custom_metadata_cache.get_id_for_name(name)  # type: ignore[attr-defined]
+            internal_name = await self._client.custom_metadata_cache.get_id_for_name(
+                name
+            )  # type: ignore[attr-defined]
         elif typedef_type == EnumDef:
             internal_name = name
         elif typedef_type == AtlanTagDef:
-            internal_name = str(await self._client.atlan_tag_cache.get_id_for_name(name))  # type: ignore[attr-defined]
+            internal_name = str(
+                await self._client.atlan_tag_cache.get_id_for_name(name)
+            )  # type: ignore[attr-defined]
         else:
             raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
                 typedef_type

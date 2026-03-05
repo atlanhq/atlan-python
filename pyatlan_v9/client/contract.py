@@ -6,8 +6,8 @@ from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import CONTRACT_INIT_API
 from pyatlan.errors import ErrorCode
 from pyatlan_v9.model.assets import Asset
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.contract import InitRequest
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9ContractClient:

@@ -7,7 +7,6 @@ import msgspec
 
 from pyatlan.client.common import AdminGetAdminEvents, AdminGetKeycloakEvents, ApiCaller
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.keycloak_events import (
     AdminEvent,
     AdminEventRequest,
@@ -16,6 +15,7 @@ from pyatlan_v9.model.keycloak_events import (
     KeycloakEventRequest,
     KeycloakEventResponse,
 )
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AdminClient:
@@ -72,9 +72,7 @@ class V9AdminClient:
         :raises AtlanError: on any API communication issue
         """
         endpoint, query_params = AdminGetAdminEvents.prepare_request(admin_request)
-        raw_json = self._client._call_api(
-            endpoint, query_params=query_params
-        )
+        raw_json = self._client._call_api(endpoint, query_params=query_params)
         if raw_json:
             events = msgspec.convert(raw_json, list[AdminEvent], strict=False)
         else:

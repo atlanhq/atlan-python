@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Optional, Set, Union
+from typing import Any, ClassVar, Set, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -16,7 +16,6 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import validate_required_fields
 
 from .asset import Asset, AssetAttributes, AssetNested
 from .auth_policy import AuthPolicy

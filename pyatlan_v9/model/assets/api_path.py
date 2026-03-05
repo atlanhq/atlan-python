@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import Union
 
-from msgspec import UNSET, UnsetType
+from msgspec import UNSET, UnsetType, field
 
 from pyatlan_v9.model.conversion_utils import (
     build_attributes_kwargs,
@@ -47,7 +47,9 @@ class APIPath(Asset):
     api_path_summary: Union[str, None, UnsetType] = UNSET
     """Descriptive summary intended to apply to all operations in this path."""
 
-    api_path_raw_uri: Union[str, None, UnsetType] = UNSET
+    api_path_raw_uri: Union[str, None, UnsetType] = field(
+        default=UNSET, name="apiPathRawURI"
+    )
     """Absolute path to an individual endpoint."""
 
     api_path_is_templated: Union[bool, None, UnsetType] = UNSET
@@ -91,12 +93,10 @@ class APIPath(Asset):
 
     @property
     def api_path_raw_u_r_i(self) -> Union[str, None, UnsetType]:
-        """Alias for api_path_raw_uri to preserve SDK field parity."""
         return self.api_path_raw_uri
 
     @api_path_raw_u_r_i.setter
     def api_path_raw_u_r_i(self, value: Union[str, None, UnsetType]) -> None:
-        """Alias setter for api_path_raw_uri."""
         self.api_path_raw_uri = value
 
     # =========================================================================
@@ -203,7 +203,9 @@ class APIPathAttributes(AssetAttributes):
     api_path_summary: Union[str, None, UnsetType] = UNSET
     """Descriptive summary intended to apply to all operations in this path."""
 
-    api_path_raw_uri: Union[str, None, UnsetType] = UNSET
+    api_path_raw_uri: Union[str, None, UnsetType] = field(
+        default=UNSET, name="apiPathRawURI"
+    )
     """Absolute path to an individual endpoint."""
 
     api_path_is_templated: Union[bool, None, UnsetType] = UNSET

@@ -119,9 +119,7 @@ class V9AsyncImpersonationClient:
         """
         try:
             endpoint, query_params = ImpersonateGetUserId.prepare_request(username)
-            raw_json = await self._client._call_api(
-                endpoint, query_params=query_params
-            )
+            raw_json = await self._client._call_api(endpoint, query_params=query_params)
             return ImpersonateGetUserId.process_response(raw_json)
         except AtlanError as e:
             raise ErrorCode.UNABLE_TO_RETRIEVE_USER_GUID.exception_with_parameters(

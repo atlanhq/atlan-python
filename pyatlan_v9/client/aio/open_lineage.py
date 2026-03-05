@@ -11,13 +11,13 @@ from pyatlan.client.common import (
     OpenLineageSend,
 )
 from pyatlan.errors import AtlanError, ErrorCode
-from pyatlan_v9.model.enums import AtlanConnectorType
 from pyatlan.utils import validate_type
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.assets.connection import Connection
 from pyatlan_v9.model.credential import Credential
+from pyatlan_v9.model.enums import AtlanConnectorType
 from pyatlan_v9.model.open_lineage.event import OpenLineageEvent, OpenLineageRawEvent
 from pyatlan_v9.model.response import AssetMutationResponse
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncOpenLineageClient:
@@ -75,7 +75,6 @@ class V9AsyncOpenLineageClient:
         connection.default_credential_guid = credential_response.id
 
         return await self._client.asset.save(connection)  # type: ignore[attr-defined]
-
 
     async def send(
         self,

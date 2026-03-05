@@ -457,6 +457,12 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
             else:
                 attributes[key] = value
 
+        # Fields that live in Attributes but represent entity references
+        # (e.g. parentCategory, anchor) must ALSO appear in
+        # relationshipAttributes when explicitly set, so the Atlas API
+        # processes relationship changes.
+        _mirror_ref_fields_to_rels(type(self), attributes, rel_replace)
+
         # Always include typeName — omit_defaults may have dropped it
         if "typeName" not in top_level and self.type_name is not UNSET:
             top_level["typeName"] = self.type_name
@@ -479,6 +485,7 @@ def _enc_hook(obj: Any) -> Any:
     Handles v9-native types that msgspec doesn't know about (AtlanTagName).
     """
     import datetime
+
     from pyatlan_v9.model.core import AtlanTagName
 
     if type(obj) is AtlanTagName:
@@ -497,6 +504,53 @@ def _enc_hook(obj: Any) -> Any:
 _ENTITY_TOP_LEVEL_FIELDS = frozenset(
     f.encode_name for f in msgspec.structs.fields(Entity)
 )
+
+_ref_field_cache: dict[type, frozenset[str]] = {}
+
+
+def _get_struct_ref_fields(cls: type) -> frozenset[str]:
+    """Return camelCase names of fields whose type includes a Struct subclass.
+
+    These are attribute-level fields that hold references to other entities
+    (e.g. ``parent_category``, ``anchor``) and need to be mirrored into
+    ``relationshipAttributes`` for the Atlas API to process them.
+    """
+    if cls in _ref_field_cache:
+        return _ref_field_cache[cls]
+
+    import typing
+
+    ref_names: set[str] = set()
+    for f in msgspec.structs.fields(cls):
+        if f.encode_name in _ENTITY_TOP_LEVEL_FIELDS:
+            continue
+        args = typing.get_args(f.type)
+        for arg in args:
+            if isinstance(arg, type) and issubclass(arg, msgspec.Struct):
+                ref_names.add(f.encode_name)
+                break
+    result = frozenset(ref_names)
+    _ref_field_cache[cls] = result
+    return result
+
+
+def _mirror_ref_fields_to_rels(
+    cls: type,
+    attributes: dict[str, Any],
+    rel_replace: dict[str, Any],
+) -> None:
+    """Copy entity-reference fields from attributes into rel_replace.
+
+    The Atlas API requires relationship-like fields (parentCategory, anchor,
+    etc.) to appear in ``relationshipAttributes`` for mutations to take
+    effect.  The v9 model places some of these in ``Attributes`` rather
+    than ``RelationshipAttributes``, so we mirror them here.
+    """
+    ref_fields = _get_struct_ref_fields(cls)
+    for key in ref_fields:
+        if key in attributes and key not in rel_replace:
+            rel_replace[key] = attributes[key]
+
 
 _rel_fields_cache: dict[type, frozenset[str]] = {}
 
@@ -578,6 +632,9 @@ def _bucket_relationship(
     remove: dict,
 ) -> None:
     """Sort a relationship value into replace/append/remove buckets."""
+    if value is None:
+        replace[key] = None
+        return
     if isinstance(value, dict):
         semantic = value.get("semantic")
         cleaned = _strip_semantic(value)

@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Optional, Set, Union
+from typing import Any, ClassVar, Set, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -193,9 +193,7 @@ def _auth_policy_to_nested(ap: AuthPolicy) -> AuthPolicyNested:
 
 def _auth_policy_from_nested(nested: AuthPolicyNested) -> AuthPolicy:
     attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else AuthPolicyAttributes()
+        nested.attributes if nested.attributes is not UNSET else AuthPolicyAttributes()
     )
     merged_rels = merge_relationships(
         nested.relationship_attributes,

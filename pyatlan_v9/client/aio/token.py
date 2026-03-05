@@ -16,8 +16,8 @@ from pyatlan.client.common import (
 )
 from pyatlan.client.constants import UPSERT_API_TOKEN
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
+from pyatlan_v9.validate import validate_arguments
 
 
 class V9AsyncTokenClient:
@@ -135,7 +135,6 @@ class V9AsyncTokenClient:
         raw_json = await self._client._call_api(UPSERT_API_TOKEN, request_obj=request)
         return msgspec.convert(raw_json, ApiToken, strict=False)
 
-
     @validate_arguments
     async def updater(
         self,
@@ -164,7 +163,6 @@ class V9AsyncTokenClient:
         endpoint = UPSERT_API_TOKEN.format_path_with_params(guid)
         raw_json = await self._client._call_api(endpoint, request_obj=request)
         return msgspec.convert(raw_json, ApiToken, strict=False)
-
 
     @validate_arguments
     async def purge(self, guid: str) -> None:

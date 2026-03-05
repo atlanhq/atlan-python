@@ -9,9 +9,7 @@ from typing import Union
 import msgspec
 
 
-class SSOMapperConfig(
-    msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True
-):
+class SSOMapperConfig(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
     """Configuration for an SSO mapper."""
 
     sync_mode: Union[str, None] = None

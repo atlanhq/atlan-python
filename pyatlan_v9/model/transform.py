@@ -246,13 +246,21 @@ _NESTED_BUCKETS = frozenset(
 
 _CAMEL_ABBREV_RE = re.compile(r"([A-Z]{2,})(?=[A-Z][a-z]|$)")
 
+# Keys that use explicit msgspec.field(name="...") with trailing uppercase
+# (e.g. dataProductAssetsDSL). Normalization would turn them into Dsl;
+# preserve so struct field name matches.
+_PRESERVE_CAMEL_KEYS = frozenset({"dataProductAssetsDSL", "apiPathRawURI"})
+
 
 def _normalize_camel_key(key: str) -> str:
     """Normalize uppercase abbreviations in camelCase keys for msgspec.
 
     msgspec's rename="camel" expects apiPathRawUri, not apiPathRawURI.
     This converts trailing/mid uppercase runs like URI→Uri, DSL→Dsl, DQ→Dq.
+    Keys in _PRESERVE_CAMEL_KEYS are left unchanged so they match struct fields.
     """
+    if key in _PRESERVE_CAMEL_KEYS:
+        return key
     return _CAMEL_ABBREV_RE.sub(lambda m: m.group(1).capitalize(), key)
 
 

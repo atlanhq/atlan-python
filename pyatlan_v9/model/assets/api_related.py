@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from typing import Union
 
-from msgspec import UNSET, UnsetType
+from msgspec import UNSET, UnsetType, field
 
 from .catalog_related import RelatedCatalog
 from .referenceable_related import RelatedReferenceable
@@ -121,7 +121,9 @@ class RelatedAPIPath(RelatedAPI):
     api_path_summary: Union[str, None, UnsetType] = UNSET
     """Descriptive summary intended to apply to all operations in this path."""
 
-    api_path_raw_uri: Union[str, None, UnsetType] = UNSET
+    api_path_raw_uri: Union[str, None, UnsetType] = field(
+        default=UNSET, name="apiPathRawURI"
+    )
     """Absolute path to an individual endpoint."""
 
     api_path_is_templated: Union[bool, None, UnsetType] = UNSET

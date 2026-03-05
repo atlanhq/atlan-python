@@ -169,6 +169,7 @@ class ADLSObject(Asset):
             connector_name=connector_name,
             connection_qualified_name=connection_qualified_name,
             adls_account_qualified_name=adls_account_qualified_name,
+            adls_account_name=adls_account_qualified_name.rsplit("/", 1)[-1],
         )
 
     @classmethod
@@ -225,6 +226,7 @@ class ADLSObject(Asset):
             connector_name=connector_name,
             connection_qualified_name=connection_qualified_name,
             adls_account_qualified_name=adls_account_qualified_name,
+            adls_account_name=adls_account_qualified_name.rsplit("/", 1)[-1],
         )
 
     @classmethod

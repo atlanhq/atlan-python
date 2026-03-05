@@ -9,8 +9,8 @@ import msgspec
 
 from pyatlan.client.common import ApiCaller, TaskSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
 from pyatlan_v9.model.task import AtlanTask, TaskSearchRequest, TaskSearchResponse
+from pyatlan_v9.validate import validate_arguments
 
 
 def _parse_tasks(raw_json: dict) -> List[AtlanTask]:

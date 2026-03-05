@@ -34,6 +34,8 @@ from pyatlan.client.common import CONNECTION_RETRY
 from pyatlan.client.constants import EVENT_STREAM, PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.oauth import OAuthTokenManager
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
+from pyatlan.model.core import AtlanObject as LegacyAtlanObject
+from pyatlan.model.core import AtlanRequest as LegacyAtlanRequest
 from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import (
     API,
@@ -703,6 +705,11 @@ class AtlanClient(msgspec.Struct, kw_only=True):
         if request_obj is not None:
             if api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
+            elif isinstance(request_obj, LegacyAtlanObject):
+                # Use legacy serialization so request body matches legacy client exactly
+                params["data"] = LegacyAtlanRequest(
+                    instance=request_obj, client=self
+                ).json()
             elif hasattr(request_obj, "json") and callable(request_obj.json):
                 # Prefer json() method if available (handles nested serialization properly)
                 params["data"] = request_obj.json(by_alias=True, exclude_none=True)

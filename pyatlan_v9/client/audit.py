@@ -9,12 +9,8 @@ import msgspec
 
 from pyatlan.client.common import ApiCaller, AuditSearch
 from pyatlan.errors import ErrorCode
-from pyatlan.validate import validate_arguments
-from pyatlan_v9.model.audit import (
-    AuditSearchRequest,
-    AuditSearchResults,
-    EntityAudit,
-)
+from pyatlan_v9.model.audit import AuditSearchRequest, AuditSearchResults, EntityAudit
+from pyatlan_v9.validate import validate_arguments
 
 ENTITY_AUDITS = "entityAudits"
 _MS_TIMESTAMP_THRESHOLD = 1e12
@@ -85,9 +81,7 @@ class V9AuditClient:
         count = raw_json.get("totalCount", 0)
         aggregations = raw_json.get("aggregations")
 
-        if AuditSearch.check_for_bulk_search(
-            count, criteria, bulk, AuditSearchResults
-        ):
+        if AuditSearch.check_for_bulk_search(count, criteria, bulk, AuditSearchResults):
             return self.search(criteria)
 
         return AuditSearchResults(
