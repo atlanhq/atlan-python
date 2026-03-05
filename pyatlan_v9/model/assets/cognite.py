@@ -157,7 +157,6 @@ def _cognite_to_nested(cognite: Cognite) -> CogniteNested:
 
 def _cognite_from_nested(nested: CogniteNested) -> Cognite:
     """Convert nested format to flat Cognite."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CogniteAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

@@ -19,9 +19,9 @@ Example:
 __all__ = []
 __version__ = "0.1.0"
 
-# Optional imports - these may have additional dependencies
+# Optional imports - these may have additional dependencies (re-exported via __all__)
 try:
-    from pyatlan_v9.checkpoint import (
+    from pyatlan_v9.checkpoint import (  # noqa: F401
         BatchContext,
         CheckpointStore,
         checkpoint_exists,

@@ -155,7 +155,6 @@ def _cloud_to_nested(cloud: Cloud) -> CloudNested:
 
 def _cloud_from_nested(nested: CloudNested) -> Cloud:
     """Convert nested format to flat Cloud."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CloudAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

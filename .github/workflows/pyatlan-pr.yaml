@@ -1,11 +1,10 @@
 name: Pyatlan Pull Request Build
 
 # This workflow runs both sync and async integration tests intelligently:
-# - Sync integration tests: Always run on every PR
-# - Async integration tests: Only run when:
-#   1. Changes detected in pyatlan/*/aio/ or tests/*/aio/ paths
-#   2. PR has the "run-async-tests" label (manual trigger)
-# This prevents adding 12+ minutes to every PR while ensuring async tests run when needed.
+# - Legacy sync integration tests: Always run on every PR with code changes
+# - Legacy async integration tests: Only run when AIO changes detected or "run-async-tests" label
+# - V9 unit tests: Always run on every PR with code changes
+# - V9 integration tests (sync + async): Only run when PR has the "run_pyatlan_v9_integration_test" label
 
 on:
   pull_request:
@@ -115,6 +114,28 @@ jobs:
           else
             echo "run-async-tests=false" >> $GITHUB_OUTPUT
             echo "⏭️ No AIO changes detected and no manual trigger label found"
+          fi
+
+  check-v9-integration-label:
+    runs-on: ubuntu-latest
+    outputs:
+      run-v9-integration: ${{ steps.check-label.outputs.run-v9-integration }}
+    steps:
+      - name: Check for v9 integration test label
+        id: check-label
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run-v9-integration=true" >> $GITHUB_OUTPUT
+            echo "Manual trigger: running v9 integration tests"
+            exit 0
+          fi
+
+          if echo '${{ toJson(github.event.pull_request.labels.*.name) }}' | grep -q "run_pyatlan_v9_integration_test"; then
+            echo "run-v9-integration=true" >> $GITHUB_OUTPUT
+            echo "Found 'run_pyatlan_v9_integration_test' label"
+          else
+            echo "run-v9-integration=false" >> $GITHUB_OUTPUT
+            echo "No 'run_pyatlan_v9_integration_test' label found, skipping v9 integration tests"
           fi
 
   qa-checks-and-unit-tests:
@@ -259,4 +280,151 @@ jobs:
           timeout_minutes: 15 # Async tests may take longer, increased timeout
           # Run the async integration test file using `pytest-timer` plugin
           # to display only the durations of the 10 slowest tests with `pytest-sugar`
+          command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar -vv
+
+  # =========================================================================
+  # V9 (msgspec) Jobs
+  # =========================================================================
+
+  v9-unit-tests:
+    needs: [check-code-changes, vulnerability-scan]
+    if: needs.check-code-changes.outputs.has-code-changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run v9 unit tests
+        env:
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+        run: uv run pytest tests_v9/unit --force-sugar -vv
+
+  v9-prepare-integration-tests:
+    needs: [check-code-changes, vulnerability-scan, check-v9-integration-label]
+    if: >-
+      needs.check-code-changes.outputs.has-code-changes == 'true' &&
+      needs.check-v9-integration-label.outputs.run-v9-integration == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      v9-files: ${{ steps.distribute-v9-files.outputs.v9-files }}
+      v9-aio-files: ${{ steps.distribute-v9-aio-files.outputs.v9-aio-files }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare v9 sync integration tests distribution
+        id: distribute-v9-files
+        run: |
+          files=$(find tests_v9/integration -maxdepth 1 \( -name "test_*.py" -o -name "*_test.py" \) | sort | tr '\n' ' ')
+          if [ -n "$files" ]; then
+            json_files=$(echo "${files[@]}" | jq -R -c 'split(" ")[:-1]')
+          else
+            json_files="[]"
+          fi
+          echo "v9-files=$json_files" >> $GITHUB_OUTPUT
+          echo "V9 sync integration test files: $json_files"
+
+      - name: Prepare v9 async integration tests distribution
+        id: distribute-v9-aio-files
+        run: |
+          if [ -d "tests_v9/integration/aio" ]; then
+            aio_files=$(find tests_v9/integration/aio -name "test_*.py" | sort | tr '\n' ' ')
+            if [ -n "$aio_files" ]; then
+              json_aio_files=$(echo "${aio_files[@]}" | jq -R -c 'split(" ")[:-1]')
+            else
+              json_aio_files="[]"
+            fi
+          else
+            json_aio_files="[]"
+          fi
+          echo "v9-aio-files=$json_aio_files" >> $GITHUB_OUTPUT
+          echo "V9 async integration test files: $json_aio_files"
+
+  v9-integration-tests:
+    needs: [v9-prepare-integration-tests]
+    if: needs.v9-prepare-integration-tests.outputs.v9-files != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test_file: ${{fromJson(needs.v9-prepare-integration-tests.outputs.v9-files)}}
+    concurrency:
+      group: v9-${{ matrix.test_file }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run v9 integration test
+        env:
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+        uses: nick-fields/retry@v3
+        with:
+          max_attempts: 3
+          timeout_minutes: 10
+          command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar -vv
+
+  v9-async-integration-tests:
+    needs: [v9-prepare-integration-tests]
+    if: needs.v9-prepare-integration-tests.outputs.v9-aio-files != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test_file: ${{fromJson(needs.v9-prepare-integration-tests.outputs.v9-aio-files)}}
+    concurrency:
+      group: v9-async-${{ matrix.test_file }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run v9 async integration test
+        env:
+          ATLAN_API_KEY: ${{ secrets.ATLAN_API_KEY }}
+          ATLAN_BASE_URL: ${{ secrets.ATLAN_BASE_URL }}
+        uses: nick-fields/retry@v3
+        with:
+          max_attempts: 3
+          timeout_minutes: 15
           command: uv run pytest ${{ matrix.test_file }} -p name_of_plugin --timer-top-n 10 --force-sugar -vv

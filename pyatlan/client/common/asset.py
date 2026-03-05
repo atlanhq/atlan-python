@@ -332,7 +332,6 @@ class FindAssetsByName:
                     asset
                     for asset in (search_results.current_page() or search_results)
                     if isinstance(asset, asset_type)
-                    or getattr(asset, "type_name", None) == asset_type.__name__
                 ]
             )
         ):
@@ -565,10 +564,7 @@ class GetByQualifiedName:
                 asset_type.__name__, qualified_name
             )
         asset = GetByQualifiedName.handle_relationships(raw_json)
-        if (
-            not isinstance(asset, asset_type)
-            and getattr(asset, "type_name", None) != asset_type.__name__
-        ):
+        if not isinstance(asset, asset_type):
             raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
                 asset_type.__name__, qualified_name
             )
@@ -671,10 +667,7 @@ class GetByGuid:
         :raises NotFoundError: if asset not found or wrong type
         """
         asset = GetByQualifiedName.handle_relationships(raw_json)
-        if (
-            not isinstance(asset, asset_type)
-            and getattr(asset, "type_name", None) != asset_type.__name__
-        ):
+        if not isinstance(asset, asset_type):
             raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
                 guid, asset_type.__name__
             )
@@ -1212,18 +1205,12 @@ class ManageAssetAttributes:
         :param glossary_guid: GUID of the glossary
         :raises AtlanError: if glossary_guid is required but missing
         """
-        if asset_type_name not in ("AtlasGlossaryTerm", "AtlasGlossaryCategory"):
-            return
-        if not glossary_guid:
-            raise ErrorCode.MISSING_GLOSSARY_GUID.exception_with_parameters(
-                asset_type_name
-            )
         if isinstance(asset, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
+            if not glossary_guid:
+                raise ErrorCode.MISSING_GLOSSARY_GUID.exception_with_parameters(
+                    asset_type_name
+                )
             asset.anchor = AtlasGlossary.ref_by_guid(glossary_guid)
-        elif hasattr(asset, "anchor"):
-            from pyatlan_v9.model.assets.gtc_related import RelatedAtlasGlossary
-
-            asset.anchor = RelatedAtlasGlossary(guid=glossary_guid)
 
 
 class UpdateCertificate:
@@ -1679,7 +1666,6 @@ class SearchForAssetWithName:
                     asset
                     for asset in (results.current_page() or results)
                     if isinstance(asset, asset_type)
-                    or getattr(asset, "type_name", None) == asset_type.__name__
                 ]
             )
         ):
@@ -1720,19 +1706,13 @@ class SearchForAssetWithName:
             if current_page:
                 # Use current page if available
                 assets = [
-                    asset
-                    for asset in current_page
-                    if isinstance(asset, asset_type)
-                    or getattr(asset, "type_name", None) == asset_type.__name__
+                    asset for asset in current_page if isinstance(asset, asset_type)
                 ]
             else:
                 # Otherwise, collect from async iterator
                 assets = []
                 async for asset in results:
-                    if (
-                        isinstance(asset, asset_type)
-                        or getattr(asset, "type_name", None) == asset_type.__name__
-                    ):
+                    if isinstance(asset, asset_type):
                         assets.append(asset)
 
             if assets:
@@ -1917,13 +1897,11 @@ class GetHierarchy:
         category_dict = {}
 
         for category in filter(
-            lambda a: isinstance(a, AtlasGlossaryCategory)
-            or getattr(a, "type_name", None) == "AtlasGlossaryCategory",
-            response,
+            lambda a: isinstance(a, AtlasGlossaryCategory), response
         ):
             guid = category.guid
             category_dict[guid] = category
-            if not category.parent_category:
+            if category.parent_category is None:
                 top_categories.add(guid)
 
         if not top_categories:
@@ -1957,22 +1935,18 @@ class GetHierarchy:
                 asset
                 for asset in response.current_page()
                 if isinstance(asset, AtlasGlossaryCategory)
-                or getattr(asset, "type_name", None) == "AtlasGlossaryCategory"
             ]
         else:
             # Collect from async iterator
             categories = []
             async for asset in response:
-                if (
-                    isinstance(asset, AtlasGlossaryCategory)
-                    or getattr(asset, "type_name", None) == "AtlasGlossaryCategory"
-                ):
+                if isinstance(asset, AtlasGlossaryCategory):
                     categories.append(asset)
 
         for category in categories:
             guid = category.guid
             category_dict[guid] = category
-            if not category.parent_category:
+            if category.parent_category is None:
                 top_categories.add(guid)
 
         if not top_categories:

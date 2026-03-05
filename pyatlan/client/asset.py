@@ -2570,11 +2570,10 @@ class Batch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if (
-            isinstance(candidate, AtlasGlossaryTerm)
-            or getattr(candidate, "type_name", None) == "AtlasGlossaryTerm"
-        ):
-            asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
+        if isinstance(candidate, AtlasGlossaryTerm):
+            # trim_to_required for AtlasGlossaryTerm requires anchor
+            # which is not include in AssetMutationResponse
+            asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
         asset.name = candidate.name
@@ -2674,8 +2673,8 @@ class CategoryHierarchy:
                 full_parent = self._categories.get(parent_guid, stub_dict[parent_guid])
                 children: List[AtlasGlossaryCategory] = (
                     []
-                    if not full_parent.children_categories
-                    else list(full_parent.children_categories)
+                    if full_parent.children_categories is None
+                    else full_parent.children_categories.copy()
                 )
                 if category not in children:
                     children.append(category)

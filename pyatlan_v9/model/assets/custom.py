@@ -155,7 +155,6 @@ def _custom_to_nested(custom: Custom) -> CustomNested:
 
 def _custom_from_nested(nested: CustomNested) -> Custom:
     """Convert nested format to flat Custom."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CustomAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

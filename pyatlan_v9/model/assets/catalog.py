@@ -157,7 +157,6 @@ def _catalog_to_nested(catalog: Catalog) -> CatalogNested:
 
 def _catalog_from_nested(nested: CatalogNested) -> Catalog:
     """Convert nested format to flat Catalog."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CatalogAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

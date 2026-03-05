@@ -162,11 +162,6 @@ def _cognite_event_to_nested(cognite_event: CogniteEvent) -> CogniteEventNested:
 
 def _cognite_event_from_nested(nested: CogniteEventNested) -> CogniteEvent:
     """Convert nested format to flat CogniteEvent."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else CogniteEventAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = ["cognite_asset"]
     merged_rels = merge_relationships(

@@ -151,7 +151,6 @@ def _bi_to_nested(bi: BI) -> BINested:
 
 def _bi_from_nested(nested: BINested) -> BI:
     """Convert nested format to flat BI."""
-    attrs = nested.attributes if nested.attributes is not UNSET else BIAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

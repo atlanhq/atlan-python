@@ -157,9 +157,6 @@ def _notebook_to_nested(notebook: Notebook) -> NotebookNested:
 
 def _notebook_from_nested(nested: NotebookNested) -> Notebook:
     """Convert nested format to flat Notebook."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else NotebookAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

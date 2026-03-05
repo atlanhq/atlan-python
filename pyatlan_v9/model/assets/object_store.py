@@ -157,9 +157,6 @@ def _object_store_to_nested(object_store: ObjectStore) -> ObjectStoreNested:
 
 def _object_store_from_nested(nested: ObjectStoreNested) -> ObjectStore:
     """Convert nested format to flat ObjectStore."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else ObjectStoreAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

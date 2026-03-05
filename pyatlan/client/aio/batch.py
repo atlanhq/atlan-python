@@ -410,11 +410,10 @@ class AsyncBatch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if (
-            isinstance(candidate, AtlasGlossaryTerm)
-            or getattr(candidate, "type_name", None) == "AtlasGlossaryTerm"
-        ):
-            asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
+        if isinstance(candidate, AtlasGlossaryTerm):
+            # trim_to_required for AtlasGlossaryTerm requires anchor
+            # which is not include in AssetMutationResponse
+            asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
         asset.name = candidate.name

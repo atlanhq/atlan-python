@@ -166,11 +166,6 @@ def _cognite_time_series_from_nested(
     nested: CogniteTimeSeriesNested,
 ) -> CogniteTimeSeries:
     """Convert nested format to flat CogniteTimeSeries."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else CogniteTimeSeriesAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = ["cognite_asset"]
     merged_rels = merge_relationships(

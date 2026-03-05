@@ -240,7 +240,7 @@ class Persona(Asset):
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField
+from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField  # noqa: E402
 
 Persona.PERSONA_GROUPS = KeywordField("personaGroups", "personaGroups")
 Persona.PERSONA_USERS = KeywordField("personaUsers", "personaUsers")

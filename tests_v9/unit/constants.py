@@ -19,14 +19,6 @@ from tests.unit.constants import (  # noqa: F401, F403
 from tests.unit.model.constants import *  # noqa: F401, F403
 
 from pyatlan_v9.model.assets import AtlasGlossary
-from pyatlan_v9.model.constants import (
-    AIAssetTypes,
-    AssetTypes,
-    DomainTypes,
-    EntityTypes,
-    GlossaryTypes,
-    OtherAssetTypes,
-)
 from pyatlan_v9.model.enums import AtlanWorkflowPhase
 from pyatlan_v9.model.workflow import (
     ScheduleQueriesSearchRequest,

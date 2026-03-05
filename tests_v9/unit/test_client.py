@@ -133,7 +133,7 @@ TEST_GROUP_CLIENT_METHODS = _rename_keys(_V9_GROUP_METHODS)
 TEST_TOKEN_CLIENT_METHODS = _rename_keys(_V9_TOKEN_METHODS)
 TEST_TYPEDEF_CLIENT_METHODS = _rename_keys(_V9_TYPEDEF_METHODS)
 TEST_USER_CLIENT_METHODS = _rename_keys(_V9_USER_METHODS)
-from tests.unit.model.constants import (
+from tests.unit.model.constants import (  # noqa: E402
     CONNECTION_NAME,
     CONNECTOR_TYPE,
     DATA_DOMAIN_NAME,

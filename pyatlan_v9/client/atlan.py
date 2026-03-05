@@ -13,7 +13,7 @@ from contextvars import ContextVar
 from http import HTTPStatus
 from importlib.resources import read_text
 from types import SimpleNamespace
-from typing import Any, Dict, Generator, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union
 from urllib.parse import urljoin
 
 import httpx
@@ -68,6 +68,10 @@ from pyatlan_v9.model.atlan_image import AtlanImage
 from pyatlan_v9.model.core import AtlanRequest, AtlanResponse
 from pyatlan_v9.model.enums import AtlanTypeCategory
 from pyatlan_v9.model.query import ParsedQuery, QueryParserRequest
+
+if TYPE_CHECKING:
+    from pyatlan_v9.model.assets import Asset
+    from pyatlan_v9.model.core import AssetMutationResponse
 
 request_id_var = ContextVar("request_id", default=None)
 
@@ -843,12 +847,12 @@ class AtlanClient(msgspec.Struct, kw_only=True):
 
     def save(
         self,
-        entity: Union["Asset", List["Asset"]],  # type: ignore[name-defined]
+        entity: Union["Asset", List["Asset"]],
         replace_atlan_tags: bool = False,
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
         append_atlan_tags: bool = False,
-    ) -> "AssetMutationResponse":  # type: ignore[name-defined]
+    ) -> "AssetMutationResponse":
         """
         Convenience method that delegates to asset.save().
         If an asset with the same qualified_name exists, updates the existing asset. Otherwise, creates the asset.

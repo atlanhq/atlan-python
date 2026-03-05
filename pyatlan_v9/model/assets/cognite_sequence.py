@@ -164,11 +164,6 @@ def _cognite_sequence_to_nested(
 
 def _cognite_sequence_from_nested(nested: CogniteSequenceNested) -> CogniteSequence:
     """Convert nested format to flat CogniteSequence."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else CogniteSequenceAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = ["cognite_asset"]
     merged_rels = merge_relationships(

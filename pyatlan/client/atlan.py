@@ -96,16 +96,6 @@ from pyatlan.utils import (
 request_id_var = ContextVar("request_id", default=None)
 
 
-def _is_msgspec_struct(obj: Any) -> bool:
-    """Check if *obj* is a msgspec.Struct instance (without importing msgspec at module level)."""
-    try:
-        import msgspec
-
-        return isinstance(obj, msgspec.Struct)
-    except ImportError:
-        return False
-
-
 def get_adapter() -> logging.LoggerAdapter:
     """
     This function creates a LoggerAdapter that will provide the requestid from the ContextVar request_id_var
@@ -872,12 +862,6 @@ class AtlanClient(BaseSettings):
                 params["data"] = AtlanRequest(instance=request_obj, client=self).json()
             elif api.consumes == APPLICATION_ENCODED_FORM:
                 params["data"] = request_obj
-            elif _is_msgspec_struct(request_obj):
-                from pyatlan_v9.model.core import AtlanRequest as V9AtlanRequest
-
-                params["data"] = V9AtlanRequest(
-                    instance=request_obj, client=self
-                ).json()
             else:
                 params["data"] = json.dumps(request_obj)
         return params

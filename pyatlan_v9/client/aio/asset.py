@@ -34,9 +34,7 @@ from pyatlan.client.common import (
     FindConnectionsByName,
     FindDomainByName,
     FindGlossaryByName,
-    FindPersonasByName,
     FindProductByName,
-    FindPurposesByName,
     FindTermFastByName,
     GetByGuid,
     GetByQualifiedName,
@@ -51,7 +49,6 @@ from pyatlan.client.common import (
     ReplaceCustomMetadata,
     RestoreAsset,
     Search,
-    SearchForAssetWithName,
     UpdateAnnouncement,
     UpdateAsset,
     UpdateAssetByAttribute,
@@ -60,6 +57,12 @@ from pyatlan.client.common import (
 )
 from pyatlan.client.constants import BULK_UPDATE, DELETE_ENTITIES_BY_GUIDS
 from pyatlan.errors import ErrorCode, NotFoundError, PermissionError
+from pyatlan_v9.client.asset import (
+    _handle_v9_glossary_anchor,
+    _is_glossary_category,
+    _matches_asset_type,
+    _process_find_response_v9,
+)
 from pyatlan.model.aio import AsyncIndexSearchResults, AsyncLineageListResults
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.utils import unflatten_custom_metadata_for_entity
@@ -105,6 +108,75 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 A = TypeVar("A", bound=Asset)
+
+
+async def _process_search_results_v9_async(
+    results, name: str, asset_type, allow_multiple: bool = False
+):
+    """Async v9-aware replacement for ``SearchForAssetWithName.process_async_search_results``."""
+    import logging
+
+    _LOGGER = logging.getLogger(__name__)
+
+    if results and results.count > 0:
+        current_page = (
+            results.current_page() if hasattr(results, "current_page") else None
+        )
+        if current_page:
+            assets = [
+                asset
+                for asset in current_page
+                if _matches_asset_type(asset, asset_type)
+            ]
+        else:
+            assets = []
+            async for asset in results:
+                if _matches_asset_type(asset, asset_type):
+                    assets.append(asset)
+
+        if assets:
+            if not allow_multiple and len(assets) > 1:
+                _LOGGER.warning(
+                    "More than 1 %s found with the name '%s', returning only the first.",
+                    asset_type.__name__,
+                    name,
+                )
+            return assets
+
+    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+        asset_type.__name__, name
+    )
+
+
+async def _process_hierarchy_v9_async(response, glossary) -> CategoryHierarchy:
+    """Async v9-aware replacement for ``GetHierarchy.process_async_search_results``."""
+    top_categories: set = set()
+    category_dict = {}
+
+    if hasattr(response, "current_page") and response.current_page():
+        categories = [
+            asset for asset in response.current_page() if _is_glossary_category(asset)
+        ]
+    else:
+        categories = []
+        async for asset in response:
+            if _is_glossary_category(asset):
+                categories.append(asset)
+
+    for category in categories:
+        guid = category.guid
+        if not getattr(category, "children_categories", None):
+            category.children_categories = None
+        category_dict[guid] = category
+        if not category.parent_category:
+            top_categories.add(guid)
+
+    if not top_categories:
+        raise ErrorCode.NO_CATEGORIES.exception_with_parameters(
+            glossary.guid, glossary.qualified_name
+        )
+
+    return CategoryHierarchy(top_level=top_categories, stub_dict=category_dict)
 
 
 # ---------------------------------------------------------------------------
@@ -524,8 +596,8 @@ class V9AsyncAssetClient:
         """
         search_request = self._build_find_request(name, "PERSONA", attributes)
         search_results = await self.search(search_request)
-        return FindPersonasByName.process_response(
-            search_results, name, allow_multiple=True
+        return _process_find_response_v9(
+            search_results, name, Persona, allow_multiple=True
         )
 
     @validate_arguments
@@ -544,8 +616,8 @@ class V9AsyncAssetClient:
         """
         search_request = self._build_find_request(name, "PURPOSE", attributes)
         search_results = await self.search(search_request)
-        return FindPurposesByName.process_response(
-            search_results, name, allow_multiple=True
+        return _process_find_response_v9(
+            search_results, name, Purpose, allow_multiple=True
         )
 
     # ------------------------------------------------------------------
@@ -1318,6 +1390,7 @@ class V9AsyncAssetClient:
             message=message,
             glossary_guid=glossary_guid,
         )
+        _handle_v9_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return await self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @overload
@@ -1370,6 +1443,7 @@ class V9AsyncAssetClient:
             name=name,
             glossary_guid=glossary_guid,
         )
+        _handle_v9_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return await self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     # ------------------------------------------------------------------
@@ -1432,6 +1506,7 @@ class V9AsyncAssetClient:
             announcement=announcement,
             glossary_guid=glossary_guid,
         )
+        _handle_v9_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return await self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @overload
@@ -1483,6 +1558,7 @@ class V9AsyncAssetClient:
             name=name,
             glossary_guid=glossary_guid,
         )
+        _handle_v9_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return await self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     # ------------------------------------------------------------------
@@ -1566,7 +1642,7 @@ class V9AsyncAssetClient:
             relation_attributes=["name"],
         )
         results = await self.search(search_request)
-        return await SearchForAssetWithName.process_async_search_results(
+        return await _process_search_results_v9_async(
             results, name, asset_type, allow_multiple
         )
 
@@ -1934,7 +2010,7 @@ class V9AsyncAssetClient:
             search = search.include_on_relations(field)
         request = search.to_request()
         response = await self.search(request)
-        return await GetHierarchy.process_async_search_results(response, glossary)
+        return await _process_hierarchy_v9_async(response, glossary)
 
     # ------------------------------------------------------------------
     # Bulk processing

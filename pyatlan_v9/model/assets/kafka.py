@@ -155,7 +155,6 @@ def _kafka_to_nested(kafka: Kafka) -> KafkaNested:
 
 def _kafka_from_nested(nested: KafkaNested) -> Kafka:
     """Convert nested format to flat Kafka."""
-    attrs = nested.attributes if nested.attributes is not UNSET else KafkaAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

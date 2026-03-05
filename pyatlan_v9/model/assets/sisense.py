@@ -157,7 +157,6 @@ def _sisense_to_nested(sisense: Sisense) -> SisenseNested:
 
 def _sisense_from_nested(nested: SisenseNested) -> Sisense:
     """Convert nested format to flat Sisense."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SisenseAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

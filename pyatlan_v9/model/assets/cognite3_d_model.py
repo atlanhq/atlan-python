@@ -164,11 +164,6 @@ def _cognite3_d_model_to_nested(
 
 def _cognite3_d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DModel:
     """Convert nested format to flat Cognite3DModel."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else Cognite3DModelAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = ["cognite_asset"]
     merged_rels = merge_relationships(

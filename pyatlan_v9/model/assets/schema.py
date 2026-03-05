@@ -486,7 +486,7 @@ def _schema__from_nested_bytes(data: bytes, serde: Serde) -> Schema:
 # ---------------------------------------------------------------------------
 # Schema field descriptors (inherited from SQL in legacy, set explicitly here)
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField  # noqa: E402
 
 Schema.DATABASE_NAME = KeywordTextField(
     "databaseName", "databaseName.keyword", "databaseName"

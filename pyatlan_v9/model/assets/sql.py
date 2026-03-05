@@ -341,7 +341,7 @@ def _sql_from_nested_bytes(data: bytes, serde: Serde) -> SQL:
 # ---------------------------------------------------------------------------
 # SQL field descriptors (for search queries)
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     BooleanField,
     KeywordField,
     KeywordTextField,

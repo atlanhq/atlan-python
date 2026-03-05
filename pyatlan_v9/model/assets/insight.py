@@ -157,7 +157,6 @@ def _insight_to_nested(insight: Insight) -> InsightNested:
 
 def _insight_from_nested(nested: InsightNested) -> Insight:
     """Convert nested format to flat Insight."""
-    attrs = nested.attributes if nested.attributes is not UNSET else InsightAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

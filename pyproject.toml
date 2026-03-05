@@ -109,6 +109,8 @@ split-on-trailing-comma = false
 "pyatlan/model/assets.py" = ["S307"]
 "pyatlan/model/assets/**.py" = ["E402", "F811"]
 "pyatlan/model/assets/core/**.py" = ["E402", "F811"]
+"pyatlan_v9/model/assets/**.py" = ["E402"]
+"pyatlan_v9/model/transform.py" = ["E402"]
 
 [tool.pytest.ini_options]
 addopts = "-p no:name_of_plugin"

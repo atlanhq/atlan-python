@@ -157,9 +157,6 @@ def _semantic_to_nested(semantic: Semantic) -> SemanticNested:
 
 def _semantic_from_nested(nested: SemanticNested) -> Semantic:
     """Convert nested format to flat Semantic."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else SemanticAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

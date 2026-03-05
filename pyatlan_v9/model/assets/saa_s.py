@@ -151,7 +151,6 @@ def _saa_s_to_nested(saa_s: SaaS) -> SaaSNested:
 
 def _saa_s_from_nested(nested: SaaSNested) -> SaaS:
     """Convert nested format to flat SaaS."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SaaSAttributes()
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

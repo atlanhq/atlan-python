@@ -160,9 +160,6 @@ def _namespace_to_nested(namespace: Namespace) -> NamespaceNested:
 
 def _namespace_from_nested(nested: NamespaceNested) -> Namespace:
     """Convert nested format to flat Namespace."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else NamespaceAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = ["children_folders"]
     merged_rels = merge_relationships(

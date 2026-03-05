@@ -160,9 +160,6 @@ def _cognite_file_to_nested(cognite_file: CogniteFile) -> CogniteFileNested:
 
 def _cognite_file_from_nested(nested: CogniteFileNested) -> CogniteFile:
     """Convert nested format to flat CogniteFile."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else CogniteFileAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = ["cognite_asset"]
     merged_rels = merge_relationships(

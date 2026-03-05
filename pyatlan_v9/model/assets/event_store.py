@@ -157,9 +157,6 @@ def _event_store_to_nested(event_store: EventStore) -> EventStoreNested:
 
 def _event_store_from_nested(nested: EventStoreNested) -> EventStore:
     """Convert nested format to flat EventStore."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else EventStoreAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = []
     merged_rels = merge_relationships(

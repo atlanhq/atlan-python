@@ -163,11 +163,6 @@ class Asset(Referenceable):
         if isinstance(data, Asset):
             return data
 
-        import msgspec
-
-        if isinstance(data, msgspec.Struct) and hasattr(data, "type_name"):
-            return data
-
         if isinstance(data, list):  # Recursively process lists
             return [cls._convert_to_real_type_(item) for item in data]
 

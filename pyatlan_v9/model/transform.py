@@ -16,11 +16,11 @@ import importlib
 import re
 from typing import Any, TypeVar
 
-_T = TypeVar("_T")
-
 import msgspec
 
 from pyatlan_v9.model.assets.asset import Asset
+
+_T = TypeVar("_T")
 
 # Type registry - maps type names to classes
 # Populated via @register_asset decorator or lazy loading in get_type()

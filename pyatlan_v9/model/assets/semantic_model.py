@@ -182,11 +182,6 @@ def _semantic_model_to_nested(semantic_model: SemanticModel) -> SemanticModelNes
 
 def _semantic_model_from_nested(nested: SemanticModelNested) -> SemanticModel:
     """Convert nested format to flat SemanticModel."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SemanticModelAttributes()
-    )
     # Merge relationships from all three buckets
     rel_fields: list[str] = [
         "semantic_dimensions",

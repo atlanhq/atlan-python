@@ -16,6 +16,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
     overload,
 )
 from warnings import warn
@@ -36,7 +37,7 @@ from tenacity import (
 # ---------------------------------------------------------------------------
 from pyatlan.client.asset import (  # noqa: F401
     AssetIdentity,
-    Batch,
+    Batch as _LegacyBatch,
     CategoryHierarchy,
     CustomMetadataHandling,
     FailedBatch,
@@ -51,9 +52,7 @@ from pyatlan.client.common import (
     FindConnectionsByName,
     FindDomainByName,
     FindGlossaryByName,
-    FindPersonasByName,
     FindProductByName,
-    FindPurposesByName,
     FindTermFastByName,
     GetByGuid,
     GetByQualifiedName,
@@ -68,7 +67,6 @@ from pyatlan.client.common import (
     ReplaceCustomMetadata,
     RestoreAsset,
     Search,
-    SearchForAssetWithName,
     UpdateAnnouncement,
     UpdateAsset,
     UpdateAssetByAttribute,
@@ -136,6 +134,119 @@ def _custom_metadata_payload(custom_metadata_request: Any) -> Any:
     ):
         return custom_metadata_request.dict(by_alias=True, exclude_none=True)
     return custom_metadata_request
+
+
+_GLOSSARY_ASSET_TYPES = {"AtlasGlossaryTerm", "AtlasGlossaryCategory"}
+
+
+def _handle_v9_glossary_anchor(asset, asset_type_name: str, glossary_guid):
+    """Set glossary anchor on v9 glossary assets.
+
+    The legacy ``ManageAssetAttributes.handle_glossary_anchor`` uses
+    ``isinstance`` against legacy Pydantic models, which doesn't recognise v9
+    ``msgspec.Struct`` assets.  This helper performs the same check using the
+    asset's ``type_name`` attribute so it works regardless of model layer.
+    """
+    if getattr(asset, "type_name", None) in _GLOSSARY_ASSET_TYPES:
+        if not glossary_guid:
+            raise ErrorCode.MISSING_GLOSSARY_GUID.exception_with_parameters(
+                asset_type_name
+            )
+        asset.anchor = AtlasGlossary.ref_by_guid(glossary_guid)
+
+
+def _matches_asset_type(asset, asset_type) -> bool:
+    """Check if *asset* matches *asset_type*, supporting both legacy and v9 models."""
+    return (
+        isinstance(asset, asset_type)
+        or getattr(asset, "type_name", None) == asset_type.__name__
+    )
+
+
+def _is_glossary_category(asset) -> bool:
+    return (
+        isinstance(asset, AtlasGlossaryCategory)
+        or getattr(asset, "type_name", None) == "AtlasGlossaryCategory"
+    )
+
+
+def _process_search_results_v9(
+    results, name: str, asset_type, allow_multiple: bool = False
+):
+    """v9-aware replacement for ``SearchForAssetWithName.process_search_results``."""
+    if (
+        results
+        and results.count > 0
+        and (
+            assets := [
+                asset
+                for asset in (results.current_page() or results)
+                if _matches_asset_type(asset, asset_type)
+            ]
+        )
+    ):
+        if not allow_multiple and len(assets) > 1:
+            LOGGER.warning(
+                "More than 1 %s found with the name '%s', returning only the first.",
+                asset_type.__name__,
+                name,
+            )
+        return assets
+    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+        asset_type.__name__, name
+    )
+
+
+def _process_find_response_v9(
+    search_results, name: str, asset_type, allow_multiple: bool = True
+):
+    """v9-aware replacement for ``FindAssetsByName.process_response``."""
+    if (
+        search_results
+        and search_results.count > 0
+        and (
+            assets := [
+                asset
+                for asset in (search_results.current_page() or search_results)
+                if _matches_asset_type(asset, asset_type)
+            ]
+        )
+    ):
+        if not allow_multiple and len(assets) > 1:
+            LOGGER.warning(
+                "More than 1 %s found with the name '%s', returning only the first.",
+                asset_type.__name__,
+                name,
+            )
+        return assets
+    raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+        asset_type.__name__, name
+    )
+
+
+def _process_hierarchy_v9(response, glossary) -> CategoryHierarchy:
+    """v9-aware replacement for ``GetHierarchy.process_search_results``.
+
+    Uses ``type_name`` attribute instead of ``isinstance`` to recognise
+    v9 ``msgspec.Struct`` categories.
+    """
+    top_categories: set = set()
+    category_dict = {}
+
+    for category in filter(_is_glossary_category, response):
+        guid = category.guid
+        if not getattr(category, "children_categories", None):
+            category.children_categories = None
+        category_dict[guid] = category
+        if not category.parent_category:
+            top_categories.add(guid)
+
+    if not top_categories:
+        raise ErrorCode.NO_CATEGORIES.exception_with_parameters(
+            glossary.guid, glossary.qualified_name
+        )
+
+    return CategoryHierarchy(top_level=top_categories, stub_dict=category_dict)
 
 
 # ---------------------------------------------------------------------------
@@ -600,8 +711,8 @@ class V9AssetClient:
         """
         search_request = self._build_find_request(name, "PERSONA", attributes)
         search_results = self.search(search_request)
-        return FindPersonasByName.process_response(
-            search_results, name, allow_multiple=True
+        return _process_find_response_v9(
+            search_results, name, Persona, allow_multiple=True
         )
 
     @validate_arguments
@@ -620,8 +731,8 @@ class V9AssetClient:
         """
         search_request = self._build_find_request(name, "PURPOSE", attributes)
         search_results = self.search(search_request)
-        return FindPurposesByName.process_response(
-            search_results, name, allow_multiple=True
+        return _process_find_response_v9(
+            search_results, name, Purpose, allow_multiple=True
         )
 
     # ------------------------------------------------------------------
@@ -1414,6 +1525,7 @@ class V9AssetClient:
             message=message,
             glossary_guid=glossary_guid,
         )
+        _handle_v9_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @overload
@@ -1467,6 +1579,7 @@ class V9AssetClient:
             name=name,
             glossary_guid=glossary_guid,
         )
+        _handle_v9_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     # ------------------------------------------------------------------
@@ -1530,6 +1643,7 @@ class V9AssetClient:
             announcement=announcement,
             glossary_guid=glossary_guid,
         )
+        _handle_v9_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     @overload
@@ -1582,6 +1696,7 @@ class V9AssetClient:
             name=name,
             glossary_guid=glossary_guid,
         )
+        _handle_v9_glossary_anchor(asset, asset_type.__name__, glossary_guid)
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     # ------------------------------------------------------------------
@@ -1665,9 +1780,7 @@ class V9AssetClient:
             relation_attributes=["name"],
         )
         results = self.search(search_request)
-        return SearchForAssetWithName.process_search_results(
-            results, name, asset_type, allow_multiple
-        )
+        return _process_search_results_v9(results, name, asset_type, allow_multiple)
 
     def _manage_terms(
         self,
@@ -2047,7 +2160,7 @@ class V9AssetClient:
             search = search.include_on_relations(field)
         request = search.to_request()
         response = self.search(request)
-        return GetHierarchy.process_search_results(response, glossary)
+        return _process_hierarchy_v9(response, glossary)
 
     # ------------------------------------------------------------------
     # Bulk processing
@@ -2151,3 +2264,35 @@ class V9AssetClient:
             row_scope_filter_column_qualified_name
         )
         return self.save(updated_asset)
+
+
+# ---------------------------------------------------------------------------
+# V9-aware Batch (bypasses Pydantic's _convert_to_real_type_ validator and
+# recognises v9 msgspec glossary terms in the tracking logic)
+# ---------------------------------------------------------------------------
+
+
+class Batch(_LegacyBatch):
+    """V9 wrapper around the legacy ``Batch`` class.
+
+    Overrides ``add()`` to accept v9 ``msgspec.Struct`` assets without
+    going through Pydantic's ``_convert_to_real_type_`` validator, and
+    overrides the tracking helper so v9 ``AtlasGlossaryTerm`` instances
+    are handled correctly.
+    """
+
+    def add(self, single) -> Optional[AssetMutationResponse]:
+        self._batch.append(single)
+        return self._process()
+
+    @staticmethod
+    def __track(tracker, candidate):
+        if (
+            isinstance(candidate, AtlasGlossaryTerm)
+            or getattr(candidate, "type_name", None) == "AtlasGlossaryTerm"
+        ):
+            asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
+        else:
+            asset = candidate.trim_to_required()
+        asset.name = candidate.name
+        tracker.append(asset)
