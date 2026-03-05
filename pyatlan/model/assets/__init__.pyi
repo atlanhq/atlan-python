@@ -422,6 +422,7 @@ __all__ = [
     "AzureEventHubConsumerGroup",
     "DynamoDBLocalSecondaryIndex",
     "DynamoDBGlobalSecondaryIndex",
+    "DynamoDBAttribute",
     "IndistinctAsset",
 ]
 
@@ -688,6 +689,7 @@ from .dremio_source import DremioSource
 from .dremio_space import DremioSpace
 from .dremio_virtual_dataset import DremioVirtualDataset
 from .dynamo_d_b import DynamoDB
+from .dynamo_d_b_attribute import DynamoDBAttribute
 from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex
 from .dynamo_d_b_local_secondary_index import DynamoDBLocalSecondaryIndex
 from .dynamo_dbtable import DynamoDBTable
