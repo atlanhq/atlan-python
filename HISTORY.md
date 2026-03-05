@@ -1,10 +1,3 @@
-## 8.5.4 (March 5, 2026)
-
-### Features
-
-- Added support for new connector type: `AtlanConnectorType.ALLOYDB_POSTGRES`.
-- Added support for new workflow package: `WorkflowPackage.ALLOYDB_POSTGRES`.
-
 ## 8.5.3 (February 17, 2026)
 
 ### QOL Improvements
