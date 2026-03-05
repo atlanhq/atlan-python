@@ -4,7 +4,7 @@ name: Pyatlan Pull Request Build
 # - Legacy sync integration tests: Always run on every PR with code changes
 # - Legacy async integration tests: Only run when AIO changes detected or "run-async-tests" label
 # - V9 unit tests: Always run on every PR with code changes
-# - V9 integration tests (sync + async): Only run when PR has the "run_pyatlan_v9_integration_test" label
+# - V9 integration tests (sync + async): Only run when PR has the "run_pyatlan_v9_integration_tests" label
 
 on:
   pull_request:
@@ -130,12 +130,12 @@ jobs:
             exit 0
           fi
 
-          if echo '${{ toJson(github.event.pull_request.labels.*.name) }}' | grep -q "run_pyatlan_v9_integration_test"; then
+          if echo '${{ toJson(github.event.pull_request.labels.*.name) }}' | grep -q "run_pyatlan_v9_integration_tests"; then
             echo "run-v9-integration=true" >> $GITHUB_OUTPUT
-            echo "Found 'run_pyatlan_v9_integration_test' label"
+            echo "Found 'run_pyatlan_v9_integration_tests' label"
           else
             echo "run-v9-integration=false" >> $GITHUB_OUTPUT
-            echo "No 'run_pyatlan_v9_integration_test' label found, skipping v9 integration tests"
+            echo "No 'run_pyatlan_v9_integration_tests' label found, skipping v9 integration tests"
           fi
 
   qa-checks-and-unit-tests:
@@ -286,7 +286,7 @@ jobs:
   # V9 (msgspec) Jobs
   # =========================================================================
 
-  v9-unit-tests:
+  v9-qa-checks-and-unit-tests:
     needs: [check-code-changes, vulnerability-scan]
     if: needs.check-code-changes.outputs.has-code-changes == 'true'
     runs-on: ubuntu-latest
