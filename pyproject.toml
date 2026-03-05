@@ -38,6 +38,7 @@ dependencies = [
     "httpx~=0.28.1",
     "httpx-retries~=0.4.5",
     "authlib~=1.6.6",
+    "msgspec~=0.20.0",
 ]
 
 [project.urls]
