@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
-name: Pyatlan Sphinx Docs Build
+name: Pyatlan MkDocs Build
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 jobs:
   publish-docs:
     runs-on: ubuntu-latest
-    name: "Sphinx"
+    name: "MkDocs"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,11 +26,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --group docs
 
-      - name: Build Sphinx docs
-        run: uv run sphinx-build -b html docs docs/_build
+      - name: Build MkDocs
+        run: uv run mkdocs build
 
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/_build
+          publish_dir: site

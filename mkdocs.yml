@@ -1,0 +1,53 @@
+site_name: pyatlan
+site_description: The official Python SDK for Atlan
+site_url: https://atlanhq.github.io/atlan-python/
+repo_url: https://github.com/atlanhq/atlan-python
+repo_name: atlanhq/atlan-python
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+            members_order: alphabetical
+            filters:
+              - "!^_"
+
+nav:
+  - Home: index.md
+  - API Reference:
+    - AtlanClient: api/client.md
+    - Models: api/model.md
+    - Cache: api/cache.md
+    - Events: api/events.md
+    - Utils: api/utils.md
+    - Errors: api/errors.md
