@@ -46,6 +46,7 @@ nav:
   - Home: index.md
   - API Reference:
     - AtlanClient: api/client.md
+    - Asset Models: api/assets.md
     - Models: api/model.md
     - Cache: api/cache.md
     - Events: api/events.md

@@ -59,3 +59,4 @@ pyatlan/documentation/*.md
 # Sphinx
 docs/_build/
 docs/generated/
+site/
