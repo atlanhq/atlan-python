@@ -1392,6 +1392,20 @@
         <span class="s2">&quot;Set multi_valued=False when creating rich text attributes.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">INVALID_UPLOAD_FILE_PATH_TRAVERSAL</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-077&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Path traversal detected in file path: </span><span class="si">{0}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ensure the file path does not contain &#39;..&#39; components.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">INVALID_UPLOAD_FILE_PATH_SENSITIVE</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-078&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Access to blocked file path is not allowed: </span><span class="si">{0}</span><span class="s2">.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ensure the file path does not point to a blocked location (system files, credential directories, or paths defined in PYATLAN_UPLOAD_FILE_BLOCKED_PATHS).&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
