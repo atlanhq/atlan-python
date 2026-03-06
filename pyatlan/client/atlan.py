@@ -601,9 +601,11 @@ class AtlanClient(BaseSettings):
                         _stream_lines=response_data[
                             "lines"
                         ],  # Store lines for event processing
-                        json=lambda: json.loads(response_data["text"])
-                        if response_data["text"]
-                        else {},
+                        json=lambda: (
+                            json.loads(response_data["text"])
+                            if response_data["text"]
+                            else {}
+                        ),
                     )
             else:
                 response = self._session.request(

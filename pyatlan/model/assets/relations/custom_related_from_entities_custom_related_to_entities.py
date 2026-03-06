@@ -17,7 +17,9 @@ class CustomRelatedFromEntitiesCustomRelatedToEntities(RelationshipAttributes):
         description="Inter-relationship between two custom assets.",
     )
     attributes: CustomRelatedFromEntitiesCustomRelatedToEntities.Attributes = Field(  # type: ignore[name-defined]
-        default_factory=lambda: CustomRelatedFromEntitiesCustomRelatedToEntities.Attributes(),
+        default_factory=lambda: (
+            CustomRelatedFromEntitiesCustomRelatedToEntities.Attributes()
+        ),
         description="Map of attributes in the instance and their values",
     )
 
