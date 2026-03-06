@@ -20,6 +20,13 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -40,6 +47,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .dremio_related import RelatedDremioFolder, RelatedDremioSource
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -58,14 +66,6 @@ from .sql_related import (
     RelatedTable,
     RelatedTablePartition,
 )
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .dremio_related import RelatedDremioFolder, RelatedDremioSource
 
 # =============================================================================
 # FLAT ASSET CLASS

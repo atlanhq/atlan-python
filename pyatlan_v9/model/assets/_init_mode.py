@@ -8,6 +8,10 @@ Mode module exports.
 This module provides convenient imports for all Mode types and their Related variants.
 """
 
+from .mode import Mode
+from .mode_chart import ModeChart
+from .mode_collection import ModeCollection
+from .mode_query import ModeQuery
 from .mode_related import (
     RelatedMode,
     RelatedModeChart,
@@ -16,10 +20,6 @@ from .mode_related import (
     RelatedModeReport,
     RelatedModeWorkspace,
 )
-from .mode import Mode
-from .mode_chart import ModeChart
-from .mode_collection import ModeCollection
-from .mode_query import ModeQuery
 from .mode_report import ModeReport
 from .mode_workspace import ModeWorkspace
 

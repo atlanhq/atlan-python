@@ -4,6 +4,17 @@ import os
 from pathlib import Path
 from typing import Any
 
+from pyatlan.client.constants import (
+    API,
+    PRESIGNED_URL,
+    PRESIGNED_URL_DOWNLOAD,
+    PRESIGNED_URL_UPLOAD_AZURE_BLOB,
+    PRESIGNED_URL_UPLOAD_GCS,
+    PRESIGNED_URL_UPLOAD_S3,
+)
+from pyatlan.errors import ErrorCode
+from pyatlan.model.file import CloudStorageIdentifier, PresignedURLRequest
+
 # System directories that must never be read from.
 _SENSITIVE_SYSTEM_PREFIXES = (
     "/etc/",
@@ -25,17 +36,6 @@ _SENSITIVE_FILE_PREFIXES = (".env",)
 def _parse_env_list(env_var: str) -> list:
     val = os.environ.get(env_var, "")
     return [p.strip() for p in val.split(",") if p.strip()] if val else []
-
-from pyatlan.client.constants import (
-    API,
-    PRESIGNED_URL,
-    PRESIGNED_URL_DOWNLOAD,
-    PRESIGNED_URL_UPLOAD_AZURE_BLOB,
-    PRESIGNED_URL_UPLOAD_GCS,
-    PRESIGNED_URL_UPLOAD_S3,
-)
-from pyatlan.errors import ErrorCode
-from pyatlan.model.file import CloudStorageIdentifier, PresignedURLRequest
 
 
 class FilePresignedUrl:

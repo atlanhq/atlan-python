@@ -20,6 +20,18 @@ from typing import Any, ClassVar, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan.errors import ErrorCode
+from pyatlan.model.enums import DataProductStatus
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.data_mesh import DataProductsAssetsDSL
+from pyatlan_v9.model.search import IndexSearchRequest
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -33,6 +45,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .data_mesh_related import RelatedDataDomain, RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -45,19 +58,6 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .starburst_related import RelatedStarburstDataset
-from pyatlan.errors import ErrorCode
-from pyatlan.model.enums import DataProductStatus
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.data_mesh import DataProductsAssetsDSL
-from pyatlan_v9.model.search import IndexSearchRequest
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .data_mesh_related import RelatedDataDomain, RelatedDataProduct
 
 # =============================================================================
 # FLAT ASSET CLASS
