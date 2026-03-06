@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -50,12 +44,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .tableau_related import RelatedTableauProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class TableauFlow(Asset):
@@ -151,9 +148,7 @@ class TableauFlow(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -162,9 +157,7 @@ class TableauFlow(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -191,9 +184,7 @@ class TableauFlow(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -205,9 +196,7 @@ class TableauFlow(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -232,6 +221,7 @@ class TableauFlow(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -284,7 +274,6 @@ class TableauFlow(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class TableauFlowAttributes(AssetAttributes):
     """TableauFlow-specific attributes for nested API format."""
 
@@ -311,7 +300,6 @@ class TableauFlowAttributes(AssetAttributes):
 
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
-
 
 class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     """TableauFlow-specific relationship attributes for nested API format."""
@@ -340,9 +328,7 @@ class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -351,9 +337,7 @@ class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -380,9 +364,7 @@ class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -394,9 +376,7 @@ class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -411,19 +391,13 @@ class TableauFlowRelationshipAttributes(AssetRelationshipAttributes):
     project: Union[RelatedTableauProject, None, UnsetType] = UNSET
     """Project in which this flow exists."""
 
-
 class TableauFlowNested(AssetNested):
     """TableauFlow in nested API format for high-performance serialization."""
 
     attributes: Union[TableauFlowAttributes, UnsetType] = UNSET
     relationship_attributes: Union[TableauFlowRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        TableauFlowRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        TableauFlowRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[TableauFlowRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[TableauFlowRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -462,10 +436,7 @@ _TABLEAU_FLOW_REL_FIELDS: List[str] = [
     "project",
 ]
 
-
-def _populate_tableau_flow_attrs(
-    attrs: TableauFlowAttributes, obj: TableauFlow
-) -> None:
+def _populate_tableau_flow_attrs(attrs: TableauFlowAttributes, obj: TableauFlow) -> None:
     """Populate TableauFlow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.site_qualified_name = obj.site_qualified_name
@@ -475,10 +446,7 @@ def _populate_tableau_flow_attrs(
     attrs.input_fields = obj.input_fields
     attrs.output_fields = obj.output_fields
     attrs.output_steps = obj.output_steps
-    attrs.tableau_project_hierarchy_qualified_names = (
-        obj.tableau_project_hierarchy_qualified_names
-    )
-
+    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
 
 def _extract_tableau_flow_attrs(attrs: TableauFlowAttributes) -> dict:
     """Extract all TableauFlow attributes from the attrs struct into a flat dict."""
@@ -490,11 +458,8 @@ def _extract_tableau_flow_attrs(attrs: TableauFlowAttributes) -> dict:
     result["input_fields"] = attrs.input_fields
     result["output_fields"] = attrs.output_fields
     result["output_steps"] = attrs.output_steps
-    result["tableau_project_hierarchy_qualified_names"] = (
-        attrs.tableau_project_hierarchy_qualified_names
-    )
+    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -535,19 +500,16 @@ def _tableau_flow_to_nested(tableau_flow: TableauFlow) -> TableauFlowNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _tableau_flow_from_nested(nested: TableauFlowNested) -> TableauFlow:
     """Convert nested format to flat TableauFlow."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else TableauFlowAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else TableauFlowAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_FLOW_REL_FIELDS,
-        TableauFlowRelationshipAttributes,
+        TableauFlowRelationshipAttributes
     )
     return TableauFlow(
         guid=nested.guid,
@@ -574,7 +536,6 @@ def _tableau_flow_from_nested(nested: TableauFlowNested) -> TableauFlow:
         **merged_rels,
     )
 
-
 def _tableau_flow_to_nested_bytes(tableau_flow: TableauFlow, serde: Serde) -> bytes:
     """Convert flat TableauFlow to nested JSON bytes."""
     return serde.encode(_tableau_flow_to_nested(tableau_flow))
@@ -585,26 +546,22 @@ def _tableau_flow_from_nested_bytes(data: bytes, serde: Serde) -> TableauFlow:
     nested = serde.decode(data, TableauFlowNested)
     return _tableau_flow_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
 TableauFlow.SITE_QUALIFIED_NAME = KeywordField("siteQualifiedName", "siteQualifiedName")
-TableauFlow.PROJECT_QUALIFIED_NAME = KeywordField(
-    "projectQualifiedName", "projectQualifiedName"
-)
-TableauFlow.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField(
-    "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
-)
+TableauFlow.PROJECT_QUALIFIED_NAME = KeywordField("projectQualifiedName", "projectQualifiedName")
+TableauFlow.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField("topLevelProjectQualifiedName", "topLevelProjectQualifiedName")
 TableauFlow.PROJECT_HIERARCHY = KeywordField("projectHierarchy", "projectHierarchy")
 TableauFlow.INPUT_FIELDS = KeywordField("inputFields", "inputFields")
 TableauFlow.OUTPUT_FIELDS = KeywordField("outputFields", "outputFields")
 TableauFlow.OUTPUT_STEPS = KeywordField("outputSteps", "outputSteps")
-TableauFlow.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
-    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
-)
+TableauFlow.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
 TableauFlow.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TableauFlow.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 TableauFlow.ANOMALO_CHECKS = RelationField("anomaloChecks")

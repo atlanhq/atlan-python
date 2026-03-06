@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -69,7 +69,6 @@ class RelatedQlik(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Qlik"
 
-
 class RelatedQlikChart(RelatedQlik):
     """
     Related entity reference for QlikChart assets.
@@ -96,7 +95,6 @@ class RelatedQlikChart(RelatedQlik):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QlikChart"
 
-
 class RelatedQlikSheet(RelatedQlik):
     """
     Related entity reference for QlikSheet assets.
@@ -113,7 +111,6 @@ class RelatedQlikSheet(RelatedQlik):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QlikSheet"
-
 
 class RelatedQlikSpace(RelatedQlik):
     """
@@ -132,7 +129,6 @@ class RelatedQlikSpace(RelatedQlik):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QlikSpace"
 
-
 class RelatedQlikStream(RelatedQlik):
     """
     Related entity reference for QlikStream assets.
@@ -146,7 +142,6 @@ class RelatedQlikStream(RelatedQlik):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QlikStream"
-
 
 class RelatedQlikApp(RelatedQlik):
     """
@@ -177,7 +172,6 @@ class RelatedQlikApp(RelatedQlik):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QlikApp"
 
-
 class RelatedQlikDataset(RelatedQlik):
     """
     Related entity reference for QlikDataset assets.
@@ -206,7 +200,6 @@ class RelatedQlikDataset(RelatedQlik):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QlikDataset"
-
 
 class RelatedQlikColumn(RelatedQlik):
     """

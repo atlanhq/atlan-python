@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -59,7 +60,6 @@ class RelatedMultiDimensionalDataset(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MultiDimensionalDataset"
 
-
 class RelatedCube(RelatedMultiDimensionalDataset):
     """
     Related entity reference for Cube assets.
@@ -76,7 +76,6 @@ class RelatedCube(RelatedMultiDimensionalDataset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Cube"
-
 
 class RelatedCubeDimension(RelatedMultiDimensionalDataset):
     """
@@ -95,7 +94,6 @@ class RelatedCubeDimension(RelatedMultiDimensionalDataset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CubeDimension"
 
-
 class RelatedCubeHierarchy(RelatedMultiDimensionalDataset):
     """
     Related entity reference for CubeHierarchy assets.
@@ -112,7 +110,6 @@ class RelatedCubeHierarchy(RelatedMultiDimensionalDataset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CubeHierarchy"
-
 
 class RelatedCubeField(RelatedMultiDimensionalDataset):
     """

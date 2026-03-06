@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,12 +34,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -58,12 +46,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .sql_related import RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Function(Asset):
@@ -160,9 +151,7 @@ class Function(Asset):
     sql_is_external: Union[bool, None, UnsetType] = UNSET
     """Whether the function is stored or executed externally (true) or internally (false)."""
 
-    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlIsDMF"
-    )
+    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="sqlIsDMF")
     """Whether the function is a data metric function."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -234,9 +223,7 @@ class Function(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
@@ -263,9 +250,7 @@ class Function(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -274,9 +259,7 @@ class Function(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -291,9 +274,7 @@ class Function(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -323,9 +304,7 @@ class Function(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -343,14 +322,10 @@ class Function(Asset):
     sql_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes that utilize this function."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -372,6 +347,7 @@ class Function(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -424,7 +400,6 @@ class Function(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class FunctionAttributes(AssetAttributes):
     """Function-specific attributes for nested API format."""
 
@@ -446,9 +421,7 @@ class FunctionAttributes(AssetAttributes):
     sql_is_external: Union[bool, None, UnsetType] = UNSET
     """Whether the function is stored or executed externally (true) or internally (false)."""
 
-    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlIsDMF"
-    )
+    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="sqlIsDMF")
     """Whether the function is a data metric function."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -520,11 +493,8 @@ class FunctionAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
-
 
 class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     """Function-specific relationship attributes for nested API format."""
@@ -553,9 +523,7 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -564,9 +532,7 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -581,9 +547,7 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -613,9 +577,7 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -633,14 +595,10 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     sql_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes that utilize this function."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -652,19 +610,13 @@ class FunctionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class FunctionNested(AssetNested):
     """Function in nested API format for high-performance serialization."""
 
     attributes: Union[FunctionAttributes, UnsetType] = UNSET
     relationship_attributes: Union[FunctionRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[FunctionRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[FunctionRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[FunctionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[FunctionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -711,7 +663,6 @@ _FUNCTION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_function_attrs(attrs: FunctionAttributes, obj: Function) -> None:
     """Populate Function-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -747,7 +698,6 @@ def _populate_function_attrs(attrs: FunctionAttributes, obj: Function) -> None:
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
 
-
 def _extract_function_attrs(attrs: FunctionAttributes) -> dict:
     """Extract all Function attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -781,11 +731,8 @@ def _extract_function_attrs(attrs: FunctionAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -826,19 +773,16 @@ def _function_to_nested(function: Function) -> FunctionNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _function_from_nested(nested: FunctionNested) -> Function:
     """Convert nested format to flat Function."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else FunctionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else FunctionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FUNCTION_REL_FIELDS,
-        FunctionRelationshipAttributes,
+        FunctionRelationshipAttributes
     )
     return Function(
         guid=nested.guid,
@@ -865,7 +809,6 @@ def _function_from_nested(nested: FunctionNested) -> Function:
         **merged_rels,
     )
 
-
 def _function_to_nested_bytes(function: Function, serde: Serde) -> bytes:
     """Convert flat Function to nested JSON bytes."""
     return serde.encode(_function_to_nested(function))
@@ -875,7 +818,6 @@ def _function_from_nested_bytes(data: bytes, serde: Serde) -> Function:
     """Convert nested JSON bytes to flat Function."""
     nested = serde.decode(data, FunctionNested)
     return _function_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -897,46 +839,28 @@ Function.SQL_IS_EXTERNAL = BooleanField("sqlIsExternal", "sqlIsExternal")
 Function.SQL_IS_DMF = BooleanField("sqlIsDMF", "sqlIsDMF")
 Function.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Function.SQL_IS_MEMOIZABLE = BooleanField("sqlIsMemoizable", "sqlIsMemoizable")
-Function.SQL_RUNTIME_VERSION = KeywordTextField(
-    "sqlRuntimeVersion", "sqlRuntimeVersion", "sqlRuntimeVersion.text"
-)
-Function.SQL_EXTERNAL_ACCESS_INTEGRATIONS = KeywordField(
-    "sqlExternalAccessIntegrations", "sqlExternalAccessIntegrations"
-)
+Function.SQL_RUNTIME_VERSION = KeywordTextField("sqlRuntimeVersion", "sqlRuntimeVersion", "sqlRuntimeVersion.text")
+Function.SQL_EXTERNAL_ACCESS_INTEGRATIONS = KeywordField("sqlExternalAccessIntegrations", "sqlExternalAccessIntegrations")
 Function.SQL_SECRETS = KeywordField("sqlSecrets", "sqlSecrets")
 Function.SQL_PACKAGES = KeywordField("sqlPackages", "sqlPackages")
-Function.SQL_INSTALLED_PACKAGES = KeywordField(
-    "sqlInstalledPackages", "sqlInstalledPackages"
-)
+Function.SQL_INSTALLED_PACKAGES = KeywordField("sqlInstalledPackages", "sqlInstalledPackages")
 Function.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Function.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Function.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Function.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+Function.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 Function.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Function.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+Function.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 Function.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Function.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+Function.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 Function.TABLE_NAME = KeywordField("tableName", "tableName")
 Function.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 Function.VIEW_NAME = KeywordField("viewName", "viewName")
 Function.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Function.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-Function.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+Function.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+Function.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 Function.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Function.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Function.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+Function.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 Function.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Function.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Function.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -970,9 +894,7 @@ Function.README = RelationField("readme")
 Function.FUNCTION_SCHEMA = RelationField("functionSchema")
 Function.SQL_PROCESSES = RelationField("sqlProcesses")
 Function.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-Function.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+Function.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 Function.SODA_CHECKS = RelationField("sodaChecks")
 Function.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Function.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

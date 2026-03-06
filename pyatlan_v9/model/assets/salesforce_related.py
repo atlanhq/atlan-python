@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedSaaS
@@ -48,7 +49,6 @@ class RelatedSalesforce(RelatedSaaS):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Salesforce"
 
-
 class RelatedSalesforceOrganization(RelatedSalesforce):
     """
     Related entity reference for SalesforceOrganization assets.
@@ -65,7 +65,6 @@ class RelatedSalesforceOrganization(RelatedSalesforce):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SalesforceOrganization"
-
 
 class RelatedSalesforceObject(RelatedSalesforce):
     """
@@ -92,7 +91,6 @@ class RelatedSalesforceObject(RelatedSalesforce):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SalesforceObject"
-
 
 class RelatedSalesforceField(RelatedSalesforce):
     """
@@ -156,7 +154,6 @@ class RelatedSalesforceField(RelatedSalesforce):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SalesforceField"
 
-
 class RelatedSalesforceReport(RelatedSalesforce):
     """
     Related entity reference for SalesforceReport assets.
@@ -179,7 +176,6 @@ class RelatedSalesforceReport(RelatedSalesforce):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SalesforceReport"
-
 
 class RelatedSalesforceDashboard(RelatedSalesforce):
     """

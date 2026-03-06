@@ -8,20 +8,20 @@ Resource module exports.
 This module provides convenient imports for all Resource types and their Related variants.
 """
 
-from .file import File
-from .link import Link
-from .readme import Readme
-from .readme_template import ReadmeTemplate
-from .resource import Resource
 from .resource_related import (
-    Related__internal,
     RelatedBadge,
     RelatedFile,
     RelatedLink,
     RelatedReadme,
     RelatedReadmeTemplate,
     RelatedResource,
+    Related__internal,
 )
+from .resource import Resource
+from .file import File
+from .link import Link
+from .readme import Readme
+from .readme_template import ReadmeTemplate
 
 __all__ = [
     "File",

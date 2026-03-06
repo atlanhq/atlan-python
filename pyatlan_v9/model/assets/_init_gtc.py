@@ -8,14 +8,14 @@ GTC module exports.
 This module provides convenient imports for all GTC types and their Related variants.
 """
 
-from .atlas_glossary import AtlasGlossary
-from .atlas_glossary_category import AtlasGlossaryCategory
-from .atlas_glossary_term import AtlasGlossaryTerm
 from .gtc_related import (
     RelatedAtlasGlossary,
     RelatedAtlasGlossaryCategory,
     RelatedAtlasGlossaryTerm,
 )
+from .atlas_glossary import AtlasGlossary
+from .atlas_glossary_category import AtlasGlossaryCategory
+from .atlas_glossary_term import AtlasGlossaryTerm
 
 __all__ = [
     "AtlasGlossary",

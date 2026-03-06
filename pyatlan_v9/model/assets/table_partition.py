@@ -15,18 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,12 +34,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -59,12 +46,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .sql_related import RelatedColumn, RelatedTable, RelatedTablePartition
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class TablePartition(Asset):
@@ -240,9 +230,7 @@ class TablePartition(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -272,9 +260,7 @@ class TablePartition(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -283,9 +269,7 @@ class TablePartition(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -300,9 +284,7 @@ class TablePartition(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -332,9 +314,7 @@ class TablePartition(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -358,14 +338,10 @@ class TablePartition(Asset):
     parent_table_partition: Union[RelatedTablePartition, None, UnsetType] = UNSET
     """Partition in which this partition exists."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -388,111 +364,6 @@ class TablePartition(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
 
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        table_qualified_name: str,
-        table_name: str | None = None,
-        schema_name: str | None = None,
-        schema_qualified_name: str | None = None,
-        database_name: str | None = None,
-        database_qualified_name: str | None = None,
-        connection_qualified_name: str | None = None,
-    ) -> "TablePartition":
-        """
-        Create a new TablePartition asset with auto-derived fields.
-
-        Args:
-            name: Simple name of the table partition
-            table_qualified_name: Unique name of the table in which this partition exists
-            table_name: Simple name of the table (auto-derived if not provided)
-            schema_name: Simple name of the schema (auto-derived if not provided)
-            schema_qualified_name: Unique name of the schema (auto-derived if not provided)
-            database_name: Simple name of the database (auto-derived if not provided)
-            database_qualified_name: Unique name of the database (auto-derived if not provided)
-            connection_qualified_name: Unique name of the connection (auto-derived if not provided)
-
-        Returns:
-            New TablePartition instance with all fields populated
-
-        Raises:
-            ValueError: If required parameters are missing or invalid
-        """
-        validate_required_fields(
-            ["name", "table_qualified_name"], [name, table_qualified_name]
-        )
-
-        fields = table_qualified_name.split("/")
-        if len(fields) != 6:
-            raise ValueError(
-                f"Invalid table_qualified_name: {table_qualified_name}. "
-                "Expected format: default/connector/connection_id/database/schema/table"
-            )
-
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
-        )
-        db_name = database_name or fields[3]
-        sch_name = schema_name or fields[4]
-        tbl_name = table_name or fields[5]
-        db_qualified_name = database_qualified_name or f"{connection_qn}/{db_name}"
-        sch_qualified_name = schema_qualified_name or f"{db_qualified_name}/{sch_name}"
-        qualified_name = f"{sch_qualified_name}/{name}"
-
-        return cls(
-            name=name,
-            qualified_name=qualified_name,
-            table_name=tbl_name,
-            table_qualified_name=table_qualified_name,
-            schema_name=sch_name,
-            schema_qualified_name=sch_qualified_name,
-            database_name=db_name,
-            database_qualified_name=db_qualified_name,
-            connector_name=connector_name,
-            connection_qualified_name=connection_qn,
-            parent_table=RelatedTable(qualified_name=table_qualified_name),
-        )
-
-    @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "TablePartition":
-        """
-        Create a TablePartition instance for updating an existing asset.
-
-        Args:
-            qualified_name: Unique name of the table partition to update
-            name: Simple name of the table partition
-
-        Returns:
-            TablePartition instance configured for updates
-
-        Raises:
-            ValueError: If required parameters are missing
-        """
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
-
-    def trim_to_required(self) -> "TablePartition":
-        """
-        Return a TablePartition with only required fields for reference.
-
-        Returns:
-            TablePartition instance with only qualified_name and name set
-        """
-        return TablePartition(qualified_name=self.qualified_name, name=self.name)
-
-    @classmethod
-    def create(cls, **kwargs) -> "TablePartition":
-        """Backward compatibility alias for creator()."""
-        return cls.creator(**kwargs)
-
-    @classmethod
-    def create_for_modification(cls, **kwargs) -> "TablePartition":
-        """Backward compatibility alias for updater()."""
-        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -544,7 +415,6 @@ class TablePartition(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class TablePartitionAttributes(AssetAttributes):
     """TablePartition-specific attributes for nested API format."""
@@ -642,14 +512,11 @@ class TablePartitionAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
-
 
 class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     """TablePartition-specific relationship attributes for nested API format."""
@@ -678,9 +545,7 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -689,9 +554,7 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -706,9 +569,7 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -738,9 +599,7 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -764,14 +623,10 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     parent_table_partition: Union[RelatedTablePartition, None, UnsetType] = UNSET
     """Partition in which this partition exists."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -783,21 +638,13 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class TablePartitionNested(AssetNested):
     """TablePartition in nested API format for high-performance serialization."""
 
     attributes: Union[TablePartitionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[TablePartitionRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        TablePartitionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        TablePartitionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[TablePartitionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[TablePartitionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[TablePartitionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -846,10 +693,7 @@ _TABLE_PARTITION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_table_partition_attrs(
-    attrs: TablePartitionAttributes, obj: TablePartition
-) -> None:
+def _populate_table_partition_attrs(attrs: TablePartitionAttributes, obj: TablePartition) -> None:
     """Populate TablePartition-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.constraint = obj.constraint
@@ -886,7 +730,6 @@ def _populate_table_partition_attrs(
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
-
 def _extract_table_partition_attrs(attrs: TablePartitionAttributes) -> dict:
     """Extract all TablePartition attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -921,12 +764,9 @@ def _extract_table_partition_attrs(attrs: TablePartitionAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -939,9 +779,7 @@ def _table_partition_to_nested(table_partition: TablePartition) -> TablePartitio
     _populate_table_partition_attrs(attrs, table_partition)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        table_partition,
-        _TABLE_PARTITION_REL_FIELDS,
-        TablePartitionRelationshipAttributes,
+        table_partition, _TABLE_PARTITION_REL_FIELDS, TablePartitionRelationshipAttributes
     )
     return TablePartitionNested(
         guid=table_partition.guid,
@@ -969,21 +807,16 @@ def _table_partition_to_nested(table_partition: TablePartition) -> TablePartitio
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _table_partition_from_nested(nested: TablePartitionNested) -> TablePartition:
     """Convert nested format to flat TablePartition."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else TablePartitionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else TablePartitionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLE_PARTITION_REL_FIELDS,
-        TablePartitionRelationshipAttributes,
+        TablePartitionRelationshipAttributes
     )
     return TablePartition(
         guid=nested.guid,
@@ -1010,10 +843,7 @@ def _table_partition_from_nested(nested: TablePartitionNested) -> TablePartition
         **merged_rels,
     )
 
-
-def _table_partition_to_nested_bytes(
-    table_partition: TablePartition, serde: Serde
-) -> bytes:
+def _table_partition_to_nested_bytes(table_partition: TablePartition, serde: Serde) -> bytes:
     """Convert flat TablePartition to nested JSON bytes."""
     return serde.encode(_table_partition_to_nested(table_partition))
 
@@ -1022,7 +852,6 @@ def _table_partition_from_nested_bytes(data: bytes, serde: Serde) -> TablePartit
     """Convert nested JSON bytes to flat TablePartition."""
     nested = serde.decode(data, TablePartitionNested)
     return _table_partition_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1041,55 +870,31 @@ TablePartition.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
 TablePartition.ALIAS = KeywordField("alias", "alias")
 TablePartition.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 TablePartition.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-TablePartition.QUERY_PREVIEW_CONFIG = KeywordField(
-    "queryPreviewConfig", "queryPreviewConfig"
-)
+TablePartition.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
 TablePartition.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
-TablePartition.EXTERNAL_LOCATION_REGION = KeywordField(
-    "externalLocationRegion", "externalLocationRegion"
-)
-TablePartition.EXTERNAL_LOCATION_FORMAT = KeywordField(
-    "externalLocationFormat", "externalLocationFormat"
-)
+TablePartition.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
+TablePartition.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
 TablePartition.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-TablePartition.PARTITION_STRATEGY = KeywordField(
-    "partitionStrategy", "partitionStrategy"
-)
+TablePartition.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
 TablePartition.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
 TablePartition.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 TablePartition.QUERY_COUNT = NumericField("queryCount", "queryCount")
 TablePartition.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 TablePartition.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-TablePartition.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+TablePartition.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 TablePartition.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-TablePartition.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+TablePartition.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 TablePartition.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-TablePartition.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+TablePartition.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 TablePartition.TABLE_NAME = KeywordField("tableName", "tableName")
-TablePartition.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+TablePartition.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 TablePartition.VIEW_NAME = KeywordField("viewName", "viewName")
-TablePartition.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-TablePartition.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-TablePartition.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+TablePartition.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+TablePartition.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+TablePartition.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 TablePartition.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 TablePartition.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-TablePartition.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+TablePartition.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 TablePartition.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 TablePartition.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TablePartition.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -1099,9 +904,7 @@ TablePartition.APPLICATION_FIELD = RelationField("applicationField")
 TablePartition.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 TablePartition.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 TablePartition.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-TablePartition.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+TablePartition.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 TablePartition.METRICS = RelationField("metrics")
 TablePartition.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 TablePartition.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
@@ -1128,9 +931,7 @@ TablePartition.PARENT_TABLE = RelationField("parentTable")
 TablePartition.CHILD_TABLE_PARTITIONS = RelationField("childTablePartitions")
 TablePartition.PARENT_TABLE_PARTITION = RelationField("parentTablePartition")
 TablePartition.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-TablePartition.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+TablePartition.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 TablePartition.SODA_CHECKS = RelationField("sodaChecks")
 TablePartition.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 TablePartition.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

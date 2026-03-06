@@ -15,18 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,12 +34,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -59,12 +46,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class View(Asset):
@@ -211,9 +201,7 @@ class View(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -243,9 +231,7 @@ class View(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -254,9 +240,7 @@ class View(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -271,9 +255,7 @@ class View(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -303,9 +285,7 @@ class View(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -326,14 +306,10 @@ class View(Asset):
     atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema in which this view exists."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -356,105 +332,6 @@ class View(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
 
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        schema_qualified_name: str,
-        schema_name: str | None = None,
-        database_name: str | None = None,
-        database_qualified_name: str | None = None,
-        connection_qualified_name: str | None = None,
-    ) -> "View":
-        """
-        Create a new View asset with auto-derived fields.
-
-        Args:
-            name: Simple name of the view
-            schema_qualified_name: Unique name of the schema in which this view exists
-            schema_name: Simple name of the schema (auto-derived if not provided)
-            database_name: Simple name of the database (auto-derived if not provided)
-            database_qualified_name: Unique name of the database (auto-derived if not provided)
-            connection_qualified_name: Unique name of the connection (auto-derived if not provided)
-
-        Returns:
-            New View instance with all fields populated
-
-        Raises:
-            ValueError: If required parameters are missing or invalid
-        """
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-
-        # Validate schema_qualified_name format: default/connector/connection_id/database/schema
-        fields = schema_qualified_name.split("/")
-        if len(fields) != 5:
-            raise ValueError(
-                f"Invalid schema_qualified_name: {schema_qualified_name}. "
-                "Expected format: default/connector/connection_id/database/schema"
-            )
-
-        # Derive other fields from schema_qualified_name
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
-        )
-        db_name = database_name or fields[3]
-        sch_name = schema_name or fields[4]
-        db_qualified_name = database_qualified_name or f"{connection_qn}/{db_name}"
-        qualified_name = f"{schema_qualified_name}/{name}"
-
-        return cls(
-            name=name,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=db_qualified_name,
-            schema_name=sch_name,
-            schema_qualified_name=schema_qualified_name,
-            connector_name=connector_name,
-            connection_qualified_name=connection_qn,
-            atlan_schema=RelatedSchema(qualified_name=schema_qualified_name),
-        )
-
-    @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "View":
-        """
-        Create a View instance for updating an existing asset.
-
-        Args:
-            qualified_name: Unique name of the view to update
-            name: Simple name of the view
-
-        Returns:
-            View instance configured for updates
-
-        Raises:
-            ValueError: If required parameters are missing
-        """
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
-
-    def trim_to_required(self) -> "View":
-        """
-        Return a View with only required fields for reference.
-
-        Returns:
-            View instance with only qualified_name and name set
-        """
-        return View(qualified_name=self.qualified_name, name=self.name)
-
-    @classmethod
-    def create(cls, **kwargs) -> "View":
-        """Backward compatibility alias for creator()."""
-        return cls.creator(**kwargs)
-
-    @classmethod
-    def create_for_modification(cls, **kwargs) -> "View":
-        """Backward compatibility alias for updater()."""
-        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -506,7 +383,6 @@ class View(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class ViewAttributes(AssetAttributes):
     """View-specific attributes for nested API format."""
@@ -583,14 +459,11 @@ class ViewAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
-
 
 class ViewRelationshipAttributes(AssetRelationshipAttributes):
     """View-specific relationship attributes for nested API format."""
@@ -619,9 +492,7 @@ class ViewRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -630,9 +501,7 @@ class ViewRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -647,9 +516,7 @@ class ViewRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -679,9 +546,7 @@ class ViewRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -702,14 +567,10 @@ class ViewRelationshipAttributes(AssetRelationshipAttributes):
     atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema in which this view exists."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -721,7 +582,6 @@ class ViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class ViewNested(AssetNested):
     """View in nested API format for high-performance serialization."""
 
@@ -729,7 +589,6 @@ class ViewNested(AssetNested):
     relationship_attributes: Union[ViewRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[ViewRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[ViewRelationshipAttributes, UnsetType] = UNSET
-
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -777,7 +636,6 @@ _VIEW_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_view_attrs(attrs: ViewAttributes, obj: View) -> None:
     """Populate View-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -808,7 +666,6 @@ def _populate_view_attrs(attrs: ViewAttributes, obj: View) -> None:
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
-
 def _extract_view_attrs(attrs: ViewAttributes) -> dict:
     """Extract all View attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -836,12 +693,9 @@ def _extract_view_attrs(attrs: ViewAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -882,7 +736,6 @@ def _view_to_nested(view: View) -> ViewNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _view_from_nested(nested: ViewNested) -> View:
     """Convert nested format to flat View."""
     attrs = nested.attributes if nested.attributes is not UNSET else ViewAttributes()
@@ -892,7 +745,7 @@ def _view_from_nested(nested: ViewNested) -> View:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _VIEW_REL_FIELDS,
-        ViewRelationshipAttributes,
+        ViewRelationshipAttributes
     )
     return View(
         guid=nested.guid,
@@ -919,7 +772,6 @@ def _view_from_nested(nested: ViewNested) -> View:
         **merged_rels,
     )
 
-
 def _view_to_nested_bytes(view: View, serde: Serde) -> bytes:
     """Convert flat View to nested JSON bytes."""
     return serde.encode(_view_to_nested(view))
@@ -929,7 +781,6 @@ def _view_from_nested_bytes(data: bytes, serde: Serde) -> View:
     """Convert nested JSON bytes to flat View."""
     nested = serde.decode(data, ViewNested)
     return _view_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -954,9 +805,7 @@ View.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 View.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
 View.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 View.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-View.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+View.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 View.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
 View.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 View.TABLE_NAME = KeywordField("tableName", "tableName")
@@ -964,14 +813,10 @@ View.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedNa
 View.VIEW_NAME = KeywordField("viewName", "viewName")
 View.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
 View.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-View.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+View.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 View.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 View.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-View.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+View.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 View.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 View.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 View.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

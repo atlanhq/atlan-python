@@ -8,15 +8,6 @@ SQL module exports.
 This module provides convenient imports for all SQL types and their Related variants.
 """
 
-from .calculation_view import CalculationView
-from .column import Column
-from .database import Database
-from .function import Function
-from .materialised_view import MaterialisedView
-from .procedure import Procedure
-from .query import Query
-from .schema import Schema
-from .sql import SQL
 from .sql_related import (
     RelatedCalculationView,
     RelatedColumn,
@@ -25,12 +16,21 @@ from .sql_related import (
     RelatedMaterialisedView,
     RelatedProcedure,
     RelatedQuery,
-    RelatedSchema,
     RelatedSQL,
+    RelatedSchema,
     RelatedTable,
     RelatedTablePartition,
     RelatedView,
 )
+from .sql import SQL
+from .calculation_view import CalculationView
+from .column import Column
+from .database import Database
+from .function import Function
+from .materialised_view import MaterialisedView
+from .procedure import Procedure
+from .query import Query
+from .schema import Schema
 from .table import Table
 from .table_partition import TablePartition
 from .view import View

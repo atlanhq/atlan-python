@@ -8,10 +8,6 @@ Preset module exports.
 This module provides convenient imports for all Preset types and their Related variants.
 """
 
-from .preset import Preset
-from .preset_chart import PresetChart
-from .preset_dashboard import PresetDashboard
-from .preset_dataset import PresetDataset
 from .preset_related import (
     RelatedPreset,
     RelatedPresetChart,
@@ -19,6 +15,10 @@ from .preset_related import (
     RelatedPresetDataset,
     RelatedPresetWorkspace,
 )
+from .preset import Preset
+from .preset_chart import PresetChart
+from .preset_dashboard import PresetDashboard
+from .preset_dataset import PresetDataset
 from .preset_workspace import PresetWorkspace
 
 __all__ = [

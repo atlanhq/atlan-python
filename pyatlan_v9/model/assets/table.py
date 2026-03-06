@@ -15,18 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,12 +34,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -59,18 +46,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import (
-    RelatedColumn,
-    RelatedQuery,
-    RelatedSchema,
-    RelatedTable,
-    RelatedTablePartition,
-)
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema, RelatedTable, RelatedTablePartition
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Table(Asset):
@@ -296,9 +280,7 @@ class Table(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -328,9 +310,7 @@ class Table(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -339,9 +319,7 @@ class Table(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -356,9 +334,7 @@ class Table(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -388,9 +364,7 @@ class Table(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -420,14 +394,10 @@ class Table(Asset):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -450,80 +420,6 @@ class Table(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
 
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        schema_qualified_name: str,
-        schema_name: str | None = None,
-        database_name: str | None = None,
-        database_qualified_name: str | None = None,
-        connection_qualified_name: str | None = None,
-    ) -> "Table":
-        """
-        Create a new Table asset.
-
-        Args:
-            name: Name of the table
-            schema_qualified_name: Unique name of the schema in which this table exists
-            schema_name: Simple name of the schema (optional, will be derived if not provided)
-            database_name: Simple name of the database (optional, will be derived if not provided)
-            database_qualified_name: Unique name of the database (optional, will be derived if not provided)
-            connection_qualified_name: Unique name of the connection (optional, will be derived if not provided)
-
-        Returns:
-            Table instance ready to be created
-
-        Raises:
-            ValueError: If required parameters are missing or invalid
-        """
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-
-        fields = schema_qualified_name.split("/")
-        if len(fields) != 5:
-            raise ValueError(
-                f"Invalid schema_qualified_name: {schema_qualified_name}. "
-                "Expected format: default/connector/connection_id/database/schema"
-            )
-
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
-        )
-        db_name = database_name or fields[3]
-        sch_name = schema_name or fields[4]
-        db_qualified_name = database_qualified_name or f"{connection_qn}/{db_name}"
-        qualified_name = f"{schema_qualified_name}/{name}"
-
-        return cls(
-            name=name,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=db_qualified_name,
-            schema_name=sch_name,
-            schema_qualified_name=schema_qualified_name,
-            connector_name=connector_name,
-            connection_qualified_name=connection_qn,
-            atlan_schema=RelatedSchema(qualified_name=schema_qualified_name),
-        )
-
-    @classmethod
-    def create(cls, *, name: str, schema_qualified_name: str) -> "Table":
-        """
-        Create a new Table asset (deprecated - use creator instead).
-
-        Args:
-            name: Name of the table
-            schema_qualified_name: Unique name of the schema in which this table exists
-
-        Returns:
-            Table instance ready to be created
-        """
-        return cls.creator(name=name, schema_qualified_name=schema_qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -575,7 +471,6 @@ class Table(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class TableAttributes(AssetAttributes):
     """Table-specific attributes for nested API format."""
@@ -709,14 +604,11 @@ class TableAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
-
 
 class TableRelationshipAttributes(AssetRelationshipAttributes):
     """Table-specific relationship attributes for nested API format."""
@@ -745,9 +637,7 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -756,9 +646,7 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -773,9 +661,7 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -805,9 +691,7 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -837,14 +721,10 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -856,19 +736,13 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class TableNested(AssetNested):
     """Table in nested API format for high-performance serialization."""
 
     attributes: Union[TableAttributes, UnsetType] = UNSET
     relationship_attributes: Union[TableRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[TableRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[TableRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[TableRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[TableRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -919,7 +793,6 @@ _TABLE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_table_attrs(attrs: TableAttributes, obj: Table) -> None:
     """Populate Table-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -969,7 +842,6 @@ def _populate_table_attrs(attrs: TableAttributes, obj: Table) -> None:
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
-
 def _extract_table_attrs(attrs: TableAttributes) -> dict:
     """Extract all Table attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -1016,12 +888,9 @@ def _extract_table_attrs(attrs: TableAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -1062,7 +931,6 @@ def _table_to_nested(table: Table) -> TableNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _table_from_nested(nested: TableNested) -> Table:
     """Convert nested format to flat Table."""
     attrs = nested.attributes if nested.attributes is not UNSET else TableAttributes()
@@ -1072,7 +940,7 @@ def _table_from_nested(nested: TableNested) -> Table:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLE_REL_FIELDS,
-        TableRelationshipAttributes,
+        TableRelationshipAttributes
     )
     return Table(
         guid=nested.guid,
@@ -1099,7 +967,6 @@ def _table_from_nested(nested: TableNested) -> Table:
         **merged_rels,
     )
 
-
 def _table_to_nested_bytes(table: Table, serde: Serde) -> bytes:
     """Convert flat Table to nested JSON bytes."""
     return serde.encode(_table_to_nested(table))
@@ -1109,7 +976,6 @@ def _table_from_nested_bytes(data: bytes, serde: Serde) -> Table:
     """Convert nested JSON bytes to flat Table."""
     nested = serde.decode(data, TableNested)
     return _table_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1130,12 +996,8 @@ Table.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 Table.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
 Table.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
 Table.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
-Table.EXTERNAL_LOCATION_REGION = KeywordField(
-    "externalLocationRegion", "externalLocationRegion"
-)
-Table.EXTERNAL_LOCATION_FORMAT = KeywordField(
-    "externalLocationFormat", "externalLocationFormat"
-)
+Table.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
+Table.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
 Table.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
 Table.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
 Table.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
@@ -1145,33 +1007,19 @@ Table.IS_SHARDED = BooleanField("isSharded", "isSharded")
 Table.SQL_TYPE = KeywordField("sqlType", "sqlType")
 Table.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
 Table.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
-Table.ICEBERG_CATALOG_SOURCE = KeywordField(
-    "icebergCatalogSource", "icebergCatalogSource"
-)
-Table.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
-    "icebergCatalogTableName", "icebergCatalogTableName"
-)
+Table.ICEBERG_CATALOG_SOURCE = KeywordField("icebergCatalogSource", "icebergCatalogSource")
+Table.ICEBERG_CATALOG_TABLE_NAME = KeywordField("icebergCatalogTableName", "icebergCatalogTableName")
 Table.SQL_IMPALA_PARAMETERS = KeywordField("sqlImpalaParameters", "sqlImpalaParameters")
-Table.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
-    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
-)
-Table.SQL_EXTERNAL_VOLUME_NAME = KeywordField(
-    "sqlExternalVolumeName", "sqlExternalVolumeName"
-)
-Table.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
-    "icebergTableBaseLocation", "icebergTableBaseLocation"
-)
+Table.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField("icebergCatalogTableNamespace", "icebergCatalogTableNamespace")
+Table.SQL_EXTERNAL_VOLUME_NAME = KeywordField("sqlExternalVolumeName", "sqlExternalVolumeName")
+Table.ICEBERG_TABLE_BASE_LOCATION = KeywordField("icebergTableBaseLocation", "icebergTableBaseLocation")
 Table.SQL_RETENTION_TIME = NumericField("sqlRetentionTime", "sqlRetentionTime")
 Table.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Table.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Table.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Table.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+Table.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 Table.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Table.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+Table.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 Table.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
 Table.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 Table.TABLE_NAME = KeywordField("tableName", "tableName")
@@ -1179,14 +1027,10 @@ Table.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedN
 Table.VIEW_NAME = KeywordField("viewName", "viewName")
 Table.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
 Table.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-Table.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+Table.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 Table.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Table.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Table.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+Table.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 Table.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Table.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Table.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -1225,9 +1069,7 @@ Table.DIMENSIONS = RelationField("dimensions")
 Table.FACTS = RelationField("facts")
 Table.PARTITIONS = RelationField("partitions")
 Table.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-Table.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+Table.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 Table.SODA_CHECKS = RelationField("sodaChecks")
 Table.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Table.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

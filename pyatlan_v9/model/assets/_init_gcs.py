@@ -8,10 +8,14 @@ GCS module exports.
 This module provides convenient imports for all GCS types and their Related variants.
 """
 
+from .gcs_related import (
+    RelatedGCS,
+    RelatedGCSBucket,
+    RelatedGCSObject,
+)
 from .gcs import GCS
 from .gcs_bucket import GCSBucket
 from .gcs_object import GCSObject
-from .gcs_related import RelatedGCS, RelatedGCSBucket, RelatedGCSObject
 
 __all__ = [
     "GCS",

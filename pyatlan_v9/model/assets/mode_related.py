@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -69,7 +70,6 @@ class RelatedMode(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Mode"
 
-
 class RelatedModeCollection(RelatedMode):
     """
     Related entity reference for ModeCollection assets.
@@ -90,7 +90,6 @@ class RelatedModeCollection(RelatedMode):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModeCollection"
 
-
 class RelatedModeQuery(RelatedMode):
     """
     Related entity reference for ModeQuery assets.
@@ -110,7 +109,6 @@ class RelatedModeQuery(RelatedMode):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModeQuery"
-
 
 class RelatedModeReport(RelatedMode):
     """
@@ -150,7 +148,6 @@ class RelatedModeReport(RelatedMode):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModeReport"
 
-
 class RelatedModeWorkspace(RelatedMode):
     """
     Related entity reference for ModeWorkspace assets.
@@ -167,7 +164,6 @@ class RelatedModeWorkspace(RelatedMode):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModeWorkspace"
-
 
 class RelatedModeChart(RelatedMode):
     """
