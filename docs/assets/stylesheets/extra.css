@@ -1,10 +1,28 @@
-/* Hide site name text — logo image already contains the name */
+/* Atlan blue — matches the dark navy of "atlan" text in logo */
+:root,
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        #1B4F6A;
+  --md-primary-fg-color--light: #256690;
+  --md-primary-fg-color--dark:  #123547;
+  --md-primary-bg-color:        #ffffff;
+  --md-primary-bg-color--light: rgba(255,255,255,0.7);
+  --md-accent-fg-color:         #5DD4F5;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        #1B4F6A;
+  --md-primary-fg-color--light: #256690;
+  --md-primary-fg-color--dark:  #123547;
+  --md-accent-fg-color:         #5DD4F5;
+}
+
+/* Hide site name text — logo already contains the name */
 .md-header__title {
   display: none;
 }
 
-/* Make logo bigger */
+/* Logo size and clean rendering in header */
 .md-header__button.md-logo img {
-  height: 2.5rem;
+  height: 2.2rem;
   width: auto;
 }

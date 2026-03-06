@@ -12,14 +12,14 @@ theme:
   homepage: https://atlanhq.github.io/atlan-python/
   palette:
     - scheme: default
-      primary: deep purple
-      accent: indigo
+      primary: custom
+      accent: light blue
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - scheme: slate
-      primary: deep purple
-      accent: indigo
+      primary: custom
+      accent: light blue
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
@@ -83,7 +83,6 @@ plugins:
             show_signature_annotations: true
 
 nav:
-  - Home: index.md
   - API Reference:
     - AtlanClient: api/client.md
     - Cache: api/cache.md
