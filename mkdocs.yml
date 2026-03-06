@@ -7,8 +7,9 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
-  logo: https://github.com/user-attachments/assets/38243809-d723-4464-8f1c-4869795ea0c8
-  favicon: https://github.com/user-attachments/assets/38243809-d723-4464-8f1c-4869795ea0c8
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  homepage: https://atlanhq.github.io/atlan-python/
   palette:
     - scheme: default
       primary: deep purple
