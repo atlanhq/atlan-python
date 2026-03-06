@@ -682,6 +682,13 @@ class ErrorCode(Enum):
         "Ensure the file path does not contain '..' components.",
         InvalidRequestError,
     )
+    INVALID_UPLOAD_FILE_PATH_SENSITIVE = (
+        400,
+        "ATLAN-PYTHON-400-078",
+        "Access to sensitive file path is not allowed: {0}.",
+        "Ensure the file path does not point to sensitive system files or credential directories.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

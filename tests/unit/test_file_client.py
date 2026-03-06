@@ -161,12 +161,40 @@ def test_file_client_methods_validation_error(client, method, params):
                 "Error: No such file or directory, Path: some/invalid/file_path.png"
             ),
         ],
+        # Path traversal
         [
             "../../etc/passwd",
             (
                 "ATLAN-PYTHON-400-077 Path traversal detected in file path: "
                 r"\.\.\/\.\.\/etc\/passwd"
             ),
+        ],
+        # Sensitive system files
+        [
+            "/etc/passwd",
+            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+        ],
+        [
+            "/etc/shadow",
+            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+        ],
+        # Credential directories
+        [
+            "/home/user/.aws/credentials",
+            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+        ],
+        [
+            "/home/user/.ssh/id_rsa",
+            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+        ],
+        # Environment files
+        [
+            "/app/.env",
+            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+        ],
+        [
+            "/app/.env.production",
+            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
         ],
     ],
 )

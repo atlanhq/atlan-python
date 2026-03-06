@@ -3,6 +3,23 @@
 from pathlib import Path
 from typing import Any
 
+# System directories that must never be read from
+_SENSITIVE_SYSTEM_PREFIXES = (
+    "/etc/",
+    "/proc/",
+    "/sys/",
+    "/dev/",
+    "/root/",
+    "/private/etc/",  # macOS: /etc is a symlink to /private/etc
+    "/private/var/",  # macOS
+)
+
+# Hidden credential/config directories that must never be read from
+_SENSITIVE_DIR_NAMES = frozenset({".aws", ".ssh", ".gnupg"})
+
+# File name prefixes for environment/secret files
+_SENSITIVE_FILE_PREFIXES = (".env",)
+
 from pyatlan.client.constants import (
     API,
     PRESIGNED_URL,
@@ -56,15 +73,40 @@ class FileUpload:
         :param file_path: path to the file to upload
         :returns: opened file object
         :raises INVALID_UPLOAD_FILE_PATH_TRAVERSAL: if path traversal is detected
+        :raises INVALID_UPLOAD_FILE_PATH_SENSITIVE: if path points to a sensitive location
         :raises INVALID_UPLOAD_FILE_PATH: if file not found
         """
         path = Path(file_path)
+
+        # Block directory traversal via '..'
         if ".." in path.parts:
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH_TRAVERSAL.exception_with_parameters(
                 file_path
             )
+
+        resolved = path.resolve()
+        resolved_str = str(resolved)
+
+        # Block sensitive system directories (e.g. /etc/, /proc/, /dev/)
+        if resolved_str.startswith(_SENSITIVE_SYSTEM_PREFIXES):
+            raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
+                file_path
+            )
+
+        # Block credential/config hidden directories (e.g. .aws, .ssh, .gnupg)
+        if any(part in _SENSITIVE_DIR_NAMES for part in resolved.parts):
+            raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
+                file_path
+            )
+
+        # Block environment/secret files (e.g. .env, .env.local, .env.production)
+        if resolved.name.startswith(_SENSITIVE_FILE_PREFIXES):
+            raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
+                file_path
+            )
+
         try:
-            return open(path.resolve(), "rb")
+            return open(resolved, "rb")
         except FileNotFoundError as err:
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH.exception_with_parameters(
                 str(err.strerror), file_path
