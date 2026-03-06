@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -48,14 +42,17 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .soda_related import RelatedSodaCheck
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SodaCheck(Asset):
@@ -148,9 +145,7 @@ class SodaCheck(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -159,9 +154,7 @@ class SodaCheck(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -188,9 +181,7 @@ class SodaCheck(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -202,9 +193,7 @@ class SodaCheck(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_check_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
@@ -224,6 +213,8 @@ class SodaCheck(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SodaCheck"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -276,7 +267,6 @@ class SodaCheck(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SodaCheckAttributes(AssetAttributes):
     """SodaCheck-specific attributes for nested API format."""
 
@@ -300,7 +290,6 @@ class SodaCheckAttributes(AssetAttributes):
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
-
 
 class SodaCheckRelationshipAttributes(AssetRelationshipAttributes):
     """SodaCheck-specific relationship attributes for nested API format."""
@@ -329,9 +318,7 @@ class SodaCheckRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -340,9 +327,7 @@ class SodaCheckRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -369,9 +354,7 @@ class SodaCheckRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -383,9 +366,7 @@ class SodaCheckRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_check_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
@@ -403,19 +384,13 @@ class SodaCheckRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SodaCheckNested(AssetNested):
     """SodaCheck in nested API format for high-performance serialization."""
 
     attributes: Union[SodaCheckAttributes, UnsetType] = UNSET
     relationship_attributes: Union[SodaCheckRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        SodaCheckRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SodaCheckRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[SodaCheckRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SodaCheckRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -455,7 +430,6 @@ _SODA_CHECK_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_soda_check_attrs(attrs: SodaCheckAttributes, obj: SodaCheck) -> None:
     """Populate SodaCheck-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -466,7 +440,6 @@ def _populate_soda_check_attrs(attrs: SodaCheckAttributes, obj: SodaCheck) -> No
     attrs.soda_incident_count = obj.soda_incident_count
     attrs.soda_linked_asset_qualified_name = obj.soda_linked_asset_qualified_name
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
-
 
 def _extract_soda_check_attrs(attrs: SodaCheckAttributes) -> dict:
     """Extract all SodaCheck attributes from the attrs struct into a flat dict."""
@@ -479,7 +452,6 @@ def _extract_soda_check_attrs(attrs: SodaCheckAttributes) -> dict:
     result["soda_linked_asset_qualified_name"] = attrs.soda_linked_asset_qualified_name
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -520,19 +492,16 @@ def _soda_check_to_nested(soda_check: SodaCheck) -> SodaCheckNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _soda_check_from_nested(nested: SodaCheckNested) -> SodaCheck:
     """Convert nested format to flat SodaCheck."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else SodaCheckAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SodaCheckAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SODA_CHECK_REL_FIELDS,
-        SodaCheckRelationshipAttributes,
+        SodaCheckRelationshipAttributes
     )
     return SodaCheck(
         guid=nested.guid,
@@ -559,7 +528,6 @@ def _soda_check_from_nested(nested: SodaCheckNested) -> SodaCheck:
         **merged_rels,
     )
 
-
 def _soda_check_to_nested_bytes(soda_check: SodaCheck, serde: Serde) -> bytes:
     """Convert flat SodaCheck to nested JSON bytes."""
     return serde.encode(_soda_check_to_nested(soda_check))
@@ -569,7 +537,6 @@ def _soda_check_from_nested_bytes(data: bytes, serde: Serde) -> SodaCheck:
     """Convert nested JSON bytes to flat SodaCheck."""
     nested = serde.decode(data, SodaCheckNested)
     return _soda_check_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -582,20 +549,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SodaCheck.SODA_ID = KeywordField("sodaId", "sodaId")
-SodaCheck.SODA_EVALUATION_STATUS = KeywordField(
-    "sodaEvaluationStatus", "sodaEvaluationStatus"
-)
-SodaCheck.SODA_CHECK_DEFINITION = KeywordField(
-    "sodaCheckDefinition", "sodaCheckDefinition"
-)
+SodaCheck.SODA_EVALUATION_STATUS = KeywordField("sodaEvaluationStatus", "sodaEvaluationStatus")
+SodaCheck.SODA_CHECK_DEFINITION = KeywordField("sodaCheckDefinition", "sodaCheckDefinition")
 SodaCheck.SODA_LAST_SCAN_AT = NumericField("sodaLastScanAt", "sodaLastScanAt")
 SodaCheck.SODA_INCIDENT_COUNT = NumericField("sodaIncidentCount", "sodaIncidentCount")
-SodaCheck.SODA_LINKED_ASSET_QUALIFIED_NAME = KeywordField(
-    "sodaLinkedAssetQualifiedName", "sodaLinkedAssetQualifiedName"
-)
-SodaCheck.DQ_IS_PART_OF_CONTRACT = BooleanField(
-    "dqIsPartOfContract", "dqIsPartOfContract"
-)
+SodaCheck.SODA_LINKED_ASSET_QUALIFIED_NAME = KeywordField("sodaLinkedAssetQualifiedName", "sodaLinkedAssetQualifiedName")
+SodaCheck.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
 SodaCheck.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SodaCheck.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SodaCheck.ANOMALO_CHECKS = RelationField("anomaloChecks")

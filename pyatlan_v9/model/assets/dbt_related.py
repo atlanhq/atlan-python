@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -108,7 +108,6 @@ class RelatedDbt(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Dbt"
 
-
 class RelatedDbtSemanticModel(RelatedDbt):
     """
     Related entity reference for DbtSemanticModel assets.
@@ -122,7 +121,6 @@ class RelatedDbtSemanticModel(RelatedDbt):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtSemanticModel"
-
 
 class RelatedDbtDimension(RelatedDbt):
     """
@@ -144,7 +142,6 @@ class RelatedDbtDimension(RelatedDbt):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtDimension"
 
-
 class RelatedDbtMeasure(RelatedDbt):
     """
     Related entity reference for DbtMeasure assets.
@@ -161,7 +158,6 @@ class RelatedDbtMeasure(RelatedDbt):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtMeasure"
-
 
 class RelatedDbtEntity(RelatedDbt):
     """
@@ -180,7 +176,6 @@ class RelatedDbtEntity(RelatedDbt):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtEntity"
 
-
 class RelatedDbtModel(RelatedDbt):
     """
     Related entity reference for DbtModel assets.
@@ -197,14 +192,10 @@ class RelatedDbtModel(RelatedDbt):
     dbt_error: Union[str, None, UnsetType] = UNSET
     """Error message if any for the dbt model."""
 
-    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dbtRawSQL"
-    )
+    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtRawSQL")
     """Raw SQL of the dbt model."""
 
-    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dbtCompiledSQL"
-    )
+    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtCompiledSQL")
     """Compiled SQL of the dbt model."""
 
     dbt_stats: Union[str, None, UnsetType] = UNSET
@@ -238,7 +229,6 @@ class RelatedDbtModel(RelatedDbt):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtModel"
 
-
 class RelatedDbtTest(RelatedDbt):
     """
     Related entity reference for DbtTest assets.
@@ -258,14 +248,10 @@ class RelatedDbtTest(RelatedDbt):
     dbt_test_error: Union[str, None, UnsetType] = UNSET
     """Error message in the case of state being "error"."""
 
-    dbt_test_raw_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dbtTestRawSQL"
-    )
+    dbt_test_raw_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtTestRawSQL")
     """Raw SQL of the test."""
 
-    dbt_test_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dbtTestCompiledSQL"
-    )
+    dbt_test_compiled_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtTestCompiledSQL")
     """Compiled SQL of the test."""
 
     dbt_test_raw_code: Union[str, None, UnsetType] = UNSET
@@ -280,7 +266,6 @@ class RelatedDbtTest(RelatedDbt):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtTest"
-
 
 class RelatedDbtSource(RelatedDbt):
     """
@@ -301,7 +286,6 @@ class RelatedDbtSource(RelatedDbt):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtSource"
-
 
 class RelatedDbtMetric(RelatedDbt):
     """
@@ -332,7 +316,6 @@ class RelatedDbtMetric(RelatedDbt):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtMetric"
 
-
 class RelatedDbtModelColumn(RelatedDbt):
     """
     Related entity reference for DbtModelColumn assets.
@@ -356,7 +339,6 @@ class RelatedDbtModelColumn(RelatedDbt):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtModelColumn"
 
-
 class RelatedDbtProcess(RelatedDbt):
     """
     Related entity reference for DbtProcess assets.
@@ -377,7 +359,6 @@ class RelatedDbtProcess(RelatedDbt):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtProcess"
 
-
 class RelatedDbtColumnProcess(RelatedDbt):
     """
     Related entity reference for DbtColumnProcess assets.
@@ -395,7 +376,6 @@ class RelatedDbtColumnProcess(RelatedDbt):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtColumnProcess"
 
-
 class RelatedDbtTag(RelatedDbt):
     """
     Related entity reference for DbtTag assets.
@@ -409,7 +389,6 @@ class RelatedDbtTag(RelatedDbt):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DbtTag"
-
 
 class RelatedDbtSeed(RelatedDbt):
     """

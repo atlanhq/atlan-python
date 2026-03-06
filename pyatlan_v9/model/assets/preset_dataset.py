@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,18 +38,21 @@ from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
-from .preset_related import RelatedPresetDashboard
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .preset_related import RelatedPresetDashboard
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class PresetDataset(Asset):
@@ -148,9 +144,7 @@ class PresetDataset(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -159,9 +153,7 @@ class PresetDataset(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -191,9 +183,7 @@ class PresetDataset(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -205,9 +195,7 @@ class PresetDataset(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -230,34 +218,6 @@ class PresetDataset(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
 
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        preset_dashboard_qualified_name: str,
-        connection_qualified_name: str | None = None,
-    ) -> "PresetDataset":
-        validate_required_fields(
-            ["name", "preset_dashboard_qualified_name"],
-            [name, preset_dashboard_qualified_name],
-        )
-        fields = preset_dashboard_qualified_name.split("/")
-        connector_name = fields[1] if len(fields) > 1 else None
-        connection_qn = connection_qualified_name or (
-            f"{fields[0]}/{fields[1]}/{fields[2]}" if len(fields) >= 3 else None
-        )
-        return cls(
-            name=name,
-            qualified_name=f"{preset_dashboard_qualified_name}/{name}",
-            preset_dashboard_qualified_name=preset_dashboard_qualified_name,
-            connection_qualified_name=connection_qn,
-            connector_name=connector_name,
-            preset_dashboard=RelatedPresetDashboard(
-                qualified_name=preset_dashboard_qualified_name
-            ),
-        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -310,7 +270,6 @@ class PresetDataset(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class PresetDatasetAttributes(AssetAttributes):
     """PresetDataset-specific attributes for nested API format."""
 
@@ -334,7 +293,6 @@ class PresetDatasetAttributes(AssetAttributes):
 
     preset_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the dashboard in which this asset exists."""
-
 
 class PresetDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """PresetDataset-specific relationship attributes for nested API format."""
@@ -363,9 +321,7 @@ class PresetDatasetRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -374,9 +330,7 @@ class PresetDatasetRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -406,9 +360,7 @@ class PresetDatasetRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -420,9 +372,7 @@ class PresetDatasetRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -434,21 +384,13 @@ class PresetDatasetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class PresetDatasetNested(AssetNested):
     """PresetDataset in nested API format for high-performance serialization."""
 
     attributes: Union[PresetDatasetAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[PresetDatasetRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        PresetDatasetRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        PresetDatasetRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[PresetDatasetRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[PresetDatasetRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[PresetDatasetRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -487,10 +429,7 @@ _PRESET_DATASET_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_preset_dataset_attrs(
-    attrs: PresetDatasetAttributes, obj: PresetDataset
-) -> None:
+def _populate_preset_dataset_attrs(attrs: PresetDatasetAttributes, obj: PresetDataset) -> None:
     """Populate PresetDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.preset_dataset_datasource_name = obj.preset_dataset_datasource_name
@@ -500,7 +439,6 @@ def _populate_preset_dataset_attrs(
     attrs.preset_workspace_qualified_name = obj.preset_workspace_qualified_name
     attrs.preset_dashboard_id = obj.preset_dashboard_id
     attrs.preset_dashboard_qualified_name = obj.preset_dashboard_qualified_name
-
 
 def _extract_preset_dataset_attrs(attrs: PresetDatasetAttributes) -> dict:
     """Extract all PresetDataset attributes from the attrs struct into a flat dict."""
@@ -513,7 +451,6 @@ def _extract_preset_dataset_attrs(attrs: PresetDatasetAttributes) -> dict:
     result["preset_dashboard_id"] = attrs.preset_dashboard_id
     result["preset_dashboard_qualified_name"] = attrs.preset_dashboard_qualified_name
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -554,21 +491,16 @@ def _preset_dataset_to_nested(preset_dataset: PresetDataset) -> PresetDatasetNes
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _preset_dataset_from_nested(nested: PresetDatasetNested) -> PresetDataset:
     """Convert nested format to flat PresetDataset."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else PresetDatasetAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else PresetDatasetAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PRESET_DATASET_REL_FIELDS,
-        PresetDatasetRelationshipAttributes,
+        PresetDatasetRelationshipAttributes
     )
     return PresetDataset(
         guid=nested.guid,
@@ -595,10 +527,7 @@ def _preset_dataset_from_nested(nested: PresetDatasetNested) -> PresetDataset:
         **merged_rels,
     )
 
-
-def _preset_dataset_to_nested_bytes(
-    preset_dataset: PresetDataset, serde: Serde
-) -> bytes:
+def _preset_dataset_to_nested_bytes(preset_dataset: PresetDataset, serde: Serde) -> bytes:
     """Convert flat PresetDataset to nested JSON bytes."""
     return serde.encode(_preset_dataset_to_nested(preset_dataset))
 
@@ -607,7 +536,6 @@ def _preset_dataset_from_nested_bytes(data: bytes, serde: Serde) -> PresetDatase
     """Convert nested JSON bytes to flat PresetDataset."""
     nested = serde.decode(data, PresetDatasetNested)
     return _preset_dataset_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -619,29 +547,13 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-PresetDataset.PRESET_DATASET_DATASOURCE_NAME = KeywordField(
-    "presetDatasetDatasourceName", "presetDatasetDatasourceName"
-)
+PresetDataset.PRESET_DATASET_DATASOURCE_NAME = KeywordField("presetDatasetDatasourceName", "presetDatasetDatasourceName")
 PresetDataset.PRESET_DATASET_ID = NumericField("presetDatasetId", "presetDatasetId")
-PresetDataset.PRESET_DATASET_TYPE = KeywordField(
-    "presetDatasetType", "presetDatasetType"
-)
-PresetDataset.PRESET_WORKSPACE_ID = NumericField(
-    "presetWorkspaceId", "presetWorkspaceId"
-)
-PresetDataset.PRESET_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
-    "presetWorkspaceQualifiedName",
-    "presetWorkspaceQualifiedName",
-    "presetWorkspaceQualifiedName.text",
-)
-PresetDataset.PRESET_DASHBOARD_ID = NumericField(
-    "presetDashboardId", "presetDashboardId"
-)
-PresetDataset.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
-    "presetDashboardQualifiedName",
-    "presetDashboardQualifiedName",
-    "presetDashboardQualifiedName.text",
-)
+PresetDataset.PRESET_DATASET_TYPE = KeywordField("presetDatasetType", "presetDatasetType")
+PresetDataset.PRESET_WORKSPACE_ID = NumericField("presetWorkspaceId", "presetWorkspaceId")
+PresetDataset.PRESET_WORKSPACE_QUALIFIED_NAME = KeywordTextField("presetWorkspaceQualifiedName", "presetWorkspaceQualifiedName", "presetWorkspaceQualifiedName.text")
+PresetDataset.PRESET_DASHBOARD_ID = NumericField("presetDashboardId", "presetDashboardId")
+PresetDataset.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField("presetDashboardQualifiedName", "presetDashboardQualifiedName", "presetDashboardQualifiedName.text")
 PresetDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 PresetDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 PresetDataset.ANOMALO_CHECKS = RelationField("anomaloChecks")

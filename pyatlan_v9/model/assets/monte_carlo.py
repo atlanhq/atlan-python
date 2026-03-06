@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,7 +35,6 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
-from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
@@ -49,11 +42,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class MonteCarlo(Asset):
@@ -128,9 +125,7 @@ class MonteCarlo(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -139,9 +134,7 @@ class MonteCarlo(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -168,9 +161,7 @@ class MonteCarlo(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -182,9 +173,7 @@ class MonteCarlo(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -198,6 +187,8 @@ class MonteCarlo(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MonteCarlo"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -250,7 +241,6 @@ class MonteCarlo(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class MonteCarloAttributes(AssetAttributes):
     """MonteCarlo-specific attributes for nested API format."""
 
@@ -262,7 +252,6 @@ class MonteCarloAttributes(AssetAttributes):
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
-
 
 class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     """MonteCarlo-specific relationship attributes for nested API format."""
@@ -291,9 +280,7 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -302,9 +289,7 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -331,9 +316,7 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -345,9 +328,7 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -359,19 +340,13 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class MonteCarloNested(AssetNested):
     """MonteCarlo in nested API format for high-performance serialization."""
 
     attributes: Union[MonteCarloAttributes, UnsetType] = UNSET
     relationship_attributes: Union[MonteCarloRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        MonteCarloRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        MonteCarloRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[MonteCarloRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[MonteCarloRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -409,14 +384,12 @@ _MONTE_CARLO_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_monte_carlo_attrs(attrs: MonteCarloAttributes, obj: MonteCarlo) -> None:
     """Populate MonteCarlo-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.mc_labels = obj.mc_labels
     attrs.mc_asset_qualified_names = obj.mc_asset_qualified_names
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
-
 
 def _extract_monte_carlo_attrs(attrs: MonteCarloAttributes) -> dict:
     """Extract all MonteCarlo attributes from the attrs struct into a flat dict."""
@@ -425,7 +398,6 @@ def _extract_monte_carlo_attrs(attrs: MonteCarloAttributes) -> dict:
     result["mc_asset_qualified_names"] = attrs.mc_asset_qualified_names
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -466,19 +438,16 @@ def _monte_carlo_to_nested(monte_carlo: MonteCarlo) -> MonteCarloNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _monte_carlo_from_nested(nested: MonteCarloNested) -> MonteCarlo:
     """Convert nested format to flat MonteCarlo."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else MonteCarloAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else MonteCarloAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MONTE_CARLO_REL_FIELDS,
-        MonteCarloRelationshipAttributes,
+        MonteCarloRelationshipAttributes
     )
     return MonteCarlo(
         guid=nested.guid,
@@ -505,7 +474,6 @@ def _monte_carlo_from_nested(nested: MonteCarloNested) -> MonteCarlo:
         **merged_rels,
     )
 
-
 def _monte_carlo_to_nested_bytes(monte_carlo: MonteCarlo, serde: Serde) -> bytes:
     """Convert flat MonteCarlo to nested JSON bytes."""
     return serde.encode(_monte_carlo_to_nested(monte_carlo))
@@ -515,7 +483,6 @@ def _monte_carlo_from_nested_bytes(data: bytes, serde: Serde) -> MonteCarlo:
     """Convert nested JSON bytes to flat MonteCarlo."""
     nested = serde.decode(data, MonteCarloNested)
     return _monte_carlo_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -527,12 +494,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 MonteCarlo.MC_LABELS = KeywordField("mcLabels", "mcLabels")
-MonteCarlo.MC_ASSET_QUALIFIED_NAMES = KeywordField(
-    "mcAssetQualifiedNames", "mcAssetQualifiedNames"
-)
-MonteCarlo.DQ_IS_PART_OF_CONTRACT = BooleanField(
-    "dqIsPartOfContract", "dqIsPartOfContract"
-)
+MonteCarlo.MC_ASSET_QUALIFIED_NAMES = KeywordField("mcAssetQualifiedNames", "mcAssetQualifiedNames")
+MonteCarlo.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
 MonteCarlo.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MonteCarlo.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MonteCarlo.ANOMALO_CHECKS = RelationField("anomaloChecks")

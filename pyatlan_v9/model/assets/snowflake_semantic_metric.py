@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,12 +35,7 @@ from .asset import (
 from .asset_related import RelatedAsset
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -56,15 +44,18 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SnowflakeSemanticMetric(Asset):
@@ -213,9 +204,7 @@ class SnowflakeSemanticMetric(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -224,9 +213,7 @@ class SnowflakeSemanticMetric(Asset):
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
-    metric_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="metricSQL"
-    )
+    metric_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="metricSQL")
     """SQL query used to compute the metric."""
 
     metric_filters: Union[str, None, UnsetType] = UNSET
@@ -262,9 +249,7 @@ class SnowflakeSemanticMetric(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
@@ -282,9 +267,7 @@ class SnowflakeSemanticMetric(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -299,9 +282,7 @@ class SnowflakeSemanticMetric(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -331,9 +312,7 @@ class SnowflakeSemanticMetric(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -345,19 +324,13 @@ class SnowflakeSemanticMetric(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_table: Union[
-        RelatedSnowflakeSemanticLogicalTable, None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_table: Union[RelatedSnowflakeSemanticLogicalTable, None, UnsetType] = UNSET
     """Logical table containing the metric."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -379,6 +352,7 @@ class SnowflakeSemanticMetric(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -409,9 +383,7 @@ class SnowflakeSemanticMetric(Asset):
         return _snowflake_semantic_metric_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SnowflakeSemanticMetric:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SnowflakeSemanticMetric:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -432,7 +404,6 @@ class SnowflakeSemanticMetric(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class SnowflakeSemanticMetricAttributes(AssetAttributes):
     """SnowflakeSemanticMetric-specific attributes for nested API format."""
@@ -506,9 +477,7 @@ class SnowflakeSemanticMetricAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -517,9 +486,7 @@ class SnowflakeSemanticMetricAttributes(AssetAttributes):
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
-    metric_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="metricSQL"
-    )
+    metric_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="metricSQL")
     """SQL query used to compute the metric."""
 
     metric_filters: Union[str, None, UnsetType] = UNSET
@@ -530,7 +497,6 @@ class SnowflakeSemanticMetricAttributes(AssetAttributes):
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
-
 
 class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes):
     """SnowflakeSemanticMetric-specific relationship attributes for nested API format."""
@@ -559,9 +525,7 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
@@ -579,9 +543,7 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -596,9 +558,7 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -628,9 +588,7 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -642,19 +600,13 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_table: Union[
-        RelatedSnowflakeSemanticLogicalTable, None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_table: Union[RelatedSnowflakeSemanticLogicalTable, None, UnsetType] = UNSET
     """Logical table containing the metric."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -666,21 +618,13 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SnowflakeSemanticMetricNested(AssetNested):
     """SnowflakeSemanticMetric in nested API format for high-performance serialization."""
 
     attributes: Union[SnowflakeSemanticMetricAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        SnowflakeSemanticMetricRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        SnowflakeSemanticMetricRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SnowflakeSemanticMetricRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SnowflakeSemanticMetricRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SnowflakeSemanticMetricRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SnowflakeSemanticMetricRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -729,29 +673,16 @@ _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_snowflake_semantic_metric_attrs(
-    attrs: SnowflakeSemanticMetricAttributes, obj: SnowflakeSemanticMetric
-) -> None:
+def _populate_snowflake_semantic_metric_attrs(attrs: SnowflakeSemanticMetricAttributes, obj: SnowflakeSemanticMetric) -> None:
     """Populate SnowflakeSemanticMetric-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.snowflake_semantic_view_qualified_name = (
-        obj.snowflake_semantic_view_qualified_name
-    )
+    attrs.snowflake_semantic_view_qualified_name = obj.snowflake_semantic_view_qualified_name
     attrs.snowflake_semantic_view_name = obj.snowflake_semantic_view_name
-    attrs.snowflake_semantic_table_qualified_name = (
-        obj.snowflake_semantic_table_qualified_name
-    )
+    attrs.snowflake_semantic_table_qualified_name = obj.snowflake_semantic_table_qualified_name
     attrs.snowflake_semantic_table_name = obj.snowflake_semantic_table_name
-    attrs.snowflake_metric_additive_dimensions = (
-        obj.snowflake_metric_additive_dimensions
-    )
-    attrs.snowflake_metric_non_additive_dimensions = (
-        obj.snowflake_metric_non_additive_dimensions
-    )
-    attrs.snowflake_metric_using_relationships = (
-        obj.snowflake_metric_using_relationships
-    )
+    attrs.snowflake_metric_additive_dimensions = obj.snowflake_metric_additive_dimensions
+    attrs.snowflake_metric_non_additive_dimensions = obj.snowflake_metric_non_additive_dimensions
+    attrs.snowflake_metric_using_relationships = obj.snowflake_metric_using_relationships
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -776,29 +707,16 @@ def _populate_snowflake_semantic_metric_attrs(
     attrs.metric_time_grains = obj.metric_time_grains
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
 
-
-def _extract_snowflake_semantic_metric_attrs(
-    attrs: SnowflakeSemanticMetricAttributes,
-) -> dict:
+def _extract_snowflake_semantic_metric_attrs(attrs: SnowflakeSemanticMetricAttributes) -> dict:
     """Extract all SnowflakeSemanticMetric attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["snowflake_semantic_view_qualified_name"] = (
-        attrs.snowflake_semantic_view_qualified_name
-    )
+    result["snowflake_semantic_view_qualified_name"] = attrs.snowflake_semantic_view_qualified_name
     result["snowflake_semantic_view_name"] = attrs.snowflake_semantic_view_name
-    result["snowflake_semantic_table_qualified_name"] = (
-        attrs.snowflake_semantic_table_qualified_name
-    )
+    result["snowflake_semantic_table_qualified_name"] = attrs.snowflake_semantic_table_qualified_name
     result["snowflake_semantic_table_name"] = attrs.snowflake_semantic_table_name
-    result["snowflake_metric_additive_dimensions"] = (
-        attrs.snowflake_metric_additive_dimensions
-    )
-    result["snowflake_metric_non_additive_dimensions"] = (
-        attrs.snowflake_metric_non_additive_dimensions
-    )
-    result["snowflake_metric_using_relationships"] = (
-        attrs.snowflake_metric_using_relationships
-    )
+    result["snowflake_metric_additive_dimensions"] = attrs.snowflake_metric_additive_dimensions
+    result["snowflake_metric_non_additive_dimensions"] = attrs.snowflake_metric_non_additive_dimensions
+    result["snowflake_metric_using_relationships"] = attrs.snowflake_metric_using_relationships
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -815,9 +733,7 @@ def _extract_snowflake_semantic_metric_attrs(
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["metric_type"] = attrs.metric_type
     result["metric_sql"] = attrs.metric_sql
@@ -826,23 +742,18 @@ def _extract_snowflake_semantic_metric_attrs(
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _snowflake_semantic_metric_to_nested(
-    snowflake_semantic_metric: SnowflakeSemanticMetric,
-) -> SnowflakeSemanticMetricNested:
+def _snowflake_semantic_metric_to_nested(snowflake_semantic_metric: SnowflakeSemanticMetric) -> SnowflakeSemanticMetricNested:
     """Convert flat SnowflakeSemanticMetric to nested format."""
     attrs = SnowflakeSemanticMetricAttributes()
     _populate_snowflake_semantic_metric_attrs(attrs, snowflake_semantic_metric)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        snowflake_semantic_metric,
-        _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS,
-        SnowflakeSemanticMetricRelationshipAttributes,
+        snowflake_semantic_metric, _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS, SnowflakeSemanticMetricRelationshipAttributes
     )
     return SnowflakeSemanticMetricNested(
         guid=snowflake_semantic_metric.guid,
@@ -870,23 +781,16 @@ def _snowflake_semantic_metric_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _snowflake_semantic_metric_from_nested(
-    nested: SnowflakeSemanticMetricNested,
-) -> SnowflakeSemanticMetric:
+def _snowflake_semantic_metric_from_nested(nested: SnowflakeSemanticMetricNested) -> SnowflakeSemanticMetric:
     """Convert nested format to flat SnowflakeSemanticMetric."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SnowflakeSemanticMetricAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SnowflakeSemanticMetricAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS,
-        SnowflakeSemanticMetricRelationshipAttributes,
+        SnowflakeSemanticMetricRelationshipAttributes
     )
     return SnowflakeSemanticMetric(
         guid=nested.guid,
@@ -913,21 +817,15 @@ def _snowflake_semantic_metric_from_nested(
         **merged_rels,
     )
 
-
-def _snowflake_semantic_metric_to_nested_bytes(
-    snowflake_semantic_metric: SnowflakeSemanticMetric, serde: Serde
-) -> bytes:
+def _snowflake_semantic_metric_to_nested_bytes(snowflake_semantic_metric: SnowflakeSemanticMetric, serde: Serde) -> bytes:
     """Convert flat SnowflakeSemanticMetric to nested JSON bytes."""
     return serde.encode(_snowflake_semantic_metric_to_nested(snowflake_semantic_metric))
 
 
-def _snowflake_semantic_metric_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> SnowflakeSemanticMetric:
+def _snowflake_semantic_metric_from_nested_bytes(data: bytes, serde: Serde) -> SnowflakeSemanticMetric:
     """Convert nested JSON bytes to flat SnowflakeSemanticMetric."""
     nested = serde.decode(data, SnowflakeSemanticMetricNested)
     return _snowflake_semantic_metric_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -939,103 +837,51 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_VIEW_QUALIFIED_NAME = KeywordField(
-    "snowflakeSemanticViewQualifiedName", "snowflakeSemanticViewQualifiedName"
-)
-SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_VIEW_NAME = KeywordField(
-    "snowflakeSemanticViewName", "snowflakeSemanticViewName"
-)
-SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_TABLE_QUALIFIED_NAME = KeywordField(
-    "snowflakeSemanticTableQualifiedName", "snowflakeSemanticTableQualifiedName"
-)
-SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_TABLE_NAME = KeywordField(
-    "snowflakeSemanticTableName", "snowflakeSemanticTableName"
-)
-SnowflakeSemanticMetric.SNOWFLAKE_METRIC_ADDITIVE_DIMENSIONS = KeywordField(
-    "snowflakeMetricAdditiveDimensions", "snowflakeMetricAdditiveDimensions"
-)
-SnowflakeSemanticMetric.SNOWFLAKE_METRIC_NON_ADDITIVE_DIMENSIONS = KeywordField(
-    "snowflakeMetricNonAdditiveDimensions", "snowflakeMetricNonAdditiveDimensions"
-)
-SnowflakeSemanticMetric.SNOWFLAKE_METRIC_USING_RELATIONSHIPS = KeywordField(
-    "snowflakeMetricUsingRelationships", "snowflakeMetricUsingRelationships"
-)
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_VIEW_QUALIFIED_NAME = KeywordField("snowflakeSemanticViewQualifiedName", "snowflakeSemanticViewQualifiedName")
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_VIEW_NAME = KeywordField("snowflakeSemanticViewName", "snowflakeSemanticViewName")
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_TABLE_QUALIFIED_NAME = KeywordField("snowflakeSemanticTableQualifiedName", "snowflakeSemanticTableQualifiedName")
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_TABLE_NAME = KeywordField("snowflakeSemanticTableName", "snowflakeSemanticTableName")
+SnowflakeSemanticMetric.SNOWFLAKE_METRIC_ADDITIVE_DIMENSIONS = KeywordField("snowflakeMetricAdditiveDimensions", "snowflakeMetricAdditiveDimensions")
+SnowflakeSemanticMetric.SNOWFLAKE_METRIC_NON_ADDITIVE_DIMENSIONS = KeywordField("snowflakeMetricNonAdditiveDimensions", "snowflakeMetricNonAdditiveDimensions")
+SnowflakeSemanticMetric.SNOWFLAKE_METRIC_USING_RELATIONSHIPS = KeywordField("snowflakeMetricUsingRelationships", "snowflakeMetricUsingRelationships")
 SnowflakeSemanticMetric.QUERY_COUNT = NumericField("queryCount", "queryCount")
-SnowflakeSemanticMetric.QUERY_USER_COUNT = NumericField(
-    "queryUserCount", "queryUserCount"
-)
+SnowflakeSemanticMetric.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 SnowflakeSemanticMetric.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-SnowflakeSemanticMetric.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+SnowflakeSemanticMetric.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 SnowflakeSemanticMetric.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-SnowflakeSemanticMetric.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+SnowflakeSemanticMetric.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 SnowflakeSemanticMetric.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-SnowflakeSemanticMetric.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+SnowflakeSemanticMetric.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 SnowflakeSemanticMetric.TABLE_NAME = KeywordField("tableName", "tableName")
-SnowflakeSemanticMetric.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+SnowflakeSemanticMetric.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 SnowflakeSemanticMetric.VIEW_NAME = KeywordField("viewName", "viewName")
-SnowflakeSemanticMetric.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-SnowflakeSemanticMetric.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-SnowflakeSemanticMetric.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+SnowflakeSemanticMetric.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+SnowflakeSemanticMetric.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+SnowflakeSemanticMetric.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 SnowflakeSemanticMetric.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-SnowflakeSemanticMetric.LAST_PROFILED_AT = NumericField(
-    "lastProfiledAt", "lastProfiledAt"
-)
-SnowflakeSemanticMetric.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+SnowflakeSemanticMetric.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
+SnowflakeSemanticMetric.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 SnowflakeSemanticMetric.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 SnowflakeSemanticMetric.METRIC_TYPE = KeywordField("metricType", "metricType")
 SnowflakeSemanticMetric.METRIC_SQL = KeywordField("metricSQL", "metricSQL")
 SnowflakeSemanticMetric.METRIC_FILTERS = KeywordField("metricFilters", "metricFilters")
-SnowflakeSemanticMetric.METRIC_TIME_GRAINS = KeywordField(
-    "metricTimeGrains", "metricTimeGrains"
-)
-SnowflakeSemanticMetric.DQ_IS_PART_OF_CONTRACT = BooleanField(
-    "dqIsPartOfContract", "dqIsPartOfContract"
-)
+SnowflakeSemanticMetric.METRIC_TIME_GRAINS = KeywordField("metricTimeGrains", "metricTimeGrains")
+SnowflakeSemanticMetric.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
 SnowflakeSemanticMetric.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SnowflakeSemanticMetric.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+SnowflakeSemanticMetric.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SnowflakeSemanticMetric.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SnowflakeSemanticMetric.APPLICATION = RelationField("application")
 SnowflakeSemanticMetric.APPLICATION_FIELD = RelationField("applicationField")
-SnowflakeSemanticMetric.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-SnowflakeSemanticMetric.INPUT_PORT_DATA_PRODUCTS = RelationField(
-    "inputPortDataProducts"
-)
-SnowflakeSemanticMetric.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-SnowflakeSemanticMetric.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SnowflakeSemanticMetric.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+SnowflakeSemanticMetric.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+SnowflakeSemanticMetric.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+SnowflakeSemanticMetric.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SnowflakeSemanticMetric.ASSETS = RelationField("assets")
 SnowflakeSemanticMetric.METRICS = RelationField("metrics")
 SnowflakeSemanticMetric.METRIC_TIMESTAMP_COLUMN = RelationField("metricTimestampColumn")
-SnowflakeSemanticMetric.METRIC_DIMENSION_COLUMNS = RelationField(
-    "metricDimensionColumns"
-)
+SnowflakeSemanticMetric.METRIC_DIMENSION_COLUMNS = RelationField("metricDimensionColumns")
 SnowflakeSemanticMetric.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SnowflakeSemanticMetric.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
+SnowflakeSemanticMetric.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 SnowflakeSemanticMetric.DBT_MODELS = RelationField("dbtModels")
 SnowflakeSemanticMetric.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 SnowflakeSemanticMetric.DBT_TESTS = RelationField("dbtTests")
@@ -1049,24 +895,14 @@ SnowflakeSemanticMetric.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields
 SnowflakeSemanticMetric.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 SnowflakeSemanticMetric.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SnowflakeSemanticMetric.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-SnowflakeSemanticMetric.USER_DEF_RELATIONSHIP_TO = RelationField(
-    "userDefRelationshipTo"
-)
-SnowflakeSemanticMetric.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+SnowflakeSemanticMetric.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+SnowflakeSemanticMetric.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 SnowflakeSemanticMetric.FILES = RelationField("files")
 SnowflakeSemanticMetric.LINKS = RelationField("links")
 SnowflakeSemanticMetric.README = RelationField("readme")
-SnowflakeSemanticMetric.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
-SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_LOGICAL_TABLE = RelationField(
-    "snowflakeSemanticLogicalTable"
-)
-SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+SnowflakeSemanticMetric.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_LOGICAL_TABLE = RelationField("snowflakeSemanticLogicalTable")
+SnowflakeSemanticMetric.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 SnowflakeSemanticMetric.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakeSemanticMetric.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SnowflakeSemanticMetric.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

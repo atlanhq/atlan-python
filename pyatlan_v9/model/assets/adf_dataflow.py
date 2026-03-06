@@ -14,23 +14,11 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .adf_related import (
-    RelatedAdfActivity,
-    RelatedAdfDataset,
-    RelatedAdfLinkedservice,
-    RelatedAdfPipeline,
-)
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -55,11 +43,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .adf_related import RelatedAdfActivity, RelatedAdfDataset, RelatedAdfLinkedservice, RelatedAdfPipeline
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AdfDataflow(Asset):
@@ -158,9 +150,7 @@ class AdfDataflow(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -169,9 +159,7 @@ class AdfDataflow(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -198,9 +186,7 @@ class AdfDataflow(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -212,9 +198,7 @@ class AdfDataflow(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -228,6 +212,8 @@ class AdfDataflow(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AdfDataflow"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -280,7 +266,6 @@ class AdfDataflow(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AdfDataflowAttributes(AssetAttributes):
     """AdfDataflow-specific attributes for nested API format."""
 
@@ -298,7 +283,6 @@ class AdfDataflowAttributes(AssetAttributes):
 
     adf_asset_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path in which this ADF asset exists."""
-
 
 class AdfDataflowRelationshipAttributes(AssetRelationshipAttributes):
     """AdfDataflow-specific relationship attributes for nested API format."""
@@ -339,9 +323,7 @@ class AdfDataflowRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -350,9 +332,7 @@ class AdfDataflowRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -379,9 +359,7 @@ class AdfDataflowRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -393,9 +371,7 @@ class AdfDataflowRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -407,19 +383,13 @@ class AdfDataflowRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class AdfDataflowNested(AssetNested):
     """AdfDataflow in nested API format for high-performance serialization."""
 
     attributes: Union[AdfDataflowAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AdfDataflowRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        AdfDataflowRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AdfDataflowRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[AdfDataflowRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AdfDataflowRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -461,10 +431,7 @@ _ADF_DATAFLOW_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_adf_dataflow_attrs(
-    attrs: AdfDataflowAttributes, obj: AdfDataflow
-) -> None:
+def _populate_adf_dataflow_attrs(attrs: AdfDataflowAttributes, obj: AdfDataflow) -> None:
     """Populate AdfDataflow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.adf_dataflow_sources = obj.adf_dataflow_sources
@@ -472,7 +439,6 @@ def _populate_adf_dataflow_attrs(
     attrs.adf_dataflow_script = obj.adf_dataflow_script
     attrs.adf_factory_name = obj.adf_factory_name
     attrs.adf_asset_folder_path = obj.adf_asset_folder_path
-
 
 def _extract_adf_dataflow_attrs(attrs: AdfDataflowAttributes) -> dict:
     """Extract all AdfDataflow attributes from the attrs struct into a flat dict."""
@@ -483,7 +449,6 @@ def _extract_adf_dataflow_attrs(attrs: AdfDataflowAttributes) -> dict:
     result["adf_factory_name"] = attrs.adf_factory_name
     result["adf_asset_folder_path"] = attrs.adf_asset_folder_path
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -524,19 +489,16 @@ def _adf_dataflow_to_nested(adf_dataflow: AdfDataflow) -> AdfDataflowNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _adf_dataflow_from_nested(nested: AdfDataflowNested) -> AdfDataflow:
     """Convert nested format to flat AdfDataflow."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else AdfDataflowAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AdfDataflowAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADF_DATAFLOW_REL_FIELDS,
-        AdfDataflowRelationshipAttributes,
+        AdfDataflowRelationshipAttributes
     )
     return AdfDataflow(
         guid=nested.guid,
@@ -563,7 +525,6 @@ def _adf_dataflow_from_nested(nested: AdfDataflowNested) -> AdfDataflow:
         **merged_rels,
     )
 
-
 def _adf_dataflow_to_nested_bytes(adf_dataflow: AdfDataflow, serde: Serde) -> bytes:
     """Convert flat AdfDataflow to nested JSON bytes."""
     return serde.encode(_adf_dataflow_to_nested(adf_dataflow))
@@ -574,21 +535,19 @@ def _adf_dataflow_from_nested_bytes(data: bytes, serde: Serde) -> AdfDataflow:
     nested = serde.decode(data, AdfDataflowNested)
     return _adf_dataflow_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
-
-AdfDataflow.ADF_DATAFLOW_SOURCES = KeywordField(
-    "adfDataflowSources", "adfDataflowSources"
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
 )
+
+AdfDataflow.ADF_DATAFLOW_SOURCES = KeywordField("adfDataflowSources", "adfDataflowSources")
 AdfDataflow.ADF_DATAFLOW_SINKS = KeywordField("adfDataflowSinks", "adfDataflowSinks")
 AdfDataflow.ADF_DATAFLOW_SCRIPT = KeywordField("adfDataflowScript", "adfDataflowScript")
 AdfDataflow.ADF_FACTORY_NAME = KeywordField("adfFactoryName", "adfFactoryName")
-AdfDataflow.ADF_ASSET_FOLDER_PATH = KeywordField(
-    "adfAssetFolderPath", "adfAssetFolderPath"
-)
+AdfDataflow.ADF_ASSET_FOLDER_PATH = KeywordField("adfAssetFolderPath", "adfAssetFolderPath")
 AdfDataflow.ADF_ACTIVITIES = RelationField("adfActivities")
 AdfDataflow.ADF_DATASETS = RelationField("adfDatasets")
 AdfDataflow.ADF_LINKEDSERVICES = RelationField("adfLinkedservices")

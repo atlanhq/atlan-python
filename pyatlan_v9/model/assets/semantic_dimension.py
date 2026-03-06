@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -48,14 +42,17 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .semantic_related import RelatedSemanticModel
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .semantic_related import RelatedSemanticModel
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SemanticDimension(Asset):
@@ -147,9 +144,7 @@ class SemanticDimension(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -158,9 +153,7 @@ class SemanticDimension(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -187,9 +180,7 @@ class SemanticDimension(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -201,9 +192,7 @@ class SemanticDimension(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
@@ -225,7 +214,10 @@ class SemanticDimension(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,9 +248,7 @@ class SemanticDimension(Asset):
         return _semantic_dimension_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SemanticDimension:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SemanticDimension:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -279,7 +269,6 @@ class SemanticDimension(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class SemanticDimensionAttributes(AssetAttributes):
     """SemanticDimension-specific attributes for nested API format."""
@@ -304,7 +293,6 @@ class SemanticDimensionAttributes(AssetAttributes):
 
     semantic_labels: Union[List[str], None, UnsetType] = UNSET
     """Labels associated with the semantic field."""
-
 
 class SemanticDimensionRelationshipAttributes(AssetRelationshipAttributes):
     """SemanticDimension-specific relationship attributes for nested API format."""
@@ -333,9 +321,7 @@ class SemanticDimensionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -344,9 +330,7 @@ class SemanticDimensionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -373,9 +357,7 @@ class SemanticDimensionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -387,9 +369,7 @@ class SemanticDimensionRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
@@ -404,21 +384,13 @@ class SemanticDimensionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SemanticDimensionNested(AssetNested):
     """SemanticDimension in nested API format for high-performance serialization."""
 
     attributes: Union[SemanticDimensionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        SemanticDimensionRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        SemanticDimensionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SemanticDimensionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SemanticDimensionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SemanticDimensionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SemanticDimensionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -457,10 +429,7 @@ _SEMANTIC_DIMENSION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_semantic_dimension_attrs(
-    attrs: SemanticDimensionAttributes, obj: SemanticDimension
-) -> None:
+def _populate_semantic_dimension_attrs(attrs: SemanticDimensionAttributes, obj: SemanticDimension) -> None:
     """Populate SemanticDimension-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.semantic_expression = obj.semantic_expression
@@ -470,7 +439,6 @@ def _populate_semantic_dimension_attrs(
     attrs.semantic_access_modifier = obj.semantic_access_modifier
     attrs.semantic_data_type = obj.semantic_data_type
     attrs.semantic_labels = obj.semantic_labels
-
 
 def _extract_semantic_dimension_attrs(attrs: SemanticDimensionAttributes) -> dict:
     """Extract all SemanticDimension attributes from the attrs struct into a flat dict."""
@@ -484,23 +452,18 @@ def _extract_semantic_dimension_attrs(attrs: SemanticDimensionAttributes) -> dic
     result["semantic_labels"] = attrs.semantic_labels
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _semantic_dimension_to_nested(
-    semantic_dimension: SemanticDimension,
-) -> SemanticDimensionNested:
+def _semantic_dimension_to_nested(semantic_dimension: SemanticDimension) -> SemanticDimensionNested:
     """Convert flat SemanticDimension to nested format."""
     attrs = SemanticDimensionAttributes()
     _populate_semantic_dimension_attrs(attrs, semantic_dimension)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        semantic_dimension,
-        _SEMANTIC_DIMENSION_REL_FIELDS,
-        SemanticDimensionRelationshipAttributes,
+        semantic_dimension, _SEMANTIC_DIMENSION_REL_FIELDS, SemanticDimensionRelationshipAttributes
     )
     return SemanticDimensionNested(
         guid=semantic_dimension.guid,
@@ -528,23 +491,16 @@ def _semantic_dimension_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _semantic_dimension_from_nested(
-    nested: SemanticDimensionNested,
-) -> SemanticDimension:
+def _semantic_dimension_from_nested(nested: SemanticDimensionNested) -> SemanticDimension:
     """Convert nested format to flat SemanticDimension."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SemanticDimensionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SemanticDimensionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SEMANTIC_DIMENSION_REL_FIELDS,
-        SemanticDimensionRelationshipAttributes,
+        SemanticDimensionRelationshipAttributes
     )
     return SemanticDimension(
         guid=nested.guid,
@@ -571,21 +527,15 @@ def _semantic_dimension_from_nested(
         **merged_rels,
     )
 
-
-def _semantic_dimension_to_nested_bytes(
-    semantic_dimension: SemanticDimension, serde: Serde
-) -> bytes:
+def _semantic_dimension_to_nested_bytes(semantic_dimension: SemanticDimension, serde: Serde) -> bytes:
     """Convert flat SemanticDimension to nested JSON bytes."""
     return serde.encode(_semantic_dimension_to_nested(semantic_dimension))
 
 
-def _semantic_dimension_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> SemanticDimension:
+def _semantic_dimension_from_nested_bytes(data: bytes, serde: Serde) -> SemanticDimension:
     """Convert nested JSON bytes to flat SemanticDimension."""
     nested = serde.decode(data, SemanticDimensionNested)
     return _semantic_dimension_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -596,22 +546,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-SemanticDimension.SEMANTIC_EXPRESSION = KeywordField(
-    "semanticExpression", "semanticExpression"
-)
+SemanticDimension.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
 SemanticDimension.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
-SemanticDimension.SEMANTIC_SYNONYMS = KeywordField(
-    "semanticSynonyms", "semanticSynonyms"
-)
-SemanticDimension.SEMANTIC_SAMPLE_VALUES = TextField(
-    "semanticSampleValues", "semanticSampleValues"
-)
-SemanticDimension.SEMANTIC_ACCESS_MODIFIER = KeywordField(
-    "semanticAccessModifier", "semanticAccessModifier"
-)
-SemanticDimension.SEMANTIC_DATA_TYPE = KeywordField(
-    "semanticDataType", "semanticDataType"
-)
+SemanticDimension.SEMANTIC_SYNONYMS = KeywordField("semanticSynonyms", "semanticSynonyms")
+SemanticDimension.SEMANTIC_SAMPLE_VALUES = TextField("semanticSampleValues", "semanticSampleValues")
+SemanticDimension.SEMANTIC_ACCESS_MODIFIER = KeywordField("semanticAccessModifier", "semanticAccessModifier")
+SemanticDimension.SEMANTIC_DATA_TYPE = KeywordField("semanticDataType", "semanticDataType")
 SemanticDimension.SEMANTIC_LABELS = KeywordField("semanticLabels", "semanticLabels")
 SemanticDimension.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SemanticDimension.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -621,9 +561,7 @@ SemanticDimension.APPLICATION_FIELD = RelationField("applicationField")
 SemanticDimension.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SemanticDimension.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SemanticDimension.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SemanticDimension.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SemanticDimension.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SemanticDimension.METRICS = RelationField("metrics")
 SemanticDimension.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SemanticDimension.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

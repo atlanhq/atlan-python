@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -49,11 +43,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class ObjectStore(Asset):
@@ -116,9 +112,7 @@ class ObjectStore(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -127,9 +121,7 @@ class ObjectStore(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -156,9 +148,7 @@ class ObjectStore(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -170,9 +160,7 @@ class ObjectStore(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -186,6 +174,8 @@ class ObjectStore(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ObjectStore"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -238,12 +228,10 @@ class ObjectStore(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class ObjectStoreAttributes(AssetAttributes):
     """ObjectStore-specific attributes for nested API format."""
 
     pass
-
 
 class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     """ObjectStore-specific relationship attributes for nested API format."""
@@ -272,9 +260,7 @@ class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -283,9 +269,7 @@ class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -312,9 +296,7 @@ class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -326,9 +308,7 @@ class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -340,19 +320,13 @@ class ObjectStoreRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class ObjectStoreNested(AssetNested):
     """ObjectStore in nested API format for high-performance serialization."""
 
     attributes: Union[ObjectStoreAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ObjectStoreRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        ObjectStoreRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        ObjectStoreRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[ObjectStoreRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[ObjectStoreRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -390,18 +364,13 @@ _OBJECT_STORE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_object_store_attrs(
-    attrs: ObjectStoreAttributes, obj: ObjectStore
-) -> None:
+def _populate_object_store_attrs(attrs: ObjectStoreAttributes, obj: ObjectStore) -> None:
     """Populate ObjectStore-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-
 
 def _extract_object_store_attrs(attrs: ObjectStoreAttributes) -> dict:
     """Extract all ObjectStore attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -442,19 +411,16 @@ def _object_store_to_nested(object_store: ObjectStore) -> ObjectStoreNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _object_store_from_nested(nested: ObjectStoreNested) -> ObjectStore:
     """Convert nested format to flat ObjectStore."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else ObjectStoreAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else ObjectStoreAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _OBJECT_STORE_REL_FIELDS,
-        ObjectStoreRelationshipAttributes,
+        ObjectStoreRelationshipAttributes
     )
     return ObjectStore(
         guid=nested.guid,
@@ -481,7 +447,6 @@ def _object_store_from_nested(nested: ObjectStoreNested) -> ObjectStore:
         **merged_rels,
     )
 
-
 def _object_store_to_nested_bytes(object_store: ObjectStore, serde: Serde) -> bytes:
     """Convert flat ObjectStore to nested JSON bytes."""
     return serde.encode(_object_store_to_nested(object_store))
@@ -491,7 +456,6 @@ def _object_store_from_nested_bytes(data: bytes, serde: Serde) -> ObjectStore:
     """Convert nested JSON bytes to flat ObjectStore."""
     nested = serde.decode(data, ObjectStoreNested)
     return _object_store_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

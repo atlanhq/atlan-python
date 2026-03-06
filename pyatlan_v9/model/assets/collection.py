@@ -14,19 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
-from uuid import uuid4
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan.errors import AtlanError, ErrorCode
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -43,17 +34,20 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
-from .namespace_related import RelatedFolder
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .sql_related import RelatedQuery
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .namespace_related import RelatedFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Collection(Asset):
@@ -113,9 +107,7 @@ class Collection(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -133,9 +125,7 @@ class Collection(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -150,9 +140,7 @@ class Collection(Asset):
     children_queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -161,24 +149,7 @@ class Collection(Asset):
     def __post_init__(self) -> None:
         self.type_name = "Collection"
 
-    @classmethod
-    @init_guid
-    def creator(cls, *, client: "AtlanClient", name: str) -> "Collection":
-        validate_required_fields(["client", "name"], [client, name])
-        return cls(
-            name=name,
-            qualified_name=cls._generate_qualified_name(client),
-        )
 
-    @classmethod
-    def _generate_qualified_name(cls, client: "AtlanClient") -> str:
-        try:
-            username = client.user.get_current().username
-            return f"default/collection/{username}/{uuid4()}"
-        except AtlanError as e:
-            raise ErrorCode.UNABLE_TO_GENERATE_QN.exception_with_parameters(
-                cls.__name__, e
-            ) from e
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -231,7 +202,6 @@ class Collection(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class CollectionAttributes(AssetAttributes):
     """Collection-specific attributes for nested API format."""
 
@@ -240,7 +210,6 @@ class CollectionAttributes(AssetAttributes):
 
     icon_type: Union[str, None, UnsetType] = UNSET
     """Type of image used to represent the collection (for example, an emoji)."""
-
 
 class CollectionRelationshipAttributes(AssetRelationshipAttributes):
     """Collection-specific relationship attributes for nested API format."""
@@ -266,9 +235,7 @@ class CollectionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -286,9 +253,7 @@ class CollectionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -303,27 +268,19 @@ class CollectionRelationshipAttributes(AssetRelationshipAttributes):
     children_queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
-
 
 class CollectionNested(AssetNested):
     """Collection in nested API format for high-performance serialization."""
 
     attributes: Union[CollectionAttributes, UnsetType] = UNSET
     relationship_attributes: Union[CollectionRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        CollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        CollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[CollectionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[CollectionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -353,13 +310,11 @@ _COLLECTION_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
 def _populate_collection_attrs(attrs: CollectionAttributes, obj: Collection) -> None:
     """Populate Collection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.icon = obj.icon
     attrs.icon_type = obj.icon_type
-
 
 def _extract_collection_attrs(attrs: CollectionAttributes) -> dict:
     """Extract all Collection attributes from the attrs struct into a flat dict."""
@@ -367,7 +322,6 @@ def _extract_collection_attrs(attrs: CollectionAttributes) -> dict:
     result["icon"] = attrs.icon
     result["icon_type"] = attrs.icon_type
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -408,19 +362,16 @@ def _collection_to_nested(collection: Collection) -> CollectionNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _collection_from_nested(nested: CollectionNested) -> Collection:
     """Convert nested format to flat Collection."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else CollectionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else CollectionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COLLECTION_REL_FIELDS,
-        CollectionRelationshipAttributes,
+        CollectionRelationshipAttributes
     )
     return Collection(
         guid=nested.guid,
@@ -447,7 +398,6 @@ def _collection_from_nested(nested: CollectionNested) -> Collection:
         **merged_rels,
     )
 
-
 def _collection_to_nested_bytes(collection: Collection, serde: Serde) -> bytes:
     """Convert flat Collection to nested JSON bytes."""
     return serde.encode(_collection_to_nested(collection))
@@ -458,11 +408,13 @@ def _collection_from_nested_bytes(data: bytes, serde: Serde) -> Collection:
     nested = serde.decode(data, CollectionNested)
     return _collection_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
 Collection.ICON = KeywordField("icon", "icon")
 Collection.ICON_TYPE = KeywordField("iconType", "iconType")

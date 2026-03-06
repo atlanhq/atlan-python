@@ -15,19 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Optional, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan.model.enums import AtlanConnectorType
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -49,11 +40,13 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Connection(Asset):
@@ -171,34 +164,22 @@ class Connection(Asset):
     default_credential_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier (GUID) for the default credentials to use for this connection."""
 
-    connection_dq_credential_guid: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionDQCredentialGuid"
-    )
+    connection_dq_credential_guid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQCredentialGuid")
     """Unique identifier (GUID) for the data quality credentials to use for this connection."""
 
-    connection_is_dq_enabled: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionIsDQEnabled"
-    )
+    connection_is_dq_enabled: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="connectionIsDQEnabled")
     """Whether data quality is enabled for this connection (true) or not (false)."""
 
-    connection_dq_environment_setup_status: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionDQEnvironmentSetupStatus"
-    )
+    connection_dq_environment_setup_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatus")
     """Status of the data quality environment setup for this connection."""
 
-    connection_dq_environment_setup_error_message: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupErrorMessage")
-    )
+    connection_dq_environment_setup_error_message: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupErrorMessage")
     """Error message if data quality environment setup failed for this connection."""
 
-    connection_dq_environment_setup_status_updated_at: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatusUpdatedAt")
-    )
+    connection_dq_environment_setup_status_updated_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatusUpdatedAt")
     """Timestamp when the data quality environment setup status was last updated."""
 
-    connection_dq_environment_source_database_name: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="connectionDQEnvironmentSourceDatabaseName")
-    )
+    connection_dq_environment_source_database_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSourceDatabaseName")
     """Name of the database in the source environment for data quality."""
 
     connector_icon: Union[str, None, UnsetType] = UNSET
@@ -222,17 +203,13 @@ class Connection(Asset):
     connection_dbt_environments: Union[List[str], None, UnsetType] = UNSET
     """"""
 
-    connection_sso_credential_guid: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionSSOCredentialGuid"
-    )
+    connection_sso_credential_guid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionSSOCredentialGuid")
     """Unique identifier (GUID) for the SSO credentials to use for this connection."""
 
     use_object_storage: Union[bool, None, UnsetType] = UNSET
     """Whether to upload to S3, GCP, or another storage location (true) or not (false)."""
 
-    connection_insights_via_oauth_cookie: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionInsightsViaOAuthCookie"
-    )
+    connection_insights_via_oauth_cookie: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="connectionInsightsViaOAuthCookie")
     """Whether cookie based OAuth is enabled in Insights for this connection (true) or not (false)."""
 
     object_storage_upload_threshold: Union[int, None, UnsetType] = UNSET
@@ -265,9 +242,7 @@ class Connection(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -279,22 +254,16 @@ class Connection(Asset):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    input_to_connection_processes: Union[
-        List[RelatedConnectionProcess], None, UnsetType
-    ] = UNSET
+    input_to_connection_processes: Union[List[RelatedConnectionProcess], None, UnsetType] = UNSET
     """Connection process to which this asset provides input."""
 
-    output_from_connection_processes: Union[
-        List[RelatedConnectionProcess], None, UnsetType
-    ] = UNSET
+    output_from_connection_processes: Union[List[RelatedConnectionProcess], None, UnsetType] = UNSET
     """Connection processs from which this asset is produced as output."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -306,9 +275,7 @@ class Connection(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -321,157 +288,10 @@ class Connection(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^default/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^default/[^/]+/[^/]+$"
+    )
 
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        client: AtlanClient,
-        name: str,
-        connector_type: AtlanConnectorType,
-        admin_users: Optional[List[str]] = None,
-        admin_groups: Optional[List[str]] = None,
-        admin_roles: Optional[List[str]] = None,
-        host: Optional[str] = None,
-        port: Optional[int] = None,
-    ) -> "Connection":
-        """
-        Create a new Connection asset.
-
-        Args:
-            client: AtlanClient for cache validation
-            name: Simple name of the connection
-            connector_type: Type of connector for the connection
-            admin_users: List of admin usernames
-            admin_groups: List of admin group names
-            admin_roles: List of admin role GUIDs
-            host: Optional hostname for the connection
-            port: Optional port number for the connection
-
-        Returns:
-            New Connection instance with all fields populated
-
-        Raises:
-            ValueError: If required parameters are missing or invalid
-        """
-        validate_required_fields(
-            ["client", "name", "connector_type"], [client, name, connector_type]
-        )
-        if not admin_users and not admin_groups and not admin_roles:
-            raise ValueError(
-                "One of admin_user, admin_groups or admin_roles is required"
-            )
-        client.user_cache.validate_names(names=admin_users or [])
-        client.role_cache.validate_idstrs(idstrs=admin_roles or [])
-        client.group_cache.validate_aliases(aliases=admin_groups or [])
-
-        kwargs: dict = dict(
-            name=name,
-            qualified_name=connector_type.to_qualified_name(),
-            connector_name=connector_type.value,
-            category=connector_type.category.value,
-            admin_users=set() if admin_users is None else set(admin_users),
-            admin_groups=set() if admin_groups is None else set(admin_groups),
-            admin_roles=set() if admin_roles is None else set(admin_roles),
-        )
-        if host is not None:
-            kwargs["host"] = host
-        if port is not None:
-            kwargs["port"] = port
-        return cls(**kwargs)
-
-    @classmethod
-    @init_guid
-    async def creator_async(
-        cls,
-        *,
-        client: Any,
-        name: str,
-        connector_type: AtlanConnectorType,
-        admin_users: Optional[List[str]] = None,
-        admin_groups: Optional[List[str]] = None,
-        admin_roles: Optional[List[str]] = None,
-        host: Optional[str] = None,
-        port: Optional[int] = None,
-    ) -> "Connection":
-        """
-        Async version of creator() for creating a new Connection asset.
-
-        :param client: async Atlan client for cache validation
-        :param name: name for the connection
-        :param connector_type: type of connector
-        :param admin_users: list of admin usernames
-        :param admin_groups: list of admin group names
-        :param admin_roles: list of admin role GUIDs
-        :param host: optional hostname
-        :param port: optional port number
-        :returns: the new connection object
-        :raises ValueError: if required parameters are missing or invalid
-        """
-        validate_required_fields(
-            ["client", "name", "connector_type"], [client, name, connector_type]
-        )
-        if not admin_users and not admin_groups and not admin_roles:
-            raise ValueError(
-                "One of admin_user, admin_groups or admin_roles is required"
-            )
-        await client.user_cache.validate_names(names=admin_users or [])
-        await client.role_cache.validate_idstrs(idstrs=admin_roles or [])
-        await client.group_cache.validate_aliases(aliases=admin_groups or [])
-
-        kwargs: dict = dict(
-            name=name,
-            qualified_name=connector_type.to_qualified_name(),
-            connector_name=connector_type.value,
-            category=connector_type.category.value,
-            admin_users=set() if admin_users is None else set(admin_users),
-            admin_groups=set() if admin_groups is None else set(admin_groups),
-            admin_roles=set() if admin_roles is None else set(admin_roles),
-        )
-        if host is not None:
-            kwargs["host"] = host
-        if port is not None:
-            kwargs["port"] = port
-        return cls(**kwargs)
-
-    @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "Connection":
-        """
-        Create a Connection instance for updating an existing asset.
-
-        Args:
-            qualified_name: Unique name of the connection to update
-            name: Simple name of the connection
-
-        Returns:
-            Connection instance configured for updates
-
-        Raises:
-            ValueError: If required parameters are missing
-        """
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
-
-    def trim_to_required(self) -> "Connection":
-        """
-        Return a Connection with only required fields for reference.
-
-        Returns:
-            Connection instance with only qualified_name and name set
-        """
-        return Connection(qualified_name=self.qualified_name, name=self.name)
-
-    @classmethod
-    def create(cls, **kwargs) -> "Connection":
-        """Backward compatibility alias for creator()."""
-        return cls.creator(**kwargs)
-
-    @classmethod
-    def create_for_modification(cls, **kwargs) -> "Connection":
-        """Backward compatibility alias for updater()."""
-        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -523,7 +343,6 @@ class Connection(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class ConnectionAttributes(AssetAttributes):
     """Connection-specific attributes for nested API format."""
@@ -579,34 +398,22 @@ class ConnectionAttributes(AssetAttributes):
     default_credential_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier (GUID) for the default credentials to use for this connection."""
 
-    connection_dq_credential_guid: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionDQCredentialGuid"
-    )
+    connection_dq_credential_guid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQCredentialGuid")
     """Unique identifier (GUID) for the data quality credentials to use for this connection."""
 
-    connection_is_dq_enabled: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionIsDQEnabled"
-    )
+    connection_is_dq_enabled: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="connectionIsDQEnabled")
     """Whether data quality is enabled for this connection (true) or not (false)."""
 
-    connection_dq_environment_setup_status: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionDQEnvironmentSetupStatus"
-    )
+    connection_dq_environment_setup_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatus")
     """Status of the data quality environment setup for this connection."""
 
-    connection_dq_environment_setup_error_message: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupErrorMessage")
-    )
+    connection_dq_environment_setup_error_message: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupErrorMessage")
     """Error message if data quality environment setup failed for this connection."""
 
-    connection_dq_environment_setup_status_updated_at: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatusUpdatedAt")
-    )
+    connection_dq_environment_setup_status_updated_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatusUpdatedAt")
     """Timestamp when the data quality environment setup status was last updated."""
 
-    connection_dq_environment_source_database_name: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="connectionDQEnvironmentSourceDatabaseName")
-    )
+    connection_dq_environment_source_database_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSourceDatabaseName")
     """Name of the database in the source environment for data quality."""
 
     connector_icon: Union[str, None, UnsetType] = UNSET
@@ -630,17 +437,13 @@ class ConnectionAttributes(AssetAttributes):
     connection_dbt_environments: Union[List[str], None, UnsetType] = UNSET
     """"""
 
-    connection_sso_credential_guid: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionSSOCredentialGuid"
-    )
+    connection_sso_credential_guid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionSSOCredentialGuid")
     """Unique identifier (GUID) for the SSO credentials to use for this connection."""
 
     use_object_storage: Union[bool, None, UnsetType] = UNSET
     """Whether to upload to S3, GCP, or another storage location (true) or not (false)."""
 
-    connection_insights_via_oauth_cookie: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="connectionInsightsViaOAuthCookie"
-    )
+    connection_insights_via_oauth_cookie: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="connectionInsightsViaOAuthCookie")
     """Whether cookie based OAuth is enabled in Insights for this connection (true) or not (false)."""
 
     object_storage_upload_threshold: Union[int, None, UnsetType] = UNSET
@@ -651,7 +454,6 @@ class ConnectionAttributes(AssetAttributes):
 
     vector_embeddings_updated_at: Union[int, None, UnsetType] = UNSET
     """"""
-
 
 class ConnectionRelationshipAttributes(AssetRelationshipAttributes):
     """Connection-specific relationship attributes for nested API format."""
@@ -677,9 +479,7 @@ class ConnectionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -691,22 +491,16 @@ class ConnectionRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    input_to_connection_processes: Union[
-        List[RelatedConnectionProcess], None, UnsetType
-    ] = UNSET
+    input_to_connection_processes: Union[List[RelatedConnectionProcess], None, UnsetType] = UNSET
     """Connection process to which this asset provides input."""
 
-    output_from_connection_processes: Union[
-        List[RelatedConnectionProcess], None, UnsetType
-    ] = UNSET
+    output_from_connection_processes: Union[List[RelatedConnectionProcess], None, UnsetType] = UNSET
     """Connection processs from which this asset is produced as output."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -718,27 +512,19 @@ class ConnectionRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
-
 
 class ConnectionNested(AssetNested):
     """Connection in nested API format for high-performance serialization."""
 
     attributes: Union[ConnectionAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ConnectionRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        ConnectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        ConnectionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[ConnectionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[ConnectionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -768,7 +554,6 @@ _CONNECTION_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
 def _populate_connection_attrs(attrs: ConnectionAttributes, obj: Connection) -> None:
     """Populate Connection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -791,18 +576,10 @@ def _populate_connection_attrs(attrs: ConnectionAttributes, obj: Connection) -> 
     attrs.default_credential_guid = obj.default_credential_guid
     attrs.connection_dq_credential_guid = obj.connection_dq_credential_guid
     attrs.connection_is_dq_enabled = obj.connection_is_dq_enabled
-    attrs.connection_dq_environment_setup_status = (
-        obj.connection_dq_environment_setup_status
-    )
-    attrs.connection_dq_environment_setup_error_message = (
-        obj.connection_dq_environment_setup_error_message
-    )
-    attrs.connection_dq_environment_setup_status_updated_at = (
-        obj.connection_dq_environment_setup_status_updated_at
-    )
-    attrs.connection_dq_environment_source_database_name = (
-        obj.connection_dq_environment_source_database_name
-    )
+    attrs.connection_dq_environment_setup_status = obj.connection_dq_environment_setup_status
+    attrs.connection_dq_environment_setup_error_message = obj.connection_dq_environment_setup_error_message
+    attrs.connection_dq_environment_setup_status_updated_at = obj.connection_dq_environment_setup_status_updated_at
+    attrs.connection_dq_environment_source_database_name = obj.connection_dq_environment_source_database_name
     attrs.connector_icon = obj.connector_icon
     attrs.connector_image = obj.connector_image
     attrs.source_logo = obj.source_logo
@@ -812,13 +589,10 @@ def _populate_connection_attrs(attrs: ConnectionAttributes, obj: Connection) -> 
     attrs.connection_dbt_environments = obj.connection_dbt_environments
     attrs.connection_sso_credential_guid = obj.connection_sso_credential_guid
     attrs.use_object_storage = obj.use_object_storage
-    attrs.connection_insights_via_oauth_cookie = (
-        obj.connection_insights_via_oauth_cookie
-    )
+    attrs.connection_insights_via_oauth_cookie = obj.connection_insights_via_oauth_cookie
     attrs.object_storage_upload_threshold = obj.object_storage_upload_threshold
     attrs.vector_embeddings_enabled = obj.vector_embeddings_enabled
     attrs.vector_embeddings_updated_at = obj.vector_embeddings_updated_at
-
 
 def _extract_connection_attrs(attrs: ConnectionAttributes) -> dict:
     """Extract all Connection attributes from the attrs struct into a flat dict."""
@@ -830,34 +604,22 @@ def _extract_connection_attrs(attrs: ConnectionAttributes) -> dict:
     result["allow_query"] = attrs.allow_query
     result["allow_query_preview"] = attrs.allow_query_preview
     result["query_preview_config"] = attrs.query_preview_config
-    result["connection_workflow_configuration"] = (
-        attrs.connection_workflow_configuration
-    )
+    result["connection_workflow_configuration"] = attrs.connection_workflow_configuration
     result["query_config"] = attrs.query_config
     result["credential_strategy"] = attrs.credential_strategy
     result["preview_credential_strategy"] = attrs.preview_credential_strategy
     result["policy_strategy"] = attrs.policy_strategy
-    result["policy_strategy_for_sample_preview"] = (
-        attrs.policy_strategy_for_sample_preview
-    )
+    result["policy_strategy_for_sample_preview"] = attrs.policy_strategy_for_sample_preview
     result["query_username_strategy"] = attrs.query_username_strategy
     result["row_limit"] = attrs.row_limit
     result["query_timeout"] = attrs.query_timeout
     result["default_credential_guid"] = attrs.default_credential_guid
     result["connection_dq_credential_guid"] = attrs.connection_dq_credential_guid
     result["connection_is_dq_enabled"] = attrs.connection_is_dq_enabled
-    result["connection_dq_environment_setup_status"] = (
-        attrs.connection_dq_environment_setup_status
-    )
-    result["connection_dq_environment_setup_error_message"] = (
-        attrs.connection_dq_environment_setup_error_message
-    )
-    result["connection_dq_environment_setup_status_updated_at"] = (
-        attrs.connection_dq_environment_setup_status_updated_at
-    )
-    result["connection_dq_environment_source_database_name"] = (
-        attrs.connection_dq_environment_source_database_name
-    )
+    result["connection_dq_environment_setup_status"] = attrs.connection_dq_environment_setup_status
+    result["connection_dq_environment_setup_error_message"] = attrs.connection_dq_environment_setup_error_message
+    result["connection_dq_environment_setup_status_updated_at"] = attrs.connection_dq_environment_setup_status_updated_at
+    result["connection_dq_environment_source_database_name"] = attrs.connection_dq_environment_source_database_name
     result["connector_icon"] = attrs.connector_icon
     result["connector_image"] = attrs.connector_image
     result["source_logo"] = attrs.source_logo
@@ -867,14 +629,11 @@ def _extract_connection_attrs(attrs: ConnectionAttributes) -> dict:
     result["connection_dbt_environments"] = attrs.connection_dbt_environments
     result["connection_sso_credential_guid"] = attrs.connection_sso_credential_guid
     result["use_object_storage"] = attrs.use_object_storage
-    result["connection_insights_via_oauth_cookie"] = (
-        attrs.connection_insights_via_oauth_cookie
-    )
+    result["connection_insights_via_oauth_cookie"] = attrs.connection_insights_via_oauth_cookie
     result["object_storage_upload_threshold"] = attrs.object_storage_upload_threshold
     result["vector_embeddings_enabled"] = attrs.vector_embeddings_enabled
     result["vector_embeddings_updated_at"] = attrs.vector_embeddings_updated_at
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -915,19 +674,16 @@ def _connection_to_nested(connection: Connection) -> ConnectionNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _connection_from_nested(nested: ConnectionNested) -> Connection:
     """Convert nested format to flat Connection."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else ConnectionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else ConnectionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CONNECTION_REL_FIELDS,
-        ConnectionRelationshipAttributes,
+        ConnectionRelationshipAttributes
     )
     return Connection(
         guid=nested.guid,
@@ -954,7 +710,6 @@ def _connection_from_nested(nested: ConnectionNested) -> Connection:
         **merged_rels,
     )
 
-
 def _connection_to_nested_bytes(connection: Connection, serde: Serde) -> bytes:
     """Convert flat Connection to nested JSON bytes."""
     return serde.encode(_connection_to_nested(connection))
@@ -964,7 +719,6 @@ def _connection_from_nested_bytes(data: bytes, serde: Serde) -> Connection:
     """Convert nested JSON bytes to flat Connection."""
     nested = serde.decode(data, ConnectionNested)
     return _connection_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -983,83 +737,36 @@ Connection.HOST = KeywordField("host", "host")
 Connection.PORT = NumericField("port", "port")
 Connection.ALLOW_QUERY = BooleanField("allowQuery", "allowQuery")
 Connection.ALLOW_QUERY_PREVIEW = BooleanField("allowQueryPreview", "allowQueryPreview")
-Connection.QUERY_PREVIEW_CONFIG = KeywordField(
-    "queryPreviewConfig", "queryPreviewConfig"
-)
-Connection.CONNECTION_WORKFLOW_CONFIGURATION = KeywordField(
-    "connectionWorkflowConfiguration", "connectionWorkflowConfiguration"
-)
+Connection.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+Connection.CONNECTION_WORKFLOW_CONFIGURATION = KeywordField("connectionWorkflowConfiguration", "connectionWorkflowConfiguration")
 Connection.QUERY_CONFIG = KeywordField("queryConfig", "queryConfig")
-Connection.CREDENTIAL_STRATEGY = KeywordField(
-    "credentialStrategy", "credentialStrategy"
-)
-Connection.PREVIEW_CREDENTIAL_STRATEGY = KeywordField(
-    "previewCredentialStrategy", "previewCredentialStrategy"
-)
+Connection.CREDENTIAL_STRATEGY = KeywordField("credentialStrategy", "credentialStrategy")
+Connection.PREVIEW_CREDENTIAL_STRATEGY = KeywordField("previewCredentialStrategy", "previewCredentialStrategy")
 Connection.POLICY_STRATEGY = KeywordField("policyStrategy", "policyStrategy")
-Connection.POLICY_STRATEGY_FOR_SAMPLE_PREVIEW = KeywordField(
-    "policyStrategyForSamplePreview", "policyStrategyForSamplePreview"
-)
-Connection.QUERY_USERNAME_STRATEGY = KeywordField(
-    "queryUsernameStrategy", "queryUsernameStrategy"
-)
+Connection.POLICY_STRATEGY_FOR_SAMPLE_PREVIEW = KeywordField("policyStrategyForSamplePreview", "policyStrategyForSamplePreview")
+Connection.QUERY_USERNAME_STRATEGY = KeywordField("queryUsernameStrategy", "queryUsernameStrategy")
 Connection.ROW_LIMIT = NumericField("rowLimit", "rowLimit")
 Connection.QUERY_TIMEOUT = NumericField("queryTimeout", "queryTimeout")
-Connection.DEFAULT_CREDENTIAL_GUID = KeywordField(
-    "defaultCredentialGuid", "defaultCredentialGuid"
-)
-Connection.CONNECTION_DQ_CREDENTIAL_GUID = KeywordField(
-    "connectionDQCredentialGuid", "connectionDQCredentialGuid"
-)
-Connection.CONNECTION_IS_DQ_ENABLED = BooleanField(
-    "connectionIsDQEnabled", "connectionIsDQEnabled"
-)
-Connection.CONNECTION_DQ_ENVIRONMENT_SETUP_STATUS = KeywordField(
-    "connectionDQEnvironmentSetupStatus", "connectionDQEnvironmentSetupStatus"
-)
-Connection.CONNECTION_DQ_ENVIRONMENT_SETUP_ERROR_MESSAGE = TextField(
-    "connectionDQEnvironmentSetupErrorMessage",
-    "connectionDQEnvironmentSetupErrorMessage",
-)
-Connection.CONNECTION_DQ_ENVIRONMENT_SETUP_STATUS_UPDATED_AT = NumericField(
-    "connectionDQEnvironmentSetupStatusUpdatedAt",
-    "connectionDQEnvironmentSetupStatusUpdatedAt",
-)
-Connection.CONNECTION_DQ_ENVIRONMENT_SOURCE_DATABASE_NAME = KeywordField(
-    "connectionDQEnvironmentSourceDatabaseName",
-    "connectionDQEnvironmentSourceDatabaseName",
-)
+Connection.DEFAULT_CREDENTIAL_GUID = KeywordField("defaultCredentialGuid", "defaultCredentialGuid")
+Connection.CONNECTION_DQ_CREDENTIAL_GUID = KeywordField("connectionDQCredentialGuid", "connectionDQCredentialGuid")
+Connection.CONNECTION_IS_DQ_ENABLED = BooleanField("connectionIsDQEnabled", "connectionIsDQEnabled")
+Connection.CONNECTION_DQ_ENVIRONMENT_SETUP_STATUS = KeywordField("connectionDQEnvironmentSetupStatus", "connectionDQEnvironmentSetupStatus")
+Connection.CONNECTION_DQ_ENVIRONMENT_SETUP_ERROR_MESSAGE = TextField("connectionDQEnvironmentSetupErrorMessage", "connectionDQEnvironmentSetupErrorMessage")
+Connection.CONNECTION_DQ_ENVIRONMENT_SETUP_STATUS_UPDATED_AT = NumericField("connectionDQEnvironmentSetupStatusUpdatedAt", "connectionDQEnvironmentSetupStatusUpdatedAt")
+Connection.CONNECTION_DQ_ENVIRONMENT_SOURCE_DATABASE_NAME = KeywordField("connectionDQEnvironmentSourceDatabaseName", "connectionDQEnvironmentSourceDatabaseName")
 Connection.CONNECTOR_ICON = KeywordField("connectorIcon", "connectorIcon")
 Connection.CONNECTOR_IMAGE = KeywordField("connectorImage", "connectorImage")
 Connection.SOURCE_LOGO = KeywordField("sourceLogo", "sourceLogo")
-Connection.IS_SAMPLE_DATA_PREVIEW_ENABLED = BooleanField(
-    "isSampleDataPreviewEnabled", "isSampleDataPreviewEnabled"
-)
-Connection.POPULARITY_INSIGHTS_TIMEFRAME = NumericField(
-    "popularityInsightsTimeframe", "popularityInsightsTimeframe"
-)
-Connection.HAS_POPULARITY_INSIGHTS = BooleanField(
-    "hasPopularityInsights", "hasPopularityInsights"
-)
-Connection.CONNECTION_DBT_ENVIRONMENTS = KeywordField(
-    "connectionDbtEnvironments", "connectionDbtEnvironments"
-)
-Connection.CONNECTION_SSO_CREDENTIAL_GUID = KeywordField(
-    "connectionSSOCredentialGuid", "connectionSSOCredentialGuid"
-)
+Connection.IS_SAMPLE_DATA_PREVIEW_ENABLED = BooleanField("isSampleDataPreviewEnabled", "isSampleDataPreviewEnabled")
+Connection.POPULARITY_INSIGHTS_TIMEFRAME = NumericField("popularityInsightsTimeframe", "popularityInsightsTimeframe")
+Connection.HAS_POPULARITY_INSIGHTS = BooleanField("hasPopularityInsights", "hasPopularityInsights")
+Connection.CONNECTION_DBT_ENVIRONMENTS = KeywordField("connectionDbtEnvironments", "connectionDbtEnvironments")
+Connection.CONNECTION_SSO_CREDENTIAL_GUID = KeywordField("connectionSSOCredentialGuid", "connectionSSOCredentialGuid")
 Connection.USE_OBJECT_STORAGE = BooleanField("useObjectStorage", "useObjectStorage")
-Connection.CONNECTION_INSIGHTS_VIA_OAUTH_COOKIE = BooleanField(
-    "connectionInsightsViaOAuthCookie", "connectionInsightsViaOAuthCookie"
-)
-Connection.OBJECT_STORAGE_UPLOAD_THRESHOLD = NumericField(
-    "objectStorageUploadThreshold", "objectStorageUploadThreshold"
-)
-Connection.VECTOR_EMBEDDINGS_ENABLED = BooleanField(
-    "vectorEmbeddingsEnabled", "vectorEmbeddingsEnabled"
-)
-Connection.VECTOR_EMBEDDINGS_UPDATED_AT = NumericField(
-    "vectorEmbeddingsUpdatedAt", "vectorEmbeddingsUpdatedAt"
-)
+Connection.CONNECTION_INSIGHTS_VIA_OAUTH_COOKIE = BooleanField("connectionInsightsViaOAuthCookie", "connectionInsightsViaOAuthCookie")
+Connection.OBJECT_STORAGE_UPLOAD_THRESHOLD = NumericField("objectStorageUploadThreshold", "objectStorageUploadThreshold")
+Connection.VECTOR_EMBEDDINGS_ENABLED = BooleanField("vectorEmbeddingsEnabled", "vectorEmbeddingsEnabled")
+Connection.VECTOR_EMBEDDINGS_UPDATED_AT = NumericField("vectorEmbeddingsUpdatedAt", "vectorEmbeddingsUpdatedAt")
 Connection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Connection.APPLICATION = RelationField("application")
 Connection.APPLICATION_FIELD = RelationField("applicationField")
@@ -1072,9 +779,7 @@ Connection.MEANINGS = RelationField("meanings")
 Connection.MC_MONITORS = RelationField("mcMonitors")
 Connection.MC_INCIDENTS = RelationField("mcIncidents")
 Connection.INPUT_TO_CONNECTION_PROCESSES = RelationField("inputToConnectionProcesses")
-Connection.OUTPUT_FROM_CONNECTION_PROCESSES = RelationField(
-    "outputFromConnectionProcesses"
-)
+Connection.OUTPUT_FROM_CONNECTION_PROCESSES = RelationField("outputFromConnectionProcesses")
 Connection.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
 Connection.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 Connection.FILES = RelationField("files")

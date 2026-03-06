@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -49,11 +43,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Fivetran(Asset):
@@ -128,9 +124,7 @@ class Fivetran(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -139,9 +133,7 @@ class Fivetran(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -168,9 +160,7 @@ class Fivetran(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -182,9 +172,7 @@ class Fivetran(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -198,6 +186,8 @@ class Fivetran(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Fivetran"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -250,7 +240,6 @@ class Fivetran(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class FivetranAttributes(AssetAttributes):
     """Fivetran-specific attributes for nested API format."""
 
@@ -262,7 +251,6 @@ class FivetranAttributes(AssetAttributes):
 
     fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
     """Number of records updated in the latest sync on Fivetran"""
-
 
 class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     """Fivetran-specific relationship attributes for nested API format."""
@@ -291,9 +279,7 @@ class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -302,9 +288,7 @@ class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -331,9 +315,7 @@ class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -345,9 +327,7 @@ class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -359,19 +339,13 @@ class FivetranRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class FivetranNested(AssetNested):
     """Fivetran in nested API format for high-performance serialization."""
 
     attributes: Union[FivetranAttributes, UnsetType] = UNSET
     relationship_attributes: Union[FivetranRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[FivetranRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[FivetranRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[FivetranRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[FivetranRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -409,7 +383,6 @@ _FIVETRAN_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_fivetran_attrs(attrs: FivetranAttributes, obj: Fivetran) -> None:
     """Populate Fivetran-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -417,17 +390,13 @@ def _populate_fivetran_attrs(attrs: FivetranAttributes, obj: Fivetran) -> None:
     attrs.fivetran_last_sync_status = obj.fivetran_last_sync_status
     attrs.fivetran_last_sync_records_updated = obj.fivetran_last_sync_records_updated
 
-
 def _extract_fivetran_attrs(attrs: FivetranAttributes) -> dict:
     """Extract all Fivetran attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["fivetran_workflow_name"] = attrs.fivetran_workflow_name
     result["fivetran_last_sync_status"] = attrs.fivetran_last_sync_status
-    result["fivetran_last_sync_records_updated"] = (
-        attrs.fivetran_last_sync_records_updated
-    )
+    result["fivetran_last_sync_records_updated"] = attrs.fivetran_last_sync_records_updated
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -468,19 +437,16 @@ def _fivetran_to_nested(fivetran: Fivetran) -> FivetranNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _fivetran_from_nested(nested: FivetranNested) -> Fivetran:
     """Convert nested format to flat Fivetran."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else FivetranAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else FivetranAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FIVETRAN_REL_FIELDS,
-        FivetranRelationshipAttributes,
+        FivetranRelationshipAttributes
     )
     return Fivetran(
         guid=nested.guid,
@@ -507,7 +473,6 @@ def _fivetran_from_nested(nested: FivetranNested) -> Fivetran:
         **merged_rels,
     )
 
-
 def _fivetran_to_nested_bytes(fivetran: Fivetran, serde: Serde) -> bytes:
     """Convert flat Fivetran to nested JSON bytes."""
     return serde.encode(_fivetran_to_nested(fivetran))
@@ -518,7 +483,6 @@ def _fivetran_from_nested_bytes(data: bytes, serde: Serde) -> Fivetran:
     nested = serde.decode(data, FivetranNested)
     return _fivetran_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -528,15 +492,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Fivetran.FIVETRAN_WORKFLOW_NAME = KeywordField(
-    "fivetranWorkflowName", "fivetranWorkflowName"
-)
-Fivetran.FIVETRAN_LAST_SYNC_STATUS = KeywordField(
-    "fivetranLastSyncStatus", "fivetranLastSyncStatus"
-)
-Fivetran.FIVETRAN_LAST_SYNC_RECORDS_UPDATED = NumericField(
-    "fivetranLastSyncRecordsUpdated", "fivetranLastSyncRecordsUpdated"
-)
+Fivetran.FIVETRAN_WORKFLOW_NAME = KeywordField("fivetranWorkflowName", "fivetranWorkflowName")
+Fivetran.FIVETRAN_LAST_SYNC_STATUS = KeywordField("fivetranLastSyncStatus", "fivetranLastSyncStatus")
+Fivetran.FIVETRAN_LAST_SYNC_RECORDS_UPDATED = NumericField("fivetranLastSyncRecordsUpdated", "fivetranLastSyncRecordsUpdated")
 Fivetran.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Fivetran.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Fivetran.ANOMALO_CHECKS = RelationField("anomaloChecks")

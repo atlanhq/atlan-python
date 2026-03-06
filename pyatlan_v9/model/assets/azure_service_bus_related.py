@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedEventStore
@@ -49,7 +50,6 @@ class RelatedAzureServiceBus(RelatedEventStore):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AzureServiceBus"
 
-
 class RelatedAzureServiceBusNamespace(RelatedAzureServiceBus):
     """
     Related entity reference for AzureServiceBusNamespace assets.
@@ -64,7 +64,6 @@ class RelatedAzureServiceBusNamespace(RelatedAzureServiceBus):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AzureServiceBusNamespace"
 
-
 class RelatedAzureServiceBusSchema(RelatedAzureServiceBus):
     """
     Related entity reference for AzureServiceBusSchema assets.
@@ -78,7 +77,6 @@ class RelatedAzureServiceBusSchema(RelatedAzureServiceBus):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AzureServiceBusSchema"
-
 
 class RelatedAzureServiceBusTopic(RelatedAzureServiceBus):
     """

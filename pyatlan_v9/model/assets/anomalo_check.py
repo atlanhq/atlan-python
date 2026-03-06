@@ -14,19 +14,12 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
-from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
     _ASSET_REL_FIELDS,
@@ -50,11 +43,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .anomalo_related import RelatedAnomaloCheck
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AnomaloCheck(Asset):
@@ -169,9 +166,7 @@ class AnomaloCheck(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -180,9 +175,7 @@ class AnomaloCheck(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -209,9 +202,7 @@ class AnomaloCheck(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -223,9 +214,7 @@ class AnomaloCheck(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -239,6 +228,8 @@ class AnomaloCheck(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AnomaloCheck"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -291,7 +282,6 @@ class AnomaloCheck(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AnomaloCheckAttributes(AssetAttributes):
     """AnomaloCheck-specific attributes for nested API format."""
 
@@ -331,7 +321,6 @@ class AnomaloCheckAttributes(AssetAttributes):
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
 
-
 class AnomaloCheckRelationshipAttributes(AssetRelationshipAttributes):
     """AnomaloCheck-specific relationship attributes for nested API format."""
 
@@ -362,9 +351,7 @@ class AnomaloCheckRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -373,9 +360,7 @@ class AnomaloCheckRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -402,9 +387,7 @@ class AnomaloCheckRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -416,9 +399,7 @@ class AnomaloCheckRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -430,21 +411,13 @@ class AnomaloCheckRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class AnomaloCheckNested(AssetNested):
     """AnomaloCheck in nested API format for high-performance serialization."""
 
     attributes: Union[AnomaloCheckAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AnomaloCheckRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        AnomaloCheckRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AnomaloCheckRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[AnomaloCheckRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[AnomaloCheckRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AnomaloCheckRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -483,15 +456,10 @@ _ANOMALO_CHECK_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_anomalo_check_attrs(
-    attrs: AnomaloCheckAttributes, obj: AnomaloCheck
-) -> None:
+def _populate_anomalo_check_attrs(attrs: AnomaloCheckAttributes, obj: AnomaloCheck) -> None:
     """Populate AnomaloCheck-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.anomalo_check_linked_asset_qualified_name = (
-        obj.anomalo_check_linked_asset_qualified_name
-    )
+    attrs.anomalo_check_linked_asset_qualified_name = obj.anomalo_check_linked_asset_qualified_name
     attrs.anomalo_check_category_type = obj.anomalo_check_category_type
     attrs.anomalo_check_type = obj.anomalo_check_type
     attrs.anomalo_check_priority_level = obj.anomalo_check_priority_level
@@ -499,39 +467,27 @@ def _populate_anomalo_check_attrs(
     attrs.anomalo_check_status = obj.anomalo_check_status
     attrs.anomalo_check_status_image_url = obj.anomalo_check_status_image_url
     attrs.anomalo_check_last_run_completed_at = obj.anomalo_check_last_run_completed_at
-    attrs.anomalo_check_last_run_evaluated_message = (
-        obj.anomalo_check_last_run_evaluated_message
-    )
+    attrs.anomalo_check_last_run_evaluated_message = obj.anomalo_check_last_run_evaluated_message
     attrs.anomalo_check_last_run_url = obj.anomalo_check_last_run_url
     attrs.anomalo_check_historic_run_status = obj.anomalo_check_historic_run_status
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
 
-
 def _extract_anomalo_check_attrs(attrs: AnomaloCheckAttributes) -> dict:
     """Extract all AnomaloCheck attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["anomalo_check_linked_asset_qualified_name"] = (
-        attrs.anomalo_check_linked_asset_qualified_name
-    )
+    result["anomalo_check_linked_asset_qualified_name"] = attrs.anomalo_check_linked_asset_qualified_name
     result["anomalo_check_category_type"] = attrs.anomalo_check_category_type
     result["anomalo_check_type"] = attrs.anomalo_check_type
     result["anomalo_check_priority_level"] = attrs.anomalo_check_priority_level
     result["anomalo_check_is_system_added"] = attrs.anomalo_check_is_system_added
     result["anomalo_check_status"] = attrs.anomalo_check_status
     result["anomalo_check_status_image_url"] = attrs.anomalo_check_status_image_url
-    result["anomalo_check_last_run_completed_at"] = (
-        attrs.anomalo_check_last_run_completed_at
-    )
-    result["anomalo_check_last_run_evaluated_message"] = (
-        attrs.anomalo_check_last_run_evaluated_message
-    )
+    result["anomalo_check_last_run_completed_at"] = attrs.anomalo_check_last_run_completed_at
+    result["anomalo_check_last_run_evaluated_message"] = attrs.anomalo_check_last_run_evaluated_message
     result["anomalo_check_last_run_url"] = attrs.anomalo_check_last_run_url
-    result["anomalo_check_historic_run_status"] = (
-        attrs.anomalo_check_historic_run_status
-    )
+    result["anomalo_check_historic_run_status"] = attrs.anomalo_check_historic_run_status
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -572,21 +528,16 @@ def _anomalo_check_to_nested(anomalo_check: AnomaloCheck) -> AnomaloCheckNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _anomalo_check_from_nested(nested: AnomaloCheckNested) -> AnomaloCheck:
     """Convert nested format to flat AnomaloCheck."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else AnomaloCheckAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AnomaloCheckAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ANOMALO_CHECK_REL_FIELDS,
-        AnomaloCheckRelationshipAttributes,
+        AnomaloCheckRelationshipAttributes
     )
     return AnomaloCheck(
         guid=nested.guid,
@@ -613,7 +564,6 @@ def _anomalo_check_from_nested(nested: AnomaloCheckNested) -> AnomaloCheck:
         **merged_rels,
     )
 
-
 def _anomalo_check_to_nested_bytes(anomalo_check: AnomaloCheck, serde: Serde) -> bytes:
     """Convert flat AnomaloCheck to nested JSON bytes."""
     return serde.encode(_anomalo_check_to_nested(anomalo_check))
@@ -623,7 +573,6 @@ def _anomalo_check_from_nested_bytes(data: bytes, serde: Serde) -> AnomaloCheck:
     """Convert nested JSON bytes to flat AnomaloCheck."""
     nested = serde.decode(data, AnomaloCheckNested)
     return _anomalo_check_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -635,40 +584,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AnomaloCheck.ANOMALO_CHECK_LINKED_ASSET_QUALIFIED_NAME = KeywordField(
-    "anomaloCheckLinkedAssetQualifiedName", "anomaloCheckLinkedAssetQualifiedName"
-)
-AnomaloCheck.ANOMALO_CHECK_CATEGORY_TYPE = KeywordField(
-    "anomaloCheckCategoryType", "anomaloCheckCategoryType"
-)
+AnomaloCheck.ANOMALO_CHECK_LINKED_ASSET_QUALIFIED_NAME = KeywordField("anomaloCheckLinkedAssetQualifiedName", "anomaloCheckLinkedAssetQualifiedName")
+AnomaloCheck.ANOMALO_CHECK_CATEGORY_TYPE = KeywordField("anomaloCheckCategoryType", "anomaloCheckCategoryType")
 AnomaloCheck.ANOMALO_CHECK_TYPE = KeywordField("anomaloCheckType", "anomaloCheckType")
-AnomaloCheck.ANOMALO_CHECK_PRIORITY_LEVEL = KeywordField(
-    "anomaloCheckPriorityLevel", "anomaloCheckPriorityLevel"
-)
-AnomaloCheck.ANOMALO_CHECK_IS_SYSTEM_ADDED = BooleanField(
-    "anomaloCheckIsSystemAdded", "anomaloCheckIsSystemAdded"
-)
-AnomaloCheck.ANOMALO_CHECK_STATUS = KeywordField(
-    "anomaloCheckStatus", "anomaloCheckStatus"
-)
-AnomaloCheck.ANOMALO_CHECK_STATUS_IMAGE_URL = KeywordField(
-    "anomaloCheckStatusImageUrl", "anomaloCheckStatusImageUrl"
-)
-AnomaloCheck.ANOMALO_CHECK_LAST_RUN_COMPLETED_AT = NumericField(
-    "anomaloCheckLastRunCompletedAt", "anomaloCheckLastRunCompletedAt"
-)
-AnomaloCheck.ANOMALO_CHECK_LAST_RUN_EVALUATED_MESSAGE = KeywordField(
-    "anomaloCheckLastRunEvaluatedMessage", "anomaloCheckLastRunEvaluatedMessage"
-)
-AnomaloCheck.ANOMALO_CHECK_LAST_RUN_URL = KeywordField(
-    "anomaloCheckLastRunUrl", "anomaloCheckLastRunUrl"
-)
-AnomaloCheck.ANOMALO_CHECK_HISTORIC_RUN_STATUS = KeywordField(
-    "anomaloCheckHistoricRunStatus", "anomaloCheckHistoricRunStatus"
-)
-AnomaloCheck.DQ_IS_PART_OF_CONTRACT = BooleanField(
-    "dqIsPartOfContract", "dqIsPartOfContract"
-)
+AnomaloCheck.ANOMALO_CHECK_PRIORITY_LEVEL = KeywordField("anomaloCheckPriorityLevel", "anomaloCheckPriorityLevel")
+AnomaloCheck.ANOMALO_CHECK_IS_SYSTEM_ADDED = BooleanField("anomaloCheckIsSystemAdded", "anomaloCheckIsSystemAdded")
+AnomaloCheck.ANOMALO_CHECK_STATUS = KeywordField("anomaloCheckStatus", "anomaloCheckStatus")
+AnomaloCheck.ANOMALO_CHECK_STATUS_IMAGE_URL = KeywordField("anomaloCheckStatusImageUrl", "anomaloCheckStatusImageUrl")
+AnomaloCheck.ANOMALO_CHECK_LAST_RUN_COMPLETED_AT = NumericField("anomaloCheckLastRunCompletedAt", "anomaloCheckLastRunCompletedAt")
+AnomaloCheck.ANOMALO_CHECK_LAST_RUN_EVALUATED_MESSAGE = KeywordField("anomaloCheckLastRunEvaluatedMessage", "anomaloCheckLastRunEvaluatedMessage")
+AnomaloCheck.ANOMALO_CHECK_LAST_RUN_URL = KeywordField("anomaloCheckLastRunUrl", "anomaloCheckLastRunUrl")
+AnomaloCheck.ANOMALO_CHECK_HISTORIC_RUN_STATUS = KeywordField("anomaloCheckHistoricRunStatus", "anomaloCheckHistoricRunStatus")
+AnomaloCheck.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
 AnomaloCheck.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AnomaloCheck.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AnomaloCheck.ANOMALO_CHECK_ASSET = RelationField("anomaloCheckAsset")

@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflow, RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -48,12 +42,15 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .spark_related import RelatedSparkJob
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Spark(Asset):
@@ -137,9 +134,7 @@ class Spark(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -148,9 +143,7 @@ class Spark(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -177,9 +170,7 @@ class Spark(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -191,9 +182,7 @@ class Spark(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -205,13 +194,13 @@ class Spark(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    spark_orchestrated_by_airflow_assets: Union[
-        List[RelatedAirflow], None, UnsetType
-    ] = UNSET
+    spark_orchestrated_by_airflow_assets: Union[List[RelatedAirflow], None, UnsetType] = UNSET
     """Airflow assets that execute this spark asset."""
 
     def __post_init__(self) -> None:
         self.type_name = "Spark"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -264,7 +253,6 @@ class Spark(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SparkAttributes(AssetAttributes):
     """Spark-specific attributes for nested API format."""
 
@@ -282,7 +270,6 @@ class SparkAttributes(AssetAttributes):
 
     spark_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """OpenLineage state of the Spark Job run eg. COMPLETE"""
-
 
 class SparkRelationshipAttributes(AssetRelationshipAttributes):
     """Spark-specific relationship attributes for nested API format."""
@@ -311,9 +298,7 @@ class SparkRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -322,9 +307,7 @@ class SparkRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -351,9 +334,7 @@ class SparkRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -365,9 +346,7 @@ class SparkRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -379,24 +358,16 @@ class SparkRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    spark_orchestrated_by_airflow_assets: Union[
-        List[RelatedAirflow], None, UnsetType
-    ] = UNSET
+    spark_orchestrated_by_airflow_assets: Union[List[RelatedAirflow], None, UnsetType] = UNSET
     """Airflow assets that execute this spark asset."""
-
 
 class SparkNested(AssetNested):
     """Spark in nested API format for high-performance serialization."""
 
     attributes: Union[SparkAttributes, UnsetType] = UNSET
     relationship_attributes: Union[SparkRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SparkRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[SparkRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[SparkRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SparkRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -435,7 +406,6 @@ _SPARK_REL_FIELDS: List[str] = [
     "spark_orchestrated_by_airflow_assets",
 ]
 
-
 def _populate_spark_attrs(attrs: SparkAttributes, obj: Spark) -> None:
     """Populate Spark-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -444,7 +414,6 @@ def _populate_spark_attrs(attrs: SparkAttributes, obj: Spark) -> None:
     attrs.spark_run_start_time = obj.spark_run_start_time
     attrs.spark_run_end_time = obj.spark_run_end_time
     attrs.spark_run_open_lineage_state = obj.spark_run_open_lineage_state
-
 
 def _extract_spark_attrs(attrs: SparkAttributes) -> dict:
     """Extract all Spark attributes from the attrs struct into a flat dict."""
@@ -455,7 +424,6 @@ def _extract_spark_attrs(attrs: SparkAttributes) -> dict:
     result["spark_run_end_time"] = attrs.spark_run_end_time
     result["spark_run_open_lineage_state"] = attrs.spark_run_open_lineage_state
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -496,7 +464,6 @@ def _spark_to_nested(spark: Spark) -> SparkNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _spark_from_nested(nested: SparkNested) -> Spark:
     """Convert nested format to flat Spark."""
     attrs = nested.attributes if nested.attributes is not UNSET else SparkAttributes()
@@ -506,7 +473,7 @@ def _spark_from_nested(nested: SparkNested) -> Spark:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SPARK_REL_FIELDS,
-        SparkRelationshipAttributes,
+        SparkRelationshipAttributes
     )
     return Spark(
         guid=nested.guid,
@@ -533,7 +500,6 @@ def _spark_from_nested(nested: SparkNested) -> Spark:
         **merged_rels,
     )
 
-
 def _spark_to_nested_bytes(spark: Spark, serde: Serde) -> bytes:
     """Convert flat Spark to nested JSON bytes."""
     return serde.encode(_spark_to_nested(spark))
@@ -543,7 +509,6 @@ def _spark_from_nested_bytes(data: bytes, serde: Serde) -> Spark:
     """Convert nested JSON bytes to flat Spark."""
     nested = serde.decode(data, SparkNested)
     return _spark_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -555,14 +520,10 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Spark.SPARK_RUN_VERSION = KeywordField("sparkRunVersion", "sparkRunVersion")
-Spark.SPARK_RUN_OPEN_LINEAGE_VERSION = KeywordField(
-    "sparkRunOpenLineageVersion", "sparkRunOpenLineageVersion"
-)
+Spark.SPARK_RUN_OPEN_LINEAGE_VERSION = KeywordField("sparkRunOpenLineageVersion", "sparkRunOpenLineageVersion")
 Spark.SPARK_RUN_START_TIME = NumericField("sparkRunStartTime", "sparkRunStartTime")
 Spark.SPARK_RUN_END_TIME = NumericField("sparkRunEndTime", "sparkRunEndTime")
-Spark.SPARK_RUN_OPEN_LINEAGE_STATE = KeywordField(
-    "sparkRunOpenLineageState", "sparkRunOpenLineageState"
-)
+Spark.SPARK_RUN_OPEN_LINEAGE_STATE = KeywordField("sparkRunOpenLineageState", "sparkRunOpenLineageState")
 Spark.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Spark.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Spark.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -591,6 +552,4 @@ Spark.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 Spark.SODA_CHECKS = RelationField("sodaChecks")
 Spark.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Spark.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-Spark.SPARK_ORCHESTRATED_BY_AIRFLOW_ASSETS = RelationField(
-    "sparkOrchestratedByAirflowAssets"
-)
+Spark.SPARK_ORCHESTRATED_BY_AIRFLOW_ASSETS = RelationField("sparkOrchestratedByAirflowAssets")

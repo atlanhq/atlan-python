@@ -15,18 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,12 +35,7 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .databricks_related import RelatedDatabricksAIModelContext, RelatedDatabricksVolume
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -57,32 +44,18 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import (
-    RelatedSnowflakeAIModelContext,
-    RelatedSnowflakeDynamicTable,
-    RelatedSnowflakePipe,
-    RelatedSnowflakeSemanticLogicalTable,
-    RelatedSnowflakeSemanticView,
-    RelatedSnowflakeStage,
-    RelatedSnowflakeStream,
-    RelatedSnowflakeTag,
-)
+from .snowflake_related import RelatedSnowflakeAIModelContext, RelatedSnowflakeDynamicTable, RelatedSnowflakePipe, RelatedSnowflakeSemanticLogicalTable, RelatedSnowflakeSemanticView, RelatedSnowflakeStage, RelatedSnowflakeStream, RelatedSnowflakeTag
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import (
-    RelatedCalculationView,
-    RelatedDatabase,
-    RelatedFunction,
-    RelatedMaterialisedView,
-    RelatedProcedure,
-    RelatedTable,
-    RelatedView,
-)
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sql_related import RelatedCalculationView, RelatedDatabase, RelatedFunction, RelatedMaterialisedView, RelatedProcedure, RelatedTable, RelatedView
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Schema(Asset):
@@ -226,9 +199,7 @@ class Schema(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -258,9 +229,7 @@ class Schema(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -269,14 +238,10 @@ class Schema(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    databricks_ai_model_contexts: Union[
-        List[RelatedDatabricksAIModelContext], None, UnsetType
-    ] = msgspec.field(default=UNSET, name="databricksAIModelContexts")
+    databricks_ai_model_contexts: Union[List[RelatedDatabricksAIModelContext], None, UnsetType] = msgspec.field(default=UNSET, name="databricksAIModelContexts")
     """Contexts contained within the schema."""
 
     databricks_volumes: Union[List[RelatedDatabricksVolume], None, UnsetType] = UNSET
@@ -294,9 +259,7 @@ class Schema(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -326,9 +289,7 @@ class Schema(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -361,14 +322,10 @@ class Schema(Asset):
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_dynamic_tables: Union[
-        List[RelatedSnowflakeDynamicTable], None, UnsetType
-    ] = UNSET
+    snowflake_dynamic_tables: Union[List[RelatedSnowflakeDynamicTable], None, UnsetType] = UNSET
     """Snowflake dynamic tables that exist within this schema."""
 
     snowflake_pipes: Union[List[RelatedSnowflakePipe], None, UnsetType] = UNSET
@@ -383,19 +340,13 @@ class Schema(Asset):
     snowflake_tags: Union[List[RelatedSnowflakeTag], None, UnsetType] = UNSET
     """Snowflake tags that exist within this schema."""
 
-    snowflake_ai_model_contexts: Union[
-        List[RelatedSnowflakeAIModelContext], None, UnsetType
-    ] = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
+    snowflake_ai_model_contexts: Union[List[RelatedSnowflakeAIModelContext], None, UnsetType] = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
     """Contexts contained within the schema."""
 
-    snowflake_semantic_views: Union[
-        List[RelatedSnowflakeSemanticView], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_views: Union[List[RelatedSnowflakeSemanticView], None, UnsetType] = UNSET
     """Snowflake semantic views contained in the schema."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -414,99 +365,10 @@ class Schema(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
 
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        database_qualified_name: str,
-        database_name: str | None = None,
-        connection_qualified_name: str | None = None,
-    ) -> "Schema":
-        """
-        Create a new Schema asset with auto-derived fields.
-
-        Args:
-            name: Simple name of the schema
-            database_qualified_name: Unique name of the database in which this schema exists
-            database_name: Simple name of the database (auto-derived if not provided)
-            connection_qualified_name: Unique name of the connection (auto-derived if not provided)
-
-        Returns:
-            New Schema instance with all fields populated
-
-        Raises:
-            ValueError: If required parameters are missing or invalid
-        """
-        validate_required_fields(
-            ["name", "database_qualified_name"], [name, database_qualified_name]
-        )
-
-        # Validate database_qualified_name format: default/connector/connection_id/database
-        fields = database_qualified_name.split("/")
-        if len(fields) != 4:
-            raise ValueError(
-                f"Invalid database_qualified_name: {database_qualified_name}. "
-                "Expected format: default/connector/connection_id/database"
-            )
-
-        # Derive other fields from database_qualified_name
-        connector_name = fields[1]
-        connection_qn = (
-            connection_qualified_name or f"{fields[0]}/{fields[1]}/{fields[2]}"
-        )
-        db_name = database_name or fields[3]
-        qualified_name = f"{database_qualified_name}/{name}"
-
-        return cls(
-            name=name,
-            qualified_name=qualified_name,
-            database_name=db_name,
-            database_qualified_name=database_qualified_name,
-            connector_name=connector_name,
-            connection_qualified_name=connection_qn,
-            database=RelatedDatabase(qualified_name=database_qualified_name),
-        )
-
-    @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "Schema":
-        """
-        Create a Schema instance for updating an existing asset.
-
-        Args:
-            qualified_name: Unique name of the schema to update
-            name: Simple name of the schema
-
-        Returns:
-            Schema instance configured for updates
-
-        Raises:
-            ValueError: If required parameters are missing
-        """
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
-
-    def trim_to_required(self) -> "Schema":
-        """
-        Return a Schema with only required fields for reference.
-
-        Returns:
-            Schema instance with only qualified_name and name set
-        """
-        return Schema(qualified_name=self.qualified_name, name=self.name)
-
-    @classmethod
-    def create(cls, **kwargs) -> "Schema":
-        """Backward compatibility alias for creator()."""
-        return cls.creator(**kwargs)
-
-    @classmethod
-    def create_for_modification(cls, **kwargs) -> "Schema":
-        """Backward compatibility alias for updater()."""
-        return cls.updater(**kwargs)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -558,7 +420,6 @@ class Schema(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class SchemaAttributes(AssetAttributes):
     """Schema-specific attributes for nested API format."""
@@ -623,14 +484,11 @@ class SchemaAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
-
 
 class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     """Schema-specific relationship attributes for nested API format."""
@@ -659,9 +517,7 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -670,14 +526,10 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    databricks_ai_model_contexts: Union[
-        List[RelatedDatabricksAIModelContext], None, UnsetType
-    ] = msgspec.field(default=UNSET, name="databricksAIModelContexts")
+    databricks_ai_model_contexts: Union[List[RelatedDatabricksAIModelContext], None, UnsetType] = msgspec.field(default=UNSET, name="databricksAIModelContexts")
     """Contexts contained within the schema."""
 
     databricks_volumes: Union[List[RelatedDatabricksVolume], None, UnsetType] = UNSET
@@ -695,9 +547,7 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -727,9 +577,7 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -762,14 +610,10 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_dynamic_tables: Union[
-        List[RelatedSnowflakeDynamicTable], None, UnsetType
-    ] = UNSET
+    snowflake_dynamic_tables: Union[List[RelatedSnowflakeDynamicTable], None, UnsetType] = UNSET
     """Snowflake dynamic tables that exist within this schema."""
 
     snowflake_pipes: Union[List[RelatedSnowflakePipe], None, UnsetType] = UNSET
@@ -784,19 +628,13 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     snowflake_tags: Union[List[RelatedSnowflakeTag], None, UnsetType] = UNSET
     """Snowflake tags that exist within this schema."""
 
-    snowflake_ai_model_contexts: Union[
-        List[RelatedSnowflakeAIModelContext], None, UnsetType
-    ] = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
+    snowflake_ai_model_contexts: Union[List[RelatedSnowflakeAIModelContext], None, UnsetType] = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
     """Contexts contained within the schema."""
 
-    snowflake_semantic_views: Union[
-        List[RelatedSnowflakeSemanticView], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_views: Union[List[RelatedSnowflakeSemanticView], None, UnsetType] = UNSET
     """Snowflake semantic views contained in the schema."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -808,19 +646,13 @@ class SchemaRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SchemaNested(AssetNested):
     """Schema in nested API format for high-performance serialization."""
 
     attributes: Union[SchemaAttributes, UnsetType] = UNSET
     relationship_attributes: Union[SchemaRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SchemaRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[SchemaRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[SchemaRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SchemaRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -881,7 +713,6 @@ _SCHEMA_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_schema__attrs(attrs: SchemaAttributes, obj: Schema) -> None:
     """Populate Schema-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -908,7 +739,6 @@ def _populate_schema__attrs(attrs: SchemaAttributes, obj: Schema) -> None:
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
-
 def _extract_schema__attrs(attrs: SchemaAttributes) -> dict:
     """Extract all Schema attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -932,12 +762,9 @@ def _extract_schema__attrs(attrs: SchemaAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -978,7 +805,6 @@ def _schema__to_nested(schema_: Schema) -> SchemaNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _schema__from_nested(nested: SchemaNested) -> Schema:
     """Convert nested format to flat Schema."""
     attrs = nested.attributes if nested.attributes is not UNSET else SchemaAttributes()
@@ -988,7 +814,7 @@ def _schema__from_nested(nested: SchemaNested) -> Schema:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SCHEMA_REL_FIELDS,
-        SchemaRelationshipAttributes,
+        SchemaRelationshipAttributes
     )
     return Schema(
         guid=nested.guid,
@@ -1015,7 +841,6 @@ def _schema__from_nested(nested: SchemaNested) -> Schema:
         **merged_rels,
     )
 
-
 def _schema__to_nested_bytes(schema_: Schema, serde: Serde) -> bytes:
     """Convert flat Schema to nested JSON bytes."""
     return serde.encode(_schema__to_nested(schema_))
@@ -1025,7 +850,6 @@ def _schema__from_nested_bytes(data: bytes, serde: Serde) -> Schema:
     """Convert nested JSON bytes to flat Schema."""
     nested = serde.decode(data, SchemaNested)
     return _schema__from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1038,42 +862,26 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Schema.TABLE_COUNT = NumericField("tableCount", "tableCount")
-Schema.SQL_EXTERNAL_LOCATION = KeywordField(
-    "sqlExternalLocation", "sqlExternalLocation"
-)
+Schema.SQL_EXTERNAL_LOCATION = KeywordField("sqlExternalLocation", "sqlExternalLocation")
 Schema.VIEWS_COUNT = NumericField("viewsCount", "viewsCount")
-Schema.LINKED_SCHEMA_QUALIFIED_NAME = KeywordField(
-    "linkedSchemaQualifiedName", "linkedSchemaQualifiedName"
-)
+Schema.LINKED_SCHEMA_QUALIFIED_NAME = KeywordField("linkedSchemaQualifiedName", "linkedSchemaQualifiedName")
 Schema.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Schema.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Schema.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Schema.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+Schema.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 Schema.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Schema.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+Schema.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 Schema.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Schema.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+Schema.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 Schema.TABLE_NAME = KeywordField("tableName", "tableName")
 Schema.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 Schema.VIEW_NAME = KeywordField("viewName", "viewName")
 Schema.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Schema.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-Schema.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+Schema.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+Schema.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 Schema.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Schema.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Schema.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+Schema.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 Schema.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Schema.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Schema.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -1122,9 +930,7 @@ Schema.SNOWFLAKE_STREAMS = RelationField("snowflakeStreams")
 Schema.SNOWFLAKE_TAGS = RelationField("snowflakeTags")
 Schema.SNOWFLAKE_AI_MODEL_CONTEXTS = RelationField("snowflakeAIModelContexts")
 Schema.SNOWFLAKE_SEMANTIC_VIEWS = RelationField("snowflakeSemanticViews")
-Schema.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+Schema.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 Schema.SODA_CHECKS = RelationField("sodaChecks")
 Schema.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Schema.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

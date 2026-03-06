@@ -15,22 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan.errors import ErrorCode
-from pyatlan.model.enums import DataProductStatus
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.data_mesh import DataProductsAssetsDSL
-from pyatlan_v9.model.search import IndexSearchRequest
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,7 +33,6 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
-from .data_mesh_related import RelatedDataDomain, RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -58,11 +45,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .starburst_related import RelatedStarburstDataset
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .data_mesh_related import RelatedDataDomain, RelatedDataProduct
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DataProduct(Asset):
@@ -148,9 +139,7 @@ class DataProduct(Asset):
     daap_visibility: Union[str, None, UnsetType] = UNSET
     """Visibility of a data product."""
 
-    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dataProductAssetsDSL"
-    )
+    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dataProductAssetsDSL")
     """Search DSL used to define which assets are part of this data product."""
 
     data_product_assets_playbook_filter: Union[str, None, UnsetType] = UNSET
@@ -216,9 +205,7 @@ class DataProduct(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -227,9 +214,7 @@ class DataProduct(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -256,9 +241,7 @@ class DataProduct(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -270,9 +253,7 @@ class DataProduct(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -294,87 +275,10 @@ class DataProduct(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/product/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/product/[^/]+$"
+    )
 
-    @classmethod
-    def _get_super_domain_qualified_name(
-        cls, domain_qualified_name: str
-    ) -> Union[str, None]:
-        """Extract the top-most ancestor domain qualified name."""
-        domain_qn_prefix = re.compile(r"(default/domain/[a-zA-Z0-9-]+/super)/.*")
-        if domain_qualified_name:
-            match = domain_qn_prefix.match(domain_qualified_name)
-            if match and match.group(1):
-                return match.group(1)
-            if domain_qualified_name.startswith("default/domain/"):
-                return domain_qualified_name
-        return None
-
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        domain_qualified_name: str,
-        asset_selection: IndexSearchRequest,
-    ) -> "DataProduct":
-        """Create a new DataProduct asset."""
-        validate_required_fields(
-            ["name", "domain_qualified_name", "asset_selection"],
-            [name, domain_qualified_name, asset_selection],
-        )
-        assets_playbook_filter = '{"condition":"AND","isGroupLocked":false,"rules":[]}'
-        return cls(
-            name=name,
-            data_product_assets_dsl=DataProductsAssetsDSL.get_asset_selection(
-                asset_selection
-            ),
-            data_domain=RelatedDataDomain(
-                unique_attributes={"qualifiedName": domain_qualified_name}
-            ),
-            qualified_name=f"{domain_qualified_name}/product/{name}",
-            data_product_assets_playbook_filter=assets_playbook_filter,
-            parent_domain_qualified_name=domain_qualified_name,
-            super_domain_qualified_name=cls._get_super_domain_qualified_name(
-                domain_qualified_name
-            ),
-            daap_status=DataProductStatus.ACTIVE,
-        )
-
-    @classmethod
-    @init_guid
-    def updater(
-        cls,
-        *,
-        qualified_name: str,
-        name: str,
-        asset_selection: Union[IndexSearchRequest, None] = None,
-    ) -> "DataProduct":
-        """Create a DataProduct instance for update operations."""
-        validate_required_fields(["name", "qualified_name"], [name, qualified_name])
-        fields = qualified_name.split("/")
-        if len(fields) < 5:
-            raise ValueError(f"Invalid data product qualified_name: {qualified_name}")
-        product = cls(qualified_name=qualified_name, name=name)
-        if asset_selection:
-            product.data_product_assets_dsl = DataProductsAssetsDSL.get_asset_selection(
-                asset_selection
-            )
-        return product
-
-    def trim_to_required(self) -> "DataProduct":
-        """Return only the required fields for updates."""
-        return DataProduct.updater(qualified_name=self.qualified_name, name=self.name)
-
-    def get_assets(self, client: "AtlanClient"):
-        """Retrieve assets linked to this data product."""
-        dp_dsl = self.data_product_assets_dsl
-        if not dp_dsl:
-            raise ErrorCode.MISSING_DATA_PRODUCT_ASSET_DSL.exception_with_parameters()
-        query_data = msgspec.json.decode(dp_dsl).get("query", {})
-        request = msgspec.convert(query_data, IndexSearchRequest, strict=False)
-        return client.asset.search(request)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -427,7 +331,6 @@ class DataProduct(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class DataProductAttributes(AssetAttributes):
     """DataProduct-specific attributes for nested API format."""
 
@@ -455,9 +358,7 @@ class DataProductAttributes(AssetAttributes):
     daap_visibility: Union[str, None, UnsetType] = UNSET
     """Visibility of a data product."""
 
-    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dataProductAssetsDSL"
-    )
+    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dataProductAssetsDSL")
     """Search DSL used to define which assets are part of this data product."""
 
     data_product_assets_playbook_filter: Union[str, None, UnsetType] = UNSET
@@ -489,7 +390,6 @@ class DataProductAttributes(AssetAttributes):
 
     super_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the top-level domain in which this asset exists."""
-
 
 class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     """DataProduct-specific relationship attributes for nested API format."""
@@ -527,9 +427,7 @@ class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -538,9 +436,7 @@ class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -567,9 +463,7 @@ class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -581,9 +475,7 @@ class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -598,19 +490,13 @@ class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     starburst_datasets: Union[List[RelatedStarburstDataset], None, UnsetType] = UNSET
     """Starburst datasets published by this data product."""
 
-
 class DataProductNested(AssetNested):
     """DataProduct in nested API format for high-performance serialization."""
 
     attributes: Union[DataProductAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DataProductRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        DataProductRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DataProductRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[DataProductRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DataProductRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -652,10 +538,7 @@ _DATA_PRODUCT_REL_FIELDS: List[str] = [
     "starburst_datasets",
 ]
 
-
-def _populate_data_product_attrs(
-    attrs: DataProductAttributes, obj: DataProduct
-) -> None:
+def _populate_data_product_attrs(attrs: DataProductAttributes, obj: DataProduct) -> None:
     """Populate DataProduct-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.data_product_status = obj.data_product_status
@@ -678,7 +561,6 @@ def _populate_data_product_attrs(
     attrs.parent_domain_qualified_name = obj.parent_domain_qualified_name
     attrs.super_domain_qualified_name = obj.super_domain_qualified_name
 
-
 def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
     """Extract all DataProduct attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -691,9 +573,7 @@ def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
     result["data_product_visibility"] = attrs.data_product_visibility
     result["daap_visibility"] = attrs.daap_visibility
     result["data_product_assets_dsl"] = attrs.data_product_assets_dsl
-    result["data_product_assets_playbook_filter"] = (
-        attrs.data_product_assets_playbook_filter
-    )
+    result["data_product_assets_playbook_filter"] = attrs.data_product_assets_playbook_filter
     result["data_product_score_value"] = attrs.data_product_score_value
     result["data_mesh_score_updated_at"] = attrs.data_mesh_score_updated_at
     result["daap_visibility_users"] = attrs.daap_visibility_users
@@ -704,7 +584,6 @@ def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
     result["parent_domain_qualified_name"] = attrs.parent_domain_qualified_name
     result["super_domain_qualified_name"] = attrs.super_domain_qualified_name
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -745,19 +624,16 @@ def _data_product_to_nested(data_product: DataProduct) -> DataProductNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
     """Convert nested format to flat DataProduct."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else DataProductAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DataProductAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATA_PRODUCT_REL_FIELDS,
-        DataProductRelationshipAttributes,
+        DataProductRelationshipAttributes
     )
     return DataProduct(
         guid=nested.guid,
@@ -784,7 +660,6 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         **merged_rels,
     )
 
-
 def _data_product_to_nested_bytes(data_product: DataProduct, serde: Serde) -> bytes:
     """Convert flat DataProduct to nested JSON bytes."""
     return serde.encode(_data_product_to_nested(data_product))
@@ -794,7 +669,6 @@ def _data_product_from_nested_bytes(data: bytes, serde: Serde) -> DataProduct:
     """Convert nested JSON bytes to flat DataProduct."""
     nested = serde.decode(data, DataProductNested)
     return _data_product_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -808,53 +682,23 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 DataProduct.DATA_PRODUCT_STATUS = KeywordField("dataProductStatus", "dataProductStatus")
 DataProduct.DAAP_STATUS = KeywordField("daapStatus", "daapStatus")
-DataProduct.DATA_PRODUCT_CRITICALITY = KeywordField(
-    "dataProductCriticality", "dataProductCriticality"
-)
+DataProduct.DATA_PRODUCT_CRITICALITY = KeywordField("dataProductCriticality", "dataProductCriticality")
 DataProduct.DAAP_CRITICALITY = KeywordField("daapCriticality", "daapCriticality")
-DataProduct.DATA_PRODUCT_SENSITIVITY = KeywordField(
-    "dataProductSensitivity", "dataProductSensitivity"
-)
+DataProduct.DATA_PRODUCT_SENSITIVITY = KeywordField("dataProductSensitivity", "dataProductSensitivity")
 DataProduct.DAAP_SENSITIVITY = KeywordField("daapSensitivity", "daapSensitivity")
-DataProduct.DATA_PRODUCT_VISIBILITY = KeywordField(
-    "dataProductVisibility", "dataProductVisibility"
-)
+DataProduct.DATA_PRODUCT_VISIBILITY = KeywordField("dataProductVisibility", "dataProductVisibility")
 DataProduct.DAAP_VISIBILITY = KeywordField("daapVisibility", "daapVisibility")
-DataProduct.DATA_PRODUCT_ASSETS_DSL = KeywordField(
-    "dataProductAssetsDSL", "dataProductAssetsDSL"
-)
-DataProduct.DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = KeywordField(
-    "dataProductAssetsPlaybookFilter", "dataProductAssetsPlaybookFilter"
-)
-DataProduct.DATA_PRODUCT_SCORE_VALUE = NumericField(
-    "dataProductScoreValue", "dataProductScoreValue"
-)
-DataProduct.DATA_MESH_SCORE_UPDATED_AT = NumericField(
-    "dataMeshScoreUpdatedAt", "dataMeshScoreUpdatedAt"
-)
-DataProduct.DAAP_VISIBILITY_USERS = KeywordField(
-    "daapVisibilityUsers", "daapVisibilityUsers"
-)
-DataProduct.DAAP_VISIBILITY_GROUPS = KeywordField(
-    "daapVisibilityGroups", "daapVisibilityGroups"
-)
-DataProduct.DAAP_OUTPUT_PORT_GUIDS = KeywordField(
-    "daapOutputPortGuids", "daapOutputPortGuids"
-)
-DataProduct.DAAP_INPUT_PORT_GUIDS = KeywordField(
-    "daapInputPortGuids", "daapInputPortGuids"
-)
+DataProduct.DATA_PRODUCT_ASSETS_DSL = KeywordField("dataProductAssetsDSL", "dataProductAssetsDSL")
+DataProduct.DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = KeywordField("dataProductAssetsPlaybookFilter", "dataProductAssetsPlaybookFilter")
+DataProduct.DATA_PRODUCT_SCORE_VALUE = NumericField("dataProductScoreValue", "dataProductScoreValue")
+DataProduct.DATA_MESH_SCORE_UPDATED_AT = NumericField("dataMeshScoreUpdatedAt", "dataMeshScoreUpdatedAt")
+DataProduct.DAAP_VISIBILITY_USERS = KeywordField("daapVisibilityUsers", "daapVisibilityUsers")
+DataProduct.DAAP_VISIBILITY_GROUPS = KeywordField("daapVisibilityGroups", "daapVisibilityGroups")
+DataProduct.DAAP_OUTPUT_PORT_GUIDS = KeywordField("daapOutputPortGuids", "daapOutputPortGuids")
+DataProduct.DAAP_INPUT_PORT_GUIDS = KeywordField("daapInputPortGuids", "daapInputPortGuids")
 DataProduct.DAAP_LINEAGE_STATUS = KeywordField("daapLineageStatus", "daapLineageStatus")
-DataProduct.PARENT_DOMAIN_QUALIFIED_NAME = KeywordTextField(
-    "parentDomainQualifiedName",
-    "parentDomainQualifiedName",
-    "parentDomainQualifiedName.text",
-)
-DataProduct.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField(
-    "superDomainQualifiedName",
-    "superDomainQualifiedName",
-    "superDomainQualifiedName.text",
-)
+DataProduct.PARENT_DOMAIN_QUALIFIED_NAME = KeywordTextField("parentDomainQualifiedName", "parentDomainQualifiedName", "parentDomainQualifiedName.text")
+DataProduct.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField("superDomainQualifiedName", "superDomainQualifiedName", "superDomainQualifiedName.text")
 DataProduct.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataProduct.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataProduct.ANOMALO_CHECKS = RelationField("anomaloChecks")
