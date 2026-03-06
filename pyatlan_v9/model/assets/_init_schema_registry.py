@@ -8,11 +8,8 @@ SchemaRegistry module exports.
 This module provides convenient imports for all SchemaRegistry types and their Related variants.
 """
 
-from .schema_registry_related import (
-    RelatedSchemaRegistry,
-    RelatedSchemaRegistrySubject,
-)
 from .schema_registry import SchemaRegistry
+from .schema_registry_related import RelatedSchemaRegistry, RelatedSchemaRegistrySubject
 from .schema_registry_subject import SchemaRegistrySubject
 
 __all__ = [

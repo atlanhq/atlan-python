@@ -19,6 +19,13 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -34,6 +41,11 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .model_related import (
+    RelatedModelAttribute,
+    RelatedModelDataModel,
+    RelatedModelEntity,
+)
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
@@ -42,18 +54,6 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .model_related import (
-    RelatedModelAttribute,
-    RelatedModelDataModel,
-    RelatedModelEntity,
-)
 
 # =============================================================================
 # FLAT ASSET CLASS

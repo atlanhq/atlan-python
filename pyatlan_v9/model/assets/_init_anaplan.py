@@ -8,6 +8,14 @@ Anaplan module exports.
 This module provides convenient imports for all Anaplan types and their Related variants.
 """
 
+from .anaplan import Anaplan
+from .anaplan_app import AnaplanApp
+from .anaplan_dimension import AnaplanDimension
+from .anaplan_line_item import AnaplanLineItem
+from .anaplan_list import AnaplanList
+from .anaplan_model import AnaplanModel
+from .anaplan_module import AnaplanModule
+from .anaplan_page import AnaplanPage
 from .anaplan_related import (
     RelatedAnaplan,
     RelatedAnaplanApp,
@@ -21,14 +29,6 @@ from .anaplan_related import (
     RelatedAnaplanView,
     RelatedAnaplanWorkspace,
 )
-from .anaplan import Anaplan
-from .anaplan_app import AnaplanApp
-from .anaplan_dimension import AnaplanDimension
-from .anaplan_line_item import AnaplanLineItem
-from .anaplan_list import AnaplanList
-from .anaplan_model import AnaplanModel
-from .anaplan_module import AnaplanModule
-from .anaplan_page import AnaplanPage
 from .anaplan_system_dimension import AnaplanSystemDimension
 from .anaplan_view import AnaplanView
 from .anaplan_workspace import AnaplanWorkspace

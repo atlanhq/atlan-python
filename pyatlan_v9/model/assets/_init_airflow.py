@@ -8,13 +8,9 @@ Airflow module exports.
 This module provides convenient imports for all Airflow types and their Related variants.
 """
 
-from .airflow_related import (
-    RelatedAirflow,
-    RelatedAirflowDag,
-    RelatedAirflowTask,
-)
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
+from .airflow_related import RelatedAirflow, RelatedAirflowDag, RelatedAirflowTask
 from .airflow_task import AirflowTask
 
 __all__ = [

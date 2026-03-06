@@ -18,6 +18,13 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -40,15 +47,8 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -496,10 +496,7 @@ def _soda_from_nested_bytes(data: bytes, serde: Serde) -> Soda:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    BooleanField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import BooleanField, RelationField  # noqa: E402
 
 Soda.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
 Soda.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

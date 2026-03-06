@@ -8,6 +8,8 @@ DataMesh module exports.
 This module provides convenient imports for all DataMesh types and their Related variants.
 """
 
+from .data_domain import DataDomain
+from .data_mesh import DataMesh
 from .data_mesh_related import (
     RelatedDataDomain,
     RelatedDataMesh,
@@ -15,8 +17,6 @@ from .data_mesh_related import (
     RelatedStakeholder,
     RelatedStakeholderTitle,
 )
-from .data_mesh import DataMesh
-from .data_domain import DataDomain
 from .data_product import DataProduct
 
 __all__ = [

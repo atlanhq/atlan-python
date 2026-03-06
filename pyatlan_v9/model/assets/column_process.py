@@ -22,6 +22,14 @@ from typing import Any, ClassVar, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .adf_related import RelatedAdfActivity
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,21 +53,13 @@ from .gtc_related import RelatedAtlasGlossaryTerm
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .power_bi_related import RelatedPowerBIDataflow
+from .process_related import RelatedColumnProcess, RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .process_related import RelatedColumnProcess, RelatedProcess
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -742,10 +742,7 @@ def _column_process_from_nested_bytes(data: bytes, serde: Serde) -> ColumnProces
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
 ColumnProcess.CODE = KeywordField("code", "code")
 ColumnProcess.SQL = KeywordField("sql", "sql")

@@ -8,6 +8,14 @@ Flow module exports.
 This module provides convenient imports for all Flow types and their Related variants.
 """
 
+from .flow import Flow
+from .flow_control_operation import FlowControlOperation
+from .flow_dataset import FlowDataset
+from .flow_dataset_operation import FlowDatasetOperation
+from .flow_field import FlowField
+from .flow_field_operation import FlowFieldOperation
+from .flow_folder import FlowFolder
+from .flow_project import FlowProject
 from .flow_related import (
     RelatedFlow,
     RelatedFlowControlOperation,
@@ -19,14 +27,6 @@ from .flow_related import (
     RelatedFlowProject,
     RelatedFlowReusableUnit,
 )
-from .flow import Flow
-from .flow_control_operation import FlowControlOperation
-from .flow_dataset import FlowDataset
-from .flow_dataset_operation import FlowDatasetOperation
-from .flow_field import FlowField
-from .flow_field_operation import FlowFieldOperation
-from .flow_folder import FlowFolder
-from .flow_project import FlowProject
 from .flow_reusable_unit import FlowReusableUnit
 
 __all__ = [

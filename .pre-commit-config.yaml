@@ -3,9 +3,11 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-yaml
+        exclude: ^\.github/workflows/
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: debug-statements
+        exclude: ^pyatlan_v9/model/assets/_overlays/
 
   # Use uv to run formatting and QA tools
   - repo: https://github.com/astral-sh/ruff-pre-commit

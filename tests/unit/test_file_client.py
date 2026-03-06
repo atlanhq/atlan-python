@@ -161,6 +161,41 @@ def test_file_client_methods_validation_error(client, method, params):
                 "Error: No such file or directory, Path: some/invalid/file_path.png"
             ),
         ],
+        # Path traversal
+        [
+            "../../etc/passwd",
+            (
+                "ATLAN-PYTHON-400-077 Path traversal detected in file path: "
+                r"\.\.\/\.\.\/etc\/passwd"
+            ),
+        ],
+        # Sensitive system files
+        [
+            "/etc/passwd",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
+        ],
+        [
+            "/etc/shadow",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
+        ],
+        # Credential directories
+        [
+            "/home/user/.aws/credentials",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
+        ],
+        [
+            "/home/user/.ssh/id_rsa",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
+        ],
+        # Environment files
+        [
+            "/app/.env",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
+        ],
+        [
+            "/app/.env.production",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
+        ],
     ],
 )
 def test_file_client_upload_file_raises_invalid_request_error(
@@ -173,6 +208,26 @@ def test_file_client_upload_file_raises_invalid_request_error(
             presigned_url="test-url",
             file_path=file_path,
         )
+
+
+@pytest.mark.parametrize(
+    "env_value, file_path",
+    [
+        ("/custom/secrets/", "/custom/secrets/key"),
+        (".vault", "/home/user/.vault/token"),
+        (".credentials", "/app/.credentials.prod"),
+    ],
+)
+def test_file_client_upload_file_user_defined_sensitive_paths(
+    monkeypatch, mock_api_caller, env_value, file_path
+):
+    monkeypatch.setenv("PYATLAN_UPLOAD_FILE_BLOCKED_PATHS", env_value)
+    client = FileClient(client=mock_api_caller)
+    with pytest.raises(
+        InvalidRequestError,
+        match="ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
+    ):
+        client.upload_file(presigned_url="test-url", file_path=file_path)
 
 
 def test_file_client_download_file_invalid_format_raises_invalid_request_error(

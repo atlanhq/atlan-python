@@ -19,6 +19,13 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -34,6 +41,7 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .looker_related import RelatedLookerLook, RelatedLookerModel, RelatedLookerTile
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -43,14 +51,6 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .looker_related import RelatedLookerLook, RelatedLookerModel, RelatedLookerTile
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -574,10 +574,7 @@ def _looker_query_from_nested_bytes(data: bytes, serde: Serde) -> LookerQuery:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
 LookerQuery.SOURCE_DEFINITION = KeywordField("sourceDefinition", "sourceDefinition")
 LookerQuery.SOURCE_DEFINITION_DATABASE = KeywordField(

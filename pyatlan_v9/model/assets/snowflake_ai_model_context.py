@@ -20,6 +20,13 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .ai_related import RelatedAIApplication, RelatedAIModelVersion
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -49,20 +56,13 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .soda_related import RelatedSodaCheck
-from .spark_related import RelatedSparkJob
-from .sql_related import RelatedSchema
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .snowflake_related import (
     RelatedSnowflakeAIModelVersion,
     RelatedSnowflakeSemanticLogicalTable,
 )
+from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
+from .sql_related import RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS

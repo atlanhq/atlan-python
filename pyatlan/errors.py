@@ -675,6 +675,20 @@ class ErrorCode(Enum):
         "Set multi_valued=False when creating rich text attributes.",
         InvalidRequestError,
     )
+    INVALID_UPLOAD_FILE_PATH_TRAVERSAL = (
+        400,
+        "ATLAN-PYTHON-400-077",
+        "Path traversal detected in file path: {0}.",
+        "Ensure the file path does not contain '..' components.",
+        InvalidRequestError,
+    )
+    INVALID_UPLOAD_FILE_PATH_SENSITIVE = (
+        400,
+        "ATLAN-PYTHON-400-078",
+        "Access to blocked file path is not allowed: {0}.",
+        "Ensure the file path does not point to a blocked location (system files, credential directories, or paths defined in PYATLAN_UPLOAD_FILE_BLOCKED_PATHS).",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
