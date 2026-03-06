@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
+from pathlib import Path
 from typing import Any
 
 from pyatlan.client.constants import (
@@ -54,10 +55,16 @@ class FileUpload:
 
         :param file_path: path to the file to upload
         :returns: opened file object
+        :raises INVALID_UPLOAD_FILE_PATH_TRAVERSAL: if path traversal is detected
         :raises INVALID_UPLOAD_FILE_PATH: if file not found
         """
+        path = Path(file_path)
+        if ".." in path.parts:
+            raise ErrorCode.INVALID_UPLOAD_FILE_PATH_TRAVERSAL.exception_with_parameters(
+                file_path
+            )
         try:
-            return open(file_path, "rb")
+            return open(path.resolve(), "rb")
         except FileNotFoundError as err:
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH.exception_with_parameters(
                 str(err.strerror), file_path

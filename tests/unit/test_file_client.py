@@ -161,6 +161,13 @@ def test_file_client_methods_validation_error(client, method, params):
                 "Error: No such file or directory, Path: some/invalid/file_path.png"
             ),
         ],
+        [
+            "../../etc/passwd",
+            (
+                "ATLAN-PYTHON-400-077 Path traversal detected in file path: "
+                r"\.\.\/\.\.\/etc\/passwd"
+            ),
+        ],
     ],
 )
 def test_file_client_upload_file_raises_invalid_request_error(
