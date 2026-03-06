@@ -4,7 +4,7 @@ hide:
   - toc
 ---
 
-<div align="center" markdown>
+<div class="homepage-hero" align="center" markdown>
 
 ![pyatlan logo](assets/logo.png){ width="260" }
 

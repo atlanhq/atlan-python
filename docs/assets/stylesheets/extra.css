@@ -16,6 +16,11 @@
   --md-accent-fg-color:         #5DD4F5;
 }
 
+/* Hide auto-generated 'Home' h1 on homepage — logo already shows the name */
+.md-content__inner:has(.homepage-hero) > h1 {
+  display: none;
+}
+
 /* Hide site name text — logo already contains the name */
 .md-header__title {
   display: none;
