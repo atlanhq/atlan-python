@@ -4,13 +4,17 @@
 
 ::: pyatlan.model.assets.core.model.Model
 
+## ModelAttribute
+
+::: pyatlan.model.assets.core.model_attribute.ModelAttribute
+
+## ModelAttributeAssociation
+
+::: pyatlan.model.assets.core.model_attribute_association.ModelAttributeAssociation
+
 ## ModelDataModel
 
 ::: pyatlan.model.assets.core.model_data_model.ModelDataModel
-
-## ModelVersion
-
-::: pyatlan.model.assets.core.model_version.ModelVersion
 
 ## ModelEntity
 
@@ -20,13 +24,9 @@
 
 ::: pyatlan.model.assets.core.model_entity_association.ModelEntityAssociation
 
-## ModelAttribute
+## ModelVersion
 
-::: pyatlan.model.assets.core.model_attribute.ModelAttribute
-
-## ModelAttributeAssociation
-
-::: pyatlan.model.assets.core.model_attribute_association.ModelAttributeAssociation
+::: pyatlan.model.assets.core.model_version.ModelVersion
 
 ## SemanticModel
 

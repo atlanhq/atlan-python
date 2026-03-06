@@ -1,0 +1,45 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            name: str,
+            parent_qualified_name: str,
+            order: int,
+            parent_name: Optional[str] = None,
+            connection_qualified_name: Optional[str] = None,
+        ) -> DynamoDBAttribute.Attributes:
+            validate_required_fields(
+                ["name", "parent_qualified_name", "order"],
+                [name, parent_qualified_name, order],
+            )
+            if connection_qualified_name:
+                connector_name = AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                )
+            else:
+                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
+                    parent_qualified_name, "parent_qualified_name", 4
+                )
+            if order < 0:
+                raise ValueError("Order must be be a positive integer")
+
+            fields = parent_qualified_name.split("/")
+            qualified_name = f"{parent_qualified_name}/{name}"
+            connection_qualified_name = connection_qualified_name or connection_qn
+            table_name = parent_name or fields[3]
+
+            dynamo_dbtable = DynamoDBTable()
+            dynamo_dbtable.qualified_name = parent_qualified_name
+
+            return DynamoDBAttribute.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                order=order,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+                table_name=table_name,
+                table_qualified_name=parent_qualified_name,
+                dynamo_dbtable=dynamo_dbtable,
+            )

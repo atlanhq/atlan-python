@@ -16,10 +16,6 @@
 
 ::: pyatlan.model.assets.workflow_run.WorkflowRun
 
-## AppWorkflowRun
-
-::: pyatlan.model.assets.app_workflow_run.AppWorkflowRun
-
 ## Notebook
 
 ::: pyatlan.model.assets.notebook.Notebook
@@ -92,10 +88,6 @@
 
 ::: pyatlan.model.assets.readme_template.ReadmeTemplate
 
-## AtlanApp
-
-::: pyatlan.model.assets.atlan_app.AtlanApp
-
 ## AtlanAppDeployment
 
 ::: pyatlan.model.assets.atlan_app_deployment.AtlanAppDeployment
@@ -112,10 +104,6 @@
 
 ::: pyatlan.model.assets.flow_project.FlowProject
 
-## PartialV01Object
-
-::: pyatlan.model.assets.partial_v01_object.PartialV01Object
-
 ## App
 
 ::: pyatlan.model.assets.core.app.App
@@ -127,11 +115,3 @@
 ## ApplicationField
 
 ::: pyatlan.model.assets.core.application_field.ApplicationField
-
-## Stakeholder
-
-::: pyatlan.model.assets.core.stakeholder.Stakeholder
-
-## StakeholderTitle
-
-::: pyatlan.model.assets.core.stakeholder_title.StakeholderTitle

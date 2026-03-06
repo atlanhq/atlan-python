@@ -25,12 +25,11 @@ __all__ = [
     "FlowDataset",
     "NoSQL",
     "Partial",
+    "AppWorkflowRun",
     "Dbt",
     "Fivetran",
     "DataContract",
     "DataQuality",
-    "PartialV01",
-    "PartialV02",
     "AI",
     "Resource",
     "FlowField",
@@ -48,6 +47,7 @@ __all__ = [
     "Stakeholder",
     "ApplicationField",
     "Application",
+    "AtlanApp",
     "AirflowDag",
     "AirflowTask",
     "AdfDataflow",
@@ -74,9 +74,6 @@ __all__ = [
     "Metric",
     "DataQualityRule",
     "Soda",
-    "PartialV01Field",
-    "PartialV02Field",
-    "PartialV02Object",
     "AIApplication",
     "AIModelVersion",
     "AIModel",
@@ -97,8 +94,8 @@ __all__ = [
     "SnowflakeStage",
     "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "CalculationView",
     "Database",
+    "CalculationView",
     "Procedure",
     "Databricks",
     "SnowflakeTag",
@@ -114,6 +111,8 @@ __all__ = [
     "ModelDataModel",
     "SparkJob",
     "SchemaRegistrySubject",
+    "AtlanAppWorkflow",
+    "AtlanAppTool",
     "PowerBIReport",
     "PowerBIDatasource",
     "PowerBIWorkspace",
@@ -183,7 +182,6 @@ __all__ = [
     "SAP",
     "EventStore",
     "NoSQL",
-    "AppWorkflowRun",
     "Insight",
     "ObjectStore",
     "Notebook",
@@ -199,7 +197,6 @@ __all__ = [
     "AWS",
     "BusinessPolicyIncident",
     "DbtColumnProcess",
-    "AtlanApp",
     "SapErpTable",
     "SapErpColumn",
     "SapErpCdsView",
@@ -244,11 +241,11 @@ __all__ = [
     "ADLS",
     "GCS",
     "DatabricksNotebook",
-    "PartialV01Object",
     "SageMakerUnifiedStudio",
     "Dataverse",
     "Cognite",
     "Salesforce",
+    "SageMaker",
     "ReadmeTemplate",
     "Cube",
     "CubeHierarchy",
@@ -258,6 +255,7 @@ __all__ = [
     "Dremio",
     "BigqueryTag",
     "Snowflake",
+    "Iceberg",
     "APISpec",
     "APIQuery",
     "APIObject",
@@ -382,6 +380,7 @@ __all__ = [
     "CassandraColumn",
     "CassandraIndex",
     "CassandraKeyspace",
+    "DynamoDBAttribute",
     "DynamoDBTable",
     "S3Bucket",
     "S3Prefix",
@@ -409,12 +408,21 @@ __all__ = [
     "SalesforceOrganization",
     "SalesforceDashboard",
     "SalesforceReport",
+    "SageMakerModel",
+    "SageMakerModelGroup",
+    "SageMakerFeature",
+    "SageMakerFeatureGroup",
+    "SageMakerModelDeployment",
     "DremioVirtualDataset",
     "DremioColumn",
     "DremioSpace",
     "DremioPhysicalDataset",
     "DremioFolder",
     "DremioSource",
+    "IcebergTable",
+    "IcebergNamespace",
+    "IcebergColumn",
+    "IcebergCatalog",
     "DatabricksExternalLocation",
     "DatabricksExternalLocationPath",
     "QlikStream",
@@ -422,7 +430,6 @@ __all__ = [
     "AzureEventHubConsumerGroup",
     "DynamoDBLocalSecondaryIndex",
     "DynamoDBGlobalSecondaryIndex",
-    "DynamoDBAttribute",
     "IndistinctAsset",
 ]
 
@@ -448,8 +455,6 @@ from .anaplan_page import AnaplanPage
 from .anaplan_system_dimension import AnaplanSystemDimension
 from .anaplan_view import AnaplanView
 from .anaplan_workspace import AnaplanWorkspace
-from .app_workflow_run import AppWorkflowRun
-from .atlan_app import AtlanApp
 from .atlan_app_deployment import AtlanAppDeployment
 from .atlan_app_installed import AtlanAppInstalled
 from .auth_service import AuthService
@@ -511,9 +516,13 @@ from .core.airflow_task import AirflowTask
 from .core.anomalo import Anomalo
 from .core.anomalo_check import AnomaloCheck
 from .core.app import App
+from .core.app_workflow_run import AppWorkflowRun
 from .core.application import Application
 from .core.application_field import ApplicationField
 from .core.asset import Asset
+from .core.atlan_app import AtlanApp
+from .core.atlan_app_tool import AtlanAppTool
+from .core.atlan_app_workflow import AtlanAppWorkflow
 from .core.atlas_glossary import AtlasGlossary
 from .core.atlas_glossary_category import AtlasGlossaryCategory
 from .core.atlas_glossary_term import AtlasGlossaryTerm
@@ -606,11 +615,6 @@ from .core.no_s_q_l import NoSQL
 from .core.partial import Partial
 from .core.partial_field import PartialField
 from .core.partial_object import PartialObject
-from .core.partial_v01 import PartialV01
-from .core.partial_v01_field import PartialV01Field
-from .core.partial_v02 import PartialV02
-from .core.partial_v02_field import PartialV02Field
-from .core.partial_v02_object import PartialV02Object
 from .core.persona import Persona
 from .core.power_b_i import PowerBI
 from .core.power_b_i_app import PowerBIApp
@@ -701,6 +705,11 @@ from .g_c_s import GCS
 from .g_c_s_bucket import GCSBucket
 from .g_c_s_object import GCSObject
 from .google import Google
+from .iceberg import Iceberg
+from .iceberg_catalog import IcebergCatalog
+from .iceberg_column import IcebergColumn
+from .iceberg_namespace import IcebergNamespace
+from .iceberg_table import IcebergTable
 from .incident import Incident
 from .infrastructure import Infrastructure
 from .insight import Insight
@@ -743,7 +752,6 @@ from .mongo_d_b import MongoDB
 from .multi_dimensional_dataset import MultiDimensionalDataset
 from .notebook import Notebook
 from .object_store import ObjectStore
-from .partial_v01_object import PartialV01Object
 from .preset import Preset
 from .preset_chart import PresetChart
 from .preset_dashboard import PresetDashboard
@@ -779,6 +787,12 @@ from .s3_object import S3Object
 from .s3_prefix import S3Prefix
 from .s_a_p import SAP
 from .saa_s import SaaS
+from .sage_maker import SageMaker
+from .sage_maker_feature import SageMakerFeature
+from .sage_maker_feature_group import SageMakerFeatureGroup
+from .sage_maker_model import SageMakerModel
+from .sage_maker_model_deployment import SageMakerModelDeployment
+from .sage_maker_model_group import SageMakerModelGroup
 from .sage_maker_unified_studio import SageMakerUnifiedStudio
 from .sage_maker_unified_studio_asset import SageMakerUnifiedStudioAsset
 from .sage_maker_unified_studio_asset_schema import SageMakerUnifiedStudioAssetSchema

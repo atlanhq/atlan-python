@@ -334,6 +334,12 @@ class AssetInfo:
                 "Function",
             ):
                 continue
+
+            # To avoid circular import: SQL → DbtTest → DbtModelColumn → Column → SQL
+            # Column inherits from SQL (top-level import), SQL bottom-imports DbtTest,
+            # DbtTest bottom-imports DbtModelColumn, DbtModelColumn bottom-imports Column.
+            if self.name == "SQL" and required_asset.name == "DbtTest":
+                continue
             if not self.is_core_asset and required_asset.is_core_asset:
                 import_statement = f"from .core.{required_asset.module_name} import {required_asset.name} # noqa: E402, F401"
             else:
@@ -829,17 +835,41 @@ class Generator:
         with init_path.open("w") as script:
             script.write(content)
 
+    # These core modules must be imported in this exact order before everything else
+    # to avoid circular import errors at load time:
+    # - referenceable must be first: its bottom import of asset.py triggers asset→referenceable
+    #   which works only when referenceable is already in sys.modules with Referenceable defined
+    # - atlan_app/tool/workflow must precede app_workflow_run whose bottom import references them
+    _CORE_INIT_PRIORITY_MODULES = [
+        "referenceable",
+        "atlan_app",
+        "atlan_app_tool",
+        "atlan_app_workflow",
+    ]
+
     def render_core_init(self, assets: List[AssetInfo]):
-        asset_names = [
-            asset.name
+        core_assets = [
+            asset
             for asset in assets
             if asset.is_core_asset or asset.name in asset._CORE_ASSETS
         ]
-        asset_imports = [
-            f"from .{asset.module_name} import {asset.name}"
-            for asset in assets
-            if asset.is_core_asset or asset.name in asset._CORE_ASSETS
+        priority_set = set(self._CORE_INIT_PRIORITY_MODULES)
+        # Build priority list in the exact order specified (not alphabetical)
+        asset_by_module = {a.module_name: a for a in core_assets}
+        priority = [
+            asset_by_module[m]
+            for m in self._CORE_INIT_PRIORITY_MODULES
+            if m in asset_by_module
         ]
+        rest = [a for a in core_assets if a.module_name not in priority_set]
+        ordered = priority + rest
+        asset_names = [asset.name for asset in ordered]
+        asset_imports = []
+        for asset in ordered:
+            import_line = f"from .{asset.module_name} import {asset.name}"
+            if asset.module_name in priority_set:
+                import_line += "  # isort: skip"
+            asset_imports.append(import_line)
 
         template = self.environment.get_template("core/init.jinja2")
         content = template.render(
@@ -971,204 +1001,595 @@ class Generator:
             )
 
         groups = [
-            ("core.md", "Core Base Classes", core(
-                "Referenceable", "Asset", "Catalog", "Namespace", "Folder",
-                "Resource", "Process", "ColumnProcess", "BIProcess",
-                "FlowDataset", "FlowField", "Flow", "FlowReusableUnit",
-                "FlowControlOperation", "FlowDatasetOperation", "FlowFieldOperation",
-                "Tag", "SchemaRegistry", "SchemaRegistrySubject", "IndistinctAsset",
-            )),
-            ("glossary.md", "Glossary", core(
-                "AtlasGlossary", "AtlasGlossaryTerm", "AtlasGlossaryCategory",
-            )),
-            ("access-control.md", "Access Control", core(
-                "AccessControl", "AuthPolicy", "Persona", "Stakeholder",
-                "StakeholderTitle",
-            ) + pick(
-                "purpose", "business_policy", "business_policy_exception",
-                "business_policy_incident", "business_policy_log", "auth_service",
-            )),
-            ("sql.md", "SQL Databases", core(
-                "SQL", "Database", "Schema", "Table", "View", "MaterialisedView",
-                "Column", "Function", "Procedure", "Query", "TablePartition",
-                "CalculationView", "DataContract",
-                "Partial", "PartialField", "PartialObject",
-                "PartialV01", "PartialV01Field",
-                "PartialV02", "PartialV02Field", "PartialV02Object",
-            )),
-            ("snowflake.md", "Snowflake", pick("snowflake") + core(
-                "SnowflakePipe", "SnowflakeStage", "SnowflakeStream", "SnowflakeTag",
-                "SnowflakeDynamicTable", "SnowflakeAIModelContext", "SnowflakeAIModelVersion",
-            ) + pick("bigquery_tag") + core("BigqueryRoutine")),
-            ("databricks.md", "Databricks", core(
-                "Databricks", "DatabricksUnityCatalogTag", "DatabricksVolume",
-                "DatabricksVolumePath", "DatabricksMetricView",
-                "DatabricksAIModelContext", "DatabricksAIModelVersion",
-            ) + pick(
-                "databricks_notebook", "databricks_external_location",
-                "databricks_external_location_path",
-            )),
-            ("nosql.md", "NoSQL Databases", core(
-                "NoSQL",
-                "CosmosMongoDB", "CosmosMongoDBAccount", "CosmosMongoDBCollection",
-                "CosmosMongoDBDatabase",
-                "DocumentDB", "DocumentDBCollection", "DocumentDBDatabase",
-                "DynamoDBSecondaryIndex",
-                "MongoDBCollection", "MongoDBDatabase",
-            ) + pick(
-                "mongo_d_b", "dynamo_d_b", "dynamo_dbtable",
-                "dynamo_d_b_local_secondary_index", "dynamo_d_b_global_secondary_index",
-                "dynamo_d_b_attribute",
-                "cassandra", "cassandra_table", "cassandra_view", "cassandra_column",
-                "cassandra_index", "cassandra_keyspace",
-            )),
-            ("streaming.md", "Streaming & Events", pick(
-                "kafka", "kafka_topic", "kafka_consumer_group",
-                "azure_service_bus", "azure_service_bus_namespace",
-                "azure_service_bus_schema", "azure_service_bus_topic",
-                "azure_event_hub", "azure_event_hub_consumer_group", "event_store",
-            )),
-            ("cloud-storage.md", "Cloud Storage", pick(
-                "s3", "s3_bucket", "s3_prefix", "s3_object",
-                "a_d_l_s", "a_d_l_s_account", "a_d_l_s_container", "a_d_l_s_object",
-                "g_c_s", "g_c_s_bucket", "g_c_s_object", "object_store",
-                "a_w_s", "google", "azure", "cloud",
-            )),
-            ("dbt.md", "dbt", core(
-                "Dbt", "DbtModel", "DbtModelColumn", "DbtTest",
-                "DbtSeed", "DbtMetric", "DbtSource",
-            ) + pick(
-                "dbt_tag", "dbt_dimension", "dbt_measure", "dbt_semantic_model",
-                "dbt_entity", "dbt_column_process", "dbt_process",
-            )),
-            ("orchestration.md", "Orchestration", core(
-                "Airflow", "AirflowDag", "AirflowTask",
-                "ADF", "AdfDataflow", "AdfDataset", "AdfPipeline",
-                "AdfLinkedservice", "AdfActivity",
-                "Matillion", "MatillionGroup", "MatillionJob",
-                "MatillionProject", "MatillionComponent",
-                "Fivetran", "FivetranConnector",
-                "Spark", "SparkJob",
-            )),
-            ("microsoft-bi.md", "Microsoft BI", core(
-                "PowerBI", "PowerBIApp", "PowerBIColumn", "PowerBIDashboard",
-                "PowerBIDataflow", "PowerBIDataflowEntityColumn", "PowerBIDataset",
-                "PowerBIDatasource", "PowerBIMeasure", "PowerBIPage", "PowerBIReport",
-                "PowerBITable", "PowerBITile", "PowerBIWorkspace",
-                "Fabric", "FabricActivity", "FabricDashboard", "FabricDataflow",
-                "FabricDataflowEntityColumn", "FabricDataPipeline", "FabricPage",
-                "FabricReport", "FabricSemanticModel", "FabricSemanticModelTable",
-                "FabricSemanticModelTableColumn", "FabricVisual", "FabricWorkspace",
-            )),
-            ("tableau.md", "Tableau", pick(
-                "tableau", "tableau_workbook", "tableau_worksheet",
-                "tableau_worksheet_field", "tableau_dashboard",
-                "tableau_dashboard_field", "tableau_datasource",
-                "tableau_datasource_field", "tableau_calculated_field",
-                "tableau_project", "tableau_site", "tableau_flow", "tableau_metric",
-            )),
-            ("looker.md", "Looker", pick(
-                "looker", "looker_look", "looker_dashboard", "looker_folder",
-                "looker_tile", "looker_model", "looker_explore", "looker_project",
-                "looker_query", "looker_field", "looker_view",
-            )),
-            ("other-bi.md", "Other BI Tools", pick(
-                "metabase", "metabase_collection", "metabase_dashboard",
-                "metabase_question",
-                "mode", "mode_report", "mode_query", "mode_chart",
-                "mode_workspace", "mode_collection",
-                "preset", "preset_chart", "preset_dashboard",
-                "preset_dataset", "preset_workspace",
-                "sigma", "sigma_workbook", "sigma_page", "sigma_dataset",
-                "sigma_dataset_column", "sigma_data_element", "sigma_data_element_field",
-                "quick_sight", "quick_sight_analysis", "quick_sight_analysis_visual",
-                "quick_sight_dashboard", "quick_sight_dashboard_visual",
-                "quick_sight_dataset", "quick_sight_dataset_field", "quick_sight_folder",
-                "thoughtspot", "thoughtspot_worksheet", "thoughtspot_liveboard",
-                "thoughtspot_table", "thoughtspot_view", "thoughtspot_column",
-                "thoughtspot_dashlet", "thoughtspot_answer",
-                "micro_strategy", "micro_strategy_report", "micro_strategy_project",
-                "micro_strategy_metric", "micro_strategy_dossier", "micro_strategy_fact",
-                "micro_strategy_cube", "micro_strategy_column", "micro_strategy_document",
-                "micro_strategy_attribute", "micro_strategy_visualization",
-                "cognos", "cognos_column", "cognos_exploration", "cognos_dataset",
-                "cognos_dashboard", "cognos_report", "cognos_module", "cognos_file",
-                "cognos_folder", "cognos_package", "cognos_datasource",
-                "superset", "superset_chart", "superset_dashboard", "superset_dataset",
-                "qlik", "qlik_app", "qlik_chart", "qlik_column", "qlik_dataset",
-                "qlik_sheet", "qlik_space", "qlik_stream",
-                "domo", "domo_card", "domo_dashboard", "domo_dataset",
-                "domo_dataset_column",
-                "redash", "redash_dashboard", "redash_query", "redash_visualization",
-                "sisense", "sisense_dashboard", "sisense_datamodel",
-                "sisense_datamodel_table", "sisense_folder", "sisense_widget",
-                "data_studio", "data_studio_asset",
-                "anaplan", "anaplan_app", "anaplan_dimension", "anaplan_line_item",
-                "anaplan_list", "anaplan_model", "anaplan_module", "anaplan_page",
-                "anaplan_system_dimension", "anaplan_view", "anaplan_workspace",
-            )),
-            ("data-quality.md", "Data Quality", core(
-                "DataQuality", "DataQualityRule", "DataQualityRuleTemplate", "Metric",
-                "Anomalo", "AnomaloCheck", "MonteCarlo", "MCMonitor", "MCIncident",
-                "Soda", "SodaCheck",
-            )),
-            ("data-mesh.md", "Data Mesh", core(
-                "DataMesh", "DataDomain", "DataProduct",
-            )),
-            ("ai.md", "AI / ML", core(
-                "AI", "AIModel", "AIModelVersion", "AIApplication",
-                "DatabricksAIModelContext", "DatabricksAIModelVersion",
-                "SnowflakeAIModelContext", "SnowflakeAIModelVersion",
-            )),
-            ("api.md", "API", pick(
-                "a_p_i", "a_p_i_spec", "a_p_i_query", "a_p_i_object",
-                "a_p_i_path", "a_p_i_field",
-            )),
-            ("modeling.md", "Data Modeling & Semantic", core(
-                "Model", "ModelDataModel", "ModelVersion", "ModelEntity",
-                "ModelEntityAssociation", "ModelAttribute", "ModelAttributeAssociation",
-            ) + pick(
-                "semantic_model", "semantic_dimension", "semantic_entity",
-                "semantic_field", "semantic_measure",
-                "cube", "cube_hierarchy", "cube_dimension", "cube_field",
-            )),
-            ("sap.md", "SAP", pick(
-                "s_a_p", "sap_erp_table", "sap_erp_column", "sap_erp_cds_view",
-                "sap_erp_abap_program", "sap_erp_transaction_code",
-                "sap_erp_component", "sap_erp_function_module", "sap_erp_view",
-            )),
-            ("salesforce.md", "Salesforce", pick(
-                "salesforce", "salesforce_object", "salesforce_field",
-                "salesforce_organization", "salesforce_dashboard", "salesforce_report",
-            )),
-            ("cognite.md", "Cognite", pick(
-                "cognite", "cognite_asset", "cognite_event", "cognite3_d_model",
-                "cognite_sequence", "cognite_time_series", "cognite_file",
-            )),
-            ("sagemaker.md", "AWS SageMaker", pick(
-                "sage_maker_unified_studio", "sage_maker_unified_studio_project",
-                "sage_maker_unified_studio_asset",
-                "sage_maker_unified_studio_subscribed_asset",
-                "sage_maker_unified_studio_published_asset",
-                "sage_maker_unified_studio_asset_schema",
-            )),
-            ("other-connectors.md", "Other Connectors", pick(
-                "dataverse", "dataverse_attribute", "dataverse_entity",
-                "dremio", "dremio_virtual_dataset", "dremio_column", "dremio_space",
-                "dremio_physical_dataset", "dremio_folder", "dremio_source",
-            )),
-            ("other.md", "Other", pick(
-                "connection", "connection_process", "workflow", "workflow_run",
-                "app_workflow_run", "notebook", "collection", "custom", "custom_entity",
-                "badge", "tag_attachment", "source_tag", "task", "form", "data_set",
-                "response", "incident", "insight", "saa_s",
-                "multi_dimensional_dataset", "infrastructure", "process_execution",
-                "readme_template", "atlan_app", "atlan_app_deployment",
-                "atlan_app_installed", "flow_folder", "flow_project",
-                "partial_v01_object",
-            ) + core(
-                "App", "Application", "ApplicationField",
-            )),
+            (
+                "core.md",
+                "Core Base Classes",
+                core(
+                    "Referenceable",
+                    "Asset",
+                    "Catalog",
+                    "Namespace",
+                    "Folder",
+                    "Resource",
+                    "Process",
+                    "ColumnProcess",
+                    "BIProcess",
+                    "FlowDataset",
+                    "FlowField",
+                    "Flow",
+                    "FlowReusableUnit",
+                    "FlowControlOperation",
+                    "FlowDatasetOperation",
+                    "FlowFieldOperation",
+                    "Tag",
+                    "SchemaRegistry",
+                    "SchemaRegistrySubject",
+                    "IndistinctAsset",
+                ),
+            ),
+            (
+                "glossary.md",
+                "Glossary",
+                core(
+                    "AtlasGlossary",
+                    "AtlasGlossaryTerm",
+                    "AtlasGlossaryCategory",
+                ),
+            ),
+            (
+                "access-control.md",
+                "Access Control",
+                core(
+                    "AccessControl",
+                    "AuthPolicy",
+                    "Persona",
+                    "Stakeholder",
+                    "StakeholderTitle",
+                )
+                + pick(
+                    "purpose",
+                    "business_policy",
+                    "business_policy_exception",
+                    "business_policy_incident",
+                    "business_policy_log",
+                    "auth_service",
+                ),
+            ),
+            (
+                "sql.md",
+                "SQL Databases",
+                core(
+                    "SQL",
+                    "Database",
+                    "Schema",
+                    "Table",
+                    "View",
+                    "MaterialisedView",
+                    "Column",
+                    "Function",
+                    "Procedure",
+                    "Query",
+                    "TablePartition",
+                    "CalculationView",
+                    "DataContract",
+                    "Partial",
+                    "PartialField",
+                    "PartialObject",
+                    "PartialV01",
+                    "PartialV01Field",
+                    "PartialV02",
+                    "PartialV02Field",
+                    "PartialV02Object",
+                ),
+            ),
+            (
+                "snowflake.md",
+                "Snowflake",
+                pick("snowflake")
+                + core(
+                    "SnowflakePipe",
+                    "SnowflakeStage",
+                    "SnowflakeStream",
+                    "SnowflakeTag",
+                    "SnowflakeDynamicTable",
+                    "SnowflakeAIModelContext",
+                    "SnowflakeAIModelVersion",
+                )
+                + pick("bigquery_tag")
+                + core("BigqueryRoutine"),
+            ),
+            (
+                "databricks.md",
+                "Databricks",
+                core(
+                    "Databricks",
+                    "DatabricksUnityCatalogTag",
+                    "DatabricksVolume",
+                    "DatabricksVolumePath",
+                    "DatabricksMetricView",
+                    "DatabricksAIModelContext",
+                    "DatabricksAIModelVersion",
+                )
+                + pick(
+                    "databricks_notebook",
+                    "databricks_external_location",
+                    "databricks_external_location_path",
+                ),
+            ),
+            (
+                "nosql.md",
+                "NoSQL Databases",
+                core(
+                    "NoSQL",
+                    "CosmosMongoDB",
+                    "CosmosMongoDBAccount",
+                    "CosmosMongoDBCollection",
+                    "CosmosMongoDBDatabase",
+                    "DocumentDB",
+                    "DocumentDBCollection",
+                    "DocumentDBDatabase",
+                    "DynamoDBSecondaryIndex",
+                    "MongoDBCollection",
+                    "MongoDBDatabase",
+                )
+                + pick(
+                    "mongo_d_b",
+                    "dynamo_d_b",
+                    "dynamo_dbtable",
+                    "dynamo_d_b_local_secondary_index",
+                    "dynamo_d_b_global_secondary_index",
+                    "dynamo_d_b_attribute",
+                    "cassandra",
+                    "cassandra_table",
+                    "cassandra_view",
+                    "cassandra_column",
+                    "cassandra_index",
+                    "cassandra_keyspace",
+                ),
+            ),
+            (
+                "streaming.md",
+                "Streaming & Events",
+                pick(
+                    "kafka",
+                    "kafka_topic",
+                    "kafka_consumer_group",
+                    "azure_service_bus",
+                    "azure_service_bus_namespace",
+                    "azure_service_bus_schema",
+                    "azure_service_bus_topic",
+                    "azure_event_hub",
+                    "azure_event_hub_consumer_group",
+                    "event_store",
+                ),
+            ),
+            (
+                "cloud-storage.md",
+                "Cloud Storage",
+                pick(
+                    "s3",
+                    "s3_bucket",
+                    "s3_prefix",
+                    "s3_object",
+                    "a_d_l_s",
+                    "a_d_l_s_account",
+                    "a_d_l_s_container",
+                    "a_d_l_s_object",
+                    "g_c_s",
+                    "g_c_s_bucket",
+                    "g_c_s_object",
+                    "object_store",
+                    "a_w_s",
+                    "google",
+                    "azure",
+                    "cloud",
+                ),
+            ),
+            (
+                "dbt.md",
+                "dbt",
+                core(
+                    "Dbt",
+                    "DbtModel",
+                    "DbtModelColumn",
+                    "DbtTest",
+                    "DbtSeed",
+                    "DbtMetric",
+                    "DbtSource",
+                )
+                + pick(
+                    "dbt_tag",
+                    "dbt_dimension",
+                    "dbt_measure",
+                    "dbt_semantic_model",
+                    "dbt_entity",
+                    "dbt_column_process",
+                    "dbt_process",
+                ),
+            ),
+            (
+                "orchestration.md",
+                "Orchestration",
+                core(
+                    "Airflow",
+                    "AirflowDag",
+                    "AirflowTask",
+                    "ADF",
+                    "AdfDataflow",
+                    "AdfDataset",
+                    "AdfPipeline",
+                    "AdfLinkedservice",
+                    "AdfActivity",
+                    "Matillion",
+                    "MatillionGroup",
+                    "MatillionJob",
+                    "MatillionProject",
+                    "MatillionComponent",
+                    "Fivetran",
+                    "FivetranConnector",
+                    "Spark",
+                    "SparkJob",
+                ),
+            ),
+            (
+                "microsoft-bi.md",
+                "Microsoft BI",
+                core(
+                    "PowerBI",
+                    "PowerBIApp",
+                    "PowerBIColumn",
+                    "PowerBIDashboard",
+                    "PowerBIDataflow",
+                    "PowerBIDataflowEntityColumn",
+                    "PowerBIDataset",
+                    "PowerBIDatasource",
+                    "PowerBIMeasure",
+                    "PowerBIPage",
+                    "PowerBIReport",
+                    "PowerBITable",
+                    "PowerBITile",
+                    "PowerBIWorkspace",
+                    "Fabric",
+                    "FabricActivity",
+                    "FabricDashboard",
+                    "FabricDataflow",
+                    "FabricDataflowEntityColumn",
+                    "FabricDataPipeline",
+                    "FabricPage",
+                    "FabricReport",
+                    "FabricSemanticModel",
+                    "FabricSemanticModelTable",
+                    "FabricSemanticModelTableColumn",
+                    "FabricVisual",
+                    "FabricWorkspace",
+                ),
+            ),
+            (
+                "tableau.md",
+                "Tableau",
+                pick(
+                    "tableau",
+                    "tableau_workbook",
+                    "tableau_worksheet",
+                    "tableau_worksheet_field",
+                    "tableau_dashboard",
+                    "tableau_dashboard_field",
+                    "tableau_datasource",
+                    "tableau_datasource_field",
+                    "tableau_calculated_field",
+                    "tableau_project",
+                    "tableau_site",
+                    "tableau_flow",
+                    "tableau_metric",
+                ),
+            ),
+            (
+                "looker.md",
+                "Looker",
+                pick(
+                    "looker",
+                    "looker_look",
+                    "looker_dashboard",
+                    "looker_folder",
+                    "looker_tile",
+                    "looker_model",
+                    "looker_explore",
+                    "looker_project",
+                    "looker_query",
+                    "looker_field",
+                    "looker_view",
+                ),
+            ),
+            (
+                "other-bi.md",
+                "Other BI Tools",
+                pick(
+                    "metabase",
+                    "metabase_collection",
+                    "metabase_dashboard",
+                    "metabase_question",
+                    "mode",
+                    "mode_report",
+                    "mode_query",
+                    "mode_chart",
+                    "mode_workspace",
+                    "mode_collection",
+                    "preset",
+                    "preset_chart",
+                    "preset_dashboard",
+                    "preset_dataset",
+                    "preset_workspace",
+                    "sigma",
+                    "sigma_workbook",
+                    "sigma_page",
+                    "sigma_dataset",
+                    "sigma_dataset_column",
+                    "sigma_data_element",
+                    "sigma_data_element_field",
+                    "quick_sight",
+                    "quick_sight_analysis",
+                    "quick_sight_analysis_visual",
+                    "quick_sight_dashboard",
+                    "quick_sight_dashboard_visual",
+                    "quick_sight_dataset",
+                    "quick_sight_dataset_field",
+                    "quick_sight_folder",
+                    "thoughtspot",
+                    "thoughtspot_worksheet",
+                    "thoughtspot_liveboard",
+                    "thoughtspot_table",
+                    "thoughtspot_view",
+                    "thoughtspot_column",
+                    "thoughtspot_dashlet",
+                    "thoughtspot_answer",
+                    "micro_strategy",
+                    "micro_strategy_report",
+                    "micro_strategy_project",
+                    "micro_strategy_metric",
+                    "micro_strategy_dossier",
+                    "micro_strategy_fact",
+                    "micro_strategy_cube",
+                    "micro_strategy_column",
+                    "micro_strategy_document",
+                    "micro_strategy_attribute",
+                    "micro_strategy_visualization",
+                    "cognos",
+                    "cognos_column",
+                    "cognos_exploration",
+                    "cognos_dataset",
+                    "cognos_dashboard",
+                    "cognos_report",
+                    "cognos_module",
+                    "cognos_file",
+                    "cognos_folder",
+                    "cognos_package",
+                    "cognos_datasource",
+                    "superset",
+                    "superset_chart",
+                    "superset_dashboard",
+                    "superset_dataset",
+                    "qlik",
+                    "qlik_app",
+                    "qlik_chart",
+                    "qlik_column",
+                    "qlik_dataset",
+                    "qlik_sheet",
+                    "qlik_space",
+                    "qlik_stream",
+                    "domo",
+                    "domo_card",
+                    "domo_dashboard",
+                    "domo_dataset",
+                    "domo_dataset_column",
+                    "redash",
+                    "redash_dashboard",
+                    "redash_query",
+                    "redash_visualization",
+                    "sisense",
+                    "sisense_dashboard",
+                    "sisense_datamodel",
+                    "sisense_datamodel_table",
+                    "sisense_folder",
+                    "sisense_widget",
+                    "data_studio",
+                    "data_studio_asset",
+                    "anaplan",
+                    "anaplan_app",
+                    "anaplan_dimension",
+                    "anaplan_line_item",
+                    "anaplan_list",
+                    "anaplan_model",
+                    "anaplan_module",
+                    "anaplan_page",
+                    "anaplan_system_dimension",
+                    "anaplan_view",
+                    "anaplan_workspace",
+                ),
+            ),
+            (
+                "data-quality.md",
+                "Data Quality",
+                core(
+                    "DataQuality",
+                    "DataQualityRule",
+                    "DataQualityRuleTemplate",
+                    "Metric",
+                    "Anomalo",
+                    "AnomaloCheck",
+                    "MonteCarlo",
+                    "MCMonitor",
+                    "MCIncident",
+                    "Soda",
+                    "SodaCheck",
+                ),
+            ),
+            (
+                "data-mesh.md",
+                "Data Mesh",
+                core(
+                    "DataMesh",
+                    "DataDomain",
+                    "DataProduct",
+                ),
+            ),
+            (
+                "ai.md",
+                "AI / ML",
+                core(
+                    "AI",
+                    "AIModel",
+                    "AIModelVersion",
+                    "AIApplication",
+                    "DatabricksAIModelContext",
+                    "DatabricksAIModelVersion",
+                    "SnowflakeAIModelContext",
+                    "SnowflakeAIModelVersion",
+                ),
+            ),
+            (
+                "api.md",
+                "API",
+                pick(
+                    "a_p_i",
+                    "a_p_i_spec",
+                    "a_p_i_query",
+                    "a_p_i_object",
+                    "a_p_i_path",
+                    "a_p_i_field",
+                ),
+            ),
+            (
+                "modeling.md",
+                "Data Modeling & Semantic",
+                core(
+                    "Model",
+                    "ModelDataModel",
+                    "ModelVersion",
+                    "ModelEntity",
+                    "ModelEntityAssociation",
+                    "ModelAttribute",
+                    "ModelAttributeAssociation",
+                )
+                + pick(
+                    "semantic_model",
+                    "semantic_dimension",
+                    "semantic_entity",
+                    "semantic_field",
+                    "semantic_measure",
+                    "cube",
+                    "cube_hierarchy",
+                    "cube_dimension",
+                    "cube_field",
+                ),
+            ),
+            (
+                "sap.md",
+                "SAP",
+                pick(
+                    "s_a_p",
+                    "sap_erp_table",
+                    "sap_erp_column",
+                    "sap_erp_cds_view",
+                    "sap_erp_abap_program",
+                    "sap_erp_transaction_code",
+                    "sap_erp_component",
+                    "sap_erp_function_module",
+                    "sap_erp_view",
+                ),
+            ),
+            (
+                "salesforce.md",
+                "Salesforce",
+                pick(
+                    "salesforce",
+                    "salesforce_object",
+                    "salesforce_field",
+                    "salesforce_organization",
+                    "salesforce_dashboard",
+                    "salesforce_report",
+                ),
+            ),
+            (
+                "cognite.md",
+                "Cognite",
+                pick(
+                    "cognite",
+                    "cognite_asset",
+                    "cognite_event",
+                    "cognite3_d_model",
+                    "cognite_sequence",
+                    "cognite_time_series",
+                    "cognite_file",
+                ),
+            ),
+            (
+                "sagemaker.md",
+                "AWS SageMaker",
+                pick(
+                    "sage_maker_unified_studio",
+                    "sage_maker_unified_studio_project",
+                    "sage_maker_unified_studio_asset",
+                    "sage_maker_unified_studio_subscribed_asset",
+                    "sage_maker_unified_studio_published_asset",
+                    "sage_maker_unified_studio_asset_schema",
+                ),
+            ),
+            (
+                "other-connectors.md",
+                "Other Connectors",
+                pick(
+                    "dataverse",
+                    "dataverse_attribute",
+                    "dataverse_entity",
+                    "dremio",
+                    "dremio_virtual_dataset",
+                    "dremio_column",
+                    "dremio_space",
+                    "dremio_physical_dataset",
+                    "dremio_folder",
+                    "dremio_source",
+                ),
+            ),
+            (
+                "other.md",
+                "Other",
+                pick(
+                    "connection",
+                    "connection_process",
+                    "workflow",
+                    "workflow_run",
+                    "app_workflow_run",
+                    "notebook",
+                    "collection",
+                    "custom",
+                    "custom_entity",
+                    "badge",
+                    "tag_attachment",
+                    "source_tag",
+                    "task",
+                    "form",
+                    "data_set",
+                    "response",
+                    "incident",
+                    "insight",
+                    "saa_s",
+                    "multi_dimensional_dataset",
+                    "infrastructure",
+                    "process_execution",
+                    "readme_template",
+                    "atlan_app",
+                    "atlan_app_deployment",
+                    "atlan_app_installed",
+                    "flow_folder",
+                    "flow_project",
+                    "partial_v01_object",
+                )
+                + core(
+                    "App",
+                    "Application",
+                    "ApplicationField",
+                ),
+            ),
         ]
 
         MKDOCS_ASSETS_DIR.mkdir(parents=True, exist_ok=True)
@@ -1184,7 +1605,10 @@ class Generator:
         for filename, title, asset_list in groups:
             lines = [f"# {title}", ""]
             for asset_info in asset_list:
-                if asset_info.is_core_asset or asset_info.name in AssetInfo._CORE_ASSETS:
+                if (
+                    asset_info.is_core_asset
+                    or asset_info.name in AssetInfo._CORE_ASSETS
+                ):
                     module_ref = f"pyatlan.model.assets.core.{asset_info.module_name}"
                 else:
                     module_ref = f"pyatlan.model.assets.{asset_info.module_name}"

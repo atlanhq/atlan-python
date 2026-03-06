@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
@@ -13,6 +14,7 @@ from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
+    NumericField,
     TextField,
 )
 
@@ -61,12 +63,26 @@ class PowerBI(BI):
     """
     Endorsement status of this asset, in Power BI.
     """
+    POWER_BI_ENDORSED_BY: ClassVar[KeywordField] = KeywordField(
+        "powerBIEndorsedBy", "powerBIEndorsedBy"
+    )
+    """
+    User who endorsed this asset in Power BI.
+    """
+    POWER_BI_ENDORSED_AT: ClassVar[NumericField] = NumericField(
+        "powerBIEndorsedAt", "powerBIEndorsedAt"
+    )
+    """
+    Time at which this asset was endorsed in Power BI.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "power_b_i_is_hidden",
         "power_b_i_table_qualified_name",
         "power_b_i_format_string",
         "power_b_i_endorsement",
+        "power_b_i_endorsed_by",
+        "power_b_i_endorsed_at",
     ]
 
     @property
@@ -121,6 +137,30 @@ class PowerBI(BI):
             self.attributes = self.Attributes()
         self.attributes.power_b_i_endorsement = power_b_i_endorsement
 
+    @property
+    def power_b_i_endorsed_by(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.power_b_i_endorsed_by
+        )
+
+    @power_b_i_endorsed_by.setter
+    def power_b_i_endorsed_by(self, power_b_i_endorsed_by: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_endorsed_by = power_b_i_endorsed_by
+
+    @property
+    def power_b_i_endorsed_at(self) -> Optional[datetime]:
+        return (
+            None if self.attributes is None else self.attributes.power_b_i_endorsed_at
+        )
+
+    @power_b_i_endorsed_at.setter
+    def power_b_i_endorsed_at(self, power_b_i_endorsed_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_endorsed_at = power_b_i_endorsed_at
+
     class Attributes(BI.Attributes):
         power_b_i_is_hidden: Optional[bool] = Field(default=None, description="")
         power_b_i_table_qualified_name: Optional[str] = Field(
@@ -130,6 +170,8 @@ class PowerBI(BI):
         power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
             default=None, description=""
         )
+        power_b_i_endorsed_by: Optional[str] = Field(default=None, description="")
+        power_b_i_endorsed_at: Optional[datetime] = Field(default=None, description="")
 
     attributes: PowerBI.Attributes = Field(
         default_factory=lambda: PowerBI.Attributes(),

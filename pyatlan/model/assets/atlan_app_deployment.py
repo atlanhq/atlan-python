@@ -11,7 +11,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.enums import AtlanAppDeploymentOperation, AtlanAppDeploymentStatus
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
 
-from .atlan_app import AtlanApp
+from .core.atlan_app import AtlanApp
 
 
 class AtlanAppDeployment(AtlanApp):
@@ -54,12 +54,19 @@ class AtlanAppDeployment(AtlanApp):
     """
     Type of operation requested.
     """
+    ATLAN_APP_ERROR_DETAILS: ClassVar[KeywordField] = KeywordField(
+        "atlanAppErrorDetails", "atlanAppErrorDetails"
+    )
+    """
+    Detailed error message explaining why the deployment failed. Should only be populated when status = FAILED.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "atlan_app_version_id",
         "atlan_app_version_u_u_i_d",
         "atlan_app_status",
         "atlan_app_operation",
+        "atlan_app_error_details",
     ]
 
     @property
@@ -108,6 +115,18 @@ class AtlanAppDeployment(AtlanApp):
             self.attributes = self.Attributes()
         self.attributes.atlan_app_operation = atlan_app_operation
 
+    @property
+    def atlan_app_error_details(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.atlan_app_error_details
+        )
+
+    @atlan_app_error_details.setter
+    def atlan_app_error_details(self, atlan_app_error_details: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_app_error_details = atlan_app_error_details
+
     class Attributes(AtlanApp.Attributes):
         atlan_app_version_id: Optional[int] = Field(default=None, description="")
         atlan_app_version_u_u_i_d: Optional[str] = Field(default=None, description="")
@@ -117,6 +136,7 @@ class AtlanAppDeployment(AtlanApp):
         atlan_app_operation: Optional[AtlanAppDeploymentOperation] = Field(
             default=None, description=""
         )
+        atlan_app_error_details: Optional[str] = Field(default=None, description="")
 
     attributes: AtlanAppDeployment.Attributes = Field(
         default_factory=lambda: AtlanAppDeployment.Attributes(),

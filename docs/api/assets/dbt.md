@@ -4,6 +4,10 @@
 
 ::: pyatlan.model.assets.core.dbt.Dbt
 
+## DbtMetric
+
+::: pyatlan.model.assets.core.dbt_metric.DbtMetric
+
 ## DbtModel
 
 ::: pyatlan.model.assets.core.dbt_model.DbtModel
@@ -12,21 +16,17 @@
 
 ::: pyatlan.model.assets.core.dbt_model_column.DbtModelColumn
 
-## DbtTest
-
-::: pyatlan.model.assets.core.dbt_test.DbtTest
-
 ## DbtSeed
 
 ::: pyatlan.model.assets.core.dbt_seed.DbtSeed
 
-## DbtMetric
-
-::: pyatlan.model.assets.core.dbt_metric.DbtMetric
-
 ## DbtSource
 
 ::: pyatlan.model.assets.core.dbt_source.DbtSource
+
+## DbtTest
+
+::: pyatlan.model.assets.core.dbt_test.DbtTest
 
 ## DbtTag
 

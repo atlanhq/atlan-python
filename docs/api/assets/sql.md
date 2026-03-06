@@ -1,56 +1,28 @@
 # SQL Databases
 
-## SQL
+## CalculationView
 
-::: pyatlan.model.assets.core.s_q_l.SQL
-
-## Database
-
-::: pyatlan.model.assets.core.database.Database
-
-## Schema
-
-::: pyatlan.model.assets.core.schema.Schema
-
-## Table
-
-::: pyatlan.model.assets.core.table.Table
-
-## View
-
-::: pyatlan.model.assets.core.view.View
-
-## MaterialisedView
-
-::: pyatlan.model.assets.core.materialised_view.MaterialisedView
+::: pyatlan.model.assets.core.calculation_view.CalculationView
 
 ## Column
 
 ::: pyatlan.model.assets.core.column.Column
 
+## DataContract
+
+::: pyatlan.model.assets.core.data_contract.DataContract
+
+## Database
+
+::: pyatlan.model.assets.core.database.Database
+
 ## Function
 
 ::: pyatlan.model.assets.core.function.Function
 
-## Procedure
+## MaterialisedView
 
-::: pyatlan.model.assets.core.procedure.Procedure
-
-## Query
-
-::: pyatlan.model.assets.core.query.Query
-
-## TablePartition
-
-::: pyatlan.model.assets.core.table_partition.TablePartition
-
-## CalculationView
-
-::: pyatlan.model.assets.core.calculation_view.CalculationView
-
-## DataContract
-
-::: pyatlan.model.assets.core.data_contract.DataContract
+::: pyatlan.model.assets.core.materialised_view.MaterialisedView
 
 ## Partial
 
@@ -64,22 +36,30 @@
 
 ::: pyatlan.model.assets.core.partial_object.PartialObject
 
-## PartialV01
+## Procedure
 
-::: pyatlan.model.assets.core.partial_v01.PartialV01
+::: pyatlan.model.assets.core.procedure.Procedure
 
-## PartialV01Field
+## Query
 
-::: pyatlan.model.assets.core.partial_v01_field.PartialV01Field
+::: pyatlan.model.assets.core.query.Query
 
-## PartialV02
+## SQL
 
-::: pyatlan.model.assets.core.partial_v02.PartialV02
+::: pyatlan.model.assets.core.s_q_l.SQL
 
-## PartialV02Field
+## Schema
 
-::: pyatlan.model.assets.core.partial_v02_field.PartialV02Field
+::: pyatlan.model.assets.core.schema.Schema
 
-## PartialV02Object
+## Table
 
-::: pyatlan.model.assets.core.partial_v02_object.PartialV02Object
+::: pyatlan.model.assets.core.table.Table
+
+## TablePartition
+
+::: pyatlan.model.assets.core.table_partition.TablePartition
+
+## View
+
+::: pyatlan.model.assets.core.view.View

@@ -1,9 +1,5 @@
 # NoSQL Databases
 
-## NoSQL
-
-::: pyatlan.model.assets.core.no_s_q_l.NoSQL
-
 ## CosmosMongoDB
 
 ::: pyatlan.model.assets.core.cosmos_mongo_d_b.CosmosMongoDB
@@ -20,18 +16,6 @@
 
 ::: pyatlan.model.assets.core.cosmos_mongo_d_b_database.CosmosMongoDBDatabase
 
-## MongoDB
-
-::: pyatlan.model.assets.mongo_d_b.MongoDB
-
-## MongoDBCollection
-
-::: pyatlan.model.assets.core.mongo_d_b_collection.MongoDBCollection
-
-## MongoDBDatabase
-
-::: pyatlan.model.assets.core.mongo_d_b_database.MongoDBDatabase
-
 ## DocumentDB
 
 ::: pyatlan.model.assets.core.document_d_b.DocumentDB
@@ -44,6 +28,26 @@
 
 ::: pyatlan.model.assets.core.document_d_b_database.DocumentDBDatabase
 
+## DynamoDBSecondaryIndex
+
+::: pyatlan.model.assets.core.dynamo_d_b_secondary_index.DynamoDBSecondaryIndex
+
+## MongoDBCollection
+
+::: pyatlan.model.assets.core.mongo_d_b_collection.MongoDBCollection
+
+## MongoDBDatabase
+
+::: pyatlan.model.assets.core.mongo_d_b_database.MongoDBDatabase
+
+## NoSQL
+
+::: pyatlan.model.assets.core.no_s_q_l.NoSQL
+
+## MongoDB
+
+::: pyatlan.model.assets.mongo_d_b.MongoDB
+
 ## DynamoDB
 
 ::: pyatlan.model.assets.dynamo_d_b.DynamoDB
@@ -51,10 +55,6 @@
 ## DynamoDBTable
 
 ::: pyatlan.model.assets.dynamo_dbtable.DynamoDBTable
-
-## DynamoDBSecondaryIndex
-
-::: pyatlan.model.assets.core.dynamo_d_b_secondary_index.DynamoDBSecondaryIndex
 
 ## DynamoDBLocalSecondaryIndex
 

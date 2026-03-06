@@ -34,31 +34,31 @@ class DynamoDB(NoSQL):
         "dynamoDBStatus", "dynamoDBStatus"
     )
     """
-    Status of the DynamoDB Asset
+    Status of the DynamoDB asset.
     """
     DYNAMO_DB_PARTITION_KEY: ClassVar[KeywordField] = KeywordField(
         "dynamoDBPartitionKey", "dynamoDBPartitionKey"
     )
     """
-    Specifies the partition key of the DynamoDB Table/Index
+    Specifies the partition key of the DynamoDB table or index.
     """
     DYNAMO_DB_SORT_KEY: ClassVar[KeywordField] = KeywordField(
         "dynamoDBSortKey", "dynamoDBSortKey"
     )
     """
-    Specifies the sort key of the DynamoDB Table/Index
+    Specifies the sort key of the DynamoDB table or index.
     """
     DYNAMO_DB_READ_CAPACITY_UNITS: ClassVar[NumericField] = NumericField(
         "dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits"
     )
     """
-    The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException
+    The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException.
     """
     DYNAMO_DB_WRITE_CAPACITY_UNITS: ClassVar[NumericField] = NumericField(
         "dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits"
     )
     """
-    The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException
+    The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException.
     """
 
     _convenience_properties: ClassVar[List[str]] = [

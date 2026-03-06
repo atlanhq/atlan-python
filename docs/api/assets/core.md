@@ -1,72 +1,68 @@
 # Core Base Classes
 
-## Referenceable
-
-::: pyatlan.model.assets.core.referenceable.Referenceable
-
 ## Asset
 
 ::: pyatlan.model.assets.core.asset.Asset
-
-## Catalog
-
-::: pyatlan.model.assets.core.catalog.Catalog
-
-## Namespace
-
-::: pyatlan.model.assets.core.namespace.Namespace
-
-## Folder
-
-::: pyatlan.model.assets.core.folder.Folder
-
-## Resource
-
-::: pyatlan.model.assets.core.resource.Resource
-
-## Process
-
-::: pyatlan.model.assets.core.process.Process
-
-## ColumnProcess
-
-::: pyatlan.model.assets.core.column_process.ColumnProcess
 
 ## BIProcess
 
 ::: pyatlan.model.assets.core.b_i_process.BIProcess
 
-## FlowDataset
+## Catalog
 
-::: pyatlan.model.assets.core.flow_dataset.FlowDataset
+::: pyatlan.model.assets.core.catalog.Catalog
 
-## FlowField
+## ColumnProcess
 
-::: pyatlan.model.assets.core.flow_field.FlowField
+::: pyatlan.model.assets.core.column_process.ColumnProcess
 
 ## Flow
 
 ::: pyatlan.model.assets.core.flow.Flow
 
-## FlowReusableUnit
-
-::: pyatlan.model.assets.core.flow_reusable_unit.FlowReusableUnit
-
 ## FlowControlOperation
 
 ::: pyatlan.model.assets.core.flow_control_operation.FlowControlOperation
+
+## FlowDataset
+
+::: pyatlan.model.assets.core.flow_dataset.FlowDataset
 
 ## FlowDatasetOperation
 
 ::: pyatlan.model.assets.core.flow_dataset_operation.FlowDatasetOperation
 
+## FlowField
+
+::: pyatlan.model.assets.core.flow_field.FlowField
+
 ## FlowFieldOperation
 
 ::: pyatlan.model.assets.core.flow_field_operation.FlowFieldOperation
 
-## Tag
+## FlowReusableUnit
 
-::: pyatlan.model.assets.core.tag.Tag
+::: pyatlan.model.assets.core.flow_reusable_unit.FlowReusableUnit
+
+## Folder
+
+::: pyatlan.model.assets.core.folder.Folder
+
+## Namespace
+
+::: pyatlan.model.assets.core.namespace.Namespace
+
+## Process
+
+::: pyatlan.model.assets.core.process.Process
+
+## Referenceable
+
+::: pyatlan.model.assets.core.referenceable.Referenceable
+
+## Resource
+
+::: pyatlan.model.assets.core.resource.Resource
 
 ## SchemaRegistry
 
@@ -76,6 +72,6 @@
 
 ::: pyatlan.model.assets.core.schema_registry_subject.SchemaRegistrySubject
 
-## IndistinctAsset
+## Tag
 
-::: pyatlan.model.assets.core.indistinct_asset.IndistinctAsset
+::: pyatlan.model.assets.core.tag.Tag

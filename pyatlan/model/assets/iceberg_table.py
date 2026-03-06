@@ -9,11 +9,7 @@ from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import (
-    DynamoDBSecondaryIndexProjectionType,
-    DynamoDBStatus,
-    TableType,
-)
+from pyatlan.model.enums import TableType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -21,31 +17,56 @@ from pyatlan.model.fields.atlan_fields import (
     NumericField,
     TextField,
 )
+from pyatlan.model.structs import IcebergPartition
 
-from .table import Table
+from .core.table import Table
 
 
-class DynamoDBSecondaryIndex(Table):
+class IcebergTable(Table):
     """Description"""
 
-    type_name: str = Field(default="DynamoDBSecondaryIndex", allow_mutation=False)
+    type_name: str = Field(default="IcebergTable", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DynamoDBSecondaryIndex":
-            raise ValueError("must be DynamoDBSecondaryIndex")
+        if v != "IcebergTable":
+            raise ValueError("must be IcebergTable")
         return v
 
     def __setattr__(self, name, value):
-        if name in DynamoDBSecondaryIndex._convenience_properties:
+        if name in IcebergTable._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "dynamoDBSecondaryIndexProjectionType", "dynamoDBSecondaryIndexProjectionType"
+    ICEBERG_CURRENT_SNAPSHOT_ID: ClassVar[NumericField] = NumericField(
+        "icebergCurrentSnapshotId", "icebergCurrentSnapshotId"
     )
     """
-    Specifies attributes that are projected from the DynamoDB table into the index.
+    Current snapshot identifier for this Iceberg table.
+    """
+    ICEBERG_FORMAT_VERSION: ClassVar[NumericField] = NumericField(
+        "icebergFormatVersion", "icebergFormatVersion"
+    )
+    """
+    Iceberg format version of the table.
+    """
+    ICEBERG_TABLE_PROPERTIES: ClassVar[KeywordField] = KeywordField(
+        "icebergTableProperties", "icebergTableProperties"
+    )
+    """
+    Properties of the Iceberg table.
+    """
+    ICEBERG_TABLE_PARTITIONS: ClassVar[KeywordField] = KeywordField(
+        "icebergTablePartitions", "icebergTablePartitions"
+    )
+    """
+    Partition information for the Iceberg table.
+    """
+    ICEBERG_SNAPSHOTS: ClassVar[KeywordField] = KeywordField(
+        "icebergSnapshots", "icebergSnapshots"
+    )
+    """
+    Snapshot information for the Iceberg table.
     """
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
@@ -295,45 +316,25 @@ class DynamoDBSecondaryIndex(Table):
     """
     Whether this asset is secure (true) or not (false).
     """
-    DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dynamoDBStatus", "dynamoDBStatus"
+    ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName"
     )
     """
-    Status of the DynamoDB asset.
+    Unique name of the immediate parent namespace in which this asset exists.
     """
-    DYNAMO_DB_PARTITION_KEY: ClassVar[KeywordField] = KeywordField(
-        "dynamoDBPartitionKey", "dynamoDBPartitionKey"
+    ICEBERG_NAMESPACE_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "icebergNamespaceHierarchy", "icebergNamespaceHierarchy"
     )
     """
-    Specifies the partition key of the DynamoDB table or index.
-    """
-    DYNAMO_DB_SORT_KEY: ClassVar[KeywordField] = KeywordField(
-        "dynamoDBSortKey", "dynamoDBSortKey"
-    )
-    """
-    Specifies the sort key of the DynamoDB table or index.
-    """
-    DYNAMO_DB_READ_CAPACITY_UNITS: ClassVar[NumericField] = NumericField(
-        "dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits"
-    )
-    """
-    The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException.
-    """
-    DYNAMO_DB_WRITE_CAPACITY_UNITS: ClassVar[NumericField] = NumericField(
-        "dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits"
-    )
-    """
-    The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException.
-    """
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-    )
-    """
-    Represents attributes for describing the key schema for the table and indexes.
-    """
+    Ordered array of namespace assets with qualified name and name representing the complete namespace hierarchy path for this asset, from immediate parent to root namespace.
+    """  # noqa: E501
 
     _convenience_properties: ClassVar[List[str]] = [
-        "dynamo_d_b_secondary_index_projection_type",
+        "iceberg_current_snapshot_id",
+        "iceberg_format_version",
+        "iceberg_table_properties",
+        "iceberg_table_partitions",
+        "iceberg_snapshots",
         "column_count",
         "row_count",
         "size_bytes",
@@ -379,36 +380,77 @@ class DynamoDBSecondaryIndex(Table):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
-        "dynamo_d_b_status",
-        "dynamo_d_b_partition_key",
-        "dynamo_d_b_sort_key",
-        "dynamo_d_b_read_capacity_units",
-        "dynamo_d_b_write_capacity_units",
-        "no_s_q_l_schema_definition",
+        "iceberg_parent_namespace_qualified_name",
+        "iceberg_namespace_hierarchy",
     ]
 
     @property
-    def dynamo_d_b_secondary_index_projection_type(
-        self,
-    ) -> Optional[DynamoDBSecondaryIndexProjectionType]:
+    def iceberg_current_snapshot_id(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.dynamo_d_b_secondary_index_projection_type
+            else self.attributes.iceberg_current_snapshot_id
         )
 
-    @dynamo_d_b_secondary_index_projection_type.setter
-    def dynamo_d_b_secondary_index_projection_type(
-        self,
-        dynamo_d_b_secondary_index_projection_type: Optional[
-            DynamoDBSecondaryIndexProjectionType
-        ],
+    @iceberg_current_snapshot_id.setter
+    def iceberg_current_snapshot_id(self, iceberg_current_snapshot_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_current_snapshot_id = iceberg_current_snapshot_id
+
+    @property
+    def iceberg_format_version(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.iceberg_format_version
+        )
+
+    @iceberg_format_version.setter
+    def iceberg_format_version(self, iceberg_format_version: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_format_version = iceberg_format_version
+
+    @property
+    def iceberg_table_properties(self) -> Optional[Dict[str, str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_table_properties
+        )
+
+    @iceberg_table_properties.setter
+    def iceberg_table_properties(
+        self, iceberg_table_properties: Optional[Dict[str, str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_secondary_index_projection_type = (
-            dynamo_d_b_secondary_index_projection_type
+        self.attributes.iceberg_table_properties = iceberg_table_properties
+
+    @property
+    def iceberg_table_partitions(self) -> Optional[List[IcebergPartition]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_table_partitions
         )
+
+    @iceberg_table_partitions.setter
+    def iceberg_table_partitions(
+        self, iceberg_table_partitions: Optional[List[IcebergPartition]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_table_partitions = iceberg_table_partitions
+
+    @property
+    def iceberg_snapshots(self) -> Optional[List[Dict[str, str]]]:
+        return None if self.attributes is None else self.attributes.iceberg_snapshots
+
+    @iceberg_snapshots.setter
+    def iceberg_snapshots(self, iceberg_snapshots: Optional[List[Dict[str, str]]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_snapshots = iceberg_snapshots
 
     @property
     def column_count(self) -> Optional[int]:
@@ -919,91 +961,51 @@ class DynamoDBSecondaryIndex(Table):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
-    def dynamo_d_b_status(self) -> Optional[DynamoDBStatus]:
-        return None if self.attributes is None else self.attributes.dynamo_d_b_status
-
-    @dynamo_d_b_status.setter
-    def dynamo_d_b_status(self, dynamo_d_b_status: Optional[DynamoDBStatus]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_status = dynamo_d_b_status
-
-    @property
-    def dynamo_d_b_partition_key(self) -> Optional[str]:
+    def iceberg_parent_namespace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.dynamo_d_b_partition_key
+            else self.attributes.iceberg_parent_namespace_qualified_name
         )
 
-    @dynamo_d_b_partition_key.setter
-    def dynamo_d_b_partition_key(self, dynamo_d_b_partition_key: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_partition_key = dynamo_d_b_partition_key
-
-    @property
-    def dynamo_d_b_sort_key(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dynamo_d_b_sort_key
-
-    @dynamo_d_b_sort_key.setter
-    def dynamo_d_b_sort_key(self, dynamo_d_b_sort_key: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_sort_key = dynamo_d_b_sort_key
-
-    @property
-    def dynamo_d_b_read_capacity_units(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dynamo_d_b_read_capacity_units
-        )
-
-    @dynamo_d_b_read_capacity_units.setter
-    def dynamo_d_b_read_capacity_units(
-        self, dynamo_d_b_read_capacity_units: Optional[int]
+    @iceberg_parent_namespace_qualified_name.setter
+    def iceberg_parent_namespace_qualified_name(
+        self, iceberg_parent_namespace_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_read_capacity_units = dynamo_d_b_read_capacity_units
+        self.attributes.iceberg_parent_namespace_qualified_name = (
+            iceberg_parent_namespace_qualified_name
+        )
 
     @property
-    def dynamo_d_b_write_capacity_units(self) -> Optional[int]:
+    def iceberg_namespace_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.dynamo_d_b_write_capacity_units
+            else self.attributes.iceberg_namespace_hierarchy
         )
 
-    @dynamo_d_b_write_capacity_units.setter
-    def dynamo_d_b_write_capacity_units(
-        self, dynamo_d_b_write_capacity_units: Optional[int]
+    @iceberg_namespace_hierarchy.setter
+    def iceberg_namespace_hierarchy(
+        self, iceberg_namespace_hierarchy: Optional[List[Dict[str, str]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_write_capacity_units = (
-            dynamo_d_b_write_capacity_units
-        )
-
-    @property
-    def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.no_s_q_l_schema_definition
-        )
-
-    @no_s_q_l_schema_definition.setter
-    def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
+        self.attributes.iceberg_namespace_hierarchy = iceberg_namespace_hierarchy
 
     class Attributes(Table.Attributes):
-        dynamo_d_b_secondary_index_projection_type: Optional[
-            DynamoDBSecondaryIndexProjectionType
-        ] = Field(default=None, description="")
+        iceberg_current_snapshot_id: Optional[int] = Field(default=None, description="")
+        iceberg_format_version: Optional[int] = Field(default=None, description="")
+        iceberg_table_properties: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
+        iceberg_table_partitions: Optional[List[IcebergPartition]] = Field(
+            default=None, description=""
+        )
+        iceberg_snapshots: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         column_count: Optional[int] = Field(default=None, description="")
         row_count: Optional[int] = Field(default=None, description="")
         size_bytes: Optional[int] = Field(default=None, description="")
@@ -1059,24 +1061,21 @@ class DynamoDBSecondaryIndex(Table):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
-        dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
+        iceberg_parent_namespace_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        dynamo_d_b_partition_key: Optional[str] = Field(default=None, description="")
-        dynamo_d_b_sort_key: Optional[str] = Field(default=None, description="")
-        dynamo_d_b_read_capacity_units: Optional[int] = Field(
+        iceberg_namespace_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        dynamo_d_b_write_capacity_units: Optional[int] = Field(
-            default=None, description=""
-        )
-        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
 
-    attributes: DynamoDBSecondaryIndex.Attributes = Field(
-        default_factory=lambda: DynamoDBSecondaryIndex.Attributes(),
+    attributes: IcebergTable.Attributes = Field(
+        default_factory=lambda: IcebergTable.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
             "so are described in the sub-types of this schema."
         ),
     )
+
+
+IcebergTable.Attributes.update_forward_refs()

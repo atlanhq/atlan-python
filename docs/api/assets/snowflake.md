@@ -4,6 +4,18 @@
 
 ::: pyatlan.model.assets.snowflake.Snowflake
 
+## SnowflakeAIModelContext
+
+::: pyatlan.model.assets.core.snowflake_a_i_model_context.SnowflakeAIModelContext
+
+## SnowflakeAIModelVersion
+
+::: pyatlan.model.assets.core.snowflake_a_i_model_version.SnowflakeAIModelVersion
+
+## SnowflakeDynamicTable
+
+::: pyatlan.model.assets.core.snowflake_dynamic_table.SnowflakeDynamicTable
+
 ## SnowflakePipe
 
 ::: pyatlan.model.assets.core.snowflake_pipe.SnowflakePipe
@@ -19,18 +31,6 @@
 ## SnowflakeTag
 
 ::: pyatlan.model.assets.core.snowflake_tag.SnowflakeTag
-
-## SnowflakeDynamicTable
-
-::: pyatlan.model.assets.core.snowflake_dynamic_table.SnowflakeDynamicTable
-
-## SnowflakeAIModelContext
-
-::: pyatlan.model.assets.core.snowflake_a_i_model_context.SnowflakeAIModelContext
-
-## SnowflakeAIModelVersion
-
-::: pyatlan.model.assets.core.snowflake_a_i_model_version.SnowflakeAIModelVersion
 
 ## BigqueryTag
 

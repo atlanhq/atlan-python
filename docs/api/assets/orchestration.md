@@ -1,5 +1,29 @@
 # Orchestration
 
+## ADF
+
+::: pyatlan.model.assets.core.a_d_f.ADF
+
+## AdfActivity
+
+::: pyatlan.model.assets.core.adf_activity.AdfActivity
+
+## AdfDataflow
+
+::: pyatlan.model.assets.core.adf_dataflow.AdfDataflow
+
+## AdfDataset
+
+::: pyatlan.model.assets.core.adf_dataset.AdfDataset
+
+## AdfLinkedservice
+
+::: pyatlan.model.assets.core.adf_linkedservice.AdfLinkedservice
+
+## AdfPipeline
+
+::: pyatlan.model.assets.core.adf_pipeline.AdfPipeline
+
 ## Airflow
 
 ::: pyatlan.model.assets.core.airflow.Airflow
@@ -12,33 +36,21 @@
 
 ::: pyatlan.model.assets.core.airflow_task.AirflowTask
 
-## ADF
+## Fivetran
 
-::: pyatlan.model.assets.core.a_d_f.ADF
+::: pyatlan.model.assets.core.fivetran.Fivetran
 
-## AdfDataflow
+## FivetranConnector
 
-::: pyatlan.model.assets.core.adf_dataflow.AdfDataflow
-
-## AdfDataset
-
-::: pyatlan.model.assets.core.adf_dataset.AdfDataset
-
-## AdfPipeline
-
-::: pyatlan.model.assets.core.adf_pipeline.AdfPipeline
-
-## AdfLinkedservice
-
-::: pyatlan.model.assets.core.adf_linkedservice.AdfLinkedservice
-
-## AdfActivity
-
-::: pyatlan.model.assets.core.adf_activity.AdfActivity
+::: pyatlan.model.assets.core.fivetran_connector.FivetranConnector
 
 ## Matillion
 
 ::: pyatlan.model.assets.core.matillion.Matillion
+
+## MatillionComponent
+
+::: pyatlan.model.assets.core.matillion_component.MatillionComponent
 
 ## MatillionGroup
 
@@ -51,18 +63,6 @@
 ## MatillionProject
 
 ::: pyatlan.model.assets.core.matillion_project.MatillionProject
-
-## MatillionComponent
-
-::: pyatlan.model.assets.core.matillion_component.MatillionComponent
-
-## Fivetran
-
-::: pyatlan.model.assets.core.fivetran.Fivetran
-
-## FivetranConnector
-
-::: pyatlan.model.assets.core.fivetran_connector.FivetranConnector
 
 ## Spark
 

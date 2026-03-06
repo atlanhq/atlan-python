@@ -4,6 +4,18 @@
 
 ::: pyatlan.model.assets.core.databricks.Databricks
 
+## DatabricksAIModelContext
+
+::: pyatlan.model.assets.core.databricks_a_i_model_context.DatabricksAIModelContext
+
+## DatabricksAIModelVersion
+
+::: pyatlan.model.assets.core.databricks_a_i_model_version.DatabricksAIModelVersion
+
+## DatabricksMetricView
+
+::: pyatlan.model.assets.core.databricks_metric_view.DatabricksMetricView
+
 ## DatabricksUnityCatalogTag
 
 ::: pyatlan.model.assets.core.databricks_unity_catalog_tag.DatabricksUnityCatalogTag
@@ -15,18 +27,6 @@
 ## DatabricksVolumePath
 
 ::: pyatlan.model.assets.core.databricks_volume_path.DatabricksVolumePath
-
-## DatabricksMetricView
-
-::: pyatlan.model.assets.core.databricks_metric_view.DatabricksMetricView
-
-## DatabricksAIModelContext
-
-::: pyatlan.model.assets.core.databricks_a_i_model_context.DatabricksAIModelContext
-
-## DatabricksAIModelVersion
-
-::: pyatlan.model.assets.core.databricks_a_i_model_version.DatabricksAIModelVersion
 
 ## DatabricksNotebook
 

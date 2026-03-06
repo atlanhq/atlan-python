@@ -1,5 +1,57 @@
 # Microsoft BI
 
+## Fabric
+
+::: pyatlan.model.assets.core.fabric.Fabric
+
+## FabricActivity
+
+::: pyatlan.model.assets.core.fabric_activity.FabricActivity
+
+## FabricDashboard
+
+::: pyatlan.model.assets.core.fabric_dashboard.FabricDashboard
+
+## FabricDataPipeline
+
+::: pyatlan.model.assets.core.fabric_data_pipeline.FabricDataPipeline
+
+## FabricDataflow
+
+::: pyatlan.model.assets.core.fabric_dataflow.FabricDataflow
+
+## FabricDataflowEntityColumn
+
+::: pyatlan.model.assets.core.fabric_dataflow_entity_column.FabricDataflowEntityColumn
+
+## FabricPage
+
+::: pyatlan.model.assets.core.fabric_page.FabricPage
+
+## FabricReport
+
+::: pyatlan.model.assets.core.fabric_report.FabricReport
+
+## FabricSemanticModel
+
+::: pyatlan.model.assets.core.fabric_semantic_model.FabricSemanticModel
+
+## FabricSemanticModelTable
+
+::: pyatlan.model.assets.core.fabric_semantic_model_table.FabricSemanticModelTable
+
+## FabricSemanticModelTableColumn
+
+::: pyatlan.model.assets.core.fabric_semantic_model_table_column.FabricSemanticModelTableColumn
+
+## FabricVisual
+
+::: pyatlan.model.assets.core.fabric_visual.FabricVisual
+
+## FabricWorkspace
+
+::: pyatlan.model.assets.core.fabric_workspace.FabricWorkspace
+
 ## PowerBI
 
 ::: pyatlan.model.assets.core.power_b_i.PowerBI
@@ -55,55 +107,3 @@
 ## PowerBIWorkspace
 
 ::: pyatlan.model.assets.core.power_b_i_workspace.PowerBIWorkspace
-
-## Fabric
-
-::: pyatlan.model.assets.core.fabric.Fabric
-
-## FabricActivity
-
-::: pyatlan.model.assets.core.fabric_activity.FabricActivity
-
-## FabricDashboard
-
-::: pyatlan.model.assets.core.fabric_dashboard.FabricDashboard
-
-## FabricDataflow
-
-::: pyatlan.model.assets.core.fabric_dataflow.FabricDataflow
-
-## FabricDataflowEntityColumn
-
-::: pyatlan.model.assets.core.fabric_dataflow_entity_column.FabricDataflowEntityColumn
-
-## FabricDataPipeline
-
-::: pyatlan.model.assets.core.fabric_data_pipeline.FabricDataPipeline
-
-## FabricPage
-
-::: pyatlan.model.assets.core.fabric_page.FabricPage
-
-## FabricReport
-
-::: pyatlan.model.assets.core.fabric_report.FabricReport
-
-## FabricSemanticModel
-
-::: pyatlan.model.assets.core.fabric_semantic_model.FabricSemanticModel
-
-## FabricSemanticModelTable
-
-::: pyatlan.model.assets.core.fabric_semantic_model_table.FabricSemanticModelTable
-
-## FabricSemanticModelTableColumn
-
-::: pyatlan.model.assets.core.fabric_semantic_model_table_column.FabricSemanticModelTableColumn
-
-## FabricVisual
-
-::: pyatlan.model.assets.core.fabric_visual.FabricVisual
-
-## FabricWorkspace
-
-::: pyatlan.model.assets.core.fabric_workspace.FabricWorkspace

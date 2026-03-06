@@ -3,7 +3,7 @@ repos:
     rev: v6.0.0
     hooks:
       - id: check-yaml
-        exclude: ^\.github/workflows/
+        exclude: ^(\.github/workflows/|mkdocs\.yml$)
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: debug-statements

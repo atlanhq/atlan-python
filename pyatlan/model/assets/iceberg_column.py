@@ -9,58 +9,31 @@ from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AtlanConnectorType, DynamoDBStatus
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
-    RelationField,
     TextField,
 )
 from pyatlan.model.structs import AssetHistogram, ColumnValueFrequencyMap, Histogram
-from pyatlan.utils import init_guid, validate_required_fields
 
 from .core.column import Column
 
 
-class DynamoDBAttribute(Column):
+class IcebergColumn(Column):
     """Description"""
 
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        parent_qualified_name: str,
-        order: int,
-        parent_name: Optional[str] = None,
-        connection_qualified_name: Optional[str] = None,
-    ) -> DynamoDBAttribute:
-        validate_required_fields(
-            ["name", "parent_qualified_name", "order"],
-            [name, parent_qualified_name, order],
-        )
-        attributes = DynamoDBAttribute.Attributes.creator(
-            name=name,
-            parent_qualified_name=parent_qualified_name,
-            order=order,
-            parent_name=parent_name,
-            connection_qualified_name=connection_qualified_name,
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field(default="DynamoDBAttribute", allow_mutation=False)
+    type_name: str = Field(default="IcebergColumn", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DynamoDBAttribute":
-            raise ValueError("must be DynamoDBAttribute")
+        if v != "IcebergColumn":
+            raise ValueError("must be IcebergColumn")
         return v
 
     def __setattr__(self, name, value):
-        if name in DynamoDBAttribute._convenience_properties:
+        if name in IcebergColumn._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -526,47 +499,18 @@ class DynamoDBAttribute(Column):
     """
     Whether this asset is secure (true) or not (false).
     """
-    DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
-        "dynamoDBStatus", "dynamoDBStatus"
+    ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName"
     )
     """
-    Status of the DynamoDB asset.
+    Unique name of the immediate parent namespace in which this asset exists.
     """
-    DYNAMO_DB_PARTITION_KEY: ClassVar[KeywordField] = KeywordField(
-        "dynamoDBPartitionKey", "dynamoDBPartitionKey"
+    ICEBERG_NAMESPACE_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "icebergNamespaceHierarchy", "icebergNamespaceHierarchy"
     )
     """
-    Specifies the partition key of the DynamoDB table or index.
-    """
-    DYNAMO_DB_SORT_KEY: ClassVar[KeywordField] = KeywordField(
-        "dynamoDBSortKey", "dynamoDBSortKey"
-    )
-    """
-    Specifies the sort key of the DynamoDB table or index.
-    """
-    DYNAMO_DB_READ_CAPACITY_UNITS: ClassVar[NumericField] = NumericField(
-        "dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits"
-    )
-    """
-    The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException.
-    """
-    DYNAMO_DB_WRITE_CAPACITY_UNITS: ClassVar[NumericField] = NumericField(
-        "dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits"
-    )
-    """
-    The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException.
-    """
-    NO_SQL_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-    )
-    """
-    Represents attributes for describing the key schema for the table and indexes.
-    """
-
-    DYNAMO_DB_TABLE: ClassVar[RelationField] = RelationField("dynamoDBTable")
-    """
-    TBC
-    """
+    Ordered array of namespace assets with qualified name and name representing the complete namespace hierarchy path for this asset, from immediate parent to root namespace.
+    """  # noqa: E501
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_type",
@@ -655,13 +599,8 @@ class DynamoDBAttribute(Column):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
-        "dynamo_d_b_status",
-        "dynamo_d_b_partition_key",
-        "dynamo_d_b_sort_key",
-        "dynamo_d_b_read_capacity_units",
-        "dynamo_d_b_write_capacity_units",
-        "no_s_q_l_schema_definition",
-        "dynamo_dbtable",
+        "iceberg_parent_namespace_qualified_name",
+        "iceberg_namespace_hierarchy",
     ]
 
     @property
@@ -1667,96 +1606,38 @@ class DynamoDBAttribute(Column):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
-    def dynamo_d_b_status(self) -> Optional[DynamoDBStatus]:
-        return None if self.attributes is None else self.attributes.dynamo_d_b_status
-
-    @dynamo_d_b_status.setter
-    def dynamo_d_b_status(self, dynamo_d_b_status: Optional[DynamoDBStatus]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_status = dynamo_d_b_status
-
-    @property
-    def dynamo_d_b_partition_key(self) -> Optional[str]:
+    def iceberg_parent_namespace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.dynamo_d_b_partition_key
+            else self.attributes.iceberg_parent_namespace_qualified_name
         )
 
-    @dynamo_d_b_partition_key.setter
-    def dynamo_d_b_partition_key(self, dynamo_d_b_partition_key: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_partition_key = dynamo_d_b_partition_key
-
-    @property
-    def dynamo_d_b_sort_key(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.dynamo_d_b_sort_key
-
-    @dynamo_d_b_sort_key.setter
-    def dynamo_d_b_sort_key(self, dynamo_d_b_sort_key: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_sort_key = dynamo_d_b_sort_key
-
-    @property
-    def dynamo_d_b_read_capacity_units(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dynamo_d_b_read_capacity_units
-        )
-
-    @dynamo_d_b_read_capacity_units.setter
-    def dynamo_d_b_read_capacity_units(
-        self, dynamo_d_b_read_capacity_units: Optional[int]
+    @iceberg_parent_namespace_qualified_name.setter
+    def iceberg_parent_namespace_qualified_name(
+        self, iceberg_parent_namespace_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_read_capacity_units = dynamo_d_b_read_capacity_units
+        self.attributes.iceberg_parent_namespace_qualified_name = (
+            iceberg_parent_namespace_qualified_name
+        )
 
     @property
-    def dynamo_d_b_write_capacity_units(self) -> Optional[int]:
+    def iceberg_namespace_hierarchy(self) -> Optional[List[Dict[str, str]]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.dynamo_d_b_write_capacity_units
+            else self.attributes.iceberg_namespace_hierarchy
         )
 
-    @dynamo_d_b_write_capacity_units.setter
-    def dynamo_d_b_write_capacity_units(
-        self, dynamo_d_b_write_capacity_units: Optional[int]
+    @iceberg_namespace_hierarchy.setter
+    def iceberg_namespace_hierarchy(
+        self, iceberg_namespace_hierarchy: Optional[List[Dict[str, str]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_write_capacity_units = (
-            dynamo_d_b_write_capacity_units
-        )
-
-    @property
-    def no_s_q_l_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.no_s_q_l_schema_definition
-        )
-
-    @no_s_q_l_schema_definition.setter
-    def no_s_q_l_schema_definition(self, no_s_q_l_schema_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
-
-    @property
-    def dynamo_dbtable(self) -> Optional[DynamoDBTable]:
-        return None if self.attributes is None else self.attributes.dynamo_dbtable
-
-    @dynamo_dbtable.setter
-    def dynamo_dbtable(self, dynamo_dbtable: Optional[DynamoDBTable]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dynamo_dbtable = dynamo_dbtable
+        self.attributes.iceberg_namespace_hierarchy = iceberg_namespace_hierarchy
 
     class Attributes(Column.Attributes):
         data_type: Optional[str] = Field(default=None, description="")
@@ -1883,69 +1764,15 @@ class DynamoDBAttribute(Column):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
-        dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
+        iceberg_parent_namespace_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
-        dynamo_d_b_partition_key: Optional[str] = Field(default=None, description="")
-        dynamo_d_b_sort_key: Optional[str] = Field(default=None, description="")
-        dynamo_d_b_read_capacity_units: Optional[int] = Field(
+        iceberg_namespace_hierarchy: Optional[List[Dict[str, str]]] = Field(
             default=None, description=""
         )
-        dynamo_d_b_write_capacity_units: Optional[int] = Field(
-            default=None, description=""
-        )
-        no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        dynamo_dbtable: Optional[DynamoDBTable] = Field(
-            default=None, description=""
-        )  # relationship
 
-        @classmethod
-        @init_guid
-        def creator(
-            cls,
-            *,
-            name: str,
-            parent_qualified_name: str,
-            order: int,
-            parent_name: Optional[str] = None,
-            connection_qualified_name: Optional[str] = None,
-        ) -> DynamoDBAttribute.Attributes:
-            validate_required_fields(
-                ["name", "parent_qualified_name", "order"],
-                [name, parent_qualified_name, order],
-            )
-            if connection_qualified_name:
-                connector_name = AtlanConnectorType.get_connector_name(
-                    connection_qualified_name
-                )
-            else:
-                connection_qn, connector_name = AtlanConnectorType.get_connector_name(
-                    parent_qualified_name, "parent_qualified_name", 4
-                )
-            if order < 0:
-                raise ValueError("Order must be be a positive integer")
-
-            fields = parent_qualified_name.split("/")
-            qualified_name = f"{parent_qualified_name}/{name}"
-            connection_qualified_name = connection_qualified_name or connection_qn
-            table_name = parent_name or fields[3]
-
-            dynamo_dbtable = DynamoDBTable()
-            dynamo_dbtable.qualified_name = parent_qualified_name
-
-            return DynamoDBAttribute.Attributes(
-                name=name,
-                qualified_name=qualified_name,
-                order=order,
-                connector_name=connector_name,
-                connection_qualified_name=connection_qualified_name,
-                table_name=table_name,
-                table_qualified_name=parent_qualified_name,
-                dynamo_dbtable=dynamo_dbtable,
-            )
-
-    attributes: DynamoDBAttribute.Attributes = Field(
-        default_factory=lambda: DynamoDBAttribute.Attributes(),
+    attributes: IcebergColumn.Attributes = Field(
+        default_factory=lambda: IcebergColumn.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -1954,6 +1781,4 @@ class DynamoDBAttribute(Column):
     )
 
 
-from .dynamo_dbtable import DynamoDBTable  # noqa: E402, F401
-
-DynamoDBAttribute.Attributes.update_forward_refs()
+IcebergColumn.Attributes.update_forward_refs()

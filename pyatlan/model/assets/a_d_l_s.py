@@ -66,6 +66,12 @@ class ADLS(ObjectStore):
     """
     Tags that have been applied to this asset in Azure.
     """
+    CLOUD_UNIFORM_RESOURCE_NAME: ClassVar[KeywordField] = KeywordField(
+        "cloudUniformResourceName", "cloudUniformResourceName"
+    )
+    """
+    Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "adls_account_qualified_name",
@@ -74,6 +80,7 @@ class ADLS(ObjectStore):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
+        "cloud_uniform_resource_name",
     ]
 
     @property
@@ -148,6 +155,20 @@ class ADLS(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
+    @property
+    def cloud_uniform_resource_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cloud_uniform_resource_name
+        )
+
+    @cloud_uniform_resource_name.setter
+    def cloud_uniform_resource_name(self, cloud_uniform_resource_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cloud_uniform_resource_name = cloud_uniform_resource_name
+
     class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(default=None, description="")
         adls_account_name: Optional[str] = Field(default=None, description="")
@@ -157,6 +178,7 @@ class ADLS(ObjectStore):
             default=None, description=""
         )
         azure_tags: Optional[List[AzureTag]] = Field(default=None, description="")
+        cloud_uniform_resource_name: Optional[str] = Field(default=None, description="")
 
     attributes: ADLS.Attributes = Field(
         default_factory=lambda: ADLS.Attributes(),

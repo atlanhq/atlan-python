@@ -114,6 +114,12 @@ class GCS(Google):
     """
     List of tags that have been applied to the asset in Google.
     """
+    CLOUD_UNIFORM_RESOURCE_NAME: ClassVar[KeywordField] = KeywordField(
+        "cloudUniformResourceName", "cloudUniformResourceName"
+    )
+    """
+    Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on.
+    """
 
     INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
     """
@@ -145,26 +151,8 @@ class GCS(Google):
     """
     TBC
     """
-    PARTIAL_V02CHILD_FIELDS: ClassVar[RelationField] = RelationField(
-        "partialV02ChildFields"
-    )
-    """
-    TBC
-    """
-    PARTIAL_V02CHILD_OBJECTS: ClassVar[RelationField] = RelationField(
-        "partialV02ChildObjects"
-    )
-    """
-    TBC
-    """
     OUTPUT_FROM_SPARK_JOBS: ClassVar[RelationField] = RelationField(
         "outputFromSparkJobs"
-    )
-    """
-    TBC
-    """
-    PARTIAL_V01CHILD_FIELDS: ClassVar[RelationField] = RelationField(
-        "partialV01ChildFields"
     )
     """
     TBC
@@ -203,16 +191,14 @@ class GCS(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
+        "cloud_uniform_resource_name",
         "input_to_spark_jobs",
         "partial_child_fields",
         "input_to_airflow_tasks",
         "input_to_processes",
         "model_implemented_attributes",
         "output_from_airflow_tasks",
-        "partial_v02_child_fields",
-        "partial_v02_child_objects",
         "output_from_spark_jobs",
-        "partial_v01_child_fields",
         "model_implemented_entities",
         "partial_child_objects",
         "output_from_processes",
@@ -363,6 +349,20 @@ class GCS(Google):
         self.attributes.google_tags = google_tags
 
     @property
+    def cloud_uniform_resource_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cloud_uniform_resource_name
+        )
+
+    @cloud_uniform_resource_name.setter
+    def cloud_uniform_resource_name(self, cloud_uniform_resource_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cloud_uniform_resource_name = cloud_uniform_resource_name
+
+    @property
     def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
         return None if self.attributes is None else self.attributes.input_to_spark_jobs
 
@@ -439,38 +439,6 @@ class GCS(Google):
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
 
     @property
-    def partial_v02_child_fields(self) -> Optional[List[PartialV02Field]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.partial_v02_child_fields
-        )
-
-    @partial_v02_child_fields.setter
-    def partial_v02_child_fields(
-        self, partial_v02_child_fields: Optional[List[PartialV02Field]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partial_v02_child_fields = partial_v02_child_fields
-
-    @property
-    def partial_v02_child_objects(self) -> Optional[List[PartialV02Object]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.partial_v02_child_objects
-        )
-
-    @partial_v02_child_objects.setter
-    def partial_v02_child_objects(
-        self, partial_v02_child_objects: Optional[List[PartialV02Object]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partial_v02_child_objects = partial_v02_child_objects
-
-    @property
     def output_from_spark_jobs(self) -> Optional[List[SparkJob]]:
         return (
             None if self.attributes is None else self.attributes.output_from_spark_jobs
@@ -481,22 +449,6 @@ class GCS(Google):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_from_spark_jobs = output_from_spark_jobs
-
-    @property
-    def partial_v01_child_fields(self) -> Optional[List[PartialV01Field]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.partial_v01_child_fields
-        )
-
-    @partial_v01_child_fields.setter
-    def partial_v01_child_fields(
-        self, partial_v01_child_fields: Optional[List[PartialV01Field]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partial_v01_child_fields = partial_v01_child_fields
 
     @property
     def model_implemented_entities(self) -> Optional[List[ModelEntity]]:
@@ -555,6 +507,7 @@ class GCS(Google):
         google_location_type: Optional[str] = Field(default=None, description="")
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
+        cloud_uniform_resource_name: Optional[str] = Field(default=None, description="")
         input_to_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship
@@ -573,16 +526,7 @@ class GCS(Google):
         output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
             default=None, description=""
         )  # relationship
-        partial_v02_child_fields: Optional[List[PartialV02Field]] = Field(
-            default=None, description=""
-        )  # relationship
-        partial_v02_child_objects: Optional[List[PartialV02Object]] = Field(
-            default=None, description=""
-        )  # relationship
         output_from_spark_jobs: Optional[List[SparkJob]] = Field(
-            default=None, description=""
-        )  # relationship
-        partial_v01_child_fields: Optional[List[PartialV01Field]] = Field(
             default=None, description=""
         )  # relationship
         model_implemented_entities: Optional[List[ModelEntity]] = Field(
@@ -610,9 +554,6 @@ from .core.model_attribute import ModelAttribute  # noqa: E402, F401
 from .core.model_entity import ModelEntity  # noqa: E402, F401
 from .core.partial_field import PartialField  # noqa: E402, F401
 from .core.partial_object import PartialObject  # noqa: E402, F401
-from .core.partial_v01_field import PartialV01Field  # noqa: E402, F401
-from .core.partial_v02_field import PartialV02Field  # noqa: E402, F401
-from .core.partial_v02_object import PartialV02Object  # noqa: E402, F401
 from .core.process import Process  # noqa: E402, F401
 from .core.spark_job import SparkJob  # noqa: E402, F401
 

@@ -17,25 +17,63 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
 )
 
-from .catalog import Catalog
+from .iceberg import Iceberg
 
 
-class SQL(Catalog):
+class IcebergCatalog(Iceberg):
     """Description"""
 
-    type_name: str = Field(default="SQL", allow_mutation=False)
+    type_name: str = Field(default="IcebergCatalog", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SQL":
-            raise ValueError("must be SQL")
+        if v != "IcebergCatalog":
+            raise ValueError("must be IcebergCatalog")
         return v
 
     def __setattr__(self, name, value):
-        if name in SQL._convenience_properties:
+        if name in IcebergCatalog._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    ICEBERG_CATALOG_TYPE: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogType", "icebergCatalogType"
+    )
+    """
+    Type of the Iceberg catalog (e.g., 'hadoop', 'hive', 'nessie', 'rest').
+    """
+    ICEBERG_URI: ClassVar[KeywordField] = KeywordField("icebergUri", "icebergUri")
+    """
+    URI of the Iceberg catalog.
+    """
+    ICEBERG_WAREHOUSE: ClassVar[KeywordField] = KeywordField(
+        "icebergWarehouse", "icebergWarehouse"
+    )
+    """
+    Warehouse associated with this Iceberg catalog.
+    """
+    ICEBERG_SCOPE: ClassVar[KeywordField] = KeywordField("icebergScope", "icebergScope")
+    """
+    Scope of the Iceberg catalog.
+    """
+    ICEBERG_CATALOG_PROPERTIES: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogProperties", "icebergCatalogProperties"
+    )
+    """
+    Properties of the Iceberg catalog.
+    """
+    ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName"
+    )
+    """
+    Unique name of the immediate parent namespace in which this asset exists.
+    """
+    ICEBERG_NAMESPACE_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "icebergNamespaceHierarchy", "icebergNamespaceHierarchy"
+    )
+    """
+    Ordered array of namespace assets with qualified name and name representing the complete namespace hierarchy path for this asset, from immediate parent to root namespace.
+    """  # noqa: E501
     QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
     """
     Number of times this asset has been queried.
@@ -138,33 +176,28 @@ class SQL(Catalog):
     """
     Whether this asset is secure (true) or not (false).
     """
+    SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
+    """
+    Number of schemas in this database.
+    """
 
-    DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
+    FABRIC_WORKSPACE: ClassVar[RelationField] = RelationField("fabricWorkspace")
     """
     TBC
     """
-    SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
-    """
-    TBC
-    """
-    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
-    """
-    TBC
-    """
-    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
-    """
-    TBC
-    """
-    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
-    """
-    TBC
-    """
-    DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
+    SCHEMAS: ClassVar[RelationField] = RelationField("schemas")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "iceberg_catalog_type",
+        "iceberg_uri",
+        "iceberg_warehouse",
+        "iceberg_scope",
+        "iceberg_catalog_properties",
+        "iceberg_parent_namespace_qualified_name",
+        "iceberg_namespace_hierarchy",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -183,13 +216,100 @@ class SQL(Catalog):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
-        "dbt_sources",
-        "sql_dbt_models",
-        "dbt_tests",
-        "sql_dbt_sources",
-        "dbt_models",
-        "dbt_seed_assets",
+        "schema_count",
+        "fabric_workspace",
+        "schemas",
     ]
+
+    @property
+    def iceberg_catalog_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.iceberg_catalog_type
+
+    @iceberg_catalog_type.setter
+    def iceberg_catalog_type(self, iceberg_catalog_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_type = iceberg_catalog_type
+
+    @property
+    def iceberg_uri(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.iceberg_uri
+
+    @iceberg_uri.setter
+    def iceberg_uri(self, iceberg_uri: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_uri = iceberg_uri
+
+    @property
+    def iceberg_warehouse(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.iceberg_warehouse
+
+    @iceberg_warehouse.setter
+    def iceberg_warehouse(self, iceberg_warehouse: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_warehouse = iceberg_warehouse
+
+    @property
+    def iceberg_scope(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.iceberg_scope
+
+    @iceberg_scope.setter
+    def iceberg_scope(self, iceberg_scope: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_scope = iceberg_scope
+
+    @property
+    def iceberg_catalog_properties(self) -> Optional[Dict[str, str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_catalog_properties
+        )
+
+    @iceberg_catalog_properties.setter
+    def iceberg_catalog_properties(
+        self, iceberg_catalog_properties: Optional[Dict[str, str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_properties = iceberg_catalog_properties
+
+    @property
+    def iceberg_parent_namespace_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_parent_namespace_qualified_name
+        )
+
+    @iceberg_parent_namespace_qualified_name.setter
+    def iceberg_parent_namespace_qualified_name(
+        self, iceberg_parent_namespace_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_parent_namespace_qualified_name = (
+            iceberg_parent_namespace_qualified_name
+        )
+
+    @property
+    def iceberg_namespace_hierarchy(self) -> Optional[List[Dict[str, str]]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_namespace_hierarchy
+        )
+
+    @iceberg_namespace_hierarchy.setter
+    def iceberg_namespace_hierarchy(
+        self, iceberg_namespace_hierarchy: Optional[List[Dict[str, str]]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_namespace_hierarchy = iceberg_namespace_hierarchy
 
     @property
     def query_count(self) -> Optional[int]:
@@ -396,66 +516,49 @@ class SQL(Catalog):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
-    def dbt_sources(self) -> Optional[List[DbtSource]]:
-        return None if self.attributes is None else self.attributes.dbt_sources
+    def schema_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.schema_count
 
-    @dbt_sources.setter
-    def dbt_sources(self, dbt_sources: Optional[List[DbtSource]]):
+    @schema_count.setter
+    def schema_count(self, schema_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_sources = dbt_sources
+        self.attributes.schema_count = schema_count
 
     @property
-    def sql_dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_models
+    def fabric_workspace(self) -> Optional[FabricWorkspace]:
+        return None if self.attributes is None else self.attributes.fabric_workspace
 
-    @sql_dbt_models.setter
-    def sql_dbt_models(self, sql_dbt_models: Optional[List[DbtModel]]):
+    @fabric_workspace.setter
+    def fabric_workspace(self, fabric_workspace: Optional[FabricWorkspace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sql_dbt_models = sql_dbt_models
+        self.attributes.fabric_workspace = fabric_workspace
 
     @property
-    def dbt_tests(self) -> Optional[List[DbtTest]]:
-        return None if self.attributes is None else self.attributes.dbt_tests
+    def schemas(self) -> Optional[List[Schema]]:
+        return None if self.attributes is None else self.attributes.schemas
 
-    @dbt_tests.setter
-    def dbt_tests(self, dbt_tests: Optional[List[DbtTest]]):
+    @schemas.setter
+    def schemas(self, schemas: Optional[List[Schema]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dbt_tests = dbt_tests
+        self.attributes.schemas = schemas
 
-    @property
-    def sql_dbt_sources(self) -> Optional[List[DbtSource]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_sources
-
-    @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[List[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_sources = sql_dbt_sources
-
-    @property
-    def dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
-
-    @property
-    def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
-        return None if self.attributes is None else self.attributes.dbt_seed_assets
-
-    @dbt_seed_assets.setter
-    def dbt_seed_assets(self, dbt_seed_assets: Optional[List[DbtSeed]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_seed_assets = dbt_seed_assets
-
-    class Attributes(Catalog.Attributes):
+    class Attributes(Iceberg.Attributes):
+        iceberg_catalog_type: Optional[str] = Field(default=None, description="")
+        iceberg_uri: Optional[str] = Field(default=None, description="")
+        iceberg_warehouse: Optional[str] = Field(default=None, description="")
+        iceberg_scope: Optional[str] = Field(default=None, description="")
+        iceberg_catalog_properties: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
+        iceberg_parent_namespace_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        iceberg_namespace_hierarchy: Optional[List[Dict[str, str]]] = Field(
+            default=None, description=""
+        )
         query_count: Optional[int] = Field(default=None, description="")
         query_user_count: Optional[int] = Field(default=None, description="")
         query_user_map: Optional[Dict[str, int]] = Field(default=None, description="")
@@ -478,27 +581,16 @@ class SQL(Catalog):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
-        dbt_sources: Optional[List[DbtSource]] = Field(
+        schema_count: Optional[int] = Field(default=None, description="")
+        fabric_workspace: Optional[FabricWorkspace] = Field(
             default=None, description=""
         )  # relationship
-        sql_dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
-            default=None, description=""
-        )  # relationship
-        sql_dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
-        dbt_seed_assets: Optional[List[DbtSeed]] = Field(
+        schemas: Optional[List[Schema]] = Field(
             default=None, description=""
         )  # relationship
 
-    attributes: SQL.Attributes = Field(
-        default_factory=lambda: SQL.Attributes(),
+    attributes: IcebergCatalog.Attributes = Field(
+        default_factory=lambda: IcebergCatalog.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -507,6 +599,7 @@ class SQL(Catalog):
     )
 
 
-from .dbt_model import DbtModel  # noqa: E402, F401
-from .dbt_seed import DbtSeed  # noqa: E402, F401
-from .dbt_source import DbtSource  # noqa: E402, F401
+from .core.fabric_workspace import FabricWorkspace  # noqa: E402, F401
+from .core.schema import Schema  # noqa: E402, F401
+
+IcebergCatalog.Attributes.update_forward_refs()

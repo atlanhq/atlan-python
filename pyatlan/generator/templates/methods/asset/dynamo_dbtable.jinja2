@@ -1,0 +1,8 @@
+
+    @classmethod
+    @init_guid
+    def creator(cls, *args, **kwargs) -> DynamoDBTable:
+        raise NotImplementedError(
+            "DynamoDBTable does not support creation via Table.creator(). "
+            "Please submit an enhancement request if you need this implemented."
+        )

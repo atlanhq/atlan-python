@@ -4,6 +4,10 @@
 
 ::: pyatlan.model.assets.core.a_i.AI
 
+## AIApplication
+
+::: pyatlan.model.assets.core.a_i_application.AIApplication
+
 ## AIModel
 
 ::: pyatlan.model.assets.core.a_i_model.AIModel
@@ -11,10 +15,6 @@
 ## AIModelVersion
 
 ::: pyatlan.model.assets.core.a_i_model_version.AIModelVersion
-
-## AIApplication
-
-::: pyatlan.model.assets.core.a_i_application.AIApplication
 
 ## DatabricksAIModelContext
 
