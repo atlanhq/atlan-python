@@ -1,33 +1,21 @@
 # Cache
 
-## AtlanTagCache
+::: pyatlan.cache.atlan_tag_cache
 
-::: pyatlan.cache.atlan_tag_cache.AtlanTagCache
+::: pyatlan.cache.custom_metadata_cache
 
-## CustomMetadataCache
+::: pyatlan.cache.enum_cache
 
-::: pyatlan.cache.custom_metadata_cache.CustomMetadataCache
+::: pyatlan.cache.group_cache
 
-## EnumCache
+::: pyatlan.cache.role_cache
 
-::: pyatlan.cache.enum_cache.EnumCache
+::: pyatlan.cache.user_cache
 
-## GroupCache
+::: pyatlan.cache.connection_cache
 
-::: pyatlan.cache.group_cache.GroupCache
+::: pyatlan.cache.source_tag_cache
 
-## RoleCache
+::: pyatlan.cache.abstract_asset_cache
 
-::: pyatlan.cache.role_cache.RoleCache
-
-## UserCache
-
-::: pyatlan.cache.user_cache.UserCache
-
-## ConnectionCache
-
-::: pyatlan.cache.connection_cache.ConnectionCache
-
-## SourceTagCache
-
-::: pyatlan.cache.source_tag_cache.SourceTagCache
+::: pyatlan.cache.dq_template_config_cache

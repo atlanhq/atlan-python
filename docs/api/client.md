@@ -2,40 +2,82 @@
 
 ## AtlanClient
 
-::: pyatlan.client.atlan.AtlanClient
+::: pyatlan.client.atlan
 
 ## Asset Client
 
-::: pyatlan.client.asset.AssetClient
+::: pyatlan.client.asset
 
 ## Audit Client
 
-::: pyatlan.client.audit.AuditClient
+::: pyatlan.client.audit
 
 ## File Client
 
-::: pyatlan.client.file.FileClient
+::: pyatlan.client.file
 
 ## Group Client
 
-::: pyatlan.client.group.GroupClient
+::: pyatlan.client.group
 
 ## Role Client
 
-::: pyatlan.client.role.RoleClient
+::: pyatlan.client.role
 
 ## Token Client
 
-::: pyatlan.client.token.TokenClient
+::: pyatlan.client.token
 
 ## User Client
 
-::: pyatlan.client.user.UserClient
+::: pyatlan.client.user
 
 ## Typedef Client
 
-::: pyatlan.client.typedef.TypeDefClient
+::: pyatlan.client.typedef
 
 ## Workflow Client
 
-::: pyatlan.client.workflow.WorkflowClient
+::: pyatlan.client.workflow
+
+## Credential Client
+
+::: pyatlan.client.credential
+
+## Contract Client
+
+::: pyatlan.client.contract
+
+## Query Client
+
+::: pyatlan.client.query
+
+## Search Log Client
+
+::: pyatlan.client.search_log
+
+## Task Client
+
+::: pyatlan.client.task
+
+## SSO Client
+
+::: pyatlan.client.sso
+
+## Open Lineage Client
+
+::: pyatlan.client.open_lineage
+
+## Impersonation Client
+
+::: pyatlan.client.impersonate
+
+## Admin Client
+
+::: pyatlan.client.admin
+
+## OAuth
+
+::: pyatlan.client.oauth
+
+::: pyatlan.client.oauth_client
