@@ -31,3 +31,26 @@
   height: 2.2rem;
   width: auto;
 }
+
+/* Nav tabs — hover and active states */
+.md-tabs__link {
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+.md-tabs__link:hover,
+.md-tabs__link--active {
+  opacity: 1;
+  color: #ffffff !important;
+}
+
+/* Sidebar nav links — hover and active */
+.md-nav__link:hover,
+.md-nav__link--active {
+  color: #5DD4F5 !important;
+}
+
+/* TOC links — hover and active */
+.md-nav--secondary .md-nav__link:hover,
+.md-nav--secondary .md-nav__link--active {
+  color: #5DD4F5 !important;
+}
