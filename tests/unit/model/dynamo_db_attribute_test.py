@@ -109,6 +109,25 @@ def test_creator_with_explicit_connection_qualified_name():
 
 
 @pytest.mark.parametrize(
+    "parent_qualified_name",
+    [
+        DYNAMODB_CONNECTION_QUALIFIED_NAME,
+        DYNAMODB_ATTRIBUTE_QUALIFIED_NAME,
+    ],
+)
+def test_creator_with_connection_qn_and_invalid_parent_raises_value_error(
+    parent_qualified_name,
+):
+    with pytest.raises(ValueError, match="Invalid parent_qualified_name"):
+        DynamoDBAttribute.creator(
+            name=DYNAMODB_ATTRIBUTE_NAME,
+            parent_qualified_name=parent_qualified_name,
+            order=1,
+            connection_qualified_name=DYNAMODB_CONNECTION_QUALIFIED_NAME,
+        )
+
+
+@pytest.mark.parametrize(
     "qualified_name, name, message",
     [
         (None, DYNAMODB_ATTRIBUTE_QUALIFIED_NAME, "qualified_name is required"),
