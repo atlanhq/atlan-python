@@ -232,6 +232,7 @@ class AssetInfo:
         "Purpose",
         "DataQualityRule",
         "Process",
+        "SQL",
     }
     _ASSETS_REQUIRE_ASYNC_CLIENT = {
         "Badge",
