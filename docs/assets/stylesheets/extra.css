@@ -45,7 +45,8 @@
 
 /* Sidebar nav links — hover and active */
 .md-nav__link:hover,
-.md-nav__link--active {
+.md-nav__link--active,
+.md-nav__item--active > .md-nav__link {
   color: #5DD4F5 !important;
 }
 
@@ -53,4 +54,10 @@
 .md-nav--secondary .md-nav__link:hover,
 .md-nav--secondary .md-nav__link--active {
   color: #5DD4F5 !important;
+}
+
+/* Dark mode: blend logo white-fringe into the header background */
+[data-md-color-scheme="slate"] .md-header__button.md-logo img {
+  background-color: #1B4F6A;
+  border-radius: 4px;
 }
