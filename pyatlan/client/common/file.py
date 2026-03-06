@@ -1,9 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
+import os
 from pathlib import Path
 from typing import Any
 
-# System directories that must never be read from
+# System directories that must never be read from.
+# Extend via PYATLAN_SENSITIVE_SYSTEM_PREFIXES (comma-separated paths, e.g. "/vault/,/secrets/")
 _SENSITIVE_SYSTEM_PREFIXES = (
     "/etc/",
     "/proc/",
@@ -14,11 +16,18 @@ _SENSITIVE_SYSTEM_PREFIXES = (
     "/private/var/",  # macOS
 )
 
-# Hidden credential/config directories that must never be read from
+# Hidden credential/config directories that must never be read from.
+# Extend via PYATLAN_SENSITIVE_DIR_NAMES (comma-separated names, e.g. ".vault,.myconfig")
 _SENSITIVE_DIR_NAMES = frozenset({".aws", ".ssh", ".gnupg"})
 
-# File name prefixes for environment/secret files
+# File name prefixes for environment/secret files.
+# Extend via PYATLAN_SENSITIVE_FILE_PREFIXES (comma-separated prefixes, e.g. ".secrets,.credentials")
 _SENSITIVE_FILE_PREFIXES = (".env",)
+
+
+def _parse_env_list(env_var: str) -> list:
+    val = os.environ.get(env_var, "")
+    return [p.strip() for p in val.split(",") if p.strip()] if val else []
 
 from pyatlan.client.constants import (
     API,
@@ -87,20 +96,30 @@ class FileUpload:
         resolved = path.resolve()
         resolved_str = str(resolved)
 
+        system_prefixes = _SENSITIVE_SYSTEM_PREFIXES + tuple(
+            _parse_env_list("PYATLAN_SENSITIVE_SYSTEM_PREFIXES")
+        )
+        dir_names = _SENSITIVE_DIR_NAMES | frozenset(
+            _parse_env_list("PYATLAN_SENSITIVE_DIR_NAMES")
+        )
+        file_prefixes = _SENSITIVE_FILE_PREFIXES + tuple(
+            _parse_env_list("PYATLAN_SENSITIVE_FILE_PREFIXES")
+        )
+
         # Block sensitive system directories (e.g. /etc/, /proc/, /dev/)
-        if resolved_str.startswith(_SENSITIVE_SYSTEM_PREFIXES):
+        if resolved_str.startswith(system_prefixes):
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
                 file_path
             )
 
         # Block credential/config hidden directories (e.g. .aws, .ssh, .gnupg)
-        if any(part in _SENSITIVE_DIR_NAMES for part in resolved.parts):
+        if any(part in dir_names for part in resolved.parts):
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
                 file_path
             )
 
         # Block environment/secret files (e.g. .env, .env.local, .env.production)
-        if resolved.name.startswith(_SENSITIVE_FILE_PREFIXES):
+        if resolved.name.startswith(file_prefixes):
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
                 file_path
             )

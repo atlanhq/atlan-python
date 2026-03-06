@@ -210,6 +210,26 @@ def test_file_client_upload_file_raises_invalid_request_error(
         )
 
 
+@pytest.mark.parametrize(
+    "env_var, env_value, file_path",
+    [
+        ("PYATLAN_SENSITIVE_SYSTEM_PREFIXES", "/custom/secrets/", "/custom/secrets/key"),
+        ("PYATLAN_SENSITIVE_DIR_NAMES", ".vault", "/home/user/.vault/token"),
+        ("PYATLAN_SENSITIVE_FILE_PREFIXES", ".credentials", "/app/.credentials.prod"),
+    ],
+)
+def test_file_client_upload_file_user_defined_sensitive_paths(
+    monkeypatch, mock_api_caller, env_var, env_value, file_path
+):
+    monkeypatch.setenv(env_var, env_value)
+    client = FileClient(client=mock_api_caller)
+    with pytest.raises(
+        InvalidRequestError,
+        match="ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+    ):
+        client.upload_file(presigned_url="test-url", file_path=file_path)
+
+
 def test_file_client_download_file_invalid_format_raises_invalid_request_error(
     client, s3_presigned_url, mock_session_invalid
 ):
