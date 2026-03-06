@@ -25,6 +25,14 @@ from .core.table import Table
 class DynamoDBTable(Table):
     """Description"""
 
+    @classmethod
+    def creator(cls, **kwargs) -> DynamoDBTable:
+        raise NotImplementedError(
+            "DynamoDBTable does not support the creator() method inherited from Table, "
+            "as it does not require a parent schema. "
+            "If you need this functionality, please raise a feature request."
+        )
+
     type_name: str = Field(default="DynamoDBTable", allow_mutation=False)
 
     @validator("type_name")
