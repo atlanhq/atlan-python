@@ -211,8 +211,11 @@ class AtlanClient(BaseSettings):
         # Configure httpx client with custom transport that supports retry and proxy
         # Note: We pass proxy/SSL config to the transport, not the client,
         # so that retry logic properly respects these settings
+        # Pass self reference to transport for duplicate checking during retries
         self._session = httpx.Client(
-            transport=PyatlanSyncTransport(retry=self.retry, **transport_kwargs),
+            transport=PyatlanSyncTransport(
+                retry=self.retry, client=self, **transport_kwargs
+            ),
             headers={
                 "x-atlan-agent": "sdk",
                 "x-atlan-agent-id": "python",
@@ -2005,7 +2008,9 @@ class AtlanClient(BaseSettings):
         if self.verify is not None:
             transport_kwargs["verify"] = self.verify
 
-        new_transport = PyatlanSyncTransport(retry=max_retries, **transport_kwargs)
+        new_transport = PyatlanSyncTransport(
+            retry=max_retries, client=self, **transport_kwargs
+        )
         self._session._transport = new_transport
 
         LOGGER.debug(
