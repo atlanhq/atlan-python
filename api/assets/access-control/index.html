@@ -1,0 +1,5804 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The official Python SDK for Atlan — search, discover, govern your data assets">
+      
+      
+      
+        <link rel="canonical" href="https://atlanhq.github.io/atlan-python/api/assets/access-control/">
+      
+      
+        <link rel="prev" href="../glossary/">
+      
+      
+        <link rel="next" href="../sql/">
+      
+      
+      <link rel="icon" href="../../../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>Access Control - pyatlan</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#access-control" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="pyatlan" class="md-header__button md-logo" aria-label="pyatlan" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pyatlan
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Access Control
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="light-blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="light-blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/atlanhq/atlan-python" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    atlanhq/atlan-python
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../client/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Asset Models
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="pyatlan" class="md-nav__button md-logo" aria-label="pyatlan" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    pyatlan
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/atlanhq/atlan-python" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    atlanhq/atlan-python
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    AtlanClient
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cache
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utils
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Errors
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Asset Models
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Asset Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core Base Classes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Glossary
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Access Control
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Access Control
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#accesscontrol" class="md-nav__link">
+    <span class="md-ellipsis">
+      AccessControl
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl" class="md-nav__link">
+    <span class="md-ellipsis">
+      AccessControl
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AccessControl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.CHANNEL_LINK" class="md-nav__link">
+    <span class="md-ellipsis">
+      CHANNEL_LINK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DEFAULT_NAVIGATION" class="md-nav__link">
+    <span class="md-ellipsis">
+      DEFAULT_NAVIGATION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_FILTERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_ASSET_FILTERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_METADATA_TYPES" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_ASSET_METADATA_TYPES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_TABS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_ASSET_TABS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_TYPES" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_ASSET_TYPES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_CUSTOM_METADATA_GUIDS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_CUSTOM_METADATA_GUIDS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_NAVIGATION_PAGES" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_NAVIGATION_PAGES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_SIDEBAR_TABS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_SIDEBAR_TABS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DISPLAY_PREFERENCES" class="md-nav__link">
+    <span class="md-ellipsis">
+      DISPLAY_PREFERENCES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.IS_ACCESS_CONTROL_ENABLED" class="md-nav__link">
+    <span class="md-ellipsis">
+      IS_ACCESS_CONTROL_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.POLICIES" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICIES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authpolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      AuthPolicy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      AuthPolicy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AuthPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.ACCESS_CONTROL" class="md-nav__link">
+    <span class="md-ellipsis">
+      ACCESS_CONTROL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.IS_POLICY_ENABLED" class="md-nav__link">
+    <span class="md-ellipsis">
+      IS_POLICY_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_ACTIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_ACTIONS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_CATEGORY" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_CATEGORY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_CONDITIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_CONDITIONS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_DELEGATE_ADMIN" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_DELEGATE_ADMIN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_FILTER_CRITERIA" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_FILTER_CRITERIA
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_GROUPS" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_GROUPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_MASK_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_MASK_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_PRIORITY" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_PRIORITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCES" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_RESOURCES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCE_CATEGORY" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_RESOURCE_CATEGORY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCE_SIGNATURE" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_RESOURCE_SIGNATURE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_ROLES" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_ROLES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_SERVICE_NAME" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_SERVICE_NAME
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_SUB_CATEGORY" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_SUB_CATEGORY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_USERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_USERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_VALIDITY_SCHEDULE" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_VALIDITY_SCHEDULE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persona" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persona
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persona
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Persona">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona.PERSONA_GROUPS" class="md-nav__link">
+    <span class="md-ellipsis">
+      PERSONA_GROUPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona.PERSONA_USERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      PERSONA_USERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona.ROLE_ID" class="md-nav__link">
+    <span class="md-ellipsis">
+      ROLE_ID
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stakeholder" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stakeholder
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stakeholder
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stakeholder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_DATA_DOMAIN" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_DATA_DOMAIN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_DOMAIN_QUALIFIED_NAME" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_DOMAIN_QUALIFIED_NAME
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_TITLE" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_TITLE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_TITLE_GUID" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_TITLE_GUID
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stakeholdertitle" class="md-nav__link">
+    <span class="md-ellipsis">
+      StakeholderTitle
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle" class="md-nav__link">
+    <span class="md-ellipsis">
+      StakeholderTitle
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StakeholderTitle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle.STAKEHOLDERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle.STAKEHOLDER_TITLE_DOMAIN_QUALIFIED_NAMES" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_TITLE_DOMAIN_QUALIFIED_NAMES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.purpose.Purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Purpose">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.purpose.Purpose-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.purpose.Purpose.PURPOSE_CLASSIFICATIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      PURPOSE_CLASSIFICATIONS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#businesspolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BusinessPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_BASE_PARENT_GUID" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_BASE_PARENT_GUID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_FILTER_DSL" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_FILTER_DSL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_LONG_DESCRIPTION" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_LONG_DESCRIPTION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_REVIEW_PERIOD" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_REVIEW_PERIOD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_RULES" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_RULES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_SELECTED_APPROVAL_WF" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_SELECTED_APPROVAL_WF
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VALID_FROM" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_VALID_FROM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VALID_TILL" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_VALID_TILL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VERSION" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_VERSION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.EXCEPTIONS_FOR_BUSINESS_POLICY" class="md-nav__link">
+    <span class="md-ellipsis">
+      EXCEPTIONS_FOR_BUSINESS_POLICY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.RELATED_BUSINESS_POLICIES" class="md-nav__link">
+    <span class="md-ellipsis">
+      RELATED_BUSINESS_POLICIES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#businesspolicyexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyException
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyException
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BusinessPolicyException">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_FILTER_DSL" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_EXCEPTION_FILTER_DSL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_GROUPS" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_EXCEPTION_GROUPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_USERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_EXCEPTION_USERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_FOR_EXCEPTION" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_FOR_EXCEPTION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_QUALIFIED_NAME" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_QUALIFIED_NAME
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#businesspolicyincident" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyIncident
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyIncident
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BusinessPolicyIncident">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_FILTER_DSL" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_INCIDENT_FILTER_DSL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#businesspolicylog" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyLog
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyLog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BusinessPolicyLog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.BUSINESS_POLICY_ID" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.BUSINESS_POLICY_LOG_POLICY_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_LOG_POLICY_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.COMPLIANT_ASSETS_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      COMPLIANT_ASSETS_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.GOVERNED_ASSETS_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      GOVERNED_ASSETS_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.NON_COMPLIANT_ASSETS_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      NON_COMPLIANT_ASSETS_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.NON_GOVERNED_ASSETS_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      NON_GOVERNED_ASSETS_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      AuthService
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService" class="md-nav__link">
+    <span class="md-ellipsis">
+      AuthService
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AuthService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.ABAC_SERVICE" class="md-nav__link">
+    <span class="md-ellipsis">
+      ABAC_SERVICE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_CONFIG" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTH_SERVICE_CONFIG
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_IS_ENABLED" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTH_SERVICE_IS_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_POLICY_LAST_SYNC" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTH_SERVICE_POLICY_LAST_SYNC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTH_SERVICE_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.TAG_SERVICE" class="md-nav__link">
+    <span class="md-ellipsis">
+      TAG_SERVICE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Databases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../snowflake/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Snowflake
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../databricks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Databricks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nosql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    NoSQL Databases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../streaming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Streaming & Events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cloud-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cloud Storage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dbt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    dbt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orchestration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Orchestration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../microsoft-bi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Microsoft BI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tableau/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tableau
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../looker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Looker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../other-bi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Other BI Tools
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-quality/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Quality
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-mesh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Mesh
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    AI / ML
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Modeling & Semantic
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SAP
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../salesforce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Salesforce
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cognite/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cognite
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sagemaker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    AWS SageMaker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../other-connectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Other Connectors
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../other/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Other
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#accesscontrol" class="md-nav__link">
+    <span class="md-ellipsis">
+      AccessControl
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl" class="md-nav__link">
+    <span class="md-ellipsis">
+      AccessControl
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AccessControl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.CHANNEL_LINK" class="md-nav__link">
+    <span class="md-ellipsis">
+      CHANNEL_LINK
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DEFAULT_NAVIGATION" class="md-nav__link">
+    <span class="md-ellipsis">
+      DEFAULT_NAVIGATION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_FILTERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_ASSET_FILTERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_METADATA_TYPES" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_ASSET_METADATA_TYPES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_TABS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_ASSET_TABS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_TYPES" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_ASSET_TYPES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_CUSTOM_METADATA_GUIDS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_CUSTOM_METADATA_GUIDS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_NAVIGATION_PAGES" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_NAVIGATION_PAGES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_SIDEBAR_TABS" class="md-nav__link">
+    <span class="md-ellipsis">
+      DENY_SIDEBAR_TABS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.DISPLAY_PREFERENCES" class="md-nav__link">
+    <span class="md-ellipsis">
+      DISPLAY_PREFERENCES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.IS_ACCESS_CONTROL_ENABLED" class="md-nav__link">
+    <span class="md-ellipsis">
+      IS_ACCESS_CONTROL_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.access_control.AccessControl.POLICIES" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICIES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authpolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      AuthPolicy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      AuthPolicy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AuthPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.ACCESS_CONTROL" class="md-nav__link">
+    <span class="md-ellipsis">
+      ACCESS_CONTROL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.IS_POLICY_ENABLED" class="md-nav__link">
+    <span class="md-ellipsis">
+      IS_POLICY_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_ACTIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_ACTIONS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_CATEGORY" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_CATEGORY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_CONDITIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_CONDITIONS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_DELEGATE_ADMIN" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_DELEGATE_ADMIN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_FILTER_CRITERIA" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_FILTER_CRITERIA
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_GROUPS" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_GROUPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_MASK_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_MASK_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_PRIORITY" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_PRIORITY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCES" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_RESOURCES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCE_CATEGORY" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_RESOURCE_CATEGORY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCE_SIGNATURE" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_RESOURCE_SIGNATURE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_ROLES" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_ROLES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_SERVICE_NAME" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_SERVICE_NAME
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_SUB_CATEGORY" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_SUB_CATEGORY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_USERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_USERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_VALIDITY_SCHEDULE" class="md-nav__link">
+    <span class="md-ellipsis">
+      POLICY_VALIDITY_SCHEDULE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persona" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persona
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persona
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Persona">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona.PERSONA_GROUPS" class="md-nav__link">
+    <span class="md-ellipsis">
+      PERSONA_GROUPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona.PERSONA_USERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      PERSONA_USERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.persona.Persona.ROLE_ID" class="md-nav__link">
+    <span class="md-ellipsis">
+      ROLE_ID
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stakeholder" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stakeholder
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stakeholder
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stakeholder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_DATA_DOMAIN" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_DATA_DOMAIN
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_DOMAIN_QUALIFIED_NAME" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_DOMAIN_QUALIFIED_NAME
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_TITLE" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_TITLE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_TITLE_GUID" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_TITLE_GUID
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stakeholdertitle" class="md-nav__link">
+    <span class="md-ellipsis">
+      StakeholderTitle
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle" class="md-nav__link">
+    <span class="md-ellipsis">
+      StakeholderTitle
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StakeholderTitle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle.STAKEHOLDERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle.STAKEHOLDER_TITLE_DOMAIN_QUALIFIED_NAMES" class="md-nav__link">
+    <span class="md-ellipsis">
+      STAKEHOLDER_TITLE_DOMAIN_QUALIFIED_NAMES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.purpose.Purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      Purpose
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Purpose">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.purpose.Purpose-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.purpose.Purpose.PURPOSE_CLASSIFICATIONS" class="md-nav__link">
+    <span class="md-ellipsis">
+      PURPOSE_CLASSIFICATIONS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#businesspolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BusinessPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_BASE_PARENT_GUID" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_BASE_PARENT_GUID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_FILTER_DSL" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_FILTER_DSL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_LONG_DESCRIPTION" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_LONG_DESCRIPTION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_REVIEW_PERIOD" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_REVIEW_PERIOD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_RULES" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_RULES
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_SELECTED_APPROVAL_WF" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_SELECTED_APPROVAL_WF
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VALID_FROM" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_VALID_FROM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VALID_TILL" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_VALID_TILL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VERSION" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_VERSION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.EXCEPTIONS_FOR_BUSINESS_POLICY" class="md-nav__link">
+    <span class="md-ellipsis">
+      EXCEPTIONS_FOR_BUSINESS_POLICY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy.BusinessPolicy.RELATED_BUSINESS_POLICIES" class="md-nav__link">
+    <span class="md-ellipsis">
+      RELATED_BUSINESS_POLICIES
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#businesspolicyexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyException
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyException
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BusinessPolicyException">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_FILTER_DSL" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_EXCEPTION_FILTER_DSL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_GROUPS" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_EXCEPTION_GROUPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_USERS" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_EXCEPTION_USERS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_FOR_EXCEPTION" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_FOR_EXCEPTION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_QUALIFIED_NAME" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_QUALIFIED_NAME
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#businesspolicyincident" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyIncident
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyIncident
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BusinessPolicyIncident">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_FILTER_DSL" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_INCIDENT_FILTER_DSL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#businesspolicylog" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyLog
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog" class="md-nav__link">
+    <span class="md-ellipsis">
+      BusinessPolicyLog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BusinessPolicyLog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.BUSINESS_POLICY_ID" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_ID
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.BUSINESS_POLICY_LOG_POLICY_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      BUSINESS_POLICY_LOG_POLICY_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.COMPLIANT_ASSETS_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      COMPLIANT_ASSETS_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.GOVERNED_ASSETS_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      GOVERNED_ASSETS_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.NON_COMPLIANT_ASSETS_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      NON_COMPLIANT_ASSETS_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.NON_GOVERNED_ASSETS_COUNT" class="md-nav__link">
+    <span class="md-ellipsis">
+      NON_GOVERNED_ASSETS_COUNT
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      AuthService
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService" class="md-nav__link">
+    <span class="md-ellipsis">
+      AuthService
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AuthService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.ABAC_SERVICE" class="md-nav__link">
+    <span class="md-ellipsis">
+      ABAC_SERVICE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_CONFIG" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTH_SERVICE_CONFIG
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_IS_ENABLED" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTH_SERVICE_IS_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_POLICY_LAST_SYNC" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTH_SERVICE_POLICY_LAST_SYNC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_TYPE" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTH_SERVICE_TYPE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.auth_service.AuthService.TAG_SERVICE" class="md-nav__link">
+    <span class="md-ellipsis">
+      TAG_SERVICE
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="access-control">Access Control<a class="headerlink" href="#access-control" title="Permanent link">&para;</a></h1>
+<h2 id="accesscontrol">AccessControl<a class="headerlink" href="#accesscontrol" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.core.access_control.AccessControl" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">access_control</span><span class="o">.</span><span class="n">AccessControl</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.asset.Asset(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.asset.Asset)" href="../core/#pyatlan.model.assets.core.asset.Asset">Asset</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.core.access_control.AccessControl-attributes">Attributes<a href="#pyatlan.model.assets.core.access_control.AccessControl-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.CHANNEL_LINK" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">CHANNEL_LINK</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;channelLink&#39;</span><span class="p">,</span> <span class="s1">&#39;channelLink&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.CHANNEL_LINK" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DEFAULT_NAVIGATION" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DEFAULT_NAVIGATION</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;defaultNavigation&#39;</span><span class="p">,</span> <span class="s1">&#39;defaultNavigation&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DEFAULT_NAVIGATION" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_FILTERS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DENY_ASSET_FILTERS</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;denyAssetFilters&#39;</span><span class="p">,</span> <span class="s1">&#39;denyAssetFilters&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_FILTERS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_METADATA_TYPES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DENY_ASSET_METADATA_TYPES</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;denyAssetMetadataTypes&#39;</span><span class="p">,</span> <span class="s1">&#39;denyAssetMetadataTypes&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_METADATA_TYPES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_TABS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DENY_ASSET_TABS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;denyAssetTabs&#39;</span><span class="p">,</span> <span class="s1">&#39;denyAssetTabs&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_TABS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_TYPES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DENY_ASSET_TYPES</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;denyAssetTypes&#39;</span><span class="p">,</span> <span class="s1">&#39;denyAssetTypes&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_ASSET_TYPES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DENY_CUSTOM_METADATA_GUIDS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DENY_CUSTOM_METADATA_GUIDS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;denyCustomMetadataGuids&#39;</span><span class="p">,</span> <span class="s1">&#39;denyCustomMetadataGuids&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_CUSTOM_METADATA_GUIDS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DENY_NAVIGATION_PAGES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DENY_NAVIGATION_PAGES</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;denyNavigationPages&#39;</span><span class="p">,</span> <span class="s1">&#39;denyNavigationPages&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_NAVIGATION_PAGES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DENY_SIDEBAR_TABS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DENY_SIDEBAR_TABS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;denySidebarTabs&#39;</span><span class="p">,</span> <span class="s1">&#39;denySidebarTabs&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DENY_SIDEBAR_TABS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.DISPLAY_PREFERENCES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">DISPLAY_PREFERENCES</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;displayPreferences&#39;</span><span class="p">,</span> <span class="s1">&#39;displayPreferences&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.DISPLAY_PREFERENCES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.IS_ACCESS_CONTROL_ENABLED" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">IS_ACCESS_CONTROL_ENABLED</span><span class="p">:</span> <span class="n">BooleanField</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s1">&#39;isAccessControlEnabled&#39;</span><span class="p">,</span> <span class="s1">&#39;isAccessControlEnabled&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.IS_ACCESS_CONTROL_ENABLED" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.access_control.AccessControl.POLICIES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICIES</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;policies&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.access_control.AccessControl.POLICIES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="authpolicy">AuthPolicy<a class="headerlink" href="#authpolicy" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.core.auth_policy.AuthPolicy" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">auth_policy</span><span class="o">.</span><span class="n">AuthPolicy</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.asset.Asset(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.asset.Asset)" href="../core/#pyatlan.model.assets.core.asset.Asset">Asset</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.core.auth_policy.AuthPolicy-attributes">Attributes<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.ACCESS_CONTROL" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ACCESS_CONTROL</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;accessControl&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.ACCESS_CONTROL" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.IS_POLICY_ENABLED" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">IS_POLICY_ENABLED</span><span class="p">:</span> <span class="n">BooleanField</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s1">&#39;isPolicyEnabled&#39;</span><span class="p">,</span> <span class="s1">&#39;isPolicyEnabled&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.IS_POLICY_ENABLED" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_ACTIONS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_ACTIONS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyActions&#39;</span><span class="p">,</span> <span class="s1">&#39;policyActions&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_ACTIONS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_CATEGORY" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_CATEGORY</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyCategory&#39;</span><span class="p">,</span> <span class="s1">&#39;policyCategory&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_CATEGORY" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_CONDITIONS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_CONDITIONS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyConditions&#39;</span><span class="p">,</span> <span class="s1">&#39;policyConditions&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_CONDITIONS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_DELEGATE_ADMIN" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_DELEGATE_ADMIN</span><span class="p">:</span> <span class="n">BooleanField</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s1">&#39;policyDelegateAdmin&#39;</span><span class="p">,</span> <span class="s1">&#39;policyDelegateAdmin&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_DELEGATE_ADMIN" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_FILTER_CRITERIA" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_FILTER_CRITERIA</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;policyFilterCriteria&#39;</span><span class="p">,</span> <span class="s1">&#39;policyFilterCriteria&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_FILTER_CRITERIA" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_GROUPS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_GROUPS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyGroups&#39;</span><span class="p">,</span> <span class="s1">&#39;policyGroups&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_GROUPS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_MASK_TYPE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_MASK_TYPE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyMaskType&#39;</span><span class="p">,</span> <span class="s1">&#39;policyMaskType&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_MASK_TYPE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_PRIORITY" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_PRIORITY</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;policyPriority&#39;</span><span class="p">,</span> <span class="s1">&#39;policyPriority&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_PRIORITY" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_RESOURCES</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyResources&#39;</span><span class="p">,</span> <span class="s1">&#39;policyResources&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCE_CATEGORY" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_RESOURCE_CATEGORY</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyResourceCategory&#39;</span><span class="p">,</span> <span class="s1">&#39;policyResourceCategory&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCE_CATEGORY" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCE_SIGNATURE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_RESOURCE_SIGNATURE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyResourceSignature&#39;</span><span class="p">,</span> <span class="s1">&#39;policyResourceSignature&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_RESOURCE_SIGNATURE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_ROLES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_ROLES</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyRoles&#39;</span><span class="p">,</span> <span class="s1">&#39;policyRoles&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_ROLES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_SERVICE_NAME" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_SERVICE_NAME</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyServiceName&#39;</span><span class="p">,</span> <span class="s1">&#39;policyServiceName&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_SERVICE_NAME" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_SUB_CATEGORY" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_SUB_CATEGORY</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policySubCategory&#39;</span><span class="p">,</span> <span class="s1">&#39;policySubCategory&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_SUB_CATEGORY" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_TYPE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_TYPE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyType&#39;</span><span class="p">,</span> <span class="s1">&#39;policyType&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_TYPE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_USERS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_USERS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyUsers&#39;</span><span class="p">,</span> <span class="s1">&#39;policyUsers&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_USERS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_VALIDITY_SCHEDULE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">POLICY_VALIDITY_SCHEDULE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;policyValiditySchedule&#39;</span><span class="p">,</span> <span class="s1">&#39;policyValiditySchedule&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.auth_policy.AuthPolicy.POLICY_VALIDITY_SCHEDULE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="persona">Persona<a class="headerlink" href="#persona" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.core.persona.Persona" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">persona</span><span class="o">.</span><span class="n">Persona</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.core.persona.Persona" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.access_control.AccessControl(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.access_control.AccessControl)" href="#pyatlan.model.assets.core.access_control.AccessControl">AccessControl</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.core.persona.Persona-attributes">Attributes<a href="#pyatlan.model.assets.core.persona.Persona-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.persona.Persona.PERSONA_GROUPS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">PERSONA_GROUPS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;personaGroups&#39;</span><span class="p">,</span> <span class="s1">&#39;personaGroups&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.persona.Persona.PERSONA_GROUPS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.persona.Persona.PERSONA_USERS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">PERSONA_USERS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;personaUsers&#39;</span><span class="p">,</span> <span class="s1">&#39;personaUsers&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.persona.Persona.PERSONA_USERS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.persona.Persona.ROLE_ID" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ROLE_ID</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;roleId&#39;</span><span class="p">,</span> <span class="s1">&#39;roleId&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.persona.Persona.ROLE_ID" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="stakeholder">Stakeholder<a class="headerlink" href="#stakeholder" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.core.stakeholder.Stakeholder" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">stakeholder</span><span class="o">.</span><span class="n">Stakeholder</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.core.stakeholder.Stakeholder" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.persona.Persona(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.persona.Persona)" href="#pyatlan.model.assets.core.persona.Persona">Persona</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.core.stakeholder.Stakeholder-attributes">Attributes<a href="#pyatlan.model.assets.core.stakeholder.Stakeholder-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_DATA_DOMAIN" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">STAKEHOLDER_DATA_DOMAIN</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;stakeholderDataDomain&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_DATA_DOMAIN" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_DOMAIN_QUALIFIED_NAME" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">STAKEHOLDER_DOMAIN_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;stakeholderDomainQualifiedName&#39;</span><span class="p">,</span> <span class="s1">&#39;stakeholderDomainQualifiedName&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_DOMAIN_QUALIFIED_NAME" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_TITLE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">STAKEHOLDER_TITLE</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;stakeholderTitle&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_TITLE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_TITLE_GUID" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">STAKEHOLDER_TITLE_GUID</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;stakeholderTitleGuid&#39;</span><span class="p">,</span> <span class="s1">&#39;stakeholderTitleGuid&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.stakeholder.Stakeholder.STAKEHOLDER_TITLE_GUID" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="stakeholdertitle">StakeholderTitle<a class="headerlink" href="#stakeholdertitle" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.core.stakeholder_title.StakeholderTitle" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">stakeholder_title</span><span class="o">.</span><span class="n">StakeholderTitle</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.asset.Asset(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.asset.Asset)" href="../core/#pyatlan.model.assets.core.asset.Asset">Asset</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.core.stakeholder_title.StakeholderTitle-attributes">Attributes<a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.stakeholder_title.StakeholderTitle.STAKEHOLDERS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">STAKEHOLDERS</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;stakeholders&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle.STAKEHOLDERS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.core.stakeholder_title.StakeholderTitle.STAKEHOLDER_TITLE_DOMAIN_QUALIFIED_NAMES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">STAKEHOLDER_TITLE_DOMAIN_QUALIFIED_NAMES</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;stakeholderTitleDomainQualifiedNames&#39;</span><span class="p">,</span> <span class="s1">&#39;stakeholderTitleDomainQualifiedNames&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.core.stakeholder_title.StakeholderTitle.STAKEHOLDER_TITLE_DOMAIN_QUALIFIED_NAMES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>qualified name array representing the Domains for which this StakeholderTitle is applicable</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.purpose.Purpose" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">purpose</span><span class="o">.</span><span class="n">Purpose</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.purpose.Purpose" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.access_control.AccessControl(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.access_control.AccessControl)" href="#pyatlan.model.assets.core.access_control.AccessControl">AccessControl</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.purpose.Purpose-attributes">Attributes<a href="#pyatlan.model.assets.purpose.Purpose-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.purpose.Purpose.PURPOSE_CLASSIFICATIONS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">PURPOSE_CLASSIFICATIONS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;purposeClassifications&#39;</span><span class="p">,</span> <span class="s1">&#39;purposeClassifications&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.purpose.Purpose.PURPOSE_CLASSIFICATIONS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="businesspolicy">BusinessPolicy<a class="headerlink" href="#businesspolicy" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.business_policy.BusinessPolicy" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">business_policy</span><span class="o">.</span><span class="n">BusinessPolicy</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.asset.Asset(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.asset.Asset)" href="../core/#pyatlan.model.assets.core.asset.Asset">Asset</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.business_policy.BusinessPolicy-attributes">Attributes<a href="#pyatlan.model.assets.business_policy.BusinessPolicy-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_BASE_PARENT_GUID" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_BASE_PARENT_GUID</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyBaseParentGuid&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyBaseParentGuid&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_BASE_PARENT_GUID" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Base parent Guid for policy used in version</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_FILTER_DSL" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_FILTER_DSL</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;businessPolicyFilterDSL&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyFilterDSL&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_FILTER_DSL" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Business Policy Filter ES DSL to denote the associate asset/s involved.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_LONG_DESCRIPTION" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_LONG_DESCRIPTION</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;businessPolicyLongDescription&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_LONG_DESCRIPTION" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Body of the business policy, a long readme like document</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_REVIEW_PERIOD" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_REVIEW_PERIOD</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyReviewPeriod&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyReviewPeriod&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_REVIEW_PERIOD" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Duration for the business policy to complete review.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_RULES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_RULES</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyRules&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyRules&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_RULES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List of rules applied to this business policy.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_SELECTED_APPROVAL_WF" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_SELECTED_APPROVAL_WF</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;businessPolicySelectedApprovalWF&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicySelectedApprovalWF&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_SELECTED_APPROVAL_WF" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Selected approval workflow id for business policy</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_TYPE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_TYPE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyType&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyType&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_TYPE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Type of business policy</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VALID_FROM" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_VALID_FROM</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;businessPolicyValidFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyValidFrom&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VALID_FROM" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validity start date of the policy</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VALID_TILL" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_VALID_TILL</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;businessPolicyValidTill&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyValidTill&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VALID_TILL" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Validity end date of the policy</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VERSION" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_VERSION</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;businessPolicyVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyVersion&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.BUSINESS_POLICY_VERSION" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Version of the policy</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.EXCEPTIONS_FOR_BUSINESS_POLICY" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">EXCEPTIONS_FOR_BUSINESS_POLICY</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;exceptionsForBusinessPolicy&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.EXCEPTIONS_FOR_BUSINESS_POLICY" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy.BusinessPolicy.RELATED_BUSINESS_POLICIES" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">RELATED_BUSINESS_POLICIES</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;relatedBusinessPolicies&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy.BusinessPolicy.RELATED_BUSINESS_POLICIES" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="businesspolicyexception">BusinessPolicyException<a class="headerlink" href="#businesspolicyexception" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.business_policy_exception.BusinessPolicyException" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">business_policy_exception</span><span class="o">.</span><span class="n">BusinessPolicyException</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.asset.Asset(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.asset.Asset)" href="../core/#pyatlan.model.assets.core.asset.Asset">Asset</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.business_policy_exception.BusinessPolicyException-attributes">Attributes<a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_FILTER_DSL" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_EXCEPTION_FILTER_DSL</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;businessPolicyExceptionFilterDSL&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyExceptionFilterDSL&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_FILTER_DSL" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Business Policy Exception Filter ES DSL to denote the associate asset/s involved.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_GROUPS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_EXCEPTION_GROUPS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyExceptionGroups&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyExceptionGroups&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_GROUPS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List of groups who are part of this exception</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_USERS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_EXCEPTION_USERS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyExceptionUsers&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyExceptionUsers&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_EXCEPTION_USERS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>List of users who are part of this exception</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_FOR_EXCEPTION" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_FOR_EXCEPTION</span><span class="p">:</span> <span class="n">RelationField</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span><span class="s1">&#39;businessPolicyForException&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_FOR_EXCEPTION" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_QUALIFIED_NAME" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_QUALIFIED_NAME</span><span class="p">:</span> <span class="n">KeywordTextField</span> <span class="o">=</span> <span class="n">KeywordTextField</span><span class="p">(</span><span class="s1">&#39;businessPolicyQualifiedName&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyQualifiedName&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyQualifiedName.text&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_exception.BusinessPolicyException.BUSINESS_POLICY_QUALIFIED_NAME" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Unique name of the business policy through which this asset is accessible.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="businesspolicyincident">BusinessPolicyIncident<a class="headerlink" href="#businesspolicyincident" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">business_policy_incident</span><span class="o">.</span><span class="n">BusinessPolicyIncident</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.incident.Incident(__pydantic_self__, **data: Any) (pyatlan.model.assets.incident.Incident)" href="../other/#pyatlan.model.assets.incident.Incident">Incident</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident-attributes">Attributes<a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_FILTER_DSL" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_INCIDENT_FILTER_DSL</span><span class="p">:</span> <span class="n">TextField</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="s1">&#39;businessPolicyIncidentFilterDSL&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyIncidentFilterDSL&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_FILTER_DSL" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Filter ES DSL to denote the associate asset/s involved.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;businessPolicyIncidentNoncompliantCount&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyIncidentNoncompliantCount&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>count of noncompliant assets in the incident</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyIncidentRelatedPolicyGUIDs&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyIncidentRelatedPolicyGUIDs&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_incident.BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>policy ids related to this incident</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="businesspolicylog">BusinessPolicyLog<a class="headerlink" href="#businesspolicylog" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.business_policy_log.BusinessPolicyLog" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">business_policy_log</span><span class="o">.</span><span class="n">BusinessPolicyLog</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.asset.Asset(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.asset.Asset)" href="../core/#pyatlan.model.assets.core.asset.Asset">Asset</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.business_policy_log.BusinessPolicyLog-attributes">Attributes<a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_log.BusinessPolicyLog.BUSINESS_POLICY_ID" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_ID</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyId&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyId&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.BUSINESS_POLICY_ID" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>business policy guid for which log are created</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_log.BusinessPolicyLog.BUSINESS_POLICY_LOG_POLICY_TYPE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">BUSINESS_POLICY_LOG_POLICY_TYPE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;businessPolicyLogPolicyType&#39;</span><span class="p">,</span> <span class="s1">&#39;businessPolicyLogPolicyType&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.BUSINESS_POLICY_LOG_POLICY_TYPE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>business policy type for which log are created</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_log.BusinessPolicyLog.COMPLIANT_ASSETS_COUNT" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">COMPLIANT_ASSETS_COUNT</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;compliantAssetsCount&#39;</span><span class="p">,</span> <span class="s1">&#39;compliantAssetsCount&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.COMPLIANT_ASSETS_COUNT" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>number of compliant assets in the policy</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_log.BusinessPolicyLog.GOVERNED_ASSETS_COUNT" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">GOVERNED_ASSETS_COUNT</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;governedAssetsCount&#39;</span><span class="p">,</span> <span class="s1">&#39;governedAssetsCount&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.GOVERNED_ASSETS_COUNT" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>number of governed assets in the policy</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_log.BusinessPolicyLog.NON_COMPLIANT_ASSETS_COUNT" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">NON_COMPLIANT_ASSETS_COUNT</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;nonCompliantAssetsCount&#39;</span><span class="p">,</span> <span class="s1">&#39;nonCompliantAssetsCount&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.NON_COMPLIANT_ASSETS_COUNT" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>number of non compliant assets in the policy</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.business_policy_log.BusinessPolicyLog.NON_GOVERNED_ASSETS_COUNT" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">NON_GOVERNED_ASSETS_COUNT</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;nonGovernedAssetsCount&#39;</span><span class="p">,</span> <span class="s1">&#39;nonGovernedAssetsCount&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.business_policy_log.BusinessPolicyLog.NON_GOVERNED_ASSETS_COUNT" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>number of non governed assets in the policy</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="authservice">AuthService<a class="headerlink" href="#authservice" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="pyatlan.model.assets.auth_service.AuthService" class="doc doc-heading">
+              <code class="highlight language-python"><span class="n">pyatlan</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">auth_service</span><span class="o">.</span><span class="n">AuthService</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span></code>
+
+<a href="#pyatlan.model.assets.auth_service.AuthService" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="pyatlan.model.assets.core.asset.Asset(__pydantic_self__, **data: Any) (pyatlan.model.assets.core.asset.Asset)" href="../core/#pyatlan.model.assets.core.asset.Asset">Asset</a></code></p>
+
+
+        <p>Description</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>pyatlan/model/assets/core/referenceable.py</code></summary>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="n">__pydantic_self__</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">__pydantic_self__</span><span class="o">.</span><span class="n">__fields_set__</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;attributes&quot;</span><span class="p">,</span> <span class="s2">&quot;type_name&quot;</span><span class="p">])</span>
+</span></code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h3 id="pyatlan.model.assets.auth_service.AuthService-attributes">Attributes<a href="#pyatlan.model.assets.auth_service.AuthService-attributes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.auth_service.AuthService.ABAC_SERVICE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">ABAC_SERVICE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;abacService&#39;</span><span class="p">,</span> <span class="s1">&#39;abacService&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.auth_service.AuthService.ABAC_SERVICE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_CONFIG" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">AUTH_SERVICE_CONFIG</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;authServiceConfig&#39;</span><span class="p">,</span> <span class="s1">&#39;authServiceConfig&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_CONFIG" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_IS_ENABLED" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">AUTH_SERVICE_IS_ENABLED</span><span class="p">:</span> <span class="n">BooleanField</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span><span class="s1">&#39;authServiceIsEnabled&#39;</span><span class="p">,</span> <span class="s1">&#39;authServiceIsEnabled&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_IS_ENABLED" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_POLICY_LAST_SYNC" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">AUTH_SERVICE_POLICY_LAST_SYNC</span><span class="p">:</span> <span class="n">NumericField</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span><span class="s1">&#39;authServicePolicyLastSync&#39;</span><span class="p">,</span> <span class="s1">&#39;authServicePolicyLastSync&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_POLICY_LAST_SYNC" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_TYPE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">AUTH_SERVICE_TYPE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;authServiceType&#39;</span><span class="p">,</span> <span class="s1">&#39;authServiceType&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.auth_service.AuthService.AUTH_SERVICE_TYPE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.auth_service.AuthService.TAG_SERVICE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">TAG_SERVICE</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;tagService&#39;</span><span class="p">,</span> <span class="s1">&#39;tagService&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.auth_service.AuthService.TAG_SERVICE" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>TBC</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../glossary/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Glossary">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Glossary
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../sql/" class="md-footer__link md-footer__link--next" aria-label="Next: SQL Databases">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                SQL Databases
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "navigation.footer", "navigation.indexes", "toc.follow", "search.highlight", "search.suggest", "search.share", "content.code.copy", "content.code.annotate", "content.tabs.link", "announce.dismiss"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
