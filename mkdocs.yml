@@ -46,9 +46,36 @@ nav:
   - Home: index.md
   - API Reference:
     - AtlanClient: api/client.md
-    - Asset Models: api/assets.md
-    - Models: api/model.md
     - Cache: api/cache.md
     - Events: api/events.md
+    - Models: api/model.md
     - Utils: api/utils.md
     - Errors: api/errors.md
+  - Asset Models:
+    - Overview: api/assets/index.md
+    - Core Base Classes: api/assets/core.md
+    - Glossary: api/assets/glossary.md
+    - Access Control: api/assets/access-control.md
+    - SQL Databases: api/assets/sql.md
+    - Snowflake: api/assets/snowflake.md
+    - Databricks: api/assets/databricks.md
+    - NoSQL Databases: api/assets/nosql.md
+    - Streaming & Events: api/assets/streaming.md
+    - Cloud Storage: api/assets/cloud-storage.md
+    - dbt: api/assets/dbt.md
+    - Orchestration: api/assets/orchestration.md
+    - Microsoft BI: api/assets/microsoft-bi.md
+    - Tableau: api/assets/tableau.md
+    - Looker: api/assets/looker.md
+    - Other BI Tools: api/assets/other-bi.md
+    - Data Quality: api/assets/data-quality.md
+    - Data Mesh: api/assets/data-mesh.md
+    - AI / ML: api/assets/ai.md
+    - API: api/assets/api.md
+    - Data Modeling & Semantic: api/assets/modeling.md
+    - SAP: api/assets/sap.md
+    - Salesforce: api/assets/salesforce.md
+    - Cognite: api/assets/cognite.md
+    - AWS SageMaker: api/assets/sagemaker.md
+    - Other Connectors: api/assets/other-connectors.md
+    - Other: api/assets/other.md
