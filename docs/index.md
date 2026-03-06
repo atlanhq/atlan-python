@@ -6,9 +6,7 @@ hide:
 
 <div align="center" markdown>
 
-![pyatlan logo](https://github.com/user-attachments/assets/38243809-d723-4464-8f1c-4869795ea0c8){ width="260" }
-
-# pyatlan
+![pyatlan logo](assets/logo.png){ width="260" }
 
 **The official Python SDK for [Atlan](https://atlan.com) :blue_heart:**
 
