@@ -172,29 +172,29 @@ def test_file_client_methods_validation_error(client, method, params):
         # Sensitive system files
         [
             "/etc/passwd",
-            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
         ],
         [
             "/etc/shadow",
-            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
         ],
         # Credential directories
         [
             "/home/user/.aws/credentials",
-            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
         ],
         [
             "/home/user/.ssh/id_rsa",
-            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
         ],
         # Environment files
         [
             "/app/.env",
-            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
         ],
         [
             "/app/.env.production",
-            "ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+            "ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
         ],
     ],
 )
@@ -211,21 +211,21 @@ def test_file_client_upload_file_raises_invalid_request_error(
 
 
 @pytest.mark.parametrize(
-    "env_var, env_value, file_path",
+    "env_value, file_path",
     [
-        ("PYATLAN_SENSITIVE_SYSTEM_PREFIXES", "/custom/secrets/", "/custom/secrets/key"),
-        ("PYATLAN_SENSITIVE_DIR_NAMES", ".vault", "/home/user/.vault/token"),
-        ("PYATLAN_SENSITIVE_FILE_PREFIXES", ".credentials", "/app/.credentials.prod"),
+        ("/custom/secrets/", "/custom/secrets/key"),
+        (".vault", "/home/user/.vault/token"),
+        (".credentials", "/app/.credentials.prod"),
     ],
 )
 def test_file_client_upload_file_user_defined_sensitive_paths(
-    monkeypatch, mock_api_caller, env_var, env_value, file_path
+    monkeypatch, mock_api_caller, env_value, file_path
 ):
-    monkeypatch.setenv(env_var, env_value)
+    monkeypatch.setenv("PYATLAN_UPLOAD_FILE_BLOCKED_PATHS", env_value)
     client = FileClient(client=mock_api_caller)
     with pytest.raises(
         InvalidRequestError,
-        match="ATLAN-PYTHON-400-078 Access to sensitive file path is not allowed",
+        match="ATLAN-PYTHON-400-078 Access to blocked file path is not allowed",
     ):
         client.upload_file(presigned_url="test-url", file_path=file_path)
 

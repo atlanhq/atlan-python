@@ -685,8 +685,8 @@ class ErrorCode(Enum):
     INVALID_UPLOAD_FILE_PATH_SENSITIVE = (
         400,
         "ATLAN-PYTHON-400-078",
-        "Access to sensitive file path is not allowed: {0}.",
-        "Ensure the file path does not point to sensitive system files or credential directories.",
+        "Access to blocked file path is not allowed: {0}.",
+        "Ensure the file path does not point to a blocked location (system files, credential directories, or paths defined in PYATLAN_UPLOAD_FILE_BLOCKED_PATHS).",
         InvalidRequestError,
     )
     AUTHENTICATION_PASSTHROUGH = (

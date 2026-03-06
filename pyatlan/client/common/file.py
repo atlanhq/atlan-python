@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any
 
 # System directories that must never be read from.
-# Extend via PYATLAN_SENSITIVE_SYSTEM_PREFIXES (comma-separated paths, e.g. "/vault/,/secrets/")
 _SENSITIVE_SYSTEM_PREFIXES = (
     "/etc/",
     "/proc/",
@@ -17,11 +16,9 @@ _SENSITIVE_SYSTEM_PREFIXES = (
 )
 
 # Hidden credential/config directories that must never be read from.
-# Extend via PYATLAN_SENSITIVE_DIR_NAMES (comma-separated names, e.g. ".vault,.myconfig")
 _SENSITIVE_DIR_NAMES = frozenset({".aws", ".ssh", ".gnupg"})
 
 # File name prefixes for environment/secret files.
-# Extend via PYATLAN_SENSITIVE_FILE_PREFIXES (comma-separated prefixes, e.g. ".secrets,.credentials")
 _SENSITIVE_FILE_PREFIXES = (".env",)
 
 
@@ -96,30 +93,31 @@ class FileUpload:
         resolved = path.resolve()
         resolved_str = str(resolved)
 
-        system_prefixes = _SENSITIVE_SYSTEM_PREFIXES + tuple(
-            _parse_env_list("PYATLAN_SENSITIVE_SYSTEM_PREFIXES")
-        )
-        dir_names = _SENSITIVE_DIR_NAMES | frozenset(
-            _parse_env_list("PYATLAN_SENSITIVE_DIR_NAMES")
-        )
-        file_prefixes = _SENSITIVE_FILE_PREFIXES + tuple(
-            _parse_env_list("PYATLAN_SENSITIVE_FILE_PREFIXES")
-        )
-
         # Block sensitive system directories (e.g. /etc/, /proc/, /dev/)
-        if resolved_str.startswith(system_prefixes):
+        if resolved_str.startswith(_SENSITIVE_SYSTEM_PREFIXES):
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
                 file_path
             )
 
         # Block credential/config hidden directories (e.g. .aws, .ssh, .gnupg)
-        if any(part in dir_names for part in resolved.parts):
+        if any(part in _SENSITIVE_DIR_NAMES for part in resolved.parts):
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
                 file_path
             )
 
         # Block environment/secret files (e.g. .env, .env.local, .env.production)
-        if resolved.name.startswith(file_prefixes):
+        if resolved.name.startswith(_SENSITIVE_FILE_PREFIXES):
+            raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
+                file_path
+            )
+
+        # Block user-defined paths via PYATLAN_UPLOAD_FILE_BLOCKED_PATHS (comma-separated).
+        # Each entry is matched as a substring against the full resolved path, so it
+        # can express system prefixes ("/vault/"), dir names (".vault"), or
+        # file prefixes (".credentials").
+        # e.g. PYATLAN_UPLOAD_FILE_BLOCKED_PATHS="/custom/secrets/,.vault,.credentials"
+        user_blocked = _parse_env_list("PYATLAN_UPLOAD_FILE_BLOCKED_PATHS")
+        if any(pattern in resolved_str for pattern in user_blocked):
             raise ErrorCode.INVALID_UPLOAD_FILE_PATH_SENSITIVE.exception_with_parameters(
                 file_path
             )
