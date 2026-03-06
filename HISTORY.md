@@ -1,3 +1,22 @@
+## 9.1.0 (March 6, 2026)
+
+### Breaking Changes
+
+- `DynamoDBTable.creator()` now raises `NotImplementedError`. DynamoDB tables have a fundamentally different creation model and cannot reuse the inherited `Table.creator()`. Submit an enhancement request if you need this implemented.
+- `FileClient.upload_file()` now blocks uploads of sensitive files (system paths, credential directories, hidden config files) to prevent accidental secret exposure. Users can extend the blocklist via the `PYATLAN_UPLOAD_FILE_BLOCKED_PATHS` environment variable (comma-separated substrings matched against the resolved path):
+  ```
+  PYATLAN_UPLOAD_FILE_BLOCKED_PATHS="/custom/secrets/,.vault,.credentials"
+  ```
+
+### QOL Improvements
+
+- Regenerated latest typedef models.
+- Upgraded Python dependencies (`pydantic`, `ruff`, `mypy`, `pytz`, and others) and GitHub Actions to latest versions.
+- Replaced Sphinx with MkDocs + mkdocstrings for SDK documentation.
+- Fixed circular import chains in `core/__init__.py` generator (`SQL → DbtTest`, `atlan_app` priority ordering).
+- Moved `AtlanApp`, `AtlanAppTool`, `AtlanAppWorkflow`, and `AppWorkflowRun` into `core/`.
+- Added Claude Code skill (`/upgrade-deps`) for automated SDK dependency maintenance.
+
 ## 8.5.3 (February 17, 2026)
 
 ### New Features

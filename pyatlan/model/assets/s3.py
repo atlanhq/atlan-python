@@ -56,7 +56,7 @@ class S3(ObjectStore):
         "awsArn", "awsArn", "awsArn.text"
     )
     """
-    Amazon Resource Name (ARN) for this asset. This uniquely identifies the asset in AWS, and thus must be unique across all AWS asset instances.
+    DEPRECATED: This legacy attribute must be unique across all AWS asset instances. This can create non-obvious edge cases for creating / updating assets, and we therefore recommended NOT using it. See and use cloudResourceName instead.
     """  # noqa: E501
     AWS_PARTITION: ClassVar[KeywordField] = KeywordField("awsPartition", "awsPartition")
     """
@@ -96,6 +96,12 @@ class S3(ObjectStore):
     """
     List of tags that have been applied to the asset in AWS.
     """
+    CLOUD_UNIFORM_RESOURCE_NAME: ClassVar[KeywordField] = KeywordField(
+        "cloudUniformResourceName", "cloudUniformResourceName"
+    )
+    """
+    Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "s3_e_tag",
@@ -111,6 +117,7 @@ class S3(ObjectStore):
         "aws_owner_name",
         "aws_owner_id",
         "aws_tags",
+        "cloud_uniform_resource_name",
     ]
 
     @property
@@ -251,6 +258,20 @@ class S3(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
+    @property
+    def cloud_uniform_resource_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.cloud_uniform_resource_name
+        )
+
+    @cloud_uniform_resource_name.setter
+    def cloud_uniform_resource_name(self, cloud_uniform_resource_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.cloud_uniform_resource_name = cloud_uniform_resource_name
+
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(default=None, description="")
         s3_encryption: Optional[str] = Field(default=None, description="")
@@ -269,6 +290,7 @@ class S3(ObjectStore):
         aws_owner_name: Optional[str] = Field(default=None, description="")
         aws_owner_id: Optional[str] = Field(default=None, description="")
         aws_tags: Optional[List[AwsTag]] = Field(default=None, description="")
+        cloud_uniform_resource_name: Optional[str] = Field(default=None, description="")
 
     attributes: S3.Attributes = Field(
         default_factory=lambda: S3.Attributes(),

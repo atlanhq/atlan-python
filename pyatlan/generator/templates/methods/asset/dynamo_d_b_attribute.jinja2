@@ -1,0 +1,24 @@
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        parent_qualified_name: str,
+        order: int,
+        parent_name: Optional[str] = None,
+        connection_qualified_name: Optional[str] = None,
+    ) -> DynamoDBAttribute:
+        validate_required_fields(
+            ["name", "parent_qualified_name", "order"],
+            [name, parent_qualified_name, order],
+        )
+        attributes = DynamoDBAttribute.Attributes.creator(
+            name=name,
+            parent_qualified_name=parent_qualified_name,
+            order=order,
+            parent_name=parent_name,
+            connection_qualified_name=connection_qualified_name,
+        )
+        return cls(attributes=attributes)

@@ -1,0 +1,63 @@
+/* Atlan blue — matches the dark navy of "atlan" text in logo */
+:root,
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        #1B4F6A;
+  --md-primary-fg-color--light: #256690;
+  --md-primary-fg-color--dark:  #123547;
+  --md-primary-bg-color:        #ffffff;
+  --md-primary-bg-color--light: rgba(255,255,255,0.7);
+  --md-accent-fg-color:         #5DD4F5;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        #1B4F6A;
+  --md-primary-fg-color--light: #256690;
+  --md-primary-fg-color--dark:  #123547;
+  --md-accent-fg-color:         #5DD4F5;
+}
+
+/* Hide auto-generated 'Home' h1 on homepage — logo already shows the name */
+.md-content__inner:has(.homepage-hero) > h1 {
+  display: none;
+}
+
+/* Hide site name text — logo already contains the name */
+.md-header__title {
+  display: none;
+}
+
+/* Logo size and clean rendering in header */
+.md-header__button.md-logo img {
+  height: 2.2rem;
+  width: auto;
+}
+
+/* Nav tabs — hover and active states */
+.md-tabs__link {
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+.md-tabs__link:hover,
+.md-tabs__link--active {
+  opacity: 1;
+  color: #ffffff !important;
+}
+
+/* Sidebar nav links — hover and active */
+.md-nav__link:hover,
+.md-nav__link--active,
+.md-nav__item--active > .md-nav__link {
+  color: #5DD4F5 !important;
+}
+
+/* TOC links — hover and active */
+.md-nav--secondary .md-nav__link:hover,
+.md-nav--secondary .md-nav__link--active {
+  color: #5DD4F5 !important;
+}
+
+/* Dark mode: blend logo white-fringe into the header background */
+[data-md-color-scheme="slate"] .md-header__button.md-logo img {
+  background-color: #1B4F6A;
+  border-radius: 4px;
+}

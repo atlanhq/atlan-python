@@ -1,0 +1,120 @@
+site_name: pyatlan
+site_description: The official Python SDK for Atlan — search, discover, govern your data assets
+site_url: https://atlanhq.github.io/atlan-python/
+repo_url: https://github.com/atlanhq/atlan-python
+repo_name: atlanhq/atlan-python
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  homepage: https://atlanhq.github.io/atlan-python/
+  palette:
+    - scheme: default
+      primary: custom
+      accent: light blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: custom
+      accent: light blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - toc.follow
+    - search.highlight
+    - search.suggest
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - announce.dismiss
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+            members_order: alphabetical
+            filters:
+              - "!^_"
+            merge_init_into_class: true
+            show_signature_annotations: true
+
+nav:
+  - API Reference:
+    - AtlanClient: api/client.md
+    - Cache: api/cache.md
+    - Events: api/events.md
+    - Models: api/model.md
+    - Utils: api/utils.md
+    - Errors: api/errors.md
+  - Asset Models:
+    - Overview: api/assets/index.md
+    - Core Base Classes: api/assets/core.md
+    - Glossary: api/assets/glossary.md
+    - Access Control: api/assets/access-control.md
+    - SQL Databases: api/assets/sql.md
+    - Snowflake: api/assets/snowflake.md
+    - Databricks: api/assets/databricks.md
+    - NoSQL Databases: api/assets/nosql.md
+    - Streaming & Events: api/assets/streaming.md
+    - Cloud Storage: api/assets/cloud-storage.md
+    - dbt: api/assets/dbt.md
+    - Orchestration: api/assets/orchestration.md
+    - Microsoft BI: api/assets/microsoft-bi.md
+    - Tableau: api/assets/tableau.md
+    - Looker: api/assets/looker.md
+    - Other BI Tools: api/assets/other-bi.md
+    - Data Quality: api/assets/data-quality.md
+    - Data Mesh: api/assets/data-mesh.md
+    - AI / ML: api/assets/ai.md
+    - API: api/assets/api.md
+    - Data Modeling & Semantic: api/assets/modeling.md
+    - SAP: api/assets/sap.md
+    - Salesforce: api/assets/salesforce.md
+    - Cognite: api/assets/cognite.md
+    - AWS SageMaker: api/assets/sagemaker.md
+    - Other Connectors: api/assets/other-connectors.md
+    - Other: api/assets/other.md

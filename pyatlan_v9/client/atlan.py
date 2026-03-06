@@ -484,9 +484,11 @@ class AtlanClient(msgspec.Struct, kw_only=True):
                         text=response_data["text"],
                         content=response_data["content"],
                         _stream_lines=response_data["lines"],
-                        json=lambda: json.loads(response_data["text"])
-                        if response_data["text"]
-                        else {},
+                        json=lambda: (
+                            json.loads(response_data["text"])
+                            if response_data["text"]
+                            else {}
+                        ),
                     )
             else:
                 response = self._session.request(

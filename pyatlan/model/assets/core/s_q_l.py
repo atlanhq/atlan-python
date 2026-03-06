@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import ClassVar, Dict, List, Optional
+from typing import TYPE_CHECKING, ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
@@ -18,6 +18,9 @@ from pyatlan.model.fields.atlan_fields import (
 )
 
 from .catalog import Catalog
+
+if TYPE_CHECKING:
+    from pyatlan.model.assets.core.dbt_test import DbtTest
 
 
 class SQL(Catalog):
@@ -510,4 +513,3 @@ class SQL(Catalog):
 from .dbt_model import DbtModel  # noqa: E402, F401
 from .dbt_seed import DbtSeed  # noqa: E402, F401
 from .dbt_source import DbtSource  # noqa: E402, F401
-from .dbt_test import DbtTest  # noqa: E402, F401

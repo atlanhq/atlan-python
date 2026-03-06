@@ -34,7 +34,7 @@ class AWS(Cloud):
         "awsArn", "awsArn", "awsArn.text"
     )
     """
-    Amazon Resource Name (ARN) for this asset. This uniquely identifies the asset in AWS, and thus must be unique across all AWS asset instances.
+    DEPRECATED: This legacy attribute must be unique across all AWS asset instances. This can create non-obvious edge cases for creating / updating assets, and we therefore recommended NOT using it. See and use cloudResourceName instead.
     """  # noqa: E501
     AWS_PARTITION: ClassVar[KeywordField] = KeywordField("awsPartition", "awsPartition")
     """

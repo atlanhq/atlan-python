@@ -27,16 +27,16 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "pydantic~=2.12.4",
+    "pydantic~=2.12.5",
     "jinja2~=3.1.6",
     "tenacity~=9.1.2",
     "lazy-loader~=0.4",
     "nanoid~=2.0.0",
-    "pytz~=2025.2",
+    "pytz~=2026.1",
     "python-dateutil~=2.9.0.post0",
     "PyYAML~=6.0.3",
     "httpx~=0.28.1",
-    "httpx-retries~=0.4.5",
+    "httpx-retries~=0.4.6",
     "authlib~=1.6.9",
     "msgspec~=0.20.0",
 ]
@@ -49,20 +49,20 @@ Issues = "https://github.com/atlanhq/atlan-python/issues"
 
 [dependency-groups]
 dev = [
-    "mypy~=1.18.0",
-    "ruff~=0.14.5",
-    "types-setuptools~=80.9.0.20250822",
-    "types-Authlib~=1.6.5.20251005",
+    "mypy~=1.19.0",
+    "ruff~=0.15.5",
+    "types-setuptools~=81.0.0.20260209",
+    "types-Authlib~=1.6.7.20260208",
     "jaraco-context~=6.1.0",
-    "filelock~=3.20.3; python_version >= '3.10'",
-    "virtualenv~=20.36.1",
+    "filelock~=3.25.0; python_version >= '3.10'",
+    "virtualenv~=21.1.0",
     "urllib3~=2.6.3; python_version >= '3.10'",
     "pytest~=8.4.2",
     "pytest-vcr~=1.0.2",
     "vcrpy~=7.0.0",
     "pytest-order~=1.3.0",
     "pytest-timer[termcolor]~=1.0.0",
-    "pytest-sugar~=1.0.0",
+    "pytest-sugar~=1.1.1",
     "pre-commit~=4.3.0",
     "deepdiff~=8.6.1",
     "pytest-cov~=7.0.0",
@@ -74,10 +74,10 @@ dev = [
 ]
 
 docs = [
-    "sphinx~=7.4.7",
-    "furo~=2025.9.25",
-    "requests~=2.32.5",
-    "pydantic~=2.12.3",
+    "mkdocs~=1.6.1",
+    "mkdocs-material~=9.6.8",
+    "mkdocstrings[python]~=0.29.1",
+    "pydantic~=2.12.5",
     "jinja2~=3.1.6",
     "networkx~=3.2.1",
     "tenacity~=9.1.2",

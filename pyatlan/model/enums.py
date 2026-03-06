@@ -2619,6 +2619,12 @@ class AppWorkflowRunStatus(str, Enum):
     STOPPED = "Stopped"
 
 
+class AssetDQRunStatus(str, Enum):
+    SUCCESSFUL = "SUCCESSFUL"
+    FAILURE = "FAILURE"
+    IN_PROGRESS = "IN_PROGRESS"
+
+
 class AssetSmusMetadataFormStatus(str, Enum):
     ENABLED = "ENABLED"
     DISABLED = "DISABLED"
@@ -2634,6 +2640,16 @@ class AtlanAppDeploymentStatus(str, Enum):
     PENDING = "PENDING"
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
+
+
+class AtlanAppWorkflowOwnership(str, Enum):
+    SYSTEM = "SYSTEM"
+    USER = "USER"
+
+
+class AtlanAppWorkflowStatus(str, Enum):
+    DRAFT = "DRAFT"
+    PUBLISHED = "PUBLISHED"
 
 
 class AtlasGlossaryCategoryType(str, Enum):
@@ -3003,6 +3019,7 @@ class OpenLineageRunState(str, Enum):
 class PowerbiEndorsement(str, Enum):
     PROMOTED = "Promoted"
     CERTIFIED = "Certified"
+    MASTER_DATA = "Master Data"
 
 
 class QueryUsernameStrategy(str, Enum):

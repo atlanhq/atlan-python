@@ -2,6 +2,12 @@
 
 from .referenceable import Referenceable  # isort: skip
 
+from .atlan_app import AtlanApp  # isort: skip
+
+from .atlan_app_tool import AtlanAppTool  # isort: skip
+
+from .atlan_app_workflow import AtlanAppWorkflow  # isort: skip
+
 from .a_d_f import ADF
 from .a_i import AI
 from .a_i_application import AIApplication
@@ -19,6 +25,7 @@ from .airflow_task import AirflowTask
 from .anomalo import Anomalo
 from .anomalo_check import AnomaloCheck
 from .app import App
+from .app_workflow_run import AppWorkflowRun
 from .application import Application
 from .application_field import ApplicationField
 from .asset import Asset
@@ -114,11 +121,6 @@ from .no_s_q_l import NoSQL
 from .partial import Partial
 from .partial_field import PartialField
 from .partial_object import PartialObject
-from .partial_v01 import PartialV01
-from .partial_v01_field import PartialV01Field
-from .partial_v02 import PartialV02
-from .partial_v02_field import PartialV02Field
-from .partial_v02_object import PartialV02Object
 from .persona import Persona
 from .power_b_i import PowerBI
 from .power_b_i_app import PowerBIApp
@@ -165,6 +167,9 @@ from .view import View
 # Update asset forward references:
 localns = locals()
 Referenceable.Attributes.update_forward_refs(**localns)
+AtlanApp.Attributes.update_forward_refs(**localns)
+AtlanAppTool.Attributes.update_forward_refs(**localns)
+AtlanAppWorkflow.Attributes.update_forward_refs(**localns)
 Asset.Attributes.update_forward_refs(**localns)
 Process.Attributes.update_forward_refs(**localns)
 AtlasGlossaryCategory.Attributes.update_forward_refs(**localns)
@@ -188,12 +193,11 @@ Semantic.Attributes.update_forward_refs(**localns)
 FlowDataset.Attributes.update_forward_refs(**localns)
 NoSQL.Attributes.update_forward_refs(**localns)
 Partial.Attributes.update_forward_refs(**localns)
+AppWorkflowRun.Attributes.update_forward_refs(**localns)
 Dbt.Attributes.update_forward_refs(**localns)
 Fivetran.Attributes.update_forward_refs(**localns)
 DataContract.Attributes.update_forward_refs(**localns)
 DataQuality.Attributes.update_forward_refs(**localns)
-PartialV01.Attributes.update_forward_refs(**localns)
-PartialV02.Attributes.update_forward_refs(**localns)
 AI.Attributes.update_forward_refs(**localns)
 Resource.Attributes.update_forward_refs(**localns)
 FlowField.Attributes.update_forward_refs(**localns)
@@ -237,9 +241,6 @@ DataQualityRuleTemplate.Attributes.update_forward_refs(**localns)
 Metric.Attributes.update_forward_refs(**localns)
 DataQualityRule.Attributes.update_forward_refs(**localns)
 Soda.Attributes.update_forward_refs(**localns)
-PartialV01Field.Attributes.update_forward_refs(**localns)
-PartialV02Field.Attributes.update_forward_refs(**localns)
-PartialV02Object.Attributes.update_forward_refs(**localns)
 AIApplication.Attributes.update_forward_refs(**localns)
 AIModelVersion.Attributes.update_forward_refs(**localns)
 AIModel.Attributes.update_forward_refs(**localns)
@@ -260,8 +261,8 @@ Column.Attributes.update_forward_refs(**localns)
 SnowflakeStage.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-CalculationView.Attributes.update_forward_refs(**localns)
 Database.Attributes.update_forward_refs(**localns)
+CalculationView.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 Databricks.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)

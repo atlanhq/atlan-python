@@ -3,7 +3,7 @@
 -e .
 annotated-types==0.7.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pydantic
-anyio==4.10.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+anyio==4.12.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via httpx
 authlib==1.6.9 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
@@ -11,22 +11,24 @@ backports-asyncio-runner==1.2.0 ; python_full_version < '3.11' and platform_pyth
     # via pytest-asyncio
 backports-tarfile==1.2.0 ; python_full_version < '3.12' and platform_python_implementation == 'CPython'
     # via jaraco-context
-certifi==2025.8.3 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+certifi==2026.2.25 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
     #   httpcore
     #   httpx
     #   requests
 cffi==2.0.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via cryptography
-cfgv==3.4.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+cfgv==3.4.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
     # via pre-commit
-charset-normalizer==3.4.3 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+cfgv==3.5.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via pre-commit
+charset-normalizer==3.4.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via requests
 colorama==0.4.6 ; python_full_version < '3.14' and platform_python_implementation == 'CPython' and sys_platform == 'win32'
     # via pytest
 coverage==7.10.7 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
     # via pytest-cov
-coverage==7.11.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
+coverage==7.13.4 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pytest-cov
 cryptography==46.0.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
@@ -36,16 +38,20 @@ cryptography==46.0.5 ; python_full_version < '3.14' and platform_python_implemen
 deepdiff==8.6.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 distlib==0.4.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via virtualenv
-docutils==0.20.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+docutils==0.21.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via readme-renderer
-exceptiongroup==1.3.0 ; python_full_version < '3.11' and platform_python_implementation == 'CPython'
+exceptiongroup==1.3.1 ; python_full_version < '3.11' and platform_python_implementation == 'CPython'
     # via
     #   anyio
     #   pytest
 filelock==3.19.1 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
-    # via virtualenv
-filelock==3.20.3 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
-    # via virtualenv
+    # via
+    #   python-discovery
+    #   virtualenv
+filelock==3.25.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via
+    #   python-discovery
+    #   virtualenv
 h11==0.16.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via httpcore
 httpcore==1.0.9 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
@@ -54,29 +60,35 @@ httpx==0.28.1 ; python_full_version < '3.14' and platform_python_implementation 
     # via
     #   httpx-retries
     #   pyatlan
-httpx-retries==0.4.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+httpx-retries==0.4.6 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
-id==1.5.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+id==1.5.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
     # via twine
-identify==2.6.13 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+id==1.6.1 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via twine
+identify==2.6.15 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
     # via pre-commit
-idna==3.10 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+identify==2.6.17 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via pre-commit
+idna==3.11 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
     #   anyio
     #   httpx
     #   requests
     #   yarl
-importlib-metadata==8.7.0 ; (python_full_version < '3.12' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython') or (python_full_version < '3.10' and platform_machine == 'ppc64le' and platform_python_implementation == 'CPython') or (python_full_version < '3.10' and platform_machine == 's390x' and platform_python_implementation == 'CPython')
+importlib-metadata==8.7.1 ; (python_full_version < '3.12' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython') or (python_full_version < '3.10' and platform_machine == 'ppc64le' and platform_python_implementation == 'CPython') or (python_full_version < '3.10' and platform_machine == 's390x' and platform_python_implementation == 'CPython')
     # via
     #   keyring
     #   twine
-iniconfig==2.1.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+iniconfig==2.1.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
+    # via pytest
+iniconfig==2.3.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pytest
 jaraco-classes==3.4.0 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython'
     # via keyring
 jaraco-context==6.1.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via keyring
-jaraco-functools==4.2.1 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython'
+jaraco-functools==4.4.0 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython'
     # via keyring
 jeepney==0.9.0 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython' and sys_platform == 'linux'
     # via
@@ -84,27 +96,29 @@ jeepney==0.9.0 ; python_full_version < '3.14' and platform_machine != 'ppc64le' 
     #   secretstorage
 jinja2==3.1.6 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
-keyring==25.6.0 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython'
+keyring==25.7.0 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython'
     # via twine
 lazy-loader==0.4 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
+librt==0.8.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via mypy
 markdown-it-py==3.0.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
     # via rich
 markdown-it-py==4.0.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via rich
-markupsafe==3.0.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+markupsafe==3.0.3 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via jinja2
 mdurl==0.1.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via markdown-it-py
-more-itertools==10.7.0 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython'
+more-itertools==10.8.0 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython'
     # via
     #   jaraco-classes
     #   jaraco-functools
 msgspec==0.20.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
-multidict==6.6.4 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+multidict==6.7.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via yarl
-mypy==1.18.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+mypy==1.19.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 mypy-extensions==1.1.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via mypy
 nanoid==2.0.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
@@ -112,32 +126,39 @@ nanoid==2.0.0 ; python_full_version < '3.14' and platform_python_implementation 
 networkx==3.2.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via networkx-stubs
 networkx-stubs==0.0.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-nh3==0.3.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+nh3==0.3.3 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via readme-renderer
-nodeenv==1.9.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+nodeenv==1.10.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pre-commit
 orderly-set==5.5.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via deepdiff
-packaging==25.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+packaging==26.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
     #   lazy-loader
     #   pytest
-    #   pytest-sugar
     #   twine
-pathspec==0.12.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+pathspec==1.0.4 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via mypy
-platformdirs==4.3.8 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-    # via virtualenv
+platformdirs==4.4.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
+    # via
+    #   python-discovery
+    #   virtualenv
+platformdirs==4.9.4 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via
+    #   python-discovery
+    #   virtualenv
 pluggy==1.6.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
     #   pytest
     #   pytest-cov
 pre-commit==4.3.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-propcache==0.3.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+propcache==0.4.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via yarl
-pycparser==2.22 ; python_full_version < '3.14' and implementation_name != 'PyPy' and platform_python_implementation == 'CPython'
+pycparser==2.23 ; python_full_version < '3.10' and implementation_name != 'PyPy' and platform_python_implementation == 'CPython'
     # via cffi
-pydantic==2.12.4 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+pycparser==3.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and implementation_name != 'PyPy' and platform_python_implementation == 'CPython'
+    # via cffi
+pydantic==2.12.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
 pydantic-core==2.41.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pydantic
@@ -157,12 +178,14 @@ pytest==8.4.2 ; python_full_version < '3.14' and platform_python_implementation 
 pytest-asyncio==1.2.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 pytest-cov==7.0.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 pytest-order==1.3.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-pytest-sugar==1.0.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+pytest-sugar==1.1.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 pytest-timer==1.0.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 pytest-vcr==1.0.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 python-dateutil==2.9.0.post0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
-pytz==2025.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+python-discovery==1.1.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via virtualenv
+pytz==2026.1.post1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pyatlan
 pywin32-ctypes==0.2.3 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython' and sys_platform == 'win32'
     # via keyring
@@ -171,7 +194,7 @@ pyyaml==6.0.3 ; python_full_version < '3.14' and platform_python_implementation 
     #   pre-commit
     #   pyatlan
     #   vcrpy
-readme-renderer==43.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+readme-renderer==44.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via twine
 requests==2.32.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
@@ -182,31 +205,37 @@ requests-toolbelt==1.0.0 ; python_full_version < '3.14' and platform_python_impl
     # via twine
 rfc3986==2.0.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via twine
-rich==14.1.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+rich==14.3.3 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via twine
-ruff==0.14.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-secretstorage==3.3.3 ; python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython' and sys_platform == 'linux'
+ruff==0.15.5 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+secretstorage==3.3.3 ; python_full_version < '3.10' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython' and sys_platform == 'linux'
+    # via keyring
+secretstorage==3.5.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython' and sys_platform == 'linux'
     # via keyring
 six==1.17.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via python-dateutil
-sniffio==1.3.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-    # via anyio
-tenacity==9.1.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+tenacity==9.1.2 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
     # via pyatlan
-termcolor==3.1.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+tenacity==9.1.4 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via pyatlan
+termcolor==3.1.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
     # via
     #   pytest-sugar
     #   pytest-timer
-tomli==2.2.1 ; python_full_version <= '3.11' and platform_python_implementation == 'CPython'
+termcolor==3.3.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
+    # via
+    #   pytest-sugar
+    #   pytest-timer
+tomli==2.4.0 ; python_full_version <= '3.11' and platform_python_implementation == 'CPython'
     # via
     #   coverage
     #   mypy
     #   pytest
 twine==6.2.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-types-authlib==1.6.5.20251005 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+types-authlib==1.6.7.20260208 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
 types-retry==0.9.9.20250322 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-types-setuptools==80.9.0.20250822 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
-typing-extensions==4.14.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+types-setuptools==81.0.0.20260209 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+typing-extensions==4.15.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
     #   anyio
     #   cryptography
@@ -227,16 +256,19 @@ urllib3==1.26.20 ; python_full_version < '3.10' and platform_python_implementati
     #   vcrpy
 urllib3==2.6.3 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via
+    #   id
     #   requests
     #   twine
     #   vcrpy
 vcrpy==7.0.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pytest-vcr
-virtualenv==20.36.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+virtualenv==21.1.0 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via pre-commit
-wrapt==1.17.3 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+wrapt==2.1.2 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via vcrpy
-yarl==1.20.1 ; python_full_version < '3.14' and platform_python_implementation == 'CPython'
+yarl==1.22.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
+    # via vcrpy
+yarl==1.23.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and platform_python_implementation == 'CPython'
     # via vcrpy
 zipp==3.23.0 ; (python_full_version < '3.12' and platform_machine != 'ppc64le' and platform_machine != 's390x' and platform_python_implementation == 'CPython') or (python_full_version < '3.10' and platform_machine == 'ppc64le' and platform_python_implementation == 'CPython') or (python_full_version < '3.10' and platform_machine == 's390x' and platform_python_implementation == 'CPython')
     # via importlib-metadata

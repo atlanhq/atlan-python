@@ -1,7 +1,7 @@
 # Copyright 2024 Atlan Pte. Ltd.
 {% for asset_import in asset_imports -%}
-{%- if 'Referenceable' in asset_import %}
-{{ asset_import }} # isort: skip
+{%- if '# isort: skip' in asset_import %}
+{{ asset_import }}
 {%- else  %}
 {{ asset_import }}
 {% endif %}

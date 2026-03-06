@@ -9,8 +9,7 @@ from .asset import Asset
 
 
 class IndistinctAsset(Asset, type_name="IndistinctAsset"):
-    """
-    Instance of an asset where we cannot determine
+    """Instance of an asset where we cannot determine
     (have not yet modeled) its detailed information.
     In the meanwhile, this provides a catch-all case
     where at least the basic asset information is available.

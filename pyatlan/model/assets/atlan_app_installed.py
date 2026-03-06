@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField
 
-from .atlan_app import AtlanApp
+from .core.atlan_app import AtlanApp
 
 
 class AtlanAppInstalled(AtlanApp):
