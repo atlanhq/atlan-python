@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,12 +34,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -56,14 +44,17 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .semantic_related import RelatedSemanticModel
-from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SnowflakeSemanticFact(Asset):
@@ -200,9 +191,7 @@ class SnowflakeSemanticFact(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -253,9 +242,7 @@ class SnowflakeSemanticFact(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -264,9 +251,7 @@ class SnowflakeSemanticFact(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -281,9 +266,7 @@ class SnowflakeSemanticFact(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -313,9 +296,7 @@ class SnowflakeSemanticFact(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -327,22 +308,16 @@ class SnowflakeSemanticFact(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
     """Semantic model in which this measure exists."""
 
-    snowflake_semantic_logical_table: Union[
-        RelatedSnowflakeSemanticLogicalTable, None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_table: Union[RelatedSnowflakeSemanticLogicalTable, None, UnsetType] = UNSET
     """Logical table containing the fact."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -364,6 +339,7 @@ class SnowflakeSemanticFact(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -394,9 +370,7 @@ class SnowflakeSemanticFact(Asset):
         return _snowflake_semantic_fact_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SnowflakeSemanticFact:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SnowflakeSemanticFact:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -417,7 +391,6 @@ class SnowflakeSemanticFact(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class SnowflakeSemanticFactAttributes(AssetAttributes):
     """SnowflakeSemanticFact-specific attributes for nested API format."""
@@ -482,9 +455,7 @@ class SnowflakeSemanticFactAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -510,7 +481,6 @@ class SnowflakeSemanticFactAttributes(AssetAttributes):
 
     semantic_labels: Union[List[str], None, UnsetType] = UNSET
     """Labels associated with the semantic field."""
-
 
 class SnowflakeSemanticFactRelationshipAttributes(AssetRelationshipAttributes):
     """SnowflakeSemanticFact-specific relationship attributes for nested API format."""
@@ -539,9 +509,7 @@ class SnowflakeSemanticFactRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -550,9 +518,7 @@ class SnowflakeSemanticFactRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -567,9 +533,7 @@ class SnowflakeSemanticFactRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -599,9 +563,7 @@ class SnowflakeSemanticFactRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -613,22 +575,16 @@ class SnowflakeSemanticFactRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
     """Semantic model in which this measure exists."""
 
-    snowflake_semantic_logical_table: Union[
-        RelatedSnowflakeSemanticLogicalTable, None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_table: Union[RelatedSnowflakeSemanticLogicalTable, None, UnsetType] = UNSET
     """Logical table containing the fact."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -640,21 +596,13 @@ class SnowflakeSemanticFactRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SnowflakeSemanticFactNested(AssetNested):
     """SnowflakeSemanticFact in nested API format for high-performance serialization."""
 
     attributes: Union[SnowflakeSemanticFactAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        SnowflakeSemanticFactRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        SnowflakeSemanticFactRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SnowflakeSemanticFactRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SnowflakeSemanticFactRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SnowflakeSemanticFactRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SnowflakeSemanticFactRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -701,19 +649,12 @@ _SNOWFLAKE_SEMANTIC_FACT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_snowflake_semantic_fact_attrs(
-    attrs: SnowflakeSemanticFactAttributes, obj: SnowflakeSemanticFact
-) -> None:
+def _populate_snowflake_semantic_fact_attrs(attrs: SnowflakeSemanticFactAttributes, obj: SnowflakeSemanticFact) -> None:
     """Populate SnowflakeSemanticFact-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.snowflake_semantic_view_qualified_name = (
-        obj.snowflake_semantic_view_qualified_name
-    )
+    attrs.snowflake_semantic_view_qualified_name = obj.snowflake_semantic_view_qualified_name
     attrs.snowflake_semantic_view_name = obj.snowflake_semantic_view_name
-    attrs.snowflake_semantic_table_qualified_name = (
-        obj.snowflake_semantic_table_qualified_name
-    )
+    attrs.snowflake_semantic_table_qualified_name = obj.snowflake_semantic_table_qualified_name
     attrs.snowflake_semantic_table_name = obj.snowflake_semantic_table_name
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
@@ -741,19 +682,12 @@ def _populate_snowflake_semantic_fact_attrs(
     attrs.semantic_data_type = obj.semantic_data_type
     attrs.semantic_labels = obj.semantic_labels
 
-
-def _extract_snowflake_semantic_fact_attrs(
-    attrs: SnowflakeSemanticFactAttributes,
-) -> dict:
+def _extract_snowflake_semantic_fact_attrs(attrs: SnowflakeSemanticFactAttributes) -> dict:
     """Extract all SnowflakeSemanticFact attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["snowflake_semantic_view_qualified_name"] = (
-        attrs.snowflake_semantic_view_qualified_name
-    )
+    result["snowflake_semantic_view_qualified_name"] = attrs.snowflake_semantic_view_qualified_name
     result["snowflake_semantic_view_name"] = attrs.snowflake_semantic_view_name
-    result["snowflake_semantic_table_qualified_name"] = (
-        attrs.snowflake_semantic_table_qualified_name
-    )
+    result["snowflake_semantic_table_qualified_name"] = attrs.snowflake_semantic_table_qualified_name
     result["snowflake_semantic_table_name"] = attrs.snowflake_semantic_table_name
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
@@ -771,9 +705,7 @@ def _extract_snowflake_semantic_fact_attrs(
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
@@ -784,23 +716,18 @@ def _extract_snowflake_semantic_fact_attrs(
     result["semantic_labels"] = attrs.semantic_labels
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _snowflake_semantic_fact_to_nested(
-    snowflake_semantic_fact: SnowflakeSemanticFact,
-) -> SnowflakeSemanticFactNested:
+def _snowflake_semantic_fact_to_nested(snowflake_semantic_fact: SnowflakeSemanticFact) -> SnowflakeSemanticFactNested:
     """Convert flat SnowflakeSemanticFact to nested format."""
     attrs = SnowflakeSemanticFactAttributes()
     _populate_snowflake_semantic_fact_attrs(attrs, snowflake_semantic_fact)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        snowflake_semantic_fact,
-        _SNOWFLAKE_SEMANTIC_FACT_REL_FIELDS,
-        SnowflakeSemanticFactRelationshipAttributes,
+        snowflake_semantic_fact, _SNOWFLAKE_SEMANTIC_FACT_REL_FIELDS, SnowflakeSemanticFactRelationshipAttributes
     )
     return SnowflakeSemanticFactNested(
         guid=snowflake_semantic_fact.guid,
@@ -828,23 +755,16 @@ def _snowflake_semantic_fact_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _snowflake_semantic_fact_from_nested(
-    nested: SnowflakeSemanticFactNested,
-) -> SnowflakeSemanticFact:
+def _snowflake_semantic_fact_from_nested(nested: SnowflakeSemanticFactNested) -> SnowflakeSemanticFact:
     """Convert nested format to flat SnowflakeSemanticFact."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SnowflakeSemanticFactAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SnowflakeSemanticFactAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SNOWFLAKE_SEMANTIC_FACT_REL_FIELDS,
-        SnowflakeSemanticFactRelationshipAttributes,
+        SnowflakeSemanticFactRelationshipAttributes
     )
     return SnowflakeSemanticFact(
         guid=nested.guid,
@@ -871,21 +791,15 @@ def _snowflake_semantic_fact_from_nested(
         **merged_rels,
     )
 
-
-def _snowflake_semantic_fact_to_nested_bytes(
-    snowflake_semantic_fact: SnowflakeSemanticFact, serde: Serde
-) -> bytes:
+def _snowflake_semantic_fact_to_nested_bytes(snowflake_semantic_fact: SnowflakeSemanticFact, serde: Serde) -> bytes:
     """Convert flat SnowflakeSemanticFact to nested JSON bytes."""
     return serde.encode(_snowflake_semantic_fact_to_nested(snowflake_semantic_fact))
 
 
-def _snowflake_semantic_fact_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> SnowflakeSemanticFact:
+def _snowflake_semantic_fact_from_nested_bytes(data: bytes, serde: Serde) -> SnowflakeSemanticFact:
     """Convert nested JSON bytes to flat SnowflakeSemanticFact."""
     nested = serde.decode(data, SnowflakeSemanticFactNested)
     return _snowflake_semantic_fact_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -898,95 +812,47 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_VIEW_QUALIFIED_NAME = KeywordField(
-    "snowflakeSemanticViewQualifiedName", "snowflakeSemanticViewQualifiedName"
-)
-SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_VIEW_NAME = KeywordField(
-    "snowflakeSemanticViewName", "snowflakeSemanticViewName"
-)
-SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_TABLE_QUALIFIED_NAME = KeywordField(
-    "snowflakeSemanticTableQualifiedName", "snowflakeSemanticTableQualifiedName"
-)
-SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_TABLE_NAME = KeywordField(
-    "snowflakeSemanticTableName", "snowflakeSemanticTableName"
-)
+SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_VIEW_QUALIFIED_NAME = KeywordField("snowflakeSemanticViewQualifiedName", "snowflakeSemanticViewQualifiedName")
+SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_VIEW_NAME = KeywordField("snowflakeSemanticViewName", "snowflakeSemanticViewName")
+SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_TABLE_QUALIFIED_NAME = KeywordField("snowflakeSemanticTableQualifiedName", "snowflakeSemanticTableQualifiedName")
+SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_TABLE_NAME = KeywordField("snowflakeSemanticTableName", "snowflakeSemanticTableName")
 SnowflakeSemanticFact.QUERY_COUNT = NumericField("queryCount", "queryCount")
-SnowflakeSemanticFact.QUERY_USER_COUNT = NumericField(
-    "queryUserCount", "queryUserCount"
-)
+SnowflakeSemanticFact.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 SnowflakeSemanticFact.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-SnowflakeSemanticFact.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+SnowflakeSemanticFact.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 SnowflakeSemanticFact.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-SnowflakeSemanticFact.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+SnowflakeSemanticFact.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 SnowflakeSemanticFact.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-SnowflakeSemanticFact.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+SnowflakeSemanticFact.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 SnowflakeSemanticFact.TABLE_NAME = KeywordField("tableName", "tableName")
-SnowflakeSemanticFact.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+SnowflakeSemanticFact.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 SnowflakeSemanticFact.VIEW_NAME = KeywordField("viewName", "viewName")
-SnowflakeSemanticFact.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-SnowflakeSemanticFact.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-SnowflakeSemanticFact.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+SnowflakeSemanticFact.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+SnowflakeSemanticFact.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+SnowflakeSemanticFact.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 SnowflakeSemanticFact.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-SnowflakeSemanticFact.LAST_PROFILED_AT = NumericField(
-    "lastProfiledAt", "lastProfiledAt"
-)
-SnowflakeSemanticFact.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+SnowflakeSemanticFact.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
+SnowflakeSemanticFact.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 SnowflakeSemanticFact.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-SnowflakeSemanticFact.SEMANTIC_EXPRESSION = KeywordField(
-    "semanticExpression", "semanticExpression"
-)
+SnowflakeSemanticFact.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
 SnowflakeSemanticFact.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
-SnowflakeSemanticFact.SEMANTIC_SYNONYMS = KeywordField(
-    "semanticSynonyms", "semanticSynonyms"
-)
-SnowflakeSemanticFact.SEMANTIC_SAMPLE_VALUES = TextField(
-    "semanticSampleValues", "semanticSampleValues"
-)
-SnowflakeSemanticFact.SEMANTIC_ACCESS_MODIFIER = KeywordField(
-    "semanticAccessModifier", "semanticAccessModifier"
-)
-SnowflakeSemanticFact.SEMANTIC_DATA_TYPE = KeywordField(
-    "semanticDataType", "semanticDataType"
-)
+SnowflakeSemanticFact.SEMANTIC_SYNONYMS = KeywordField("semanticSynonyms", "semanticSynonyms")
+SnowflakeSemanticFact.SEMANTIC_SAMPLE_VALUES = TextField("semanticSampleValues", "semanticSampleValues")
+SnowflakeSemanticFact.SEMANTIC_ACCESS_MODIFIER = KeywordField("semanticAccessModifier", "semanticAccessModifier")
+SnowflakeSemanticFact.SEMANTIC_DATA_TYPE = KeywordField("semanticDataType", "semanticDataType")
 SnowflakeSemanticFact.SEMANTIC_LABELS = KeywordField("semanticLabels", "semanticLabels")
 SnowflakeSemanticFact.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SnowflakeSemanticFact.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+SnowflakeSemanticFact.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SnowflakeSemanticFact.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SnowflakeSemanticFact.APPLICATION = RelationField("application")
 SnowflakeSemanticFact.APPLICATION_FIELD = RelationField("applicationField")
-SnowflakeSemanticFact.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
+SnowflakeSemanticFact.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SnowflakeSemanticFact.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SnowflakeSemanticFact.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-SnowflakeSemanticFact.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SnowflakeSemanticFact.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+SnowflakeSemanticFact.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SnowflakeSemanticFact.METRICS = RelationField("metrics")
 SnowflakeSemanticFact.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SnowflakeSemanticFact.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
+SnowflakeSemanticFact.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 SnowflakeSemanticFact.DBT_MODELS = RelationField("dbtModels")
 SnowflakeSemanticFact.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 SnowflakeSemanticFact.DBT_TESTS = RelationField("dbtTests")
@@ -1001,20 +867,14 @@ SnowflakeSemanticFact.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 SnowflakeSemanticFact.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SnowflakeSemanticFact.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 SnowflakeSemanticFact.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SnowflakeSemanticFact.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+SnowflakeSemanticFact.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 SnowflakeSemanticFact.FILES = RelationField("files")
 SnowflakeSemanticFact.LINKS = RelationField("links")
 SnowflakeSemanticFact.README = RelationField("readme")
 SnowflakeSemanticFact.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SnowflakeSemanticFact.SEMANTIC_MODEL = RelationField("semanticModel")
-SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_LOGICAL_TABLE = RelationField(
-    "snowflakeSemanticLogicalTable"
-)
-SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_LOGICAL_TABLE = RelationField("snowflakeSemanticLogicalTable")
+SnowflakeSemanticFact.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 SnowflakeSemanticFact.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakeSemanticFact.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SnowflakeSemanticFact.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

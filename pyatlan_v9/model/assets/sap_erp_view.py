@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -46,15 +40,18 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SapErpView(Asset):
@@ -155,9 +152,7 @@ class SapErpView(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -166,9 +161,7 @@ class SapErpView(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -195,9 +188,7 @@ class SapErpView(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -215,9 +206,7 @@ class SapErpView(Asset):
     sap_erp_columns: Union[List[RelatedSapErpColumn], None, UnsetType] = UNSET
     """SAP ERP Columns that exist within this view."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -231,6 +220,8 @@ class SapErpView(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpView"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -283,7 +274,6 @@ class SapErpView(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SapErpViewAttributes(AssetAttributes):
     """SapErpView-specific attributes for nested API format."""
 
@@ -314,7 +304,6 @@ class SapErpViewAttributes(AssetAttributes):
     sap_field_order: Union[int, None, UnsetType] = UNSET
     """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
 
-
 class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpView-specific relationship attributes for nested API format."""
 
@@ -342,9 +331,7 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -353,9 +340,7 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -382,9 +367,7 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -402,9 +385,7 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_columns: Union[List[RelatedSapErpColumn], None, UnsetType] = UNSET
     """SAP ERP Columns that exist within this view."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -416,19 +397,13 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SapErpViewNested(AssetNested):
     """SapErpView in nested API format for high-performance serialization."""
 
     attributes: Union[SapErpViewAttributes, UnsetType] = UNSET
     relationship_attributes: Union[SapErpViewRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        SapErpViewRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SapErpViewRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[SapErpViewRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SapErpViewRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -468,7 +443,6 @@ _SAP_ERP_VIEW_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_sap_erp_view_attrs(attrs: SapErpViewAttributes, obj: SapErpView) -> None:
     """Populate SapErpView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -481,7 +455,6 @@ def _populate_sap_erp_view_attrs(attrs: SapErpViewAttributes, obj: SapErpView) -
     attrs.sap_data_type = obj.sap_data_type
     attrs.sap_field_count = obj.sap_field_count
     attrs.sap_field_order = obj.sap_field_order
-
 
 def _extract_sap_erp_view_attrs(attrs: SapErpViewAttributes) -> dict:
     """Extract all SapErpView attributes from the attrs struct into a flat dict."""
@@ -496,7 +469,6 @@ def _extract_sap_erp_view_attrs(attrs: SapErpViewAttributes) -> dict:
     result["sap_field_count"] = attrs.sap_field_count
     result["sap_field_order"] = attrs.sap_field_order
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -537,19 +509,16 @@ def _sap_erp_view_to_nested(sap_erp_view: SapErpView) -> SapErpViewNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _sap_erp_view_from_nested(nested: SapErpViewNested) -> SapErpView:
     """Convert nested format to flat SapErpView."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else SapErpViewAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SapErpViewAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_VIEW_REL_FIELDS,
-        SapErpViewRelationshipAttributes,
+        SapErpViewRelationshipAttributes
     )
     return SapErpView(
         guid=nested.guid,
@@ -576,7 +545,6 @@ def _sap_erp_view_from_nested(nested: SapErpViewNested) -> SapErpView:
         **merged_rels,
     )
 
-
 def _sap_erp_view_to_nested_bytes(sap_erp_view: SapErpView, serde: Serde) -> bytes:
     """Convert flat SapErpView to nested JSON bytes."""
     return serde.encode(_sap_erp_view_to_nested(sap_erp_view))
@@ -586,7 +554,6 @@ def _sap_erp_view_from_nested_bytes(data: bytes, serde: Serde) -> SapErpView:
     """Convert nested JSON bytes to flat SapErpView."""
     nested = serde.decode(data, SapErpViewNested)
     return _sap_erp_view_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

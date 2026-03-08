@@ -8,11 +8,6 @@ Sisense module exports.
 This module provides convenient imports for all Sisense types and their Related variants.
 """
 
-from .sisense import Sisense
-from .sisense_dashboard import SisenseDashboard
-from .sisense_datamodel import SisenseDatamodel
-from .sisense_datamodel_table import SisenseDatamodelTable
-from .sisense_folder import SisenseFolder
 from .sisense_related import (
     RelatedSisense,
     RelatedSisenseDashboard,
@@ -21,6 +16,11 @@ from .sisense_related import (
     RelatedSisenseFolder,
     RelatedSisenseWidget,
 )
+from .sisense import Sisense
+from .sisense_dashboard import SisenseDashboard
+from .sisense_datamodel import SisenseDatamodel
+from .sisense_datamodel_table import SisenseDatamodelTable
+from .sisense_folder import SisenseFolder
 from .sisense_widget import SisenseWidget
 
 __all__ = [

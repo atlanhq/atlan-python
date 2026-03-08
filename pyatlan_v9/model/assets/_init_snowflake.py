@@ -8,9 +8,6 @@ Snowflake module exports.
 This module provides convenient imports for all Snowflake types and their Related variants.
 """
 
-from .snowflake import Snowflake
-from .snowflake_ai_model_context import SnowflakeAIModelContext
-from .snowflake_ai_model_version import SnowflakeAIModelVersion
 from .snowflake_related import (
     RelatedSnowflake,
     RelatedSnowflakeAIModelContext,
@@ -26,6 +23,9 @@ from .snowflake_related import (
     RelatedSnowflakeStream,
     RelatedSnowflakeTag,
 )
+from .snowflake import Snowflake
+from .snowflake_ai_model_context import SnowflakeAIModelContext
+from .snowflake_ai_model_version import SnowflakeAIModelVersion
 from .snowflake_semantic_dimension import SnowflakeSemanticDimension
 from .snowflake_semantic_fact import SnowflakeSemanticFact
 from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable

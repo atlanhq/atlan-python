@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .adf_related import RelatedAdfActivity
 from .airflow_related import RelatedAirflowTask
@@ -58,11 +51,13 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DbtColumnProcess(Asset):
@@ -249,9 +244,7 @@ class DbtColumnProcess(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -260,9 +253,7 @@ class DbtColumnProcess(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     fabric_activities: Union[List[RelatedFabricActivity], None, UnsetType] = UNSET
@@ -292,9 +283,7 @@ class DbtColumnProcess(Asset):
     partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(
-        default=UNSET, name="powerBIDataflow"
-    )
+    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflow")
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
@@ -318,9 +307,7 @@ class DbtColumnProcess(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -338,9 +325,7 @@ class DbtColumnProcess(Asset):
     sql_functions: Union[List[RelatedFunction], None, UnsetType] = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -357,6 +342,8 @@ class DbtColumnProcess(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DbtColumnProcess"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -387,9 +374,7 @@ class DbtColumnProcess(Asset):
         return _dbt_column_process_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> DbtColumnProcess:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DbtColumnProcess:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -410,7 +395,6 @@ class DbtColumnProcess(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class DbtColumnProcessAttributes(AssetAttributes):
     """DbtColumnProcess-specific attributes for nested API format."""
@@ -493,7 +477,6 @@ class DbtColumnProcessAttributes(AssetAttributes):
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
 
-
 class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     """DbtColumnProcess-specific relationship attributes for nested API format."""
 
@@ -527,9 +510,7 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -538,9 +519,7 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     fabric_activities: Union[List[RelatedFabricActivity], None, UnsetType] = UNSET
@@ -570,9 +549,7 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     partial_child_objects: Union[List[RelatedPartialObject], None, UnsetType] = UNSET
     """Partial objects contained in the asset."""
 
-    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(
-        default=UNSET, name="powerBIDataflow"
-    )
+    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflow")
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
@@ -596,9 +573,7 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -616,9 +591,7 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     sql_functions: Union[List[RelatedFunction], None, UnsetType] = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -633,21 +606,13 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DbtColumnProcessNested(AssetNested):
     """DbtColumnProcess in nested API format for high-performance serialization."""
 
     attributes: Union[DbtColumnProcessAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        DbtColumnProcessRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        DbtColumnProcessRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DbtColumnProcessRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[DbtColumnProcessRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DbtColumnProcessRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DbtColumnProcessRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -699,10 +664,7 @@ _DBT_COLUMN_PROCESS_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_dbt_column_process_attrs(
-    attrs: DbtColumnProcessAttributes, obj: DbtColumnProcess
-) -> None:
+def _populate_dbt_column_process_attrs(attrs: DbtColumnProcessAttributes, obj: DbtColumnProcess) -> None:
     """Populate DbtColumnProcess-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dbt_column_process_job_status = obj.dbt_column_process_job_status
@@ -727,13 +689,10 @@ def _populate_dbt_column_process_attrs(
     attrs.dbt_job_runs = obj.dbt_job_runs
     attrs.code = obj.code
     attrs.sql = obj.sql
-    attrs.parent_connection_process_qualified_name = (
-        obj.parent_connection_process_qualified_name
-    )
+    attrs.parent_connection_process_qualified_name = obj.parent_connection_process_qualified_name
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
-
 
 def _extract_dbt_column_process_attrs(attrs: DbtColumnProcessAttributes) -> dict:
     """Extract all DbtColumnProcess attributes from the attrs struct into a flat dict."""
@@ -760,31 +719,24 @@ def _extract_dbt_column_process_attrs(attrs: DbtColumnProcessAttributes) -> dict
     result["dbt_job_runs"] = attrs.dbt_job_runs
     result["code"] = attrs.code
     result["sql"] = attrs.sql
-    result["parent_connection_process_qualified_name"] = (
-        attrs.parent_connection_process_qualified_name
-    )
+    result["parent_connection_process_qualified_name"] = attrs.parent_connection_process_qualified_name
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _dbt_column_process_to_nested(
-    dbt_column_process: DbtColumnProcess,
-) -> DbtColumnProcessNested:
+def _dbt_column_process_to_nested(dbt_column_process: DbtColumnProcess) -> DbtColumnProcessNested:
     """Convert flat DbtColumnProcess to nested format."""
     attrs = DbtColumnProcessAttributes()
     _populate_dbt_column_process_attrs(attrs, dbt_column_process)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        dbt_column_process,
-        _DBT_COLUMN_PROCESS_REL_FIELDS,
-        DbtColumnProcessRelationshipAttributes,
+        dbt_column_process, _DBT_COLUMN_PROCESS_REL_FIELDS, DbtColumnProcessRelationshipAttributes
     )
     return DbtColumnProcessNested(
         guid=dbt_column_process.guid,
@@ -812,21 +764,16 @@ def _dbt_column_process_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _dbt_column_process_from_nested(nested: DbtColumnProcessNested) -> DbtColumnProcess:
     """Convert nested format to flat DbtColumnProcess."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else DbtColumnProcessAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DbtColumnProcessAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_COLUMN_PROCESS_REL_FIELDS,
-        DbtColumnProcessRelationshipAttributes,
+        DbtColumnProcessRelationshipAttributes
     )
     return DbtColumnProcess(
         guid=nested.guid,
@@ -853,21 +800,15 @@ def _dbt_column_process_from_nested(nested: DbtColumnProcessNested) -> DbtColumn
         **merged_rels,
     )
 
-
-def _dbt_column_process_to_nested_bytes(
-    dbt_column_process: DbtColumnProcess, serde: Serde
-) -> bytes:
+def _dbt_column_process_to_nested_bytes(dbt_column_process: DbtColumnProcess, serde: Serde) -> bytes:
     """Convert flat DbtColumnProcess to nested JSON bytes."""
     return serde.encode(_dbt_column_process_to_nested(dbt_column_process))
 
 
-def _dbt_column_process_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> DbtColumnProcess:
+def _dbt_column_process_from_nested_bytes(data: bytes, serde: Serde) -> DbtColumnProcess:
     """Convert nested JSON bytes to flat DbtColumnProcess."""
     nested = serde.decode(data, DbtColumnProcessNested)
     return _dbt_column_process_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -878,9 +819,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DbtColumnProcess.DBT_COLUMN_PROCESS_JOB_STATUS = KeywordField(
-    "dbtColumnProcessJobStatus", "dbtColumnProcessJobStatus"
-)
+DbtColumnProcess.DBT_COLUMN_PROCESS_JOB_STATUS = KeywordField("dbtColumnProcessJobStatus", "dbtColumnProcessJobStatus")
 DbtColumnProcess.DBT_ALIAS = KeywordField("dbtAlias", "dbtAlias")
 DbtColumnProcess.DBT_META = KeywordField("dbtMeta", "dbtMeta")
 DbtColumnProcess.DBT_UNIQUE_ID = KeywordField("dbtUniqueId", "dbtUniqueId")
@@ -890,37 +829,21 @@ DbtColumnProcess.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageNa
 DbtColumnProcess.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtColumnProcess.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtColumnProcess.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtColumnProcess.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
-    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
-)
+DbtColumnProcess.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
 DbtColumnProcess.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtColumnProcess.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtColumnProcess.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
-    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
-)
-DbtColumnProcess.DBT_ENVIRONMENT_NAME = KeywordField(
-    "dbtEnvironmentName", "dbtEnvironmentName"
-)
-DbtColumnProcess.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
-    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
-)
+DbtColumnProcess.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
+DbtColumnProcess.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
+DbtColumnProcess.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
 DbtColumnProcess.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtColumnProcess.DBT_CONNECTION_CONTEXT = KeywordField(
-    "dbtConnectionContext", "dbtConnectionContext"
-)
-DbtColumnProcess.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
-    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
-)
+DbtColumnProcess.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
+DbtColumnProcess.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
 DbtColumnProcess.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtColumnProcess.CODE = KeywordField("code", "code")
 DbtColumnProcess.SQL = KeywordField("sql", "sql")
-DbtColumnProcess.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField(
-    "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
-)
+DbtColumnProcess.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField("parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName")
 DbtColumnProcess.AST = KeywordField("ast", "ast")
-DbtColumnProcess.ADDITIONAL_ETL_CONTEXT = KeywordField(
-    "additionalEtlContext", "additionalEtlContext"
-)
+DbtColumnProcess.ADDITIONAL_ETL_CONTEXT = KeywordField("additionalEtlContext", "additionalEtlContext")
 DbtColumnProcess.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 DbtColumnProcess.ADF_ACTIVITY = RelationField("adfActivity")
 DbtColumnProcess.AIRFLOW_TASKS = RelationField("airflowTasks")
@@ -932,9 +855,7 @@ DbtColumnProcess.APPLICATION_FIELD = RelationField("applicationField")
 DbtColumnProcess.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DbtColumnProcess.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DbtColumnProcess.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DbtColumnProcess.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+DbtColumnProcess.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 DbtColumnProcess.METRICS = RelationField("metrics")
 DbtColumnProcess.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DbtColumnProcess.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

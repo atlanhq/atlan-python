@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,7 +32,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .asset_grouping_related import RelatedAssetGroupingStrategy
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -51,11 +44,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .asset_grouping_related import RelatedAssetGroupingStrategy
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AssetGroupingCollection(Asset):
@@ -110,9 +107,7 @@ class AssetGroupingCollection(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    asset_grouping_strategy: Union[RelatedAssetGroupingStrategy, None, UnsetType] = (
-        UNSET
-    )
+    asset_grouping_strategy: Union[RelatedAssetGroupingStrategy, None, UnsetType] = UNSET
     """Grouping strategy from which this collection was created."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
@@ -124,9 +119,7 @@ class AssetGroupingCollection(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -135,9 +128,7 @@ class AssetGroupingCollection(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -164,9 +155,7 @@ class AssetGroupingCollection(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -178,9 +167,7 @@ class AssetGroupingCollection(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -199,7 +186,10 @@ class AssetGroupingCollection(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -230,9 +220,7 @@ class AssetGroupingCollection(Asset):
         return _asset_grouping_collection_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> AssetGroupingCollection:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AssetGroupingCollection:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -254,12 +242,10 @@ class AssetGroupingCollection(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AssetGroupingCollectionAttributes(AssetAttributes):
     """AssetGroupingCollection-specific attributes for nested API format."""
 
     pass
-
 
 class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes):
     """AssetGroupingCollection-specific relationship attributes for nested API format."""
@@ -279,9 +265,7 @@ class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes)
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    asset_grouping_strategy: Union[RelatedAssetGroupingStrategy, None, UnsetType] = (
-        UNSET
-    )
+    asset_grouping_strategy: Union[RelatedAssetGroupingStrategy, None, UnsetType] = UNSET
     """Grouping strategy from which this collection was created."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
@@ -293,9 +277,7 @@ class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes)
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -304,9 +286,7 @@ class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes)
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -333,9 +313,7 @@ class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes)
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -347,9 +325,7 @@ class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes)
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -361,21 +337,13 @@ class AssetGroupingCollectionRelationshipAttributes(AssetRelationshipAttributes)
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class AssetGroupingCollectionNested(AssetNested):
     """AssetGroupingCollection in nested API format for high-performance serialization."""
 
     attributes: Union[AssetGroupingCollectionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        AssetGroupingCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        AssetGroupingCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AssetGroupingCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[AssetGroupingCollectionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[AssetGroupingCollectionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AssetGroupingCollectionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -414,37 +382,26 @@ _ASSET_GROUPING_COLLECTION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_asset_grouping_collection_attrs(
-    attrs: AssetGroupingCollectionAttributes, obj: AssetGroupingCollection
-) -> None:
+def _populate_asset_grouping_collection_attrs(attrs: AssetGroupingCollectionAttributes, obj: AssetGroupingCollection) -> None:
     """Populate AssetGroupingCollection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
-
-def _extract_asset_grouping_collection_attrs(
-    attrs: AssetGroupingCollectionAttributes,
-) -> dict:
+def _extract_asset_grouping_collection_attrs(attrs: AssetGroupingCollectionAttributes) -> dict:
     """Extract all AssetGroupingCollection attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _asset_grouping_collection_to_nested(
-    asset_grouping_collection: AssetGroupingCollection,
-) -> AssetGroupingCollectionNested:
+def _asset_grouping_collection_to_nested(asset_grouping_collection: AssetGroupingCollection) -> AssetGroupingCollectionNested:
     """Convert flat AssetGroupingCollection to nested format."""
     attrs = AssetGroupingCollectionAttributes()
     _populate_asset_grouping_collection_attrs(attrs, asset_grouping_collection)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        asset_grouping_collection,
-        _ASSET_GROUPING_COLLECTION_REL_FIELDS,
-        AssetGroupingCollectionRelationshipAttributes,
+        asset_grouping_collection, _ASSET_GROUPING_COLLECTION_REL_FIELDS, AssetGroupingCollectionRelationshipAttributes
     )
     return AssetGroupingCollectionNested(
         guid=asset_grouping_collection.guid,
@@ -472,23 +429,16 @@ def _asset_grouping_collection_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _asset_grouping_collection_from_nested(
-    nested: AssetGroupingCollectionNested,
-) -> AssetGroupingCollection:
+def _asset_grouping_collection_from_nested(nested: AssetGroupingCollectionNested) -> AssetGroupingCollection:
     """Convert nested format to flat AssetGroupingCollection."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else AssetGroupingCollectionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AssetGroupingCollectionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ASSET_GROUPING_COLLECTION_REL_FIELDS,
-        AssetGroupingCollectionRelationshipAttributes,
+        AssetGroupingCollectionRelationshipAttributes
     )
     return AssetGroupingCollection(
         guid=nested.guid,
@@ -515,21 +465,15 @@ def _asset_grouping_collection_from_nested(
         **merged_rels,
     )
 
-
-def _asset_grouping_collection_to_nested_bytes(
-    asset_grouping_collection: AssetGroupingCollection, serde: Serde
-) -> bytes:
+def _asset_grouping_collection_to_nested_bytes(asset_grouping_collection: AssetGroupingCollection, serde: Serde) -> bytes:
     """Convert flat AssetGroupingCollection to nested JSON bytes."""
     return serde.encode(_asset_grouping_collection_to_nested(asset_grouping_collection))
 
 
-def _asset_grouping_collection_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> AssetGroupingCollection:
+def _asset_grouping_collection_from_nested_bytes(data: bytes, serde: Serde) -> AssetGroupingCollection:
     """Convert nested JSON bytes to flat AssetGroupingCollection."""
     nested = serde.decode(data, AssetGroupingCollectionNested)
     return _asset_grouping_collection_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -537,30 +481,18 @@ def _asset_grouping_collection_from_nested_bytes(
 from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
 
 AssetGroupingCollection.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-AssetGroupingCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+AssetGroupingCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AssetGroupingCollection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AssetGroupingCollection.APPLICATION = RelationField("application")
 AssetGroupingCollection.APPLICATION_FIELD = RelationField("applicationField")
 AssetGroupingCollection.ASSET_GROUPING_STRATEGY = RelationField("assetGroupingStrategy")
-AssetGroupingCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-AssetGroupingCollection.INPUT_PORT_DATA_PRODUCTS = RelationField(
-    "inputPortDataProducts"
-)
-AssetGroupingCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-AssetGroupingCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+AssetGroupingCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+AssetGroupingCollection.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+AssetGroupingCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+AssetGroupingCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 AssetGroupingCollection.METRICS = RelationField("metrics")
 AssetGroupingCollection.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-AssetGroupingCollection.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
+AssetGroupingCollection.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 AssetGroupingCollection.MEANINGS = RelationField("meanings")
 AssetGroupingCollection.MC_MONITORS = RelationField("mcMonitors")
 AssetGroupingCollection.MC_INCIDENTS = RelationField("mcIncidents")
@@ -568,18 +500,12 @@ AssetGroupingCollection.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields
 AssetGroupingCollection.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 AssetGroupingCollection.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 AssetGroupingCollection.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-AssetGroupingCollection.USER_DEF_RELATIONSHIP_TO = RelationField(
-    "userDefRelationshipTo"
-)
-AssetGroupingCollection.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+AssetGroupingCollection.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+AssetGroupingCollection.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 AssetGroupingCollection.FILES = RelationField("files")
 AssetGroupingCollection.LINKS = RelationField("links")
 AssetGroupingCollection.README = RelationField("readme")
-AssetGroupingCollection.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
+AssetGroupingCollection.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 AssetGroupingCollection.SODA_CHECKS = RelationField("sodaChecks")
 AssetGroupingCollection.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 AssetGroupingCollection.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

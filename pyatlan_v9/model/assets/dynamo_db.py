@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -50,11 +43,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DynamoDB(Asset):
@@ -99,34 +94,22 @@ class DynamoDB(Asset):
 
     type_name: Union[str, UnsetType] = "DynamoDB"
 
-    dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBStatus"
-    )
+    dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBStatus")
     """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBPartitionKey"
-    )
+    dynamo_db_partition_key: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
     """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBSortKey"
-    )
+    dynamo_db_sort_key: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBSortKey")
     """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBReadCapacityUnits"
-    )
+    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
     """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBWriteCapacityUnits"
-    )
+    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
     """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
@@ -153,9 +136,7 @@ class DynamoDB(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -164,9 +145,7 @@ class DynamoDB(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -193,9 +172,7 @@ class DynamoDB(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -207,9 +184,7 @@ class DynamoDB(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -223,6 +198,8 @@ class DynamoDB(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DynamoDB"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -275,40 +252,26 @@ class DynamoDB(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class DynamoDBAttributes(AssetAttributes):
     """DynamoDB-specific attributes for nested API format."""
 
-    dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBStatus"
-    )
+    dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBStatus")
     """Status of the DynamoDB asset."""
 
-    dynamo_db_partition_key: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBPartitionKey"
-    )
+    dynamo_db_partition_key: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBPartitionKey")
     """Specifies the partition key of the DynamoDB table or index."""
 
-    dynamo_db_sort_key: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBSortKey"
-    )
+    dynamo_db_sort_key: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBSortKey")
     """Specifies the sort key of the DynamoDB table or index."""
 
-    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBReadCapacityUnits"
-    )
+    dynamo_db_read_capacity_units: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBReadCapacityUnits")
     """The maximum number of strongly consistent reads consumed per second before DynamoDB returns a ThrottlingException."""
 
-    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBWriteCapacityUnits"
-    )
+    dynamo_db_write_capacity_units: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="dynamoDBWriteCapacityUnits")
     """The maximum number of writes consumed per second before DynamoDB returns a ThrottlingException."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
-
 
 class DynamoDBRelationshipAttributes(AssetRelationshipAttributes):
     """DynamoDB-specific relationship attributes for nested API format."""
@@ -337,9 +300,7 @@ class DynamoDBRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -348,9 +309,7 @@ class DynamoDBRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -377,9 +336,7 @@ class DynamoDBRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -391,9 +348,7 @@ class DynamoDBRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -405,19 +360,13 @@ class DynamoDBRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DynamoDBNested(AssetNested):
     """DynamoDB in nested API format for high-performance serialization."""
 
     attributes: Union[DynamoDBAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DynamoDBRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DynamoDBRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[DynamoDBRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[DynamoDBRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DynamoDBRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -455,7 +404,6 @@ _DYNAMO_DB_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_dynamo_db_attrs(attrs: DynamoDBAttributes, obj: DynamoDB) -> None:
     """Populate DynamoDB-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -465,7 +413,6 @@ def _populate_dynamo_db_attrs(attrs: DynamoDBAttributes, obj: DynamoDB) -> None:
     attrs.dynamo_db_read_capacity_units = obj.dynamo_db_read_capacity_units
     attrs.dynamo_db_write_capacity_units = obj.dynamo_db_write_capacity_units
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
-
 
 def _extract_dynamo_db_attrs(attrs: DynamoDBAttributes) -> dict:
     """Extract all DynamoDB attributes from the attrs struct into a flat dict."""
@@ -477,7 +424,6 @@ def _extract_dynamo_db_attrs(attrs: DynamoDBAttributes) -> dict:
     result["dynamo_db_write_capacity_units"] = attrs.dynamo_db_write_capacity_units
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -518,19 +464,16 @@ def _dynamo_db_to_nested(dynamo_db: DynamoDB) -> DynamoDBNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _dynamo_db_from_nested(nested: DynamoDBNested) -> DynamoDB:
     """Convert nested format to flat DynamoDB."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else DynamoDBAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DynamoDBAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DYNAMO_DB_REL_FIELDS,
-        DynamoDBRelationshipAttributes,
+        DynamoDBRelationshipAttributes
     )
     return DynamoDB(
         guid=nested.guid,
@@ -557,7 +500,6 @@ def _dynamo_db_from_nested(nested: DynamoDBNested) -> DynamoDB:
         **merged_rels,
     )
 
-
 def _dynamo_db_to_nested_bytes(dynamo_db: DynamoDB, serde: Serde) -> bytes:
     """Convert flat DynamoDB to nested JSON bytes."""
     return serde.encode(_dynamo_db_to_nested(dynamo_db))
@@ -567,7 +509,6 @@ def _dynamo_db_from_nested_bytes(data: bytes, serde: Serde) -> DynamoDB:
     """Convert nested JSON bytes to flat DynamoDB."""
     nested = serde.decode(data, DynamoDBNested)
     return _dynamo_db_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -579,19 +520,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 DynamoDB.DYNAMO_DB_STATUS = KeywordField("dynamoDBStatus", "dynamoDBStatus")
-DynamoDB.DYNAMO_DB_PARTITION_KEY = KeywordField(
-    "dynamoDBPartitionKey", "dynamoDBPartitionKey"
-)
+DynamoDB.DYNAMO_DB_PARTITION_KEY = KeywordField("dynamoDBPartitionKey", "dynamoDBPartitionKey")
 DynamoDB.DYNAMO_DB_SORT_KEY = KeywordField("dynamoDBSortKey", "dynamoDBSortKey")
-DynamoDB.DYNAMO_DB_READ_CAPACITY_UNITS = NumericField(
-    "dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits"
-)
-DynamoDB.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField(
-    "dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits"
-)
-DynamoDB.NO_SQL_SCHEMA_DEFINITION = KeywordField(
-    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-)
+DynamoDB.DYNAMO_DB_READ_CAPACITY_UNITS = NumericField("dynamoDBReadCapacityUnits", "dynamoDBReadCapacityUnits")
+DynamoDB.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField("dynamoDBWriteCapacityUnits", "dynamoDBWriteCapacityUnits")
+DynamoDB.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
 DynamoDB.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DynamoDB.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DynamoDB.ANOMALO_CHECKS = RelationField("anomaloChecks")

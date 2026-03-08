@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -49,11 +43,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SaaS(Asset):
@@ -116,9 +112,7 @@ class SaaS(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -127,9 +121,7 @@ class SaaS(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -156,9 +148,7 @@ class SaaS(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -170,9 +160,7 @@ class SaaS(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -186,6 +174,8 @@ class SaaS(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SaaS"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -238,12 +228,10 @@ class SaaS(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SaaSAttributes(AssetAttributes):
     """SaaS-specific attributes for nested API format."""
 
     pass
-
 
 class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     """SaaS-specific relationship attributes for nested API format."""
@@ -272,9 +260,7 @@ class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -283,9 +269,7 @@ class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -312,9 +296,7 @@ class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -326,9 +308,7 @@ class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -340,7 +320,6 @@ class SaaSRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SaaSNested(AssetNested):
     """SaaS in nested API format for high-performance serialization."""
 
@@ -348,7 +327,6 @@ class SaaSNested(AssetNested):
     relationship_attributes: Union[SaaSRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[SaaSRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[SaaSRelationshipAttributes, UnsetType] = UNSET
-
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -386,16 +364,13 @@ _SAA_S_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_saa_s_attrs(attrs: SaaSAttributes, obj: SaaS) -> None:
     """Populate SaaS-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
-
 def _extract_saa_s_attrs(attrs: SaaSAttributes) -> dict:
     """Extract all SaaS attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -436,7 +411,6 @@ def _saa_s_to_nested(saa_s: SaaS) -> SaaSNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _saa_s_from_nested(nested: SaaSNested) -> SaaS:
     """Convert nested format to flat SaaS."""
     attrs = nested.attributes if nested.attributes is not UNSET else SaaSAttributes()
@@ -446,7 +420,7 @@ def _saa_s_from_nested(nested: SaaSNested) -> SaaS:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAA_S_REL_FIELDS,
-        SaaSRelationshipAttributes,
+        SaaSRelationshipAttributes
     )
     return SaaS(
         guid=nested.guid,
@@ -473,7 +447,6 @@ def _saa_s_from_nested(nested: SaaSNested) -> SaaS:
         **merged_rels,
     )
 
-
 def _saa_s_to_nested_bytes(saa_s: SaaS, serde: Serde) -> bytes:
     """Convert flat SaaS to nested JSON bytes."""
     return serde.encode(_saa_s_to_nested(saa_s))
@@ -483,7 +456,6 @@ def _saa_s_from_nested_bytes(data: bytes, serde: Serde) -> SaaS:
     """Convert nested JSON bytes to flat SaaS."""
     nested = serde.decode(data, SaaSNested)
     return _saa_s_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

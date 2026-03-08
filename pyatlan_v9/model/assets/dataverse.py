@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -49,11 +43,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Dataverse(Asset):
@@ -128,9 +124,7 @@ class Dataverse(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -139,9 +133,7 @@ class Dataverse(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -168,9 +160,7 @@ class Dataverse(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -182,9 +172,7 @@ class Dataverse(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -198,6 +186,8 @@ class Dataverse(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Dataverse"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -250,7 +240,6 @@ class Dataverse(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class DataverseAttributes(AssetAttributes):
     """Dataverse-specific attributes for nested API format."""
 
@@ -262,7 +251,6 @@ class DataverseAttributes(AssetAttributes):
 
     dataverse_is_audit_enabled: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseEntity has auditing enabled."""
-
 
 class DataverseRelationshipAttributes(AssetRelationshipAttributes):
     """Dataverse-specific relationship attributes for nested API format."""
@@ -291,9 +279,7 @@ class DataverseRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -302,9 +288,7 @@ class DataverseRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -331,9 +315,7 @@ class DataverseRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -345,9 +327,7 @@ class DataverseRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -359,19 +339,13 @@ class DataverseRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DataverseNested(AssetNested):
     """Dataverse in nested API format for high-performance serialization."""
 
     attributes: Union[DataverseAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DataverseRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        DataverseRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DataverseRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[DataverseRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DataverseRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -409,14 +383,12 @@ _DATAVERSE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_dataverse_attrs(attrs: DataverseAttributes, obj: Dataverse) -> None:
     """Populate Dataverse-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dataverse_is_custom = obj.dataverse_is_custom
     attrs.dataverse_is_customizable = obj.dataverse_is_customizable
     attrs.dataverse_is_audit_enabled = obj.dataverse_is_audit_enabled
-
 
 def _extract_dataverse_attrs(attrs: DataverseAttributes) -> dict:
     """Extract all Dataverse attributes from the attrs struct into a flat dict."""
@@ -425,7 +397,6 @@ def _extract_dataverse_attrs(attrs: DataverseAttributes) -> dict:
     result["dataverse_is_customizable"] = attrs.dataverse_is_customizable
     result["dataverse_is_audit_enabled"] = attrs.dataverse_is_audit_enabled
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -466,19 +437,16 @@ def _dataverse_to_nested(dataverse: Dataverse) -> DataverseNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _dataverse_from_nested(nested: DataverseNested) -> Dataverse:
     """Convert nested format to flat Dataverse."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else DataverseAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DataverseAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATAVERSE_REL_FIELDS,
-        DataverseRelationshipAttributes,
+        DataverseRelationshipAttributes
     )
     return Dataverse(
         guid=nested.guid,
@@ -505,7 +473,6 @@ def _dataverse_from_nested(nested: DataverseNested) -> Dataverse:
         **merged_rels,
     )
 
-
 def _dataverse_to_nested_bytes(dataverse: Dataverse, serde: Serde) -> bytes:
     """Convert flat Dataverse to nested JSON bytes."""
     return serde.encode(_dataverse_to_nested(dataverse))
@@ -516,19 +483,17 @@ def _dataverse_from_nested_bytes(data: bytes, serde: Serde) -> Dataverse:
     nested = serde.decode(data, DataverseNested)
     return _dataverse_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import BooleanField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
+    RelationField,
+)
 
 Dataverse.DATAVERSE_IS_CUSTOM = BooleanField("dataverseIsCustom", "dataverseIsCustom")
-Dataverse.DATAVERSE_IS_CUSTOMIZABLE = BooleanField(
-    "dataverseIsCustomizable", "dataverseIsCustomizable"
-)
-Dataverse.DATAVERSE_IS_AUDIT_ENABLED = BooleanField(
-    "dataverseIsAuditEnabled", "dataverseIsAuditEnabled"
-)
+Dataverse.DATAVERSE_IS_CUSTOMIZABLE = BooleanField("dataverseIsCustomizable", "dataverseIsCustomizable")
+Dataverse.DATAVERSE_IS_AUDIT_ENABLED = BooleanField("dataverseIsAuditEnabled", "dataverseIsAuditEnabled")
 Dataverse.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Dataverse.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Dataverse.ANOMALO_CHECKS = RelationField("anomaloChecks")

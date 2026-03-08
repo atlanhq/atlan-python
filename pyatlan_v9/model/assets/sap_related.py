@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -66,7 +67,6 @@ class RelatedSAP(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SAP"
 
-
 class RelatedSapErpTransactionCode(RelatedSAP):
     """
     Related entity reference for SapErpTransactionCode assets.
@@ -80,7 +80,6 @@ class RelatedSapErpTransactionCode(RelatedSAP):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpTransactionCode"
-
 
 class RelatedSapErpView(RelatedSAP):
     """
@@ -101,7 +100,6 @@ class RelatedSapErpView(RelatedSAP):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpView"
-
 
 class RelatedSapErpCdsView(RelatedSAP):
     """
@@ -125,7 +123,6 @@ class RelatedSapErpCdsView(RelatedSAP):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpCdsView"
-
 
 class RelatedSapErpColumn(RelatedSAP):
     """
@@ -186,7 +183,6 @@ class RelatedSapErpColumn(RelatedSAP):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpColumn"
 
-
 class RelatedSapErpComponent(RelatedSAP):
     """
     Related entity reference for SapErpComponent assets.
@@ -201,7 +197,6 @@ class RelatedSapErpComponent(RelatedSAP):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpComponent"
 
-
 class RelatedSapErpFunctionModule(RelatedSAP):
     """
     Related entity reference for SapErpFunctionModule assets.
@@ -215,25 +210,19 @@ class RelatedSapErpFunctionModule(RelatedSAP):
     sap_group: Union[str, None, UnsetType] = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
-    sap_erp_function_module_import_params: Union[
-        List[Dict[str, str]], None, UnsetType
-    ] = UNSET
+    sap_erp_function_module_import_params: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
     sap_import_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
-    sap_erp_function_module_export_params: Union[
-        List[Dict[str, str]], None, UnsetType
-    ] = UNSET
+    sap_erp_function_module_export_params: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
     sap_export_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Export Parameters in a given SAP ERP Function Module."""
 
-    sap_erp_function_exception_list: Union[List[Dict[str, str]], None, UnsetType] = (
-        UNSET
-    )
+    sap_erp_function_exception_list: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """List of exceptions raised by the SAP ERP function module, defined as key-value pairs."""
 
     sap_erp_function_exception_list_count: Union[int, None, UnsetType] = UNSET
@@ -242,7 +231,6 @@ class RelatedSapErpFunctionModule(RelatedSAP):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpFunctionModule"
-
 
 class RelatedSapErpTable(RelatedSAP):
     """
@@ -263,7 +251,6 @@ class RelatedSapErpTable(RelatedSAP):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpTable"
-
 
 class RelatedSapErpAbapProgram(RelatedSAP):
     """

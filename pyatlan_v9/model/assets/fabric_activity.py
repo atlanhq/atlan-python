@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -40,7 +34,6 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .fabric_related import RelatedFabricDataPipeline
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -51,11 +44,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .fabric_related import RelatedFabricDataPipeline
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class FabricActivity(Asset):
@@ -140,9 +137,7 @@ class FabricActivity(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -151,9 +146,7 @@ class FabricActivity(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     fabric_data_pipeline: Union[RelatedFabricDataPipeline, None, UnsetType] = UNSET
@@ -186,9 +179,7 @@ class FabricActivity(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -200,9 +191,7 @@ class FabricActivity(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -224,6 +213,7 @@ class FabricActivity(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -276,7 +266,6 @@ class FabricActivity(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class FabricActivityAttributes(AssetAttributes):
     """FabricActivity-specific attributes for nested API format."""
 
@@ -294,7 +283,6 @@ class FabricActivityAttributes(AssetAttributes):
 
     fabric_ordinal: Union[int, None, UnsetType] = UNSET
     """Order/position of this asset within its parent."""
-
 
 class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     """FabricActivity-specific relationship attributes for nested API format."""
@@ -323,9 +311,7 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -334,9 +320,7 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     fabric_data_pipeline: Union[RelatedFabricDataPipeline, None, UnsetType] = UNSET
@@ -369,9 +353,7 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -383,9 +365,7 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -397,21 +377,13 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class FabricActivityNested(AssetNested):
     """FabricActivity in nested API format for high-performance serialization."""
 
     attributes: Union[FabricActivityAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[FabricActivityRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        FabricActivityRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        FabricActivityRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[FabricActivityRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[FabricActivityRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[FabricActivityRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -451,10 +423,7 @@ _FABRIC_ACTIVITY_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_fabric_activity_attrs(
-    attrs: FabricActivityAttributes, obj: FabricActivity
-) -> None:
+def _populate_fabric_activity_attrs(attrs: FabricActivityAttributes, obj: FabricActivity) -> None:
     """Populate FabricActivity-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.fabric_data_pipeline_qualified_name = obj.fabric_data_pipeline_qualified_name
@@ -463,19 +432,15 @@ def _populate_fabric_activity_attrs(
     attrs.fabric_data_type = obj.fabric_data_type
     attrs.fabric_ordinal = obj.fabric_ordinal
 
-
 def _extract_fabric_activity_attrs(attrs: FabricActivityAttributes) -> dict:
     """Extract all FabricActivity attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["fabric_data_pipeline_qualified_name"] = (
-        attrs.fabric_data_pipeline_qualified_name
-    )
+    result["fabric_data_pipeline_qualified_name"] = attrs.fabric_data_pipeline_qualified_name
     result["fabric_activity_type"] = attrs.fabric_activity_type
     result["fabric_column_count"] = attrs.fabric_column_count
     result["fabric_data_type"] = attrs.fabric_data_type
     result["fabric_ordinal"] = attrs.fabric_ordinal
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -488,9 +453,7 @@ def _fabric_activity_to_nested(fabric_activity: FabricActivity) -> FabricActivit
     _populate_fabric_activity_attrs(attrs, fabric_activity)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        fabric_activity,
-        _FABRIC_ACTIVITY_REL_FIELDS,
-        FabricActivityRelationshipAttributes,
+        fabric_activity, _FABRIC_ACTIVITY_REL_FIELDS, FabricActivityRelationshipAttributes
     )
     return FabricActivityNested(
         guid=fabric_activity.guid,
@@ -518,21 +481,16 @@ def _fabric_activity_to_nested(fabric_activity: FabricActivity) -> FabricActivit
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _fabric_activity_from_nested(nested: FabricActivityNested) -> FabricActivity:
     """Convert nested format to flat FabricActivity."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else FabricActivityAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else FabricActivityAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FABRIC_ACTIVITY_REL_FIELDS,
-        FabricActivityRelationshipAttributes,
+        FabricActivityRelationshipAttributes
     )
     return FabricActivity(
         guid=nested.guid,
@@ -559,10 +517,7 @@ def _fabric_activity_from_nested(nested: FabricActivityNested) -> FabricActivity
         **merged_rels,
     )
 
-
-def _fabric_activity_to_nested_bytes(
-    fabric_activity: FabricActivity, serde: Serde
-) -> bytes:
+def _fabric_activity_to_nested_bytes(fabric_activity: FabricActivity, serde: Serde) -> bytes:
     """Convert flat FabricActivity to nested JSON bytes."""
     return serde.encode(_fabric_activity_to_nested(fabric_activity))
 
@@ -571,7 +526,6 @@ def _fabric_activity_from_nested_bytes(data: bytes, serde: Serde) -> FabricActiv
     """Convert nested JSON bytes to flat FabricActivity."""
     nested = serde.decode(data, FabricActivityNested)
     return _fabric_activity_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -582,15 +536,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-FabricActivity.FABRIC_DATA_PIPELINE_QUALIFIED_NAME = KeywordField(
-    "fabricDataPipelineQualifiedName", "fabricDataPipelineQualifiedName"
-)
-FabricActivity.FABRIC_ACTIVITY_TYPE = KeywordField(
-    "fabricActivityType", "fabricActivityType"
-)
-FabricActivity.FABRIC_COLUMN_COUNT = NumericField(
-    "fabricColumnCount", "fabricColumnCount"
-)
+FabricActivity.FABRIC_DATA_PIPELINE_QUALIFIED_NAME = KeywordField("fabricDataPipelineQualifiedName", "fabricDataPipelineQualifiedName")
+FabricActivity.FABRIC_ACTIVITY_TYPE = KeywordField("fabricActivityType", "fabricActivityType")
+FabricActivity.FABRIC_COLUMN_COUNT = NumericField("fabricColumnCount", "fabricColumnCount")
 FabricActivity.FABRIC_DATA_TYPE = KeywordField("fabricDataType", "fabricDataType")
 FabricActivity.FABRIC_ORDINAL = NumericField("fabricOrdinal", "fabricOrdinal")
 FabricActivity.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -601,9 +549,7 @@ FabricActivity.APPLICATION_FIELD = RelationField("applicationField")
 FabricActivity.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 FabricActivity.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 FabricActivity.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-FabricActivity.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+FabricActivity.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 FabricActivity.METRICS = RelationField("metrics")
 FabricActivity.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 FabricActivity.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

@@ -8,12 +8,6 @@ Sigma module exports.
 This module provides convenient imports for all Sigma types and their Related variants.
 """
 
-from .sigma import Sigma
-from .sigma_data_element import SigmaDataElement
-from .sigma_data_element_field import SigmaDataElementField
-from .sigma_dataset import SigmaDataset
-from .sigma_dataset_column import SigmaDatasetColumn
-from .sigma_page import SigmaPage
 from .sigma_related import (
     RelatedSigma,
     RelatedSigmaDataElement,
@@ -23,6 +17,12 @@ from .sigma_related import (
     RelatedSigmaPage,
     RelatedSigmaWorkbook,
 )
+from .sigma import Sigma
+from .sigma_data_element import SigmaDataElement
+from .sigma_data_element_field import SigmaDataElementField
+from .sigma_dataset import SigmaDataset
+from .sigma_dataset_column import SigmaDatasetColumn
+from .sigma_page import SigmaPage
 from .sigma_workbook import SigmaWorkbook
 
 __all__ = [

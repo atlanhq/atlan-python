@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -44,11 +38,13 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Cloud(Asset):
@@ -102,9 +98,7 @@ class Cloud(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -119,9 +113,7 @@ class Cloud(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -133,9 +125,7 @@ class Cloud(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -143,6 +133,8 @@ class Cloud(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Cloud"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -195,13 +187,11 @@ class Cloud(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class CloudAttributes(AssetAttributes):
     """Cloud-specific attributes for nested API format."""
 
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
-
 
 class CloudRelationshipAttributes(AssetRelationshipAttributes):
     """Cloud-specific relationship attributes for nested API format."""
@@ -227,9 +217,7 @@ class CloudRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -244,9 +232,7 @@ class CloudRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -258,27 +244,19 @@ class CloudRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
-
 
 class CloudNested(AssetNested):
     """Cloud in nested API format for high-performance serialization."""
 
     attributes: Union[CloudAttributes, UnsetType] = UNSET
     relationship_attributes: Union[CloudRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CloudRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[CloudRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[CloudRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[CloudRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -306,19 +284,16 @@ _CLOUD_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
 def _populate_cloud_attrs(attrs: CloudAttributes, obj: Cloud) -> None:
     """Populate Cloud-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
-
 
 def _extract_cloud_attrs(attrs: CloudAttributes) -> dict:
     """Extract all Cloud attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -359,7 +334,6 @@ def _cloud_to_nested(cloud: Cloud) -> CloudNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _cloud_from_nested(nested: CloudNested) -> Cloud:
     """Convert nested format to flat Cloud."""
     attrs = nested.attributes if nested.attributes is not UNSET else CloudAttributes()
@@ -369,7 +343,7 @@ def _cloud_from_nested(nested: CloudNested) -> Cloud:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CLOUD_REL_FIELDS,
-        CloudRelationshipAttributes,
+        CloudRelationshipAttributes
     )
     return Cloud(
         guid=nested.guid,
@@ -396,7 +370,6 @@ def _cloud_from_nested(nested: CloudNested) -> Cloud:
         **merged_rels,
     )
 
-
 def _cloud_to_nested_bytes(cloud: Cloud, serde: Serde) -> bytes:
     """Convert flat Cloud to nested JSON bytes."""
     return serde.encode(_cloud_to_nested(cloud))
@@ -407,15 +380,15 @@ def _cloud_from_nested_bytes(data: bytes, serde: Serde) -> Cloud:
     nested = serde.decode(data, CloudNested)
     return _cloud_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
-
-Cloud.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
-    "cloudUniformResourceName", "cloudUniformResourceName"
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
 )
+
+Cloud.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
 Cloud.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Cloud.APPLICATION = RelationField("application")
 Cloud.APPLICATION_FIELD = RelationField("applicationField")

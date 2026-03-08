@@ -14,21 +14,11 @@ This module provides:
 
 from __future__ import annotations
 
-import hashlib
 import re
-from io import StringIO
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .adf_related import RelatedAdfActivity
 from .airflow_related import RelatedAirflowTask
@@ -53,18 +43,21 @@ from .gtc_related import RelatedAtlasGlossaryTerm
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .power_bi_related import RelatedPowerBIDataflow
-from .process_related import RelatedColumnProcess, RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .process_related import RelatedColumnProcess, RelatedProcess
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class ColumnProcess(Asset):
@@ -158,9 +151,7 @@ class ColumnProcess(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     fabric_activities: Union[List[RelatedFabricActivity], None, UnsetType] = UNSET
@@ -184,9 +175,7 @@ class ColumnProcess(Asset):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(
-        default=UNSET, name="powerBIDataflow"
-    )
+    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflow")
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
@@ -204,9 +193,7 @@ class ColumnProcess(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -224,9 +211,7 @@ class ColumnProcess(Asset):
     sql_functions: Union[List[RelatedFunction], None, UnsetType] = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -242,141 +227,10 @@ class ColumnProcess(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
 
-    @staticmethod
-    def _extract_guid(relationship: Any) -> Union[str, None]:
-        """Extract guid from a relationship-like object."""
-        if relationship is None:
-            return None
-        guid = getattr(relationship, "guid", UNSET)
-        if guid is UNSET or not guid:
-            return None
-        return guid
-
-    @staticmethod
-    def _to_related_catalog(value: Any) -> RelatedCatalog:
-        """Convert any relationship-like value to a RelatedCatalog reference."""
-        if isinstance(value, RelatedCatalog):
-            return value
-        guid = getattr(value, "guid", UNSET)
-        type_name = getattr(value, "type_name", UNSET)
-        if guid is not UNSET and guid:
-            kwargs: dict[str, Any] = {"guid": guid}
-            if type_name is not UNSET and type_name:
-                kwargs["type_name"] = type_name
-            return RelatedCatalog(**kwargs)
-        qualified_name = getattr(value, "qualified_name", UNSET)
-        if qualified_name is not UNSET and qualified_name:
-            kwargs = {"unique_attributes": {"qualifiedName": qualified_name}}
-            if type_name is not UNSET and type_name:
-                kwargs["type_name"] = type_name
-            return RelatedCatalog(**kwargs)
-        return RelatedCatalog()
-
-    @staticmethod
-    def _to_related_process(value: Any) -> RelatedProcess:
-        """Convert any relationship-like value to a RelatedProcess reference."""
-        if isinstance(value, RelatedProcess):
-            return value
-        guid = getattr(value, "guid", UNSET)
-        type_name = getattr(value, "type_name", UNSET)
-        if guid is not UNSET and guid:
-            kwargs: dict[str, Any] = {"guid": guid}
-            if type_name is not UNSET and type_name:
-                kwargs["type_name"] = type_name
-            return RelatedProcess(**kwargs)
-        qualified_name = getattr(value, "qualified_name", UNSET)
-        if qualified_name is not UNSET and qualified_name:
-            kwargs = {"unique_attributes": {"qualifiedName": qualified_name}}
-            if type_name is not UNSET and type_name:
-                kwargs["type_name"] = type_name
-            return RelatedProcess(**kwargs)
-        return RelatedProcess()
-
-    @staticmethod
-    def generate_qualified_name(
-        *,
-        name: str,
-        connection_qualified_name: str,
-        inputs: list[Any],
-        outputs: list[Any],
-        parent: Any,
-        process_id: Union[str, None] = None,
-    ) -> str:
-        """Generate column process qualified name using explicit process_id or deterministic hash."""
-        validate_required_fields(
-            ["name", "connection_qualified_name", "inputs", "outputs", "parent"],
-            [name, connection_qualified_name, inputs, outputs, parent],
-        )
-        if process_id and process_id.strip():
-            return f"{connection_qualified_name}/{process_id}"
-        buffer = StringIO()
-        buffer.write(name)
-        buffer.write(connection_qualified_name)
-        parent_guid = ColumnProcess._extract_guid(parent)
-        if parent_guid:
-            buffer.write(parent_guid)
-        for relationship in inputs:
-            guid = ColumnProcess._extract_guid(relationship)
-            if guid:
-                buffer.write(guid)
-        for relationship in outputs:
-            guid = ColumnProcess._extract_guid(relationship)
-            if guid:
-                buffer.write(guid)
-        hash_seed = buffer.getvalue()
-        buffer.close()
-        # deepcode ignore InsecureHash/test: this is not used for generating security keys
-        return (
-            f"{connection_qualified_name}/{hashlib.md5(hash_seed.encode()).hexdigest()}"  # noqa: S324
-        )
-
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        inputs: list[Any],
-        outputs: list[Any],
-        parent: Any,
-        process_id: Union[str, None] = None,
-    ) -> "ColumnProcess":
-        """Create a new ColumnProcess asset."""
-        qualified_name = cls.generate_qualified_name(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            inputs=inputs,
-            outputs=outputs,
-            parent=parent,
-            process_id=process_id,
-        )
-        connector_name = (
-            connection_qualified_name.split("/")[1]
-            if len(connection_qualified_name.split("/")) > 1
-            else ""
-        )
-        return cls(
-            name=name,
-            qualified_name=qualified_name,
-            connector_name=connector_name,
-            connection_qualified_name=connection_qualified_name,
-            inputs=[cls._to_related_catalog(item) for item in inputs],
-            outputs=[cls._to_related_catalog(item) for item in outputs],
-            process=cls._to_related_process(parent),
-        )
-
-    @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "ColumnProcess":
-        """Create a ColumnProcess instance for update operations."""
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
-
-    def trim_to_required(self) -> "ColumnProcess":
-        """Return only fields required for update operations."""
-        return ColumnProcess.updater(qualified_name=self.qualified_name, name=self.name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -429,7 +283,6 @@ class ColumnProcess(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class ColumnProcessAttributes(AssetAttributes):
     """ColumnProcess-specific attributes for nested API format."""
 
@@ -450,7 +303,6 @@ class ColumnProcessAttributes(AssetAttributes):
 
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
-
 
 class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     """ColumnProcess-specific relationship attributes for nested API format."""
@@ -482,9 +334,7 @@ class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     fabric_activities: Union[List[RelatedFabricActivity], None, UnsetType] = UNSET
@@ -508,9 +358,7 @@ class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(
-        default=UNSET, name="powerBIDataflow"
-    )
+    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflow")
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
@@ -528,9 +376,7 @@ class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -548,9 +394,7 @@ class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     sql_functions: Union[List[RelatedFunction], None, UnsetType] = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -559,21 +403,13 @@ class ColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class ColumnProcessNested(AssetNested):
     """ColumnProcess in nested API format for high-performance serialization."""
 
     attributes: Union[ColumnProcessAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ColumnProcessRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        ColumnProcessRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        ColumnProcessRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[ColumnProcessRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[ColumnProcessRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[ColumnProcessRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -615,35 +451,26 @@ _COLUMN_PROCESS_REL_FIELDS: List[str] = [
     "spark_jobs",
 ]
 
-
-def _populate_column_process_attrs(
-    attrs: ColumnProcessAttributes, obj: ColumnProcess
-) -> None:
+def _populate_column_process_attrs(attrs: ColumnProcessAttributes, obj: ColumnProcess) -> None:
     """Populate ColumnProcess-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.code = obj.code
     attrs.sql = obj.sql
-    attrs.parent_connection_process_qualified_name = (
-        obj.parent_connection_process_qualified_name
-    )
+    attrs.parent_connection_process_qualified_name = obj.parent_connection_process_qualified_name
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
-
 
 def _extract_column_process_attrs(attrs: ColumnProcessAttributes) -> dict:
     """Extract all ColumnProcess attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["code"] = attrs.code
     result["sql"] = attrs.sql
-    result["parent_connection_process_qualified_name"] = (
-        attrs.parent_connection_process_qualified_name
-    )
+    result["parent_connection_process_qualified_name"] = attrs.parent_connection_process_qualified_name
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -684,21 +511,16 @@ def _column_process_to_nested(column_process: ColumnProcess) -> ColumnProcessNes
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _column_process_from_nested(nested: ColumnProcessNested) -> ColumnProcess:
     """Convert nested format to flat ColumnProcess."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else ColumnProcessAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else ColumnProcessAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COLUMN_PROCESS_REL_FIELDS,
-        ColumnProcessRelationshipAttributes,
+        ColumnProcessRelationshipAttributes
     )
     return ColumnProcess(
         guid=nested.guid,
@@ -725,10 +547,7 @@ def _column_process_from_nested(nested: ColumnProcessNested) -> ColumnProcess:
         **merged_rels,
     )
 
-
-def _column_process_to_nested_bytes(
-    column_process: ColumnProcess, serde: Serde
-) -> bytes:
+def _column_process_to_nested_bytes(column_process: ColumnProcess, serde: Serde) -> bytes:
     """Convert flat ColumnProcess to nested JSON bytes."""
     return serde.encode(_column_process_to_nested(column_process))
 
@@ -738,21 +557,19 @@ def _column_process_from_nested_bytes(data: bytes, serde: Serde) -> ColumnProces
     nested = serde.decode(data, ColumnProcessNested)
     return _column_process_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
 ColumnProcess.CODE = KeywordField("code", "code")
 ColumnProcess.SQL = KeywordField("sql", "sql")
-ColumnProcess.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField(
-    "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
-)
+ColumnProcess.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField("parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName")
 ColumnProcess.AST = KeywordField("ast", "ast")
-ColumnProcess.ADDITIONAL_ETL_CONTEXT = KeywordField(
-    "additionalEtlContext", "additionalEtlContext"
-)
+ColumnProcess.ADDITIONAL_ETL_CONTEXT = KeywordField("additionalEtlContext", "additionalEtlContext")
 ColumnProcess.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 ColumnProcess.ADF_ACTIVITY = RelationField("adfActivity")
 ColumnProcess.AIRFLOW_TASKS = RelationField("airflowTasks")

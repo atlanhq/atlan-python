@@ -8,20 +8,13 @@ Fabric module exports.
 This module provides convenient imports for all Fabric types and their Related variants.
 """
 
-from .fabric import Fabric
-from .fabric_activity import FabricActivity
-from .fabric_dashboard import FabricDashboard
-from .fabric_data_pipeline import FabricDataPipeline
-from .fabric_dataflow import FabricDataflow
-from .fabric_dataflow_entity_column import FabricDataflowEntityColumn
-from .fabric_page import FabricPage
 from .fabric_related import (
     RelatedFabric,
     RelatedFabricActivity,
     RelatedFabricDashboard,
+    RelatedFabricDataPipeline,
     RelatedFabricDataflow,
     RelatedFabricDataflowEntityColumn,
-    RelatedFabricDataPipeline,
     RelatedFabricPage,
     RelatedFabricReport,
     RelatedFabricSemanticModel,
@@ -30,6 +23,13 @@ from .fabric_related import (
     RelatedFabricVisual,
     RelatedFabricWorkspace,
 )
+from .fabric import Fabric
+from .fabric_activity import FabricActivity
+from .fabric_dashboard import FabricDashboard
+from .fabric_data_pipeline import FabricDataPipeline
+from .fabric_dataflow import FabricDataflow
+from .fabric_dataflow_entity_column import FabricDataflowEntityColumn
+from .fabric_page import FabricPage
 from .fabric_report import FabricReport
 from .fabric_semantic_model import FabricSemanticModel
 from .fabric_semantic_model_table import FabricSemanticModelTable

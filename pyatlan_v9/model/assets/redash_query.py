@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,17 +38,20 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .redash_related import RelatedRedashVisualization
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .redash_related import RelatedRedashVisualization
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class RedashQuery(Asset):
@@ -102,9 +98,7 @@ class RedashQuery(Asset):
 
     type_name: Union[str, UnsetType] = "RedashQuery"
 
-    redash_query_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="redashQuerySQL"
-    )
+    redash_query_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="redashQuerySQL")
     """SQL code of this query."""
 
     redash_query_parameters: Union[str, None, UnsetType] = UNSET
@@ -149,9 +143,7 @@ class RedashQuery(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -160,9 +152,7 @@ class RedashQuery(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -186,17 +176,13 @@ class RedashQuery(Asset):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    redash_visualizations: Union[List[RelatedRedashVisualization], None, UnsetType] = (
-        UNSET
-    )
+    redash_visualizations: Union[List[RelatedRedashVisualization], None, UnsetType] = UNSET
     """Visualizations that were created by this query."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -208,9 +194,7 @@ class RedashQuery(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -224,6 +208,8 @@ class RedashQuery(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "RedashQuery"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -276,13 +262,10 @@ class RedashQuery(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class RedashQueryAttributes(AssetAttributes):
     """RedashQuery-specific attributes for nested API format."""
 
-    redash_query_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="redashQuerySQL"
-    )
+    redash_query_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="redashQuerySQL")
     """SQL code of this query."""
 
     redash_query_parameters: Union[str, None, UnsetType] = UNSET
@@ -302,7 +285,6 @@ class RedashQueryAttributes(AssetAttributes):
 
     redash_is_published: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
-
 
 class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     """RedashQuery-specific relationship attributes for nested API format."""
@@ -331,9 +313,7 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -342,9 +322,7 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -368,17 +346,13 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    redash_visualizations: Union[List[RelatedRedashVisualization], None, UnsetType] = (
-        UNSET
-    )
+    redash_visualizations: Union[List[RelatedRedashVisualization], None, UnsetType] = UNSET
     """Visualizations that were created by this query."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -390,9 +364,7 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -404,19 +376,13 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class RedashQueryNested(AssetNested):
     """RedashQuery in nested API format for high-performance serialization."""
 
     attributes: Union[RedashQueryAttributes, UnsetType] = UNSET
     relationship_attributes: Union[RedashQueryRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        RedashQueryRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        RedashQueryRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[RedashQueryRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[RedashQueryRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -455,10 +421,7 @@ _REDASH_QUERY_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_redash_query_attrs(
-    attrs: RedashQueryAttributes, obj: RedashQuery
-) -> None:
+def _populate_redash_query_attrs(attrs: RedashQueryAttributes, obj: RedashQuery) -> None:
     """Populate RedashQuery-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.redash_query_sql = obj.redash_query_sql
@@ -469,21 +432,17 @@ def _populate_redash_query_attrs(
     attrs.redash_query_schedule_humanized = obj.redash_query_schedule_humanized
     attrs.redash_is_published = obj.redash_is_published
 
-
 def _extract_redash_query_attrs(attrs: RedashQueryAttributes) -> dict:
     """Extract all RedashQuery attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["redash_query_sql"] = attrs.redash_query_sql
     result["redash_query_parameters"] = attrs.redash_query_parameters
     result["redash_query_schedule"] = attrs.redash_query_schedule
-    result["redash_query_last_execution_runtime"] = (
-        attrs.redash_query_last_execution_runtime
-    )
+    result["redash_query_last_execution_runtime"] = attrs.redash_query_last_execution_runtime
     result["redash_query_last_executed_at"] = attrs.redash_query_last_executed_at
     result["redash_query_schedule_humanized"] = attrs.redash_query_schedule_humanized
     result["redash_is_published"] = attrs.redash_is_published
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -524,19 +483,16 @@ def _redash_query_to_nested(redash_query: RedashQuery) -> RedashQueryNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _redash_query_from_nested(nested: RedashQueryNested) -> RedashQuery:
     """Convert nested format to flat RedashQuery."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else RedashQueryAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else RedashQueryAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _REDASH_QUERY_REL_FIELDS,
-        RedashQueryRelationshipAttributes,
+        RedashQueryRelationshipAttributes
     )
     return RedashQuery(
         guid=nested.guid,
@@ -563,7 +519,6 @@ def _redash_query_from_nested(nested: RedashQueryNested) -> RedashQuery:
         **merged_rels,
     )
 
-
 def _redash_query_to_nested_bytes(redash_query: RedashQuery, serde: Serde) -> bytes:
     """Convert flat RedashQuery to nested JSON bytes."""
     return serde.encode(_redash_query_to_nested(redash_query))
@@ -573,7 +528,6 @@ def _redash_query_from_nested_bytes(data: bytes, serde: Serde) -> RedashQuery:
     """Convert nested JSON bytes to flat RedashQuery."""
     nested = serde.decode(data, RedashQueryNested)
     return _redash_query_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -587,23 +541,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 RedashQuery.REDASH_QUERY_SQL = KeywordField("redashQuerySQL", "redashQuerySQL")
-RedashQuery.REDASH_QUERY_PARAMETERS = KeywordField(
-    "redashQueryParameters", "redashQueryParameters"
-)
-RedashQuery.REDASH_QUERY_SCHEDULE = KeywordField(
-    "redashQuerySchedule", "redashQuerySchedule"
-)
-RedashQuery.REDASH_QUERY_LAST_EXECUTION_RUNTIME = NumericField(
-    "redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime"
-)
-RedashQuery.REDASH_QUERY_LAST_EXECUTED_AT = NumericField(
-    "redashQueryLastExecutedAt", "redashQueryLastExecutedAt"
-)
-RedashQuery.REDASH_QUERY_SCHEDULE_HUMANIZED = KeywordTextField(
-    "redashQueryScheduleHumanized",
-    "redashQueryScheduleHumanized",
-    "redashQueryScheduleHumanized.text",
-)
+RedashQuery.REDASH_QUERY_PARAMETERS = KeywordField("redashQueryParameters", "redashQueryParameters")
+RedashQuery.REDASH_QUERY_SCHEDULE = KeywordField("redashQuerySchedule", "redashQuerySchedule")
+RedashQuery.REDASH_QUERY_LAST_EXECUTION_RUNTIME = NumericField("redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime")
+RedashQuery.REDASH_QUERY_LAST_EXECUTED_AT = NumericField("redashQueryLastExecutedAt", "redashQueryLastExecutedAt")
+RedashQuery.REDASH_QUERY_SCHEDULE_HUMANIZED = KeywordTextField("redashQueryScheduleHumanized", "redashQueryScheduleHumanized", "redashQueryScheduleHumanized.text")
 RedashQuery.REDASH_IS_PUBLISHED = BooleanField("redashIsPublished", "redashIsPublished")
 RedashQuery.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 RedashQuery.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

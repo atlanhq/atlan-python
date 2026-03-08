@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,7 +31,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cassandra_related import RelatedCassandraTable, RelatedCassandraView
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -51,11 +43,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cassandra_related import RelatedCassandraTable, RelatedCassandraView
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class CassandraKeyspace(Asset):
@@ -133,9 +129,7 @@ class CassandraKeyspace(Asset):
     cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
@@ -168,9 +162,7 @@ class CassandraKeyspace(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -179,9 +171,7 @@ class CassandraKeyspace(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -208,9 +198,7 @@ class CassandraKeyspace(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -222,9 +210,7 @@ class CassandraKeyspace(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -238,6 +224,8 @@ class CassandraKeyspace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "CassandraKeyspace"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -268,9 +256,7 @@ class CassandraKeyspace(Asset):
         return _cassandra_keyspace_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> CassandraKeyspace:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> CassandraKeyspace:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -291,7 +277,6 @@ class CassandraKeyspace(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class CassandraKeyspaceAttributes(AssetAttributes):
     """CassandraKeyspace-specific attributes for nested API format."""
@@ -323,11 +308,8 @@ class CassandraKeyspaceAttributes(AssetAttributes):
     cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
-
 
 class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     """CassandraKeyspace-specific relationship attributes for nested API format."""
@@ -362,9 +344,7 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -373,9 +353,7 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -402,9 +380,7 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -416,9 +392,7 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -430,21 +404,13 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class CassandraKeyspaceNested(AssetNested):
     """CassandraKeyspace in nested API format for high-performance serialization."""
 
     attributes: Union[CassandraKeyspaceAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        CassandraKeyspaceRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        CassandraKeyspaceRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        CassandraKeyspaceRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[CassandraKeyspaceRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[CassandraKeyspaceRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[CassandraKeyspaceRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -484,10 +450,7 @@ _CASSANDRA_KEYSPACE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_cassandra_keyspace_attrs(
-    attrs: CassandraKeyspaceAttributes, obj: CassandraKeyspace
-) -> None:
+def _populate_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes, obj: CassandraKeyspace) -> None:
     """Populate CassandraKeyspace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cassandra_keyspace_durable_writes = obj.cassandra_keyspace_durable_writes
@@ -501,13 +464,10 @@ def _populate_cassandra_keyspace_attrs(
     attrs.cassandra_view_qualified_name = obj.cassandra_view_qualified_name
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
 
-
 def _extract_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes) -> dict:
     """Extract all CassandraKeyspace attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cassandra_keyspace_durable_writes"] = (
-        attrs.cassandra_keyspace_durable_writes
-    )
+    result["cassandra_keyspace_durable_writes"] = attrs.cassandra_keyspace_durable_writes
     result["cassandra_keyspace_replication"] = attrs.cassandra_keyspace_replication
     result["cassandra_keyspace_virtual"] = attrs.cassandra_keyspace_virtual
     result["cassandra_keyspace_query"] = attrs.cassandra_keyspace_query
@@ -519,23 +479,18 @@ def _extract_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes) -> dic
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _cassandra_keyspace_to_nested(
-    cassandra_keyspace: CassandraKeyspace,
-) -> CassandraKeyspaceNested:
+def _cassandra_keyspace_to_nested(cassandra_keyspace: CassandraKeyspace) -> CassandraKeyspaceNested:
     """Convert flat CassandraKeyspace to nested format."""
     attrs = CassandraKeyspaceAttributes()
     _populate_cassandra_keyspace_attrs(attrs, cassandra_keyspace)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cassandra_keyspace,
-        _CASSANDRA_KEYSPACE_REL_FIELDS,
-        CassandraKeyspaceRelationshipAttributes,
+        cassandra_keyspace, _CASSANDRA_KEYSPACE_REL_FIELDS, CassandraKeyspaceRelationshipAttributes
     )
     return CassandraKeyspaceNested(
         guid=cassandra_keyspace.guid,
@@ -563,23 +518,16 @@ def _cassandra_keyspace_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _cassandra_keyspace_from_nested(
-    nested: CassandraKeyspaceNested,
-) -> CassandraKeyspace:
+def _cassandra_keyspace_from_nested(nested: CassandraKeyspaceNested) -> CassandraKeyspace:
     """Convert nested format to flat CassandraKeyspace."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else CassandraKeyspaceAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else CassandraKeyspaceAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CASSANDRA_KEYSPACE_REL_FIELDS,
-        CassandraKeyspaceRelationshipAttributes,
+        CassandraKeyspaceRelationshipAttributes
     )
     return CassandraKeyspace(
         guid=nested.guid,
@@ -606,21 +554,15 @@ def _cassandra_keyspace_from_nested(
         **merged_rels,
     )
 
-
-def _cassandra_keyspace_to_nested_bytes(
-    cassandra_keyspace: CassandraKeyspace, serde: Serde
-) -> bytes:
+def _cassandra_keyspace_to_nested_bytes(cassandra_keyspace: CassandraKeyspace, serde: Serde) -> bytes:
     """Convert flat CassandraKeyspace to nested JSON bytes."""
     return serde.encode(_cassandra_keyspace_to_nested(cassandra_keyspace))
 
 
-def _cassandra_keyspace_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> CassandraKeyspace:
+def _cassandra_keyspace_from_nested_bytes(data: bytes, serde: Serde) -> CassandraKeyspace:
     """Convert nested JSON bytes to flat CassandraKeyspace."""
     nested = serde.decode(data, CassandraKeyspaceNested)
     return _cassandra_keyspace_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -631,36 +573,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CassandraKeyspace.CASSANDRA_KEYSPACE_DURABLE_WRITES = BooleanField(
-    "cassandraKeyspaceDurableWrites", "cassandraKeyspaceDurableWrites"
-)
-CassandraKeyspace.CASSANDRA_KEYSPACE_REPLICATION = KeywordField(
-    "cassandraKeyspaceReplication", "cassandraKeyspaceReplication"
-)
-CassandraKeyspace.CASSANDRA_KEYSPACE_VIRTUAL = BooleanField(
-    "cassandraKeyspaceVirtual", "cassandraKeyspaceVirtual"
-)
-CassandraKeyspace.CASSANDRA_KEYSPACE_QUERY = KeywordField(
-    "cassandraKeyspaceQuery", "cassandraKeyspaceQuery"
-)
-CassandraKeyspace.CASSANDRA_KEYSPACE_NAME = KeywordField(
-    "cassandraKeyspaceName", "cassandraKeyspaceName"
-)
-CassandraKeyspace.CASSANDRA_TABLE_NAME = KeywordField(
-    "cassandraTableName", "cassandraTableName"
-)
-CassandraKeyspace.CASSANDRA_VIEW_NAME = KeywordField(
-    "cassandraViewName", "cassandraViewName"
-)
-CassandraKeyspace.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField(
-    "cassandraTableQualifiedName", "cassandraTableQualifiedName"
-)
-CassandraKeyspace.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField(
-    "cassandraViewQualifiedName", "cassandraViewQualifiedName"
-)
-CassandraKeyspace.NO_SQL_SCHEMA_DEFINITION = KeywordField(
-    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-)
+CassandraKeyspace.CASSANDRA_KEYSPACE_DURABLE_WRITES = BooleanField("cassandraKeyspaceDurableWrites", "cassandraKeyspaceDurableWrites")
+CassandraKeyspace.CASSANDRA_KEYSPACE_REPLICATION = KeywordField("cassandraKeyspaceReplication", "cassandraKeyspaceReplication")
+CassandraKeyspace.CASSANDRA_KEYSPACE_VIRTUAL = BooleanField("cassandraKeyspaceVirtual", "cassandraKeyspaceVirtual")
+CassandraKeyspace.CASSANDRA_KEYSPACE_QUERY = KeywordField("cassandraKeyspaceQuery", "cassandraKeyspaceQuery")
+CassandraKeyspace.CASSANDRA_KEYSPACE_NAME = KeywordField("cassandraKeyspaceName", "cassandraKeyspaceName")
+CassandraKeyspace.CASSANDRA_TABLE_NAME = KeywordField("cassandraTableName", "cassandraTableName")
+CassandraKeyspace.CASSANDRA_VIEW_NAME = KeywordField("cassandraViewName", "cassandraViewName")
+CassandraKeyspace.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField("cassandraTableQualifiedName", "cassandraTableQualifiedName")
+CassandraKeyspace.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField("cassandraViewQualifiedName", "cassandraViewQualifiedName")
+CassandraKeyspace.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
 CassandraKeyspace.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CassandraKeyspace.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CassandraKeyspace.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -671,9 +593,7 @@ CassandraKeyspace.CASSANDRA_VIEWS = RelationField("cassandraViews")
 CassandraKeyspace.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CassandraKeyspace.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CassandraKeyspace.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-CassandraKeyspace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+CassandraKeyspace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 CassandraKeyspace.METRICS = RelationField("metrics")
 CassandraKeyspace.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CassandraKeyspace.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

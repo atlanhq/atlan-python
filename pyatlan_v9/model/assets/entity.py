@@ -13,20 +13,13 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, Union
+from typing import Any, Dict, List, Union
 
 import msgspec
-import msgspec.structs
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.assets.related_entity import SaveSemantic
 
-_metadata_proxies: dict[Any, Any] = {}
-
-
-class AtlasClassification(
-    msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
-):
+class AtlasClassification(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     """
     Atlas classification/tag assigned to an entity.
 
@@ -34,8 +27,8 @@ class AtlasClassification(
     propagation settings and validity periods.
     """
 
-    type_name: Any = UNSET
-    """The name of the classification type (str or AtlanTagName)."""
+    type_name: Union[str, UnsetType] = UNSET
+    """The name of the classification type."""
 
     entity_guid: Union[str, UnsetType] = UNSET
     """The GUID of the entity this classification is assigned to."""
@@ -49,19 +42,10 @@ class AtlasClassification(
     remove_propagations_on_entity_delete: Union[bool, UnsetType] = UNSET
     """Whether to remove propagated classifications when the entity is deleted."""
 
-    restrict_propagation_through_lineage: Union[bool, UnsetType] = UNSET
-    """Whether to avoid propagating through lineage (True) or do propagate through lineage (False)."""
-
-    restrict_propagation_through_hierarchy: Union[bool, UnsetType] = UNSET
-    """Whether to prevent this classification from propagating through hierarchy (True) or allow it (False)."""
-
-    validity_periods: Union[list[dict[str, Any]], UnsetType] = UNSET
+    validity_periods: Union[List[Dict[str, Any]], UnsetType] = UNSET
     """Time periods during which this classification is valid."""
 
-    source_tag_attachments: Union[list[Any], UnsetType] = UNSET
-    """Source tag attachments for this classification."""
-
-    attributes: Union[dict[str, Any], UnsetType] = UNSET
+    attributes: Union[Dict[str, Any], UnsetType] = UNSET
     """Custom attributes for this classification."""
 
 
@@ -75,9 +59,6 @@ class TermAssignment(msgspec.Struct, kw_only=True, omit_defaults=True, rename="c
 
     term_guid: Union[str, UnsetType] = UNSET
     """The GUID of the assigned glossary term."""
-
-    guid_raw: Union[str, UnsetType] = msgspec.field(default=UNSET, name="guid")
-    """Raw GUID field used by some Atlas responses for term assignments."""
 
     relation_guid: Union[str, UnsetType] = UNSET
     """The GUID of the relationship between entity and term."""
@@ -106,19 +87,6 @@ class TermAssignment(msgspec.Struct, kw_only=True, omit_defaults=True, rename="c
     status: Union[str, UnsetType] = UNSET
     """Status of the assignment (DISCOVERED, PROPOSED, IMPORTED, VALIDATED, DEPRECATED, OBSOLETE, OTHER)."""
 
-    @property
-    def guid(self) -> Union[str, None]:
-        """Backward-compatible alias for term_guid."""
-        if self.term_guid is not UNSET:
-            return self.term_guid
-        if self.guid_raw is not UNSET:
-            return self.guid_raw
-        return None
-
-    @guid.setter
-    def guid(self, value: Union[str, None]) -> None:
-        self.term_guid = UNSET if value is None else value
-
 
 class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     """
@@ -142,7 +110,7 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     type_name: Union[str, UnsetType] = UNSET
     """The type name of this entity."""
 
-    super_type_names: Union[list[str], UnsetType] = UNSET
+    super_type_names: Union[List[str], UnsetType] = UNSET
     """List of all supertype names in the type hierarchy (e.g., ["Referenceable", "Asset"])."""
 
     doc_id: Union[str, UnsetType] = UNSET
@@ -168,34 +136,28 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     """Username of the user who last updated this entity."""
 
     # Classifications - typed for better validation
-    classifications: Union[list[AtlasClassification], UnsetType] = UNSET
+    classifications: Union[List[AtlasClassification], UnsetType] = UNSET
     """Classifications (tags) assigned to this entity."""
 
-    add_or_update_classifications: Union[list[Any], UnsetType] = UNSET
-    """Classifications to add or update on this entity (used during save)."""
-
-    remove_classifications: Union[list[Any], UnsetType] = UNSET
-    """Classifications to remove from this entity (used during save)."""
-
-    classification_names: Union[list, None, UnsetType] = UNSET
+    classification_names: Union[List[str], UnsetType] = UNSET
     """Simple list of classification type names assigned to this entity."""
 
     # Meanings - typed for better validation
-    meanings: Union[list[TermAssignment], None, UnsetType] = UNSET
+    meanings: Union[List[TermAssignment], UnsetType] = UNSET
     """Glossary term assignments for this entity."""
 
     # Labels
-    labels: Union[list[str], None, UnsetType] = UNSET
+    labels: Union[List[str], UnsetType] = UNSET
     """Simple string labels attached to this entity."""
 
     # Additional metadata
-    business_attributes: Union[dict[str, Any], UnsetType] = UNSET
+    business_attributes: Union[Dict[str, Any], UnsetType] = UNSET
     """Business metadata attributes for this entity."""
 
-    custom_attributes: Union[dict[str, str], UnsetType] = UNSET
+    custom_attributes: Union[Dict[str, str], UnsetType] = UNSET
     """Custom key-value pairs for this entity."""
 
-    pending_tasks: Union[list[str], None, UnsetType] = UNSET
+    pending_tasks: Union[List[str], UnsetType] = UNSET
     """Identifiers of pending tasks for this entity."""
 
     proxy: Union[bool, UnsetType] = UNSET
@@ -207,461 +169,5 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     provenance_type: Union[int, UnsetType] = UNSET
     """Provenance type identifier for this entity."""
 
-    delete_handler: Union[str, None, UnsetType] = UNSET
-    """Details on the handler used for deletion of the asset."""
-
     home_id: Union[str, UnsetType] = UNSET
     """Home identifier for distributed Atlas systems."""
-
-    semantic: Union[SaveSemantic, None, UnsetType] = UNSET
-    """Save semantic for relationship operations (REPLACE, APPEND, REMOVE).
-    Not serialized to JSON — used internally to control how relationship
-    attributes are categorized during bulk save operations."""
-
-    # =========================================================================
-    # Compatibility Methods (legacy API surface)
-    # =========================================================================
-
-    @property
-    def atlan_tags(self):
-        """User-friendly alias for classifications."""
-        val = self.classifications
-        return None if val is UNSET else val
-
-    @atlan_tags.setter
-    def atlan_tags(self, value):
-        msgspec.Struct.__setattr__(self, "classifications", value)
-
-    @property
-    def attributes(self):
-        """
-        Backward-compatible accessor that returns self.
-
-        In legacy Pydantic models, attributes were nested inside an
-        `attributes` object. v9 uses flat fields, so this property
-        returns self to allow legacy-style access like
-        `asset.attributes.qualified_name`.
-        """
-        return self
-
-    def validate_required(self):
-        """
-        Validate that required fields are present.
-
-        Subclasses should override this to add specific validation.
-        """
-        pass
-
-    def __getitem__(self, key):
-        """
-        Support dict-like access for backward compatibility.
-
-        Allows `asset["qualifiedName"]` style access.
-        """
-        if not isinstance(key, str):
-            raise KeyError(key)
-        # Try camelCase to snake_case conversion
-        import re
-
-        snake_key = re.sub(r"(?<!^)(?=[A-Z])", "_", key).lower()
-        if hasattr(self, snake_key):
-            return getattr(self, snake_key)
-        if hasattr(self, key):
-            return getattr(self, key)
-        raise KeyError(key)
-
-    @staticmethod
-    def _collapse_legacy_name(name: str) -> str:
-        """
-        Map legacy field names to v9 field names.
-
-        Legacy Pydantic models used different snake_case conventions for
-        some fields (e.g., asset_d_q_schedule_time_zone vs asset_dq_schedule_time_zone,
-        data_product_assets_d_s_l vs data_product_assets_dsl).
-        This collapses consecutive single-letter segments into groups.
-        """
-        parts = name.split("_")
-        result: list[str] = []
-        i = 0
-        while i < len(parts):
-            if len(parts[i]) == 1 and parts[i].isalpha():
-                group = parts[i]
-                while (
-                    i + 1 < len(parts)
-                    and len(parts[i + 1]) == 1
-                    and parts[i + 1].isalpha()
-                ):
-                    i += 1
-                    group += parts[i]
-                result.append(group)
-            else:
-                result.append(parts[i])
-            i += 1
-        collapsed = "_".join(result)
-        return collapsed if collapsed != name else name
-
-    @property
-    def _metadata_proxy(self):
-        return _metadata_proxies.get(id(self))
-
-    @_metadata_proxy.setter
-    def _metadata_proxy(self, value):
-        _metadata_proxies[id(self)] = value
-
-    @property
-    def _async_metadata_proxy(self):
-        return _metadata_proxies.get(("async", id(self)))
-
-    @_async_metadata_proxy.setter
-    def _async_metadata_proxy(self, value):
-        _metadata_proxies[("async", id(self))] = value
-
-    def __getattr__(self, name: str):
-        """Fallback for legacy field name compatibility."""
-        if name.startswith("_"):
-            raise AttributeError(name)
-
-        collapsed = self._collapse_legacy_name(name)
-        if collapsed != name:
-            try:
-                return object.__getattribute__(self, collapsed)
-            except AttributeError:
-                pass
-
-        raise AttributeError(
-            f"'{type(self).__name__}' object has no attribute '{name}'"
-        )
-
-    def __setattr__(self, name: str, value):
-        """Support legacy field name writes."""
-        collapsed = self._collapse_legacy_name(name)
-        if collapsed != name and collapsed in self.__struct_fields__:
-            msgspec.Struct.__setattr__(self, collapsed, value)
-        else:
-            msgspec.Struct.__setattr__(self, name, value)
-
-    # =========================================================================
-    # Custom Metadata Methods (required by legacy save pipeline)
-    # =========================================================================
-
-    def flush_custom_metadata(self, client: Any = None) -> None:
-        """Flush custom metadata proxy to business_attributes."""
-        if self._metadata_proxy:
-            msgspec.Struct.__setattr__(
-                self, "business_attributes", self._metadata_proxy.business_attributes
-            )
-
-    async def flush_custom_metadata_async(self, client: Any = None) -> None:
-        """Async version of flush_custom_metadata."""
-        if self._async_metadata_proxy:
-            ba = await self._async_metadata_proxy.business_attributes()
-            msgspec.Struct.__setattr__(self, "business_attributes", ba)
-
-    def _get_business_attributes_or_none(self) -> Any:
-        ba = self.business_attributes
-        return None if ba is UNSET else ba
-
-    def get_custom_metadata(self, client: Any = None, name: str = "") -> Any:
-        """Get custom metadata by name from the proxy."""
-        from pyatlan_v9.model.custom_metadata import CustomMetadataProxy
-
-        if not self._metadata_proxy:
-            self._metadata_proxy = CustomMetadataProxy(
-                business_attributes=self._get_business_attributes_or_none(),
-                client=client,
-            )
-        return self._metadata_proxy.get_custom_metadata(name)
-
-    def set_custom_metadata(
-        self, client: Any = None, custom_metadata: Any = None
-    ) -> None:
-        """Set custom metadata via the proxy."""
-        from pyatlan_v9.model.custom_metadata import CustomMetadataProxy
-
-        if not self._metadata_proxy:
-            self._metadata_proxy = CustomMetadataProxy(
-                business_attributes=self._get_business_attributes_or_none(),
-                client=client,
-            )
-        self._metadata_proxy.set_custom_metadata(custom_metadata)
-
-    async def get_custom_metadata_async(
-        self, client: Any = None, name: str = ""
-    ) -> Any:
-        """Async version of get_custom_metadata."""
-        from pyatlan_v9.model.aio.custom_metadata import AsyncCustomMetadataProxy
-
-        if not self._async_metadata_proxy:
-            self._async_metadata_proxy = AsyncCustomMetadataProxy(
-                business_attributes=self._get_business_attributes_or_none(),
-                client=client,
-            )
-        return await self._async_metadata_proxy.get_custom_metadata(name)
-
-    async def set_custom_metadata_async(
-        self, client: Any = None, custom_metadata: Any = None
-    ) -> None:
-        """Async version of set_custom_metadata."""
-        from pyatlan_v9.model.aio.custom_metadata import AsyncCustomMetadataProxy
-
-        if not self._async_metadata_proxy:
-            self._async_metadata_proxy = AsyncCustomMetadataProxy(
-                business_attributes=self._get_business_attributes_or_none(),
-                client=client,
-            )
-        await self._async_metadata_proxy.set_custom_metadata(custom_metadata)
-
-    # =========================================================================
-    # Generic Nested Serialization
-    # =========================================================================
-
-    def to_nested_dict(self) -> dict:
-        """
-        Convert this entity to the Atlas API nested format using a generic
-        approach that works for ALL entity types.
-
-        Splits flat fields into top-level entity fields, attributes, and
-        relationship attributes (bucketed by save semantic).
-        """
-
-        flat = msgspec.to_builtins(self, enc_hook=_enc_hook)
-
-        # Dynamically discover relationship fields from the generated
-        # XRelationshipAttributes class in the same module.
-        rel_field_names = _get_relationship_fields(type(self))
-
-        # Build a map from camelCase field names to original Entity objects
-        # so we can restore typeName that omit_defaults may have dropped.
-        _rel_originals: dict[str, Any] = {}
-        for f in msgspec.structs.fields(type(self)):
-            camel = f.encode_name
-            if camel in rel_field_names:
-                val = getattr(self, f.name, UNSET)
-                if val is not UNSET and val is not None:
-                    _rel_originals[camel] = val
-
-        top_level: dict[str, Any] = {}
-        attributes: dict[str, Any] = {}
-        rel_replace: dict[str, Any] = {}
-        rel_append: dict[str, Any] = {}
-        rel_remove: dict[str, Any] = {}
-
-        for key, value in flat.items():
-            if key in _ENTITY_TOP_LEVEL_FIELDS:
-                if key == "semantic":
-                    continue
-                top_level[key] = value
-            elif key in rel_field_names:
-                _ensure_type_name(key, value, _rel_originals)
-                _bucket_relationship(key, value, rel_replace, rel_append, rel_remove)
-            else:
-                attributes[key] = value
-
-        # Fields that live in Attributes but represent entity references
-        # (e.g. parentCategory, anchor) must ALSO appear in
-        # relationshipAttributes when explicitly set, so the Atlas API
-        # processes relationship changes.
-        _mirror_ref_fields_to_rels(type(self), attributes, rel_replace)
-
-        # Always include typeName — omit_defaults may have dropped it
-        if "typeName" not in top_level and self.type_name is not UNSET:
-            top_level["typeName"] = self.type_name
-
-        result = dict(top_level)
-        if attributes:
-            result["attributes"] = attributes
-        if rel_replace:
-            result["relationshipAttributes"] = rel_replace
-        if rel_append:
-            result["appendRelationshipAttributes"] = rel_append
-        if rel_remove:
-            result["removeRelationshipAttributes"] = rel_remove
-        return result
-
-
-def _enc_hook(obj: Any) -> Any:
-    """Fallback encoder for non-msgspec types used in v9 entities.
-
-    Handles v9-native types that msgspec doesn't know about (AtlanTagName).
-    """
-    import datetime
-
-    from pyatlan_v9.model.core import AtlanTagName
-
-    if type(obj) is AtlanTagName:
-        return str(obj)
-    if isinstance(obj, datetime.date):
-        # Convert date to timestamp in milliseconds (epoch time)
-        dt = datetime.datetime.combine(obj, datetime.time.min)
-        return int(dt.timestamp() * 1000)
-    if isinstance(obj, datetime.datetime):
-        return int(obj.timestamp() * 1000)
-    if hasattr(obj, "dict") and hasattr(obj, "__fields__"):
-        return obj.dict(by_alias=True, exclude_none=True)
-    raise TypeError(f"Encoding objects of type {type(obj).__name__} is unsupported")
-
-
-_ENTITY_TOP_LEVEL_FIELDS = frozenset(
-    f.encode_name for f in msgspec.structs.fields(Entity)
-)
-
-_ref_field_cache: dict[type, frozenset[str]] = {}
-
-
-def _get_struct_ref_fields(cls: type) -> frozenset[str]:
-    """Return camelCase names of fields whose type includes a Struct subclass.
-
-    These are attribute-level fields that hold references to other entities
-    (e.g. ``parent_category``, ``anchor``) and need to be mirrored into
-    ``relationshipAttributes`` for the Atlas API to process them.
-    """
-    if cls in _ref_field_cache:
-        return _ref_field_cache[cls]
-
-    import typing
-
-    ref_names: set[str] = set()
-    for f in msgspec.structs.fields(cls):
-        if f.encode_name in _ENTITY_TOP_LEVEL_FIELDS:
-            continue
-        args = typing.get_args(f.type)
-        for arg in args:
-            if isinstance(arg, type) and issubclass(arg, msgspec.Struct):
-                ref_names.add(f.encode_name)
-                break
-    result = frozenset(ref_names)
-    _ref_field_cache[cls] = result
-    return result
-
-
-def _mirror_ref_fields_to_rels(
-    cls: type,
-    attributes: dict[str, Any],
-    rel_replace: dict[str, Any],
-) -> None:
-    """Copy entity-reference fields from attributes into rel_replace.
-
-    The Atlas API requires relationship-like fields (parentCategory, anchor,
-    etc.) to appear in ``relationshipAttributes`` for mutations to take
-    effect.  The v9 model places some of these in ``Attributes`` rather
-    than ``RelationshipAttributes``, so we mirror them here.
-    """
-    ref_fields = _get_struct_ref_fields(cls)
-    for key in ref_fields:
-        if key in attributes and key not in rel_replace:
-            rel_replace[key] = attributes[key]
-
-
-_rel_fields_cache: dict[type, frozenset[str]] = {}
-
-
-def _get_relationship_fields(cls: type) -> frozenset[str]:
-    """
-    Get the set of camelCase relationship field names for an entity type.
-
-    Looks up the generated ``XRelationshipAttributes`` class in the same
-    module and caches the result.
-    """
-    if cls in _rel_fields_cache:
-        return _rel_fields_cache[cls]
-
-    import sys
-
-    rel_names: set[str] = set()
-    # Walk the MRO to collect relationship fields from all parent types
-    for klass in cls.__mro__:
-        mod = sys.modules.get(klass.__module__)
-        if mod is None:
-            continue
-        rel_cls_name = klass.__name__ + "RelationshipAttributes"
-        rel_cls = getattr(mod, rel_cls_name, None)
-        if rel_cls is not None and hasattr(rel_cls, "__struct_fields__"):
-            rel_names.update(f.encode_name for f in msgspec.structs.fields(rel_cls))
-
-    result = frozenset(rel_names)
-    _rel_fields_cache[cls] = result
-    return result
-
-
-def _strip_semantic(item: dict) -> dict:
-    """Remove the internal 'semantic' key from a relationship dict."""
-    item.pop("semantic", None)
-    return item
-
-
-def _fixup_ref(d: dict, original: Any) -> None:
-    """Fix a serialized reference dict to match Atlas API expectations.
-
-    - Restores typeName that omit_defaults may have dropped
-    - Wraps qualifiedName in uniqueAttributes for ref_by_qualified_name
-    """
-    if not isinstance(d, dict):
-        return
-    if (
-        "typeName" not in d
-        and isinstance(original, Entity)
-        and original.type_name is not UNSET
-    ):
-        d["typeName"] = original.type_name
-    qn = d.pop("qualifiedName", None)
-    if qn is not None and "guid" not in d:
-        d["uniqueAttributes"] = {"qualifiedName": qn}
-    elif qn is not None:
-        d.setdefault("uniqueAttributes", {})["qualifiedName"] = qn
-
-
-def _ensure_type_name(key: str, value: Any, originals: dict[str, Any]) -> None:
-    """Ensure serialized relationship dicts contain typeName and proper structure."""
-    original = originals.get(key)
-    if original is None:
-        return
-
-    if isinstance(value, dict):
-        _fixup_ref(value, original)
-    elif isinstance(value, list) and isinstance(original, list):
-        for i, item in enumerate(value):
-            if isinstance(item, dict) and i < len(original):
-                _fixup_ref(item, original[i])
-
-
-def _bucket_relationship(
-    key: str,
-    value: Any,
-    replace: dict,
-    append: dict,
-    remove: dict,
-) -> None:
-    """Sort a relationship value into replace/append/remove buckets."""
-    if value is None:
-        replace[key] = None
-        return
-    if isinstance(value, dict):
-        semantic = value.get("semantic")
-        cleaned = _strip_semantic(value)
-        if semantic == "APPEND":
-            append[key] = cleaned
-        elif semantic == "REMOVE":
-            remove[key] = cleaned
-        else:
-            replace[key] = cleaned
-    elif isinstance(value, list):
-        if len(value) == 0:
-            replace[key] = []
-            return
-        rep, app, rem = [], [], []
-        for item in value:
-            semantic = item.get("semantic") if isinstance(item, dict) else None
-            if isinstance(item, dict):
-                _strip_semantic(item)
-            if semantic == "APPEND":
-                app.append(item)
-            elif semantic == "REMOVE":
-                rem.append(item)
-            else:
-                rep.append(item)
-        if rep:
-            replace[key] = rep
-        if app:
-            append[key] = app
-        if rem:
-            remove[key] = rem

@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -49,11 +43,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class RedashDashboard(Asset):
@@ -124,9 +120,7 @@ class RedashDashboard(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -135,9 +129,7 @@ class RedashDashboard(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -164,9 +156,7 @@ class RedashDashboard(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -178,9 +168,7 @@ class RedashDashboard(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -194,6 +182,8 @@ class RedashDashboard(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "RedashDashboard"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -224,9 +214,7 @@ class RedashDashboard(Asset):
         return _redash_dashboard_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> RedashDashboard:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> RedashDashboard:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -248,7 +236,6 @@ class RedashDashboard(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class RedashDashboardAttributes(AssetAttributes):
     """RedashDashboard-specific attributes for nested API format."""
 
@@ -257,7 +244,6 @@ class RedashDashboardAttributes(AssetAttributes):
 
     redash_is_published: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
-
 
 class RedashDashboardRelationshipAttributes(AssetRelationshipAttributes):
     """RedashDashboard-specific relationship attributes for nested API format."""
@@ -286,9 +272,7 @@ class RedashDashboardRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -297,9 +281,7 @@ class RedashDashboardRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -326,9 +308,7 @@ class RedashDashboardRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -340,9 +320,7 @@ class RedashDashboardRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -354,21 +332,13 @@ class RedashDashboardRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class RedashDashboardNested(AssetNested):
     """RedashDashboard in nested API format for high-performance serialization."""
 
     attributes: Union[RedashDashboardAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[RedashDashboardRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        RedashDashboardRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        RedashDashboardRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[RedashDashboardRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[RedashDashboardRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[RedashDashboardRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -406,15 +376,11 @@ _REDASH_DASHBOARD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_redash_dashboard_attrs(
-    attrs: RedashDashboardAttributes, obj: RedashDashboard
-) -> None:
+def _populate_redash_dashboard_attrs(attrs: RedashDashboardAttributes, obj: RedashDashboard) -> None:
     """Populate RedashDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.redash_dashboard_widget_count = obj.redash_dashboard_widget_count
     attrs.redash_is_published = obj.redash_is_published
-
 
 def _extract_redash_dashboard_attrs(attrs: RedashDashboardAttributes) -> dict:
     """Extract all RedashDashboard attributes from the attrs struct into a flat dict."""
@@ -423,23 +389,18 @@ def _extract_redash_dashboard_attrs(attrs: RedashDashboardAttributes) -> dict:
     result["redash_is_published"] = attrs.redash_is_published
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _redash_dashboard_to_nested(
-    redash_dashboard: RedashDashboard,
-) -> RedashDashboardNested:
+def _redash_dashboard_to_nested(redash_dashboard: RedashDashboard) -> RedashDashboardNested:
     """Convert flat RedashDashboard to nested format."""
     attrs = RedashDashboardAttributes()
     _populate_redash_dashboard_attrs(attrs, redash_dashboard)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        redash_dashboard,
-        _REDASH_DASHBOARD_REL_FIELDS,
-        RedashDashboardRelationshipAttributes,
+        redash_dashboard, _REDASH_DASHBOARD_REL_FIELDS, RedashDashboardRelationshipAttributes
     )
     return RedashDashboardNested(
         guid=redash_dashboard.guid,
@@ -467,21 +428,16 @@ def _redash_dashboard_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _redash_dashboard_from_nested(nested: RedashDashboardNested) -> RedashDashboard:
     """Convert nested format to flat RedashDashboard."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else RedashDashboardAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else RedashDashboardAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _REDASH_DASHBOARD_REL_FIELDS,
-        RedashDashboardRelationshipAttributes,
+        RedashDashboardRelationshipAttributes
     )
     return RedashDashboard(
         guid=nested.guid,
@@ -508,10 +464,7 @@ def _redash_dashboard_from_nested(nested: RedashDashboardNested) -> RedashDashbo
         **merged_rels,
     )
 
-
-def _redash_dashboard_to_nested_bytes(
-    redash_dashboard: RedashDashboard, serde: Serde
-) -> bytes:
+def _redash_dashboard_to_nested_bytes(redash_dashboard: RedashDashboard, serde: Serde) -> bytes:
     """Convert flat RedashDashboard to nested JSON bytes."""
     return serde.encode(_redash_dashboard_to_nested(redash_dashboard))
 
@@ -520,7 +473,6 @@ def _redash_dashboard_from_nested_bytes(data: bytes, serde: Serde) -> RedashDash
     """Convert nested JSON bytes to flat RedashDashboard."""
     nested = serde.decode(data, RedashDashboardNested)
     return _redash_dashboard_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -531,12 +483,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-RedashDashboard.REDASH_DASHBOARD_WIDGET_COUNT = NumericField(
-    "redashDashboardWidgetCount", "redashDashboardWidgetCount"
-)
-RedashDashboard.REDASH_IS_PUBLISHED = BooleanField(
-    "redashIsPublished", "redashIsPublished"
-)
+RedashDashboard.REDASH_DASHBOARD_WIDGET_COUNT = NumericField("redashDashboardWidgetCount", "redashDashboardWidgetCount")
+RedashDashboard.REDASH_IS_PUBLISHED = BooleanField("redashIsPublished", "redashIsPublished")
 RedashDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 RedashDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 RedashDashboard.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -545,9 +493,7 @@ RedashDashboard.APPLICATION_FIELD = RelationField("applicationField")
 RedashDashboard.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 RedashDashboard.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 RedashDashboard.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-RedashDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+RedashDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 RedashDashboard.METRICS = RelationField("metrics")
 RedashDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 RedashDashboard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

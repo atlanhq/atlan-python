@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Union
+from typing import Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -53,7 +53,6 @@ class RelatedS3(RelatedObjectStore):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "S3"
 
-
 class RelatedS3Bucket(RelatedS3):
     """
     Related entity reference for S3Bucket assets.
@@ -73,7 +72,6 @@ class RelatedS3Bucket(RelatedS3):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "S3Bucket"
-
 
 class RelatedS3Object(RelatedS3):
     """
@@ -124,7 +122,6 @@ class RelatedS3Object(RelatedS3):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "S3Object"
-
 
 class RelatedS3Prefix(RelatedS3):
     """

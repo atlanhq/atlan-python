@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,19 +34,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
-from .dremio_related import (
-    RelatedDremioFolder,
-    RelatedDremioPhysicalDataset,
-    RelatedDremioSource,
-    RelatedDremioSpace,
-    RelatedDremioVirtualDataset,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -65,11 +46,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .dremio_related import RelatedDremioFolder, RelatedDremioPhysicalDataset, RelatedDremioSource, RelatedDremioSpace, RelatedDremioVirtualDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DremioFolder(Asset):
@@ -223,9 +208,7 @@ class DremioFolder(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -255,9 +238,7 @@ class DremioFolder(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -266,9 +247,7 @@ class DremioFolder(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -283,9 +262,7 @@ class DremioFolder(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -303,14 +280,10 @@ class DremioFolder(Asset):
     dremio_parent_folder: Union[RelatedDremioFolder, None, UnsetType] = UNSET
     """Parent Dremio Folder containing the sub-folders."""
 
-    dremio_physical_datasets: Union[
-        List[RelatedDremioPhysicalDataset], None, UnsetType
-    ] = UNSET
+    dremio_physical_datasets: Union[List[RelatedDremioPhysicalDataset], None, UnsetType] = UNSET
     """Physical datasets (tables) contained within the Dremio Folder."""
 
-    dremio_virtual_datasets: Union[
-        List[RelatedDremioVirtualDataset], None, UnsetType
-    ] = UNSET
+    dremio_virtual_datasets: Union[List[RelatedDremioVirtualDataset], None, UnsetType] = UNSET
     """Virtual datasets (views) contained within the Dremio Folder."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -337,9 +310,7 @@ class DremioFolder(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -351,14 +322,10 @@ class DremioFolder(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -377,7 +344,10 @@ class DremioFolder(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -429,7 +399,6 @@ class DremioFolder(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class DremioFolderAttributes(AssetAttributes):
     """DremioFolder-specific attributes for nested API format."""
@@ -509,14 +478,11 @@ class DremioFolderAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
-
 
 class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     """DremioFolder-specific relationship attributes for nested API format."""
@@ -545,9 +511,7 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -556,9 +520,7 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -573,9 +535,7 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -593,14 +553,10 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     dremio_parent_folder: Union[RelatedDremioFolder, None, UnsetType] = UNSET
     """Parent Dremio Folder containing the sub-folders."""
 
-    dremio_physical_datasets: Union[
-        List[RelatedDremioPhysicalDataset], None, UnsetType
-    ] = UNSET
+    dremio_physical_datasets: Union[List[RelatedDremioPhysicalDataset], None, UnsetType] = UNSET
     """Physical datasets (tables) contained within the Dremio Folder."""
 
-    dremio_virtual_datasets: Union[
-        List[RelatedDremioVirtualDataset], None, UnsetType
-    ] = UNSET
+    dremio_virtual_datasets: Union[List[RelatedDremioVirtualDataset], None, UnsetType] = UNSET
     """Virtual datasets (views) contained within the Dremio Folder."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -627,9 +583,7 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -641,14 +595,10 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -660,21 +610,13 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DremioFolderNested(AssetNested):
     """DremioFolder in nested API format for high-performance serialization."""
 
     attributes: Union[DremioFolderAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DremioFolderRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        DremioFolderRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DremioFolderRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[DremioFolderRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DremioFolderRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DremioFolderRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -725,10 +667,7 @@ _DREMIO_FOLDER_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_dremio_folder_attrs(
-    attrs: DremioFolderAttributes, obj: DremioFolder
-) -> None:
+def _populate_dremio_folder_attrs(attrs: DremioFolderAttributes, obj: DremioFolder) -> None:
     """Populate DremioFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dremio_parent_asset_type = obj.dremio_parent_asset_type
@@ -759,7 +698,6 @@ def _populate_dremio_folder_attrs(
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
-
 def _extract_dremio_folder_attrs(attrs: DremioFolderAttributes) -> dict:
     """Extract all DremioFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -769,9 +707,7 @@ def _extract_dremio_folder_attrs(attrs: DremioFolderAttributes) -> dict:
     result["dremio_space_name"] = attrs.dremio_space_name
     result["dremio_source_qualified_name"] = attrs.dremio_source_qualified_name
     result["dremio_source_name"] = attrs.dremio_source_name
-    result["dremio_parent_folder_qualified_name"] = (
-        attrs.dremio_parent_folder_qualified_name
-    )
+    result["dremio_parent_folder_qualified_name"] = attrs.dremio_parent_folder_qualified_name
     result["dremio_folder_hierarchy"] = attrs.dremio_folder_hierarchy
     result["dremio_labels"] = attrs.dremio_labels
     result["query_count"] = attrs.query_count
@@ -790,12 +726,9 @@ def _extract_dremio_folder_attrs(attrs: DremioFolderAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -836,21 +769,16 @@ def _dremio_folder_to_nested(dremio_folder: DremioFolder) -> DremioFolderNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _dremio_folder_from_nested(nested: DremioFolderNested) -> DremioFolder:
     """Convert nested format to flat DremioFolder."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else DremioFolderAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DremioFolderAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DREMIO_FOLDER_REL_FIELDS,
-        DremioFolderRelationshipAttributes,
+        DremioFolderRelationshipAttributes
     )
     return DremioFolder(
         guid=nested.guid,
@@ -877,7 +805,6 @@ def _dremio_folder_from_nested(nested: DremioFolderNested) -> DremioFolder:
         **merged_rels,
     )
 
-
 def _dremio_folder_to_nested_bytes(dremio_folder: DremioFolder, serde: Serde) -> bytes:
     """Convert flat DremioFolder to nested JSON bytes."""
     return serde.encode(_dremio_folder_to_nested(dremio_folder))
@@ -887,7 +814,6 @@ def _dremio_folder_from_nested_bytes(data: bytes, serde: Serde) -> DremioFolder:
     """Convert nested JSON bytes to flat DremioFolder."""
     nested = serde.decode(data, DremioFolderNested)
     return _dremio_folder_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -899,58 +825,32 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DremioFolder.DREMIO_PARENT_ASSET_TYPE = KeywordField(
-    "dremioParentAssetType", "dremioParentAssetType"
-)
+DremioFolder.DREMIO_PARENT_ASSET_TYPE = KeywordField("dremioParentAssetType", "dremioParentAssetType")
 DremioFolder.DREMIO_ID = KeywordField("dremioId", "dremioId")
-DremioFolder.DREMIO_SPACE_QUALIFIED_NAME = KeywordField(
-    "dremioSpaceQualifiedName", "dremioSpaceQualifiedName"
-)
+DremioFolder.DREMIO_SPACE_QUALIFIED_NAME = KeywordField("dremioSpaceQualifiedName", "dremioSpaceQualifiedName")
 DremioFolder.DREMIO_SPACE_NAME = KeywordField("dremioSpaceName", "dremioSpaceName")
-DremioFolder.DREMIO_SOURCE_QUALIFIED_NAME = KeywordField(
-    "dremioSourceQualifiedName", "dremioSourceQualifiedName"
-)
+DremioFolder.DREMIO_SOURCE_QUALIFIED_NAME = KeywordField("dremioSourceQualifiedName", "dremioSourceQualifiedName")
 DremioFolder.DREMIO_SOURCE_NAME = KeywordField("dremioSourceName", "dremioSourceName")
-DremioFolder.DREMIO_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
-    "dremioParentFolderQualifiedName", "dremioParentFolderQualifiedName"
-)
-DremioFolder.DREMIO_FOLDER_HIERARCHY = KeywordField(
-    "dremioFolderHierarchy", "dremioFolderHierarchy"
-)
+DremioFolder.DREMIO_PARENT_FOLDER_QUALIFIED_NAME = KeywordField("dremioParentFolderQualifiedName", "dremioParentFolderQualifiedName")
+DremioFolder.DREMIO_FOLDER_HIERARCHY = KeywordField("dremioFolderHierarchy", "dremioFolderHierarchy")
 DremioFolder.DREMIO_LABELS = KeywordField("dremioLabels", "dremioLabels")
 DremioFolder.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DremioFolder.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DremioFolder.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DremioFolder.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+DremioFolder.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 DremioFolder.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DremioFolder.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+DremioFolder.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 DremioFolder.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DremioFolder.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+DremioFolder.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 DremioFolder.TABLE_NAME = KeywordField("tableName", "tableName")
-DremioFolder.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+DremioFolder.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 DremioFolder.VIEW_NAME = KeywordField("viewName", "viewName")
-DremioFolder.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-DremioFolder.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-DremioFolder.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+DremioFolder.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+DremioFolder.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+DremioFolder.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 DremioFolder.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DremioFolder.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DremioFolder.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+DremioFolder.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 DremioFolder.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 DremioFolder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DremioFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -989,9 +889,7 @@ DremioFolder.FILES = RelationField("files")
 DremioFolder.LINKS = RelationField("links")
 DremioFolder.README = RelationField("readme")
 DremioFolder.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DremioFolder.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+DremioFolder.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 DremioFolder.SODA_CHECKS = RelationField("sodaChecks")
 DremioFolder.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DremioFolder.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

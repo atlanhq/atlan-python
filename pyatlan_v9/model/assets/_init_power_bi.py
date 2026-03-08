@@ -8,16 +8,6 @@ PowerBI module exports.
 This module provides convenient imports for all PowerBI types and their Related variants.
 """
 
-from .power_bi import PowerBI
-from .power_bi_app import PowerBIApp
-from .power_bi_column import PowerBIColumn
-from .power_bi_dashboard import PowerBIDashboard
-from .power_bi_dataflow import PowerBIDataflow
-from .power_bi_dataflow_entity_column import PowerBIDataflowEntityColumn
-from .power_bi_dataset import PowerBIDataset
-from .power_bi_datasource import PowerBIDatasource
-from .power_bi_measure import PowerBIMeasure
-from .power_bi_page import PowerBIPage
 from .power_bi_related import (
     RelatedPowerBI,
     RelatedPowerBIApp,
@@ -34,6 +24,16 @@ from .power_bi_related import (
     RelatedPowerBITile,
     RelatedPowerBIWorkspace,
 )
+from .power_bi import PowerBI
+from .power_bi_app import PowerBIApp
+from .power_bi_column import PowerBIColumn
+from .power_bi_dashboard import PowerBIDashboard
+from .power_bi_dataflow import PowerBIDataflow
+from .power_bi_dataflow_entity_column import PowerBIDataflowEntityColumn
+from .power_bi_dataset import PowerBIDataset
+from .power_bi_datasource import PowerBIDatasource
+from .power_bi_measure import PowerBIMeasure
+from .power_bi_page import PowerBIPage
 from .power_bi_report import PowerBIReport
 from .power_bi_table import PowerBITable
 from .power_bi_tile import PowerBITile
