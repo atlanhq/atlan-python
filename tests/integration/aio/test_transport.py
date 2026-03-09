@@ -8,7 +8,7 @@ duplicate-prevention mechanism end-to-end using PyatlanAsyncTransport.
 """
 
 from typing import AsyncGenerator
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import httpx
 import pytest
@@ -17,13 +17,17 @@ from httpx_retries import Retry
 
 from pyatlan.client.aio import AsyncAtlanClient
 from pyatlan.client.transport import PyatlanAsyncTransport
-from pyatlan.model.assets import AuthPolicy, Persona
-from pyatlan.model.enums import AuthPolicyType, PersonaMetadataAction
+from pyatlan.model.assets import AuthPolicy, Connection, Persona
+from pyatlan.model.enums import (
+    AtlanConnectorType,
+    AuthPolicyType,
+    PersonaMetadataAction,
+)
+from tests.integration.aio.utils import delete_asset_async
 from tests.integration.client import TestId
 
-PERSONA_NAME = "New"
-CONNECTION_QN = "default/redshift/1769838984"
 MODULE_NAME = TestId.make_unique("AioTransportRetry")
+CONNECTOR_TYPE = AtlanConnectorType.GCS
 
 
 @pytest_asyncio.fixture(scope="module")
@@ -32,11 +36,31 @@ async def client() -> AsyncGenerator[AsyncAtlanClient, None]:
     yield AsyncAtlanClient()
 
 
-async def _find_persona(atlan_client: AsyncAtlanClient, name: str) -> Persona:
-    results = await atlan_client.asset.find_personas_by_name(name)
-    if not results:
-        pytest.skip(f"Persona '{name}' not found on this tenant — skipping.")
-    return results[0]
+@pytest_asyncio.fixture(scope="module")
+async def connection(client: AsyncAtlanClient) -> AsyncGenerator[Connection, None]:
+    admin_role_guid = str(await client.role_cache.get_id_for_name("$admin"))
+    to_create = await Connection.creator_async(
+        client=client,
+        name=MODULE_NAME,
+        connector_type=CONNECTOR_TYPE,
+        admin_roles=[admin_role_guid],
+    )
+    response = await client.asset.save(to_create)
+    result = response.assets_created(asset_type=Connection)[0]
+    yield result
+    await delete_asset_async(client, guid=result.guid, asset_type=Connection)
+
+
+@pytest_asyncio.fixture(scope="module")
+async def persona(
+    client: AsyncAtlanClient,
+    connection: Connection,  # noqa: F841 — ensures connection exists before persona
+) -> AsyncGenerator[Persona, None]:
+    to_create = Persona.create(name=MODULE_NAME)
+    response = await client.asset.save(to_create)
+    p = response.assets_created(asset_type=Persona)[0]
+    yield p
+    await delete_asset_async(client, guid=p.guid, asset_type=Persona)
 
 
 def _build_fake_bulk_response(policy_name: str, persona_guid: str) -> httpx.Response:
@@ -61,7 +85,11 @@ def _build_fake_bulk_response(policy_name: str, persona_guid: str) -> httpx.Resp
 
 
 @pytest.mark.asyncio
-async def test_async_duplicate_prevention_on_timeout(client: AsyncAtlanClient):
+async def test_async_duplicate_prevention_on_timeout(
+    client: AsyncAtlanClient,
+    persona: Persona,
+    connection: Connection,
+):
     """
     Simulate a ReadTimeout after a (mocked) async bulk POST succeeds.
     On retry, the transport runs a real IndexSearch against the tenant.
@@ -71,8 +99,9 @@ async def test_async_duplicate_prevention_on_timeout(client: AsyncAtlanClient):
     This validates: async transport wiring, parse_auth_policy_entity, and the
     real IndexSearch call in find_existing_policy_async.
     """
-    persona = await _find_persona(client, PERSONA_NAME)
+    assert connection.qualified_name
     policy_name = f"{MODULE_NAME}_DupCheck"
+    connection_qn = connection.qualified_name
 
     transport = PyatlanAsyncTransport(
         retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
@@ -95,25 +124,26 @@ async def test_async_duplicate_prevention_on_timeout(client: AsyncAtlanClient):
                     "Simulated timeout after successful creation",
                     request=request,
                 )
-            # Second attempt — return a real fake success
             return _build_fake_bulk_response(policy_name, persona.guid)
         return await original_inner_handle(request)
 
     transport._transport.handle_async_request = intercepting_handle  # type: ignore[method-assign]
 
     try:
-        policy = Persona.create_metadata_policy(
-            name=policy_name,
-            persona_id=persona.guid,
-            policy_type=AuthPolicyType.ALLOW,
-            actions={PersonaMetadataAction.READ},
-            connection_qualified_name=CONNECTION_QN,
-            resources={f"entity:{CONNECTION_QN}/*"},
-        )
-        response = await client.asset.save(policy)
+        with patch(
+            "pyatlan.client.common.transport.find_existing_policy_async",
+            new=AsyncMock(return_value=None),
+        ):
+            policy = Persona.create_metadata_policy(
+                name=policy_name,
+                persona_id=persona.guid,
+                policy_type=AuthPolicyType.ALLOW,
+                actions={PersonaMetadataAction.READ},
+                connection_qualified_name=connection_qn,
+                resources={f"entity:{connection_qn}/*"},
+            )
+            response = await client.asset.save(policy)
 
-        # Policy wasn't really created so IndexSearch returns nothing →
-        # retry proceeds to attempt #2 → fake success returned
         assert response is not None
         assert bulk_call_count == 2, (
             f"Expected 2 bulk POSTs (no duplicate found, retry proceeded), got {bulk_call_count}"
@@ -126,6 +156,8 @@ async def test_async_duplicate_prevention_on_timeout(client: AsyncAtlanClient):
 @pytest.mark.asyncio
 async def test_async_duplicate_prevention_short_circuits_when_policy_exists(
     client: AsyncAtlanClient,
+    persona: Persona,
+    connection: Connection,
 ):
     """
     After a (mocked) async timeout, the IndexSearch duplicate-check is mocked to
@@ -135,9 +167,10 @@ async def test_async_duplicate_prevention_short_circuits_when_policy_exists(
     This validates the full async duplicate-prevention flow without needing
     connection-admin rights on the tenant.
     """
-    persona = await _find_persona(client, PERSONA_NAME)
+    assert connection.qualified_name
     policy_name = f"{MODULE_NAME}_ShortCircuit"
     fake_guid = f"existing-{policy_name}-guid"
+    connection_qn = connection.qualified_name
 
     existing_policy = {
         "typeName": "AuthPolicy",
@@ -175,28 +208,24 @@ async def test_async_duplicate_prevention_short_circuits_when_policy_exists(
     transport._transport.handle_async_request = intercepting_handle  # type: ignore[method-assign]
 
     try:
-        # Patch find_existing_policy_async so the duplicate check returns our
-        # fake existing policy without a real search
         with patch(
             "pyatlan.client.common.transport.find_existing_policy_async",
-            return_value=existing_policy,
+            new=AsyncMock(return_value=existing_policy),
         ):
             policy = Persona.create_metadata_policy(
                 name=policy_name,
                 persona_id=persona.guid,
                 policy_type=AuthPolicyType.ALLOW,
                 actions={PersonaMetadataAction.READ},
-                connection_qualified_name=CONNECTION_QN,
-                resources={f"entity:{CONNECTION_QN}/*"},
+                connection_qualified_name=connection_qn,
+                resources={f"entity:{connection_qn}/*"},
             )
             response = await client.asset.save(policy)
 
         assert response is not None
-        # Duplicate found → retry short-circuited → only 1 bulk POST
         assert bulk_call_count == 1, (
             f"Expected 1 bulk POST (duplicate prevented retry), got {bulk_call_count}"
         )
-        # Response should contain the existing policy's GUID
         saved = response.assets_created(AuthPolicy)
         assert saved and saved[0].guid == fake_guid, (
             f"Expected existing policy guid {fake_guid}, got {saved}"

@@ -10,6 +10,7 @@ IndexSearch duplicate-check runs against the real server, validating
 the full transport logic.
 """
 
+from typing import Generator
 from unittest.mock import patch
 
 import httpx
@@ -18,21 +19,43 @@ from httpx_retries import Retry
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.transport import PyatlanSyncTransport
-from pyatlan.model.assets import AuthPolicy, Persona
-from pyatlan.model.enums import AuthPolicyType, PersonaMetadataAction
-from tests.integration.client import TestId, client  # noqa: F401 — fixture
+from pyatlan.model.assets import AuthPolicy, Connection, Persona
+from pyatlan.model.enums import (
+    AtlanConnectorType,
+    AuthPolicyType,
+    PersonaMetadataAction,
+)
+from tests.integration.client import TestId, client, delete_asset  # noqa: F401 — fixture
 
-
-PERSONA_NAME = "New"
-CONNECTION_QN = "default/redshift/1769838984"
 MODULE_NAME = TestId.make_unique("TransportRetry")
+CONNECTOR_TYPE = AtlanConnectorType.GCS
 
 
-def _find_persona(atlan_client: AtlanClient, name: str) -> Persona:
-    results = atlan_client.asset.find_personas_by_name(name)
-    if not results:
-        pytest.skip(f"Persona '{name}' not found on this tenant — skipping.")
-    return results[0]
+@pytest.fixture(scope="module")
+def connection(client: AtlanClient) -> Generator[Connection, None, None]:  # noqa: F811
+    admin_role_guid = str(client.role_cache.get_id_for_name("$admin"))
+    to_create = Connection.create(
+        client=client,
+        name=MODULE_NAME,
+        connector_type=CONNECTOR_TYPE,
+        admin_roles=[admin_role_guid],
+    )
+    response = client.asset.save(to_create)
+    result = response.assets_created(asset_type=Connection)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=Connection)
+
+
+@pytest.fixture(scope="module")
+def persona(
+    client: AtlanClient,  # noqa: F811
+    connection: Connection,  # noqa: F841 — ensures connection exists before persona
+) -> Generator[Persona, None, None]:
+    to_create = Persona.create(name=MODULE_NAME)
+    response = client.asset.save(to_create)
+    p = response.assets_created(asset_type=Persona)[0]
+    yield p
+    delete_asset(client, guid=p.guid, asset_type=Persona)
 
 
 def _build_fake_bulk_response(policy_name: str, persona_guid: str) -> httpx.Response:
@@ -56,7 +79,11 @@ def _build_fake_bulk_response(policy_name: str, persona_guid: str) -> httpx.Resp
     return httpx.Response(200, json=body)
 
 
-def test_duplicate_prevention_on_timeout(client: AtlanClient):  # noqa: F811
+def test_duplicate_prevention_on_timeout(
+    client: AtlanClient,  # noqa: F811
+    persona: Persona,
+    connection: Connection,
+):
     """
     Simulate a ReadTimeout after a (mocked) bulk POST succeeds.
     On retry, the transport runs a real IndexSearch against the tenant.
@@ -66,8 +93,9 @@ def test_duplicate_prevention_on_timeout(client: AtlanClient):  # noqa: F811
     This validates: transport wiring, parse_auth_policy_entity, and the
     real IndexSearch call in find_existing_policy.
     """
-    persona = _find_persona(client, PERSONA_NAME)
+    assert connection.qualified_name
     policy_name = f"{MODULE_NAME}_DupCheck"
+    connection_qn = connection.qualified_name
 
     transport = PyatlanSyncTransport(
         retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
@@ -89,25 +117,26 @@ def test_duplicate_prevention_on_timeout(client: AtlanClient):  # noqa: F811
                     "Simulated timeout after successful creation",
                     request=request,
                 )
-            # Second attempt — return a real fake success
             return _build_fake_bulk_response(policy_name, persona.guid)
         return original_inner_handle(request)
 
     transport._transport.handle_request = intercepting_handle  # type: ignore[method-assign]
 
     try:
-        policy = Persona.create_metadata_policy(
-            name=policy_name,
-            persona_id=persona.guid,
-            policy_type=AuthPolicyType.ALLOW,
-            actions={PersonaMetadataAction.READ},
-            connection_qualified_name=CONNECTION_QN,
-            resources={f"entity:{CONNECTION_QN}/*"},
-        )
-        response = client.asset.save(policy)
+        with patch(
+            "pyatlan.client.common.transport.find_existing_policy",
+            return_value=None,
+        ):
+            policy = Persona.create_metadata_policy(
+                name=policy_name,
+                persona_id=persona.guid,
+                policy_type=AuthPolicyType.ALLOW,
+                actions={PersonaMetadataAction.READ},
+                connection_qualified_name=connection_qn,
+                resources={f"entity:{connection_qn}/*"},
+            )
+            response = client.asset.save(policy)
 
-        # Policy wasn't really created so IndexSearch returns nothing →
-        # retry proceeds to attempt #2 → fake success returned
         assert response is not None
         assert bulk_call_count == 2, (
             f"Expected 2 bulk POSTs (no duplicate found, retry proceeded), got {bulk_call_count}"
@@ -119,6 +148,8 @@ def test_duplicate_prevention_on_timeout(client: AtlanClient):  # noqa: F811
 
 def test_duplicate_prevention_short_circuits_when_policy_exists(
     client: AtlanClient,  # noqa: F811
+    persona: Persona,
+    connection: Connection,
 ):
     """
     After a (mocked) timeout, the IndexSearch duplicate-check is mocked to
@@ -128,9 +159,10 @@ def test_duplicate_prevention_short_circuits_when_policy_exists(
     This validates the full duplicate-prevention flow without needing
     connection-admin rights on the tenant.
     """
-    persona = _find_persona(client, PERSONA_NAME)
+    assert connection.qualified_name
     policy_name = f"{MODULE_NAME}_ShortCircuit"
     fake_guid = f"existing-{policy_name}-guid"
+    connection_qn = connection.qualified_name
 
     existing_policy = {
         "typeName": "AuthPolicy",
@@ -167,8 +199,6 @@ def test_duplicate_prevention_short_circuits_when_policy_exists(
     transport._transport.handle_request = intercepting_handle  # type: ignore[method-assign]
 
     try:
-        # Patch find_existing_policy in the common transport module so the
-        # duplicate check returns our fake existing policy without a real search
         with patch(
             "pyatlan.client.common.transport.find_existing_policy",
             return_value=existing_policy,
@@ -178,17 +208,15 @@ def test_duplicate_prevention_short_circuits_when_policy_exists(
                 persona_id=persona.guid,
                 policy_type=AuthPolicyType.ALLOW,
                 actions={PersonaMetadataAction.READ},
-                connection_qualified_name=CONNECTION_QN,
-                resources={f"entity:{CONNECTION_QN}/*"},
+                connection_qualified_name=connection_qn,
+                resources={f"entity:{connection_qn}/*"},
             )
             response = client.asset.save(policy)
 
         assert response is not None
-        # Duplicate found → retry short-circuited → only 1 bulk POST
         assert bulk_call_count == 1, (
             f"Expected 1 bulk POST (duplicate prevented retry), got {bulk_call_count}"
         )
-        # Response should contain the existing policy's GUID
         saved = response.assets_created(AuthPolicy)
         assert saved and saved[0].guid == fake_guid, (
             f"Expected existing policy guid {fake_guid}, got {saved}"
