@@ -28,11 +28,6 @@ CONNECTION_QN = "default/redshift/1769838984"
 MODULE_NAME = TestId.make_unique("TransportRetry")
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-
 def _find_persona(atlan_client: AtlanClient, name: str) -> Persona:
     results = atlan_client.asset.find_personas_by_name(name)
     if not results:
@@ -59,11 +54,6 @@ def _build_fake_bulk_response(policy_name: str, persona_guid: str) -> httpx.Resp
         "guidAssignments": {"-1": fake_guid},
     }
     return httpx.Response(200, json=body)
-
-
-# ---------------------------------------------------------------------------
-# Tests
-# ---------------------------------------------------------------------------
 
 
 def test_duplicate_prevention_on_timeout(client: AtlanClient):  # noqa: F811

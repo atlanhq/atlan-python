@@ -7,7 +7,7 @@ with httpx's HTTPTransport while respecting proxy and SSL configurations.
 
 import logging
 from functools import partial
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union, cast
 
 import httpx
 from httpx_retries import Retry
@@ -130,11 +130,10 @@ class PyatlanSyncTransport(httpx.BaseTransport):
                 response = e
                 continue
 
-            assert isinstance(response, httpx.Response)
             if retry.is_exhausted() or not retry.is_retryable_status_code(
-                response.status_code
+                cast(httpx.Response, response).status_code
             ):
-                return response
+                return cast(httpx.Response, response)
 
     def close(self) -> None:
         """Close the underlying transport."""
@@ -250,11 +249,10 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
                 response = e
                 continue
 
-            assert isinstance(response, httpx.Response)
             if retry.is_exhausted() or not retry.is_retryable_status_code(
-                response.status_code
+                cast(httpx.Response, response).status_code
             ):
-                return response
+                return cast(httpx.Response, response)
 
     async def aclose(self) -> None:
         """Close the underlying transport."""
