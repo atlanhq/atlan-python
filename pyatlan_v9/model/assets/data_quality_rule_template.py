@@ -95,8 +95,6 @@ class DataQualityRuleTemplate(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DataQualityRuleTemplate"
-
     dq_rule_template_dimension: Union[str, None, UnsetType] = UNSET
     """Name of the dimension the rule belongs to."""
 

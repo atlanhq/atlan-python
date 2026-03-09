@@ -92,8 +92,6 @@ class ADF(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ADF"
-
     adf_factory_name: Union[str, None, UnsetType] = UNSET
     """Defines the name of the factory in which this asset exists."""
 

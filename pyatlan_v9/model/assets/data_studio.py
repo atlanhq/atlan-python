@@ -99,8 +99,6 @@ class DataStudio(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DataStudio"
-
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 

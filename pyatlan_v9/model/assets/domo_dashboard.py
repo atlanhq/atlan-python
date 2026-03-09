@@ -98,8 +98,6 @@ class DomoDashboard(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DomoDashboard"
-
     domo_dashboard_card_count: Union[int, None, UnsetType] = UNSET
     """Number of cards linked to this dashboard."""
 

@@ -109,8 +109,6 @@ class LookerDashboard(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "LookerDashboard"
-
     folder_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent folder in Looker that contains this dashboard."""
 

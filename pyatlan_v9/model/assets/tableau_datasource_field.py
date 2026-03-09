@@ -116,8 +116,6 @@ class TableauDatasourceField(Asset):
     WORKSHEETS: ClassVar[Any] = None
     TABLEAU_WORKSHEET_FIELD: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauDatasourceField"
-
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this datasource field exists."""
 

@@ -100,8 +100,6 @@ class MatillionProject(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MatillionProject"
-
     matillion_versions: Union[List[str], None, UnsetType] = UNSET
     """List of versions in the project."""
 

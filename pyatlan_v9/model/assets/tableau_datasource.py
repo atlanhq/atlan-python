@@ -113,8 +113,6 @@ class TableauDatasource(Asset):
     WORKBOOK: ClassVar[Any] = None
     FIELDS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauDatasource"
-
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this datasource exists."""
 

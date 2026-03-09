@@ -84,8 +84,6 @@ class Collection(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Collection"
-
     icon: Union[str, None, UnsetType] = UNSET
     """Image used to represent this collection."""
 
@@ -172,6 +170,7 @@ class Collection(Asset):
 
     @classmethod
     def _generate_qualified_name(cls, client: "AtlanClient") -> str:
+
         try:
             username = client.user.get_current().username
             return f"default/collection/{username}/{uuid4()}"

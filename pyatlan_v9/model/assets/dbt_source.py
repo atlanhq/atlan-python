@@ -117,8 +117,6 @@ class DbtSource(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DbtSource"
-
     dbt_state: Union[str, None, UnsetType] = UNSET
     """State of the dbt source."""
 

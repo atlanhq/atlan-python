@@ -116,8 +116,6 @@ class LookerLook(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "LookerLook"
-
     folder_name: Union[str, None, UnsetType] = UNSET
     """Name of the folder in which the Look is organized."""
 

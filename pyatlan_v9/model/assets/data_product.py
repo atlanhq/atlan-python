@@ -122,8 +122,6 @@ class DataProduct(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     STARBURST_DATASETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DataProduct"
-
     data_product_status: Union[str, None, UnsetType] = UNSET
     """Status of this data product."""
 

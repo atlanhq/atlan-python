@@ -110,8 +110,6 @@ class TableauDashboardField(Asset):
     TABLEAU_WORKSHEET_FIELD: ClassVar[Any] = None
     TABLEAU_DASHBOARD: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauDashboardField"
-
     tableau_site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this dashboard field exists."""
 

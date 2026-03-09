@@ -146,8 +146,6 @@ class DremioFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DremioFolder"
-
     dremio_parent_asset_type: Union[str, None, UnsetType] = UNSET
     """Type of top level asset that contains this folder."""
 

@@ -111,8 +111,6 @@ class ModeReport(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ModeReport"
-
     mode_collection_token: Union[str, None, UnsetType] = UNSET
     """Token for the Mode collection."""
 

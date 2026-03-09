@@ -98,8 +98,6 @@ class TableauMetric(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     PROJECT: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauMetric"
-
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this metric exists."""
 

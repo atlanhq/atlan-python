@@ -118,8 +118,6 @@ class CassandraView(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CassandraView"
-
     cassandra_view_table_id: Union[str, None, UnsetType] = UNSET
     """ID of the base table in the CassandraView."""
 

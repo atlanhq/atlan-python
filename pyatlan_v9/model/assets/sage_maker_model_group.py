@@ -118,8 +118,6 @@ class SageMakerModelGroup(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SageMakerModelGroup"
-
     sage_maker_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Model Package Group."""
 

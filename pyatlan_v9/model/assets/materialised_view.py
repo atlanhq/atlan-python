@@ -140,8 +140,6 @@ class MaterialisedView(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MaterialisedView"
-
     refresh_mode: Union[str, None, UnsetType] = UNSET
     """Refresh mode for this materialized view."""
 

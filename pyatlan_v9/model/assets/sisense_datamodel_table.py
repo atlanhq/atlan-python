@@ -102,8 +102,6 @@ class SisenseDatamodelTable(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SisenseDatamodelTable"
-
     sisense_datamodel_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the datamodel in which this datamodel table exists."""
 

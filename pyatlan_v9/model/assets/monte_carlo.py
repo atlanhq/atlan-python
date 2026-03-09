@@ -93,8 +93,6 @@ class MonteCarlo(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MonteCarlo"
-
     mc_labels: Union[List[str], None, UnsetType] = UNSET
     """List of labels for this Monte Carlo asset."""
 

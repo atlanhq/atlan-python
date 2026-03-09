@@ -101,8 +101,6 @@ class SalesforceObject(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SalesforceObject"
-
     is_custom: Union[bool, None, UnsetType] = UNSET
     """Whether this object is a custom object (true) or not (false)."""
 

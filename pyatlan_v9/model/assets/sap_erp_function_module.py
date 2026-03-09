@@ -107,8 +107,6 @@ class SapErpFunctionModule(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SapErpFunctionModule"
-
     sap_group: Union[str, None, UnsetType] = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 

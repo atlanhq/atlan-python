@@ -105,8 +105,6 @@ class LookerFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "LookerFolder"
-
     source_content_metadata_id: Union[int, None, UnsetType] = UNSET
     """Identifier for the folder's content metadata in Looker."""
 

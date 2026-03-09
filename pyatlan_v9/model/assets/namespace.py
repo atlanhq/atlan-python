@@ -79,8 +79,6 @@ class Namespace(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Namespace"
-
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 

@@ -98,8 +98,6 @@ class KafkaConsumerGroup(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "KafkaConsumerGroup"
-
     kafka_consumer_group_topic_consumption_properties: Union[
         List[Dict[str, Any]], None, UnsetType
     ] = UNSET

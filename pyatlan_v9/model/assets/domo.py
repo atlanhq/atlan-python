@@ -92,8 +92,6 @@ class Domo(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Domo"
-
     domo_id: Union[str, None, UnsetType] = UNSET
     """Id of the Domo dataset."""
 

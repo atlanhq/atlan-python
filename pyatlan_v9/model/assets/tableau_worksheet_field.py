@@ -118,8 +118,6 @@ class TableauWorksheetField(Asset):
     TABLEAU_CALCULATED_FIELD: ClassVar[Any] = None
     TABLEAU_WORKSHEET: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauWorksheetField"
-
     tableau_site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this worksheet field exists."""
 

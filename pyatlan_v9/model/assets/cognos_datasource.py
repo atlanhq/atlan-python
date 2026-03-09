@@ -100,8 +100,6 @@ class CognosDatasource(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CognosDatasource"
-
     cognos_connection_string: Union[str, None, UnsetType] = UNSET
     """Connection string of a Cognos datasource."""
 

@@ -139,8 +139,6 @@ class DbtProcess(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DbtProcess"
-
     dbt_process_job_status: Union[str, None, UnsetType] = UNSET
     """Status of the dbt process job."""
 

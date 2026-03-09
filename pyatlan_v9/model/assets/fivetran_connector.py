@@ -133,8 +133,6 @@ class FivetranConnector(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "FivetranConnector"
-
     fivetran_last_sync_id: Union[str, None, UnsetType] = UNSET
     """ID of the latest sync"""
 

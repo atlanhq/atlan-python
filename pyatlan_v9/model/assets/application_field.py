@@ -97,8 +97,6 @@ class ApplicationField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ApplicationField"
-
     application_parent_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent Application asset that contains this ApplicationField asset."""
 

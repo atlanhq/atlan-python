@@ -101,8 +101,6 @@ class AtlanAppInstalled(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AtlanAppInstalled"
-
     atlan_app_current_version_id: Union[int, None, UnsetType] = UNSET
     """Current version identifier for the atlan application."""
 

@@ -108,8 +108,6 @@ class ThoughtspotColumn(Asset):
     THOUGHTSPOT_VIEW: ClassVar[Any] = None
     THOUGHTSPOT_WORKSHEET: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ThoughtspotColumn"
-
     thoughtspot_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the table in which this column exists."""
 

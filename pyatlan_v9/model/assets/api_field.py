@@ -106,8 +106,6 @@ class APIField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "APIField"
-
     api_field_type: Union[str, None, UnsetType] = UNSET
     """Type of APIField, as free text (e.g. STRING, NUMBER etc)."""
 

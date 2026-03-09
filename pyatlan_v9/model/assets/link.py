@@ -98,8 +98,6 @@ class Link(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Link"
-
     icon: Union[str, None, UnsetType] = UNSET
     """Icon for the link."""
 

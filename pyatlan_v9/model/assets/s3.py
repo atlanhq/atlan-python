@@ -105,8 +105,6 @@ class S3(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "S3"
-
     s3_etag: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="s3ETag")
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 

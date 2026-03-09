@@ -80,8 +80,6 @@ class Azure(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Azure"
-
     azure_resource_id: Union[str, None, UnsetType] = UNSET
     """Resource identifier of this asset in Azure."""
 

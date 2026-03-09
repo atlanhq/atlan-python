@@ -102,8 +102,6 @@ class SalesforceReport(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SalesforceReport"
-
     source_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the report in Salesforce."""
 

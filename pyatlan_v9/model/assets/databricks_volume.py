@@ -131,8 +131,6 @@ class DatabricksVolume(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksVolume"
-
     databricks_owner: Union[str, None, UnsetType] = UNSET
     """User or group (principal) currently owning the volume."""
 

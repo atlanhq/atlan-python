@@ -108,8 +108,6 @@ class ADLSContainer(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ADLSContainer"
-
     adls_container_url: Union[str, None, UnsetType] = UNSET
     """URL of this container."""
 

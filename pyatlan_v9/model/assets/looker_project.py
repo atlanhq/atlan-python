@@ -104,8 +104,6 @@ class LookerProject(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "LookerProject"
-
     looker_slug: Union[str, None, UnsetType] = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
 

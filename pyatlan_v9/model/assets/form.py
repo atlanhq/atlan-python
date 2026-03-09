@@ -77,8 +77,6 @@ class Form(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Form"
-
     form_fields: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Fields in a form."""
 

@@ -99,8 +99,6 @@ class SigmaWorkbook(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SigmaWorkbook"
-
     sigma_page_count: Union[int, None, UnsetType] = UNSET
     """Number of pages in this workbook."""
 

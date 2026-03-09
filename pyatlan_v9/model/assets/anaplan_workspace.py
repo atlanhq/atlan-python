@@ -102,8 +102,6 @@ class AnaplanWorkspace(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AnaplanWorkspace"
-
     anaplan_workspace_current_size: Union[int, None, UnsetType] = UNSET
     """Current size of the AnaplanWorkspace from the source system, estimated in MB."""
 

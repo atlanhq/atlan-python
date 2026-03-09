@@ -100,8 +100,6 @@ class AzureServiceBusTopic(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AzureServiceBusTopic"
-
     azure_service_bus_namespace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the AzureServiceBus Namespace in which this asset exists."""
 

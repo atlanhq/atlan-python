@@ -94,8 +94,6 @@ class Tag(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Tag"
-
     tag_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the tag in the source system."""
 

@@ -116,8 +116,6 @@ class SageMakerModelDeployment(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SageMakerModelDeployment"
-
     sage_maker_status: Union[str, None, UnsetType] = UNSET
     """Current status of the endpoint (e.g., InService, OutOfService, Creating, Failed)."""
 

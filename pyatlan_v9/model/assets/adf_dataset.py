@@ -113,8 +113,6 @@ class AdfDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AdfDataset"
-
     adf_dataset_type: Union[str, None, UnsetType] = UNSET
     """Defines the type of the dataset."""
 

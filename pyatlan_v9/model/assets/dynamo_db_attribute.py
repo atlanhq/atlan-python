@@ -236,8 +236,6 @@ class DynamoDBAttribute(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DynamoDBAttribute"
-
     dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dynamoDBStatus"
     )

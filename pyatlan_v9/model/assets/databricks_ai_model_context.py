@@ -142,8 +142,6 @@ class DatabricksAIModelContext(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksAIModelContext"
-
     databricks_metastore_id: Union[str, None, UnsetType] = UNSET
     """The id of the model, common across versions."""
 

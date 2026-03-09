@@ -260,8 +260,6 @@ class ProcessExecution(Referenceable):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ProcessExecution"
-
     name: Union[str, None, UnsetType] = UNSET
     """Name of this asset. Fallback for display purposes, if displayName is empty."""
 

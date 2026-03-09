@@ -116,8 +116,6 @@ class SageMakerFeatureGroup(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SageMakerFeatureGroup"
-
     sage_maker_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Feature Group (e.g., Created, Creating, Failed)."""
 

@@ -129,8 +129,6 @@ class MicroStrategyColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MicroStrategyColumn"
-
     micro_strategy_column_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the column in MicroStrategy."""
 

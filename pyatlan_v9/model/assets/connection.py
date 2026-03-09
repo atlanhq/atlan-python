@@ -118,8 +118,6 @@ class Connection(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Connection"
-
     category: Union[str, None, UnsetType] = UNSET
     """Type of connection, for example WAREHOUSE, RDBMS, etc."""
 

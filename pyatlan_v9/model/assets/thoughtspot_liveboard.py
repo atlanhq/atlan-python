@@ -96,8 +96,6 @@ class ThoughtspotLiveboard(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     THOUGHTSPOT_DASHLETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ThoughtspotLiveboard"
-
     thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
     """"""
 

@@ -140,8 +140,6 @@ class Function(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Function"
-
     function_definition: Union[str, None, UnsetType] = UNSET
     """Code or set of statements that determine the output of the function."""
 

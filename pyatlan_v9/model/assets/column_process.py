@@ -111,8 +111,6 @@ class ColumnProcess(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ColumnProcess"
-
     code: Union[str, None, UnsetType] = UNSET
     """Code that ran within the process."""
 

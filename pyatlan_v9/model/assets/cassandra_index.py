@@ -103,8 +103,6 @@ class CassandraIndex(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CassandraIndex"
-
     cassandra_index_kind: Union[str, None, UnsetType] = UNSET
     """Kind of index (e.g. COMPOSITES)."""
 

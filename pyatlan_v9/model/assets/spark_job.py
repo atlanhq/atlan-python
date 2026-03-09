@@ -103,8 +103,6 @@ class SparkJob(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SPARK_ORCHESTRATED_BY_AIRFLOW_ASSETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SparkJob"
-
     spark_app_name: Union[str, None, UnsetType] = UNSET
     """Name of the Spark app containing this Spark Job For eg. extract_raw_data"""
 

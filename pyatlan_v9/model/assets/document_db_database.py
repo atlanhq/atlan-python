@@ -133,8 +133,6 @@ class DocumentDBDatabase(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DocumentDBDatabase"
-
     document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="documentDBDatabaseCollectionCount"
     )

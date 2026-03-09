@@ -111,8 +111,6 @@ class S3Bucket(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "S3Bucket"
-
     s3_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects within the bucket."""
 

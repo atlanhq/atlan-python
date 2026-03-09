@@ -92,8 +92,6 @@ class SchemaRegistry(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SchemaRegistry"
-
     schema_registry_schema_type: Union[str, None, UnsetType] = UNSET
     """Type of language or specification used to define the schema, for example: JSON, Protobuf, etc."""
 

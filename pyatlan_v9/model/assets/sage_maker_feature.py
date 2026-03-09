@@ -116,8 +116,6 @@ class SageMakerFeature(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SageMakerFeature"
-
     sage_maker_group_name: Union[str, None, UnsetType] = UNSET
     """Name of the Feature Group that contains this feature."""
 

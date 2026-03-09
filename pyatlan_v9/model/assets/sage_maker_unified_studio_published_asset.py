@@ -111,8 +111,6 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SageMakerUnifiedStudioPublishedAsset"
-
     smus_published_asset_subscriptions_count: Union[int, None, UnsetType] = UNSET
     """Number of subscriptions for the published asset."""
 

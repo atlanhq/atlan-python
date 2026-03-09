@@ -99,8 +99,6 @@ class DomoDatasetColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DomoDatasetColumn"
-
     domo_dataset_column_type: Union[str, None, UnsetType] = UNSET
     """Type of Domo Dataset Column."""
 

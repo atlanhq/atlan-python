@@ -103,8 +103,6 @@ class SageMakerUnifiedStudioAsset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SageMakerUnifiedStudioAsset"
-
     smus_asset_summary: Union[str, None, UnsetType] = UNSET
     """Summary text for the asset in SageMaker Unified Studio."""
 

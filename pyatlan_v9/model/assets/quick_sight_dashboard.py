@@ -103,8 +103,6 @@ class QuickSightDashboard(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "QuickSightDashboard"
-
     quick_sight_published_version_number: Union[int, None, UnsetType] = UNSET
     """Version number of the published dashboard."""
 

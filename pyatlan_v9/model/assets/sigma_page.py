@@ -101,8 +101,6 @@ class SigmaPage(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SigmaPage"
-
     sigma_data_element_count: Union[int, None, UnsetType] = UNSET
     """Number of data elements on this page."""
 

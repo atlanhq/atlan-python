@@ -127,8 +127,6 @@ class DatabricksExternalLocation(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksExternalLocation"
-
     databricks_url: Union[str, None, UnsetType] = UNSET
     """URL of the external location."""
 

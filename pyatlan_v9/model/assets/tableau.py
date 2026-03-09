@@ -91,8 +91,6 @@ class Tableau(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Tableau"
-
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
 

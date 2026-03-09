@@ -108,8 +108,6 @@ class QlikApp(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "QlikApp"
-
     qlik_has_section_access: Union[bool, None, UnsetType] = UNSET
     """Whether section access or data masking is enabled on the source (true) or not (false)."""
 

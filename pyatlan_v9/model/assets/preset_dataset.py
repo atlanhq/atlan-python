@@ -101,8 +101,6 @@ class PresetDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "PresetDataset"
-
     preset_dataset_datasource_name: Union[str, None, UnsetType] = UNSET
     """"""
 

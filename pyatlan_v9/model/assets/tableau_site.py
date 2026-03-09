@@ -93,8 +93,6 @@ class TableauSite(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     PROJECTS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauSite"
-
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
 

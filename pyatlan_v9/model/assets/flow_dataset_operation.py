@@ -122,8 +122,6 @@ class FlowDatasetOperation(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "FlowDatasetOperation"
-
     flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
 

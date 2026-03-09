@@ -96,8 +96,6 @@ class Spark(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SPARK_ORCHESTRATED_BY_AIRFLOW_ASSETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Spark"
-
     spark_run_version: Union[str, None, UnsetType] = UNSET
     """Spark Version for the Spark Job run eg. 3.4.1"""
 

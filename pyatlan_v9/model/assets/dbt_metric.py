@@ -128,8 +128,6 @@ class DbtMetric(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DbtMetric"
-
     dbt_metric_filters: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Filters applied to the dbt metric."""
 

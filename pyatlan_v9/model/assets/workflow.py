@@ -84,8 +84,6 @@ class Workflow(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Workflow"
-
     workflow_template_guid: Union[str, None, UnsetType] = UNSET
     """GUID of the workflow template from which this workflow was created."""
 

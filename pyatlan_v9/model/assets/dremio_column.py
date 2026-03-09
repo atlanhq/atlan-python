@@ -235,8 +235,6 @@ class DremioColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DremioColumn"
-
     dremio_id: Union[str, None, UnsetType] = UNSET
     """Source ID of this asset in Dremio."""
 

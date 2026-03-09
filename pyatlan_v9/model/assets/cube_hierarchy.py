@@ -102,8 +102,6 @@ class CubeHierarchy(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CubeHierarchy"
-
     cube_field_count: Union[int, None, UnsetType] = UNSET
     """Number of total fields in the cube hierarchy."""
 

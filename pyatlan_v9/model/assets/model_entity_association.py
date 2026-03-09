@@ -117,8 +117,6 @@ class ModelEntityAssociation(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ModelEntityAssociation"
-
     model_entity_association_cardinality: Union[str, None, UnsetType] = UNSET
     """(Deprecated) Cardinality of the data entity association."""
 

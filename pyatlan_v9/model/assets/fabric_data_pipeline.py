@@ -97,8 +97,6 @@ class FabricDataPipeline(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "FabricDataPipeline"
-
     fabric_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this asset."""
 

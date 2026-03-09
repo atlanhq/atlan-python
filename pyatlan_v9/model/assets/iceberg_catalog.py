@@ -135,8 +135,6 @@ class IcebergCatalog(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "IcebergCatalog"
-
     iceberg_catalog_type: Union[str, None, UnsetType] = UNSET
     """Type of the Iceberg catalog (e.g., 'hadoop', 'hive', 'nessie', 'rest')."""
 

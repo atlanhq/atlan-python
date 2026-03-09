@@ -106,8 +106,6 @@ class PresetWorkspace(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "PresetWorkspace"
-
     preset_workspace_public_dashboards_allowed: Union[bool, None, UnsetType] = UNSET
     """"""
 

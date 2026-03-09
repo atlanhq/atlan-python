@@ -98,8 +98,6 @@ class CustomEntity(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CustomEntity"
-
     custom_children_subtype: Union[str, None, UnsetType] = UNSET
     """Label of the children column for this asset type."""
 

@@ -102,8 +102,6 @@ class APIObject(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "APIObject"
-
     api_field_count: Union[int, None, UnsetType] = UNSET
     """Count of the APIField of this object."""
 

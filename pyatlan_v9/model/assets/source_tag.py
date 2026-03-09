@@ -95,8 +95,6 @@ class SourceTag(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SourceTag"
-
     tag_custom_configuration: Union[str, None, UnsetType] = UNSET
     """Specifies custom configuration elements based on the system the tag is being imported from."""
 

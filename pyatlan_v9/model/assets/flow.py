@@ -89,8 +89,6 @@ class Flow(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Flow"
-
     flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
 

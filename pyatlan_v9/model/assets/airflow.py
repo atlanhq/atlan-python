@@ -99,8 +99,6 @@ class Airflow(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SPARK_ORCHESTRATED_ASSETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Airflow"
-
     airflow_tags: Union[List[str], None, UnsetType] = UNSET
     """Tags assigned to the asset in Airflow."""
 

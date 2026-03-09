@@ -135,8 +135,6 @@ class SnowflakeSemanticView(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SnowflakeSemanticView"
-
     snowflake_definition: Union[str, None, UnsetType] = UNSET
     """DDL definition of the semantic view (via GET_DDL)."""
 

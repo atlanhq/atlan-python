@@ -99,8 +99,6 @@ class DomoCard(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DomoCard"
-
     domo_card_type: Union[str, None, UnsetType] = UNSET
     """Type of the Domo Card."""
 

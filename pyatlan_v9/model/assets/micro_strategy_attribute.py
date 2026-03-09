@@ -114,8 +114,6 @@ class MicroStrategyAttribute(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MicroStrategyAttribute"
-
     micro_strategy_attribute_forms: Union[str, None, UnsetType] = UNSET
     """JSON string specifying the attribute's name, description, displayFormat, etc."""
 

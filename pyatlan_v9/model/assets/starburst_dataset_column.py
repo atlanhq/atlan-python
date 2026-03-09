@@ -234,8 +234,6 @@ class StarburstDatasetColumn(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     STARBURST_DATASET: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "StarburstDatasetColumn"
-
     starburst_sql_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the corresponding SQL Column. Enables cross-stream lookup between the Data Product perspective and the SQL perspective of the same underlying column."""
 

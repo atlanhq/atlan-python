@@ -125,8 +125,6 @@ class MicroStrategyMetric(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MicroStrategyMetric"
-
     micro_strategy_metric_expression: Union[str, None, UnsetType] = UNSET
     """Text specifiying this metric's expression."""
 

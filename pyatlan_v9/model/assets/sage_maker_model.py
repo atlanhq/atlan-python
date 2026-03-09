@@ -124,8 +124,6 @@ class SageMakerModel(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SageMakerModel"
-
     sage_maker_container_image: Union[str, None, UnsetType] = UNSET
     """Docker container image used for the model."""
 

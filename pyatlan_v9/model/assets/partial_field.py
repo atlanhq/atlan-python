@@ -100,8 +100,6 @@ class PartialField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "PartialField"
-
     partial_data_type: Union[str, None, UnsetType] = UNSET
     """Type of data captured as values in the field."""
 

@@ -140,8 +140,6 @@ class Procedure(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Procedure"
-
     definition: Union[str, None, UnsetType] = UNSET
     """SQL definition of the procedure."""
 

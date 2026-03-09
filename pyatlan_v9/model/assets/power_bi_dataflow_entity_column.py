@@ -104,8 +104,6 @@ class PowerBIDataflowEntityColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "PowerBIDataflowEntityColumn"
-
     power_bi_dataflow_entity_name: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="powerBIDataflowEntityName"
     )

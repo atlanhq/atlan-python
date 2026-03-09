@@ -113,8 +113,6 @@ class MicroStrategyCube(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MicroStrategyCube"
-
     micro_strategy_cube_type: Union[str, None, UnsetType] = UNSET
     """Type of cube, for example: OLAP or MTDI."""
 

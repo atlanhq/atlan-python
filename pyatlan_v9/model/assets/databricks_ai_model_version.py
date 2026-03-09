@@ -147,8 +147,6 @@ class DatabricksAIModelVersion(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksAIModelVersion"
-
     databricks_id: Union[int, None, UnsetType] = UNSET
     """The id of the model, unique to every version."""
 

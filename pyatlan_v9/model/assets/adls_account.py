@@ -111,8 +111,6 @@ class ADLSAccount(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ADLSAccount"
-
     adls_etag: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="adlsETag"
     )

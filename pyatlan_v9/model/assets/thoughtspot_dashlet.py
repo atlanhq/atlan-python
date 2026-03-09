@@ -99,8 +99,6 @@ class ThoughtspotDashlet(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     THOUGHTSPOT_LIVEBOARD: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ThoughtspotDashlet"
-
     thoughtspot_liveboard_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the liveboard in which this dashlet exists."""
 

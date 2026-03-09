@@ -102,8 +102,6 @@ class ModeWorkspace(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ModeWorkspace"
-
     mode_collection_count: Union[int, None, UnsetType] = UNSET
     """Number of collections in this workspace."""
 

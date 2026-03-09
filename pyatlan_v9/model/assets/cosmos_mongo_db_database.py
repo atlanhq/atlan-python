@@ -140,8 +140,6 @@ class CosmosMongoDBDatabase(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CosmosMongoDBDatabase"
-
     cosmos_mongo_db_account_qualified_name: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountQualifiedName"
     )

@@ -105,8 +105,6 @@ class AdfDataflow(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AdfDataflow"
-
     adf_dataflow_sources: Union[List[str], None, UnsetType] = UNSET
     """The list of names of sources for this dataflow."""
 

@@ -92,8 +92,6 @@ class BusinessPolicy(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "BusinessPolicy"
-
     business_policy_type: Union[str, None, UnsetType] = UNSET
     """Type of business policy"""
 

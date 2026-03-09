@@ -110,8 +110,6 @@ class MicroStrategyDossier(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "MicroStrategyDossier"
-
     micro_strategy_dossier_chapter_names: Union[List[str], None, UnsetType] = UNSET
     """List of chapter names in this dossier."""
 

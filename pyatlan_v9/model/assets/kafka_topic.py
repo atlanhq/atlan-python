@@ -104,8 +104,6 @@ class KafkaTopic(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "KafkaTopic"
-
     kafka_topic_is_internal: Union[bool, None, UnsetType] = UNSET
     """Whether this topic is an internal topic (true) or not (false)."""
 

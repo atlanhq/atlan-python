@@ -109,8 +109,6 @@ class PowerBIDashboard(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "PowerBIDashboard"
-
     workspace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the workspace in which this dashboard exists."""
 

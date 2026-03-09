@@ -95,8 +95,6 @@ class Application(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Application"
-
     app_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the application asset from the source system."""
 

@@ -98,8 +98,6 @@ class AI(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AI"
-
     ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIPrivacyConfig"
     )

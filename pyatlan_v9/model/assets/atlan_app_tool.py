@@ -107,8 +107,6 @@ class AtlanAppTool(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AtlanAppTool"
-
     atlan_app_input_schema: Union[str, None, UnsetType] = UNSET
     """Input schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 

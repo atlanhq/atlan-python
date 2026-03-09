@@ -104,8 +104,6 @@ class AnaplanList(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AnaplanList"
-
     anaplan_list_item_count: Union[int, None, UnsetType] = UNSET
     """Item Count of the AnaplanList from the source system."""
 

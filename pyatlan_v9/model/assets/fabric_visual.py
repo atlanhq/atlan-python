@@ -99,8 +99,6 @@ class FabricVisual(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "FabricVisual"
-
     fabric_page_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric page that contains this asset."""
 

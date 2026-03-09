@@ -100,8 +100,6 @@ class SemanticDimension(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SemanticDimension"
-
     semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
 

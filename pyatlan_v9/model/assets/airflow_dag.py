@@ -103,8 +103,6 @@ class AirflowDag(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SPARK_ORCHESTRATED_ASSETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AirflowDag"
-
     airflow_dag_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule for the DAG."""
 

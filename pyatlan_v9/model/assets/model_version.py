@@ -112,8 +112,6 @@ class ModelVersion(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ModelVersion"
-
     model_version_entity_count: Union[int, None, UnsetType] = UNSET
     """Number of entities in the version."""
 

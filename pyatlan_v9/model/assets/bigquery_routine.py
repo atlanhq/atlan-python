@@ -143,8 +143,6 @@ class BigqueryRoutine(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "BigqueryRoutine"
-
     bigquery_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 

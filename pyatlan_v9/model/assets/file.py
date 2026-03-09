@@ -99,8 +99,6 @@ class File(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "File"
-
     file_type: Union[str, None, UnsetType] = UNSET
     """Type (extension) of the file."""
 

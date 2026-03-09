@@ -108,8 +108,6 @@ class CassandraColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CassandraColumn"
-
     cassandra_column_clustering_order: Union[str, None, UnsetType] = UNSET
     """Clustering order of the CassandraColumn."""
 

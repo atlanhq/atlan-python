@@ -173,8 +173,6 @@ class StarburstDataset(Asset):
     STARBURST_DATA_PRODUCT: ClassVar[Any] = None
     STARBURST_DATASET_COLUMNS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "StarburstDataset"
-
     starburst_is_materialized: Union[bool, None, UnsetType] = UNSET
     """Whether this dataset is a materialized view."""
 

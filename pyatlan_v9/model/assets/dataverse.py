@@ -93,8 +93,6 @@ class Dataverse(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Dataverse"
-
     dataverse_is_custom: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseEntity is custom built."""
 

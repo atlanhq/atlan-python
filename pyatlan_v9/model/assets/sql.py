@@ -123,8 +123,6 @@ class SQL(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SQL"
-
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 

@@ -103,8 +103,6 @@ class CognosDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CognosDataset"
-
     cognos_id: Union[str, None, UnsetType] = UNSET
     """ID of the asset in Cognos."""
 

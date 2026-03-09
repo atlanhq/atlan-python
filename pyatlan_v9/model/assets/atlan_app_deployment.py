@@ -103,8 +103,6 @@ class AtlanAppDeployment(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AtlanAppDeployment"
-
     atlan_app_version_id: Union[int, None, UnsetType] = UNSET
     """Version identifier for deployment."""
 

@@ -109,8 +109,6 @@ class APIPath(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "APIPath"
-
     api_path_summary: Union[str, None, UnsetType] = UNSET
     """Descriptive summary intended to apply to all operations in this path."""
 

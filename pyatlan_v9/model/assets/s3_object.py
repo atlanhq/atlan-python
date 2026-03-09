@@ -123,8 +123,6 @@ class S3Object(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "S3Object"
-
     s3_object_last_modified_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this object was last updated, in milliseconds, or when it was created if it has never been modified."""
 

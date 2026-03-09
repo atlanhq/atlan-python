@@ -84,8 +84,6 @@ class Google(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Google"
-
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 

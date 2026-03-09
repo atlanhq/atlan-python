@@ -106,8 +106,6 @@ class SapErpAbapProgram(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SapErpAbapProgram"
-
     sap_erp_abap_program_type: Union[str, None, UnsetType] = UNSET
     """Specifies the type of ABAP program in SAP ERP (e.g., Report, Module Pool, Function Group)."""
 

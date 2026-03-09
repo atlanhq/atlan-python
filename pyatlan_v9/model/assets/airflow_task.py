@@ -118,8 +118,6 @@ class AirflowTask(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SPARK_ORCHESTRATED_ASSETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AirflowTask"
-
     airflow_task_operator_class: Union[str, None, UnsetType] = UNSET
     """Class name for the operator this task uses."""
 

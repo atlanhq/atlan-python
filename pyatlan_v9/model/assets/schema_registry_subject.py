@@ -100,8 +100,6 @@ class SchemaRegistrySubject(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SchemaRegistrySubject"
-
     schema_registry_subject_base_name: Union[str, None, UnsetType] = UNSET
     """Base name of the subject, without -key, -value prefixes."""
 

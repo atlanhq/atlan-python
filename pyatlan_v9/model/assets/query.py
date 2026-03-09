@@ -144,8 +144,6 @@ class Query(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Query"
-
     raw_query: Union[str, None, UnsetType] = UNSET
     """Deprecated. See 'longRawQuery' instead."""
 
@@ -384,6 +382,7 @@ class Query(Asset):
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Query":
+
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):
             raise ValueError(
@@ -428,6 +427,7 @@ class Query(Asset):
         collection_qualified_name: str,
         parent_qualified_name: str,
     ) -> "Query":
+
         validate_required_fields(
             ["name", "collection_qualified_name", "parent_qualified_name"],
             [name, collection_qualified_name, parent_qualified_name],

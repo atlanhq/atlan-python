@@ -129,8 +129,6 @@ class DatabricksExternalLocationPath(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DatabricksExternalLocationPath"
-
     databricks_path: Union[str, None, UnsetType] = UNSET
     """Path of data at the external location."""
 

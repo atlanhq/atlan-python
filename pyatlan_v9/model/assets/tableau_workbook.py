@@ -107,8 +107,6 @@ class TableauWorkbook(Asset):
     WORKSHEETS: ClassVar[Any] = None
     PROJECT: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauWorkbook"
-
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this workbook exists."""
 

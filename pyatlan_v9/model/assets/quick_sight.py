@@ -93,8 +93,6 @@ class QuickSight(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "QuickSight"
-
     quick_sight_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the QuickSight asset."""
 

@@ -105,8 +105,6 @@ class QlikSheet(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "QlikSheet"
-
     qlik_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
 

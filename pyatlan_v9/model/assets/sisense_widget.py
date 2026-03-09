@@ -104,8 +104,6 @@ class SisenseWidget(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SisenseWidget"
-
     sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns used in this widget."""
 

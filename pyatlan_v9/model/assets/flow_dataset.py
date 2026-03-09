@@ -113,8 +113,6 @@ class FlowDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "FlowDataset"
-
     flow_field_count: Union[int, None, UnsetType] = UNSET
     """Count of the number of individual fields that make up this ephemeral dataset."""
 

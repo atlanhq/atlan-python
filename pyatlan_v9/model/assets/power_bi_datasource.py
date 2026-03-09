@@ -102,8 +102,6 @@ class PowerBIDatasource(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "PowerBIDatasource"
-
     connection_details: Union[Dict[str, str], None, UnsetType] = UNSET
     """Connection details of the datasource."""
 

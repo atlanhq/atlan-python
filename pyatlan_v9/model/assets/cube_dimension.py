@@ -102,8 +102,6 @@ class CubeDimension(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "CubeDimension"
-
     cube_hierarchy_count: Union[int, None, UnsetType] = UNSET
     """Number of hierarchies in the cube dimension."""
 

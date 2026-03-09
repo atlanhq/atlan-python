@@ -97,8 +97,6 @@ class RedashVisualization(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "RedashVisualization"
-
     redash_visualization_type: Union[str, None, UnsetType] = UNSET
     """Type of this visualization."""
 

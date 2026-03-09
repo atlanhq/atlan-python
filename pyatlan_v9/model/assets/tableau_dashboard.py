@@ -108,8 +108,6 @@ class TableauDashboard(Asset):
     TABLEAU_PARENT_DASHBOARDS: ClassVar[Any] = None
     TABLEAU_DASHBOARD_FIELDS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauDashboard"
-
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this dashboard exists."""
 

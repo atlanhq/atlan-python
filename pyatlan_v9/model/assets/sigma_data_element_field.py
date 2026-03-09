@@ -101,8 +101,6 @@ class SigmaDataElementField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SigmaDataElementField"
-
     sigma_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this field is hidden (true) or not (false)."""
 

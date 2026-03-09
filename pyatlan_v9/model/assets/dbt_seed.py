@@ -116,8 +116,6 @@ class DbtSeed(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DbtSeed"
-
     dbt_seed_file_path: Union[str, None, UnsetType] = UNSET
     """File path of the dbt seed."""
 

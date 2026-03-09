@@ -126,8 +126,6 @@ class Starburst(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Starburst"
-
     starburst_data_product_name: Union[str, None, UnsetType] = UNSET
     """Name of the Starburst Data Product that contains this asset."""
 

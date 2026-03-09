@@ -129,8 +129,6 @@ class Database(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Database"
-
     schema_count: Union[int, None, UnsetType] = UNSET
     """Number of schemas in this database."""
 

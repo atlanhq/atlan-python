@@ -109,8 +109,6 @@ class TableauWorksheet(Asset):
     CALCULATED_FIELDS: ClassVar[Any] = None
     WORKBOOK: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauWorksheet"
-
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this worksheet exists."""
 

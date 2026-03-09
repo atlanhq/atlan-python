@@ -101,8 +101,6 @@ class FabricSemanticModelTable(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "FabricSemanticModelTable"
-
     fabric_semantic_model_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Fabric semantic model that contains this asset."""
 

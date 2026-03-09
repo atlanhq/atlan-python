@@ -105,8 +105,6 @@ class AdfPipeline(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AdfPipeline"
-
     adf_pipeline_activity_count: Union[int, None, UnsetType] = UNSET
     """Defines the count of activities in the pipline."""
 

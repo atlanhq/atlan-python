@@ -104,8 +104,6 @@ class DataStudioAsset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DataStudioAsset"
-
     data_studio_asset_type: Union[str, None, UnsetType] = UNSET
     """Type of the Google Data Studio asset, for example: REPORT or DATA_SOURCE."""
 

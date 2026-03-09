@@ -94,8 +94,6 @@ class Preset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Preset"
-
     preset_workspace_id: Union[int, None, UnsetType] = UNSET
     """Identifier of the workspace in which this asset exists, in Preset."""
 

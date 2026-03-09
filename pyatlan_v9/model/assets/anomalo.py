@@ -91,8 +91,6 @@ class Anomalo(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Anomalo"
-
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
 

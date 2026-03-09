@@ -150,8 +150,6 @@ class SapErpColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SapErpColumn"
-
     sap_data_element: Union[str, None, UnsetType] = UNSET
     """Represents the SAP ERP data element, providing semantic information about the column."""
 

@@ -95,8 +95,6 @@ class FlowReusableUnit(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "FlowReusableUnit"
-
     flow_dataset_count: Union[int, None, UnsetType] = UNSET
     """Count of the number of ephemeral datasets contained within this reusable unit."""
 

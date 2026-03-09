@@ -111,8 +111,6 @@ class TableauCalculatedField(Asset):
     DATASOURCE: ClassVar[Any] = None
     WORKSHEETS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauCalculatedField"
-
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this calculated field exists."""
 

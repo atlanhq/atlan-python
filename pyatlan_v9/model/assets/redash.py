@@ -91,8 +91,6 @@ class Redash(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Redash"
-
     redash_is_published: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
 

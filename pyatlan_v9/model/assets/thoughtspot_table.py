@@ -96,8 +96,6 @@ class ThoughtspotTable(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     THOUGHTSPOT_COLUMNS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "ThoughtspotTable"
-
     thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
     """"""
 

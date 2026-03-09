@@ -92,8 +92,6 @@ class Metabase(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Metabase"
-
     metabase_collection_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the Metabase collection in which this asset exists."""
 

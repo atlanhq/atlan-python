@@ -109,8 +109,6 @@ class TableauProject(Asset):
     FLOWS: ClassVar[Any] = None
     WORKBOOKS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "TableauProject"
-
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this project exists."""
 

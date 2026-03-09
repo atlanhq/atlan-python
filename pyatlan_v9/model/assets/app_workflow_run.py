@@ -109,8 +109,6 @@ class AppWorkflowRun(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "AppWorkflowRun"
-
     app_workflow_run_label: Union[str, None, UnsetType] = UNSET
     """Root name for the workflow run."""
 
