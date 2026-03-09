@@ -6,21 +6,29 @@ on:
       - main
     paths:
       - "pyatlan_v9/model/assets/**"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch name to format (e.g. sync-models-20260308-211204)"
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
   format:
-    # Only run on automated sync branches
-    if: startsWith(github.head_ref, 'sync-models-')
+    # Only run on automated sync branches (auto for PRs, manual via input)
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      startsWith(github.head_ref, 'sync-models-')
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout PR branch
+      - name: Checkout branch
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.event.inputs.branch || github.head_ref }}
           token: ${{ secrets.ORG_PAT_GITHUB }}
           fetch-depth: 1
 
