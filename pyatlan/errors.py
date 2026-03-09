@@ -1054,6 +1054,13 @@ class ErrorCode(Enum):
         "your intention to fail after a maximum number of retries was reached.",
         ApiError,
     )
+    UNABLE_TO_SEARCH_EXISTING_POLICY = (
+        500,
+        "ATLAN-PYTHON-500-007",
+        "Unable to search for an existing policy '{0}' for persona '{1}': {2}",
+        "Check your backend connectivity and ensure the Atlan search service is accessible.",
+        ApiError,
+    )
 
     def __init__(
         self,

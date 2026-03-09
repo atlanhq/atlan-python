@@ -168,7 +168,9 @@ class AsyncAtlanClient(AtlanClient):
 
         # Create async session with custom transport that supports retry and proxy
         self._async_session = httpx.AsyncClient(
-            transport=PyatlanAsyncTransport(retry=self.retry, **transport_kwargs),
+            transport=PyatlanAsyncTransport(
+                retry=self.retry, client=self, **transport_kwargs
+            ),
             headers={
                 "x-atlan-agent": "sdk",
                 "x-atlan-agent-id": "python",
@@ -980,7 +982,9 @@ class AsyncAtlanClient(AtlanClient):
         if self.verify is not None:
             transport_kwargs["verify"] = self.verify
 
-        new_transport = PyatlanAsyncTransport(retry=max_retries, **transport_kwargs)
+        new_transport = PyatlanAsyncTransport(
+            retry=max_retries, client=self, **transport_kwargs
+        )
         session._transport = new_transport
 
         LOGGER.debug(

@@ -1,4 +1,3 @@
-# type: ignore
 """
 Custom HTTP transport with retry support for Atlan Python SDK.
 
@@ -8,10 +7,18 @@ with httpx's HTTPTransport while respecting proxy and SSL configurations.
 
 import logging
 from functools import partial
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union, cast
 
 import httpx
 from httpx_retries import Retry
+
+from pyatlan.client.common.transport import (
+    check_for_duplicate_policy,
+    check_for_duplicate_policy_async,
+)
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +50,11 @@ class PyatlanSyncTransport(httpx.BaseTransport):
     def __init__(
         self,
         retry: Optional[Retry] = None,
+        client: Optional["AtlanClient"] = None,
         **kwargs: Any,
     ) -> None:
         self.retry = retry or Retry()
+        self._client = client  # Reference to AtlanClient for duplicate checking
         # Ensure trust_env is True by default to respect environment variables
         # unless explicitly overridden
         if "trust_env" not in kwargs:
@@ -97,6 +106,19 @@ class PyatlanSyncTransport(httpx.BaseTransport):
                 logger.debug(
                     "_retry_operation retrying response=%s retry=%s", response, retry
                 )
+
+                # ONLY during retry: check if this is a policy creation and if duplicate exists
+                if self._client:
+                    duplicate_response = check_for_duplicate_policy(
+                        self._client, request
+                    )
+                    if duplicate_response:
+                        logger.warning(
+                            "RETRY PREVENTED: Policy already exists (likely from previous "
+                            "request that timed out but succeeded). Returning existing policy."
+                        )
+                        return duplicate_response
+
                 retry = retry.increment()
                 retry.sleep(response)
 
@@ -109,9 +131,9 @@ class PyatlanSyncTransport(httpx.BaseTransport):
                 continue
 
             if retry.is_exhausted() or not retry.is_retryable_status_code(
-                response.status_code
+                cast(httpx.Response, response).status_code
             ):
-                return response
+                return cast(httpx.Response, response)
 
     def close(self) -> None:
         """Close the underlying transport."""
@@ -145,9 +167,11 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
     def __init__(
         self,
         retry: Optional[Retry] = None,
+        client: Optional["AtlanClient"] = None,
         **kwargs: Any,
     ) -> None:
         self.retry = retry or Retry()
+        self._client = client  # Reference to AtlanClient for duplicate checking
         # Ensure trust_env is True by default to respect environment variables
         # unless explicitly overridden
         if "trust_env" not in kwargs:
@@ -201,6 +225,19 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
                     response,
                     retry,
                 )
+
+                # ONLY during retry: check if this is a policy creation and if duplicate exists
+                if self._client:
+                    duplicate_response = await check_for_duplicate_policy_async(
+                        self._client, request
+                    )
+                    if duplicate_response:
+                        logger.warning(
+                            "RETRY PREVENTED: Policy already exists (likely from previous "
+                            "request that timed out but succeeded). Returning existing policy."
+                        )
+                        return duplicate_response
+
                 retry = retry.increment()
                 await retry.asleep(response)
 
@@ -213,9 +250,9 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
                 continue
 
             if retry.is_exhausted() or not retry.is_retryable_status_code(
-                response.status_code
+                cast(httpx.Response, response).status_code
             ):
-                return response
+                return cast(httpx.Response, response)
 
     async def aclose(self) -> None:
         """Close the underlying transport."""
