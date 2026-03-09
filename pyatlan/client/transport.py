@@ -1,4 +1,3 @@
-# type: ignore
 """
 Custom HTTP transport with retry support for Atlan Python SDK.
 
@@ -131,6 +130,7 @@ class PyatlanSyncTransport(httpx.BaseTransport):
                 response = e
                 continue
 
+            assert isinstance(response, httpx.Response)
             if retry.is_exhausted() or not retry.is_retryable_status_code(
                 response.status_code
             ):
@@ -250,6 +250,7 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
                 response = e
                 continue
 
+            assert isinstance(response, httpx.Response)
             if retry.is_exhausted() or not retry.is_retryable_status_code(
                 response.status_code
             ):

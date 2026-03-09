@@ -6,6 +6,7 @@ Shared transport utilities for sync and async Atlan HTTP transports.
 Provides duplicate AuthPolicy detection logic used by both
 PyatlanSyncTransport and PyatlanAsyncTransport.
 """
+
 from __future__ import annotations
 
 import json
@@ -21,7 +22,9 @@ from pyatlan.model.search import Bool, DSL, IndexSearchRequest, Term
 logger = logging.getLogger(__name__)
 
 
-def build_policy_search_request(policy_name: str, persona_guid: str) -> IndexSearchRequest:
+def build_policy_search_request(
+    policy_name: str, persona_guid: str
+) -> IndexSearchRequest:
     """Build an IndexSearchRequest to find an existing AuthPolicy by name and persona."""
     query = Bool(
         filter=[
@@ -36,7 +39,9 @@ def build_policy_search_request(policy_name: str, persona_guid: str) -> IndexSea
     )
 
 
-def create_mock_response(existing_policy: dict, temp_guid: str = "-1") -> httpx.Response:
+def create_mock_response(
+    existing_policy: dict, temp_guid: str = "-1"
+) -> httpx.Response:
     """Build a mock bulk-entity response containing an already-created policy."""
     response_body = {
         "mutatedEntities": {"CREATE": [existing_policy]},
@@ -59,7 +64,14 @@ def parse_auth_policy_entity(request: httpx.Request) -> Optional[tuple[str, str,
     if not request.content:
         return None
 
-    body = json.loads(request.content.decode("utf-8"))
+    try:
+        body = json.loads(request.content.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        logger.debug(
+            "parse_auth_policy_entity: failed to decode request body, skipping duplicate check"
+        )
+        return None
+
     for entity in body.get("entities", []):
         if entity.get("typeName") != "AuthPolicy":
             continue
@@ -73,7 +85,9 @@ def parse_auth_policy_entity(request: httpx.Request) -> Optional[tuple[str, str,
     return None
 
 
-def find_existing_policy(client: Any, policy_name: str, persona_guid: str) -> Optional[dict]:
+def find_existing_policy(
+    client: Any, policy_name: str, persona_guid: str
+) -> Optional[dict]:
     """
     Search for an existing AuthPolicy by name and persona GUID (synchronous).
 
@@ -89,7 +103,7 @@ def find_existing_policy(client: Any, policy_name: str, persona_guid: str) -> Op
     except Exception as e:
         raise ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY.exception_with_parameters(
             policy_name, persona_guid, str(e)
-        )
+        ) from e
 
 
 async def find_existing_policy_async(
@@ -110,7 +124,7 @@ async def find_existing_policy_async(
     except Exception as e:
         raise ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY.exception_with_parameters(
             policy_name, persona_guid, str(e)
-        )
+        ) from e
 
 
 def check_for_duplicate_policy(
@@ -159,7 +173,9 @@ async def check_for_duplicate_policy_async(
         return None
 
     policy_name, persona_guid, temp_guid = parsed
-    existing_policy = await find_existing_policy_async(client, policy_name, persona_guid)
+    existing_policy = await find_existing_policy_async(
+        client, policy_name, persona_guid
+    )
     if existing_policy:
         logger.info(
             f"Found existing policy '{policy_name}' with guid "

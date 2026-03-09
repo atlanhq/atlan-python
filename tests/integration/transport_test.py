@@ -9,6 +9,7 @@ mocked (the service account lacks connection-admin rights), but the
 IndexSearch duplicate-check runs against the real server, validating
 the full transport logic.
 """
+
 from unittest.mock import patch
 
 import httpx
@@ -102,7 +103,7 @@ def test_duplicate_prevention_on_timeout(client: AtlanClient):  # noqa: F811
             return _build_fake_bulk_response(policy_name, persona.guid)
         return original_inner_handle(request)
 
-    transport._transport.handle_request = intercepting_handle
+    transport._transport.handle_request = intercepting_handle  # type: ignore[method-assign]
 
     try:
         policy = Persona.create_metadata_policy(
@@ -123,7 +124,7 @@ def test_duplicate_prevention_on_timeout(client: AtlanClient):  # noqa: F811
         )
     finally:
         client._session._transport = original_transport
-        transport._transport.handle_request = original_inner_handle
+        transport._transport.handle_request = original_inner_handle  # type: ignore[method-assign]
 
 
 def test_duplicate_prevention_short_circuits_when_policy_exists(
@@ -173,7 +174,7 @@ def test_duplicate_prevention_short_circuits_when_policy_exists(
             return _build_fake_bulk_response(policy_name, persona.guid)
         return original_inner_handle(request)
 
-    transport._transport.handle_request = intercepting_handle
+    transport._transport.handle_request = intercepting_handle  # type: ignore[method-assign]
 
     try:
         # Patch find_existing_policy in the common transport module so the
@@ -204,4 +205,4 @@ def test_duplicate_prevention_short_circuits_when_policy_exists(
         )
     finally:
         client._session._transport = original_transport
-        transport._transport.handle_request = original_inner_handle
+        transport._transport.handle_request = original_inner_handle  # type: ignore[method-assign]

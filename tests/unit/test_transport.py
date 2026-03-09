@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
 """Unit tests for pyatlan.client.transport and pyatlan.client.common.transport."""
-from unittest.mock import AsyncMock, MagicMock, patch
+
+from unittest.mock import AsyncMock, MagicMock
 
 import httpx
 import pytest
@@ -17,7 +18,6 @@ from pyatlan.client.common.transport import (
 )
 from pyatlan.client.constants import BULK_UPDATE
 from pyatlan.client.transport import PyatlanAsyncTransport, PyatlanSyncTransport
-from pyatlan.errors import ErrorCode
 
 
 # ---------------------------------------------------------------------------
@@ -110,6 +110,14 @@ class TestParseAuthPolicyEntity:
         req = _make_bulk_request(temp_guid="-3")
         policy_name, persona_guid, temp_guid = parse_auth_policy_entity(req)
         assert temp_guid == "-3"
+
+    def test_returns_none_for_invalid_json(self):
+        req = httpx.Request("POST", BULK_URL, content=b"{not valid json")
+        assert parse_auth_policy_entity(req) is None
+
+    def test_returns_none_for_invalid_utf8(self):
+        req = httpx.Request("POST", BULK_URL, content=b"\xff\xfe")
+        assert parse_auth_policy_entity(req) is None
 
 
 # ---------------------------------------------------------------------------
@@ -400,9 +408,7 @@ class TestPyatlanAsyncTransportRetry:
     @pytest.mark.asyncio
     async def test_duplicate_prevention_short_circuits_retry(self):
         mock_client = MagicMock()
-        mock_client._call_api = AsyncMock(
-            return_value={"entities": [EXISTING_POLICY]}
-        )
+        mock_client._call_api = AsyncMock(return_value={"entities": [EXISTING_POLICY]})
         transport = self._make_transport(client=mock_client)
 
         call_count = 0
