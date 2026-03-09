@@ -19,7 +19,6 @@ from pyatlan.client.common.transport import (
 from pyatlan.client.constants import BULK_UPDATE
 from pyatlan.client.transport import PyatlanAsyncTransport, PyatlanSyncTransport
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------

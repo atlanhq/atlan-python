@@ -68,6 +68,7 @@ class AtlanAppDeployment(Asset):
     ATLAN_APP_STATUS: ClassVar[Any] = None
     ATLAN_APP_OPERATION: ClassVar[Any] = None
     ATLAN_APP_ERROR_DETAILS: ClassVar[Any] = None
+    ATLAN_APP_DEPLOYMENT_NAME: ClassVar[Any] = None
     ATLAN_APP_QUALIFIED_NAME: ClassVar[Any] = None
     ATLAN_APP_NAME: ClassVar[Any] = None
     ATLAN_APP_METADATA: ClassVar[Any] = None
@@ -119,6 +120,9 @@ class AtlanAppDeployment(Asset):
 
     atlan_app_error_details: Union[str, None, UnsetType] = UNSET
     """Detailed error message explaining why the deployment failed. Should only be populated when status = FAILED."""
+
+    atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
+    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""
@@ -307,6 +311,9 @@ class AtlanAppDeploymentAttributes(AssetAttributes):
     atlan_app_error_details: Union[str, None, UnsetType] = UNSET
     """Detailed error message explaining why the deployment failed. Should only be populated when status = FAILED."""
 
+    atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
+    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
+
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""
 
@@ -486,6 +493,7 @@ def _populate_atlan_app_deployment_attrs(
     attrs.atlan_app_status = obj.atlan_app_status
     attrs.atlan_app_operation = obj.atlan_app_operation
     attrs.atlan_app_error_details = obj.atlan_app_error_details
+    attrs.atlan_app_deployment_name = obj.atlan_app_deployment_name
     attrs.atlan_app_qualified_name = obj.atlan_app_qualified_name
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
@@ -500,6 +508,7 @@ def _extract_atlan_app_deployment_attrs(attrs: AtlanAppDeploymentAttributes) -> 
     result["atlan_app_status"] = attrs.atlan_app_status
     result["atlan_app_operation"] = attrs.atlan_app_operation
     result["atlan_app_error_details"] = attrs.atlan_app_error_details
+    result["atlan_app_deployment_name"] = attrs.atlan_app_deployment_name
     result["atlan_app_qualified_name"] = attrs.atlan_app_qualified_name
     result["atlan_app_name"] = attrs.atlan_app_name
     result["atlan_app_metadata"] = attrs.atlan_app_metadata
@@ -636,6 +645,9 @@ AtlanAppDeployment.ATLAN_APP_OPERATION = KeywordField(
 )
 AtlanAppDeployment.ATLAN_APP_ERROR_DETAILS = KeywordField(
     "atlanAppErrorDetails", "atlanAppErrorDetails"
+)
+AtlanAppDeployment.ATLAN_APP_DEPLOYMENT_NAME = KeywordField(
+    "atlanAppDeploymentName", "atlanAppDeploymentName"
 )
 AtlanAppDeployment.ATLAN_APP_QUALIFIED_NAME = KeywordField(
     "atlanAppQualifiedName", "atlanAppQualifiedName"

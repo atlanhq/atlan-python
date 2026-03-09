@@ -25,7 +25,7 @@ from pyatlan.model.enums import (
     AuthPolicyType,
     PersonaMetadataAction,
 )
-from tests.integration.client import TestId, client, delete_asset  # noqa: F401 — fixture
+from tests.integration.client import TestId, delete_asset  # noqa: F401 — fixture
 
 MODULE_NAME = TestId.make_unique("TransportRetry")
 CONNECTOR_TYPE = AtlanConnectorType.GCS
