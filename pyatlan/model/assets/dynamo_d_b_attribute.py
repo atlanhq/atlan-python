@@ -1914,9 +1914,6 @@ class DynamoDBAttribute(Column):
                 ["name", "parent_qualified_name", "order"],
                 [name, parent_qualified_name, order],
             )
-            fields = parent_qualified_name.split("/")
-            if len(fields) != 4:
-                raise ValueError("Invalid parent_qualified_name")
             if connection_qualified_name:
                 connector_name = AtlanConnectorType.get_connector_name(
                     connection_qualified_name
@@ -1928,6 +1925,7 @@ class DynamoDBAttribute(Column):
             if order < 0:
                 raise ValueError("Order must be be a positive integer")
 
+            fields = parent_qualified_name.split("/")
             qualified_name = f"{parent_qualified_name}/{name}"
             connection_qualified_name = connection_qualified_name or connection_qn
             table_name = parent_name or fields[3]
