@@ -837,10 +837,7 @@ class TestColumn:
         assert TestColumn.column and TestColumn.column.guid in column_guids
         assert overload_column.guid and overload_column.guid in column_guids
         assert overload_column.schema_name == TestSchema.schema.name
-        assert (
-            overload_column.schema_qualified_name
-            == TestSchema.schema.qualified_name
-        )
+        assert overload_column.schema_qualified_name == TestSchema.schema.qualified_name
         assert overload_column.database_name == TestDatabase.database.name
         assert (
             overload_column.database_qualified_name

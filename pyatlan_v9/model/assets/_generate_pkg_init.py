@@ -24,9 +24,7 @@ EAGER_IMPORTS = [
 ]
 
 
-def _scan_init_modules() -> (
-    tuple[dict[str, list[str]], dict[str, str]]
-):
+def _scan_init_modules() -> tuple[dict[str, list[str]], dict[str, str]]:
     """Scan _init_*.py files and return (lazy_mapping, class_to_source).
 
     lazy_mapping: {_init_module_name: [class_names]} for lazy_loader
@@ -185,7 +183,9 @@ def main():
     # Summary
     total_classes = sum(len(v) for v in lazy_mapping.values())
     eager_count = sum(len(names) for _, names in EAGER_IMPORTS)
-    print(f"Generated __init__.py: {len(lazy_mapping)} modules, {total_classes} lazy classes")
+    print(
+        f"Generated __init__.py: {len(lazy_mapping)} modules, {total_classes} lazy classes"
+    )
     print(f"Generated __init__.pyi: {total_classes + eager_count} type stubs")
 
 
