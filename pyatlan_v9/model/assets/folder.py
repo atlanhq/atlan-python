@@ -178,6 +178,7 @@ class Folder(Asset):
         collection_qualified_name: str | None = None,
         parent_folder_qualified_name: str | None = None,
     ) -> "Folder":
+
         validate_required_fields(["name"], [name])
         if not (parent_folder_qualified_name or collection_qualified_name):
             raise ValueError(
