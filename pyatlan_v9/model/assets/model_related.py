@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -86,6 +85,7 @@ class RelatedModel(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Model"
 
+
 class RelatedModelDataModel(RelatedModel):
     """
     Related entity reference for ModelDataModel assets.
@@ -106,6 +106,7 @@ class RelatedModelDataModel(RelatedModel):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModelDataModel"
 
+
 class RelatedModelVersion(RelatedModel):
     """
     Related entity reference for ModelVersion assets.
@@ -122,6 +123,7 @@ class RelatedModelVersion(RelatedModel):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModelVersion"
+
 
 class RelatedModelEntity(RelatedModel):
     """
@@ -148,6 +150,7 @@ class RelatedModelEntity(RelatedModel):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModelEntity"
+
 
 class RelatedModelEntityAssociation(RelatedModel):
     """
@@ -193,6 +196,7 @@ class RelatedModelEntityAssociation(RelatedModel):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModelEntityAssociation"
 
+
 class RelatedModelAttribute(RelatedModel):
     """
     Related entity reference for ModelAttribute assets.
@@ -230,6 +234,7 @@ class RelatedModelAttribute(RelatedModel):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ModelAttribute"
+
 
 class RelatedModelAttributeAssociation(RelatedModel):
     """

@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -59,6 +58,7 @@ class RelatedProcess(RelatedAsset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Process"
 
+
 class RelatedBIProcess(RelatedProcess):
     """
     Related entity reference for BIProcess assets.
@@ -73,6 +73,7 @@ class RelatedBIProcess(RelatedProcess):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "BIProcess"
 
+
 class RelatedColumnProcess(RelatedProcess):
     """
     Related entity reference for ColumnProcess assets.
@@ -86,6 +87,7 @@ class RelatedColumnProcess(RelatedProcess):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ColumnProcess"
+
 
 class RelatedConnectionProcess(RelatedProcess):
     """

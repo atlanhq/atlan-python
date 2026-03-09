@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,13 +50,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class GCS(Asset):
@@ -172,7 +177,9 @@ class GCS(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -181,7 +188,9 @@ class GCS(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -208,7 +217,9 @@ class GCS(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -220,7 +231,9 @@ class GCS(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -234,8 +247,6 @@ class GCS(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "GCS"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -288,6 +299,7 @@ class GCS(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class GCSAttributes(AssetAttributes):
     """GCS-specific attributes for nested API format."""
 
@@ -336,6 +348,7 @@ class GCSAttributes(AssetAttributes):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
+
 class GCSRelationshipAttributes(AssetRelationshipAttributes):
     """GCS-specific relationship attributes for nested API format."""
 
@@ -363,7 +376,9 @@ class GCSRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -372,7 +387,9 @@ class GCSRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -399,7 +416,9 @@ class GCSRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -411,7 +430,9 @@ class GCSRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -423,6 +444,7 @@ class GCSRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class GCSNested(AssetNested):
     """GCS in nested API format for high-performance serialization."""
 
@@ -430,6 +452,7 @@ class GCSNested(AssetNested):
     relationship_attributes: Union[GCSRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[GCSRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[GCSRelationshipAttributes, UnsetType] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -467,6 +490,7 @@ _GCS_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_gcs_attrs(attrs: GCSAttributes, obj: GCS) -> None:
     """Populate GCS-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -485,6 +509,7 @@ def _populate_gcs_attrs(attrs: GCSAttributes, obj: GCS) -> None:
     attrs.google_labels = obj.google_labels
     attrs.google_tags = obj.google_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_gcs_attrs(attrs: GCSAttributes) -> dict:
     """Extract all GCS attributes from the attrs struct into a flat dict."""
@@ -505,6 +530,7 @@ def _extract_gcs_attrs(attrs: GCSAttributes) -> dict:
     result["google_tags"] = attrs.google_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -545,6 +571,7 @@ def _gcs_to_nested(gcs: GCS) -> GCSNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _gcs_from_nested(nested: GCSNested) -> GCS:
     """Convert nested format to flat GCS."""
     attrs = nested.attributes if nested.attributes is not UNSET else GCSAttributes()
@@ -554,7 +581,7 @@ def _gcs_from_nested(nested: GCSNested) -> GCS:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _GCS_REL_FIELDS,
-        GCSRelationshipAttributes
+        GCSRelationshipAttributes,
     )
     return GCS(
         guid=nested.guid,
@@ -581,6 +608,7 @@ def _gcs_from_nested(nested: GCSNested) -> GCS:
         **merged_rels,
     )
 
+
 def _gcs_to_nested_bytes(gcs: GCS, serde: Serde) -> bytes:
     """Convert flat GCS to nested JSON bytes."""
     return serde.encode(_gcs_to_nested(gcs))
@@ -590,6 +618,7 @@ def _gcs_from_nested_bytes(data: bytes, serde: Serde) -> GCS:
     """Convert nested JSON bytes to flat GCS."""
     nested = serde.decode(data, GCSNested)
     return _gcs_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -609,14 +638,20 @@ GCS.GCS_REQUESTER_PAYS = BooleanField("gcsRequesterPays", "gcsRequesterPays")
 GCS.GCS_ACCESS_CONTROL = KeywordField("gcsAccessControl", "gcsAccessControl")
 GCS.GCS_META_GENERATION_ID = NumericField("gcsMetaGenerationId", "gcsMetaGenerationId")
 GCS.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
-GCS.GOOGLE_PROJECT_NAME = KeywordTextField("googleProjectName", "googleProjectName", "googleProjectName.text")
-GCS.GOOGLE_PROJECT_ID = KeywordTextField("googleProjectId", "googleProjectId", "googleProjectId.text")
+GCS.GOOGLE_PROJECT_NAME = KeywordTextField(
+    "googleProjectName", "googleProjectName", "googleProjectName.text"
+)
+GCS.GOOGLE_PROJECT_ID = KeywordTextField(
+    "googleProjectId", "googleProjectId", "googleProjectId.text"
+)
 GCS.GOOGLE_PROJECT_NUMBER = NumericField("googleProjectNumber", "googleProjectNumber")
 GCS.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
 GCS.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
 GCS.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
 GCS.GOOGLE_TAGS = KeywordField("googleTags", "googleTags")
-GCS.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+GCS.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 GCS.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 GCS.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 GCS.ANOMALO_CHECKS = RelationField("anomaloChecks")

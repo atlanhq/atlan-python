@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -47,6 +46,7 @@ class RelatedDatabricks(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Databricks"
 
+
 class RelatedDatabricksVolume(RelatedDatabricks):
     """
     Related entity reference for DatabricksVolume assets.
@@ -69,6 +69,7 @@ class RelatedDatabricksVolume(RelatedDatabricks):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksVolume"
+
 
 class RelatedDatabricksVolumePath(RelatedDatabricks):
     """
@@ -93,6 +94,7 @@ class RelatedDatabricksVolumePath(RelatedDatabricks):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksVolumePath"
 
+
 class RelatedDatabricksExternalLocation(RelatedDatabricks):
     """
     Related entity reference for DatabricksExternalLocation assets.
@@ -112,6 +114,7 @@ class RelatedDatabricksExternalLocation(RelatedDatabricks):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksExternalLocation"
+
 
 class RelatedDatabricksExternalLocationPath(RelatedDatabricks):
     """
@@ -136,6 +139,7 @@ class RelatedDatabricksExternalLocationPath(RelatedDatabricks):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksExternalLocationPath"
 
+
 class RelatedDatabricksAIModelContext(RelatedDatabricks):
     """
     Related entity reference for DatabricksAIModelContext assets.
@@ -152,6 +156,7 @@ class RelatedDatabricksAIModelContext(RelatedDatabricks):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksAIModelContext"
+
 
 class RelatedDatabricksAIModelVersion(RelatedDatabricks):
     """
@@ -203,6 +208,7 @@ class RelatedDatabricksAIModelVersion(RelatedDatabricks):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksAIModelVersion"
 
+
 class RelatedDatabricksUnityCatalogTag(RelatedDatabricks):
     """
     Related entity reference for DatabricksUnityCatalogTag assets.
@@ -216,6 +222,7 @@ class RelatedDatabricksUnityCatalogTag(RelatedDatabricks):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksUnityCatalogTag"
+
 
 class RelatedDatabricksNotebook(RelatedDatabricks):
     """
@@ -236,6 +243,7 @@ class RelatedDatabricksNotebook(RelatedDatabricks):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DatabricksNotebook"
+
 
 class RelatedDatabricksMetricView(RelatedDatabricks):
     """

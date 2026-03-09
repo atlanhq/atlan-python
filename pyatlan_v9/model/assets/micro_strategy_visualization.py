@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -35,6 +41,10 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .micro_strategy_related import (
+    RelatedMicroStrategyDossier,
+    RelatedMicroStrategyProject,
+)
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -44,15 +54,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .micro_strategy_related import RelatedMicroStrategyDossier, RelatedMicroStrategyProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MicroStrategyVisualization(Asset):
@@ -169,7 +175,9 @@ class MicroStrategyVisualization(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -178,7 +186,9 @@ class MicroStrategyVisualization(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -211,7 +221,9 @@ class MicroStrategyVisualization(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -223,7 +235,9 @@ class MicroStrategyVisualization(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -242,10 +256,7 @@ class MicroStrategyVisualization(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -276,7 +287,9 @@ class MicroStrategyVisualization(Asset):
         return _micro_strategy_visualization_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MicroStrategyVisualization:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MicroStrategyVisualization:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -297,6 +310,7 @@ class MicroStrategyVisualization(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class MicroStrategyVisualizationAttributes(AssetAttributes):
     """MicroStrategyVisualization-specific attributes for nested API format."""
@@ -340,6 +354,7 @@ class MicroStrategyVisualizationAttributes(AssetAttributes):
     micro_strategy_location: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Location of this asset in MicroStrategy."""
 
+
 class MicroStrategyVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     """MicroStrategyVisualization-specific relationship attributes for nested API format."""
 
@@ -367,7 +382,9 @@ class MicroStrategyVisualizationRelationshipAttributes(AssetRelationshipAttribut
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -376,7 +393,9 @@ class MicroStrategyVisualizationRelationshipAttributes(AssetRelationshipAttribut
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -409,7 +428,9 @@ class MicroStrategyVisualizationRelationshipAttributes(AssetRelationshipAttribut
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -421,7 +442,9 @@ class MicroStrategyVisualizationRelationshipAttributes(AssetRelationshipAttribut
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -433,13 +456,21 @@ class MicroStrategyVisualizationRelationshipAttributes(AssetRelationshipAttribut
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class MicroStrategyVisualizationNested(AssetNested):
     """MicroStrategyVisualization in nested API format for high-performance serialization."""
 
     attributes: Union[MicroStrategyVisualizationAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[MicroStrategyVisualizationRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[MicroStrategyVisualizationRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[MicroStrategyVisualizationRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        MicroStrategyVisualizationRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        MicroStrategyVisualizationRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        MicroStrategyVisualizationRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -479,34 +510,56 @@ _MICRO_STRATEGY_VISUALIZATION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_micro_strategy_visualization_attrs(attrs: MicroStrategyVisualizationAttributes, obj: MicroStrategyVisualization) -> None:
+
+def _populate_micro_strategy_visualization_attrs(
+    attrs: MicroStrategyVisualizationAttributes, obj: MicroStrategyVisualization
+) -> None:
     """Populate MicroStrategyVisualization-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.micro_strategy_visualization_type = obj.micro_strategy_visualization_type
-    attrs.micro_strategy_dossier_qualified_name = obj.micro_strategy_dossier_qualified_name
+    attrs.micro_strategy_dossier_qualified_name = (
+        obj.micro_strategy_dossier_qualified_name
+    )
     attrs.micro_strategy_dossier_name = obj.micro_strategy_dossier_name
-    attrs.micro_strategy_project_qualified_name = obj.micro_strategy_project_qualified_name
+    attrs.micro_strategy_project_qualified_name = (
+        obj.micro_strategy_project_qualified_name
+    )
     attrs.micro_strategy_project_name = obj.micro_strategy_project_name
     attrs.micro_strategy_cube_qualified_names = obj.micro_strategy_cube_qualified_names
     attrs.micro_strategy_cube_names = obj.micro_strategy_cube_names
-    attrs.micro_strategy_report_qualified_names = obj.micro_strategy_report_qualified_names
+    attrs.micro_strategy_report_qualified_names = (
+        obj.micro_strategy_report_qualified_names
+    )
     attrs.micro_strategy_report_names = obj.micro_strategy_report_names
     attrs.micro_strategy_is_certified = obj.micro_strategy_is_certified
     attrs.micro_strategy_certified_by = obj.micro_strategy_certified_by
     attrs.micro_strategy_certified_at = obj.micro_strategy_certified_at
     attrs.micro_strategy_location = obj.micro_strategy_location
 
-def _extract_micro_strategy_visualization_attrs(attrs: MicroStrategyVisualizationAttributes) -> dict:
+
+def _extract_micro_strategy_visualization_attrs(
+    attrs: MicroStrategyVisualizationAttributes,
+) -> dict:
     """Extract all MicroStrategyVisualization attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["micro_strategy_visualization_type"] = attrs.micro_strategy_visualization_type
-    result["micro_strategy_dossier_qualified_name"] = attrs.micro_strategy_dossier_qualified_name
+    result["micro_strategy_visualization_type"] = (
+        attrs.micro_strategy_visualization_type
+    )
+    result["micro_strategy_dossier_qualified_name"] = (
+        attrs.micro_strategy_dossier_qualified_name
+    )
     result["micro_strategy_dossier_name"] = attrs.micro_strategy_dossier_name
-    result["micro_strategy_project_qualified_name"] = attrs.micro_strategy_project_qualified_name
+    result["micro_strategy_project_qualified_name"] = (
+        attrs.micro_strategy_project_qualified_name
+    )
     result["micro_strategy_project_name"] = attrs.micro_strategy_project_name
-    result["micro_strategy_cube_qualified_names"] = attrs.micro_strategy_cube_qualified_names
+    result["micro_strategy_cube_qualified_names"] = (
+        attrs.micro_strategy_cube_qualified_names
+    )
     result["micro_strategy_cube_names"] = attrs.micro_strategy_cube_names
-    result["micro_strategy_report_qualified_names"] = attrs.micro_strategy_report_qualified_names
+    result["micro_strategy_report_qualified_names"] = (
+        attrs.micro_strategy_report_qualified_names
+    )
     result["micro_strategy_report_names"] = attrs.micro_strategy_report_names
     result["micro_strategy_is_certified"] = attrs.micro_strategy_is_certified
     result["micro_strategy_certified_by"] = attrs.micro_strategy_certified_by
@@ -514,18 +567,23 @@ def _extract_micro_strategy_visualization_attrs(attrs: MicroStrategyVisualizatio
     result["micro_strategy_location"] = attrs.micro_strategy_location
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _micro_strategy_visualization_to_nested(micro_strategy_visualization: MicroStrategyVisualization) -> MicroStrategyVisualizationNested:
+def _micro_strategy_visualization_to_nested(
+    micro_strategy_visualization: MicroStrategyVisualization,
+) -> MicroStrategyVisualizationNested:
     """Convert flat MicroStrategyVisualization to nested format."""
     attrs = MicroStrategyVisualizationAttributes()
     _populate_micro_strategy_visualization_attrs(attrs, micro_strategy_visualization)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        micro_strategy_visualization, _MICRO_STRATEGY_VISUALIZATION_REL_FIELDS, MicroStrategyVisualizationRelationshipAttributes
+        micro_strategy_visualization,
+        _MICRO_STRATEGY_VISUALIZATION_REL_FIELDS,
+        MicroStrategyVisualizationRelationshipAttributes,
     )
     return MicroStrategyVisualizationNested(
         guid=micro_strategy_visualization.guid,
@@ -553,16 +611,23 @@ def _micro_strategy_visualization_to_nested(micro_strategy_visualization: MicroS
         remove_relationship_attributes=remove_rels,
     )
 
-def _micro_strategy_visualization_from_nested(nested: MicroStrategyVisualizationNested) -> MicroStrategyVisualization:
+
+def _micro_strategy_visualization_from_nested(
+    nested: MicroStrategyVisualizationNested,
+) -> MicroStrategyVisualization:
     """Convert nested format to flat MicroStrategyVisualization."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MicroStrategyVisualizationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MicroStrategyVisualizationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MICRO_STRATEGY_VISUALIZATION_REL_FIELDS,
-        MicroStrategyVisualizationRelationshipAttributes
+        MicroStrategyVisualizationRelationshipAttributes,
     )
     return MicroStrategyVisualization(
         guid=nested.guid,
@@ -589,15 +654,23 @@ def _micro_strategy_visualization_from_nested(nested: MicroStrategyVisualization
         **merged_rels,
     )
 
-def _micro_strategy_visualization_to_nested_bytes(micro_strategy_visualization: MicroStrategyVisualization, serde: Serde) -> bytes:
+
+def _micro_strategy_visualization_to_nested_bytes(
+    micro_strategy_visualization: MicroStrategyVisualization, serde: Serde
+) -> bytes:
     """Convert flat MicroStrategyVisualization to nested JSON bytes."""
-    return serde.encode(_micro_strategy_visualization_to_nested(micro_strategy_visualization))
+    return serde.encode(
+        _micro_strategy_visualization_to_nested(micro_strategy_visualization)
+    )
 
 
-def _micro_strategy_visualization_from_nested_bytes(data: bytes, serde: Serde) -> MicroStrategyVisualization:
+def _micro_strategy_visualization_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> MicroStrategyVisualization:
     """Convert nested JSON bytes to flat MicroStrategyVisualization."""
     nested = serde.decode(data, MicroStrategyVisualizationNested)
     return _micro_strategy_visualization_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -610,46 +683,106 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MicroStrategyVisualization.MICRO_STRATEGY_VISUALIZATION_TYPE = KeywordField("microStrategyVisualizationType", "microStrategyVisualizationType")
-MicroStrategyVisualization.MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME = KeywordTextField("microStrategyDossierQualifiedName", "microStrategyDossierQualifiedName", "microStrategyDossierQualifiedName.text")
-MicroStrategyVisualization.MICRO_STRATEGY_DOSSIER_NAME = KeywordTextField("microStrategyDossierName", "microStrategyDossierName", "microStrategyDossierName.text")
-MicroStrategyVisualization.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField("microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName.text")
-MicroStrategyVisualization.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField("microStrategyProjectName", "microStrategyProjectName", "microStrategyProjectName.text")
-MicroStrategyVisualization.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField("microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames.text")
-MicroStrategyVisualization.MICRO_STRATEGY_CUBE_NAMES = KeywordField("microStrategyCubeNames", "microStrategyCubeNames")
-MicroStrategyVisualization.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField("microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames.text")
-MicroStrategyVisualization.MICRO_STRATEGY_REPORT_NAMES = KeywordField("microStrategyReportNames", "microStrategyReportNames")
-MicroStrategyVisualization.MICRO_STRATEGY_IS_CERTIFIED = BooleanField("microStrategyIsCertified", "microStrategyIsCertified")
-MicroStrategyVisualization.MICRO_STRATEGY_CERTIFIED_BY = KeywordField("microStrategyCertifiedBy", "microStrategyCertifiedBy")
-MicroStrategyVisualization.MICRO_STRATEGY_CERTIFIED_AT = NumericField("microStrategyCertifiedAt", "microStrategyCertifiedAt")
-MicroStrategyVisualization.MICRO_STRATEGY_LOCATION = KeywordField("microStrategyLocation", "microStrategyLocation")
+MicroStrategyVisualization.MICRO_STRATEGY_VISUALIZATION_TYPE = KeywordField(
+    "microStrategyVisualizationType", "microStrategyVisualizationType"
+)
+MicroStrategyVisualization.MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyDossierQualifiedName",
+    "microStrategyDossierQualifiedName",
+    "microStrategyDossierQualifiedName.text",
+)
+MicroStrategyVisualization.MICRO_STRATEGY_DOSSIER_NAME = KeywordTextField(
+    "microStrategyDossierName",
+    "microStrategyDossierName",
+    "microStrategyDossierName.text",
+)
+MicroStrategyVisualization.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName.text",
+)
+MicroStrategyVisualization.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField(
+    "microStrategyProjectName",
+    "microStrategyProjectName",
+    "microStrategyProjectName.text",
+)
+MicroStrategyVisualization.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames.text",
+)
+MicroStrategyVisualization.MICRO_STRATEGY_CUBE_NAMES = KeywordField(
+    "microStrategyCubeNames", "microStrategyCubeNames"
+)
+MicroStrategyVisualization.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames.text",
+)
+MicroStrategyVisualization.MICRO_STRATEGY_REPORT_NAMES = KeywordField(
+    "microStrategyReportNames", "microStrategyReportNames"
+)
+MicroStrategyVisualization.MICRO_STRATEGY_IS_CERTIFIED = BooleanField(
+    "microStrategyIsCertified", "microStrategyIsCertified"
+)
+MicroStrategyVisualization.MICRO_STRATEGY_CERTIFIED_BY = KeywordField(
+    "microStrategyCertifiedBy", "microStrategyCertifiedBy"
+)
+MicroStrategyVisualization.MICRO_STRATEGY_CERTIFIED_AT = NumericField(
+    "microStrategyCertifiedAt", "microStrategyCertifiedAt"
+)
+MicroStrategyVisualization.MICRO_STRATEGY_LOCATION = KeywordField(
+    "microStrategyLocation", "microStrategyLocation"
+)
 MicroStrategyVisualization.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-MicroStrategyVisualization.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+MicroStrategyVisualization.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 MicroStrategyVisualization.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MicroStrategyVisualization.APPLICATION = RelationField("application")
 MicroStrategyVisualization.APPLICATION_FIELD = RelationField("applicationField")
-MicroStrategyVisualization.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-MicroStrategyVisualization.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-MicroStrategyVisualization.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MicroStrategyVisualization.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MicroStrategyVisualization.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+MicroStrategyVisualization.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+MicroStrategyVisualization.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+MicroStrategyVisualization.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MicroStrategyVisualization.METRICS = RelationField("metrics")
 MicroStrategyVisualization.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-MicroStrategyVisualization.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+MicroStrategyVisualization.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 MicroStrategyVisualization.MEANINGS = RelationField("meanings")
-MicroStrategyVisualization.MICRO_STRATEGY_PROJECT = RelationField("microStrategyProject")
-MicroStrategyVisualization.MICRO_STRATEGY_DOSSIER = RelationField("microStrategyDossier")
+MicroStrategyVisualization.MICRO_STRATEGY_PROJECT = RelationField(
+    "microStrategyProject"
+)
+MicroStrategyVisualization.MICRO_STRATEGY_DOSSIER = RelationField(
+    "microStrategyDossier"
+)
 MicroStrategyVisualization.MC_MONITORS = RelationField("mcMonitors")
 MicroStrategyVisualization.MC_INCIDENTS = RelationField("mcIncidents")
 MicroStrategyVisualization.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
 MicroStrategyVisualization.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 MicroStrategyVisualization.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 MicroStrategyVisualization.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-MicroStrategyVisualization.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-MicroStrategyVisualization.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+MicroStrategyVisualization.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+MicroStrategyVisualization.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 MicroStrategyVisualization.FILES = RelationField("files")
 MicroStrategyVisualization.LINKS = RelationField("links")
 MicroStrategyVisualization.README = RelationField("readme")
-MicroStrategyVisualization.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+MicroStrategyVisualization.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 MicroStrategyVisualization.SODA_CHECKS = RelationField("sodaChecks")
 MicroStrategyVisualization.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 MicroStrategyVisualization.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

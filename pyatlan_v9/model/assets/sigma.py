@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,13 +49,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Sigma(Asset):
@@ -136,7 +140,9 @@ class Sigma(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -145,7 +151,9 @@ class Sigma(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -172,7 +180,9 @@ class Sigma(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -184,7 +194,9 @@ class Sigma(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -198,8 +210,6 @@ class Sigma(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Sigma"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -252,6 +262,7 @@ class Sigma(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SigmaAttributes(AssetAttributes):
     """Sigma-specific attributes for nested API format."""
 
@@ -272,6 +283,7 @@ class SigmaAttributes(AssetAttributes):
 
     sigma_data_element_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the data element in which this asset exists."""
+
 
 class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     """Sigma-specific relationship attributes for nested API format."""
@@ -300,7 +312,9 @@ class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -309,7 +323,9 @@ class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -336,7 +352,9 @@ class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -348,7 +366,9 @@ class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -360,13 +380,19 @@ class SigmaRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SigmaNested(AssetNested):
     """Sigma in nested API format for high-performance serialization."""
 
     attributes: Union[SigmaAttributes, UnsetType] = UNSET
     relationship_attributes: Union[SigmaRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SigmaRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SigmaRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SigmaRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[SigmaRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -404,6 +430,7 @@ _SIGMA_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_sigma_attrs(attrs: SigmaAttributes, obj: Sigma) -> None:
     """Populate Sigma-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -414,6 +441,7 @@ def _populate_sigma_attrs(attrs: SigmaAttributes, obj: Sigma) -> None:
     attrs.sigma_data_element_qualified_name = obj.sigma_data_element_qualified_name
     attrs.sigma_data_element_name = obj.sigma_data_element_name
 
+
 def _extract_sigma_attrs(attrs: SigmaAttributes) -> dict:
     """Extract all Sigma attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -421,9 +449,12 @@ def _extract_sigma_attrs(attrs: SigmaAttributes) -> dict:
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
     result["sigma_page_qualified_name"] = attrs.sigma_page_qualified_name
     result["sigma_page_name"] = attrs.sigma_page_name
-    result["sigma_data_element_qualified_name"] = attrs.sigma_data_element_qualified_name
+    result["sigma_data_element_qualified_name"] = (
+        attrs.sigma_data_element_qualified_name
+    )
     result["sigma_data_element_name"] = attrs.sigma_data_element_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -464,6 +495,7 @@ def _sigma_to_nested(sigma: Sigma) -> SigmaNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sigma_from_nested(nested: SigmaNested) -> Sigma:
     """Convert nested format to flat Sigma."""
     attrs = nested.attributes if nested.attributes is not UNSET else SigmaAttributes()
@@ -473,7 +505,7 @@ def _sigma_from_nested(nested: SigmaNested) -> Sigma:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SIGMA_REL_FIELDS,
-        SigmaRelationshipAttributes
+        SigmaRelationshipAttributes,
     )
     return Sigma(
         guid=nested.guid,
@@ -500,6 +532,7 @@ def _sigma_from_nested(nested: SigmaNested) -> Sigma:
         **merged_rels,
     )
 
+
 def _sigma_to_nested_bytes(sigma: Sigma, serde: Serde) -> bytes:
     """Convert flat Sigma to nested JSON bytes."""
     return serde.encode(_sigma_to_nested(sigma))
@@ -510,6 +543,7 @@ def _sigma_from_nested_bytes(data: bytes, serde: Serde) -> Sigma:
     nested = serde.decode(data, SigmaNested)
     return _sigma_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -519,12 +553,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Sigma.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField("sigmaWorkbookQualifiedName", "sigmaWorkbookQualifiedName", "sigmaWorkbookQualifiedName.text")
+Sigma.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField(
+    "sigmaWorkbookQualifiedName",
+    "sigmaWorkbookQualifiedName",
+    "sigmaWorkbookQualifiedName.text",
+)
 Sigma.SIGMA_WORKBOOK_NAME = KeywordField("sigmaWorkbookName", "sigmaWorkbookName")
-Sigma.SIGMA_PAGE_QUALIFIED_NAME = KeywordTextField("sigmaPageQualifiedName", "sigmaPageQualifiedName", "sigmaPageQualifiedName.text")
+Sigma.SIGMA_PAGE_QUALIFIED_NAME = KeywordTextField(
+    "sigmaPageQualifiedName", "sigmaPageQualifiedName", "sigmaPageQualifiedName.text"
+)
 Sigma.SIGMA_PAGE_NAME = KeywordField("sigmaPageName", "sigmaPageName")
-Sigma.SIGMA_DATA_ELEMENT_QUALIFIED_NAME = KeywordTextField("sigmaDataElementQualifiedName", "sigmaDataElementQualifiedName", "sigmaDataElementQualifiedName.text")
-Sigma.SIGMA_DATA_ELEMENT_NAME = KeywordField("sigmaDataElementName", "sigmaDataElementName")
+Sigma.SIGMA_DATA_ELEMENT_QUALIFIED_NAME = KeywordTextField(
+    "sigmaDataElementQualifiedName",
+    "sigmaDataElementQualifiedName",
+    "sigmaDataElementQualifiedName.text",
+)
+Sigma.SIGMA_DATA_ELEMENT_NAME = KeywordField(
+    "sigmaDataElementName", "sigmaDataElementName"
+)
 Sigma.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Sigma.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Sigma.ANOMALO_CHECKS = RelationField("anomaloChecks")

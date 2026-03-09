@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,6 +41,11 @@ from .asset import (
 )
 from .asset_related import RelatedAsset
 from .data_mesh_related import RelatedDataProduct
+from .data_quality_related import (
+    RelatedDataQualityRule,
+    RelatedDataQualityRuleTemplate,
+    RelatedMetric,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,15 +57,11 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .data_quality_related import RelatedDataQualityRule, RelatedDataQualityRuleTemplate, RelatedMetric
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DataQualityRule(Asset):
@@ -178,13 +186,19 @@ class DataQualityRule(Asset):
     dq_rule_config_arguments: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Json string of the rule config that contains the rule definitions."""
 
-    dq_rule_custom_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleCustomSQL")
+    dq_rule_custom_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleCustomSQL"
+    )
     """SQL code for custom SQL rules."""
 
-    dq_rule_custom_sql_return_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleCustomSQLReturnType")
+    dq_rule_custom_sql_return_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleCustomSQLReturnType"
+    )
     """Type of result returned by the custom SQL (number of rows or numeric value)."""
 
-    dq_rule_failed_rows_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleFailedRowsSQL")
+    dq_rule_failed_rows_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleFailedRowsSQL"
+    )
     """SQL query used to retrieve failed rows."""
 
     dq_rule_row_scope_filtering_enabled: Union[bool, None, UnsetType] = UNSET
@@ -217,7 +231,9 @@ class DataQualityRule(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -238,7 +254,9 @@ class DataQualityRule(Asset):
     dq_rule_reference_datasets: Union[List[RelatedAsset], None, UnsetType] = UNSET
     """Datasets referenced in this rule."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dq_rule_reference_columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
@@ -268,7 +286,9 @@ class DataQualityRule(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -280,7 +300,9 @@ class DataQualityRule(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -299,10 +321,7 @@ class DataQualityRule(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -333,7 +352,9 @@ class DataQualityRule(Asset):
         return _data_quality_rule_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DataQualityRule:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DataQualityRule:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -354,6 +375,7 @@ class DataQualityRule(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DataQualityRuleAttributes(AssetAttributes):
     """DataQualityRule-specific attributes for nested API format."""
@@ -415,13 +437,19 @@ class DataQualityRuleAttributes(AssetAttributes):
     dq_rule_config_arguments: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Json string of the rule config that contains the rule definitions."""
 
-    dq_rule_custom_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleCustomSQL")
+    dq_rule_custom_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleCustomSQL"
+    )
     """SQL code for custom SQL rules."""
 
-    dq_rule_custom_sql_return_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleCustomSQLReturnType")
+    dq_rule_custom_sql_return_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleCustomSQLReturnType"
+    )
     """Type of result returned by the custom SQL (number of rows or numeric value)."""
 
-    dq_rule_failed_rows_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleFailedRowsSQL")
+    dq_rule_failed_rows_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleFailedRowsSQL"
+    )
     """SQL query used to retrieve failed rows."""
 
     dq_rule_row_scope_filtering_enabled: Union[bool, None, UnsetType] = UNSET
@@ -429,6 +457,7 @@ class DataQualityRuleAttributes(AssetAttributes):
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
+
 
 class DataQualityRuleRelationshipAttributes(AssetRelationshipAttributes):
     """DataQualityRule-specific relationship attributes for nested API format."""
@@ -457,7 +486,9 @@ class DataQualityRuleRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -478,7 +509,9 @@ class DataQualityRuleRelationshipAttributes(AssetRelationshipAttributes):
     dq_rule_reference_datasets: Union[List[RelatedAsset], None, UnsetType] = UNSET
     """Datasets referenced in this rule."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dq_rule_reference_columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
@@ -508,7 +541,9 @@ class DataQualityRuleRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -520,7 +555,9 @@ class DataQualityRuleRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -532,13 +569,21 @@ class DataQualityRuleRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class DataQualityRuleNested(AssetNested):
     """DataQualityRule in nested API format for high-performance serialization."""
 
     attributes: Union[DataQualityRuleAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DataQualityRuleRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DataQualityRuleRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DataQualityRuleRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[DataQualityRuleRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        DataQualityRuleRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DataQualityRuleRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -581,13 +626,20 @@ _DATA_QUALITY_RULE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_data_quality_rule_attrs(attrs: DataQualityRuleAttributes, obj: DataQualityRule) -> None:
+
+def _populate_data_quality_rule_attrs(
+    attrs: DataQualityRuleAttributes, obj: DataQualityRule
+) -> None:
     """Populate DataQualityRule-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dq_rule_base_dataset_qualified_name = obj.dq_rule_base_dataset_qualified_name
     attrs.dq_rule_base_column_qualified_name = obj.dq_rule_base_column_qualified_name
-    attrs.dq_rule_reference_dataset_qualified_names = obj.dq_rule_reference_dataset_qualified_names
-    attrs.dq_rule_reference_column_qualified_names = obj.dq_rule_reference_column_qualified_names
+    attrs.dq_rule_reference_dataset_qualified_names = (
+        obj.dq_rule_reference_dataset_qualified_names
+    )
+    attrs.dq_rule_reference_column_qualified_names = (
+        obj.dq_rule_reference_column_qualified_names
+    )
     attrs.dq_rule_source_sync_status = obj.dq_rule_source_sync_status
     attrs.dq_rule_source_sync_error_code = obj.dq_rule_source_sync_error_code
     attrs.dq_rule_source_sync_error_message = obj.dq_rule_source_sync_error_message
@@ -597,7 +649,9 @@ def _populate_data_quality_rule_attrs(attrs: DataQualityRuleAttributes, obj: Dat
     attrs.dq_rule_latest_result_computed_at = obj.dq_rule_latest_result_computed_at
     attrs.dq_rule_latest_result_fetched_at = obj.dq_rule_latest_result_fetched_at
     attrs.dq_rule_latest_metric_value = obj.dq_rule_latest_metric_value
-    attrs.dq_rule_latest_metric_value_computed_at = obj.dq_rule_latest_metric_value_computed_at
+    attrs.dq_rule_latest_metric_value_computed_at = (
+        obj.dq_rule_latest_metric_value_computed_at
+    )
     attrs.dq_rule_dimension = obj.dq_rule_dimension
     attrs.dq_rule_template_name = obj.dq_rule_template_name
     attrs.dq_rule_status = obj.dq_rule_status
@@ -609,23 +663,38 @@ def _populate_data_quality_rule_attrs(attrs: DataQualityRuleAttributes, obj: Dat
     attrs.dq_rule_row_scope_filtering_enabled = obj.dq_rule_row_scope_filtering_enabled
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
 
+
 def _extract_data_quality_rule_attrs(attrs: DataQualityRuleAttributes) -> dict:
     """Extract all DataQualityRule attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dq_rule_base_dataset_qualified_name"] = attrs.dq_rule_base_dataset_qualified_name
-    result["dq_rule_base_column_qualified_name"] = attrs.dq_rule_base_column_qualified_name
-    result["dq_rule_reference_dataset_qualified_names"] = attrs.dq_rule_reference_dataset_qualified_names
-    result["dq_rule_reference_column_qualified_names"] = attrs.dq_rule_reference_column_qualified_names
+    result["dq_rule_base_dataset_qualified_name"] = (
+        attrs.dq_rule_base_dataset_qualified_name
+    )
+    result["dq_rule_base_column_qualified_name"] = (
+        attrs.dq_rule_base_column_qualified_name
+    )
+    result["dq_rule_reference_dataset_qualified_names"] = (
+        attrs.dq_rule_reference_dataset_qualified_names
+    )
+    result["dq_rule_reference_column_qualified_names"] = (
+        attrs.dq_rule_reference_column_qualified_names
+    )
     result["dq_rule_source_sync_status"] = attrs.dq_rule_source_sync_status
     result["dq_rule_source_sync_error_code"] = attrs.dq_rule_source_sync_error_code
-    result["dq_rule_source_sync_error_message"] = attrs.dq_rule_source_sync_error_message
+    result["dq_rule_source_sync_error_message"] = (
+        attrs.dq_rule_source_sync_error_message
+    )
     result["dq_rule_source_sync_raw_error"] = attrs.dq_rule_source_sync_raw_error
     result["dq_rule_source_synced_at"] = attrs.dq_rule_source_synced_at
     result["dq_rule_latest_result"] = attrs.dq_rule_latest_result
-    result["dq_rule_latest_result_computed_at"] = attrs.dq_rule_latest_result_computed_at
+    result["dq_rule_latest_result_computed_at"] = (
+        attrs.dq_rule_latest_result_computed_at
+    )
     result["dq_rule_latest_result_fetched_at"] = attrs.dq_rule_latest_result_fetched_at
     result["dq_rule_latest_metric_value"] = attrs.dq_rule_latest_metric_value
-    result["dq_rule_latest_metric_value_computed_at"] = attrs.dq_rule_latest_metric_value_computed_at
+    result["dq_rule_latest_metric_value_computed_at"] = (
+        attrs.dq_rule_latest_metric_value_computed_at
+    )
     result["dq_rule_dimension"] = attrs.dq_rule_dimension
     result["dq_rule_template_name"] = attrs.dq_rule_template_name
     result["dq_rule_status"] = attrs.dq_rule_status
@@ -634,22 +703,29 @@ def _extract_data_quality_rule_attrs(attrs: DataQualityRuleAttributes) -> dict:
     result["dq_rule_custom_sql"] = attrs.dq_rule_custom_sql
     result["dq_rule_custom_sql_return_type"] = attrs.dq_rule_custom_sql_return_type
     result["dq_rule_failed_rows_sql"] = attrs.dq_rule_failed_rows_sql
-    result["dq_rule_row_scope_filtering_enabled"] = attrs.dq_rule_row_scope_filtering_enabled
+    result["dq_rule_row_scope_filtering_enabled"] = (
+        attrs.dq_rule_row_scope_filtering_enabled
+    )
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _data_quality_rule_to_nested(data_quality_rule: DataQualityRule) -> DataQualityRuleNested:
+def _data_quality_rule_to_nested(
+    data_quality_rule: DataQualityRule,
+) -> DataQualityRuleNested:
     """Convert flat DataQualityRule to nested format."""
     attrs = DataQualityRuleAttributes()
     _populate_data_quality_rule_attrs(attrs, data_quality_rule)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        data_quality_rule, _DATA_QUALITY_RULE_REL_FIELDS, DataQualityRuleRelationshipAttributes
+        data_quality_rule,
+        _DATA_QUALITY_RULE_REL_FIELDS,
+        DataQualityRuleRelationshipAttributes,
     )
     return DataQualityRuleNested(
         guid=data_quality_rule.guid,
@@ -677,16 +753,21 @@ def _data_quality_rule_to_nested(data_quality_rule: DataQualityRule) -> DataQual
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _data_quality_rule_from_nested(nested: DataQualityRuleNested) -> DataQualityRule:
     """Convert nested format to flat DataQualityRule."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DataQualityRuleAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DataQualityRuleAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATA_QUALITY_RULE_REL_FIELDS,
-        DataQualityRuleRelationshipAttributes
+        DataQualityRuleRelationshipAttributes,
     )
     return DataQualityRule(
         guid=nested.guid,
@@ -713,7 +794,10 @@ def _data_quality_rule_from_nested(nested: DataQualityRuleNested) -> DataQuality
         **merged_rels,
     )
 
-def _data_quality_rule_to_nested_bytes(data_quality_rule: DataQualityRule, serde: Serde) -> bytes:
+
+def _data_quality_rule_to_nested_bytes(
+    data_quality_rule: DataQualityRule, serde: Serde
+) -> bytes:
     """Convert flat DataQualityRule to nested JSON bytes."""
     return serde.encode(_data_quality_rule_to_nested(data_quality_rule))
 
@@ -722,6 +806,7 @@ def _data_quality_rule_from_nested_bytes(data: bytes, serde: Serde) -> DataQuali
     """Convert nested JSON bytes to flat DataQualityRule."""
     nested = serde.decode(data, DataQualityRuleNested)
     return _data_quality_rule_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -733,30 +818,72 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DataQualityRule.DQ_RULE_BASE_DATASET_QUALIFIED_NAME = KeywordField("dqRuleBaseDatasetQualifiedName", "dqRuleBaseDatasetQualifiedName")
-DataQualityRule.DQ_RULE_BASE_COLUMN_QUALIFIED_NAME = KeywordField("dqRuleBaseColumnQualifiedName", "dqRuleBaseColumnQualifiedName")
-DataQualityRule.DQ_RULE_REFERENCE_DATASET_QUALIFIED_NAMES = KeywordField("dqRuleReferenceDatasetQualifiedNames", "dqRuleReferenceDatasetQualifiedNames")
-DataQualityRule.DQ_RULE_REFERENCE_COLUMN_QUALIFIED_NAMES = KeywordField("dqRuleReferenceColumnQualifiedNames", "dqRuleReferenceColumnQualifiedNames")
-DataQualityRule.DQ_RULE_SOURCE_SYNC_STATUS = KeywordField("dqRuleSourceSyncStatus", "dqRuleSourceSyncStatus")
-DataQualityRule.DQ_RULE_SOURCE_SYNC_ERROR_CODE = KeywordField("dqRuleSourceSyncErrorCode", "dqRuleSourceSyncErrorCode")
-DataQualityRule.DQ_RULE_SOURCE_SYNC_ERROR_MESSAGE = KeywordField("dqRuleSourceSyncErrorMessage", "dqRuleSourceSyncErrorMessage")
-DataQualityRule.DQ_RULE_SOURCE_SYNC_RAW_ERROR = KeywordField("dqRuleSourceSyncRawError", "dqRuleSourceSyncRawError")
-DataQualityRule.DQ_RULE_SOURCE_SYNCED_AT = NumericField("dqRuleSourceSyncedAt", "dqRuleSourceSyncedAt")
-DataQualityRule.DQ_RULE_LATEST_RESULT = KeywordField("dqRuleLatestResult", "dqRuleLatestResult")
-DataQualityRule.DQ_RULE_LATEST_RESULT_COMPUTED_AT = NumericField("dqRuleLatestResultComputedAt", "dqRuleLatestResultComputedAt")
-DataQualityRule.DQ_RULE_LATEST_RESULT_FETCHED_AT = NumericField("dqRuleLatestResultFetchedAt", "dqRuleLatestResultFetchedAt")
-DataQualityRule.DQ_RULE_LATEST_METRIC_VALUE = KeywordField("dqRuleLatestMetricValue", "dqRuleLatestMetricValue")
-DataQualityRule.DQ_RULE_LATEST_METRIC_VALUE_COMPUTED_AT = NumericField("dqRuleLatestMetricValueComputedAt", "dqRuleLatestMetricValueComputedAt")
+DataQualityRule.DQ_RULE_BASE_DATASET_QUALIFIED_NAME = KeywordField(
+    "dqRuleBaseDatasetQualifiedName", "dqRuleBaseDatasetQualifiedName"
+)
+DataQualityRule.DQ_RULE_BASE_COLUMN_QUALIFIED_NAME = KeywordField(
+    "dqRuleBaseColumnQualifiedName", "dqRuleBaseColumnQualifiedName"
+)
+DataQualityRule.DQ_RULE_REFERENCE_DATASET_QUALIFIED_NAMES = KeywordField(
+    "dqRuleReferenceDatasetQualifiedNames", "dqRuleReferenceDatasetQualifiedNames"
+)
+DataQualityRule.DQ_RULE_REFERENCE_COLUMN_QUALIFIED_NAMES = KeywordField(
+    "dqRuleReferenceColumnQualifiedNames", "dqRuleReferenceColumnQualifiedNames"
+)
+DataQualityRule.DQ_RULE_SOURCE_SYNC_STATUS = KeywordField(
+    "dqRuleSourceSyncStatus", "dqRuleSourceSyncStatus"
+)
+DataQualityRule.DQ_RULE_SOURCE_SYNC_ERROR_CODE = KeywordField(
+    "dqRuleSourceSyncErrorCode", "dqRuleSourceSyncErrorCode"
+)
+DataQualityRule.DQ_RULE_SOURCE_SYNC_ERROR_MESSAGE = KeywordField(
+    "dqRuleSourceSyncErrorMessage", "dqRuleSourceSyncErrorMessage"
+)
+DataQualityRule.DQ_RULE_SOURCE_SYNC_RAW_ERROR = KeywordField(
+    "dqRuleSourceSyncRawError", "dqRuleSourceSyncRawError"
+)
+DataQualityRule.DQ_RULE_SOURCE_SYNCED_AT = NumericField(
+    "dqRuleSourceSyncedAt", "dqRuleSourceSyncedAt"
+)
+DataQualityRule.DQ_RULE_LATEST_RESULT = KeywordField(
+    "dqRuleLatestResult", "dqRuleLatestResult"
+)
+DataQualityRule.DQ_RULE_LATEST_RESULT_COMPUTED_AT = NumericField(
+    "dqRuleLatestResultComputedAt", "dqRuleLatestResultComputedAt"
+)
+DataQualityRule.DQ_RULE_LATEST_RESULT_FETCHED_AT = NumericField(
+    "dqRuleLatestResultFetchedAt", "dqRuleLatestResultFetchedAt"
+)
+DataQualityRule.DQ_RULE_LATEST_METRIC_VALUE = KeywordField(
+    "dqRuleLatestMetricValue", "dqRuleLatestMetricValue"
+)
+DataQualityRule.DQ_RULE_LATEST_METRIC_VALUE_COMPUTED_AT = NumericField(
+    "dqRuleLatestMetricValueComputedAt", "dqRuleLatestMetricValueComputedAt"
+)
 DataQualityRule.DQ_RULE_DIMENSION = KeywordField("dqRuleDimension", "dqRuleDimension")
-DataQualityRule.DQ_RULE_TEMPLATE_NAME = KeywordField("dqRuleTemplateName", "dqRuleTemplateName")
+DataQualityRule.DQ_RULE_TEMPLATE_NAME = KeywordField(
+    "dqRuleTemplateName", "dqRuleTemplateName"
+)
 DataQualityRule.DQ_RULE_STATUS = KeywordField("dqRuleStatus", "dqRuleStatus")
-DataQualityRule.DQ_RULE_ALERT_PRIORITY = KeywordField("dqRuleAlertPriority", "dqRuleAlertPriority")
-DataQualityRule.DQ_RULE_CONFIG_ARGUMENTS = KeywordField("dqRuleConfigArguments", "dqRuleConfigArguments")
+DataQualityRule.DQ_RULE_ALERT_PRIORITY = KeywordField(
+    "dqRuleAlertPriority", "dqRuleAlertPriority"
+)
+DataQualityRule.DQ_RULE_CONFIG_ARGUMENTS = KeywordField(
+    "dqRuleConfigArguments", "dqRuleConfigArguments"
+)
 DataQualityRule.DQ_RULE_CUSTOM_SQL = KeywordField("dqRuleCustomSQL", "dqRuleCustomSQL")
-DataQualityRule.DQ_RULE_CUSTOM_SQL_RETURN_TYPE = KeywordField("dqRuleCustomSQLReturnType", "dqRuleCustomSQLReturnType")
-DataQualityRule.DQ_RULE_FAILED_ROWS_SQL = KeywordField("dqRuleFailedRowsSQL", "dqRuleFailedRowsSQL")
-DataQualityRule.DQ_RULE_ROW_SCOPE_FILTERING_ENABLED = BooleanField("dqRuleRowScopeFilteringEnabled", "dqRuleRowScopeFilteringEnabled")
-DataQualityRule.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
+DataQualityRule.DQ_RULE_CUSTOM_SQL_RETURN_TYPE = KeywordField(
+    "dqRuleCustomSQLReturnType", "dqRuleCustomSQLReturnType"
+)
+DataQualityRule.DQ_RULE_FAILED_ROWS_SQL = KeywordField(
+    "dqRuleFailedRowsSQL", "dqRuleFailedRowsSQL"
+)
+DataQualityRule.DQ_RULE_ROW_SCOPE_FILTERING_ENABLED = BooleanField(
+    "dqRuleRowScopeFilteringEnabled", "dqRuleRowScopeFilteringEnabled"
+)
+DataQualityRule.DQ_IS_PART_OF_CONTRACT = BooleanField(
+    "dqIsPartOfContract", "dqIsPartOfContract"
+)
 DataQualityRule.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataQualityRule.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataQualityRule.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -765,7 +892,9 @@ DataQualityRule.APPLICATION_FIELD = RelationField("applicationField")
 DataQualityRule.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DataQualityRule.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DataQualityRule.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DataQualityRule.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DataQualityRule.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DataQualityRule.METRICS = RelationField("metrics")
 DataQualityRule.DQ_RULE_TEMPLATE = RelationField("dqRuleTemplate")
 DataQualityRule.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")

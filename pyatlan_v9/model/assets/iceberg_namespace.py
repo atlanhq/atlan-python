@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -35,8 +42,14 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .databricks_related import RelatedDatabricksAIModelContext, RelatedDatabricksVolume
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .iceberg_related import RelatedIcebergNamespace
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -44,19 +57,32 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeAIModelContext, RelatedSnowflakeDynamicTable, RelatedSnowflakePipe, RelatedSnowflakeSemanticLogicalTable, RelatedSnowflakeSemanticView, RelatedSnowflakeStage, RelatedSnowflakeStream, RelatedSnowflakeTag
+from .snowflake_related import (
+    RelatedSnowflakeAIModelContext,
+    RelatedSnowflakeDynamicTable,
+    RelatedSnowflakePipe,
+    RelatedSnowflakeSemanticLogicalTable,
+    RelatedSnowflakeSemanticView,
+    RelatedSnowflakeStage,
+    RelatedSnowflakeStream,
+    RelatedSnowflakeTag,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import RelatedCalculationView, RelatedDatabase, RelatedFunction, RelatedMaterialisedView, RelatedProcedure, RelatedTable, RelatedView
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .iceberg_related import RelatedIcebergNamespace
+from .sql_related import (
+    RelatedCalculationView,
+    RelatedDatabase,
+    RelatedFunction,
+    RelatedMaterialisedView,
+    RelatedProcedure,
+    RelatedTable,
+    RelatedView,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class IcebergNamespace(Asset):
@@ -198,7 +224,9 @@ class IcebergNamespace(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -240,7 +268,9 @@ class IcebergNamespace(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -249,10 +279,14 @@ class IcebergNamespace(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    databricks_ai_model_contexts: Union[List[RelatedDatabricksAIModelContext], None, UnsetType] = msgspec.field(default=UNSET, name="databricksAIModelContexts")
+    databricks_ai_model_contexts: Union[
+        List[RelatedDatabricksAIModelContext], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="databricksAIModelContexts")
     """Contexts contained within the schema."""
 
     databricks_volumes: Union[List[RelatedDatabricksVolume], None, UnsetType] = UNSET
@@ -270,7 +304,9 @@ class IcebergNamespace(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -279,7 +315,9 @@ class IcebergNamespace(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    iceberg_sub_namespaces: Union[List[RelatedIcebergNamespace], None, UnsetType] = UNSET
+    iceberg_sub_namespaces: Union[List[RelatedIcebergNamespace], None, UnsetType] = (
+        UNSET
+    )
     """Child namespaces nested within the parent Iceberg Namespace."""
 
     iceberg_parent_namespace: Union[RelatedIcebergNamespace, None, UnsetType] = UNSET
@@ -306,7 +344,9 @@ class IcebergNamespace(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -339,10 +379,14 @@ class IcebergNamespace(Asset):
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_dynamic_tables: Union[List[RelatedSnowflakeDynamicTable], None, UnsetType] = UNSET
+    snowflake_dynamic_tables: Union[
+        List[RelatedSnowflakeDynamicTable], None, UnsetType
+    ] = UNSET
     """Snowflake dynamic tables that exist within this schema."""
 
     snowflake_pipes: Union[List[RelatedSnowflakePipe], None, UnsetType] = UNSET
@@ -357,13 +401,19 @@ class IcebergNamespace(Asset):
     snowflake_tags: Union[List[RelatedSnowflakeTag], None, UnsetType] = UNSET
     """Snowflake tags that exist within this schema."""
 
-    snowflake_ai_model_contexts: Union[List[RelatedSnowflakeAIModelContext], None, UnsetType] = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
+    snowflake_ai_model_contexts: Union[
+        List[RelatedSnowflakeAIModelContext], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
     """Contexts contained within the schema."""
 
-    snowflake_semantic_views: Union[List[RelatedSnowflakeSemanticView], None, UnsetType] = UNSET
+    snowflake_semantic_views: Union[
+        List[RelatedSnowflakeSemanticView], None, UnsetType
+    ] = UNSET
     """Snowflake semantic views contained in the schema."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -382,10 +432,7 @@ class IcebergNamespace(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -416,7 +463,9 @@ class IcebergNamespace(Asset):
         return _iceberg_namespace_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> IcebergNamespace:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> IcebergNamespace:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -437,6 +486,7 @@ class IcebergNamespace(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class IcebergNamespaceAttributes(AssetAttributes):
     """IcebergNamespace-specific attributes for nested API format."""
@@ -495,7 +545,9 @@ class IcebergNamespaceAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -512,6 +564,7 @@ class IcebergNamespaceAttributes(AssetAttributes):
 
     linked_schema_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the Linked Schema on which this Schema is dependent. This concept is mostly applicable for linked datasets/datasource in Google BigQuery via Analytics Hub Listing"""
+
 
 class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     """IcebergNamespace-specific relationship attributes for nested API format."""
@@ -540,7 +593,9 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -549,10 +604,14 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    databricks_ai_model_contexts: Union[List[RelatedDatabricksAIModelContext], None, UnsetType] = msgspec.field(default=UNSET, name="databricksAIModelContexts")
+    databricks_ai_model_contexts: Union[
+        List[RelatedDatabricksAIModelContext], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="databricksAIModelContexts")
     """Contexts contained within the schema."""
 
     databricks_volumes: Union[List[RelatedDatabricksVolume], None, UnsetType] = UNSET
@@ -570,7 +629,9 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -579,7 +640,9 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    iceberg_sub_namespaces: Union[List[RelatedIcebergNamespace], None, UnsetType] = UNSET
+    iceberg_sub_namespaces: Union[List[RelatedIcebergNamespace], None, UnsetType] = (
+        UNSET
+    )
     """Child namespaces nested within the parent Iceberg Namespace."""
 
     iceberg_parent_namespace: Union[RelatedIcebergNamespace, None, UnsetType] = UNSET
@@ -606,7 +669,9 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -639,10 +704,14 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_dynamic_tables: Union[List[RelatedSnowflakeDynamicTable], None, UnsetType] = UNSET
+    snowflake_dynamic_tables: Union[
+        List[RelatedSnowflakeDynamicTable], None, UnsetType
+    ] = UNSET
     """Snowflake dynamic tables that exist within this schema."""
 
     snowflake_pipes: Union[List[RelatedSnowflakePipe], None, UnsetType] = UNSET
@@ -657,13 +726,19 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     snowflake_tags: Union[List[RelatedSnowflakeTag], None, UnsetType] = UNSET
     """Snowflake tags that exist within this schema."""
 
-    snowflake_ai_model_contexts: Union[List[RelatedSnowflakeAIModelContext], None, UnsetType] = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
+    snowflake_ai_model_contexts: Union[
+        List[RelatedSnowflakeAIModelContext], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="snowflakeAIModelContexts")
     """Contexts contained within the schema."""
 
-    snowflake_semantic_views: Union[List[RelatedSnowflakeSemanticView], None, UnsetType] = UNSET
+    snowflake_semantic_views: Union[
+        List[RelatedSnowflakeSemanticView], None, UnsetType
+    ] = UNSET
     """Snowflake semantic views contained in the schema."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -675,13 +750,21 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class IcebergNamespaceNested(AssetNested):
     """IcebergNamespace in nested API format for high-performance serialization."""
 
     attributes: Union[IcebergNamespaceAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[IcebergNamespaceRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[IcebergNamespaceRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[IcebergNamespaceRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        IcebergNamespaceRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        IcebergNamespaceRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        IcebergNamespaceRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -744,10 +827,15 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_iceberg_namespace_attrs(attrs: IcebergNamespaceAttributes, obj: IcebergNamespace) -> None:
+
+def _populate_iceberg_namespace_attrs(
+    attrs: IcebergNamespaceAttributes, obj: IcebergNamespace
+) -> None:
     """Populate IcebergNamespace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.iceberg_parent_namespace_qualified_name = obj.iceberg_parent_namespace_qualified_name
+    attrs.iceberg_parent_namespace_qualified_name = (
+        obj.iceberg_parent_namespace_qualified_name
+    )
     attrs.iceberg_namespace_hierarchy = obj.iceberg_namespace_hierarchy
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
@@ -772,10 +860,13 @@ def _populate_iceberg_namespace_attrs(attrs: IcebergNamespaceAttributes, obj: Ic
     attrs.views_count = obj.views_count
     attrs.linked_schema_qualified_name = obj.linked_schema_qualified_name
 
+
 def _extract_iceberg_namespace_attrs(attrs: IcebergNamespaceAttributes) -> dict:
     """Extract all IcebergNamespace attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["iceberg_parent_namespace_qualified_name"] = attrs.iceberg_parent_namespace_qualified_name
+    result["iceberg_parent_namespace_qualified_name"] = (
+        attrs.iceberg_parent_namespace_qualified_name
+    )
     result["iceberg_namespace_hierarchy"] = attrs.iceberg_namespace_hierarchy
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
@@ -793,7 +884,9 @@ def _extract_iceberg_namespace_attrs(attrs: IcebergNamespaceAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["table_count"] = attrs.table_count
     result["schema_external_location"] = attrs.schema_external_location
@@ -801,18 +894,23 @@ def _extract_iceberg_namespace_attrs(attrs: IcebergNamespaceAttributes) -> dict:
     result["linked_schema_qualified_name"] = attrs.linked_schema_qualified_name
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _iceberg_namespace_to_nested(iceberg_namespace: IcebergNamespace) -> IcebergNamespaceNested:
+def _iceberg_namespace_to_nested(
+    iceberg_namespace: IcebergNamespace,
+) -> IcebergNamespaceNested:
     """Convert flat IcebergNamespace to nested format."""
     attrs = IcebergNamespaceAttributes()
     _populate_iceberg_namespace_attrs(attrs, iceberg_namespace)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        iceberg_namespace, _ICEBERG_NAMESPACE_REL_FIELDS, IcebergNamespaceRelationshipAttributes
+        iceberg_namespace,
+        _ICEBERG_NAMESPACE_REL_FIELDS,
+        IcebergNamespaceRelationshipAttributes,
     )
     return IcebergNamespaceNested(
         guid=iceberg_namespace.guid,
@@ -840,16 +938,21 @@ def _iceberg_namespace_to_nested(iceberg_namespace: IcebergNamespace) -> Iceberg
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _iceberg_namespace_from_nested(nested: IcebergNamespaceNested) -> IcebergNamespace:
     """Convert nested format to flat IcebergNamespace."""
-    attrs = nested.attributes if nested.attributes is not UNSET else IcebergNamespaceAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else IcebergNamespaceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ICEBERG_NAMESPACE_REL_FIELDS,
-        IcebergNamespaceRelationshipAttributes
+        IcebergNamespaceRelationshipAttributes,
     )
     return IcebergNamespace(
         guid=nested.guid,
@@ -876,7 +979,10 @@ def _iceberg_namespace_from_nested(nested: IcebergNamespaceNested) -> IcebergNam
         **merged_rels,
     )
 
-def _iceberg_namespace_to_nested_bytes(iceberg_namespace: IcebergNamespace, serde: Serde) -> bytes:
+
+def _iceberg_namespace_to_nested_bytes(
+    iceberg_namespace: IcebergNamespace, serde: Serde
+) -> bytes:
     """Convert flat IcebergNamespace to nested JSON bytes."""
     return serde.encode(_iceberg_namespace_to_nested(iceberg_namespace))
 
@@ -885,6 +991,7 @@ def _iceberg_namespace_from_nested_bytes(data: bytes, serde: Serde) -> IcebergNa
     """Convert nested JSON bytes to flat IcebergNamespace."""
     nested = serde.decode(data, IcebergNamespaceNested)
     return _iceberg_namespace_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -896,30 +1003,54 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-IcebergNamespace.ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME = KeywordField("icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName")
-IcebergNamespace.ICEBERG_NAMESPACE_HIERARCHY = KeywordField("icebergNamespaceHierarchy", "icebergNamespaceHierarchy")
+IcebergNamespace.ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME = KeywordField(
+    "icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName"
+)
+IcebergNamespace.ICEBERG_NAMESPACE_HIERARCHY = KeywordField(
+    "icebergNamespaceHierarchy", "icebergNamespaceHierarchy"
+)
 IcebergNamespace.QUERY_COUNT = NumericField("queryCount", "queryCount")
 IcebergNamespace.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 IcebergNamespace.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-IcebergNamespace.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+IcebergNamespace.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 IcebergNamespace.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-IcebergNamespace.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+IcebergNamespace.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 IcebergNamespace.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-IcebergNamespace.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+IcebergNamespace.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 IcebergNamespace.TABLE_NAME = KeywordField("tableName", "tableName")
-IcebergNamespace.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+IcebergNamespace.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 IcebergNamespace.VIEW_NAME = KeywordField("viewName", "viewName")
-IcebergNamespace.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-IcebergNamespace.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-IcebergNamespace.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+IcebergNamespace.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+IcebergNamespace.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+IcebergNamespace.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 IcebergNamespace.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 IcebergNamespace.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-IcebergNamespace.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+IcebergNamespace.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 IcebergNamespace.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 IcebergNamespace.TABLE_COUNT = NumericField("tableCount", "tableCount")
-IcebergNamespace.SCHEMA_EXTERNAL_LOCATION = KeywordField("schemaExternalLocation", "schemaExternalLocation")
+IcebergNamespace.SCHEMA_EXTERNAL_LOCATION = KeywordField(
+    "schemaExternalLocation", "schemaExternalLocation"
+)
 IcebergNamespace.VIEWS_COUNT = NumericField("viewsCount", "viewsCount")
-IcebergNamespace.LINKED_SCHEMA_QUALIFIED_NAME = KeywordField("linkedSchemaQualifiedName", "linkedSchemaQualifiedName")
+IcebergNamespace.LINKED_SCHEMA_QUALIFIED_NAME = KeywordField(
+    "linkedSchemaQualifiedName", "linkedSchemaQualifiedName"
+)
 IcebergNamespace.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 IcebergNamespace.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 IcebergNamespace.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -928,11 +1059,15 @@ IcebergNamespace.APPLICATION_FIELD = RelationField("applicationField")
 IcebergNamespace.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 IcebergNamespace.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 IcebergNamespace.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-IcebergNamespace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+IcebergNamespace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 IcebergNamespace.METRICS = RelationField("metrics")
 IcebergNamespace.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 IcebergNamespace.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-IcebergNamespace.DATABRICKS_AI_MODEL_CONTEXTS = RelationField("databricksAIModelContexts")
+IcebergNamespace.DATABRICKS_AI_MODEL_CONTEXTS = RelationField(
+    "databricksAIModelContexts"
+)
 IcebergNamespace.DATABRICKS_VOLUMES = RelationField("databricksVolumes")
 IcebergNamespace.DBT_MODELS = RelationField("dbtModels")
 IcebergNamespace.SQL_DBT_MODELS = RelationField("sqlDbtModels")
@@ -969,7 +1104,9 @@ IcebergNamespace.SNOWFLAKE_STREAMS = RelationField("snowflakeStreams")
 IcebergNamespace.SNOWFLAKE_TAGS = RelationField("snowflakeTags")
 IcebergNamespace.SNOWFLAKE_AI_MODEL_CONTEXTS = RelationField("snowflakeAIModelContexts")
 IcebergNamespace.SNOWFLAKE_SEMANTIC_VIEWS = RelationField("snowflakeSemanticViews")
-IcebergNamespace.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+IcebergNamespace.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 IcebergNamespace.SODA_CHECKS = RelationField("sodaChecks")
 IcebergNamespace.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 IcebergNamespace.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

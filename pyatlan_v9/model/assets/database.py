@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -33,7 +40,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .fabric_related import RelatedFabricWorkspace
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -46,15 +58,12 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .sql_related import RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Database(Asset):
@@ -172,7 +181,9 @@ class Database(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -202,7 +213,9 @@ class Database(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -211,7 +224,9 @@ class Database(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -226,7 +241,9 @@ class Database(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -259,7 +276,9 @@ class Database(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -274,10 +293,14 @@ class Database(Asset):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -291,8 +314,6 @@ class Database(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Database"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -344,6 +365,7 @@ class Database(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DatabaseAttributes(AssetAttributes):
     """Database-specific attributes for nested API format."""
@@ -399,11 +421,14 @@ class DatabaseAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     """Database-specific relationship attributes for nested API format."""
@@ -432,7 +457,9 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -441,7 +468,9 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -456,7 +485,9 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -489,7 +520,9 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -504,10 +537,14 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -519,13 +556,19 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class DatabaseNested(AssetNested):
     """Database in nested API format for high-performance serialization."""
 
     attributes: Union[DatabaseAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DatabaseRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DatabaseRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DatabaseRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DatabaseRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[DatabaseRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -572,6 +615,7 @@ _DATABASE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_database_attrs(attrs: DatabaseAttributes, obj: Database) -> None:
     """Populate Database-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -595,6 +639,7 @@ def _populate_database_attrs(attrs: DatabaseAttributes, obj: Database) -> None:
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_database_attrs(attrs: DatabaseAttributes) -> dict:
     """Extract all Database attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -615,9 +660,12 @@ def _extract_database_attrs(attrs: DatabaseAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -658,16 +706,19 @@ def _database_to_nested(database: Database) -> DatabaseNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _database_from_nested(nested: DatabaseNested) -> Database:
     """Convert nested format to flat Database."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabaseAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DatabaseAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABASE_REL_FIELDS,
-        DatabaseRelationshipAttributes
+        DatabaseRelationshipAttributes,
     )
     return Database(
         guid=nested.guid,
@@ -694,6 +745,7 @@ def _database_from_nested(nested: DatabaseNested) -> Database:
         **merged_rels,
     )
 
+
 def _database_to_nested_bytes(database: Database, serde: Serde) -> bytes:
     """Convert flat Database to nested JSON bytes."""
     return serde.encode(_database_to_nested(database))
@@ -703,6 +755,7 @@ def _database_from_nested_bytes(data: bytes, serde: Serde) -> Database:
     """Convert nested JSON bytes to flat Database."""
     nested = serde.decode(data, DatabaseNested)
     return _database_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -718,20 +771,32 @@ Database.SCHEMA_COUNT = NumericField("schemaCount", "schemaCount")
 Database.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Database.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Database.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Database.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+Database.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 Database.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Database.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+Database.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 Database.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Database.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+Database.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 Database.TABLE_NAME = KeywordField("tableName", "tableName")
 Database.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 Database.VIEW_NAME = KeywordField("viewName", "viewName")
 Database.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Database.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-Database.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+Database.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+Database.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 Database.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Database.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Database.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+Database.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 Database.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Database.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Database.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -766,7 +831,9 @@ Database.LINKS = RelationField("links")
 Database.README = RelationField("readme")
 Database.SCHEMAS = RelationField("schemas")
 Database.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-Database.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+Database.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 Database.SODA_CHECKS = RelationField("sodaChecks")
 Database.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Database.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

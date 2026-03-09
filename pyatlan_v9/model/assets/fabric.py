@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,13 +49,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Fabric(Asset):
@@ -124,7 +128,9 @@ class Fabric(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -133,7 +139,9 @@ class Fabric(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -160,7 +168,9 @@ class Fabric(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -172,7 +182,9 @@ class Fabric(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -186,8 +198,6 @@ class Fabric(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Fabric"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -240,6 +250,7 @@ class Fabric(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FabricAttributes(AssetAttributes):
     """Fabric-specific attributes for nested API format."""
 
@@ -251,6 +262,7 @@ class FabricAttributes(AssetAttributes):
 
     fabric_ordinal: Union[int, None, UnsetType] = UNSET
     """Order/position of this asset within its parent."""
+
 
 class FabricRelationshipAttributes(AssetRelationshipAttributes):
     """Fabric-specific relationship attributes for nested API format."""
@@ -279,7 +291,9 @@ class FabricRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -288,7 +302,9 @@ class FabricRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -315,7 +331,9 @@ class FabricRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -327,7 +345,9 @@ class FabricRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -339,13 +359,19 @@ class FabricRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class FabricNested(AssetNested):
     """Fabric in nested API format for high-performance serialization."""
 
     attributes: Union[FabricAttributes, UnsetType] = UNSET
     relationship_attributes: Union[FabricRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[FabricRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[FabricRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[FabricRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[FabricRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -383,12 +409,14 @@ _FABRIC_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_fabric_attrs(attrs: FabricAttributes, obj: Fabric) -> None:
     """Populate Fabric-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.fabric_column_count = obj.fabric_column_count
     attrs.fabric_data_type = obj.fabric_data_type
     attrs.fabric_ordinal = obj.fabric_ordinal
+
 
 def _extract_fabric_attrs(attrs: FabricAttributes) -> dict:
     """Extract all Fabric attributes from the attrs struct into a flat dict."""
@@ -397,6 +425,7 @@ def _extract_fabric_attrs(attrs: FabricAttributes) -> dict:
     result["fabric_data_type"] = attrs.fabric_data_type
     result["fabric_ordinal"] = attrs.fabric_ordinal
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -437,6 +466,7 @@ def _fabric_to_nested(fabric: Fabric) -> FabricNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _fabric_from_nested(nested: FabricNested) -> Fabric:
     """Convert nested format to flat Fabric."""
     attrs = nested.attributes if nested.attributes is not UNSET else FabricAttributes()
@@ -446,7 +476,7 @@ def _fabric_from_nested(nested: FabricNested) -> Fabric:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FABRIC_REL_FIELDS,
-        FabricRelationshipAttributes
+        FabricRelationshipAttributes,
     )
     return Fabric(
         guid=nested.guid,
@@ -473,6 +503,7 @@ def _fabric_from_nested(nested: FabricNested) -> Fabric:
         **merged_rels,
     )
 
+
 def _fabric_to_nested_bytes(fabric: Fabric, serde: Serde) -> bytes:
     """Convert flat Fabric to nested JSON bytes."""
     return serde.encode(_fabric_to_nested(fabric))
@@ -482,6 +513,7 @@ def _fabric_from_nested_bytes(data: bytes, serde: Serde) -> Fabric:
     """Convert nested JSON bytes to flat Fabric."""
     nested = serde.decode(data, FabricNested)
     return _fabric_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

@@ -8,6 +8,15 @@ Dbt module exports.
 This module provides convenient imports for all Dbt types and their Related variants.
 """
 
+from .dbt import Dbt
+from .dbt_column_process import DbtColumnProcess
+from .dbt_dimension import DbtDimension
+from .dbt_entity import DbtEntity
+from .dbt_measure import DbtMeasure
+from .dbt_metric import DbtMetric
+from .dbt_model import DbtModel
+from .dbt_model_column import DbtModelColumn
+from .dbt_process import DbtProcess
 from .dbt_related import (
     RelatedDbt,
     RelatedDbtColumnProcess,
@@ -24,15 +33,6 @@ from .dbt_related import (
     RelatedDbtTag,
     RelatedDbtTest,
 )
-from .dbt import Dbt
-from .dbt_column_process import DbtColumnProcess
-from .dbt_dimension import DbtDimension
-from .dbt_entity import DbtEntity
-from .dbt_measure import DbtMeasure
-from .dbt_metric import DbtMetric
-from .dbt_model import DbtModel
-from .dbt_model_column import DbtModelColumn
-from .dbt_process import DbtProcess
 from .dbt_seed import DbtSeed
 from .dbt_semantic_model import DbtSemanticModel
 from .dbt_source import DbtSource

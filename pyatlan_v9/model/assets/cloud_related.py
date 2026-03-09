@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -43,6 +42,7 @@ class RelatedCloud(RelatedAsset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Cloud"
+
 
 class RelatedAWS(RelatedCloud):
     """
@@ -85,6 +85,7 @@ class RelatedAWS(RelatedCloud):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AWS"
 
+
 class RelatedAzure(RelatedCloud):
     """
     Related entity reference for Azure assets.
@@ -110,6 +111,7 @@ class RelatedAzure(RelatedCloud):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Azure"
+
 
 class RelatedGoogle(RelatedCloud):
     """

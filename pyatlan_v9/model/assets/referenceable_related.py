@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .related_entity import RelatedEntity
@@ -51,6 +50,8 @@ class RelatedReferenceable(RelatedEntity):
         """
         if self.qualified_name is not UNSET and self.unique_attributes is UNSET:
             self.unique_attributes = {"qualifiedName": self.qualified_name}
+
+
 class RelatedPersona(RelatedReferenceable):
     """
     Related entity reference for Persona assets.

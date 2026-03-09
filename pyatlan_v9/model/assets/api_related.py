@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -67,6 +67,7 @@ class RelatedAPI(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "API"
 
+
 class RelatedAPISpec(RelatedAPI):
     """
     Related entity reference for APISpec assets.
@@ -77,7 +78,9 @@ class RelatedAPISpec(RelatedAPI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "APISpec" so it serializes correctly
 
-    api_spec_terms_of_service_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="apiSpecTermsOfServiceURL")
+    api_spec_terms_of_service_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="apiSpecTermsOfServiceURL"
+    )
     """URL to the terms of service for the API specification."""
 
     api_spec_contact_email: Union[str, None, UnsetType] = UNSET
@@ -86,13 +89,17 @@ class RelatedAPISpec(RelatedAPI):
     api_spec_contact_name: Union[str, None, UnsetType] = UNSET
     """Name of the contact responsible for the API specification."""
 
-    api_spec_contact_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="apiSpecContactURL")
+    api_spec_contact_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="apiSpecContactURL"
+    )
     """URL pointing to the contact information."""
 
     api_spec_license_name: Union[str, None, UnsetType] = UNSET
     """Name of the license under which the API specification is available."""
 
-    api_spec_license_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="apiSpecLicenseURL")
+    api_spec_license_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="apiSpecLicenseURL"
+    )
     """URL to the license under which the API specification is available."""
 
     api_spec_contract_version: Union[str, None, UnsetType] = UNSET
@@ -104,6 +111,7 @@ class RelatedAPISpec(RelatedAPI):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "APISpec"
+
 
 class RelatedAPIPath(RelatedAPI):
     """
@@ -118,7 +126,9 @@ class RelatedAPIPath(RelatedAPI):
     api_path_summary: Union[str, None, UnsetType] = UNSET
     """Descriptive summary intended to apply to all operations in this path."""
 
-    api_path_raw_uri: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="apiPathRawURI")
+    api_path_raw_uri: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="apiPathRawURI"
+    )
     """Absolute path to an individual endpoint."""
 
     api_path_is_templated: Union[bool, None, UnsetType] = UNSET
@@ -136,6 +146,7 @@ class RelatedAPIPath(RelatedAPI):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "APIPath"
+
 
 class RelatedAPIField(RelatedAPI):
     """
@@ -160,6 +171,7 @@ class RelatedAPIField(RelatedAPI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "APIField"
 
+
 class RelatedAPIObject(RelatedAPI):
     """
     Related entity reference for APIObject assets.
@@ -176,6 +188,7 @@ class RelatedAPIObject(RelatedAPI):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "APIObject"
+
 
 class RelatedAPIQuery(RelatedAPI):
     """

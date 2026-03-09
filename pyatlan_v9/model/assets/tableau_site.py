@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,15 +49,12 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .tableau_related import RelatedTableauProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class TableauSite(Asset):
@@ -119,7 +122,9 @@ class TableauSite(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -128,7 +133,9 @@ class TableauSite(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -155,7 +162,9 @@ class TableauSite(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -167,7 +176,9 @@ class TableauSite(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -184,8 +195,6 @@ class TableauSite(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "TableauSite"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -238,11 +247,13 @@ class TableauSite(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class TableauSiteAttributes(AssetAttributes):
     """TableauSite-specific attributes for nested API format."""
 
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
 
 class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     """TableauSite-specific relationship attributes for nested API format."""
@@ -271,7 +282,9 @@ class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -280,7 +293,9 @@ class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -307,7 +322,9 @@ class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -319,7 +336,9 @@ class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -334,13 +353,19 @@ class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
     projects: Union[List[RelatedTableauProject], None, UnsetType] = UNSET
     """Projects that exist within this site."""
 
+
 class TableauSiteNested(AssetNested):
     """TableauSite in nested API format for high-performance serialization."""
 
     attributes: Union[TableauSiteAttributes, UnsetType] = UNSET
     relationship_attributes: Union[TableauSiteRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[TableauSiteRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[TableauSiteRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        TableauSiteRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        TableauSiteRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -379,16 +404,25 @@ _TABLEAU_SITE_REL_FIELDS: List[str] = [
     "projects",
 ]
 
-def _populate_tableau_site_attrs(attrs: TableauSiteAttributes, obj: TableauSite) -> None:
+
+def _populate_tableau_site_attrs(
+    attrs: TableauSiteAttributes, obj: TableauSite
+) -> None:
     """Populate TableauSite-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
+    attrs.tableau_project_hierarchy_qualified_names = (
+        obj.tableau_project_hierarchy_qualified_names
+    )
+
 
 def _extract_tableau_site_attrs(attrs: TableauSiteAttributes) -> dict:
     """Extract all TableauSite attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
+    result["tableau_project_hierarchy_qualified_names"] = (
+        attrs.tableau_project_hierarchy_qualified_names
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -429,16 +463,19 @@ def _tableau_site_to_nested(tableau_site: TableauSite) -> TableauSiteNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _tableau_site_from_nested(nested: TableauSiteNested) -> TableauSite:
     """Convert nested format to flat TableauSite."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TableauSiteAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else TableauSiteAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_SITE_REL_FIELDS,
-        TableauSiteRelationshipAttributes
+        TableauSiteRelationshipAttributes,
     )
     return TableauSite(
         guid=nested.guid,
@@ -465,6 +502,7 @@ def _tableau_site_from_nested(nested: TableauSiteNested) -> TableauSite:
         **merged_rels,
     )
 
+
 def _tableau_site_to_nested_bytes(tableau_site: TableauSite, serde: Serde) -> bytes:
     """Convert flat TableauSite to nested JSON bytes."""
     return serde.encode(_tableau_site_to_nested(tableau_site))
@@ -475,15 +513,15 @@ def _tableau_site_from_nested_bytes(data: bytes, serde: Serde) -> TableauSite:
     nested = serde.decode(data, TableauSiteNested)
     return _tableau_site_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
-TableauSite.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
+TableauSite.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
+    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
+)
 TableauSite.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TableauSite.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 TableauSite.ANOMALO_CHECKS = RelationField("anomaloChecks")

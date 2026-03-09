@@ -14,21 +14,25 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from .entity import Entity, AtlasClassification, TermAssignment
-from .gtc_related import RelatedAtlasGlossaryTerm
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
 from pyatlan_v9.model.serde import Serde, get_serde
 
+from .entity import Entity
+from .gtc_related import RelatedAtlasGlossaryTerm
 from .referenceable_related import RelatedReferenceable
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 class Referenceable(Entity):
     """
@@ -57,14 +61,14 @@ class Referenceable(Entity):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     def __post_init__(self) -> None:
         if self.type_name is UNSET:
             self.type_name = "Referenceable"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -117,7 +121,10 @@ class Referenceable(Entity):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-class ReferenceableAttributes(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
+
+class ReferenceableAttributes(
+    msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
+):
     """Referenceable-specific attributes for nested API format."""
 
     qualified_name: Union[str, None, UnsetType] = UNSET
@@ -129,7 +136,10 @@ class ReferenceableAttributes(msgspec.Struct, kw_only=True, omit_defaults=True, 
     replicated_to: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Unused. List of servers where this entity is replicated to."""
 
-class ReferenceableRelationshipAttributes(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
+
+class ReferenceableRelationshipAttributes(
+    msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
+):
     """Referenceable-specific relationship attributes for nested API format."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -138,10 +148,15 @@ class ReferenceableRelationshipAttributes(msgspec.Struct, kw_only=True, omit_def
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
-class ReferenceableNested(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
+
+class ReferenceableNested(
+    msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
+):
     """Referenceable in nested API format for high-performance serialization."""
 
     guid: Union[Any, UnsetType] = UNSET
@@ -165,9 +180,16 @@ class ReferenceableNested(msgspec.Struct, kw_only=True, omit_defaults=True, rena
     home_id: Union[Any, UnsetType] = UNSET
 
     attributes: Union[ReferenceableAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ReferenceableRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ReferenceableRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ReferenceableRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[ReferenceableRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        ReferenceableRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ReferenceableRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -179,11 +201,15 @@ _REFERENCEABLE_REL_FIELDS: List[str] = [
     "user_def_relationship_from",
 ]
 
-def _populate_referenceable_attrs(attrs: ReferenceableAttributes, obj: Referenceable) -> None:
+
+def _populate_referenceable_attrs(
+    attrs: ReferenceableAttributes, obj: Referenceable
+) -> None:
     """Populate Referenceable-specific attributes on the attrs struct."""
     attrs.qualified_name = obj.qualified_name
     attrs.replicated_from = obj.replicated_from
     attrs.replicated_to = obj.replicated_to
+
 
 def _extract_referenceable_attrs(attrs: ReferenceableAttributes) -> dict:
     """Extract all Referenceable attributes from the attrs struct into a flat dict."""
@@ -192,6 +218,7 @@ def _extract_referenceable_attrs(attrs: ReferenceableAttributes) -> dict:
     result["replicated_from"] = attrs.replicated_from
     result["replicated_to"] = attrs.replicated_to
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -232,16 +259,21 @@ def _referenceable_to_nested(referenceable: Referenceable) -> ReferenceableNeste
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _referenceable_from_nested(nested: ReferenceableNested) -> Referenceable:
     """Convert nested format to flat Referenceable."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ReferenceableAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ReferenceableAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _REFERENCEABLE_REL_FIELDS,
-        ReferenceableRelationshipAttributes
+        ReferenceableRelationshipAttributes,
     )
     return Referenceable(
         guid=nested.guid,
@@ -268,6 +300,7 @@ def _referenceable_from_nested(nested: ReferenceableNested) -> Referenceable:
         **merged_rels,
     )
 
+
 def _referenceable_to_nested_bytes(referenceable: Referenceable, serde: Serde) -> bytes:
     """Convert flat Referenceable to nested JSON bytes."""
     return serde.encode(_referenceable_to_nested(referenceable))
@@ -278,6 +311,7 @@ def _referenceable_from_nested_bytes(data: bytes, serde: Serde) -> Referenceable
     nested = serde.decode(data, ReferenceableNested)
     return _referenceable_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -287,7 +321,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Referenceable.QUALIFIED_NAME = KeywordTextField("qualifiedName", "qualifiedName", "qualifiedName.text")
+Referenceable.QUALIFIED_NAME = KeywordTextField(
+    "qualifiedName", "qualifiedName", "qualifiedName.text"
+)
 Referenceable.REPLICATED_FROM = KeywordField("replicatedFrom", "replicatedFrom")
 Referenceable.REPLICATED_TO = KeywordField("replicatedTo", "replicatedTo")
 Referenceable.MEANINGS = RelationField("meanings")

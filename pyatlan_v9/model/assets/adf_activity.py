@@ -15,11 +15,23 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .adf_related import (
+    RelatedAdfDataflow,
+    RelatedAdfDataset,
+    RelatedAdfLinkedservice,
+    RelatedAdfPipeline,
+)
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -44,15 +56,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .adf_related import RelatedAdfDataflow, RelatedAdfDataset, RelatedAdfLinkedservice, RelatedAdfPipeline
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AdfActivity(Asset):
@@ -219,7 +227,9 @@ class AdfActivity(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -228,7 +238,9 @@ class AdfActivity(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -255,7 +267,9 @@ class AdfActivity(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -267,7 +281,9 @@ class AdfActivity(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -286,10 +302,7 @@ class AdfActivity(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -341,6 +354,7 @@ class AdfActivity(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class AdfActivityAttributes(AssetAttributes):
     """AdfActivity-specific attributes for nested API format."""
@@ -408,6 +422,7 @@ class AdfActivityAttributes(AssetAttributes):
     adf_asset_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path in which this ADF asset exists."""
 
+
 class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     """AdfActivity-specific relationship attributes for nested API format."""
 
@@ -450,7 +465,9 @@ class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -459,7 +476,9 @@ class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -486,7 +505,9 @@ class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -498,7 +519,9 @@ class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -510,13 +533,19 @@ class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class AdfActivityNested(AssetNested):
     """AdfActivity in nested API format for high-performance serialization."""
 
     attributes: Union[AdfActivityAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AdfActivityRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AdfActivityRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[AdfActivityRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        AdfActivityRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AdfActivityRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -559,7 +588,10 @@ _ADF_ACTIVITY_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_adf_activity_attrs(attrs: AdfActivityAttributes, obj: AdfActivity) -> None:
+
+def _populate_adf_activity_attrs(
+    attrs: AdfActivityAttributes, obj: AdfActivity
+) -> None:
     """Populate AdfActivity-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.adf_activity_type = obj.adf_activity_type
@@ -584,13 +616,18 @@ def _populate_adf_activity_attrs(attrs: AdfActivityAttributes, obj: AdfActivity)
     attrs.adf_factory_name = obj.adf_factory_name
     attrs.adf_asset_folder_path = obj.adf_asset_folder_path
 
+
 def _extract_adf_activity_attrs(attrs: AdfActivityAttributes) -> dict:
     """Extract all AdfActivity attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["adf_activity_type"] = attrs.adf_activity_type
-    result["adf_activity_preceding_dependency"] = attrs.adf_activity_preceding_dependency
+    result["adf_activity_preceding_dependency"] = (
+        attrs.adf_activity_preceding_dependency
+    )
     result["adf_activity_policy_timeout"] = attrs.adf_activity_policy_timeout
-    result["adf_activity_polict_retry_interval"] = attrs.adf_activity_polict_retry_interval
+    result["adf_activity_polict_retry_interval"] = (
+        attrs.adf_activity_polict_retry_interval
+    )
     result["adf_activity_state"] = attrs.adf_activity_state
     result["adf_activity_sources"] = attrs.adf_activity_sources
     result["adf_activity_sinks"] = attrs.adf_activity_sinks
@@ -609,6 +646,7 @@ def _extract_adf_activity_attrs(attrs: AdfActivityAttributes) -> dict:
     result["adf_factory_name"] = attrs.adf_factory_name
     result["adf_asset_folder_path"] = attrs.adf_asset_folder_path
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -649,16 +687,19 @@ def _adf_activity_to_nested(adf_activity: AdfActivity) -> AdfActivityNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _adf_activity_from_nested(nested: AdfActivityNested) -> AdfActivity:
     """Convert nested format to flat AdfActivity."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AdfActivityAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else AdfActivityAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADF_ACTIVITY_REL_FIELDS,
-        AdfActivityRelationshipAttributes
+        AdfActivityRelationshipAttributes,
     )
     return AdfActivity(
         guid=nested.guid,
@@ -685,6 +726,7 @@ def _adf_activity_from_nested(nested: AdfActivityNested) -> AdfActivity:
         **merged_rels,
     )
 
+
 def _adf_activity_to_nested_bytes(adf_activity: AdfActivity, serde: Serde) -> bytes:
     """Convert flat AdfActivity to nested JSON bytes."""
     return serde.encode(_adf_activity_to_nested(adf_activity))
@@ -694,6 +736,7 @@ def _adf_activity_from_nested_bytes(data: bytes, serde: Serde) -> AdfActivity:
     """Convert nested JSON bytes to flat AdfActivity."""
     nested = serde.decode(data, AdfActivityNested)
     return _adf_activity_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -707,26 +750,60 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 AdfActivity.ADF_ACTIVITY_TYPE = KeywordField("adfActivityType", "adfActivityType")
-AdfActivity.ADF_ACTIVITY_PRECEDING_DEPENDENCY = KeywordField("adfActivityPrecedingDependency", "adfActivityPrecedingDependency")
-AdfActivity.ADF_ACTIVITY_POLICY_TIMEOUT = KeywordField("adfActivityPolicyTimeout", "adfActivityPolicyTimeout")
-AdfActivity.ADF_ACTIVITY_POLICT_RETRY_INTERVAL = NumericField("adfActivityPolictRetryInterval", "adfActivityPolictRetryInterval")
+AdfActivity.ADF_ACTIVITY_PRECEDING_DEPENDENCY = KeywordField(
+    "adfActivityPrecedingDependency", "adfActivityPrecedingDependency"
+)
+AdfActivity.ADF_ACTIVITY_POLICY_TIMEOUT = KeywordField(
+    "adfActivityPolicyTimeout", "adfActivityPolicyTimeout"
+)
+AdfActivity.ADF_ACTIVITY_POLICT_RETRY_INTERVAL = NumericField(
+    "adfActivityPolictRetryInterval", "adfActivityPolictRetryInterval"
+)
 AdfActivity.ADF_ACTIVITY_STATE = KeywordField("adfActivityState", "adfActivityState")
-AdfActivity.ADF_ACTIVITY_SOURCES = KeywordField("adfActivitySources", "adfActivitySources")
+AdfActivity.ADF_ACTIVITY_SOURCES = KeywordField(
+    "adfActivitySources", "adfActivitySources"
+)
 AdfActivity.ADF_ACTIVITY_SINKS = KeywordField("adfActivitySinks", "adfActivitySinks")
-AdfActivity.ADF_ACTIVITY_SOURCE_TYPE = KeywordField("adfActivitySourceType", "adfActivitySourceType")
-AdfActivity.ADF_ACTIVITY_SINK_TYPE = KeywordField("adfActivitySinkType", "adfActivitySinkType")
+AdfActivity.ADF_ACTIVITY_SOURCE_TYPE = KeywordField(
+    "adfActivitySourceType", "adfActivitySourceType"
+)
+AdfActivity.ADF_ACTIVITY_SINK_TYPE = KeywordField(
+    "adfActivitySinkType", "adfActivitySinkType"
+)
 AdfActivity.ADF_ACTIVITY_RUNS = KeywordField("adfActivityRuns", "adfActivityRuns")
-AdfActivity.ADF_ACTIVITY_NOTEBOOK_PATH = KeywordField("adfActivityNotebookPath", "adfActivityNotebookPath")
-AdfActivity.ADF_ACTIVITY_MAIN_CLASS_NAME = KeywordField("adfActivityMainClassName", "adfActivityMainClassName")
-AdfActivity.ADF_ACTIVITY_PYTHON_FILE_PATH = KeywordField("adfActivityPythonFilePath", "adfActivityPythonFilePath")
-AdfActivity.ADF_ACTIVITY_FIRST_ROW_ONLY = BooleanField("adfActivityFirstRowOnly", "adfActivityFirstRowOnly")
-AdfActivity.ADF_ACTIVITY_BATCH_COUNT = NumericField("adfActivityBatchCount", "adfActivityBatchCount")
-AdfActivity.ADF_ACTIVITY_IS_SEQUENTIAL = BooleanField("adfActivityIsSequential", "adfActivityIsSequential")
-AdfActivity.ADF_ACTIVITY_SUB_ACTIVITIES = KeywordField("adfActivitySubActivities", "adfActivitySubActivities")
-AdfActivity.ADF_ACTIVITY_REFERENCE_DATAFLOW = KeywordField("adfActivityReferenceDataflow", "adfActivityReferenceDataflow")
-AdfActivity.ADF_PIPELINE_QUALIFIED_NAME = KeywordTextField("adfPipelineQualifiedName", "adfPipelineQualifiedName", "adfPipelineQualifiedName.text")
+AdfActivity.ADF_ACTIVITY_NOTEBOOK_PATH = KeywordField(
+    "adfActivityNotebookPath", "adfActivityNotebookPath"
+)
+AdfActivity.ADF_ACTIVITY_MAIN_CLASS_NAME = KeywordField(
+    "adfActivityMainClassName", "adfActivityMainClassName"
+)
+AdfActivity.ADF_ACTIVITY_PYTHON_FILE_PATH = KeywordField(
+    "adfActivityPythonFilePath", "adfActivityPythonFilePath"
+)
+AdfActivity.ADF_ACTIVITY_FIRST_ROW_ONLY = BooleanField(
+    "adfActivityFirstRowOnly", "adfActivityFirstRowOnly"
+)
+AdfActivity.ADF_ACTIVITY_BATCH_COUNT = NumericField(
+    "adfActivityBatchCount", "adfActivityBatchCount"
+)
+AdfActivity.ADF_ACTIVITY_IS_SEQUENTIAL = BooleanField(
+    "adfActivityIsSequential", "adfActivityIsSequential"
+)
+AdfActivity.ADF_ACTIVITY_SUB_ACTIVITIES = KeywordField(
+    "adfActivitySubActivities", "adfActivitySubActivities"
+)
+AdfActivity.ADF_ACTIVITY_REFERENCE_DATAFLOW = KeywordField(
+    "adfActivityReferenceDataflow", "adfActivityReferenceDataflow"
+)
+AdfActivity.ADF_PIPELINE_QUALIFIED_NAME = KeywordTextField(
+    "adfPipelineQualifiedName",
+    "adfPipelineQualifiedName",
+    "adfPipelineQualifiedName.text",
+)
 AdfActivity.ADF_FACTORY_NAME = KeywordField("adfFactoryName", "adfFactoryName")
-AdfActivity.ADF_ASSET_FOLDER_PATH = KeywordField("adfAssetFolderPath", "adfAssetFolderPath")
+AdfActivity.ADF_ASSET_FOLDER_PATH = KeywordField(
+    "adfAssetFolderPath", "adfAssetFolderPath"
+)
 AdfActivity.ADF_LINKEDSERVICES = RelationField("adfLinkedservices")
 AdfActivity.ADF_DATASETS = RelationField("adfDatasets")
 AdfActivity.ADF_DATAFLOW = RelationField("adfDataflow")

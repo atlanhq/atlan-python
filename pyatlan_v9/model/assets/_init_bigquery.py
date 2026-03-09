@@ -8,10 +8,7 @@ Bigquery module exports.
 This module provides convenient imports for all Bigquery types and their Related variants.
 """
 
-from .bigquery_related import (
-    RelatedBigqueryRoutine,
-    RelatedBigqueryTag,
-)
+from .bigquery_related import RelatedBigqueryRoutine, RelatedBigqueryTag
 from .bigquery_routine import BigqueryRoutine
 
 __all__ = [

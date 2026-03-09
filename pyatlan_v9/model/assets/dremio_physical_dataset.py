@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,7 +41,13 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
+from .dremio_related import RelatedDremioFolder, RelatedDremioSource
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -46,16 +59,18 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema, RelatedTable, RelatedTablePartition
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .dremio_related import RelatedDremioFolder, RelatedDremioSource
+from .sql_related import (
+    RelatedColumn,
+    RelatedQuery,
+    RelatedSchema,
+    RelatedTable,
+    RelatedTablePartition,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DremioPhysicalDataset(Asset):
@@ -234,7 +249,9 @@ class DremioPhysicalDataset(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -345,7 +362,9 @@ class DremioPhysicalDataset(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -354,7 +373,9 @@ class DremioPhysicalDataset(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -369,7 +390,9 @@ class DremioPhysicalDataset(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -405,7 +428,9 @@ class DremioPhysicalDataset(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -435,10 +460,14 @@ class DremioPhysicalDataset(Asset):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -457,10 +486,7 @@ class DremioPhysicalDataset(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -491,7 +517,9 @@ class DremioPhysicalDataset(Asset):
         return _dremio_physical_dataset_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DremioPhysicalDataset:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DremioPhysicalDataset:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -512,6 +540,7 @@ class DremioPhysicalDataset(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DremioPhysicalDatasetAttributes(AssetAttributes):
     """DremioPhysicalDataset-specific attributes for nested API format."""
@@ -588,7 +617,9 @@ class DremioPhysicalDatasetAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -675,6 +706,7 @@ class DremioPhysicalDatasetAttributes(AssetAttributes):
     table_retention_time: Union[int, None, UnsetType] = UNSET
     """Data retention time in days."""
 
+
 class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """DremioPhysicalDataset-specific relationship attributes for nested API format."""
 
@@ -702,7 +734,9 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -711,7 +745,9 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -726,7 +762,9 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -762,7 +800,9 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -792,10 +832,14 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -807,13 +851,21 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class DremioPhysicalDatasetNested(AssetNested):
     """DremioPhysicalDataset in nested API format for high-performance serialization."""
 
     attributes: Union[DremioPhysicalDatasetAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DremioPhysicalDatasetRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DremioPhysicalDatasetRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DremioPhysicalDatasetRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        DremioPhysicalDatasetRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        DremioPhysicalDatasetRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DremioPhysicalDatasetRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -866,7 +918,10 @@ _DREMIO_PHYSICAL_DATASET_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_dremio_physical_dataset_attrs(attrs: DremioPhysicalDatasetAttributes, obj: DremioPhysicalDataset) -> None:
+
+def _populate_dremio_physical_dataset_attrs(
+    attrs: DremioPhysicalDatasetAttributes, obj: DremioPhysicalDataset
+) -> None:
     """Populate DremioPhysicalDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dremio_id = obj.dremio_id
@@ -923,7 +978,10 @@ def _populate_dremio_physical_dataset_attrs(attrs: DremioPhysicalDatasetAttribut
     attrs.iceberg_table_base_location = obj.iceberg_table_base_location
     attrs.table_retention_time = obj.table_retention_time
 
-def _extract_dremio_physical_dataset_attrs(attrs: DremioPhysicalDatasetAttributes) -> dict:
+
+def _extract_dremio_physical_dataset_attrs(
+    attrs: DremioPhysicalDatasetAttributes,
+) -> dict:
     """Extract all DremioPhysicalDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["dremio_id"] = attrs.dremio_id
@@ -931,7 +989,9 @@ def _extract_dremio_physical_dataset_attrs(attrs: DremioPhysicalDatasetAttribute
     result["dremio_space_name"] = attrs.dremio_space_name
     result["dremio_source_qualified_name"] = attrs.dremio_source_qualified_name
     result["dremio_source_name"] = attrs.dremio_source_name
-    result["dremio_parent_folder_qualified_name"] = attrs.dremio_parent_folder_qualified_name
+    result["dremio_parent_folder_qualified_name"] = (
+        attrs.dremio_parent_folder_qualified_name
+    )
     result["dremio_folder_hierarchy"] = attrs.dremio_folder_hierarchy
     result["dremio_labels"] = attrs.dremio_labels
     result["query_count"] = attrs.query_count
@@ -950,7 +1010,9 @@ def _extract_dremio_physical_dataset_attrs(attrs: DremioPhysicalDatasetAttribute
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
@@ -981,18 +1043,23 @@ def _extract_dremio_physical_dataset_attrs(attrs: DremioPhysicalDatasetAttribute
     result["table_retention_time"] = attrs.table_retention_time
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _dremio_physical_dataset_to_nested(dremio_physical_dataset: DremioPhysicalDataset) -> DremioPhysicalDatasetNested:
+def _dremio_physical_dataset_to_nested(
+    dremio_physical_dataset: DremioPhysicalDataset,
+) -> DremioPhysicalDatasetNested:
     """Convert flat DremioPhysicalDataset to nested format."""
     attrs = DremioPhysicalDatasetAttributes()
     _populate_dremio_physical_dataset_attrs(attrs, dremio_physical_dataset)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        dremio_physical_dataset, _DREMIO_PHYSICAL_DATASET_REL_FIELDS, DremioPhysicalDatasetRelationshipAttributes
+        dremio_physical_dataset,
+        _DREMIO_PHYSICAL_DATASET_REL_FIELDS,
+        DremioPhysicalDatasetRelationshipAttributes,
     )
     return DremioPhysicalDatasetNested(
         guid=dremio_physical_dataset.guid,
@@ -1020,16 +1087,23 @@ def _dremio_physical_dataset_to_nested(dremio_physical_dataset: DremioPhysicalDa
         remove_relationship_attributes=remove_rels,
     )
 
-def _dremio_physical_dataset_from_nested(nested: DremioPhysicalDatasetNested) -> DremioPhysicalDataset:
+
+def _dremio_physical_dataset_from_nested(
+    nested: DremioPhysicalDatasetNested,
+) -> DremioPhysicalDataset:
     """Convert nested format to flat DremioPhysicalDataset."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DremioPhysicalDatasetAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DremioPhysicalDatasetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DREMIO_PHYSICAL_DATASET_REL_FIELDS,
-        DremioPhysicalDatasetRelationshipAttributes
+        DremioPhysicalDatasetRelationshipAttributes,
     )
     return DremioPhysicalDataset(
         guid=nested.guid,
@@ -1056,15 +1130,21 @@ def _dremio_physical_dataset_from_nested(nested: DremioPhysicalDatasetNested) ->
         **merged_rels,
     )
 
-def _dremio_physical_dataset_to_nested_bytes(dremio_physical_dataset: DremioPhysicalDataset, serde: Serde) -> bytes:
+
+def _dremio_physical_dataset_to_nested_bytes(
+    dremio_physical_dataset: DremioPhysicalDataset, serde: Serde
+) -> bytes:
     """Convert flat DremioPhysicalDataset to nested JSON bytes."""
     return serde.encode(_dremio_physical_dataset_to_nested(dremio_physical_dataset))
 
 
-def _dremio_physical_dataset_from_nested_bytes(data: bytes, serde: Serde) -> DremioPhysicalDataset:
+def _dremio_physical_dataset_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DremioPhysicalDataset:
     """Convert nested JSON bytes to flat DremioPhysicalDataset."""
     nested = serde.decode(data, DremioPhysicalDatasetNested)
     return _dremio_physical_dataset_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1077,70 +1157,146 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 DremioPhysicalDataset.DREMIO_ID = KeywordField("dremioId", "dremioId")
-DremioPhysicalDataset.DREMIO_SPACE_QUALIFIED_NAME = KeywordField("dremioSpaceQualifiedName", "dremioSpaceQualifiedName")
-DremioPhysicalDataset.DREMIO_SPACE_NAME = KeywordField("dremioSpaceName", "dremioSpaceName")
-DremioPhysicalDataset.DREMIO_SOURCE_QUALIFIED_NAME = KeywordField("dremioSourceQualifiedName", "dremioSourceQualifiedName")
-DremioPhysicalDataset.DREMIO_SOURCE_NAME = KeywordField("dremioSourceName", "dremioSourceName")
-DremioPhysicalDataset.DREMIO_PARENT_FOLDER_QUALIFIED_NAME = KeywordField("dremioParentFolderQualifiedName", "dremioParentFolderQualifiedName")
-DremioPhysicalDataset.DREMIO_FOLDER_HIERARCHY = KeywordField("dremioFolderHierarchy", "dremioFolderHierarchy")
+DremioPhysicalDataset.DREMIO_SPACE_QUALIFIED_NAME = KeywordField(
+    "dremioSpaceQualifiedName", "dremioSpaceQualifiedName"
+)
+DremioPhysicalDataset.DREMIO_SPACE_NAME = KeywordField(
+    "dremioSpaceName", "dremioSpaceName"
+)
+DremioPhysicalDataset.DREMIO_SOURCE_QUALIFIED_NAME = KeywordField(
+    "dremioSourceQualifiedName", "dremioSourceQualifiedName"
+)
+DremioPhysicalDataset.DREMIO_SOURCE_NAME = KeywordField(
+    "dremioSourceName", "dremioSourceName"
+)
+DremioPhysicalDataset.DREMIO_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
+    "dremioParentFolderQualifiedName", "dremioParentFolderQualifiedName"
+)
+DremioPhysicalDataset.DREMIO_FOLDER_HIERARCHY = KeywordField(
+    "dremioFolderHierarchy", "dremioFolderHierarchy"
+)
 DremioPhysicalDataset.DREMIO_LABELS = KeywordField("dremioLabels", "dremioLabels")
 DremioPhysicalDataset.QUERY_COUNT = NumericField("queryCount", "queryCount")
-DremioPhysicalDataset.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+DremioPhysicalDataset.QUERY_USER_COUNT = NumericField(
+    "queryUserCount", "queryUserCount"
+)
 DremioPhysicalDataset.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DremioPhysicalDataset.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DremioPhysicalDataset.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DremioPhysicalDataset.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DremioPhysicalDataset.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DremioPhysicalDataset.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DremioPhysicalDataset.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DremioPhysicalDataset.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DremioPhysicalDataset.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DremioPhysicalDataset.TABLE_NAME = KeywordField("tableName", "tableName")
-DremioPhysicalDataset.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DremioPhysicalDataset.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DremioPhysicalDataset.VIEW_NAME = KeywordField("viewName", "viewName")
-DremioPhysicalDataset.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DremioPhysicalDataset.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DremioPhysicalDataset.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DremioPhysicalDataset.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DremioPhysicalDataset.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DremioPhysicalDataset.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DremioPhysicalDataset.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-DremioPhysicalDataset.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DremioPhysicalDataset.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DremioPhysicalDataset.LAST_PROFILED_AT = NumericField(
+    "lastProfiledAt", "lastProfiledAt"
+)
+DremioPhysicalDataset.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DremioPhysicalDataset.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 DremioPhysicalDataset.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 DremioPhysicalDataset.ROW_COUNT = NumericField("rowCount", "rowCount")
 DremioPhysicalDataset.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
-DremioPhysicalDataset.TABLE_OBJECT_COUNT = NumericField("tableObjectCount", "tableObjectCount")
+DremioPhysicalDataset.TABLE_OBJECT_COUNT = NumericField(
+    "tableObjectCount", "tableObjectCount"
+)
 DremioPhysicalDataset.ALIAS = KeywordField("alias", "alias")
 DremioPhysicalDataset.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
-DremioPhysicalDataset.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-DremioPhysicalDataset.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
-DremioPhysicalDataset.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
-DremioPhysicalDataset.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
-DremioPhysicalDataset.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
+DremioPhysicalDataset.IS_QUERY_PREVIEW = BooleanField(
+    "isQueryPreview", "isQueryPreview"
+)
+DremioPhysicalDataset.QUERY_PREVIEW_CONFIG = KeywordField(
+    "queryPreviewConfig", "queryPreviewConfig"
+)
+DremioPhysicalDataset.EXTERNAL_LOCATION = KeywordField(
+    "externalLocation", "externalLocation"
+)
+DremioPhysicalDataset.EXTERNAL_LOCATION_REGION = KeywordField(
+    "externalLocationRegion", "externalLocationRegion"
+)
+DremioPhysicalDataset.EXTERNAL_LOCATION_FORMAT = KeywordField(
+    "externalLocationFormat", "externalLocationFormat"
+)
 DremioPhysicalDataset.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-DremioPhysicalDataset.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
+DremioPhysicalDataset.PARTITION_STRATEGY = KeywordField(
+    "partitionStrategy", "partitionStrategy"
+)
 DremioPhysicalDataset.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
-DremioPhysicalDataset.TABLE_DEFINITION = KeywordField("tableDefinition", "tableDefinition")
+DremioPhysicalDataset.TABLE_DEFINITION = KeywordField(
+    "tableDefinition", "tableDefinition"
+)
 DremioPhysicalDataset.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 DremioPhysicalDataset.IS_SHARDED = BooleanField("isSharded", "isSharded")
 DremioPhysicalDataset.TABLE_TYPE = KeywordField("tableType", "tableType")
-DremioPhysicalDataset.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
-DremioPhysicalDataset.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
-DremioPhysicalDataset.ICEBERG_CATALOG_SOURCE = KeywordField("icebergCatalogSource", "icebergCatalogSource")
-DremioPhysicalDataset.ICEBERG_CATALOG_TABLE_NAME = KeywordField("icebergCatalogTableName", "icebergCatalogTableName")
-DremioPhysicalDataset.TABLE_IMPALA_PARAMETERS = KeywordField("tableImpalaParameters", "tableImpalaParameters")
-DremioPhysicalDataset.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField("icebergCatalogTableNamespace", "icebergCatalogTableNamespace")
-DremioPhysicalDataset.TABLE_EXTERNAL_VOLUME_NAME = KeywordField("tableExternalVolumeName", "tableExternalVolumeName")
-DremioPhysicalDataset.ICEBERG_TABLE_BASE_LOCATION = KeywordField("icebergTableBaseLocation", "icebergTableBaseLocation")
-DremioPhysicalDataset.TABLE_RETENTION_TIME = NumericField("tableRetentionTime", "tableRetentionTime")
+DremioPhysicalDataset.ICEBERG_CATALOG_NAME = KeywordField(
+    "icebergCatalogName", "icebergCatalogName"
+)
+DremioPhysicalDataset.ICEBERG_TABLE_TYPE = KeywordField(
+    "icebergTableType", "icebergTableType"
+)
+DremioPhysicalDataset.ICEBERG_CATALOG_SOURCE = KeywordField(
+    "icebergCatalogSource", "icebergCatalogSource"
+)
+DremioPhysicalDataset.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
+    "icebergCatalogTableName", "icebergCatalogTableName"
+)
+DremioPhysicalDataset.TABLE_IMPALA_PARAMETERS = KeywordField(
+    "tableImpalaParameters", "tableImpalaParameters"
+)
+DremioPhysicalDataset.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
+    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
+)
+DremioPhysicalDataset.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
+    "tableExternalVolumeName", "tableExternalVolumeName"
+)
+DremioPhysicalDataset.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
+    "icebergTableBaseLocation", "icebergTableBaseLocation"
+)
+DremioPhysicalDataset.TABLE_RETENTION_TIME = NumericField(
+    "tableRetentionTime", "tableRetentionTime"
+)
 DremioPhysicalDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-DremioPhysicalDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+DremioPhysicalDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 DremioPhysicalDataset.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DremioPhysicalDataset.APPLICATION = RelationField("application")
 DremioPhysicalDataset.APPLICATION_FIELD = RelationField("applicationField")
-DremioPhysicalDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+DremioPhysicalDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 DremioPhysicalDataset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DremioPhysicalDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DremioPhysicalDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DremioPhysicalDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DremioPhysicalDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DremioPhysicalDataset.METRICS = RelationField("metrics")
 DremioPhysicalDataset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DremioPhysicalDataset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+DremioPhysicalDataset.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 DremioPhysicalDataset.DBT_MODELS = RelationField("dbtModels")
 DremioPhysicalDataset.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DremioPhysicalDataset.DBT_TESTS = RelationField("dbtTests")
@@ -1157,7 +1313,9 @@ DremioPhysicalDataset.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 DremioPhysicalDataset.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DremioPhysicalDataset.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 DremioPhysicalDataset.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DremioPhysicalDataset.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+DremioPhysicalDataset.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 DremioPhysicalDataset.FILES = RelationField("files")
 DremioPhysicalDataset.LINKS = RelationField("links")
 DremioPhysicalDataset.README = RelationField("readme")
@@ -1168,7 +1326,9 @@ DremioPhysicalDataset.DIMENSIONS = RelationField("dimensions")
 DremioPhysicalDataset.FACTS = RelationField("facts")
 DremioPhysicalDataset.PARTITIONS = RelationField("partitions")
 DremioPhysicalDataset.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DremioPhysicalDataset.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+DremioPhysicalDataset.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DremioPhysicalDataset.SODA_CHECKS = RelationField("sodaChecks")
 DremioPhysicalDataset.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DremioPhysicalDataset.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

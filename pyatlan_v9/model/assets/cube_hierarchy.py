@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .cube_related import RelatedCubeDimension, RelatedCubeField
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -44,15 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .cube_related import RelatedCubeDimension, RelatedCubeField
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CubeHierarchy(Asset):
@@ -146,7 +149,9 @@ class CubeHierarchy(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -155,7 +160,9 @@ class CubeHierarchy(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -191,7 +198,9 @@ class CubeHierarchy(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -203,7 +212,9 @@ class CubeHierarchy(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -225,7 +236,6 @@ class CubeHierarchy(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -278,6 +288,7 @@ class CubeHierarchy(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CubeHierarchyAttributes(AssetAttributes):
     """CubeHierarchy-specific attributes for nested API format."""
 
@@ -301,6 +312,7 @@ class CubeHierarchyAttributes(AssetAttributes):
 
     cube_hierarchy_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the dimension hierarchy in which this asset exists, or empty if it is itself a hierarchy."""
+
 
 class CubeHierarchyRelationshipAttributes(AssetRelationshipAttributes):
     """CubeHierarchy-specific relationship attributes for nested API format."""
@@ -329,7 +341,9 @@ class CubeHierarchyRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -338,7 +352,9 @@ class CubeHierarchyRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -374,7 +390,9 @@ class CubeHierarchyRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -386,7 +404,9 @@ class CubeHierarchyRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -398,13 +418,21 @@ class CubeHierarchyRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class CubeHierarchyNested(AssetNested):
     """CubeHierarchy in nested API format for high-performance serialization."""
 
     attributes: Union[CubeHierarchyAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[CubeHierarchyRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CubeHierarchyRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[CubeHierarchyRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[CubeHierarchyRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        CubeHierarchyRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CubeHierarchyRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -445,7 +473,10 @@ _CUBE_HIERARCHY_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cube_hierarchy_attrs(attrs: CubeHierarchyAttributes, obj: CubeHierarchy) -> None:
+
+def _populate_cube_hierarchy_attrs(
+    attrs: CubeHierarchyAttributes, obj: CubeHierarchy
+) -> None:
     """Populate CubeHierarchy-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cube_field_count = obj.cube_field_count
@@ -455,6 +486,7 @@ def _populate_cube_hierarchy_attrs(attrs: CubeHierarchyAttributes, obj: CubeHier
     attrs.cube_dimension_qualified_name = obj.cube_dimension_qualified_name
     attrs.cube_hierarchy_name = obj.cube_hierarchy_name
     attrs.cube_hierarchy_qualified_name = obj.cube_hierarchy_qualified_name
+
 
 def _extract_cube_hierarchy_attrs(attrs: CubeHierarchyAttributes) -> dict:
     """Extract all CubeHierarchy attributes from the attrs struct into a flat dict."""
@@ -467,6 +499,7 @@ def _extract_cube_hierarchy_attrs(attrs: CubeHierarchyAttributes) -> dict:
     result["cube_hierarchy_name"] = attrs.cube_hierarchy_name
     result["cube_hierarchy_qualified_name"] = attrs.cube_hierarchy_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -507,16 +540,21 @@ def _cube_hierarchy_to_nested(cube_hierarchy: CubeHierarchy) -> CubeHierarchyNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cube_hierarchy_from_nested(nested: CubeHierarchyNested) -> CubeHierarchy:
     """Convert nested format to flat CubeHierarchy."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CubeHierarchyAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CubeHierarchyAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CUBE_HIERARCHY_REL_FIELDS,
-        CubeHierarchyRelationshipAttributes
+        CubeHierarchyRelationshipAttributes,
     )
     return CubeHierarchy(
         guid=nested.guid,
@@ -543,7 +581,10 @@ def _cube_hierarchy_from_nested(nested: CubeHierarchyNested) -> CubeHierarchy:
         **merged_rels,
     )
 
-def _cube_hierarchy_to_nested_bytes(cube_hierarchy: CubeHierarchy, serde: Serde) -> bytes:
+
+def _cube_hierarchy_to_nested_bytes(
+    cube_hierarchy: CubeHierarchy, serde: Serde
+) -> bytes:
     """Convert flat CubeHierarchy to nested JSON bytes."""
     return serde.encode(_cube_hierarchy_to_nested(cube_hierarchy))
 
@@ -552,6 +593,7 @@ def _cube_hierarchy_from_nested_bytes(data: bytes, serde: Serde) -> CubeHierarch
     """Convert nested JSON bytes to flat CubeHierarchy."""
     nested = serde.decode(data, CubeHierarchyNested)
     return _cube_hierarchy_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -565,11 +607,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 CubeHierarchy.CUBE_FIELD_COUNT = NumericField("cubeFieldCount", "cubeFieldCount")
 CubeHierarchy.CUBE_NAME = KeywordTextField("cubeName", "cubeName", "cubeName.text")
-CubeHierarchy.CUBE_QUALIFIED_NAME = KeywordField("cubeQualifiedName", "cubeQualifiedName")
-CubeHierarchy.CUBE_DIMENSION_NAME = KeywordTextField("cubeDimensionName", "cubeDimensionName", "cubeDimensionName.text")
-CubeHierarchy.CUBE_DIMENSION_QUALIFIED_NAME = KeywordField("cubeDimensionQualifiedName", "cubeDimensionQualifiedName")
-CubeHierarchy.CUBE_HIERARCHY_NAME = KeywordTextField("cubeHierarchyName", "cubeHierarchyName", "cubeHierarchyName.text")
-CubeHierarchy.CUBE_HIERARCHY_QUALIFIED_NAME = KeywordField("cubeHierarchyQualifiedName", "cubeHierarchyQualifiedName")
+CubeHierarchy.CUBE_QUALIFIED_NAME = KeywordField(
+    "cubeQualifiedName", "cubeQualifiedName"
+)
+CubeHierarchy.CUBE_DIMENSION_NAME = KeywordTextField(
+    "cubeDimensionName", "cubeDimensionName", "cubeDimensionName.text"
+)
+CubeHierarchy.CUBE_DIMENSION_QUALIFIED_NAME = KeywordField(
+    "cubeDimensionQualifiedName", "cubeDimensionQualifiedName"
+)
+CubeHierarchy.CUBE_HIERARCHY_NAME = KeywordTextField(
+    "cubeHierarchyName", "cubeHierarchyName", "cubeHierarchyName.text"
+)
+CubeHierarchy.CUBE_HIERARCHY_QUALIFIED_NAME = KeywordField(
+    "cubeHierarchyQualifiedName", "cubeHierarchyQualifiedName"
+)
 CubeHierarchy.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CubeHierarchy.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CubeHierarchy.ANOMALO_CHECKS = RelationField("anomaloChecks")

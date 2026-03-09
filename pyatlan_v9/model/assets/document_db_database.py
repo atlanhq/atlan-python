@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -33,7 +40,13 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
+from .document_db_related import RelatedDocumentDBCollection
 from .fabric_related import RelatedFabricWorkspace
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -47,15 +60,11 @@ from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSchema
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .document_db_related import RelatedDocumentDBCollection
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DocumentDBDatabase(Asset):
@@ -125,10 +134,14 @@ class DocumentDBDatabase(Asset):
 
     type_name: Union[str, UnsetType] = "DocumentDBDatabase"
 
-    document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBDatabaseCollectionCount")
+    document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBDatabaseCollectionCount"
+    )
     """Number of collections in the database."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     schema_count: Union[int, None, UnsetType] = UNSET
@@ -182,7 +195,9 @@ class DocumentDBDatabase(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -212,7 +227,9 @@ class DocumentDBDatabase(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -221,7 +238,9 @@ class DocumentDBDatabase(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -236,13 +255,17 @@ class DocumentDBDatabase(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    document_db_collections: Union[List[RelatedDocumentDBCollection], None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollections")
+    document_db_collections: Union[
+        List[RelatedDocumentDBCollection], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="documentDBCollections")
     """Collections that exist within this database."""
 
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
@@ -272,7 +295,9 @@ class DocumentDBDatabase(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -287,10 +312,14 @@ class DocumentDBDatabase(Asset):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -304,8 +333,6 @@ class DocumentDBDatabase(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DocumentDBDatabase"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -336,7 +363,9 @@ class DocumentDBDatabase(Asset):
         return _document_db_database_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DocumentDBDatabase:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DocumentDBDatabase:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -358,13 +387,18 @@ class DocumentDBDatabase(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DocumentDBDatabaseAttributes(AssetAttributes):
     """DocumentDBDatabase-specific attributes for nested API format."""
 
-    document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBDatabaseCollectionCount")
+    document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBDatabaseCollectionCount"
+    )
     """Number of collections in the database."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     schema_count: Union[int, None, UnsetType] = UNSET
@@ -418,11 +452,14 @@ class DocumentDBDatabaseAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     """DocumentDBDatabase-specific relationship attributes for nested API format."""
@@ -451,7 +488,9 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -460,7 +499,9 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -475,13 +516,17 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    document_db_collections: Union[List[RelatedDocumentDBCollection], None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollections")
+    document_db_collections: Union[
+        List[RelatedDocumentDBCollection], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="documentDBCollections")
     """Collections that exist within this database."""
 
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
@@ -511,7 +556,9 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -526,10 +573,14 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -541,13 +592,21 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class DocumentDBDatabaseNested(AssetNested):
     """DocumentDBDatabase in nested API format for high-performance serialization."""
 
     attributes: Union[DocumentDBDatabaseAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DocumentDBDatabaseRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DocumentDBDatabaseRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DocumentDBDatabaseRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        DocumentDBDatabaseRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        DocumentDBDatabaseRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DocumentDBDatabaseRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -595,10 +654,15 @@ _DOCUMENT_DB_DATABASE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_document_db_database_attrs(attrs: DocumentDBDatabaseAttributes, obj: DocumentDBDatabase) -> None:
+
+def _populate_document_db_database_attrs(
+    attrs: DocumentDBDatabaseAttributes, obj: DocumentDBDatabase
+) -> None:
     """Populate DocumentDBDatabase-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.document_db_database_collection_count = obj.document_db_database_collection_count
+    attrs.document_db_database_collection_count = (
+        obj.document_db_database_collection_count
+    )
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.schema_count = obj.schema_count
     attrs.query_count = obj.query_count
@@ -620,10 +684,13 @@ def _populate_document_db_database_attrs(attrs: DocumentDBDatabaseAttributes, ob
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_document_db_database_attrs(attrs: DocumentDBDatabaseAttributes) -> dict:
     """Extract all DocumentDBDatabase attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["document_db_database_collection_count"] = attrs.document_db_database_collection_count
+    result["document_db_database_collection_count"] = (
+        attrs.document_db_database_collection_count
+    )
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["schema_count"] = attrs.schema_count
     result["query_count"] = attrs.query_count
@@ -642,22 +709,29 @@ def _extract_document_db_database_attrs(attrs: DocumentDBDatabaseAttributes) -> 
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _document_db_database_to_nested(document_db_database: DocumentDBDatabase) -> DocumentDBDatabaseNested:
+def _document_db_database_to_nested(
+    document_db_database: DocumentDBDatabase,
+) -> DocumentDBDatabaseNested:
     """Convert flat DocumentDBDatabase to nested format."""
     attrs = DocumentDBDatabaseAttributes()
     _populate_document_db_database_attrs(attrs, document_db_database)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        document_db_database, _DOCUMENT_DB_DATABASE_REL_FIELDS, DocumentDBDatabaseRelationshipAttributes
+        document_db_database,
+        _DOCUMENT_DB_DATABASE_REL_FIELDS,
+        DocumentDBDatabaseRelationshipAttributes,
     )
     return DocumentDBDatabaseNested(
         guid=document_db_database.guid,
@@ -685,16 +759,23 @@ def _document_db_database_to_nested(document_db_database: DocumentDBDatabase) ->
         remove_relationship_attributes=remove_rels,
     )
 
-def _document_db_database_from_nested(nested: DocumentDBDatabaseNested) -> DocumentDBDatabase:
+
+def _document_db_database_from_nested(
+    nested: DocumentDBDatabaseNested,
+) -> DocumentDBDatabase:
     """Convert nested format to flat DocumentDBDatabase."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DocumentDBDatabaseAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DocumentDBDatabaseAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DOCUMENT_DB_DATABASE_REL_FIELDS,
-        DocumentDBDatabaseRelationshipAttributes
+        DocumentDBDatabaseRelationshipAttributes,
     )
     return DocumentDBDatabase(
         guid=nested.guid,
@@ -721,15 +802,21 @@ def _document_db_database_from_nested(nested: DocumentDBDatabaseNested) -> Docum
         **merged_rels,
     )
 
-def _document_db_database_to_nested_bytes(document_db_database: DocumentDBDatabase, serde: Serde) -> bytes:
+
+def _document_db_database_to_nested_bytes(
+    document_db_database: DocumentDBDatabase, serde: Serde
+) -> bytes:
     """Convert flat DocumentDBDatabase to nested JSON bytes."""
     return serde.encode(_document_db_database_to_nested(document_db_database))
 
 
-def _document_db_database_from_nested_bytes(data: bytes, serde: Serde) -> DocumentDBDatabase:
+def _document_db_database_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DocumentDBDatabase:
     """Convert nested JSON bytes to flat DocumentDBDatabase."""
     nested = serde.decode(data, DocumentDBDatabaseNested)
     return _document_db_database_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -741,26 +828,46 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DocumentDBDatabase.DOCUMENT_DB_DATABASE_COLLECTION_COUNT = NumericField("documentDBDatabaseCollectionCount", "documentDBDatabaseCollectionCount")
-DocumentDBDatabase.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+DocumentDBDatabase.DOCUMENT_DB_DATABASE_COLLECTION_COUNT = NumericField(
+    "documentDBDatabaseCollectionCount", "documentDBDatabaseCollectionCount"
+)
+DocumentDBDatabase.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 DocumentDBDatabase.SCHEMA_COUNT = NumericField("schemaCount", "schemaCount")
 DocumentDBDatabase.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DocumentDBDatabase.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DocumentDBDatabase.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DocumentDBDatabase.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DocumentDBDatabase.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DocumentDBDatabase.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DocumentDBDatabase.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DocumentDBDatabase.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DocumentDBDatabase.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DocumentDBDatabase.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DocumentDBDatabase.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DocumentDBDatabase.TABLE_NAME = KeywordField("tableName", "tableName")
-DocumentDBDatabase.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DocumentDBDatabase.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DocumentDBDatabase.VIEW_NAME = KeywordField("viewName", "viewName")
-DocumentDBDatabase.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DocumentDBDatabase.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DocumentDBDatabase.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DocumentDBDatabase.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DocumentDBDatabase.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DocumentDBDatabase.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DocumentDBDatabase.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DocumentDBDatabase.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DocumentDBDatabase.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DocumentDBDatabase.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DocumentDBDatabase.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 DocumentDBDatabase.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DocumentDBDatabase.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -769,8 +876,12 @@ DocumentDBDatabase.APPLICATION = RelationField("application")
 DocumentDBDatabase.APPLICATION_FIELD = RelationField("applicationField")
 DocumentDBDatabase.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DocumentDBDatabase.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DocumentDBDatabase.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DocumentDBDatabase.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DocumentDBDatabase.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DocumentDBDatabase.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DocumentDBDatabase.METRICS = RelationField("metrics")
 DocumentDBDatabase.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DocumentDBDatabase.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
@@ -796,7 +907,9 @@ DocumentDBDatabase.LINKS = RelationField("links")
 DocumentDBDatabase.README = RelationField("readme")
 DocumentDBDatabase.SCHEMAS = RelationField("schemas")
 DocumentDBDatabase.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DocumentDBDatabase.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+DocumentDBDatabase.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DocumentDBDatabase.SODA_CHECKS = RelationField("sodaChecks")
 DocumentDBDatabase.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DocumentDBDatabase.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

@@ -15,13 +15,20 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
+from .api_related import RelatedAPIObject, RelatedAPIQuery
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
     _ASSET_REL_FIELDS,
@@ -44,15 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .api_related import RelatedAPIObject, RelatedAPIQuery
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class APIField(Asset):
@@ -167,7 +170,9 @@ class APIField(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -176,7 +181,9 @@ class APIField(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -203,7 +210,9 @@ class APIField(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -215,7 +224,9 @@ class APIField(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -234,10 +245,7 @@ class APIField(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -290,6 +298,7 @@ class APIField(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class APIFieldAttributes(AssetAttributes):
     """APIField-specific attributes for nested API format."""
 
@@ -326,6 +335,7 @@ class APIFieldAttributes(AssetAttributes):
     api_object_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true."""
 
+
 class APIFieldRelationshipAttributes(AssetRelationshipAttributes):
     """APIField-specific relationship attributes for nested API format."""
 
@@ -359,7 +369,9 @@ class APIFieldRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -368,7 +380,9 @@ class APIFieldRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -395,7 +409,9 @@ class APIFieldRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -407,7 +423,9 @@ class APIFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -419,13 +437,19 @@ class APIFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class APIFieldNested(AssetNested):
     """APIField in nested API format for high-performance serialization."""
 
     attributes: Union[APIFieldAttributes, UnsetType] = UNSET
     relationship_attributes: Union[APIFieldRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[APIFieldRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[APIFieldRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[APIFieldRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[APIFieldRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -465,6 +489,7 @@ _API_FIELD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_api_field_attrs(attrs: APIFieldAttributes, obj: APIField) -> None:
     """Populate APIField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -479,6 +504,7 @@ def _populate_api_field_attrs(attrs: APIFieldAttributes, obj: APIField) -> None:
     attrs.api_is_auth_optional = obj.api_is_auth_optional
     attrs.api_is_object_reference = obj.api_is_object_reference
     attrs.api_object_qualified_name = obj.api_object_qualified_name
+
 
 def _extract_api_field_attrs(attrs: APIFieldAttributes) -> dict:
     """Extract all APIField attributes from the attrs struct into a flat dict."""
@@ -495,6 +521,7 @@ def _extract_api_field_attrs(attrs: APIFieldAttributes) -> dict:
     result["api_is_object_reference"] = attrs.api_is_object_reference
     result["api_object_qualified_name"] = attrs.api_object_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -535,16 +562,19 @@ def _api_field_to_nested(api_field: APIField) -> APIFieldNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _api_field_from_nested(nested: APIFieldNested) -> APIField:
     """Convert nested format to flat APIField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else APIFieldAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else APIFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _API_FIELD_REL_FIELDS,
-        APIFieldRelationshipAttributes
+        APIFieldRelationshipAttributes,
     )
     return APIField(
         guid=nested.guid,
@@ -571,6 +601,7 @@ def _api_field_from_nested(nested: APIFieldNested) -> APIField:
         **merged_rels,
     )
 
+
 def _api_field_to_nested_bytes(api_field: APIField, serde: Serde) -> bytes:
     """Convert flat APIField to nested JSON bytes."""
     return serde.encode(_api_field_to_nested(api_field))
@@ -580,6 +611,7 @@ def _api_field_from_nested_bytes(data: bytes, serde: Serde) -> APIField:
     """Convert nested JSON bytes to flat APIField."""
     nested = serde.decode(data, APIFieldNested)
     return _api_field_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -592,16 +624,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 APIField.API_FIELD_TYPE = KeywordField("apiFieldType", "apiFieldType")
-APIField.API_FIELD_TYPE_SECONDARY = KeywordField("apiFieldTypeSecondary", "apiFieldTypeSecondary")
+APIField.API_FIELD_TYPE_SECONDARY = KeywordField(
+    "apiFieldTypeSecondary", "apiFieldTypeSecondary"
+)
 APIField.API_QUERY_PARAM_TYPE = KeywordField("apiQueryParamType", "apiQueryParamType")
 APIField.API_SPEC_TYPE = KeywordField("apiSpecType", "apiSpecType")
 APIField.API_SPEC_VERSION = KeywordField("apiSpecVersion", "apiSpecVersion")
 APIField.API_SPEC_NAME = KeywordField("apiSpecName", "apiSpecName")
-APIField.API_SPEC_QUALIFIED_NAME = KeywordTextField("apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text")
+APIField.API_SPEC_QUALIFIED_NAME = KeywordTextField(
+    "apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text"
+)
 APIField.API_EXTERNAL_DOCS = KeywordField("apiExternalDocs", "apiExternalDocs")
 APIField.API_IS_AUTH_OPTIONAL = BooleanField("apiIsAuthOptional", "apiIsAuthOptional")
-APIField.API_IS_OBJECT_REFERENCE = BooleanField("apiIsObjectReference", "apiIsObjectReference")
-APIField.API_OBJECT_QUALIFIED_NAME = KeywordField("apiObjectQualifiedName", "apiObjectQualifiedName")
+APIField.API_IS_OBJECT_REFERENCE = BooleanField(
+    "apiIsObjectReference", "apiIsObjectReference"
+)
+APIField.API_OBJECT_QUALIFIED_NAME = KeywordField(
+    "apiObjectQualifiedName", "apiObjectQualifiedName"
+)
 APIField.API_OBJECT = RelationField("apiObject")
 APIField.API_QUERY = RelationField("apiQuery")
 APIField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

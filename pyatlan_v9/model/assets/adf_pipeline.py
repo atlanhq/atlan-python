@@ -14,11 +14,23 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .adf_related import (
+    RelatedAdfActivity,
+    RelatedAdfDataflow,
+    RelatedAdfDataset,
+    RelatedAdfLinkedservice,
+)
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -43,15 +55,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .adf_related import RelatedAdfActivity, RelatedAdfDataflow, RelatedAdfDataset, RelatedAdfLinkedservice
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AdfPipeline(Asset):
@@ -150,7 +158,9 @@ class AdfPipeline(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -159,7 +169,9 @@ class AdfPipeline(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -186,7 +198,9 @@ class AdfPipeline(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -198,7 +212,9 @@ class AdfPipeline(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -212,8 +228,6 @@ class AdfPipeline(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AdfPipeline"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -266,6 +280,7 @@ class AdfPipeline(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AdfPipelineAttributes(AssetAttributes):
     """AdfPipeline-specific attributes for nested API format."""
 
@@ -283,6 +298,7 @@ class AdfPipelineAttributes(AssetAttributes):
 
     adf_asset_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path in which this ADF asset exists."""
+
 
 class AdfPipelineRelationshipAttributes(AssetRelationshipAttributes):
     """AdfPipeline-specific relationship attributes for nested API format."""
@@ -323,7 +339,9 @@ class AdfPipelineRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -332,7 +350,9 @@ class AdfPipelineRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -359,7 +379,9 @@ class AdfPipelineRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -371,7 +393,9 @@ class AdfPipelineRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -383,13 +407,19 @@ class AdfPipelineRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class AdfPipelineNested(AssetNested):
     """AdfPipeline in nested API format for high-performance serialization."""
 
     attributes: Union[AdfPipelineAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AdfPipelineRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AdfPipelineRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[AdfPipelineRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        AdfPipelineRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AdfPipelineRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -431,7 +461,10 @@ _ADF_PIPELINE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_adf_pipeline_attrs(attrs: AdfPipelineAttributes, obj: AdfPipeline) -> None:
+
+def _populate_adf_pipeline_attrs(
+    attrs: AdfPipelineAttributes, obj: AdfPipeline
+) -> None:
     """Populate AdfPipeline-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.adf_pipeline_activity_count = obj.adf_pipeline_activity_count
@@ -439,6 +472,7 @@ def _populate_adf_pipeline_attrs(attrs: AdfPipelineAttributes, obj: AdfPipeline)
     attrs.adf_pipeline_annotations = obj.adf_pipeline_annotations
     attrs.adf_factory_name = obj.adf_factory_name
     attrs.adf_asset_folder_path = obj.adf_asset_folder_path
+
 
 def _extract_adf_pipeline_attrs(attrs: AdfPipelineAttributes) -> dict:
     """Extract all AdfPipeline attributes from the attrs struct into a flat dict."""
@@ -449,6 +483,7 @@ def _extract_adf_pipeline_attrs(attrs: AdfPipelineAttributes) -> dict:
     result["adf_factory_name"] = attrs.adf_factory_name
     result["adf_asset_folder_path"] = attrs.adf_asset_folder_path
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -489,16 +524,19 @@ def _adf_pipeline_to_nested(adf_pipeline: AdfPipeline) -> AdfPipelineNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _adf_pipeline_from_nested(nested: AdfPipelineNested) -> AdfPipeline:
     """Convert nested format to flat AdfPipeline."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AdfPipelineAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else AdfPipelineAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADF_PIPELINE_REL_FIELDS,
-        AdfPipelineRelationshipAttributes
+        AdfPipelineRelationshipAttributes,
     )
     return AdfPipeline(
         guid=nested.guid,
@@ -525,6 +563,7 @@ def _adf_pipeline_from_nested(nested: AdfPipelineNested) -> AdfPipeline:
         **merged_rels,
     )
 
+
 def _adf_pipeline_to_nested_bytes(adf_pipeline: AdfPipeline, serde: Serde) -> bytes:
     """Convert flat AdfPipeline to nested JSON bytes."""
     return serde.encode(_adf_pipeline_to_nested(adf_pipeline))
@@ -535,6 +574,7 @@ def _adf_pipeline_from_nested_bytes(data: bytes, serde: Serde) -> AdfPipeline:
     nested = serde.decode(data, AdfPipelineNested)
     return _adf_pipeline_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -544,11 +584,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AdfPipeline.ADF_PIPELINE_ACTIVITY_COUNT = NumericField("adfPipelineActivityCount", "adfPipelineActivityCount")
+AdfPipeline.ADF_PIPELINE_ACTIVITY_COUNT = NumericField(
+    "adfPipelineActivityCount", "adfPipelineActivityCount"
+)
 AdfPipeline.ADF_PIPELINE_RUNS = KeywordField("adfPipelineRuns", "adfPipelineRuns")
-AdfPipeline.ADF_PIPELINE_ANNOTATIONS = KeywordField("adfPipelineAnnotations", "adfPipelineAnnotations")
+AdfPipeline.ADF_PIPELINE_ANNOTATIONS = KeywordField(
+    "adfPipelineAnnotations", "adfPipelineAnnotations"
+)
 AdfPipeline.ADF_FACTORY_NAME = KeywordField("adfFactoryName", "adfFactoryName")
-AdfPipeline.ADF_ASSET_FOLDER_PATH = KeywordField("adfAssetFolderPath", "adfAssetFolderPath")
+AdfPipeline.ADF_ASSET_FOLDER_PATH = KeywordField(
+    "adfAssetFolderPath", "adfAssetFolderPath"
+)
 AdfPipeline.ADF_ACTIVITIES = RelationField("adfActivities")
 AdfPipeline.ADF_DATASETS = RelationField("adfDatasets")
 AdfPipeline.ADF_LINKEDSERVICES = RelationField("adfLinkedservices")

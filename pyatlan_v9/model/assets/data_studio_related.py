@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -38,6 +37,7 @@ class RelatedDataStudio(RelatedBI):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataStudio"
+
 
 class RelatedDataStudioAsset(RelatedDataStudio):
     """

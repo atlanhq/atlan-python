@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -35,6 +41,7 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .mode_related import RelatedModeQuery
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -44,15 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .mode_related import RelatedModeQuery
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ModeChart(Asset):
@@ -156,7 +159,9 @@ class ModeChart(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -165,7 +170,9 @@ class ModeChart(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -195,7 +202,9 @@ class ModeChart(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -207,7 +216,9 @@ class ModeChart(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -229,7 +240,6 @@ class ModeChart(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -282,6 +292,7 @@ class ModeChart(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ModeChartAttributes(AssetAttributes):
     """ModeChart-specific attributes for nested API format."""
 
@@ -315,6 +326,7 @@ class ModeChartAttributes(AssetAttributes):
     mode_query_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the query for the Mode asset."""
 
+
 class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     """ModeChart-specific relationship attributes for nested API format."""
 
@@ -342,7 +354,9 @@ class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -351,7 +365,9 @@ class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -381,7 +397,9 @@ class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -393,7 +411,9 @@ class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -405,13 +425,19 @@ class ModeChartRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class ModeChartNested(AssetNested):
     """ModeChart in nested API format for high-performance serialization."""
 
     attributes: Union[ModeChartAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ModeChartRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ModeChartRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ModeChartRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        ModeChartRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ModeChartRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -450,6 +476,7 @@ _MODE_CHART_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_mode_chart_attrs(attrs: ModeChartAttributes, obj: ModeChart) -> None:
     """Populate ModeChart-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -463,6 +490,7 @@ def _populate_mode_chart_attrs(attrs: ModeChartAttributes, obj: ModeChart) -> No
     attrs.mode_report_qualified_name = obj.mode_report_qualified_name
     attrs.mode_query_name = obj.mode_query_name
     attrs.mode_query_qualified_name = obj.mode_query_qualified_name
+
 
 def _extract_mode_chart_attrs(attrs: ModeChartAttributes) -> dict:
     """Extract all ModeChart attributes from the attrs struct into a flat dict."""
@@ -478,6 +506,7 @@ def _extract_mode_chart_attrs(attrs: ModeChartAttributes) -> dict:
     result["mode_query_name"] = attrs.mode_query_name
     result["mode_query_qualified_name"] = attrs.mode_query_qualified_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -518,16 +547,19 @@ def _mode_chart_to_nested(mode_chart: ModeChart) -> ModeChartNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _mode_chart_from_nested(nested: ModeChartNested) -> ModeChart:
     """Convert nested format to flat ModeChart."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ModeChartAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ModeChartAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MODE_CHART_REL_FIELDS,
-        ModeChartRelationshipAttributes
+        ModeChartRelationshipAttributes,
     )
     return ModeChart(
         guid=nested.guid,
@@ -554,6 +586,7 @@ def _mode_chart_from_nested(nested: ModeChartNested) -> ModeChart:
         **merged_rels,
     )
 
+
 def _mode_chart_to_nested_bytes(mode_chart: ModeChart, serde: Serde) -> bytes:
     """Convert flat ModeChart to nested JSON bytes."""
     return serde.encode(_mode_chart_to_nested(mode_chart))
@@ -563,6 +596,7 @@ def _mode_chart_from_nested_bytes(data: bytes, serde: Serde) -> ModeChart:
     """Convert nested JSON bytes to flat ModeChart."""
     nested = serde.decode(data, ModeChartNested)
     return _mode_chart_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -577,12 +611,22 @@ ModeChart.MODE_CHART_TYPE = KeywordField("modeChartType", "modeChartType")
 ModeChart.MODE_ID = KeywordField("modeId", "modeId")
 ModeChart.MODE_TOKEN = KeywordTextField("modeToken", "modeToken", "modeToken.text")
 ModeChart.MODE_WORKSPACE_NAME = KeywordField("modeWorkspaceName", "modeWorkspaceName")
-ModeChart.MODE_WORKSPACE_USERNAME = KeywordTextField("modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text")
-ModeChart.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField("modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName.text")
+ModeChart.MODE_WORKSPACE_USERNAME = KeywordTextField(
+    "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
+)
+ModeChart.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName",
+    "modeWorkspaceQualifiedName.text",
+)
 ModeChart.MODE_REPORT_NAME = KeywordField("modeReportName", "modeReportName")
-ModeChart.MODE_REPORT_QUALIFIED_NAME = KeywordTextField("modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text")
+ModeChart.MODE_REPORT_QUALIFIED_NAME = KeywordTextField(
+    "modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text"
+)
 ModeChart.MODE_QUERY_NAME = KeywordField("modeQueryName", "modeQueryName")
-ModeChart.MODE_QUERY_QUALIFIED_NAME = KeywordTextField("modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text")
+ModeChart.MODE_QUERY_QUALIFIED_NAME = KeywordTextField(
+    "modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text"
+)
 ModeChart.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModeChart.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModeChart.ANOMALO_CHECKS = RelationField("anomaloChecks")

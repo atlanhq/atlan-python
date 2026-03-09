@@ -118,7 +118,9 @@ class RelatedAsset(RelatedReferenceable):
     connection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the connection through which this asset is accessible."""
 
-    has_lineage: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="__hasLineage")
+    has_lineage: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="__hasLineage"
+    )
     """Whether this asset has lineage (true) or not (false)."""
 
     is_discoverable: Union[bool, None, UnsetType] = UNSET
@@ -154,10 +156,14 @@ class RelatedAsset(RelatedReferenceable):
     source_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated this asset, in the source system."""
 
-    source_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sourceURL")
+    source_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sourceURL"
+    )
     """URL to the resource within the source application, used to create a button to view this asset in the source application."""
 
-    source_embed_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sourceEmbedURL")
+    source_embed_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sourceEmbedURL"
+    )
     """URL to create an embed for a resource (for example, an image of a dashboard) within Atlan."""
 
     last_sync_workflow_name: Union[str, None, UnsetType] = UNSET
@@ -196,28 +202,40 @@ class RelatedAsset(RelatedReferenceable):
     source_read_recent_user_list: Union[List[str], None, UnsetType] = UNSET
     """List of usernames of the most recent users who read this asset."""
 
-    source_read_recent_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_recent_user_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of usernames with extra insights for the most recent users who read this asset."""
 
     source_read_top_user_list: Union[List[str], None, UnsetType] = UNSET
     """List of usernames of the users who read this asset the most."""
 
-    source_read_top_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_top_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """List of usernames with extra insights for the users who read this asset the most."""
 
-    source_read_popular_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_popular_query_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of the most popular queries that accessed this asset."""
 
-    source_read_expensive_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_expensive_query_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of the most expensive queries that accessed this asset."""
 
-    source_read_slow_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_slow_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """List of the slowest queries that accessed this asset."""
 
     source_query_compute_cost_list: Union[List[str], None, UnsetType] = UNSET
     """List of most expensive warehouse names."""
 
-    source_query_compute_cost_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_query_compute_cost_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of most expensive warehouses with extra insights."""
 
     dbt_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -286,7 +304,9 @@ class RelatedAsset(RelatedReferenceable):
     asset_dbt_job_last_run_queued_duration: Union[str, None, UnsetType] = UNSET
     """Total duration the job that materialized this asset in dbt spent being queued."""
 
-    asset_dbt_job_last_run_queued_duration_humanized: Union[str, None, UnsetType] = UNSET
+    asset_dbt_job_last_run_queued_duration_humanized: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Human-readable total duration of the last run of the job that materialized this asset in dbt spend being queued."""
 
     asset_dbt_job_last_run_run_duration: Union[str, None, UnsetType] = UNSET
@@ -406,7 +426,9 @@ class RelatedAsset(RelatedReferenceable):
     starred_count: Union[int, None, UnsetType] = UNSET
     """Number of users who have starred this asset."""
 
-    asset_anomalo_dq_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetAnomaloDQStatus")
+    asset_anomalo_dq_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetAnomaloDQStatus"
+    )
     """Status of data quality from Anomalo."""
 
     asset_anomalo_check_count: Union[int, None, UnsetType] = UNSET
@@ -430,7 +452,9 @@ class RelatedAsset(RelatedReferenceable):
     asset_anomalo_source_url: Union[str, None, UnsetType] = UNSET
     """URL of the source in Anomalo."""
 
-    asset_soda_dq_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetSodaDQStatus")
+    asset_soda_dq_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetSodaDQStatus"
+    )
     """Status of data quality from Soda."""
 
     asset_soda_check_count: Union[int, None, UnsetType] = UNSET
@@ -445,19 +469,25 @@ class RelatedAsset(RelatedReferenceable):
     asset_soda_check_statuses: Union[str, None, UnsetType] = UNSET
     """All associated Soda check statuses."""
 
-    asset_soda_source_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetSodaSourceURL")
+    asset_soda_source_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetSodaSourceURL"
+    )
     """"""
 
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
-    asset_external_dq_metadata_details: Union[Dict[str, Dict[str, Any]], None, UnsetType] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
+    asset_external_dq_metadata_details: Union[
+        Dict[str, Dict[str, Any]], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
     """DQ metadata captured for asset from external DQ tool(s)."""
 
     is_partial: Union[bool, None, UnsetType] = UNSET
     """Indicates this asset is not fully-known, if true."""
 
-    is_ai_generated: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="isAIGenerated")
+    is_ai_generated: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="isAIGenerated"
+    )
     """"""
 
     asset_cover_image: Union[str, None, UnsetType] = UNSET
@@ -472,25 +502,37 @@ class RelatedAsset(RelatedReferenceable):
     has_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has contract (true) or not (false)."""
 
-    asset_redirect_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetRedirectGUIDs")
+    asset_redirect_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetRedirectGUIDs"
+    )
     """Array of asset ids that equivalent to this asset."""
 
-    asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetPolicyGUIDs")
+    asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetPolicyGUIDs"
+    )
     """Array of policy ids governing this asset"""
 
     asset_policies_count: Union[int, None, UnsetType] = UNSET
     """Count of policies inside the asset"""
 
-    domain_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="domainGUIDs")
+    domain_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="domainGUIDs"
+    )
     """Array of domain guids linked to this asset"""
 
-    non_compliant_asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="nonCompliantAssetPolicyGUIDs")
+    non_compliant_asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="nonCompliantAssetPolicyGUIDs"
+    )
     """Array of policy ids non-compliant to this asset"""
 
-    product_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="productGUIDs")
+    product_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="productGUIDs"
+    )
     """Array of product guids linked to this asset"""
 
-    output_product_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="outputProductGUIDs")
+    output_product_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="outputProductGUIDs"
+    )
     """Array of product guids which have this asset as outputPort"""
 
     application_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -505,76 +547,124 @@ class RelatedAsset(RelatedReferenceable):
     asset_internal_popularity_score: Union[float, None, UnsetType] = UNSET
     """Internal Popularity score for this asset."""
 
-    asset_dq_schedule_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleType")
+    asset_dq_schedule_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleType"
+    )
     """Type of schedule of the DQ rule that will run at datasource."""
 
-    asset_dq_schedule_crontab: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleCrontab")
+    asset_dq_schedule_crontab: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleCrontab"
+    )
     """Crontab of the DQ rule that will run at datasource."""
 
-    asset_dq_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleTimeZone")
+    asset_dq_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleTimeZone"
+    )
     """Timezone of the DQ rule schedule that will run at datasource"""
 
-    asset_dq_schedule_source_sync_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncStatus")
+    asset_dq_schedule_source_sync_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleSourceSyncStatus"
+    )
     """Latest sync status of the schedule to the source."""
 
-    asset_dq_schedule_source_synced_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncedAt")
+    asset_dq_schedule_source_synced_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleSourceSyncedAt"
+    )
     """Time (epoch) at which the schedule synced to the source."""
 
-    asset_dq_schedule_source_sync_error_message: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorMessage")
+    asset_dq_schedule_source_sync_error_message: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorMessage")
+    )
     """Error message in the case of sync state being "error"."""
 
-    asset_dq_schedule_source_sync_error_code: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorCode")
+    asset_dq_schedule_source_sync_error_code: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorCode")
+    )
     """Error code in the case of sync state being "error"."""
 
-    asset_dq_schedule_source_sync_raw_error: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncRawError")
+    asset_dq_schedule_source_sync_raw_error: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncRawError")
+    )
     """Raw error message from the source."""
 
-    asset_dq_rule_attached_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleAttachedDimensions")
+    asset_dq_rule_attached_dimensions: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRuleAttachedDimensions")
+    )
     """List of all the dimensions of attached rules."""
 
-    asset_dq_rule_failed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedDimensions")
+    asset_dq_rule_failed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedDimensions"
+    )
     """List of all the dimensions of failed rules."""
 
-    asset_dq_rule_passed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedDimensions")
+    asset_dq_rule_passed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedDimensions"
+    )
     """List of all the dimensions for which all the rules passed."""
 
-    asset_dq_rule_attached_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleAttachedRuleTypes")
+    asset_dq_rule_attached_rule_types: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRuleAttachedRuleTypes")
+    )
     """List of all the types of attached rules."""
 
-    asset_dq_rule_failed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedRuleTypes")
+    asset_dq_rule_failed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedRuleTypes"
+    )
     """List of all the types of failed rules."""
 
-    asset_dq_rule_passed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedRuleTypes")
+    asset_dq_rule_passed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedRuleTypes"
+    )
     """List of all the types of rules for which all the rules passed."""
 
-    asset_dq_rule_result_tags: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleResultTags")
+    asset_dq_rule_result_tags: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleResultTags"
+    )
     """Tag for the result of the DQ rules. Eg, rule_pass:completeness:null_count."""
 
-    asset_dq_rule_last_run_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleLastRunAt")
+    asset_dq_rule_last_run_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleLastRunAt"
+    )
     """Time (epoch) at which the last dq rule ran."""
 
-    asset_dq_manual_run_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQManualRunStatus")
+    asset_dq_manual_run_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQManualRunStatus"
+    )
     """Status of the latest manual DQ run triggered for this asset."""
 
-    asset_dq_rule_total_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleTotalCount")
+    asset_dq_rule_total_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleTotalCount"
+    )
     """Count of DQ rules attached to this asset."""
 
-    asset_dq_rule_failed_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedCount")
+    asset_dq_rule_failed_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedCount"
+    )
     """Count of failed DQ rules attached to this asset."""
 
-    asset_dq_rule_passed_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedCount")
+    asset_dq_rule_passed_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedCount"
+    )
     """Count of passed DQ rules attached to this asset."""
 
-    asset_dq_result: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQResult")
+    asset_dq_result: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQResult"
+    )
     """Overall result of all the dq rules. If any one rule failed, then fail else pass."""
 
-    asset_dq_freshness_value: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQFreshnessValue")
+    asset_dq_freshness_value: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQFreshnessValue"
+    )
     """Value of data freshness from Source."""
 
-    asset_dq_freshness_expectation: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQFreshnessExpectation")
+    asset_dq_freshness_expectation: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQFreshnessExpectation"
+    )
     """Expectation of data freshness from Source."""
 
-    asset_dq_row_scope_filter_column_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRowScopeFilterColumnQualifiedName")
+    asset_dq_row_scope_filter_column_qualified_name: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRowScopeFilterColumnQualifiedName")
+    )
     """Qualified name of the column used for row scope filtering in DQ rules for this asset."""
 
     asset_space_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -583,27 +673,38 @@ class RelatedAsset(RelatedReferenceable):
     asset_space_name: Union[str, None, UnsetType] = UNSET
     """Name of the space that contains this asset."""
 
-    asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
+    asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
+    )
     """Metrics captured by GCP Dataplex for objects associated with GCP services."""
 
-    asset_gcp_dataplex_aspect_list: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexAspectList")
+    asset_gcp_dataplex_aspect_list: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetGCPDataplexAspectList"
+    )
     """List of names of all Aspects linked to this asset."""
 
-    asset_gcp_dataplex_aspect_field_list: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexAspectFieldList")
+    asset_gcp_dataplex_aspect_field_list: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetGCPDataplexAspectFieldList")
+    )
     """List of field key-values associated with all Aspects linked to this asset."""
 
     asset_smus_metadata_form_names: Union[List[str], None, UnsetType] = UNSET
     """List of AWS SMUS MetadataForm Names. This is mainly used for filtering purpose."""
 
-    asset_smus_metadata_form_key_value_details: Union[List[str], None, UnsetType] = UNSET
+    asset_smus_metadata_form_key_value_details: Union[List[str], None, UnsetType] = (
+        UNSET
+    )
     """List of AWS SMUS MetadataForm Key:Value Details. This is mainly used for filtering purpose."""
 
-    asset_smus_metadata_form_details: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    asset_smus_metadata_form_details: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """AWS SMUS Asset MetadataForm details"""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Asset"
+
 
 class RelatedDataSet(RelatedAsset):
     """
@@ -619,6 +720,7 @@ class RelatedDataSet(RelatedAsset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataSet"
 
+
 class RelatedInfrastructure(RelatedAsset):
     """
     Related entity reference for Infrastructure assets.
@@ -633,6 +735,7 @@ class RelatedInfrastructure(RelatedAsset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Infrastructure"
 
+
 class RelatedProcessExecution(RelatedAsset):
     """
     Related entity reference for ProcessExecution assets.
@@ -646,6 +749,7 @@ class RelatedProcessExecution(RelatedAsset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ProcessExecution"
+
 
 class RelatedIncident(RelatedAsset):
     """

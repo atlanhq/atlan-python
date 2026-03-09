@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -38,13 +44,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Form(Asset):
@@ -102,7 +106,9 @@ class Form(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -117,7 +123,9 @@ class Form(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -129,7 +137,9 @@ class Form(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -137,8 +147,6 @@ class Form(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Form"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -191,6 +199,7 @@ class Form(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FormAttributes(AssetAttributes):
     """Form-specific attributes for nested API format."""
 
@@ -199,6 +208,7 @@ class FormAttributes(AssetAttributes):
 
     form_options: Union[Dict[str, str], None, UnsetType] = UNSET
     """Options of the form."""
+
 
 class FormRelationshipAttributes(AssetRelationshipAttributes):
     """Form-specific relationship attributes for nested API format."""
@@ -224,7 +234,9 @@ class FormRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -239,7 +251,9 @@ class FormRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -251,11 +265,14 @@ class FormRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class FormNested(AssetNested):
     """Form in nested API format for high-performance serialization."""
@@ -264,6 +281,7 @@ class FormNested(AssetNested):
     relationship_attributes: Union[FormRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[FormRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[FormRelationshipAttributes, UnsetType] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -291,11 +309,13 @@ _FORM_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
+
 def _populate_form_attrs(attrs: FormAttributes, obj: Form) -> None:
     """Populate Form-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.form_fields = obj.form_fields
     attrs.form_options = obj.form_options
+
 
 def _extract_form_attrs(attrs: FormAttributes) -> dict:
     """Extract all Form attributes from the attrs struct into a flat dict."""
@@ -303,6 +323,7 @@ def _extract_form_attrs(attrs: FormAttributes) -> dict:
     result["form_fields"] = attrs.form_fields
     result["form_options"] = attrs.form_options
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -343,6 +364,7 @@ def _form_to_nested(form: Form) -> FormNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _form_from_nested(nested: FormNested) -> Form:
     """Convert nested format to flat Form."""
     attrs = nested.attributes if nested.attributes is not UNSET else FormAttributes()
@@ -352,7 +374,7 @@ def _form_from_nested(nested: FormNested) -> Form:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FORM_REL_FIELDS,
-        FormRelationshipAttributes
+        FormRelationshipAttributes,
     )
     return Form(
         guid=nested.guid,
@@ -379,6 +401,7 @@ def _form_from_nested(nested: FormNested) -> Form:
         **merged_rels,
     )
 
+
 def _form_to_nested_bytes(form: Form, serde: Serde) -> bytes:
     """Convert flat Form to nested JSON bytes."""
     return serde.encode(_form_to_nested(form))
@@ -389,13 +412,11 @@ def _form_from_nested_bytes(data: bytes, serde: Serde) -> Form:
     nested = serde.decode(data, FormNested)
     return _form_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
 Form.FORM_FIELDS = KeywordField("formFields", "formFields")
 Form.FORM_OPTIONS = KeywordField("formOptions", "formOptions")

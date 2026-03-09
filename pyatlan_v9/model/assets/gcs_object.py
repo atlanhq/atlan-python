@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,6 +41,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcs_related import RelatedGCSBucket
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -44,15 +52,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .gcs_related import RelatedGCSBucket
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class GCSObject(Asset):
@@ -143,10 +147,14 @@ class GCSObject(Asset):
     gcs_object_generation_id: Union[int, None, UnsetType] = UNSET
     """Generation ID of this object."""
 
-    gcs_object_crc32c_hash: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="gcsObjectCRC32CHash")
+    gcs_object_crc32c_hash: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="gcsObjectCRC32CHash"
+    )
     """CRC32C hash of this object."""
 
-    gcs_object_md5_hash: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="gcsObjectMD5Hash")
+    gcs_object_md5_hash: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="gcsObjectMD5Hash"
+    )
     """MD5 hash of this object."""
 
     gcs_object_data_last_modified_time: Union[int, None, UnsetType] = UNSET
@@ -236,7 +244,9 @@ class GCSObject(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -245,7 +255,9 @@ class GCSObject(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     gcs_bucket: Union[RelatedGCSBucket, None, UnsetType] = UNSET
@@ -275,7 +287,9 @@ class GCSObject(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -287,7 +301,9 @@ class GCSObject(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -306,10 +322,7 @@ class GCSObject(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -362,6 +375,7 @@ class GCSObject(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class GCSObjectAttributes(AssetAttributes):
     """GCSObject-specific attributes for nested API format."""
 
@@ -386,10 +400,14 @@ class GCSObjectAttributes(AssetAttributes):
     gcs_object_generation_id: Union[int, None, UnsetType] = UNSET
     """Generation ID of this object."""
 
-    gcs_object_crc32c_hash: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="gcsObjectCRC32CHash")
+    gcs_object_crc32c_hash: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="gcsObjectCRC32CHash"
+    )
     """CRC32C hash of this object."""
 
-    gcs_object_md5_hash: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="gcsObjectMD5Hash")
+    gcs_object_md5_hash: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="gcsObjectMD5Hash"
+    )
     """MD5 hash of this object."""
 
     gcs_object_data_last_modified_time: Union[int, None, UnsetType] = UNSET
@@ -455,6 +473,7 @@ class GCSObjectAttributes(AssetAttributes):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
+
 class GCSObjectRelationshipAttributes(AssetRelationshipAttributes):
     """GCSObject-specific relationship attributes for nested API format."""
 
@@ -482,7 +501,9 @@ class GCSObjectRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -491,7 +512,9 @@ class GCSObjectRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     gcs_bucket: Union[RelatedGCSBucket, None, UnsetType] = UNSET
@@ -521,7 +544,9 @@ class GCSObjectRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -533,7 +558,9 @@ class GCSObjectRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -545,13 +572,19 @@ class GCSObjectRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class GCSObjectNested(AssetNested):
     """GCSObject in nested API format for high-performance serialization."""
 
     attributes: Union[GCSObjectAttributes, UnsetType] = UNSET
     relationship_attributes: Union[GCSObjectRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[GCSObjectRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[GCSObjectRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        GCSObjectRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        GCSObjectRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -590,6 +623,7 @@ _GCS_OBJECT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_gcs_object_attrs(attrs: GCSObjectAttributes, obj: GCSObject) -> None:
     """Populate GCSObject-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -607,7 +641,9 @@ def _populate_gcs_object_attrs(attrs: GCSObjectAttributes, obj: GCSObject) -> No
     attrs.gcs_object_content_encoding = obj.gcs_object_content_encoding
     attrs.gcs_object_content_disposition = obj.gcs_object_content_disposition
     attrs.gcs_object_content_language = obj.gcs_object_content_language
-    attrs.gcs_object_retention_expiration_date = obj.gcs_object_retention_expiration_date
+    attrs.gcs_object_retention_expiration_date = (
+        obj.gcs_object_retention_expiration_date
+    )
     attrs.gcs_storage_class = obj.gcs_storage_class
     attrs.gcs_encryption_type = obj.gcs_encryption_type
     attrs.gcs_etag = obj.gcs_etag
@@ -624,6 +660,7 @@ def _populate_gcs_object_attrs(attrs: GCSObjectAttributes, obj: GCSObject) -> No
     attrs.google_tags = obj.google_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
 
+
 def _extract_gcs_object_attrs(attrs: GCSObjectAttributes) -> dict:
     """Extract all GCSObject attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -636,12 +673,16 @@ def _extract_gcs_object_attrs(attrs: GCSObjectAttributes) -> dict:
     result["gcs_object_generation_id"] = attrs.gcs_object_generation_id
     result["gcs_object_crc32c_hash"] = attrs.gcs_object_crc32c_hash
     result["gcs_object_md5_hash"] = attrs.gcs_object_md5_hash
-    result["gcs_object_data_last_modified_time"] = attrs.gcs_object_data_last_modified_time
+    result["gcs_object_data_last_modified_time"] = (
+        attrs.gcs_object_data_last_modified_time
+    )
     result["gcs_object_content_type"] = attrs.gcs_object_content_type
     result["gcs_object_content_encoding"] = attrs.gcs_object_content_encoding
     result["gcs_object_content_disposition"] = attrs.gcs_object_content_disposition
     result["gcs_object_content_language"] = attrs.gcs_object_content_language
-    result["gcs_object_retention_expiration_date"] = attrs.gcs_object_retention_expiration_date
+    result["gcs_object_retention_expiration_date"] = (
+        attrs.gcs_object_retention_expiration_date
+    )
     result["gcs_storage_class"] = attrs.gcs_storage_class
     result["gcs_encryption_type"] = attrs.gcs_encryption_type
     result["gcs_etag"] = attrs.gcs_etag
@@ -658,6 +699,7 @@ def _extract_gcs_object_attrs(attrs: GCSObjectAttributes) -> dict:
     result["google_tags"] = attrs.google_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -698,16 +740,19 @@ def _gcs_object_to_nested(gcs_object: GCSObject) -> GCSObjectNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _gcs_object_from_nested(nested: GCSObjectNested) -> GCSObject:
     """Convert nested format to flat GCSObject."""
-    attrs = nested.attributes if nested.attributes is not UNSET else GCSObjectAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else GCSObjectAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _GCS_OBJECT_REL_FIELDS,
-        GCSObjectRelationshipAttributes
+        GCSObjectRelationshipAttributes,
     )
     return GCSObject(
         guid=nested.guid,
@@ -734,6 +779,7 @@ def _gcs_object_from_nested(nested: GCSObjectNested) -> GCSObject:
         **merged_rels,
     )
 
+
 def _gcs_object_to_nested_bytes(gcs_object: GCSObject, serde: Serde) -> bytes:
     """Convert flat GCSObject to nested JSON bytes."""
     return serde.encode(_gcs_object_to_nested(gcs_object))
@@ -743,6 +789,7 @@ def _gcs_object_from_nested_bytes(data: bytes, serde: Serde) -> GCSObject:
     """Convert nested JSON bytes to flat GCSObject."""
     nested = serde.decode(data, GCSObjectNested)
     return _gcs_object_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -756,35 +803,69 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 GCSObject.GCS_BUCKET_NAME = KeywordField("gcsBucketName", "gcsBucketName")
-GCSObject.GCS_BUCKET_QUALIFIED_NAME = KeywordTextField("gcsBucketQualifiedName", "gcsBucketQualifiedName", "gcsBucketQualifiedName.text")
+GCSObject.GCS_BUCKET_QUALIFIED_NAME = KeywordTextField(
+    "gcsBucketQualifiedName", "gcsBucketQualifiedName", "gcsBucketQualifiedName.text"
+)
 GCSObject.GCS_OBJECT_SIZE = NumericField("gcsObjectSize", "gcsObjectSize")
-GCSObject.GCS_OBJECT_KEY = KeywordTextField("gcsObjectKey", "gcsObjectKey", "gcsObjectKey.text")
-GCSObject.GCS_OBJECT_MEDIA_LINK = KeywordTextField("gcsObjectMediaLink", "gcsObjectMediaLink", "gcsObjectMediaLink.text")
+GCSObject.GCS_OBJECT_KEY = KeywordTextField(
+    "gcsObjectKey", "gcsObjectKey", "gcsObjectKey.text"
+)
+GCSObject.GCS_OBJECT_MEDIA_LINK = KeywordTextField(
+    "gcsObjectMediaLink", "gcsObjectMediaLink", "gcsObjectMediaLink.text"
+)
 GCSObject.GCS_OBJECT_HOLD_TYPE = KeywordField("gcsObjectHoldType", "gcsObjectHoldType")
-GCSObject.GCS_OBJECT_GENERATION_ID = NumericField("gcsObjectGenerationId", "gcsObjectGenerationId")
-GCSObject.GCS_OBJECT_CRC32C_HASH = KeywordField("gcsObjectCRC32CHash", "gcsObjectCRC32CHash")
+GCSObject.GCS_OBJECT_GENERATION_ID = NumericField(
+    "gcsObjectGenerationId", "gcsObjectGenerationId"
+)
+GCSObject.GCS_OBJECT_CRC32C_HASH = KeywordField(
+    "gcsObjectCRC32CHash", "gcsObjectCRC32CHash"
+)
 GCSObject.GCS_OBJECT_MD5_HASH = KeywordField("gcsObjectMD5Hash", "gcsObjectMD5Hash")
-GCSObject.GCS_OBJECT_DATA_LAST_MODIFIED_TIME = NumericField("gcsObjectDataLastModifiedTime", "gcsObjectDataLastModifiedTime")
-GCSObject.GCS_OBJECT_CONTENT_TYPE = KeywordField("gcsObjectContentType", "gcsObjectContentType")
-GCSObject.GCS_OBJECT_CONTENT_ENCODING = KeywordField("gcsObjectContentEncoding", "gcsObjectContentEncoding")
-GCSObject.GCS_OBJECT_CONTENT_DISPOSITION = KeywordField("gcsObjectContentDisposition", "gcsObjectContentDisposition")
-GCSObject.GCS_OBJECT_CONTENT_LANGUAGE = KeywordField("gcsObjectContentLanguage", "gcsObjectContentLanguage")
-GCSObject.GCS_OBJECT_RETENTION_EXPIRATION_DATE = NumericField("gcsObjectRetentionExpirationDate", "gcsObjectRetentionExpirationDate")
+GCSObject.GCS_OBJECT_DATA_LAST_MODIFIED_TIME = NumericField(
+    "gcsObjectDataLastModifiedTime", "gcsObjectDataLastModifiedTime"
+)
+GCSObject.GCS_OBJECT_CONTENT_TYPE = KeywordField(
+    "gcsObjectContentType", "gcsObjectContentType"
+)
+GCSObject.GCS_OBJECT_CONTENT_ENCODING = KeywordField(
+    "gcsObjectContentEncoding", "gcsObjectContentEncoding"
+)
+GCSObject.GCS_OBJECT_CONTENT_DISPOSITION = KeywordField(
+    "gcsObjectContentDisposition", "gcsObjectContentDisposition"
+)
+GCSObject.GCS_OBJECT_CONTENT_LANGUAGE = KeywordField(
+    "gcsObjectContentLanguage", "gcsObjectContentLanguage"
+)
+GCSObject.GCS_OBJECT_RETENTION_EXPIRATION_DATE = NumericField(
+    "gcsObjectRetentionExpirationDate", "gcsObjectRetentionExpirationDate"
+)
 GCSObject.GCS_STORAGE_CLASS = KeywordField("gcsStorageClass", "gcsStorageClass")
 GCSObject.GCS_ENCRYPTION_TYPE = KeywordField("gcsEncryptionType", "gcsEncryptionType")
 GCSObject.GCS_ETAG = KeywordField("gcsETag", "gcsETag")
 GCSObject.GCS_REQUESTER_PAYS = BooleanField("gcsRequesterPays", "gcsRequesterPays")
 GCSObject.GCS_ACCESS_CONTROL = KeywordField("gcsAccessControl", "gcsAccessControl")
-GCSObject.GCS_META_GENERATION_ID = NumericField("gcsMetaGenerationId", "gcsMetaGenerationId")
+GCSObject.GCS_META_GENERATION_ID = NumericField(
+    "gcsMetaGenerationId", "gcsMetaGenerationId"
+)
 GCSObject.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
-GCSObject.GOOGLE_PROJECT_NAME = KeywordTextField("googleProjectName", "googleProjectName", "googleProjectName.text")
-GCSObject.GOOGLE_PROJECT_ID = KeywordTextField("googleProjectId", "googleProjectId", "googleProjectId.text")
-GCSObject.GOOGLE_PROJECT_NUMBER = NumericField("googleProjectNumber", "googleProjectNumber")
+GCSObject.GOOGLE_PROJECT_NAME = KeywordTextField(
+    "googleProjectName", "googleProjectName", "googleProjectName.text"
+)
+GCSObject.GOOGLE_PROJECT_ID = KeywordTextField(
+    "googleProjectId", "googleProjectId", "googleProjectId.text"
+)
+GCSObject.GOOGLE_PROJECT_NUMBER = NumericField(
+    "googleProjectNumber", "googleProjectNumber"
+)
 GCSObject.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
-GCSObject.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
+GCSObject.GOOGLE_LOCATION_TYPE = KeywordField(
+    "googleLocationType", "googleLocationType"
+)
 GCSObject.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
 GCSObject.GOOGLE_TAGS = KeywordField("googleTags", "googleTags")
-GCSObject.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+GCSObject.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 GCSObject.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 GCSObject.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 GCSObject.ANOMALO_CHECKS = RelationField("anomaloChecks")

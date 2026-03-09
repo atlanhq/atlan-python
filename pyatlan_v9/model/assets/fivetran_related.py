@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -47,6 +47,7 @@ class RelatedFivetran(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Fivetran"
+
 
 class RelatedFivetranConnector(RelatedFivetran):
     """
@@ -106,7 +107,9 @@ class RelatedFivetranConnector(RelatedFivetran):
     fivetran_type: Union[str, None, UnsetType] = UNSET
     """Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc."""
 
-    fivetran_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="fivetranURL")
+    fivetran_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="fivetranURL"
+    )
     """URL to open the connector details on Fivetran"""
 
     fivetran_destination_name: Union[str, None, UnsetType] = UNSET
@@ -115,7 +118,9 @@ class RelatedFivetranConnector(RelatedFivetran):
     fivetran_destination_type: Union[str, None, UnsetType] = UNSET
     """Type of destination on Fivetran. Eg: redshift, bigquery etc."""
 
-    fivetran_destination_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="fivetranDestinationURL")
+    fivetran_destination_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="fivetranDestinationURL"
+    )
     """URL to open the destination details on Fivetran"""
 
     fivetran_sync_setup_on: Union[int, None, UnsetType] = UNSET
@@ -142,28 +147,42 @@ class RelatedFivetranConnector(RelatedFivetran):
     fivetran_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
     """Total Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_monthly_active_rows_change_percentage_free: Union[float, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_change_percentage_free: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of free MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_change_percentage_paid: Union[float, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_change_percentage_paid: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of paid MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_change_percentage_total: Union[float, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_change_percentage_total: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Increase in the percentage of total MAR compared to the previous month"""
 
-    fivetran_monthly_active_rows_free_percentage_of_account: Union[float, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_free_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total free MAR used by this connector"""
 
-    fivetran_monthly_active_rows_paid_percentage_of_account: Union[float, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_paid_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total paid MAR used by this connector"""
 
-    fivetran_monthly_active_rows_total_percentage_of_account: Union[float, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_total_percentage_of_account: Union[
+        float, None, UnsetType
+    ] = UNSET
     """Percentage of the account's total MAR used by this connector"""
 
     fivetran_total_tables_synced: Union[int, None, UnsetType] = UNSET
     """Total number of tables synced by this connector"""
 
-    fivetran_connector_top_tables_by_mar: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="fivetranConnectorTopTablesByMAR")
+    fivetran_connector_top_tables_by_mar: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="fivetranConnectorTopTablesByMAR"
+    )
     """Total five tables sorted by MAR synced by this connector"""
 
     fivetran_usage_cost: Union[float, None, UnsetType] = UNSET

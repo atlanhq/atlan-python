@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -48,6 +47,7 @@ class RelatedDomo(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Domo"
 
+
 class RelatedDomoCard(RelatedDomo):
     """
     Related entity reference for DomoCard assets.
@@ -71,6 +71,7 @@ class RelatedDomoCard(RelatedDomo):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DomoCard"
 
+
 class RelatedDomoDashboard(RelatedDomo):
     """
     Related entity reference for DomoDashboard assets.
@@ -87,6 +88,7 @@ class RelatedDomoDashboard(RelatedDomo):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DomoDashboard"
+
 
 class RelatedDomoDataset(RelatedDomo):
     """
@@ -116,6 +118,7 @@ class RelatedDomoDataset(RelatedDomo):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DomoDataset"
+
 
 class RelatedDomoDatasetColumn(RelatedDomo):
     """

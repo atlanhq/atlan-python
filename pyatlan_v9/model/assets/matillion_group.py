@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,6 +40,7 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .matillion_related import RelatedMatillionProject
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -43,15 +50,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .matillion_related import RelatedMatillionProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MatillionGroup(Asset):
@@ -123,7 +126,9 @@ class MatillionGroup(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -132,7 +137,9 @@ class MatillionGroup(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -162,7 +169,9 @@ class MatillionGroup(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -174,7 +183,9 @@ class MatillionGroup(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -188,8 +199,6 @@ class MatillionGroup(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MatillionGroup"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -242,6 +251,7 @@ class MatillionGroup(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class MatillionGroupAttributes(AssetAttributes):
     """MatillionGroup-specific attributes for nested API format."""
 
@@ -250,6 +260,7 @@ class MatillionGroupAttributes(AssetAttributes):
 
     matillion_version: Union[str, None, UnsetType] = UNSET
     """Current point in time state of a project."""
+
 
 class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     """MatillionGroup-specific relationship attributes for nested API format."""
@@ -278,7 +289,9 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -287,7 +300,9 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -317,7 +332,9 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -329,7 +346,9 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -341,13 +360,21 @@ class MatillionGroupRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class MatillionGroupNested(AssetNested):
     """MatillionGroup in nested API format for high-performance serialization."""
 
     attributes: Union[MatillionGroupAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[MatillionGroupRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[MatillionGroupRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[MatillionGroupRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[MatillionGroupRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        MatillionGroupRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        MatillionGroupRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -386,11 +413,15 @@ _MATILLION_GROUP_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_matillion_group_attrs(attrs: MatillionGroupAttributes, obj: MatillionGroup) -> None:
+
+def _populate_matillion_group_attrs(
+    attrs: MatillionGroupAttributes, obj: MatillionGroup
+) -> None:
     """Populate MatillionGroup-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.matillion_project_count = obj.matillion_project_count
     attrs.matillion_version = obj.matillion_version
+
 
 def _extract_matillion_group_attrs(attrs: MatillionGroupAttributes) -> dict:
     """Extract all MatillionGroup attributes from the attrs struct into a flat dict."""
@@ -398,6 +429,7 @@ def _extract_matillion_group_attrs(attrs: MatillionGroupAttributes) -> dict:
     result["matillion_project_count"] = attrs.matillion_project_count
     result["matillion_version"] = attrs.matillion_version
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -410,7 +442,9 @@ def _matillion_group_to_nested(matillion_group: MatillionGroup) -> MatillionGrou
     _populate_matillion_group_attrs(attrs, matillion_group)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        matillion_group, _MATILLION_GROUP_REL_FIELDS, MatillionGroupRelationshipAttributes
+        matillion_group,
+        _MATILLION_GROUP_REL_FIELDS,
+        MatillionGroupRelationshipAttributes,
     )
     return MatillionGroupNested(
         guid=matillion_group.guid,
@@ -438,16 +472,21 @@ def _matillion_group_to_nested(matillion_group: MatillionGroup) -> MatillionGrou
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _matillion_group_from_nested(nested: MatillionGroupNested) -> MatillionGroup:
     """Convert nested format to flat MatillionGroup."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MatillionGroupAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MatillionGroupAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MATILLION_GROUP_REL_FIELDS,
-        MatillionGroupRelationshipAttributes
+        MatillionGroupRelationshipAttributes,
     )
     return MatillionGroup(
         guid=nested.guid,
@@ -474,7 +513,10 @@ def _matillion_group_from_nested(nested: MatillionGroupNested) -> MatillionGroup
         **merged_rels,
     )
 
-def _matillion_group_to_nested_bytes(matillion_group: MatillionGroup, serde: Serde) -> bytes:
+
+def _matillion_group_to_nested_bytes(
+    matillion_group: MatillionGroup, serde: Serde
+) -> bytes:
     """Convert flat MatillionGroup to nested JSON bytes."""
     return serde.encode(_matillion_group_to_nested(matillion_group))
 
@@ -483,6 +525,7 @@ def _matillion_group_from_nested_bytes(data: bytes, serde: Serde) -> MatillionGr
     """Convert nested JSON bytes to flat MatillionGroup."""
     nested = serde.decode(data, MatillionGroupNested)
     return _matillion_group_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -493,7 +536,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MatillionGroup.MATILLION_PROJECT_COUNT = NumericField("matillionProjectCount", "matillionProjectCount")
+MatillionGroup.MATILLION_PROJECT_COUNT = NumericField(
+    "matillionProjectCount", "matillionProjectCount"
+)
 MatillionGroup.MATILLION_VERSION = KeywordField("matillionVersion", "matillionVersion")
 MatillionGroup.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MatillionGroup.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -503,7 +548,9 @@ MatillionGroup.APPLICATION_FIELD = RelationField("applicationField")
 MatillionGroup.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MatillionGroup.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MatillionGroup.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MatillionGroup.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MatillionGroup.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MatillionGroup.METRICS = RelationField("metrics")
 MatillionGroup.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MatillionGroup.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

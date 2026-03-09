@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,13 +49,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Kafka(Asset):
@@ -112,7 +116,9 @@ class Kafka(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -121,7 +127,9 @@ class Kafka(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -148,7 +156,9 @@ class Kafka(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -160,7 +170,9 @@ class Kafka(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -174,8 +186,6 @@ class Kafka(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Kafka"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -228,10 +238,12 @@ class Kafka(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class KafkaAttributes(AssetAttributes):
     """Kafka-specific attributes for nested API format."""
 
     pass
+
 
 class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     """Kafka-specific relationship attributes for nested API format."""
@@ -260,7 +272,9 @@ class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -269,7 +283,9 @@ class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -296,7 +312,9 @@ class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -308,7 +326,9 @@ class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -320,13 +340,19 @@ class KafkaRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class KafkaNested(AssetNested):
     """Kafka in nested API format for high-performance serialization."""
 
     attributes: Union[KafkaAttributes, UnsetType] = UNSET
     relationship_attributes: Union[KafkaRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[KafkaRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[KafkaRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[KafkaRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[KafkaRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -364,13 +390,16 @@ _KAFKA_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_kafka_attrs(attrs: KafkaAttributes, obj: Kafka) -> None:
     """Populate Kafka-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_kafka_attrs(attrs: KafkaAttributes) -> dict:
     """Extract all Kafka attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -411,6 +440,7 @@ def _kafka_to_nested(kafka: Kafka) -> KafkaNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _kafka_from_nested(nested: KafkaNested) -> Kafka:
     """Convert nested format to flat Kafka."""
     attrs = nested.attributes if nested.attributes is not UNSET else KafkaAttributes()
@@ -420,7 +450,7 @@ def _kafka_from_nested(nested: KafkaNested) -> Kafka:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _KAFKA_REL_FIELDS,
-        KafkaRelationshipAttributes
+        KafkaRelationshipAttributes,
     )
     return Kafka(
         guid=nested.guid,
@@ -447,6 +477,7 @@ def _kafka_from_nested(nested: KafkaNested) -> Kafka:
         **merged_rels,
     )
 
+
 def _kafka_to_nested_bytes(kafka: Kafka, serde: Serde) -> bytes:
     """Convert flat Kafka to nested JSON bytes."""
     return serde.encode(_kafka_to_nested(kafka))
@@ -456,6 +487,7 @@ def _kafka_from_nested_bytes(data: bytes, serde: Serde) -> Kafka:
     """Convert nested JSON bytes to flat Kafka."""
     nested = serde.decode(data, KafkaNested)
     return _kafka_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

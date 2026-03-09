@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -45,6 +44,7 @@ class RelatedSchemaRegistry(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SchemaRegistry"
 
+
 class RelatedSchemaRegistrySubject(RelatedSchemaRegistry):
     """
     Related entity reference for SchemaRegistrySubject assets.
@@ -67,10 +67,14 @@ class RelatedSchemaRegistrySubject(RelatedSchemaRegistry):
     schema_registry_subject_latest_schema_version: Union[str, None, UnsetType] = UNSET
     """Latest schema version of the subject."""
 
-    schema_registry_subject_latest_schema_definition: Union[str, None, UnsetType] = UNSET
+    schema_registry_subject_latest_schema_definition: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Definition of the latest schema in the subject."""
 
-    schema_registry_subject_governing_asset_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    schema_registry_subject_governing_asset_qualified_names: Union[
+        List[str], None, UnsetType
+    ] = UNSET
     """List of asset qualified names that this subject is governing/validating."""
 
     def __post_init__(self) -> None:

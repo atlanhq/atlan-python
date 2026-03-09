@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -40,18 +46,15 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sage_maker_unified_studio_related import RelatedSageMakerUnifiedStudioAssetSchema
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .sage_maker_unified_studio_related import RelatedSageMakerUnifiedStudioAssetSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SageMakerUnifiedStudioAsset(Asset):
@@ -159,7 +162,9 @@ class SageMakerUnifiedStudioAsset(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -168,7 +173,9 @@ class SageMakerUnifiedStudioAsset(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -195,7 +202,9 @@ class SageMakerUnifiedStudioAsset(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -207,10 +216,14 @@ class SageMakerUnifiedStudioAsset(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    smus_asset_schemas: Union[List[RelatedSageMakerUnifiedStudioAssetSchema], None, UnsetType] = UNSET
+    smus_asset_schemas: Union[
+        List[RelatedSageMakerUnifiedStudioAssetSchema], None, UnsetType
+    ] = UNSET
     """Schemas that exist within this published asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -224,8 +237,6 @@ class SageMakerUnifiedStudioAsset(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SageMakerUnifiedStudioAsset"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,7 +267,9 @@ class SageMakerUnifiedStudioAsset(Asset):
         return _sage_maker_unified_studio_asset_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SageMakerUnifiedStudioAsset:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SageMakerUnifiedStudioAsset:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -277,6 +290,7 @@ class SageMakerUnifiedStudioAsset(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class SageMakerUnifiedStudioAssetAttributes(AssetAttributes):
     """SageMakerUnifiedStudioAsset-specific attributes for nested API format."""
@@ -314,6 +328,7 @@ class SageMakerUnifiedStudioAssetAttributes(AssetAttributes):
     smus_owning_project_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio project which owns the asset."""
 
+
 class SageMakerUnifiedStudioAssetRelationshipAttributes(AssetRelationshipAttributes):
     """SageMakerUnifiedStudioAsset-specific relationship attributes for nested API format."""
 
@@ -341,7 +356,9 @@ class SageMakerUnifiedStudioAssetRelationshipAttributes(AssetRelationshipAttribu
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -350,7 +367,9 @@ class SageMakerUnifiedStudioAssetRelationshipAttributes(AssetRelationshipAttribu
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -377,7 +396,9 @@ class SageMakerUnifiedStudioAssetRelationshipAttributes(AssetRelationshipAttribu
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -389,10 +410,14 @@ class SageMakerUnifiedStudioAssetRelationshipAttributes(AssetRelationshipAttribu
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    smus_asset_schemas: Union[List[RelatedSageMakerUnifiedStudioAssetSchema], None, UnsetType] = UNSET
+    smus_asset_schemas: Union[
+        List[RelatedSageMakerUnifiedStudioAssetSchema], None, UnsetType
+    ] = UNSET
     """Schemas that exist within this published asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -404,13 +429,21 @@ class SageMakerUnifiedStudioAssetRelationshipAttributes(AssetRelationshipAttribu
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SageMakerUnifiedStudioAssetNested(AssetNested):
     """SageMakerUnifiedStudioAsset in nested API format for high-performance serialization."""
 
     attributes: Union[SageMakerUnifiedStudioAssetAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SageMakerUnifiedStudioAssetRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SageMakerUnifiedStudioAssetRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SageMakerUnifiedStudioAssetRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        SageMakerUnifiedStudioAssetRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        SageMakerUnifiedStudioAssetRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SageMakerUnifiedStudioAssetRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -449,7 +482,10 @@ _SAGE_MAKER_UNIFIED_STUDIO_ASSET_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sage_maker_unified_studio_asset_attrs(attrs: SageMakerUnifiedStudioAssetAttributes, obj: SageMakerUnifiedStudioAsset) -> None:
+
+def _populate_sage_maker_unified_studio_asset_attrs(
+    attrs: SageMakerUnifiedStudioAssetAttributes, obj: SageMakerUnifiedStudioAsset
+) -> None:
     """Populate SageMakerUnifiedStudioAsset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.smus_asset_summary = obj.smus_asset_summary
@@ -464,7 +500,10 @@ def _populate_sage_maker_unified_studio_asset_attrs(attrs: SageMakerUnifiedStudi
     attrs.smus_project_id = obj.smus_project_id
     attrs.smus_owning_project_id = obj.smus_owning_project_id
 
-def _extract_sage_maker_unified_studio_asset_attrs(attrs: SageMakerUnifiedStudioAssetAttributes) -> dict:
+
+def _extract_sage_maker_unified_studio_asset_attrs(
+    attrs: SageMakerUnifiedStudioAssetAttributes,
+) -> dict:
     """Extract all SageMakerUnifiedStudioAsset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["smus_asset_summary"] = attrs.smus_asset_summary
@@ -480,18 +519,25 @@ def _extract_sage_maker_unified_studio_asset_attrs(attrs: SageMakerUnifiedStudio
     result["smus_owning_project_id"] = attrs.smus_owning_project_id
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sage_maker_unified_studio_asset_to_nested(sage_maker_unified_studio_asset: SageMakerUnifiedStudioAsset) -> SageMakerUnifiedStudioAssetNested:
+def _sage_maker_unified_studio_asset_to_nested(
+    sage_maker_unified_studio_asset: SageMakerUnifiedStudioAsset,
+) -> SageMakerUnifiedStudioAssetNested:
     """Convert flat SageMakerUnifiedStudioAsset to nested format."""
     attrs = SageMakerUnifiedStudioAssetAttributes()
-    _populate_sage_maker_unified_studio_asset_attrs(attrs, sage_maker_unified_studio_asset)
+    _populate_sage_maker_unified_studio_asset_attrs(
+        attrs, sage_maker_unified_studio_asset
+    )
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sage_maker_unified_studio_asset, _SAGE_MAKER_UNIFIED_STUDIO_ASSET_REL_FIELDS, SageMakerUnifiedStudioAssetRelationshipAttributes
+        sage_maker_unified_studio_asset,
+        _SAGE_MAKER_UNIFIED_STUDIO_ASSET_REL_FIELDS,
+        SageMakerUnifiedStudioAssetRelationshipAttributes,
     )
     return SageMakerUnifiedStudioAssetNested(
         guid=sage_maker_unified_studio_asset.guid,
@@ -519,16 +565,23 @@ def _sage_maker_unified_studio_asset_to_nested(sage_maker_unified_studio_asset: 
         remove_relationship_attributes=remove_rels,
     )
 
-def _sage_maker_unified_studio_asset_from_nested(nested: SageMakerUnifiedStudioAssetNested) -> SageMakerUnifiedStudioAsset:
+
+def _sage_maker_unified_studio_asset_from_nested(
+    nested: SageMakerUnifiedStudioAssetNested,
+) -> SageMakerUnifiedStudioAsset:
     """Convert nested format to flat SageMakerUnifiedStudioAsset."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SageMakerUnifiedStudioAssetAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SageMakerUnifiedStudioAssetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAGE_MAKER_UNIFIED_STUDIO_ASSET_REL_FIELDS,
-        SageMakerUnifiedStudioAssetRelationshipAttributes
+        SageMakerUnifiedStudioAssetRelationshipAttributes,
     )
     return SageMakerUnifiedStudioAsset(
         guid=nested.guid,
@@ -555,47 +608,88 @@ def _sage_maker_unified_studio_asset_from_nested(nested: SageMakerUnifiedStudioA
         **merged_rels,
     )
 
-def _sage_maker_unified_studio_asset_to_nested_bytes(sage_maker_unified_studio_asset: SageMakerUnifiedStudioAsset, serde: Serde) -> bytes:
+
+def _sage_maker_unified_studio_asset_to_nested_bytes(
+    sage_maker_unified_studio_asset: SageMakerUnifiedStudioAsset, serde: Serde
+) -> bytes:
     """Convert flat SageMakerUnifiedStudioAsset to nested JSON bytes."""
-    return serde.encode(_sage_maker_unified_studio_asset_to_nested(sage_maker_unified_studio_asset))
+    return serde.encode(
+        _sage_maker_unified_studio_asset_to_nested(sage_maker_unified_studio_asset)
+    )
 
 
-def _sage_maker_unified_studio_asset_from_nested_bytes(data: bytes, serde: Serde) -> SageMakerUnifiedStudioAsset:
+def _sage_maker_unified_studio_asset_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SageMakerUnifiedStudioAsset:
     """Convert nested JSON bytes to flat SageMakerUnifiedStudioAsset."""
     nested = serde.decode(data, SageMakerUnifiedStudioAssetNested)
     return _sage_maker_unified_studio_asset_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
-SageMakerUnifiedStudioAsset.SMUS_ASSET_SUMMARY = KeywordField("smusAssetSummary", "smusAssetSummary")
-SageMakerUnifiedStudioAsset.SMUS_ASSET_TECHNICAL_NAME = KeywordField("smusAssetTechnicalName", "smusAssetTechnicalName")
-SageMakerUnifiedStudioAsset.SMUS_ASSET_TYPE = KeywordField("smusAssetType", "smusAssetType")
-SageMakerUnifiedStudioAsset.SMUS_ASSET_REVISION = KeywordField("smusAssetRevision", "smusAssetRevision")
-SageMakerUnifiedStudioAsset.SMUS_ASSET_SOURCE_IDENTIFIER = KeywordField("smusAssetSourceIdentifier", "smusAssetSourceIdentifier")
-SageMakerUnifiedStudioAsset.SMUS_DOMAIN_NAME = KeywordField("smusDomainName", "smusDomainName")
-SageMakerUnifiedStudioAsset.SMUS_DOMAIN_ID = KeywordField("smusDomainId", "smusDomainId")
-SageMakerUnifiedStudioAsset.SMUS_DOMAIN_UNIT_NAME = KeywordField("smusDomainUnitName", "smusDomainUnitName")
-SageMakerUnifiedStudioAsset.SMUS_DOMAIN_UNIT_ID = KeywordField("smusDomainUnitId", "smusDomainUnitId")
-SageMakerUnifiedStudioAsset.SMUS_PROJECT_ID = KeywordField("smusProjectId", "smusProjectId")
-SageMakerUnifiedStudioAsset.SMUS_OWNING_PROJECT_ID = KeywordField("smusOwningProjectId", "smusOwningProjectId")
-SageMakerUnifiedStudioAsset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SageMakerUnifiedStudioAsset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+SageMakerUnifiedStudioAsset.SMUS_ASSET_SUMMARY = KeywordField(
+    "smusAssetSummary", "smusAssetSummary"
+)
+SageMakerUnifiedStudioAsset.SMUS_ASSET_TECHNICAL_NAME = KeywordField(
+    "smusAssetTechnicalName", "smusAssetTechnicalName"
+)
+SageMakerUnifiedStudioAsset.SMUS_ASSET_TYPE = KeywordField(
+    "smusAssetType", "smusAssetType"
+)
+SageMakerUnifiedStudioAsset.SMUS_ASSET_REVISION = KeywordField(
+    "smusAssetRevision", "smusAssetRevision"
+)
+SageMakerUnifiedStudioAsset.SMUS_ASSET_SOURCE_IDENTIFIER = KeywordField(
+    "smusAssetSourceIdentifier", "smusAssetSourceIdentifier"
+)
+SageMakerUnifiedStudioAsset.SMUS_DOMAIN_NAME = KeywordField(
+    "smusDomainName", "smusDomainName"
+)
+SageMakerUnifiedStudioAsset.SMUS_DOMAIN_ID = KeywordField(
+    "smusDomainId", "smusDomainId"
+)
+SageMakerUnifiedStudioAsset.SMUS_DOMAIN_UNIT_NAME = KeywordField(
+    "smusDomainUnitName", "smusDomainUnitName"
+)
+SageMakerUnifiedStudioAsset.SMUS_DOMAIN_UNIT_ID = KeywordField(
+    "smusDomainUnitId", "smusDomainUnitId"
+)
+SageMakerUnifiedStudioAsset.SMUS_PROJECT_ID = KeywordField(
+    "smusProjectId", "smusProjectId"
+)
+SageMakerUnifiedStudioAsset.SMUS_OWNING_PROJECT_ID = KeywordField(
+    "smusOwningProjectId", "smusOwningProjectId"
+)
+SageMakerUnifiedStudioAsset.INPUT_TO_AIRFLOW_TASKS = RelationField(
+    "inputToAirflowTasks"
+)
+SageMakerUnifiedStudioAsset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 SageMakerUnifiedStudioAsset.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SageMakerUnifiedStudioAsset.APPLICATION = RelationField("application")
 SageMakerUnifiedStudioAsset.APPLICATION_FIELD = RelationField("applicationField")
-SageMakerUnifiedStudioAsset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-SageMakerUnifiedStudioAsset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SageMakerUnifiedStudioAsset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SageMakerUnifiedStudioAsset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SageMakerUnifiedStudioAsset.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+SageMakerUnifiedStudioAsset.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+SageMakerUnifiedStudioAsset.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+SageMakerUnifiedStudioAsset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SageMakerUnifiedStudioAsset.METRICS = RelationField("metrics")
 SageMakerUnifiedStudioAsset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SageMakerUnifiedStudioAsset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SageMakerUnifiedStudioAsset.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 SageMakerUnifiedStudioAsset.MEANINGS = RelationField("meanings")
 SageMakerUnifiedStudioAsset.MC_MONITORS = RelationField("mcMonitors")
 SageMakerUnifiedStudioAsset.MC_INCIDENTS = RelationField("mcIncidents")
@@ -603,13 +697,21 @@ SageMakerUnifiedStudioAsset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFi
 SageMakerUnifiedStudioAsset.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 SageMakerUnifiedStudioAsset.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SageMakerUnifiedStudioAsset.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-SageMakerUnifiedStudioAsset.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SageMakerUnifiedStudioAsset.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+SageMakerUnifiedStudioAsset.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+SageMakerUnifiedStudioAsset.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 SageMakerUnifiedStudioAsset.FILES = RelationField("files")
 SageMakerUnifiedStudioAsset.LINKS = RelationField("links")
 SageMakerUnifiedStudioAsset.README = RelationField("readme")
 SageMakerUnifiedStudioAsset.SMUS_ASSET_SCHEMAS = RelationField("smusAssetSchemas")
-SageMakerUnifiedStudioAsset.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SageMakerUnifiedStudioAsset.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 SageMakerUnifiedStudioAsset.SODA_CHECKS = RelationField("sodaChecks")
 SageMakerUnifiedStudioAsset.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-SageMakerUnifiedStudioAsset.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+SageMakerUnifiedStudioAsset.OUTPUT_FROM_SPARK_JOBS = RelationField(
+    "outputFromSparkJobs"
+)

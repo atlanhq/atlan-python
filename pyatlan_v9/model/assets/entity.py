@@ -19,7 +19,9 @@ import msgspec
 from msgspec import UNSET, UnsetType
 
 
-class AtlasClassification(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
+class AtlasClassification(
+    msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
+):
     """
     Atlas classification/tag assigned to an entity.
 

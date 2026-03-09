@@ -8,14 +8,10 @@ Partial module exports.
 This module provides convenient imports for all Partial types and their Related variants.
 """
 
-from .partial_related import (
-    RelatedPartial,
-    RelatedPartialField,
-    RelatedPartialObject,
-)
 from .partial import Partial
 from .partial_field import PartialField
 from .partial_object import PartialObject
+from .partial_related import RelatedPartial, RelatedPartialField, RelatedPartialObject
 
 __all__ = [
     "Partial",

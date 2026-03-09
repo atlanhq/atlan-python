@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -50,6 +49,7 @@ class RelatedSnowflake(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Snowflake"
 
+
 class RelatedSnowflakeDynamicTable(RelatedSnowflake):
     """
     Related entity reference for SnowflakeDynamicTable assets.
@@ -66,6 +66,7 @@ class RelatedSnowflakeDynamicTable(RelatedSnowflake):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeDynamicTable"
+
 
 class RelatedSnowflakePipe(RelatedSnowflake):
     """
@@ -89,6 +90,7 @@ class RelatedSnowflakePipe(RelatedSnowflake):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakePipe"
+
 
 class RelatedSnowflakeStage(RelatedSnowflake):
     """
@@ -115,6 +117,7 @@ class RelatedSnowflakeStage(RelatedSnowflake):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeStage"
+
 
 class RelatedSnowflakeStream(RelatedSnowflake):
     """
@@ -145,6 +148,7 @@ class RelatedSnowflakeStream(RelatedSnowflake):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeStream"
 
+
 class RelatedSnowflakeTag(RelatedSnowflake):
     """
     Related entity reference for SnowflakeTag assets.
@@ -159,6 +163,7 @@ class RelatedSnowflakeTag(RelatedSnowflake):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeTag"
 
+
 class RelatedSnowflakeAIModelContext(RelatedSnowflake):
     """
     Related entity reference for SnowflakeAIModelContext assets.
@@ -172,6 +177,7 @@ class RelatedSnowflakeAIModelContext(RelatedSnowflake):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeAIModelContext"
+
 
 class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
     """
@@ -202,6 +208,7 @@ class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeAIModelVersion"
 
+
 class RelatedSnowflakeSemanticView(RelatedSnowflake):
     """
     Related entity reference for SnowflakeSemanticView assets.
@@ -218,6 +225,7 @@ class RelatedSnowflakeSemanticView(RelatedSnowflake):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeSemanticView"
+
 
 class RelatedSnowflakeSemanticLogicalTable(RelatedSnowflake):
     """
@@ -248,6 +256,7 @@ class RelatedSnowflakeSemanticLogicalTable(RelatedSnowflake):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeSemanticLogicalTable"
 
+
 class RelatedSnowflakeSemanticFact(RelatedSnowflake):
     """
     Related entity reference for SnowflakeSemanticFact assets.
@@ -274,6 +283,7 @@ class RelatedSnowflakeSemanticFact(RelatedSnowflake):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeSemanticFact"
 
+
 class RelatedSnowflakeSemanticDimension(RelatedSnowflake):
     """
     Related entity reference for SnowflakeSemanticDimension assets.
@@ -299,6 +309,7 @@ class RelatedSnowflakeSemanticDimension(RelatedSnowflake):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeSemanticDimension"
+
 
 class RelatedSnowflakeSemanticMetric(RelatedSnowflake):
     """

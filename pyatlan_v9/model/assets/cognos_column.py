@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,14 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .cognos_related import (
+    RelatedCognosDashboard,
+    RelatedCognosDataset,
+    RelatedCognosExploration,
+    RelatedCognosFile,
+    RelatedCognosModule,
+    RelatedCognosPackage,
+)
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -44,15 +58,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .cognos_related import RelatedCognosDashboard, RelatedCognosDataset, RelatedCognosExploration, RelatedCognosFile, RelatedCognosModule, RelatedCognosPackage
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CognosColumn(Asset):
@@ -187,7 +197,9 @@ class CognosColumn(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -196,7 +208,9 @@ class CognosColumn(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -223,7 +237,9 @@ class CognosColumn(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -235,7 +251,9 @@ class CognosColumn(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -257,7 +275,6 @@ class CognosColumn(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -310,6 +327,7 @@ class CognosColumn(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CognosColumnAttributes(AssetAttributes):
     """CognosColumn-specific attributes for nested API format."""
 
@@ -348,6 +366,7 @@ class CognosColumnAttributes(AssetAttributes):
 
     cognos_default_screen_tip: Union[str, None, UnsetType] = UNSET
     """Tooltip text present for the Cognos asset."""
+
 
 class CognosColumnRelationshipAttributes(AssetRelationshipAttributes):
     """CognosColumn-specific relationship attributes for nested API format."""
@@ -394,7 +413,9 @@ class CognosColumnRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -403,7 +424,9 @@ class CognosColumnRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -430,7 +453,9 @@ class CognosColumnRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -442,7 +467,9 @@ class CognosColumnRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -454,13 +481,21 @@ class CognosColumnRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class CognosColumnNested(AssetNested):
     """CognosColumn in nested API format for high-performance serialization."""
 
     attributes: Union[CognosColumnAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[CognosColumnRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CognosColumnRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[CognosColumnRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[CognosColumnRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        CognosColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CognosColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -504,7 +539,10 @@ _COGNOS_COLUMN_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognos_column_attrs(attrs: CognosColumnAttributes, obj: CognosColumn) -> None:
+
+def _populate_cognos_column_attrs(
+    attrs: CognosColumnAttributes, obj: CognosColumn
+) -> None:
     """Populate CognosColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cognos_datatype = obj.cognos_datatype
@@ -519,6 +557,7 @@ def _populate_cognos_column_attrs(attrs: CognosColumnAttributes, obj: CognosColu
     attrs.cognos_is_hidden = obj.cognos_is_hidden
     attrs.cognos_is_disabled = obj.cognos_is_disabled
     attrs.cognos_default_screen_tip = obj.cognos_default_screen_tip
+
 
 def _extract_cognos_column_attrs(attrs: CognosColumnAttributes) -> dict:
     """Extract all CognosColumn attributes from the attrs struct into a flat dict."""
@@ -536,6 +575,7 @@ def _extract_cognos_column_attrs(attrs: CognosColumnAttributes) -> dict:
     result["cognos_is_disabled"] = attrs.cognos_is_disabled
     result["cognos_default_screen_tip"] = attrs.cognos_default_screen_tip
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -576,16 +616,21 @@ def _cognos_column_to_nested(cognos_column: CognosColumn) -> CognosColumnNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognos_column_from_nested(nested: CognosColumnNested) -> CognosColumn:
     """Convert nested format to flat CognosColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CognosColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CognosColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNOS_COLUMN_REL_FIELDS,
-        CognosColumnRelationshipAttributes
+        CognosColumnRelationshipAttributes,
     )
     return CognosColumn(
         guid=nested.guid,
@@ -612,6 +657,7 @@ def _cognos_column_from_nested(nested: CognosColumnNested) -> CognosColumn:
         **merged_rels,
     )
 
+
 def _cognos_column_to_nested_bytes(cognos_column: CognosColumn, serde: Serde) -> bytes:
     """Convert flat CognosColumn to nested JSON bytes."""
     return serde.encode(_cognos_column_to_nested(cognos_column))
@@ -621,6 +667,7 @@ def _cognos_column_from_nested_bytes(data: bytes, serde: Serde) -> CognosColumn:
     """Convert nested JSON bytes to flat CognosColumn."""
     nested = serde.decode(data, CognosColumnNested)
     return _cognos_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -634,16 +681,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 CognosColumn.COGNOS_DATATYPE = KeywordField("cognosDatatype", "cognosDatatype")
 CognosColumn.COGNOS_NULLABLE = KeywordField("cognosNullable", "cognosNullable")
-CognosColumn.COGNOS_REGULAR_AGGREGATE = KeywordField("cognosRegularAggregate", "cognosRegularAggregate")
+CognosColumn.COGNOS_REGULAR_AGGREGATE = KeywordField(
+    "cognosRegularAggregate", "cognosRegularAggregate"
+)
 CognosColumn.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosColumn.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
-CognosColumn.COGNOS_PARENT_NAME = KeywordTextField("cognosParentName", "cognosParentName", "cognosParentName.text")
-CognosColumn.COGNOS_PARENT_QUALIFIED_NAME = KeywordField("cognosParentQualifiedName", "cognosParentQualifiedName")
+CognosColumn.COGNOS_PARENT_NAME = KeywordTextField(
+    "cognosParentName", "cognosParentName", "cognosParentName.text"
+)
+CognosColumn.COGNOS_PARENT_QUALIFIED_NAME = KeywordField(
+    "cognosParentQualifiedName", "cognosParentQualifiedName"
+)
 CognosColumn.COGNOS_VERSION = KeywordField("cognosVersion", "cognosVersion")
 CognosColumn.COGNOS_TYPE = KeywordField("cognosType", "cognosType")
 CognosColumn.COGNOS_IS_HIDDEN = BooleanField("cognosIsHidden", "cognosIsHidden")
 CognosColumn.COGNOS_IS_DISABLED = BooleanField("cognosIsDisabled", "cognosIsDisabled")
-CognosColumn.COGNOS_DEFAULT_SCREEN_TIP = KeywordField("cognosDefaultScreenTip", "cognosDefaultScreenTip")
+CognosColumn.COGNOS_DEFAULT_SCREEN_TIP = KeywordField(
+    "cognosDefaultScreenTip", "cognosDefaultScreenTip"
+)
 CognosColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CognosColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CognosColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")

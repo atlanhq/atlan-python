@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -52,6 +51,7 @@ class RelatedTableau(RelatedBI):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Tableau"
+
 
 class RelatedTableauCalculatedField(RelatedTableau):
     """
@@ -100,6 +100,7 @@ class RelatedTableauCalculatedField(RelatedTableau):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauCalculatedField"
 
+
 class RelatedTableauDashboard(RelatedTableau):
     """
     Related entity reference for TableauDashboard assets.
@@ -128,6 +129,7 @@ class RelatedTableauDashboard(RelatedTableau):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauDashboard"
+
 
 class RelatedTableauDashboardField(RelatedTableau):
     """
@@ -175,10 +177,14 @@ class RelatedTableauDashboardField(RelatedTableau):
     tableau_dashboard_field_bin_size: Union[str, None, UnsetType] = UNSET
     """Bin size of this field."""
 
-    tableau_dashboard_field_upstream_columns: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_dashboard_field_upstream_columns: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Columns upstream to this field."""
 
-    tableau_dashboard_field_upstream_fields: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_dashboard_field_upstream_fields: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Fields upstream to this field."""
 
     tableau_dashboard_field_type: Union[str, None, UnsetType] = UNSET
@@ -187,6 +193,7 @@ class RelatedTableauDashboardField(RelatedTableau):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauDashboardField"
+
 
 class RelatedTableauDatasource(RelatedTableau):
     """
@@ -240,6 +247,7 @@ class RelatedTableauDatasource(RelatedTableau):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauDatasource"
+
 
 class RelatedTableauDatasourceField(RelatedTableau):
     """
@@ -303,6 +311,7 @@ class RelatedTableauDatasourceField(RelatedTableau):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauDatasourceField"
 
+
 class RelatedTableauFlow(RelatedTableau):
     """
     Related entity reference for TableauFlow assets.
@@ -338,6 +347,7 @@ class RelatedTableauFlow(RelatedTableau):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauFlow"
 
+
 class RelatedTableauMetric(RelatedTableau):
     """
     Related entity reference for TableauMetric assets.
@@ -363,6 +373,7 @@ class RelatedTableauMetric(RelatedTableau):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauMetric"
+
 
 class RelatedTableauProject(RelatedTableau):
     """
@@ -390,6 +401,7 @@ class RelatedTableauProject(RelatedTableau):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauProject"
 
+
 class RelatedTableauSite(RelatedTableau):
     """
     Related entity reference for TableauSite assets.
@@ -403,6 +415,7 @@ class RelatedTableauSite(RelatedTableau):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauSite"
+
 
 class RelatedTableauWorkbook(RelatedTableau):
     """
@@ -433,6 +446,7 @@ class RelatedTableauWorkbook(RelatedTableau):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauWorkbook"
 
+
 class RelatedTableauWorksheet(RelatedTableau):
     """
     Related entity reference for TableauWorksheet assets.
@@ -461,6 +475,7 @@ class RelatedTableauWorksheet(RelatedTableau):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TableauWorksheet"
+
 
 class RelatedTableauWorksheetField(RelatedTableau):
     """
@@ -502,7 +517,9 @@ class RelatedTableauWorksheetField(RelatedTableau):
     tableau_worksheet_field_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of this field."""
 
-    tableau_worksheet_field_upstream_tables: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_tables: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Tables upstream to this worksheet field."""
 
     tableau_worksheet_field_formula: Union[str, None, UnsetType] = UNSET
@@ -511,10 +528,14 @@ class RelatedTableauWorksheetField(RelatedTableau):
     tableau_worksheet_field_bin_size: Union[str, None, UnsetType] = UNSET
     """Bin size of this field."""
 
-    tableau_worksheet_field_upstream_columns: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_columns: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Columns upstream to this field."""
 
-    tableau_worksheet_field_upstream_fields: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_fields: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Fields upstream to this field."""
 
     tableau_worksheet_field_type: Union[str, None, UnsetType] = UNSET

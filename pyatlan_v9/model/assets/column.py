@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -35,7 +42,14 @@ from .asset import (
 from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtMetric, RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtMetric,
+    RelatedDbtModel,
+    RelatedDbtModelColumn,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
@@ -45,18 +59,26 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeDynamicTable, RelatedSnowflakeSemanticLogicalTable
+from .snowflake_related import (
+    RelatedSnowflakeDynamicTable,
+    RelatedSnowflakeSemanticLogicalTable,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .sql_related import RelatedCalculationView, RelatedColumn, RelatedMaterialisedView, RelatedQuery, RelatedTable, RelatedTablePartition, RelatedView
+from .sql_related import (
+    RelatedCalculationView,
+    RelatedColumn,
+    RelatedMaterialisedView,
+    RelatedQuery,
+    RelatedTable,
+    RelatedTablePartition,
+    RelatedView,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Column(Asset):
@@ -460,7 +482,9 @@ class Column(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -481,7 +505,9 @@ class Column(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: Union[RelatedCosmosMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
@@ -493,7 +519,9 @@ class Column(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -511,10 +539,14 @@ class Column(Asset):
     dq_base_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this column."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this column is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -529,7 +561,9 @@ class Column(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
@@ -538,7 +572,9 @@ class Column(Asset):
     dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """(Deprecated) Model columns related to this model column."""
 
-    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
+    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = (
+        UNSET
+    )
     """Model columns related to this column."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -547,7 +583,9 @@ class Column(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollection")
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -571,7 +609,9 @@ class Column(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -613,13 +653,19 @@ class Column(Asset):
     queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that access this column."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = UNSET
+    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
+        UNSET
+    )
     """Snowflake dynamic table in which this column exists."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -641,7 +687,6 @@ class Column(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -693,6 +738,7 @@ class Column(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class ColumnAttributes(AssetAttributes):
     """Column-specific attributes for nested API format."""
@@ -949,11 +995,14 @@ class ColumnAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     """Column-specific relationship attributes for nested API format."""
@@ -973,7 +1022,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: Union[RelatedCosmosMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
@@ -985,7 +1036,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -1003,10 +1056,14 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this column."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this column is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -1021,7 +1078,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
@@ -1030,7 +1089,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """(Deprecated) Model columns related to this model column."""
 
-    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
+    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = (
+        UNSET
+    )
     """Model columns related to this column."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -1039,7 +1100,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollection")
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -1063,7 +1126,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -1105,13 +1170,19 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that access this column."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = UNSET
+    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
+        UNSET
+    )
     """Snowflake dynamic table in which this column exists."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -1123,13 +1194,19 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class ColumnNested(AssetNested):
     """Column in nested API format for high-performance serialization."""
 
     attributes: Union[ColumnAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1193,6 +1270,7 @@ _COLUMN_REL_FIELDS: List[str] = [
     "input_to_spark_jobs",
     "output_from_spark_jobs",
 ]
+
 
 def _populate_column_attrs(attrs: ColumnAttributes, obj: Column) -> None:
     """Populate Column-specific attributes on the attrs struct."""
@@ -1284,6 +1362,7 @@ def _populate_column_attrs(attrs: ColumnAttributes, obj: Column) -> None:
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_column_attrs(attrs: ColumnAttributes) -> dict:
     """Extract all Column attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -1371,9 +1450,12 @@ def _extract_column_attrs(attrs: ColumnAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -1414,6 +1496,7 @@ def _column_to_nested(column: Column) -> ColumnNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _column_from_nested(nested: ColumnNested) -> Column:
     """Convert nested format to flat Column."""
     attrs = nested.attributes if nested.attributes is not UNSET else ColumnAttributes()
@@ -1423,7 +1506,7 @@ def _column_from_nested(nested: ColumnNested) -> Column:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COLUMN_REL_FIELDS,
-        ColumnRelationshipAttributes
+        ColumnRelationshipAttributes,
     )
     return Column(
         guid=nested.guid,
@@ -1450,6 +1533,7 @@ def _column_from_nested(nested: ColumnNested) -> Column:
         **merged_rels,
     )
 
+
 def _column_to_nested_bytes(column: Column, serde: Serde) -> bytes:
     """Convert flat Column to nested JSON bytes."""
     return serde.encode(_column_to_nested(column))
@@ -1459,6 +1543,7 @@ def _column_from_nested_bytes(data: bytes, serde: Serde) -> Column:
     """Convert nested JSON bytes to flat Column."""
     nested = serde.decode(data, ColumnNested)
     return _column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1475,9 +1560,13 @@ Column.DATA_TYPE = KeywordTextField("dataType", "dataType", "dataType.text")
 Column.SUB_DATA_TYPE = KeywordField("subDataType", "subDataType")
 Column.SQL_COMPRESSION = KeywordField("sqlCompression", "sqlCompression")
 Column.SQL_ENCODING = KeywordField("sqlEncoding", "sqlEncoding")
-Column.RAW_DATA_TYPE_DEFINITION = KeywordField("rawDataTypeDefinition", "rawDataTypeDefinition")
+Column.RAW_DATA_TYPE_DEFINITION = KeywordField(
+    "rawDataTypeDefinition", "rawDataTypeDefinition"
+)
 Column.ORDER = NumericField("order", "order")
-Column.NESTED_COLUMN_ORDER = KeywordTextField("nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text")
+Column.NESTED_COLUMN_ORDER = KeywordTextField(
+    "nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text"
+)
 Column.NESTED_COLUMN_COUNT = NumericField("nestedColumnCount", "nestedColumnCount")
 Column.COLUMN_HIERARCHY = KeywordField("columnHierarchy", "columnHierarchy")
 Column.IS_PARTITION = BooleanField("isPartition", "isPartition")
@@ -1497,31 +1586,61 @@ Column.IS_NULLABLE = BooleanField("isNullable", "isNullable")
 Column.NUMERIC_SCALE = NumericField("numericScale", "numericScale")
 Column.MAX_LENGTH = NumericField("maxLength", "maxLength")
 Column.VALIDATIONS = KeywordField("validations", "validations")
-Column.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField("parentColumnQualifiedName", "parentColumnQualifiedName", "parentColumnQualifiedName.text")
+Column.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField(
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName.text",
+)
 Column.PARENT_COLUMN_NAME = KeywordField("parentColumnName", "parentColumnName")
-Column.SQL_DISTINCT_VALUES_COUNT = NumericField("sqlDistinctValuesCount", "sqlDistinctValuesCount")
-Column.SQL_DISTINCT_VALUES_COUNT_LONG = NumericField("sqlDistinctValuesCountLong", "sqlDistinctValuesCountLong")
+Column.SQL_DISTINCT_VALUES_COUNT = NumericField(
+    "sqlDistinctValuesCount", "sqlDistinctValuesCount"
+)
+Column.SQL_DISTINCT_VALUES_COUNT_LONG = NumericField(
+    "sqlDistinctValuesCountLong", "sqlDistinctValuesCountLong"
+)
 Column.SQL_HISTOGRAM = KeywordField("sqlHistogram", "sqlHistogram")
 Column.SQL_MAX = NumericField("sqlMax", "sqlMax")
 Column.SQL_MIN = NumericField("sqlMin", "sqlMin")
 Column.SQL_MEAN = NumericField("sqlMean", "sqlMean")
 Column.SQL_SUM = NumericField("sqlSum", "sqlSum")
 Column.SQL_MEDIAN = NumericField("sqlMedian", "sqlMedian")
-Column.SQL_STANDARD_DEVIATION = NumericField("sqlStandardDeviation", "sqlStandardDeviation")
-Column.SQL_UNIQUE_VALUES_COUNT = NumericField("sqlUniqueValuesCount", "sqlUniqueValuesCount")
-Column.SQL_UNIQUE_VALUES_COUNT_LONG = NumericField("sqlUniqueValuesCountLong", "sqlUniqueValuesCountLong")
+Column.SQL_STANDARD_DEVIATION = NumericField(
+    "sqlStandardDeviation", "sqlStandardDeviation"
+)
+Column.SQL_UNIQUE_VALUES_COUNT = NumericField(
+    "sqlUniqueValuesCount", "sqlUniqueValuesCount"
+)
+Column.SQL_UNIQUE_VALUES_COUNT_LONG = NumericField(
+    "sqlUniqueValuesCountLong", "sqlUniqueValuesCountLong"
+)
 Column.SQL_AVERAGE = NumericField("sqlAverage", "sqlAverage")
 Column.SQL_AVERAGE_LENGTH = NumericField("sqlAverageLength", "sqlAverageLength")
-Column.SQL_DUPLICATE_VALUES_COUNT = NumericField("sqlDuplicateValuesCount", "sqlDuplicateValuesCount")
-Column.SQL_DUPLICATE_VALUES_COUNT_LONG = NumericField("sqlDuplicateValuesCountLong", "sqlDuplicateValuesCountLong")
-Column.SQL_MAXIMUM_STRING_LENGTH = NumericField("sqlMaximumStringLength", "sqlMaximumStringLength")
+Column.SQL_DUPLICATE_VALUES_COUNT = NumericField(
+    "sqlDuplicateValuesCount", "sqlDuplicateValuesCount"
+)
+Column.SQL_DUPLICATE_VALUES_COUNT_LONG = NumericField(
+    "sqlDuplicateValuesCountLong", "sqlDuplicateValuesCountLong"
+)
+Column.SQL_MAXIMUM_STRING_LENGTH = NumericField(
+    "sqlMaximumStringLength", "sqlMaximumStringLength"
+)
 Column.COLUMN_MAXS = KeywordField("columnMaxs", "columnMaxs")
-Column.SQL_MINIMUM_STRING_LENGTH = NumericField("sqlMinimumStringLength", "sqlMinimumStringLength")
+Column.SQL_MINIMUM_STRING_LENGTH = NumericField(
+    "sqlMinimumStringLength", "sqlMinimumStringLength"
+)
 Column.COLUMN_MINS = KeywordField("columnMins", "columnMins")
-Column.SQL_MISSING_VALUES_COUNT = NumericField("sqlMissingValuesCount", "sqlMissingValuesCount")
-Column.SQL_MISSING_VALUES_COUNT_LONG = NumericField("sqlMissingValuesCountLong", "sqlMissingValuesCountLong")
-Column.SQL_MISSING_VALUES_PERCENTAGE = NumericField("sqlMissingValuesPercentage", "sqlMissingValuesPercentage")
-Column.SQL_UNIQUENESS_PERCENTAGE = NumericField("sqlUniquenessPercentage", "sqlUniquenessPercentage")
+Column.SQL_MISSING_VALUES_COUNT = NumericField(
+    "sqlMissingValuesCount", "sqlMissingValuesCount"
+)
+Column.SQL_MISSING_VALUES_COUNT_LONG = NumericField(
+    "sqlMissingValuesCountLong", "sqlMissingValuesCountLong"
+)
+Column.SQL_MISSING_VALUES_PERCENTAGE = NumericField(
+    "sqlMissingValuesPercentage", "sqlMissingValuesPercentage"
+)
+Column.SQL_UNIQUENESS_PERCENTAGE = NumericField(
+    "sqlUniquenessPercentage", "sqlUniquenessPercentage"
+)
 Column.SQL_VARIANCE = NumericField("sqlVariance", "sqlVariance")
 Column.COLUMN_TOP_VALUES = KeywordField("columnTopValues", "columnTopValues")
 Column.SQL_MAX_VALUE = NumericField("sqlMaxValue", "sqlMaxValue")
@@ -1529,33 +1648,55 @@ Column.SQL_MIN_VALUE = NumericField("sqlMinValue", "sqlMinValue")
 Column.SQL_MEAN_VALUE = NumericField("sqlMeanValue", "sqlMeanValue")
 Column.SQL_SUM_VALUE = NumericField("sqlSumValue", "sqlSumValue")
 Column.SQL_MEDIAN_VALUE = NumericField("sqlMedianValue", "sqlMedianValue")
-Column.SQL_STANDARD_DEVIATION_VALUE = NumericField("sqlStandardDeviationValue", "sqlStandardDeviationValue")
+Column.SQL_STANDARD_DEVIATION_VALUE = NumericField(
+    "sqlStandardDeviationValue", "sqlStandardDeviationValue"
+)
 Column.SQL_AVERAGE_VALUE = NumericField("sqlAverageValue", "sqlAverageValue")
 Column.SQL_VARIANCE_VALUE = NumericField("sqlVarianceValue", "sqlVarianceValue")
-Column.SQL_AVERAGE_LENGTH_VALUE = NumericField("sqlAverageLengthValue", "sqlAverageLengthValue")
-Column.SQL_DISTRIBUTION_HISTOGRAM = KeywordField("sqlDistributionHistogram", "sqlDistributionHistogram")
+Column.SQL_AVERAGE_LENGTH_VALUE = NumericField(
+    "sqlAverageLengthValue", "sqlAverageLengthValue"
+)
+Column.SQL_DISTRIBUTION_HISTOGRAM = KeywordField(
+    "sqlDistributionHistogram", "sqlDistributionHistogram"
+)
 Column.SQL_DEPTH_LEVEL = NumericField("sqlDepthLevel", "sqlDepthLevel")
-Column.NOSQL_COLLECTION_NAME = KeywordField("nosqlCollectionName", "nosqlCollectionName")
-Column.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField("nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName")
+Column.NOSQL_COLLECTION_NAME = KeywordField(
+    "nosqlCollectionName", "nosqlCollectionName"
+)
+Column.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField(
+    "nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName"
+)
 Column.SQL_IS_MEASURE = BooleanField("sqlIsMeasure", "sqlIsMeasure")
 Column.SQL_MEASURE_TYPE = KeywordField("sqlMeasureType", "sqlMeasureType")
 Column.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Column.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Column.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Column.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+Column.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 Column.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Column.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+Column.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 Column.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Column.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+Column.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 Column.TABLE_NAME = KeywordField("tableName", "tableName")
 Column.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 Column.VIEW_NAME = KeywordField("viewName", "viewName")
 Column.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Column.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-Column.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+Column.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+Column.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 Column.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Column.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Column.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+Column.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 Column.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Column.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Column.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -1608,7 +1749,9 @@ Column.FOREIGN_KEY_FROM = RelationField("foreignKeyFrom")
 Column.QUERIES = RelationField("queries")
 Column.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 Column.SNOWFLAKE_DYNAMIC_TABLE = RelationField("snowflakeDynamicTable")
-Column.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+Column.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 Column.SODA_CHECKS = RelationField("sodaChecks")
 Column.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Column.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

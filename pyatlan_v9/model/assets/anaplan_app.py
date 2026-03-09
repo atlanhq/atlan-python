@@ -14,12 +14,19 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .airflow_related import RelatedAirflowTask
+from .anaplan_related import RelatedAnaplanPage
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -43,15 +50,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .anaplan_related import RelatedAnaplanPage
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AnaplanApp(Asset):
@@ -146,7 +149,9 @@ class AnaplanApp(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -155,7 +160,9 @@ class AnaplanApp(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -182,7 +189,9 @@ class AnaplanApp(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -194,7 +203,9 @@ class AnaplanApp(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -208,8 +219,6 @@ class AnaplanApp(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AnaplanApp"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -262,6 +271,7 @@ class AnaplanApp(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AnaplanAppAttributes(AssetAttributes):
     """AnaplanApp-specific attributes for nested API format."""
 
@@ -285,6 +295,7 @@ class AnaplanAppAttributes(AssetAttributes):
 
     anaplan_source_id: Union[str, None, UnsetType] = UNSET
     """Id/Guid of the Anaplan asset in the source system."""
+
 
 class AnaplanAppRelationshipAttributes(AssetRelationshipAttributes):
     """AnaplanApp-specific relationship attributes for nested API format."""
@@ -316,7 +327,9 @@ class AnaplanAppRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -325,7 +338,9 @@ class AnaplanAppRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -352,7 +367,9 @@ class AnaplanAppRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -364,7 +381,9 @@ class AnaplanAppRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -376,13 +395,19 @@ class AnaplanAppRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class AnaplanAppNested(AssetNested):
     """AnaplanApp in nested API format for high-performance serialization."""
 
     attributes: Union[AnaplanAppAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AnaplanAppRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AnaplanAppRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[AnaplanAppRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        AnaplanAppRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AnaplanAppRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -421,6 +446,7 @@ _ANAPLAN_APP_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_anaplan_app_attrs(attrs: AnaplanAppAttributes, obj: AnaplanApp) -> None:
     """Populate AnaplanApp-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -431,6 +457,7 @@ def _populate_anaplan_app_attrs(attrs: AnaplanAppAttributes, obj: AnaplanApp) ->
     attrs.anaplan_module_qualified_name = obj.anaplan_module_qualified_name
     attrs.anaplan_module_name = obj.anaplan_module_name
     attrs.anaplan_source_id = obj.anaplan_source_id
+
 
 def _extract_anaplan_app_attrs(attrs: AnaplanAppAttributes) -> dict:
     """Extract all AnaplanApp attributes from the attrs struct into a flat dict."""
@@ -443,6 +470,7 @@ def _extract_anaplan_app_attrs(attrs: AnaplanAppAttributes) -> dict:
     result["anaplan_module_name"] = attrs.anaplan_module_name
     result["anaplan_source_id"] = attrs.anaplan_source_id
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -483,16 +511,19 @@ def _anaplan_app_to_nested(anaplan_app: AnaplanApp) -> AnaplanAppNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _anaplan_app_from_nested(nested: AnaplanAppNested) -> AnaplanApp:
     """Convert nested format to flat AnaplanApp."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AnaplanAppAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else AnaplanAppAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ANAPLAN_APP_REL_FIELDS,
-        AnaplanAppRelationshipAttributes
+        AnaplanAppRelationshipAttributes,
     )
     return AnaplanApp(
         guid=nested.guid,
@@ -519,6 +550,7 @@ def _anaplan_app_from_nested(nested: AnaplanAppNested) -> AnaplanApp:
         **merged_rels,
     )
 
+
 def _anaplan_app_to_nested_bytes(anaplan_app: AnaplanApp, serde: Serde) -> bytes:
     """Convert flat AnaplanApp to nested JSON bytes."""
     return serde.encode(_anaplan_app_to_nested(anaplan_app))
@@ -529,19 +561,25 @@ def _anaplan_app_from_nested_bytes(data: bytes, serde: Serde) -> AnaplanApp:
     nested = serde.decode(data, AnaplanAppNested)
     return _anaplan_app_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
-AnaplanApp.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField("anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName")
-AnaplanApp.ANAPLAN_WORKSPACE_NAME = KeywordField("anaplanWorkspaceName", "anaplanWorkspaceName")
-AnaplanApp.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField("anaplanModelQualifiedName", "anaplanModelQualifiedName")
+AnaplanApp.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField(
+    "anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName"
+)
+AnaplanApp.ANAPLAN_WORKSPACE_NAME = KeywordField(
+    "anaplanWorkspaceName", "anaplanWorkspaceName"
+)
+AnaplanApp.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField(
+    "anaplanModelQualifiedName", "anaplanModelQualifiedName"
+)
 AnaplanApp.ANAPLAN_MODEL_NAME = KeywordField("anaplanModelName", "anaplanModelName")
-AnaplanApp.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField("anaplanModuleQualifiedName", "anaplanModuleQualifiedName")
+AnaplanApp.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField(
+    "anaplanModuleQualifiedName", "anaplanModuleQualifiedName"
+)
 AnaplanApp.ANAPLAN_MODULE_NAME = KeywordField("anaplanModuleName", "anaplanModuleName")
 AnaplanApp.ANAPLAN_SOURCE_ID = KeywordField("anaplanSourceId", "anaplanSourceId")
 AnaplanApp.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")

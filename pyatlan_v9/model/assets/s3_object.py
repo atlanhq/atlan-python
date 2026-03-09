@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,18 +48,15 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .s3_related import RelatedS3Bucket, RelatedS3Prefix
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .s3_related import RelatedS3Bucket, RelatedS3Prefix
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class S3Object(Asset):
@@ -221,7 +225,9 @@ class S3Object(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -230,7 +236,9 @@ class S3Object(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -257,7 +265,9 @@ class S3Object(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -275,7 +285,9 @@ class S3Object(Asset):
     s3_prefix: Union[RelatedS3Prefix, None, UnsetType] = UNSET
     """S3 prefix that contains the object."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -294,10 +306,7 @@ class S3Object(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -349,6 +358,7 @@ class S3Object(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class S3ObjectAttributes(AssetAttributes):
     """S3Object-specific attributes for nested API format."""
@@ -431,6 +441,7 @@ class S3ObjectAttributes(AssetAttributes):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
+
 class S3ObjectRelationshipAttributes(AssetRelationshipAttributes):
     """S3Object-specific relationship attributes for nested API format."""
 
@@ -458,7 +469,9 @@ class S3ObjectRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -467,7 +480,9 @@ class S3ObjectRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -494,7 +509,9 @@ class S3ObjectRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -512,7 +529,9 @@ class S3ObjectRelationshipAttributes(AssetRelationshipAttributes):
     s3_prefix: Union[RelatedS3Prefix, None, UnsetType] = UNSET
     """S3 prefix that contains the object."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -524,13 +543,19 @@ class S3ObjectRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class S3ObjectNested(AssetNested):
     """S3Object in nested API format for high-performance serialization."""
 
     attributes: Union[S3ObjectAttributes, UnsetType] = UNSET
     relationship_attributes: Union[S3ObjectRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[S3ObjectRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[S3ObjectRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[S3ObjectRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[S3ObjectRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -570,6 +595,7 @@ _S3_OBJECT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_s3_object_attrs(attrs: S3ObjectAttributes, obj: S3Object) -> None:
     """Populate S3Object-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -600,6 +626,7 @@ def _populate_s3_object_attrs(attrs: S3ObjectAttributes, obj: S3Object) -> None:
     attrs.aws_tags = obj.aws_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
 
+
 def _extract_s3_object_attrs(attrs: S3ObjectAttributes) -> dict:
     """Extract all S3Object attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -614,7 +641,9 @@ def _extract_s3_object_attrs(attrs: S3ObjectAttributes) -> dict:
     result["s3_object_version_id"] = attrs.s3_object_version_id
     result["s3_object_lock_retain_until"] = attrs.s3_object_lock_retain_until
     result["s3_object_lock_mode"] = attrs.s3_object_lock_mode
-    result["s3_object_lock_legal_hold_enabled"] = attrs.s3_object_lock_legal_hold_enabled
+    result["s3_object_lock_legal_hold_enabled"] = (
+        attrs.s3_object_lock_legal_hold_enabled
+    )
     result["s3_etag"] = attrs.s3_etag
     result["s3_encryption"] = attrs.s3_encryption
     result["s3_parent_prefix_qualified_name"] = attrs.s3_parent_prefix_qualified_name
@@ -630,6 +659,7 @@ def _extract_s3_object_attrs(attrs: S3ObjectAttributes) -> dict:
     result["aws_tags"] = attrs.aws_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -670,16 +700,19 @@ def _s3_object_to_nested(s3_object: S3Object) -> S3ObjectNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _s3_object_from_nested(nested: S3ObjectNested) -> S3Object:
     """Convert nested format to flat S3Object."""
-    attrs = nested.attributes if nested.attributes is not UNSET else S3ObjectAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else S3ObjectAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _S3_OBJECT_REL_FIELDS,
-        S3ObjectRelationshipAttributes
+        S3ObjectRelationshipAttributes,
     )
     return S3Object(
         guid=nested.guid,
@@ -706,6 +739,7 @@ def _s3_object_from_nested(nested: S3ObjectNested) -> S3Object:
         **merged_rels,
     )
 
+
 def _s3_object_to_nested_bytes(s3_object: S3Object, serde: Serde) -> bytes:
     """Convert flat S3Object to nested JSON bytes."""
     return serde.encode(_s3_object_to_nested(s3_object))
@@ -715,6 +749,7 @@ def _s3_object_from_nested_bytes(data: bytes, serde: Serde) -> S3Object:
     """Convert nested JSON bytes to flat S3Object."""
     nested = serde.decode(data, S3ObjectNested)
     return _s3_object_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -727,21 +762,41 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-S3Object.S3_OBJECT_LAST_MODIFIED_TIME = NumericField("s3ObjectLastModifiedTime", "s3ObjectLastModifiedTime")
-S3Object.S3_BUCKET_NAME = KeywordTextField("s3BucketName", "s3BucketName", "s3BucketName.text")
-S3Object.S3_BUCKET_QUALIFIED_NAME = KeywordField("s3BucketQualifiedName", "s3BucketQualifiedName")
+S3Object.S3_OBJECT_LAST_MODIFIED_TIME = NumericField(
+    "s3ObjectLastModifiedTime", "s3ObjectLastModifiedTime"
+)
+S3Object.S3_BUCKET_NAME = KeywordTextField(
+    "s3BucketName", "s3BucketName", "s3BucketName.text"
+)
+S3Object.S3_BUCKET_QUALIFIED_NAME = KeywordField(
+    "s3BucketQualifiedName", "s3BucketQualifiedName"
+)
 S3Object.S3_OBJECT_SIZE = NumericField("s3ObjectSize", "s3ObjectSize")
-S3Object.S3_OBJECT_STORAGE_CLASS = KeywordField("s3ObjectStorageClass", "s3ObjectStorageClass")
-S3Object.S3_OBJECT_KEY = KeywordTextField("s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text")
-S3Object.S3_OBJECT_CONTENT_TYPE = KeywordField("s3ObjectContentType", "s3ObjectContentType")
-S3Object.S3_OBJECT_CONTENT_DISPOSITION = KeywordField("s3ObjectContentDisposition", "s3ObjectContentDisposition")
+S3Object.S3_OBJECT_STORAGE_CLASS = KeywordField(
+    "s3ObjectStorageClass", "s3ObjectStorageClass"
+)
+S3Object.S3_OBJECT_KEY = KeywordTextField(
+    "s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text"
+)
+S3Object.S3_OBJECT_CONTENT_TYPE = KeywordField(
+    "s3ObjectContentType", "s3ObjectContentType"
+)
+S3Object.S3_OBJECT_CONTENT_DISPOSITION = KeywordField(
+    "s3ObjectContentDisposition", "s3ObjectContentDisposition"
+)
 S3Object.S3_OBJECT_VERSION_ID = KeywordField("s3ObjectVersionId", "s3ObjectVersionId")
-S3Object.S3_OBJECT_LOCK_RETAIN_UNTIL = NumericField("s3ObjectLockRetainUntil", "s3ObjectLockRetainUntil")
+S3Object.S3_OBJECT_LOCK_RETAIN_UNTIL = NumericField(
+    "s3ObjectLockRetainUntil", "s3ObjectLockRetainUntil"
+)
 S3Object.S3_OBJECT_LOCK_MODE = KeywordField("s3ObjectLockMode", "s3ObjectLockMode")
-S3Object.S3_OBJECT_LOCK_LEGAL_HOLD_ENABLED = BooleanField("s3ObjectLockLegalHoldEnabled", "s3ObjectLockLegalHoldEnabled")
+S3Object.S3_OBJECT_LOCK_LEGAL_HOLD_ENABLED = BooleanField(
+    "s3ObjectLockLegalHoldEnabled", "s3ObjectLockLegalHoldEnabled"
+)
 S3Object.S3_ETAG = KeywordTextField("s3ETag", "s3ETag", "s3ETag.text")
 S3Object.S3_ENCRYPTION = KeywordField("s3Encryption", "s3Encryption")
-S3Object.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField("s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName")
+S3Object.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField(
+    "s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName"
+)
 S3Object.S3_PREFIX_HIERARCHY = KeywordField("s3PrefixHierarchy", "s3PrefixHierarchy")
 S3Object.AWS_ARN = KeywordTextField("awsArn", "awsArn", "awsArn.text")
 S3Object.AWS_PARTITION = KeywordField("awsPartition", "awsPartition")
@@ -749,10 +804,14 @@ S3Object.AWS_SERVICE = KeywordField("awsService", "awsService")
 S3Object.AWS_REGION = KeywordField("awsRegion", "awsRegion")
 S3Object.AWS_ACCOUNT_ID = KeywordField("awsAccountId", "awsAccountId")
 S3Object.AWS_RESOURCE_ID = KeywordField("awsResourceId", "awsResourceId")
-S3Object.AWS_OWNER_NAME = KeywordTextField("awsOwnerName", "awsOwnerName", "awsOwnerName.text")
+S3Object.AWS_OWNER_NAME = KeywordTextField(
+    "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+)
 S3Object.AWS_OWNER_ID = KeywordField("awsOwnerId", "awsOwnerId")
 S3Object.AWS_TAGS = KeywordField("awsTags", "awsTags")
-S3Object.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+S3Object.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 S3Object.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 S3Object.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 S3Object.ANOMALO_CHECKS = RelationField("anomaloChecks")

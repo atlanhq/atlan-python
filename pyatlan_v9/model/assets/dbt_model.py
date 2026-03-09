@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,6 +41,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .dbt_related import RelatedDbtMetric, RelatedDbtModelColumn, RelatedDbtTest
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,15 +53,11 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSQL
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .dbt_related import RelatedDbtMetric, RelatedDbtModelColumn, RelatedDbtTest
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DbtModel(Asset):
@@ -135,10 +139,14 @@ class DbtModel(Asset):
     dbt_error: Union[str, None, UnsetType] = UNSET
     """Error message if any for the dbt model."""
 
-    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtRawSQL")
+    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dbtRawSQL"
+    )
     """Raw SQL of the dbt model."""
 
-    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtCompiledSQL")
+    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dbtCompiledSQL"
+    )
     """Compiled SQL of the dbt model."""
 
     dbt_stats: Union[str, None, UnsetType] = UNSET
@@ -249,7 +257,9 @@ class DbtModel(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -258,7 +268,9 @@ class DbtModel(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     sql_asset: Union[RelatedSQL, None, UnsetType] = UNSET
@@ -300,7 +312,9 @@ class DbtModel(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -312,7 +326,9 @@ class DbtModel(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -331,10 +347,7 @@ class DbtModel(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -387,6 +400,7 @@ class DbtModel(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DbtModelAttributes(AssetAttributes):
     """DbtModel-specific attributes for nested API format."""
 
@@ -396,10 +410,14 @@ class DbtModelAttributes(AssetAttributes):
     dbt_error: Union[str, None, UnsetType] = UNSET
     """Error message if any for the dbt model."""
 
-    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtRawSQL")
+    dbt_raw_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dbtRawSQL"
+    )
     """Raw SQL of the dbt model."""
 
-    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtCompiledSQL")
+    dbt_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dbtCompiledSQL"
+    )
     """Compiled SQL of the dbt model."""
 
     dbt_stats: Union[str, None, UnsetType] = UNSET
@@ -486,6 +504,7 @@ class DbtModelAttributes(AssetAttributes):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+
 class DbtModelRelationshipAttributes(AssetRelationshipAttributes):
     """DbtModel-specific relationship attributes for nested API format."""
 
@@ -513,7 +532,9 @@ class DbtModelRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -522,7 +543,9 @@ class DbtModelRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     sql_asset: Union[RelatedSQL, None, UnsetType] = UNSET
@@ -564,7 +587,9 @@ class DbtModelRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -576,7 +601,9 @@ class DbtModelRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -588,13 +615,19 @@ class DbtModelRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class DbtModelNested(AssetNested):
     """DbtModel in nested API format for high-performance serialization."""
 
     attributes: Union[DbtModelAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DbtModelRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DbtModelRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DbtModelRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DbtModelRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[DbtModelRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -637,6 +670,7 @@ _DBT_MODEL_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_dbt_model_attrs(attrs: DbtModelAttributes, obj: DbtModel) -> None:
     """Populate DbtModel-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -672,6 +706,7 @@ def _populate_dbt_model_attrs(attrs: DbtModelAttributes, obj: DbtModel) -> None:
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+
 
 def _extract_dbt_model_attrs(attrs: DbtModelAttributes) -> dict:
     """Extract all DbtModel attributes from the attrs struct into a flat dict."""
@@ -709,6 +744,7 @@ def _extract_dbt_model_attrs(attrs: DbtModelAttributes) -> dict:
     result["dbt_semantic_layer_proxy_url"] = attrs.dbt_semantic_layer_proxy_url
     result["dbt_job_runs"] = attrs.dbt_job_runs
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -749,16 +785,19 @@ def _dbt_model_to_nested(dbt_model: DbtModel) -> DbtModelNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_model_from_nested(nested: DbtModelNested) -> DbtModel:
     """Convert nested format to flat DbtModel."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DbtModelAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DbtModelAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_MODEL_REL_FIELDS,
-        DbtModelRelationshipAttributes
+        DbtModelRelationshipAttributes,
     )
     return DbtModel(
         guid=nested.guid,
@@ -785,6 +824,7 @@ def _dbt_model_from_nested(nested: DbtModelNested) -> DbtModel:
         **merged_rels,
     )
 
+
 def _dbt_model_to_nested_bytes(dbt_model: DbtModel, serde: Serde) -> bytes:
     """Convert flat DbtModel to nested JSON bytes."""
     return serde.encode(_dbt_model_to_nested(dbt_model))
@@ -794,6 +834,7 @@ def _dbt_model_from_nested_bytes(data: bytes, serde: Serde) -> DbtModel:
     """Convert nested JSON bytes to flat DbtModel."""
     nested = serde.decode(data, DbtModelNested)
     return _dbt_model_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -809,14 +850,30 @@ DbtModel.DBT_ERROR = KeywordField("dbtError", "dbtError")
 DbtModel.DBT_RAW_SQL = KeywordField("dbtRawSQL", "dbtRawSQL")
 DbtModel.DBT_COMPILED_SQL = KeywordField("dbtCompiledSQL", "dbtCompiledSQL")
 DbtModel.DBT_STATS = KeywordField("dbtStats", "dbtStats")
-DbtModel.DBT_MATERIALIZATION_TYPE = KeywordField("dbtMaterializationType", "dbtMaterializationType")
-DbtModel.DBT_MODEL_COMPILE_STARTED_AT = NumericField("dbtModelCompileStartedAt", "dbtModelCompileStartedAt")
-DbtModel.DBT_MODEL_COMPILE_COMPLETED_AT = NumericField("dbtModelCompileCompletedAt", "dbtModelCompileCompletedAt")
-DbtModel.DBT_MODEL_EXECUTE_STARTED_AT = NumericField("dbtModelExecuteStartedAt", "dbtModelExecuteStartedAt")
-DbtModel.DBT_MODEL_EXECUTE_COMPLETED_AT = NumericField("dbtModelExecuteCompletedAt", "dbtModelExecuteCompletedAt")
-DbtModel.DBT_MODEL_EXECUTION_TIME = NumericField("dbtModelExecutionTime", "dbtModelExecutionTime")
-DbtModel.DBT_MODEL_RUN_GENERATED_AT = NumericField("dbtModelRunGeneratedAt", "dbtModelRunGeneratedAt")
-DbtModel.DBT_MODEL_RUN_ELAPSED_TIME = NumericField("dbtModelRunElapsedTime", "dbtModelRunElapsedTime")
+DbtModel.DBT_MATERIALIZATION_TYPE = KeywordField(
+    "dbtMaterializationType", "dbtMaterializationType"
+)
+DbtModel.DBT_MODEL_COMPILE_STARTED_AT = NumericField(
+    "dbtModelCompileStartedAt", "dbtModelCompileStartedAt"
+)
+DbtModel.DBT_MODEL_COMPILE_COMPLETED_AT = NumericField(
+    "dbtModelCompileCompletedAt", "dbtModelCompileCompletedAt"
+)
+DbtModel.DBT_MODEL_EXECUTE_STARTED_AT = NumericField(
+    "dbtModelExecuteStartedAt", "dbtModelExecuteStartedAt"
+)
+DbtModel.DBT_MODEL_EXECUTE_COMPLETED_AT = NumericField(
+    "dbtModelExecuteCompletedAt", "dbtModelExecuteCompletedAt"
+)
+DbtModel.DBT_MODEL_EXECUTION_TIME = NumericField(
+    "dbtModelExecutionTime", "dbtModelExecutionTime"
+)
+DbtModel.DBT_MODEL_RUN_GENERATED_AT = NumericField(
+    "dbtModelRunGeneratedAt", "dbtModelRunGeneratedAt"
+)
+DbtModel.DBT_MODEL_RUN_ELAPSED_TIME = NumericField(
+    "dbtModelRunElapsedTime", "dbtModelRunElapsedTime"
+)
 DbtModel.DBT_ALIAS = KeywordField("dbtAlias", "dbtAlias")
 DbtModel.DBT_META = KeywordField("dbtMeta", "dbtMeta")
 DbtModel.DBT_UNIQUE_ID = KeywordField("dbtUniqueId", "dbtUniqueId")
@@ -826,15 +883,25 @@ DbtModel.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtModel.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtModel.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtModel.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtModel.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+DbtModel.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 DbtModel.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtModel.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtModel.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
+DbtModel.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
 DbtModel.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtModel.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+DbtModel.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 DbtModel.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtModel.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-DbtModel.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+DbtModel.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+DbtModel.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 DbtModel.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtModel.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DbtModel.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

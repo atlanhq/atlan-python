@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .cognite_related import RelatedCogniteAsset
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -44,15 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .cognite_related import RelatedCogniteAsset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CogniteEvent(Asset):
@@ -119,7 +122,9 @@ class CogniteEvent(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -128,7 +133,9 @@ class CogniteEvent(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -155,7 +162,9 @@ class CogniteEvent(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -167,7 +176,9 @@ class CogniteEvent(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -186,10 +197,7 @@ class CogniteEvent(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -242,10 +250,12 @@ class CogniteEvent(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CogniteEventAttributes(AssetAttributes):
     """CogniteEvent-specific attributes for nested API format."""
 
     pass
+
 
 class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     """CogniteEvent-specific relationship attributes for nested API format."""
@@ -277,7 +287,9 @@ class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -286,7 +298,9 @@ class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -313,7 +327,9 @@ class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -325,7 +341,9 @@ class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -337,13 +355,21 @@ class CogniteEventRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class CogniteEventNested(AssetNested):
     """CogniteEvent in nested API format for high-performance serialization."""
 
     attributes: Union[CogniteEventAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[CogniteEventRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CogniteEventRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[CogniteEventRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[CogniteEventRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        CogniteEventRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CogniteEventRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -382,13 +408,18 @@ _COGNITE_EVENT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognite_event_attrs(attrs: CogniteEventAttributes, obj: CogniteEvent) -> None:
+
+def _populate_cognite_event_attrs(
+    attrs: CogniteEventAttributes, obj: CogniteEvent
+) -> None:
     """Populate CogniteEvent-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+
 
 def _extract_cognite_event_attrs(attrs: CogniteEventAttributes) -> dict:
     """Extract all CogniteEvent attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -429,16 +460,21 @@ def _cognite_event_to_nested(cognite_event: CogniteEvent) -> CogniteEventNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognite_event_from_nested(nested: CogniteEventNested) -> CogniteEvent:
     """Convert nested format to flat CogniteEvent."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CogniteEventAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CogniteEventAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNITE_EVENT_REL_FIELDS,
-        CogniteEventRelationshipAttributes
+        CogniteEventRelationshipAttributes,
     )
     return CogniteEvent(
         guid=nested.guid,
@@ -465,6 +501,7 @@ def _cognite_event_from_nested(nested: CogniteEventNested) -> CogniteEvent:
         **merged_rels,
     )
 
+
 def _cognite_event_to_nested_bytes(cognite_event: CogniteEvent, serde: Serde) -> bytes:
     """Convert flat CogniteEvent to nested JSON bytes."""
     return serde.encode(_cognite_event_to_nested(cognite_event))
@@ -474,6 +511,7 @@ def _cognite_event_from_nested_bytes(data: bytes, serde: Serde) -> CogniteEvent:
     """Convert nested JSON bytes to flat CogniteEvent."""
     nested = serde.decode(data, CogniteEventNested)
     return _cognite_event_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

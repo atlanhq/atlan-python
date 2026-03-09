@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -47,6 +47,7 @@ class RelatedADLS(RelatedObjectStore):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ADLS"
 
+
 class RelatedADLSAccount(RelatedADLS):
     """
     Related entity reference for ADLSAccount assets.
@@ -57,7 +58,9 @@ class RelatedADLSAccount(RelatedADLS):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "ADLSAccount" so it serializes correctly
 
-    adls_etag: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="adlsETag")
+    adls_etag: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="adlsETag"
+    )
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
     adls_encryption_type: Union[str, None, UnsetType] = UNSET
@@ -91,6 +94,7 @@ class RelatedADLSAccount(RelatedADLS):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ADLSAccount"
 
+
 class RelatedADLSContainer(RelatedADLS):
     """
     Related entity reference for ADLSContainer assets.
@@ -113,7 +117,9 @@ class RelatedADLSContainer(RelatedADLS):
     adls_container_encryption_scope: Union[str, None, UnsetType] = UNSET
     """Encryption scope of this container."""
 
-    adls_container_version_level_immutability_support: Union[bool, None, UnsetType] = UNSET
+    adls_container_version_level_immutability_support: Union[bool, None, UnsetType] = (
+        UNSET
+    )
     """Whether this container supports version-level immutability (true) or not (false)."""
 
     adls_object_count: Union[int, None, UnsetType] = UNSET
@@ -122,6 +128,7 @@ class RelatedADLSContainer(RelatedADLS):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ADLSContainer"
+
 
 class RelatedADLSObject(RelatedADLS):
     """
@@ -169,7 +176,9 @@ class RelatedADLSObject(RelatedADLS):
     adls_object_content_type: Union[str, None, UnsetType] = UNSET
     """Content type of this object."""
 
-    adls_object_content_md5_hash: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="adlsObjectContentMD5Hash")
+    adls_object_content_md5_hash: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="adlsObjectContentMD5Hash"
+    )
     """MD5 hash of this object's contents."""
 
     adls_object_content_language: Union[str, None, UnsetType] = UNSET

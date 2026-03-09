@@ -19,6 +19,12 @@ from typing import Any, ClassVar, Dict, List, Set, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .data_mesh_related import RelatedDataProduct
@@ -38,12 +44,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 class DataSet(Referenceable):
     """
@@ -340,7 +345,9 @@ class DataSet(Referenceable):
     connection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the connection through which this asset is accessible."""
 
-    has_lineage: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="__hasLineage")
+    has_lineage: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="__hasLineage"
+    )
     """Whether this asset has lineage (true) or not (false)."""
 
     is_discoverable: Union[bool, None, UnsetType] = UNSET
@@ -376,10 +383,14 @@ class DataSet(Referenceable):
     source_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated this asset, in the source system."""
 
-    source_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sourceURL")
+    source_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sourceURL"
+    )
     """URL to the resource within the source application, used to create a button to view this asset in the source application."""
 
-    source_embed_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sourceEmbedURL")
+    source_embed_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sourceEmbedURL"
+    )
     """URL to create an embed for a resource (for example, an image of a dashboard) within Atlan."""
 
     last_sync_workflow_name: Union[str, None, UnsetType] = UNSET
@@ -418,28 +429,40 @@ class DataSet(Referenceable):
     source_read_recent_user_list: Union[List[str], None, UnsetType] = UNSET
     """List of usernames of the most recent users who read this asset."""
 
-    source_read_recent_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_recent_user_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of usernames with extra insights for the most recent users who read this asset."""
 
     source_read_top_user_list: Union[List[str], None, UnsetType] = UNSET
     """List of usernames of the users who read this asset the most."""
 
-    source_read_top_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_top_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """List of usernames with extra insights for the users who read this asset the most."""
 
-    source_read_popular_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_popular_query_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of the most popular queries that accessed this asset."""
 
-    source_read_expensive_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_expensive_query_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of the most expensive queries that accessed this asset."""
 
-    source_read_slow_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_slow_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """List of the slowest queries that accessed this asset."""
 
     source_query_compute_cost_list: Union[List[str], None, UnsetType] = UNSET
     """List of most expensive warehouse names."""
 
-    source_query_compute_cost_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_query_compute_cost_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of most expensive warehouses with extra insights."""
 
     dbt_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -508,7 +531,9 @@ class DataSet(Referenceable):
     asset_dbt_job_last_run_queued_duration: Union[str, None, UnsetType] = UNSET
     """Total duration the job that materialized this asset in dbt spent being queued."""
 
-    asset_dbt_job_last_run_queued_duration_humanized: Union[str, None, UnsetType] = UNSET
+    asset_dbt_job_last_run_queued_duration_humanized: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Human-readable total duration of the last run of the job that materialized this asset in dbt spend being queued."""
 
     asset_dbt_job_last_run_run_duration: Union[str, None, UnsetType] = UNSET
@@ -628,7 +653,9 @@ class DataSet(Referenceable):
     starred_count: Union[int, None, UnsetType] = UNSET
     """Number of users who have starred this asset."""
 
-    asset_anomalo_dq_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetAnomaloDQStatus")
+    asset_anomalo_dq_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetAnomaloDQStatus"
+    )
     """Status of data quality from Anomalo."""
 
     asset_anomalo_check_count: Union[int, None, UnsetType] = UNSET
@@ -652,7 +679,9 @@ class DataSet(Referenceable):
     asset_anomalo_source_url: Union[str, None, UnsetType] = UNSET
     """URL of the source in Anomalo."""
 
-    asset_soda_dq_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetSodaDQStatus")
+    asset_soda_dq_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetSodaDQStatus"
+    )
     """Status of data quality from Soda."""
 
     asset_soda_check_count: Union[int, None, UnsetType] = UNSET
@@ -667,19 +696,25 @@ class DataSet(Referenceable):
     asset_soda_check_statuses: Union[str, None, UnsetType] = UNSET
     """All associated Soda check statuses."""
 
-    asset_soda_source_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetSodaSourceURL")
+    asset_soda_source_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetSodaSourceURL"
+    )
     """"""
 
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
-    asset_external_dq_metadata_details: Union[Dict[str, Dict[str, Any]], None, UnsetType] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
+    asset_external_dq_metadata_details: Union[
+        Dict[str, Dict[str, Any]], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
     """DQ metadata captured for asset from external DQ tool(s)."""
 
     is_partial: Union[bool, None, UnsetType] = UNSET
     """Indicates this asset is not fully-known, if true."""
 
-    is_ai_generated: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="isAIGenerated")
+    is_ai_generated: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="isAIGenerated"
+    )
     """"""
 
     asset_cover_image: Union[str, None, UnsetType] = UNSET
@@ -694,25 +729,37 @@ class DataSet(Referenceable):
     has_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has contract (true) or not (false)."""
 
-    asset_redirect_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetRedirectGUIDs")
+    asset_redirect_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetRedirectGUIDs"
+    )
     """Array of asset ids that equivalent to this asset."""
 
-    asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetPolicyGUIDs")
+    asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetPolicyGUIDs"
+    )
     """Array of policy ids governing this asset"""
 
     asset_policies_count: Union[int, None, UnsetType] = UNSET
     """Count of policies inside the asset"""
 
-    domain_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="domainGUIDs")
+    domain_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="domainGUIDs"
+    )
     """Array of domain guids linked to this asset"""
 
-    non_compliant_asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="nonCompliantAssetPolicyGUIDs")
+    non_compliant_asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="nonCompliantAssetPolicyGUIDs"
+    )
     """Array of policy ids non-compliant to this asset"""
 
-    product_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="productGUIDs")
+    product_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="productGUIDs"
+    )
     """Array of product guids linked to this asset"""
 
-    output_product_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="outputProductGUIDs")
+    output_product_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="outputProductGUIDs"
+    )
     """Array of product guids which have this asset as outputPort"""
 
     application_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -727,76 +774,124 @@ class DataSet(Referenceable):
     asset_internal_popularity_score: Union[float, None, UnsetType] = UNSET
     """Internal Popularity score for this asset."""
 
-    asset_dq_schedule_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleType")
+    asset_dq_schedule_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleType"
+    )
     """Type of schedule of the DQ rule that will run at datasource."""
 
-    asset_dq_schedule_crontab: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleCrontab")
+    asset_dq_schedule_crontab: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleCrontab"
+    )
     """Crontab of the DQ rule that will run at datasource."""
 
-    asset_dq_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleTimeZone")
+    asset_dq_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleTimeZone"
+    )
     """Timezone of the DQ rule schedule that will run at datasource"""
 
-    asset_dq_schedule_source_sync_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncStatus")
+    asset_dq_schedule_source_sync_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleSourceSyncStatus"
+    )
     """Latest sync status of the schedule to the source."""
 
-    asset_dq_schedule_source_synced_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncedAt")
+    asset_dq_schedule_source_synced_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleSourceSyncedAt"
+    )
     """Time (epoch) at which the schedule synced to the source."""
 
-    asset_dq_schedule_source_sync_error_message: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorMessage")
+    asset_dq_schedule_source_sync_error_message: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorMessage")
+    )
     """Error message in the case of sync state being "error"."""
 
-    asset_dq_schedule_source_sync_error_code: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorCode")
+    asset_dq_schedule_source_sync_error_code: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorCode")
+    )
     """Error code in the case of sync state being "error"."""
 
-    asset_dq_schedule_source_sync_raw_error: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncRawError")
+    asset_dq_schedule_source_sync_raw_error: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncRawError")
+    )
     """Raw error message from the source."""
 
-    asset_dq_rule_attached_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleAttachedDimensions")
+    asset_dq_rule_attached_dimensions: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRuleAttachedDimensions")
+    )
     """List of all the dimensions of attached rules."""
 
-    asset_dq_rule_failed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedDimensions")
+    asset_dq_rule_failed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedDimensions"
+    )
     """List of all the dimensions of failed rules."""
 
-    asset_dq_rule_passed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedDimensions")
+    asset_dq_rule_passed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedDimensions"
+    )
     """List of all the dimensions for which all the rules passed."""
 
-    asset_dq_rule_attached_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleAttachedRuleTypes")
+    asset_dq_rule_attached_rule_types: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRuleAttachedRuleTypes")
+    )
     """List of all the types of attached rules."""
 
-    asset_dq_rule_failed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedRuleTypes")
+    asset_dq_rule_failed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedRuleTypes"
+    )
     """List of all the types of failed rules."""
 
-    asset_dq_rule_passed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedRuleTypes")
+    asset_dq_rule_passed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedRuleTypes"
+    )
     """List of all the types of rules for which all the rules passed."""
 
-    asset_dq_rule_result_tags: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleResultTags")
+    asset_dq_rule_result_tags: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleResultTags"
+    )
     """Tag for the result of the DQ rules. Eg, rule_pass:completeness:null_count."""
 
-    asset_dq_rule_last_run_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleLastRunAt")
+    asset_dq_rule_last_run_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleLastRunAt"
+    )
     """Time (epoch) at which the last dq rule ran."""
 
-    asset_dq_manual_run_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQManualRunStatus")
+    asset_dq_manual_run_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQManualRunStatus"
+    )
     """Status of the latest manual DQ run triggered for this asset."""
 
-    asset_dq_rule_total_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleTotalCount")
+    asset_dq_rule_total_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleTotalCount"
+    )
     """Count of DQ rules attached to this asset."""
 
-    asset_dq_rule_failed_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedCount")
+    asset_dq_rule_failed_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedCount"
+    )
     """Count of failed DQ rules attached to this asset."""
 
-    asset_dq_rule_passed_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedCount")
+    asset_dq_rule_passed_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedCount"
+    )
     """Count of passed DQ rules attached to this asset."""
 
-    asset_dq_result: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQResult")
+    asset_dq_result: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQResult"
+    )
     """Overall result of all the dq rules. If any one rule failed, then fail else pass."""
 
-    asset_dq_freshness_value: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQFreshnessValue")
+    asset_dq_freshness_value: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQFreshnessValue"
+    )
     """Value of data freshness from Source."""
 
-    asset_dq_freshness_expectation: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQFreshnessExpectation")
+    asset_dq_freshness_expectation: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQFreshnessExpectation"
+    )
     """Expectation of data freshness from Source."""
 
-    asset_dq_row_scope_filter_column_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRowScopeFilterColumnQualifiedName")
+    asset_dq_row_scope_filter_column_qualified_name: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRowScopeFilterColumnQualifiedName")
+    )
     """Qualified name of the column used for row scope filtering in DQ rules for this asset."""
 
     asset_space_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -805,22 +900,32 @@ class DataSet(Referenceable):
     asset_space_name: Union[str, None, UnsetType] = UNSET
     """Name of the space that contains this asset."""
 
-    asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
+    asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
+    )
     """Metrics captured by GCP Dataplex for objects associated with GCP services."""
 
-    asset_gcp_dataplex_aspect_list: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexAspectList")
+    asset_gcp_dataplex_aspect_list: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetGCPDataplexAspectList"
+    )
     """List of names of all Aspects linked to this asset."""
 
-    asset_gcp_dataplex_aspect_field_list: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexAspectFieldList")
+    asset_gcp_dataplex_aspect_field_list: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetGCPDataplexAspectFieldList")
+    )
     """List of field key-values associated with all Aspects linked to this asset."""
 
     asset_smus_metadata_form_names: Union[List[str], None, UnsetType] = UNSET
     """List of AWS SMUS MetadataForm Names. This is mainly used for filtering purpose."""
 
-    asset_smus_metadata_form_key_value_details: Union[List[str], None, UnsetType] = UNSET
+    asset_smus_metadata_form_key_value_details: Union[List[str], None, UnsetType] = (
+        UNSET
+    )
     """List of AWS SMUS MetadataForm Key:Value Details. This is mainly used for filtering purpose."""
 
-    asset_smus_metadata_form_details: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    asset_smus_metadata_form_details: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """AWS SMUS Asset MetadataForm details"""
 
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
@@ -844,7 +949,9 @@ class DataSet(Referenceable):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -859,7 +966,9 @@ class DataSet(Referenceable):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -871,7 +980,9 @@ class DataSet(Referenceable):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -879,8 +990,6 @@ class DataSet(Referenceable):
 
     def __post_init__(self) -> None:
         self.type_name = "DataSet"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -932,6 +1041,7 @@ class DataSet(Referenceable):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DataSetAttributes(ReferenceableAttributes):
     """DataSet-specific attributes for nested API format."""
@@ -1017,7 +1127,9 @@ class DataSetAttributes(ReferenceableAttributes):
     connection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the connection through which this asset is accessible."""
 
-    has_lineage: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="__hasLineage")
+    has_lineage: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="__hasLineage"
+    )
     """Whether this asset has lineage (true) or not (false)."""
 
     is_discoverable: Union[bool, None, UnsetType] = UNSET
@@ -1053,10 +1165,14 @@ class DataSetAttributes(ReferenceableAttributes):
     source_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated this asset, in the source system."""
 
-    source_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sourceURL")
+    source_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sourceURL"
+    )
     """URL to the resource within the source application, used to create a button to view this asset in the source application."""
 
-    source_embed_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sourceEmbedURL")
+    source_embed_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sourceEmbedURL"
+    )
     """URL to create an embed for a resource (for example, an image of a dashboard) within Atlan."""
 
     last_sync_workflow_name: Union[str, None, UnsetType] = UNSET
@@ -1095,28 +1211,40 @@ class DataSetAttributes(ReferenceableAttributes):
     source_read_recent_user_list: Union[List[str], None, UnsetType] = UNSET
     """List of usernames of the most recent users who read this asset."""
 
-    source_read_recent_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_recent_user_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of usernames with extra insights for the most recent users who read this asset."""
 
     source_read_top_user_list: Union[List[str], None, UnsetType] = UNSET
     """List of usernames of the users who read this asset the most."""
 
-    source_read_top_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_top_user_record_list: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """List of usernames with extra insights for the users who read this asset the most."""
 
-    source_read_popular_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_popular_query_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of the most popular queries that accessed this asset."""
 
-    source_read_expensive_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_expensive_query_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of the most expensive queries that accessed this asset."""
 
-    source_read_slow_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_read_slow_query_record_list: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """List of the slowest queries that accessed this asset."""
 
     source_query_compute_cost_list: Union[List[str], None, UnsetType] = UNSET
     """List of most expensive warehouse names."""
 
-    source_query_compute_cost_record_list: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    source_query_compute_cost_record_list: Union[
+        List[Dict[str, Any]], None, UnsetType
+    ] = UNSET
     """List of most expensive warehouses with extra insights."""
 
     dbt_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -1185,7 +1313,9 @@ class DataSetAttributes(ReferenceableAttributes):
     asset_dbt_job_last_run_queued_duration: Union[str, None, UnsetType] = UNSET
     """Total duration the job that materialized this asset in dbt spent being queued."""
 
-    asset_dbt_job_last_run_queued_duration_humanized: Union[str, None, UnsetType] = UNSET
+    asset_dbt_job_last_run_queued_duration_humanized: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Human-readable total duration of the last run of the job that materialized this asset in dbt spend being queued."""
 
     asset_dbt_job_last_run_run_duration: Union[str, None, UnsetType] = UNSET
@@ -1305,7 +1435,9 @@ class DataSetAttributes(ReferenceableAttributes):
     starred_count: Union[int, None, UnsetType] = UNSET
     """Number of users who have starred this asset."""
 
-    asset_anomalo_dq_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetAnomaloDQStatus")
+    asset_anomalo_dq_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetAnomaloDQStatus"
+    )
     """Status of data quality from Anomalo."""
 
     asset_anomalo_check_count: Union[int, None, UnsetType] = UNSET
@@ -1329,7 +1461,9 @@ class DataSetAttributes(ReferenceableAttributes):
     asset_anomalo_source_url: Union[str, None, UnsetType] = UNSET
     """URL of the source in Anomalo."""
 
-    asset_soda_dq_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetSodaDQStatus")
+    asset_soda_dq_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetSodaDQStatus"
+    )
     """Status of data quality from Soda."""
 
     asset_soda_check_count: Union[int, None, UnsetType] = UNSET
@@ -1344,19 +1478,25 @@ class DataSetAttributes(ReferenceableAttributes):
     asset_soda_check_statuses: Union[str, None, UnsetType] = UNSET
     """All associated Soda check statuses."""
 
-    asset_soda_source_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetSodaSourceURL")
+    asset_soda_source_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetSodaSourceURL"
+    )
     """"""
 
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
-    asset_external_dq_metadata_details: Union[Dict[str, Dict[str, Any]], None, UnsetType] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
+    asset_external_dq_metadata_details: Union[
+        Dict[str, Dict[str, Any]], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
     """DQ metadata captured for asset from external DQ tool(s)."""
 
     is_partial: Union[bool, None, UnsetType] = UNSET
     """Indicates this asset is not fully-known, if true."""
 
-    is_ai_generated: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="isAIGenerated")
+    is_ai_generated: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="isAIGenerated"
+    )
     """"""
 
     asset_cover_image: Union[str, None, UnsetType] = UNSET
@@ -1371,25 +1511,37 @@ class DataSetAttributes(ReferenceableAttributes):
     has_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has contract (true) or not (false)."""
 
-    asset_redirect_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetRedirectGUIDs")
+    asset_redirect_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetRedirectGUIDs"
+    )
     """Array of asset ids that equivalent to this asset."""
 
-    asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetPolicyGUIDs")
+    asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetPolicyGUIDs"
+    )
     """Array of policy ids governing this asset"""
 
     asset_policies_count: Union[int, None, UnsetType] = UNSET
     """Count of policies inside the asset"""
 
-    domain_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="domainGUIDs")
+    domain_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="domainGUIDs"
+    )
     """Array of domain guids linked to this asset"""
 
-    non_compliant_asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="nonCompliantAssetPolicyGUIDs")
+    non_compliant_asset_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="nonCompliantAssetPolicyGUIDs"
+    )
     """Array of policy ids non-compliant to this asset"""
 
-    product_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="productGUIDs")
+    product_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="productGUIDs"
+    )
     """Array of product guids linked to this asset"""
 
-    output_product_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="outputProductGUIDs")
+    output_product_guids: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="outputProductGUIDs"
+    )
     """Array of product guids which have this asset as outputPort"""
 
     application_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -1404,76 +1556,124 @@ class DataSetAttributes(ReferenceableAttributes):
     asset_internal_popularity_score: Union[float, None, UnsetType] = UNSET
     """Internal Popularity score for this asset."""
 
-    asset_dq_schedule_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleType")
+    asset_dq_schedule_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleType"
+    )
     """Type of schedule of the DQ rule that will run at datasource."""
 
-    asset_dq_schedule_crontab: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleCrontab")
+    asset_dq_schedule_crontab: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleCrontab"
+    )
     """Crontab of the DQ rule that will run at datasource."""
 
-    asset_dq_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleTimeZone")
+    asset_dq_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleTimeZone"
+    )
     """Timezone of the DQ rule schedule that will run at datasource"""
 
-    asset_dq_schedule_source_sync_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncStatus")
+    asset_dq_schedule_source_sync_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleSourceSyncStatus"
+    )
     """Latest sync status of the schedule to the source."""
 
-    asset_dq_schedule_source_synced_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncedAt")
+    asset_dq_schedule_source_synced_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQScheduleSourceSyncedAt"
+    )
     """Time (epoch) at which the schedule synced to the source."""
 
-    asset_dq_schedule_source_sync_error_message: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorMessage")
+    asset_dq_schedule_source_sync_error_message: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorMessage")
+    )
     """Error message in the case of sync state being "error"."""
 
-    asset_dq_schedule_source_sync_error_code: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorCode")
+    asset_dq_schedule_source_sync_error_code: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncErrorCode")
+    )
     """Error code in the case of sync state being "error"."""
 
-    asset_dq_schedule_source_sync_raw_error: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncRawError")
+    asset_dq_schedule_source_sync_raw_error: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQScheduleSourceSyncRawError")
+    )
     """Raw error message from the source."""
 
-    asset_dq_rule_attached_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleAttachedDimensions")
+    asset_dq_rule_attached_dimensions: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRuleAttachedDimensions")
+    )
     """List of all the dimensions of attached rules."""
 
-    asset_dq_rule_failed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedDimensions")
+    asset_dq_rule_failed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedDimensions"
+    )
     """List of all the dimensions of failed rules."""
 
-    asset_dq_rule_passed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedDimensions")
+    asset_dq_rule_passed_dimensions: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedDimensions"
+    )
     """List of all the dimensions for which all the rules passed."""
 
-    asset_dq_rule_attached_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleAttachedRuleTypes")
+    asset_dq_rule_attached_rule_types: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRuleAttachedRuleTypes")
+    )
     """List of all the types of attached rules."""
 
-    asset_dq_rule_failed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedRuleTypes")
+    asset_dq_rule_failed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedRuleTypes"
+    )
     """List of all the types of failed rules."""
 
-    asset_dq_rule_passed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedRuleTypes")
+    asset_dq_rule_passed_rule_types: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedRuleTypes"
+    )
     """List of all the types of rules for which all the rules passed."""
 
-    asset_dq_rule_result_tags: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleResultTags")
+    asset_dq_rule_result_tags: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleResultTags"
+    )
     """Tag for the result of the DQ rules. Eg, rule_pass:completeness:null_count."""
 
-    asset_dq_rule_last_run_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleLastRunAt")
+    asset_dq_rule_last_run_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleLastRunAt"
+    )
     """Time (epoch) at which the last dq rule ran."""
 
-    asset_dq_manual_run_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQManualRunStatus")
+    asset_dq_manual_run_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQManualRunStatus"
+    )
     """Status of the latest manual DQ run triggered for this asset."""
 
-    asset_dq_rule_total_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleTotalCount")
+    asset_dq_rule_total_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleTotalCount"
+    )
     """Count of DQ rules attached to this asset."""
 
-    asset_dq_rule_failed_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRuleFailedCount")
+    asset_dq_rule_failed_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRuleFailedCount"
+    )
     """Count of failed DQ rules attached to this asset."""
 
-    asset_dq_rule_passed_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRulePassedCount")
+    asset_dq_rule_passed_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQRulePassedCount"
+    )
     """Count of passed DQ rules attached to this asset."""
 
-    asset_dq_result: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQResult")
+    asset_dq_result: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQResult"
+    )
     """Overall result of all the dq rules. If any one rule failed, then fail else pass."""
 
-    asset_dq_freshness_value: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQFreshnessValue")
+    asset_dq_freshness_value: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQFreshnessValue"
+    )
     """Value of data freshness from Source."""
 
-    asset_dq_freshness_expectation: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQFreshnessExpectation")
+    asset_dq_freshness_expectation: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetDQFreshnessExpectation"
+    )
     """Expectation of data freshness from Source."""
 
-    asset_dq_row_scope_filter_column_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="assetDQRowScopeFilterColumnQualifiedName")
+    asset_dq_row_scope_filter_column_qualified_name: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetDQRowScopeFilterColumnQualifiedName")
+    )
     """Qualified name of the column used for row scope filtering in DQ rules for this asset."""
 
     asset_space_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -1482,23 +1682,34 @@ class DataSetAttributes(ReferenceableAttributes):
     asset_space_name: Union[str, None, UnsetType] = UNSET
     """Name of the space that contains this asset."""
 
-    asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
+    asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
+    )
     """Metrics captured by GCP Dataplex for objects associated with GCP services."""
 
-    asset_gcp_dataplex_aspect_list: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexAspectList")
+    asset_gcp_dataplex_aspect_list: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetGCPDataplexAspectList"
+    )
     """List of names of all Aspects linked to this asset."""
 
-    asset_gcp_dataplex_aspect_field_list: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="assetGCPDataplexAspectFieldList")
+    asset_gcp_dataplex_aspect_field_list: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetGCPDataplexAspectFieldList")
+    )
     """List of field key-values associated with all Aspects linked to this asset."""
 
     asset_smus_metadata_form_names: Union[List[str], None, UnsetType] = UNSET
     """List of AWS SMUS MetadataForm Names. This is mainly used for filtering purpose."""
 
-    asset_smus_metadata_form_key_value_details: Union[List[str], None, UnsetType] = UNSET
+    asset_smus_metadata_form_key_value_details: Union[List[str], None, UnsetType] = (
+        UNSET
+    )
     """List of AWS SMUS MetadataForm Key:Value Details. This is mainly used for filtering purpose."""
 
-    asset_smus_metadata_form_details: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    asset_smus_metadata_form_details: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """AWS SMUS Asset MetadataForm details"""
+
 
 class DataSetRelationshipAttributes(ReferenceableRelationshipAttributes):
     """DataSet-specific relationship attributes for nested API format."""
@@ -1524,7 +1735,9 @@ class DataSetRelationshipAttributes(ReferenceableRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -1539,7 +1752,9 @@ class DataSetRelationshipAttributes(ReferenceableRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -1551,19 +1766,27 @@ class DataSetRelationshipAttributes(ReferenceableRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class DataSetNested(ReferenceableNested):
     """DataSet in nested API format for high-performance serialization."""
 
     attributes: Union[DataSetAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DataSetRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DataSetRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DataSetRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DataSetRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[DataSetRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1591,6 +1814,7 @@ _DATA_SET_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
+
 def _populate_data_set_attrs(attrs: DataSetAttributes, obj: DataSet) -> None:
     """Populate DataSet-specific attributes on the attrs struct."""
     _populate_referenceable_attrs(attrs, obj)
@@ -1600,8 +1824,12 @@ def _populate_data_set_attrs(attrs: DataSetAttributes, obj: DataSet) -> None:
     attrs.asset_source_readme = obj.asset_source_readme
     attrs.user_description = obj.user_description
     attrs.asset_ai_generated_description = obj.asset_ai_generated_description
-    attrs.asset_ai_generated_description_confidence = obj.asset_ai_generated_description_confidence
-    attrs.asset_ai_generated_description_reasoning = obj.asset_ai_generated_description_reasoning
+    attrs.asset_ai_generated_description_confidence = (
+        obj.asset_ai_generated_description_confidence
+    )
+    attrs.asset_ai_generated_description_reasoning = (
+        obj.asset_ai_generated_description_reasoning
+    )
     attrs.tenant_id = obj.tenant_id
     attrs.certificate_status = obj.certificate_status
     attrs.certificate_status_message = obj.certificate_status_message
@@ -1650,11 +1878,17 @@ def _populate_data_set_attrs(attrs: DataSetAttributes, obj: DataSet) -> None:
     attrs.source_read_recent_user_record_list = obj.source_read_recent_user_record_list
     attrs.source_read_top_user_list = obj.source_read_top_user_list
     attrs.source_read_top_user_record_list = obj.source_read_top_user_record_list
-    attrs.source_read_popular_query_record_list = obj.source_read_popular_query_record_list
-    attrs.source_read_expensive_query_record_list = obj.source_read_expensive_query_record_list
+    attrs.source_read_popular_query_record_list = (
+        obj.source_read_popular_query_record_list
+    )
+    attrs.source_read_expensive_query_record_list = (
+        obj.source_read_expensive_query_record_list
+    )
     attrs.source_read_slow_query_record_list = obj.source_read_slow_query_record_list
     attrs.source_query_compute_cost_list = obj.source_query_compute_cost_list
-    attrs.source_query_compute_cost_record_list = obj.source_query_compute_cost_record_list
+    attrs.source_query_compute_cost_record_list = (
+        obj.source_query_compute_cost_record_list
+    )
     attrs.dbt_qualified_name = obj.dbt_qualified_name
     attrs.asset_dbt_workflow_last_updated = obj.asset_dbt_workflow_last_updated
     attrs.asset_dbt_alias = obj.asset_dbt_alias
@@ -1667,29 +1901,57 @@ def _populate_data_set_attrs(attrs: DataSetAttributes, obj: DataSet) -> None:
     attrs.asset_dbt_job_schedule = obj.asset_dbt_job_schedule
     attrs.asset_dbt_job_status = obj.asset_dbt_job_status
     attrs.asset_dbt_test_status = obj.asset_dbt_test_status
-    attrs.asset_dbt_job_schedule_cron_humanized = obj.asset_dbt_job_schedule_cron_humanized
+    attrs.asset_dbt_job_schedule_cron_humanized = (
+        obj.asset_dbt_job_schedule_cron_humanized
+    )
     attrs.asset_dbt_job_last_run = obj.asset_dbt_job_last_run
     attrs.asset_dbt_job_last_run_url = obj.asset_dbt_job_last_run_url
     attrs.asset_dbt_job_last_run_created_at = obj.asset_dbt_job_last_run_created_at
     attrs.asset_dbt_job_last_run_updated_at = obj.asset_dbt_job_last_run_updated_at
     attrs.asset_dbt_job_last_run_dequed_at = obj.asset_dbt_job_last_run_dequed_at
     attrs.asset_dbt_job_last_run_started_at = obj.asset_dbt_job_last_run_started_at
-    attrs.asset_dbt_job_last_run_total_duration = obj.asset_dbt_job_last_run_total_duration
-    attrs.asset_dbt_job_last_run_total_duration_humanized = obj.asset_dbt_job_last_run_total_duration_humanized
-    attrs.asset_dbt_job_last_run_queued_duration = obj.asset_dbt_job_last_run_queued_duration
-    attrs.asset_dbt_job_last_run_queued_duration_humanized = obj.asset_dbt_job_last_run_queued_duration_humanized
+    attrs.asset_dbt_job_last_run_total_duration = (
+        obj.asset_dbt_job_last_run_total_duration
+    )
+    attrs.asset_dbt_job_last_run_total_duration_humanized = (
+        obj.asset_dbt_job_last_run_total_duration_humanized
+    )
+    attrs.asset_dbt_job_last_run_queued_duration = (
+        obj.asset_dbt_job_last_run_queued_duration
+    )
+    attrs.asset_dbt_job_last_run_queued_duration_humanized = (
+        obj.asset_dbt_job_last_run_queued_duration_humanized
+    )
     attrs.asset_dbt_job_last_run_run_duration = obj.asset_dbt_job_last_run_run_duration
-    attrs.asset_dbt_job_last_run_run_duration_humanized = obj.asset_dbt_job_last_run_run_duration_humanized
+    attrs.asset_dbt_job_last_run_run_duration_humanized = (
+        obj.asset_dbt_job_last_run_run_duration_humanized
+    )
     attrs.asset_dbt_job_last_run_git_branch = obj.asset_dbt_job_last_run_git_branch
     attrs.asset_dbt_job_last_run_git_sha = obj.asset_dbt_job_last_run_git_sha
-    attrs.asset_dbt_job_last_run_status_message = obj.asset_dbt_job_last_run_status_message
-    attrs.asset_dbt_job_last_run_owner_thread_id = obj.asset_dbt_job_last_run_owner_thread_id
-    attrs.asset_dbt_job_last_run_executed_by_thread_id = obj.asset_dbt_job_last_run_executed_by_thread_id
-    attrs.asset_dbt_job_last_run_artifacts_saved = obj.asset_dbt_job_last_run_artifacts_saved
-    attrs.asset_dbt_job_last_run_artifact_s3_path = obj.asset_dbt_job_last_run_artifact_s3_path
-    attrs.asset_dbt_job_last_run_has_docs_generated = obj.asset_dbt_job_last_run_has_docs_generated
-    attrs.asset_dbt_job_last_run_has_sources_generated = obj.asset_dbt_job_last_run_has_sources_generated
-    attrs.asset_dbt_job_last_run_notifications_sent = obj.asset_dbt_job_last_run_notifications_sent
+    attrs.asset_dbt_job_last_run_status_message = (
+        obj.asset_dbt_job_last_run_status_message
+    )
+    attrs.asset_dbt_job_last_run_owner_thread_id = (
+        obj.asset_dbt_job_last_run_owner_thread_id
+    )
+    attrs.asset_dbt_job_last_run_executed_by_thread_id = (
+        obj.asset_dbt_job_last_run_executed_by_thread_id
+    )
+    attrs.asset_dbt_job_last_run_artifacts_saved = (
+        obj.asset_dbt_job_last_run_artifacts_saved
+    )
+    attrs.asset_dbt_job_last_run_artifact_s3_path = (
+        obj.asset_dbt_job_last_run_artifact_s3_path
+    )
+    attrs.asset_dbt_job_last_run_has_docs_generated = (
+        obj.asset_dbt_job_last_run_has_docs_generated
+    )
+    attrs.asset_dbt_job_last_run_has_sources_generated = (
+        obj.asset_dbt_job_last_run_has_sources_generated
+    )
+    attrs.asset_dbt_job_last_run_notifications_sent = (
+        obj.asset_dbt_job_last_run_notifications_sent
+    )
     attrs.asset_dbt_job_next_run = obj.asset_dbt_job_next_run
     attrs.asset_dbt_job_next_run_humanized = obj.asset_dbt_job_next_run_humanized
     attrs.asset_dbt_environment_name = obj.asset_dbt_environment_name
@@ -1753,11 +2015,19 @@ def _populate_data_set_attrs(attrs: DataSetAttributes, obj: DataSet) -> None:
     attrs.asset_dq_schedule_type = obj.asset_dq_schedule_type
     attrs.asset_dq_schedule_crontab = obj.asset_dq_schedule_crontab
     attrs.asset_dq_schedule_time_zone = obj.asset_dq_schedule_time_zone
-    attrs.asset_dq_schedule_source_sync_status = obj.asset_dq_schedule_source_sync_status
+    attrs.asset_dq_schedule_source_sync_status = (
+        obj.asset_dq_schedule_source_sync_status
+    )
     attrs.asset_dq_schedule_source_synced_at = obj.asset_dq_schedule_source_synced_at
-    attrs.asset_dq_schedule_source_sync_error_message = obj.asset_dq_schedule_source_sync_error_message
-    attrs.asset_dq_schedule_source_sync_error_code = obj.asset_dq_schedule_source_sync_error_code
-    attrs.asset_dq_schedule_source_sync_raw_error = obj.asset_dq_schedule_source_sync_raw_error
+    attrs.asset_dq_schedule_source_sync_error_message = (
+        obj.asset_dq_schedule_source_sync_error_message
+    )
+    attrs.asset_dq_schedule_source_sync_error_code = (
+        obj.asset_dq_schedule_source_sync_error_code
+    )
+    attrs.asset_dq_schedule_source_sync_raw_error = (
+        obj.asset_dq_schedule_source_sync_raw_error
+    )
     attrs.asset_dq_rule_attached_dimensions = obj.asset_dq_rule_attached_dimensions
     attrs.asset_dq_rule_failed_dimensions = obj.asset_dq_rule_failed_dimensions
     attrs.asset_dq_rule_passed_dimensions = obj.asset_dq_rule_passed_dimensions
@@ -1773,15 +2043,22 @@ def _populate_data_set_attrs(attrs: DataSetAttributes, obj: DataSet) -> None:
     attrs.asset_dq_result = obj.asset_dq_result
     attrs.asset_dq_freshness_value = obj.asset_dq_freshness_value
     attrs.asset_dq_freshness_expectation = obj.asset_dq_freshness_expectation
-    attrs.asset_dq_row_scope_filter_column_qualified_name = obj.asset_dq_row_scope_filter_column_qualified_name
+    attrs.asset_dq_row_scope_filter_column_qualified_name = (
+        obj.asset_dq_row_scope_filter_column_qualified_name
+    )
     attrs.asset_space_qualified_name = obj.asset_space_qualified_name
     attrs.asset_space_name = obj.asset_space_name
     attrs.asset_gcp_dataplex_metadata_details = obj.asset_gcp_dataplex_metadata_details
     attrs.asset_gcp_dataplex_aspect_list = obj.asset_gcp_dataplex_aspect_list
-    attrs.asset_gcp_dataplex_aspect_field_list = obj.asset_gcp_dataplex_aspect_field_list
+    attrs.asset_gcp_dataplex_aspect_field_list = (
+        obj.asset_gcp_dataplex_aspect_field_list
+    )
     attrs.asset_smus_metadata_form_names = obj.asset_smus_metadata_form_names
-    attrs.asset_smus_metadata_form_key_value_details = obj.asset_smus_metadata_form_key_value_details
+    attrs.asset_smus_metadata_form_key_value_details = (
+        obj.asset_smus_metadata_form_key_value_details
+    )
     attrs.asset_smus_metadata_form_details = obj.asset_smus_metadata_form_details
+
 
 def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     """Extract all DataSet attributes from the attrs struct into a flat dict."""
@@ -1792,8 +2069,12 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["asset_source_readme"] = attrs.asset_source_readme
     result["user_description"] = attrs.user_description
     result["asset_ai_generated_description"] = attrs.asset_ai_generated_description
-    result["asset_ai_generated_description_confidence"] = attrs.asset_ai_generated_description_confidence
-    result["asset_ai_generated_description_reasoning"] = attrs.asset_ai_generated_description_reasoning
+    result["asset_ai_generated_description_confidence"] = (
+        attrs.asset_ai_generated_description_confidence
+    )
+    result["asset_ai_generated_description_reasoning"] = (
+        attrs.asset_ai_generated_description_reasoning
+    )
     result["tenant_id"] = attrs.tenant_id
     result["certificate_status"] = attrs.certificate_status
     result["certificate_status_message"] = attrs.certificate_status_message
@@ -1839,14 +2120,24 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["source_cost_unit"] = attrs.source_cost_unit
     result["source_read_query_cost"] = attrs.source_read_query_cost
     result["source_read_recent_user_list"] = attrs.source_read_recent_user_list
-    result["source_read_recent_user_record_list"] = attrs.source_read_recent_user_record_list
+    result["source_read_recent_user_record_list"] = (
+        attrs.source_read_recent_user_record_list
+    )
     result["source_read_top_user_list"] = attrs.source_read_top_user_list
     result["source_read_top_user_record_list"] = attrs.source_read_top_user_record_list
-    result["source_read_popular_query_record_list"] = attrs.source_read_popular_query_record_list
-    result["source_read_expensive_query_record_list"] = attrs.source_read_expensive_query_record_list
-    result["source_read_slow_query_record_list"] = attrs.source_read_slow_query_record_list
+    result["source_read_popular_query_record_list"] = (
+        attrs.source_read_popular_query_record_list
+    )
+    result["source_read_expensive_query_record_list"] = (
+        attrs.source_read_expensive_query_record_list
+    )
+    result["source_read_slow_query_record_list"] = (
+        attrs.source_read_slow_query_record_list
+    )
     result["source_query_compute_cost_list"] = attrs.source_query_compute_cost_list
-    result["source_query_compute_cost_record_list"] = attrs.source_query_compute_cost_record_list
+    result["source_query_compute_cost_record_list"] = (
+        attrs.source_query_compute_cost_record_list
+    )
     result["dbt_qualified_name"] = attrs.dbt_qualified_name
     result["asset_dbt_workflow_last_updated"] = attrs.asset_dbt_workflow_last_updated
     result["asset_dbt_alias"] = attrs.asset_dbt_alias
@@ -1859,40 +2150,86 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["asset_dbt_job_schedule"] = attrs.asset_dbt_job_schedule
     result["asset_dbt_job_status"] = attrs.asset_dbt_job_status
     result["asset_dbt_test_status"] = attrs.asset_dbt_test_status
-    result["asset_dbt_job_schedule_cron_humanized"] = attrs.asset_dbt_job_schedule_cron_humanized
+    result["asset_dbt_job_schedule_cron_humanized"] = (
+        attrs.asset_dbt_job_schedule_cron_humanized
+    )
     result["asset_dbt_job_last_run"] = attrs.asset_dbt_job_last_run
     result["asset_dbt_job_last_run_url"] = attrs.asset_dbt_job_last_run_url
-    result["asset_dbt_job_last_run_created_at"] = attrs.asset_dbt_job_last_run_created_at
-    result["asset_dbt_job_last_run_updated_at"] = attrs.asset_dbt_job_last_run_updated_at
+    result["asset_dbt_job_last_run_created_at"] = (
+        attrs.asset_dbt_job_last_run_created_at
+    )
+    result["asset_dbt_job_last_run_updated_at"] = (
+        attrs.asset_dbt_job_last_run_updated_at
+    )
     result["asset_dbt_job_last_run_dequed_at"] = attrs.asset_dbt_job_last_run_dequed_at
-    result["asset_dbt_job_last_run_started_at"] = attrs.asset_dbt_job_last_run_started_at
-    result["asset_dbt_job_last_run_total_duration"] = attrs.asset_dbt_job_last_run_total_duration
-    result["asset_dbt_job_last_run_total_duration_humanized"] = attrs.asset_dbt_job_last_run_total_duration_humanized
-    result["asset_dbt_job_last_run_queued_duration"] = attrs.asset_dbt_job_last_run_queued_duration
-    result["asset_dbt_job_last_run_queued_duration_humanized"] = attrs.asset_dbt_job_last_run_queued_duration_humanized
-    result["asset_dbt_job_last_run_run_duration"] = attrs.asset_dbt_job_last_run_run_duration
-    result["asset_dbt_job_last_run_run_duration_humanized"] = attrs.asset_dbt_job_last_run_run_duration_humanized
-    result["asset_dbt_job_last_run_git_branch"] = attrs.asset_dbt_job_last_run_git_branch
+    result["asset_dbt_job_last_run_started_at"] = (
+        attrs.asset_dbt_job_last_run_started_at
+    )
+    result["asset_dbt_job_last_run_total_duration"] = (
+        attrs.asset_dbt_job_last_run_total_duration
+    )
+    result["asset_dbt_job_last_run_total_duration_humanized"] = (
+        attrs.asset_dbt_job_last_run_total_duration_humanized
+    )
+    result["asset_dbt_job_last_run_queued_duration"] = (
+        attrs.asset_dbt_job_last_run_queued_duration
+    )
+    result["asset_dbt_job_last_run_queued_duration_humanized"] = (
+        attrs.asset_dbt_job_last_run_queued_duration_humanized
+    )
+    result["asset_dbt_job_last_run_run_duration"] = (
+        attrs.asset_dbt_job_last_run_run_duration
+    )
+    result["asset_dbt_job_last_run_run_duration_humanized"] = (
+        attrs.asset_dbt_job_last_run_run_duration_humanized
+    )
+    result["asset_dbt_job_last_run_git_branch"] = (
+        attrs.asset_dbt_job_last_run_git_branch
+    )
     result["asset_dbt_job_last_run_git_sha"] = attrs.asset_dbt_job_last_run_git_sha
-    result["asset_dbt_job_last_run_status_message"] = attrs.asset_dbt_job_last_run_status_message
-    result["asset_dbt_job_last_run_owner_thread_id"] = attrs.asset_dbt_job_last_run_owner_thread_id
-    result["asset_dbt_job_last_run_executed_by_thread_id"] = attrs.asset_dbt_job_last_run_executed_by_thread_id
-    result["asset_dbt_job_last_run_artifacts_saved"] = attrs.asset_dbt_job_last_run_artifacts_saved
-    result["asset_dbt_job_last_run_artifact_s3_path"] = attrs.asset_dbt_job_last_run_artifact_s3_path
-    result["asset_dbt_job_last_run_has_docs_generated"] = attrs.asset_dbt_job_last_run_has_docs_generated
-    result["asset_dbt_job_last_run_has_sources_generated"] = attrs.asset_dbt_job_last_run_has_sources_generated
-    result["asset_dbt_job_last_run_notifications_sent"] = attrs.asset_dbt_job_last_run_notifications_sent
+    result["asset_dbt_job_last_run_status_message"] = (
+        attrs.asset_dbt_job_last_run_status_message
+    )
+    result["asset_dbt_job_last_run_owner_thread_id"] = (
+        attrs.asset_dbt_job_last_run_owner_thread_id
+    )
+    result["asset_dbt_job_last_run_executed_by_thread_id"] = (
+        attrs.asset_dbt_job_last_run_executed_by_thread_id
+    )
+    result["asset_dbt_job_last_run_artifacts_saved"] = (
+        attrs.asset_dbt_job_last_run_artifacts_saved
+    )
+    result["asset_dbt_job_last_run_artifact_s3_path"] = (
+        attrs.asset_dbt_job_last_run_artifact_s3_path
+    )
+    result["asset_dbt_job_last_run_has_docs_generated"] = (
+        attrs.asset_dbt_job_last_run_has_docs_generated
+    )
+    result["asset_dbt_job_last_run_has_sources_generated"] = (
+        attrs.asset_dbt_job_last_run_has_sources_generated
+    )
+    result["asset_dbt_job_last_run_notifications_sent"] = (
+        attrs.asset_dbt_job_last_run_notifications_sent
+    )
     result["asset_dbt_job_next_run"] = attrs.asset_dbt_job_next_run
     result["asset_dbt_job_next_run_humanized"] = attrs.asset_dbt_job_next_run_humanized
     result["asset_dbt_environment_name"] = attrs.asset_dbt_environment_name
-    result["asset_dbt_environment_dbt_version"] = attrs.asset_dbt_environment_dbt_version
+    result["asset_dbt_environment_dbt_version"] = (
+        attrs.asset_dbt_environment_dbt_version
+    )
     result["asset_dbt_tags"] = attrs.asset_dbt_tags
-    result["asset_dbt_semantic_layer_proxy_url"] = attrs.asset_dbt_semantic_layer_proxy_url
-    result["asset_dbt_source_freshness_criteria"] = attrs.asset_dbt_source_freshness_criteria
+    result["asset_dbt_semantic_layer_proxy_url"] = (
+        attrs.asset_dbt_semantic_layer_proxy_url
+    )
+    result["asset_dbt_source_freshness_criteria"] = (
+        attrs.asset_dbt_source_freshness_criteria
+    )
     result["sample_data_url"] = attrs.sample_data_url
     result["asset_tags"] = attrs.asset_tags
     result["asset_mc_incident_names"] = attrs.asset_mc_incident_names
-    result["asset_mc_incident_qualified_names"] = attrs.asset_mc_incident_qualified_names
+    result["asset_mc_incident_qualified_names"] = (
+        attrs.asset_mc_incident_qualified_names
+    )
     result["asset_mc_alert_qualified_names"] = attrs.asset_mc_alert_qualified_names
     result["asset_mc_monitor_names"] = attrs.asset_mc_monitor_names
     result["asset_mc_monitor_qualified_names"] = attrs.asset_mc_monitor_qualified_names
@@ -1914,7 +2251,9 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["asset_anomalo_failed_check_count"] = attrs.asset_anomalo_failed_check_count
     result["asset_anomalo_check_statuses"] = attrs.asset_anomalo_check_statuses
     result["asset_anomalo_last_check_run_at"] = attrs.asset_anomalo_last_check_run_at
-    result["asset_anomalo_applied_check_types"] = attrs.asset_anomalo_applied_check_types
+    result["asset_anomalo_applied_check_types"] = (
+        attrs.asset_anomalo_applied_check_types
+    )
     result["asset_anomalo_failed_check_types"] = attrs.asset_anomalo_failed_check_types
     result["asset_anomalo_source_url"] = attrs.asset_anomalo_source_url
     result["asset_soda_dq_status"] = attrs.asset_soda_dq_status
@@ -1924,7 +2263,9 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["asset_soda_check_statuses"] = attrs.asset_soda_check_statuses
     result["asset_soda_source_url"] = attrs.asset_soda_source_url
     result["asset_icon"] = attrs.asset_icon
-    result["asset_external_dq_metadata_details"] = attrs.asset_external_dq_metadata_details
+    result["asset_external_dq_metadata_details"] = (
+        attrs.asset_external_dq_metadata_details
+    )
     result["is_partial"] = attrs.is_partial
     result["is_ai_generated"] = attrs.is_ai_generated
     result["asset_cover_image"] = attrs.asset_cover_image
@@ -1945,15 +2286,29 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["asset_dq_schedule_type"] = attrs.asset_dq_schedule_type
     result["asset_dq_schedule_crontab"] = attrs.asset_dq_schedule_crontab
     result["asset_dq_schedule_time_zone"] = attrs.asset_dq_schedule_time_zone
-    result["asset_dq_schedule_source_sync_status"] = attrs.asset_dq_schedule_source_sync_status
-    result["asset_dq_schedule_source_synced_at"] = attrs.asset_dq_schedule_source_synced_at
-    result["asset_dq_schedule_source_sync_error_message"] = attrs.asset_dq_schedule_source_sync_error_message
-    result["asset_dq_schedule_source_sync_error_code"] = attrs.asset_dq_schedule_source_sync_error_code
-    result["asset_dq_schedule_source_sync_raw_error"] = attrs.asset_dq_schedule_source_sync_raw_error
-    result["asset_dq_rule_attached_dimensions"] = attrs.asset_dq_rule_attached_dimensions
+    result["asset_dq_schedule_source_sync_status"] = (
+        attrs.asset_dq_schedule_source_sync_status
+    )
+    result["asset_dq_schedule_source_synced_at"] = (
+        attrs.asset_dq_schedule_source_synced_at
+    )
+    result["asset_dq_schedule_source_sync_error_message"] = (
+        attrs.asset_dq_schedule_source_sync_error_message
+    )
+    result["asset_dq_schedule_source_sync_error_code"] = (
+        attrs.asset_dq_schedule_source_sync_error_code
+    )
+    result["asset_dq_schedule_source_sync_raw_error"] = (
+        attrs.asset_dq_schedule_source_sync_raw_error
+    )
+    result["asset_dq_rule_attached_dimensions"] = (
+        attrs.asset_dq_rule_attached_dimensions
+    )
     result["asset_dq_rule_failed_dimensions"] = attrs.asset_dq_rule_failed_dimensions
     result["asset_dq_rule_passed_dimensions"] = attrs.asset_dq_rule_passed_dimensions
-    result["asset_dq_rule_attached_rule_types"] = attrs.asset_dq_rule_attached_rule_types
+    result["asset_dq_rule_attached_rule_types"] = (
+        attrs.asset_dq_rule_attached_rule_types
+    )
     result["asset_dq_rule_failed_rule_types"] = attrs.asset_dq_rule_failed_rule_types
     result["asset_dq_rule_passed_rule_types"] = attrs.asset_dq_rule_passed_rule_types
     result["asset_dq_rule_result_tags"] = attrs.asset_dq_rule_result_tags
@@ -1965,16 +2320,25 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["asset_dq_result"] = attrs.asset_dq_result
     result["asset_dq_freshness_value"] = attrs.asset_dq_freshness_value
     result["asset_dq_freshness_expectation"] = attrs.asset_dq_freshness_expectation
-    result["asset_dq_row_scope_filter_column_qualified_name"] = attrs.asset_dq_row_scope_filter_column_qualified_name
+    result["asset_dq_row_scope_filter_column_qualified_name"] = (
+        attrs.asset_dq_row_scope_filter_column_qualified_name
+    )
     result["asset_space_qualified_name"] = attrs.asset_space_qualified_name
     result["asset_space_name"] = attrs.asset_space_name
-    result["asset_gcp_dataplex_metadata_details"] = attrs.asset_gcp_dataplex_metadata_details
+    result["asset_gcp_dataplex_metadata_details"] = (
+        attrs.asset_gcp_dataplex_metadata_details
+    )
     result["asset_gcp_dataplex_aspect_list"] = attrs.asset_gcp_dataplex_aspect_list
-    result["asset_gcp_dataplex_aspect_field_list"] = attrs.asset_gcp_dataplex_aspect_field_list
+    result["asset_gcp_dataplex_aspect_field_list"] = (
+        attrs.asset_gcp_dataplex_aspect_field_list
+    )
     result["asset_smus_metadata_form_names"] = attrs.asset_smus_metadata_form_names
-    result["asset_smus_metadata_form_key_value_details"] = attrs.asset_smus_metadata_form_key_value_details
+    result["asset_smus_metadata_form_key_value_details"] = (
+        attrs.asset_smus_metadata_form_key_value_details
+    )
     result["asset_smus_metadata_form_details"] = attrs.asset_smus_metadata_form_details
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -2015,6 +2379,7 @@ def _data_set_to_nested(data_set: DataSet) -> DataSetNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _data_set_from_nested(nested: DataSetNested) -> DataSet:
     """Convert nested format to flat DataSet."""
     attrs = nested.attributes if nested.attributes is not UNSET else DataSetAttributes()
@@ -2024,7 +2389,7 @@ def _data_set_from_nested(nested: DataSetNested) -> DataSet:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATA_SET_REL_FIELDS,
-        DataSetRelationshipAttributes
+        DataSetRelationshipAttributes,
     )
     return DataSet(
         guid=nested.guid,
@@ -2051,6 +2416,7 @@ def _data_set_from_nested(nested: DataSetNested) -> DataSet:
         **merged_rels,
     )
 
+
 def _data_set_to_nested_bytes(data_set: DataSet, serde: Serde) -> bytes:
     """Convert flat DataSet to nested JSON bytes."""
     return serde.encode(_data_set_to_nested(data_set))
@@ -2060,6 +2426,7 @@ def _data_set_from_nested_bytes(data: bytes, serde: Serde) -> DataSet:
     """Convert nested JSON bytes to flat DataSet."""
     nested = serde.decode(data, DataSetNested)
     return _data_set_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -2077,21 +2444,43 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 DataSet.NAME = KeywordField("name", "name")
 DataSet.DISPLAY_NAME = KeywordField("displayName", "displayName")
 DataSet.DESCRIPTION = KeywordField("description", "description")
-DataSet.ASSET_SOURCE_README = KeywordTextField("assetSourceReadme", "assetSourceReadme", "assetSourceReadme.text")
+DataSet.ASSET_SOURCE_README = KeywordTextField(
+    "assetSourceReadme", "assetSourceReadme", "assetSourceReadme.text"
+)
 DataSet.USER_DESCRIPTION = KeywordField("userDescription", "userDescription")
-DataSet.ASSET_AI_GENERATED_DESCRIPTION = TextField("assetAiGeneratedDescription", "assetAiGeneratedDescription")
-DataSet.ASSET_AI_GENERATED_DESCRIPTION_CONFIDENCE = NumericField("assetAiGeneratedDescriptionConfidence", "assetAiGeneratedDescriptionConfidence")
-DataSet.ASSET_AI_GENERATED_DESCRIPTION_REASONING = KeywordField("assetAiGeneratedDescriptionReasoning", "assetAiGeneratedDescriptionReasoning")
+DataSet.ASSET_AI_GENERATED_DESCRIPTION = TextField(
+    "assetAiGeneratedDescription", "assetAiGeneratedDescription"
+)
+DataSet.ASSET_AI_GENERATED_DESCRIPTION_CONFIDENCE = NumericField(
+    "assetAiGeneratedDescriptionConfidence", "assetAiGeneratedDescriptionConfidence"
+)
+DataSet.ASSET_AI_GENERATED_DESCRIPTION_REASONING = KeywordField(
+    "assetAiGeneratedDescriptionReasoning", "assetAiGeneratedDescriptionReasoning"
+)
 DataSet.TENANT_ID = KeywordField("tenantId", "tenantId")
-DataSet.CERTIFICATE_STATUS = KeywordTextField("certificateStatus", "certificateStatus", "certificateStatus.text")
-DataSet.CERTIFICATE_STATUS_MESSAGE = KeywordField("certificateStatusMessage", "certificateStatusMessage")
-DataSet.CERTIFICATE_UPDATED_BY = KeywordField("certificateUpdatedBy", "certificateUpdatedBy")
-DataSet.CERTIFICATE_UPDATED_AT = NumericField("certificateUpdatedAt", "certificateUpdatedAt")
+DataSet.CERTIFICATE_STATUS = KeywordTextField(
+    "certificateStatus", "certificateStatus", "certificateStatus.text"
+)
+DataSet.CERTIFICATE_STATUS_MESSAGE = KeywordField(
+    "certificateStatusMessage", "certificateStatusMessage"
+)
+DataSet.CERTIFICATE_UPDATED_BY = KeywordField(
+    "certificateUpdatedBy", "certificateUpdatedBy"
+)
+DataSet.CERTIFICATE_UPDATED_AT = NumericField(
+    "certificateUpdatedAt", "certificateUpdatedAt"
+)
 DataSet.ANNOUNCEMENT_TITLE = KeywordField("announcementTitle", "announcementTitle")
-DataSet.ANNOUNCEMENT_MESSAGE = KeywordField("announcementMessage", "announcementMessage")
+DataSet.ANNOUNCEMENT_MESSAGE = KeywordField(
+    "announcementMessage", "announcementMessage"
+)
 DataSet.ANNOUNCEMENT_TYPE = KeywordField("announcementType", "announcementType")
-DataSet.ANNOUNCEMENT_UPDATED_AT = NumericField("announcementUpdatedAt", "announcementUpdatedAt")
-DataSet.ANNOUNCEMENT_UPDATED_BY = KeywordField("announcementUpdatedBy", "announcementUpdatedBy")
+DataSet.ANNOUNCEMENT_UPDATED_AT = NumericField(
+    "announcementUpdatedAt", "announcementUpdatedAt"
+)
+DataSet.ANNOUNCEMENT_UPDATED_BY = KeywordField(
+    "announcementUpdatedBy", "announcementUpdatedBy"
+)
 DataSet.OWNER_USERS = KeywordField("ownerUsers", "ownerUsers")
 DataSet.OWNER_GROUPS = KeywordField("ownerGroups", "ownerGroups")
 DataSet.ADMIN_USERS = KeywordField("adminUsers", "adminUsers")
@@ -2099,8 +2488,12 @@ DataSet.ADMIN_GROUPS = KeywordField("adminGroups", "adminGroups")
 DataSet.VIEWER_USERS = KeywordField("viewerUsers", "viewerUsers")
 DataSet.VIEWER_GROUPS = KeywordField("viewerGroups", "viewerGroups")
 DataSet.CONNECTOR_NAME = KeywordField("connectorName", "connectorName")
-DataSet.CONNECTION_NAME = KeywordTextField("connectionName", "connectionName", "connectionName.text")
-DataSet.CONNECTION_QUALIFIED_NAME = KeywordTextField("connectionQualifiedName", "connectionQualifiedName", "connectionQualifiedName.text")
+DataSet.CONNECTION_NAME = KeywordTextField(
+    "connectionName", "connectionName", "connectionName.text"
+)
+DataSet.CONNECTION_QUALIFIED_NAME = KeywordTextField(
+    "connectionQualifiedName", "connectionQualifiedName", "connectionQualifiedName.text"
+)
 DataSet.HAS_LINEAGE = BooleanField("__hasLineage", "__hasLineage")
 DataSet.IS_DISCOVERABLE = BooleanField("isDiscoverable", "isDiscoverable")
 DataSet.IS_EDITABLE = BooleanField("isEditable", "isEditable")
@@ -2115,153 +2508,394 @@ DataSet.SOURCE_UPDATED_AT = NumericField("sourceUpdatedAt", "sourceUpdatedAt")
 DataSet.SOURCE_UPDATED_BY = KeywordField("sourceUpdatedBy", "sourceUpdatedBy")
 DataSet.SOURCE_URL = KeywordField("sourceURL", "sourceURL")
 DataSet.SOURCE_EMBED_URL = KeywordField("sourceEmbedURL", "sourceEmbedURL")
-DataSet.LAST_SYNC_WORKFLOW_NAME = KeywordField("lastSyncWorkflowName", "lastSyncWorkflowName")
+DataSet.LAST_SYNC_WORKFLOW_NAME = KeywordField(
+    "lastSyncWorkflowName", "lastSyncWorkflowName"
+)
 DataSet.LAST_SYNC_RUN_AT = NumericField("lastSyncRunAt", "lastSyncRunAt")
 DataSet.LAST_SYNC_RUN = KeywordField("lastSyncRun", "lastSyncRun")
 DataSet.ADMIN_ROLES = KeywordField("adminRoles", "adminRoles")
 DataSet.SOURCE_READ_COUNT = NumericField("sourceReadCount", "sourceReadCount")
-DataSet.SOURCE_READ_USER_COUNT = NumericField("sourceReadUserCount", "sourceReadUserCount")
+DataSet.SOURCE_READ_USER_COUNT = NumericField(
+    "sourceReadUserCount", "sourceReadUserCount"
+)
 DataSet.SOURCE_LAST_READ_AT = NumericField("sourceLastReadAt", "sourceLastReadAt")
 DataSet.LAST_ROW_CHANGED_AT = NumericField("lastRowChangedAt", "lastRowChangedAt")
 DataSet.SOURCE_TOTAL_COST = NumericField("sourceTotalCost", "sourceTotalCost")
 DataSet.SOURCE_COST_UNIT = KeywordField("sourceCostUnit", "sourceCostUnit")
-DataSet.SOURCE_READ_QUERY_COST = NumericField("sourceReadQueryCost", "sourceReadQueryCost")
-DataSet.SOURCE_READ_RECENT_USER_LIST = KeywordField("sourceReadRecentUserList", "sourceReadRecentUserList")
-DataSet.SOURCE_READ_RECENT_USER_RECORD_LIST = KeywordField("sourceReadRecentUserRecordList", "sourceReadRecentUserRecordList")
-DataSet.SOURCE_READ_TOP_USER_LIST = KeywordField("sourceReadTopUserList", "sourceReadTopUserList")
-DataSet.SOURCE_READ_TOP_USER_RECORD_LIST = KeywordField("sourceReadTopUserRecordList", "sourceReadTopUserRecordList")
-DataSet.SOURCE_READ_POPULAR_QUERY_RECORD_LIST = KeywordField("sourceReadPopularQueryRecordList", "sourceReadPopularQueryRecordList")
-DataSet.SOURCE_READ_EXPENSIVE_QUERY_RECORD_LIST = KeywordField("sourceReadExpensiveQueryRecordList", "sourceReadExpensiveQueryRecordList")
-DataSet.SOURCE_READ_SLOW_QUERY_RECORD_LIST = KeywordField("sourceReadSlowQueryRecordList", "sourceReadSlowQueryRecordList")
-DataSet.SOURCE_QUERY_COMPUTE_COST_LIST = KeywordField("sourceQueryComputeCostList", "sourceQueryComputeCostList")
-DataSet.SOURCE_QUERY_COMPUTE_COST_RECORD_LIST = KeywordField("sourceQueryComputeCostRecordList", "sourceQueryComputeCostRecordList")
-DataSet.DBT_QUALIFIED_NAME = KeywordTextField("dbtQualifiedName", "dbtQualifiedName", "dbtQualifiedName.text")
-DataSet.ASSET_DBT_WORKFLOW_LAST_UPDATED = KeywordField("assetDbtWorkflowLastUpdated", "assetDbtWorkflowLastUpdated")
+DataSet.SOURCE_READ_QUERY_COST = NumericField(
+    "sourceReadQueryCost", "sourceReadQueryCost"
+)
+DataSet.SOURCE_READ_RECENT_USER_LIST = KeywordField(
+    "sourceReadRecentUserList", "sourceReadRecentUserList"
+)
+DataSet.SOURCE_READ_RECENT_USER_RECORD_LIST = KeywordField(
+    "sourceReadRecentUserRecordList", "sourceReadRecentUserRecordList"
+)
+DataSet.SOURCE_READ_TOP_USER_LIST = KeywordField(
+    "sourceReadTopUserList", "sourceReadTopUserList"
+)
+DataSet.SOURCE_READ_TOP_USER_RECORD_LIST = KeywordField(
+    "sourceReadTopUserRecordList", "sourceReadTopUserRecordList"
+)
+DataSet.SOURCE_READ_POPULAR_QUERY_RECORD_LIST = KeywordField(
+    "sourceReadPopularQueryRecordList", "sourceReadPopularQueryRecordList"
+)
+DataSet.SOURCE_READ_EXPENSIVE_QUERY_RECORD_LIST = KeywordField(
+    "sourceReadExpensiveQueryRecordList", "sourceReadExpensiveQueryRecordList"
+)
+DataSet.SOURCE_READ_SLOW_QUERY_RECORD_LIST = KeywordField(
+    "sourceReadSlowQueryRecordList", "sourceReadSlowQueryRecordList"
+)
+DataSet.SOURCE_QUERY_COMPUTE_COST_LIST = KeywordField(
+    "sourceQueryComputeCostList", "sourceQueryComputeCostList"
+)
+DataSet.SOURCE_QUERY_COMPUTE_COST_RECORD_LIST = KeywordField(
+    "sourceQueryComputeCostRecordList", "sourceQueryComputeCostRecordList"
+)
+DataSet.DBT_QUALIFIED_NAME = KeywordTextField(
+    "dbtQualifiedName", "dbtQualifiedName", "dbtQualifiedName.text"
+)
+DataSet.ASSET_DBT_WORKFLOW_LAST_UPDATED = KeywordField(
+    "assetDbtWorkflowLastUpdated", "assetDbtWorkflowLastUpdated"
+)
 DataSet.ASSET_DBT_ALIAS = KeywordField("assetDbtAlias", "assetDbtAlias")
 DataSet.ASSET_DBT_META = KeywordField("assetDbtMeta", "assetDbtMeta")
 DataSet.ASSET_DBT_UNIQUE_ID = KeywordField("assetDbtUniqueId", "assetDbtUniqueId")
-DataSet.ASSET_DBT_ACCOUNT_NAME = KeywordField("assetDbtAccountName", "assetDbtAccountName")
-DataSet.ASSET_DBT_PROJECT_NAME = KeywordField("assetDbtProjectName", "assetDbtProjectName")
-DataSet.ASSET_DBT_PACKAGE_NAME = KeywordField("assetDbtPackageName", "assetDbtPackageName")
+DataSet.ASSET_DBT_ACCOUNT_NAME = KeywordField(
+    "assetDbtAccountName", "assetDbtAccountName"
+)
+DataSet.ASSET_DBT_PROJECT_NAME = KeywordField(
+    "assetDbtProjectName", "assetDbtProjectName"
+)
+DataSet.ASSET_DBT_PACKAGE_NAME = KeywordField(
+    "assetDbtPackageName", "assetDbtPackageName"
+)
 DataSet.ASSET_DBT_JOB_NAME = KeywordField("assetDbtJobName", "assetDbtJobName")
-DataSet.ASSET_DBT_JOB_SCHEDULE = KeywordField("assetDbtJobSchedule", "assetDbtJobSchedule")
+DataSet.ASSET_DBT_JOB_SCHEDULE = KeywordField(
+    "assetDbtJobSchedule", "assetDbtJobSchedule"
+)
 DataSet.ASSET_DBT_JOB_STATUS = KeywordField("assetDbtJobStatus", "assetDbtJobStatus")
 DataSet.ASSET_DBT_TEST_STATUS = KeywordField("assetDbtTestStatus", "assetDbtTestStatus")
-DataSet.ASSET_DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("assetDbtJobScheduleCronHumanized", "assetDbtJobScheduleCronHumanized")
-DataSet.ASSET_DBT_JOB_LAST_RUN = NumericField("assetDbtJobLastRun", "assetDbtJobLastRun")
-DataSet.ASSET_DBT_JOB_LAST_RUN_URL = KeywordField("assetDbtJobLastRunUrl", "assetDbtJobLastRunUrl")
-DataSet.ASSET_DBT_JOB_LAST_RUN_CREATED_AT = NumericField("assetDbtJobLastRunCreatedAt", "assetDbtJobLastRunCreatedAt")
-DataSet.ASSET_DBT_JOB_LAST_RUN_UPDATED_AT = NumericField("assetDbtJobLastRunUpdatedAt", "assetDbtJobLastRunUpdatedAt")
-DataSet.ASSET_DBT_JOB_LAST_RUN_DEQUED_AT = NumericField("assetDbtJobLastRunDequedAt", "assetDbtJobLastRunDequedAt")
-DataSet.ASSET_DBT_JOB_LAST_RUN_STARTED_AT = NumericField("assetDbtJobLastRunStartedAt", "assetDbtJobLastRunStartedAt")
-DataSet.ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION = KeywordField("assetDbtJobLastRunTotalDuration", "assetDbtJobLastRunTotalDuration")
-DataSet.ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED = KeywordField("assetDbtJobLastRunTotalDurationHumanized", "assetDbtJobLastRunTotalDurationHumanized")
-DataSet.ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION = KeywordField("assetDbtJobLastRunQueuedDuration", "assetDbtJobLastRunQueuedDuration")
-DataSet.ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED = KeywordField("assetDbtJobLastRunQueuedDurationHumanized", "assetDbtJobLastRunQueuedDurationHumanized")
-DataSet.ASSET_DBT_JOB_LAST_RUN_RUN_DURATION = KeywordField("assetDbtJobLastRunRunDuration", "assetDbtJobLastRunRunDuration")
-DataSet.ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED = KeywordField("assetDbtJobLastRunRunDurationHumanized", "assetDbtJobLastRunRunDurationHumanized")
-DataSet.ASSET_DBT_JOB_LAST_RUN_GIT_BRANCH = KeywordTextField("assetDbtJobLastRunGitBranch", "assetDbtJobLastRunGitBranch", "assetDbtJobLastRunGitBranch.text")
-DataSet.ASSET_DBT_JOB_LAST_RUN_GIT_SHA = KeywordField("assetDbtJobLastRunGitSha", "assetDbtJobLastRunGitSha")
-DataSet.ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE = KeywordField("assetDbtJobLastRunStatusMessage", "assetDbtJobLastRunStatusMessage")
-DataSet.ASSET_DBT_JOB_LAST_RUN_OWNER_THREAD_ID = KeywordField("assetDbtJobLastRunOwnerThreadId", "assetDbtJobLastRunOwnerThreadId")
-DataSet.ASSET_DBT_JOB_LAST_RUN_EXECUTED_BY_THREAD_ID = KeywordField("assetDbtJobLastRunExecutedByThreadId", "assetDbtJobLastRunExecutedByThreadId")
-DataSet.ASSET_DBT_JOB_LAST_RUN_ARTIFACTS_SAVED = BooleanField("assetDbtJobLastRunArtifactsSaved", "assetDbtJobLastRunArtifactsSaved")
-DataSet.ASSET_DBT_JOB_LAST_RUN_ARTIFACT_S3_PATH = KeywordField("assetDbtJobLastRunArtifactS3Path", "assetDbtJobLastRunArtifactS3Path")
-DataSet.ASSET_DBT_JOB_LAST_RUN_HAS_DOCS_GENERATED = BooleanField("assetDbtJobLastRunHasDocsGenerated", "assetDbtJobLastRunHasDocsGenerated")
-DataSet.ASSET_DBT_JOB_LAST_RUN_HAS_SOURCES_GENERATED = BooleanField("assetDbtJobLastRunHasSourcesGenerated", "assetDbtJobLastRunHasSourcesGenerated")
-DataSet.ASSET_DBT_JOB_LAST_RUN_NOTIFICATIONS_SENT = BooleanField("assetDbtJobLastRunNotificationsSent", "assetDbtJobLastRunNotificationsSent")
-DataSet.ASSET_DBT_JOB_NEXT_RUN = NumericField("assetDbtJobNextRun", "assetDbtJobNextRun")
-DataSet.ASSET_DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("assetDbtJobNextRunHumanized", "assetDbtJobNextRunHumanized")
-DataSet.ASSET_DBT_ENVIRONMENT_NAME = KeywordField("assetDbtEnvironmentName", "assetDbtEnvironmentName")
-DataSet.ASSET_DBT_ENVIRONMENT_DBT_VERSION = KeywordField("assetDbtEnvironmentDbtVersion", "assetDbtEnvironmentDbtVersion")
-DataSet.ASSET_DBT_TAGS = KeywordTextField("assetDbtTags", "assetDbtTags", "assetDbtTags.text")
-DataSet.ASSET_DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("assetDbtSemanticLayerProxyUrl", "assetDbtSemanticLayerProxyUrl")
-DataSet.ASSET_DBT_SOURCE_FRESHNESS_CRITERIA = KeywordField("assetDbtSourceFreshnessCriteria", "assetDbtSourceFreshnessCriteria")
-DataSet.SAMPLE_DATA_URL = KeywordTextField("sampleDataUrl", "sampleDataUrl", "sampleDataUrl.text")
+DataSet.ASSET_DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "assetDbtJobScheduleCronHumanized", "assetDbtJobScheduleCronHumanized"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN = NumericField(
+    "assetDbtJobLastRun", "assetDbtJobLastRun"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_URL = KeywordField(
+    "assetDbtJobLastRunUrl", "assetDbtJobLastRunUrl"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_CREATED_AT = NumericField(
+    "assetDbtJobLastRunCreatedAt", "assetDbtJobLastRunCreatedAt"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_UPDATED_AT = NumericField(
+    "assetDbtJobLastRunUpdatedAt", "assetDbtJobLastRunUpdatedAt"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_DEQUED_AT = NumericField(
+    "assetDbtJobLastRunDequedAt", "assetDbtJobLastRunDequedAt"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_STARTED_AT = NumericField(
+    "assetDbtJobLastRunStartedAt", "assetDbtJobLastRunStartedAt"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION = KeywordField(
+    "assetDbtJobLastRunTotalDuration", "assetDbtJobLastRunTotalDuration"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED = KeywordField(
+    "assetDbtJobLastRunTotalDurationHumanized",
+    "assetDbtJobLastRunTotalDurationHumanized",
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION = KeywordField(
+    "assetDbtJobLastRunQueuedDuration", "assetDbtJobLastRunQueuedDuration"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED = KeywordField(
+    "assetDbtJobLastRunQueuedDurationHumanized",
+    "assetDbtJobLastRunQueuedDurationHumanized",
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_RUN_DURATION = KeywordField(
+    "assetDbtJobLastRunRunDuration", "assetDbtJobLastRunRunDuration"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED = KeywordField(
+    "assetDbtJobLastRunRunDurationHumanized", "assetDbtJobLastRunRunDurationHumanized"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_GIT_BRANCH = KeywordTextField(
+    "assetDbtJobLastRunGitBranch",
+    "assetDbtJobLastRunGitBranch",
+    "assetDbtJobLastRunGitBranch.text",
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_GIT_SHA = KeywordField(
+    "assetDbtJobLastRunGitSha", "assetDbtJobLastRunGitSha"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE = KeywordField(
+    "assetDbtJobLastRunStatusMessage", "assetDbtJobLastRunStatusMessage"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_OWNER_THREAD_ID = KeywordField(
+    "assetDbtJobLastRunOwnerThreadId", "assetDbtJobLastRunOwnerThreadId"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_EXECUTED_BY_THREAD_ID = KeywordField(
+    "assetDbtJobLastRunExecutedByThreadId", "assetDbtJobLastRunExecutedByThreadId"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_ARTIFACTS_SAVED = BooleanField(
+    "assetDbtJobLastRunArtifactsSaved", "assetDbtJobLastRunArtifactsSaved"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_ARTIFACT_S3_PATH = KeywordField(
+    "assetDbtJobLastRunArtifactS3Path", "assetDbtJobLastRunArtifactS3Path"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_HAS_DOCS_GENERATED = BooleanField(
+    "assetDbtJobLastRunHasDocsGenerated", "assetDbtJobLastRunHasDocsGenerated"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_HAS_SOURCES_GENERATED = BooleanField(
+    "assetDbtJobLastRunHasSourcesGenerated", "assetDbtJobLastRunHasSourcesGenerated"
+)
+DataSet.ASSET_DBT_JOB_LAST_RUN_NOTIFICATIONS_SENT = BooleanField(
+    "assetDbtJobLastRunNotificationsSent", "assetDbtJobLastRunNotificationsSent"
+)
+DataSet.ASSET_DBT_JOB_NEXT_RUN = NumericField(
+    "assetDbtJobNextRun", "assetDbtJobNextRun"
+)
+DataSet.ASSET_DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "assetDbtJobNextRunHumanized", "assetDbtJobNextRunHumanized"
+)
+DataSet.ASSET_DBT_ENVIRONMENT_NAME = KeywordField(
+    "assetDbtEnvironmentName", "assetDbtEnvironmentName"
+)
+DataSet.ASSET_DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "assetDbtEnvironmentDbtVersion", "assetDbtEnvironmentDbtVersion"
+)
+DataSet.ASSET_DBT_TAGS = KeywordTextField(
+    "assetDbtTags", "assetDbtTags", "assetDbtTags.text"
+)
+DataSet.ASSET_DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "assetDbtSemanticLayerProxyUrl", "assetDbtSemanticLayerProxyUrl"
+)
+DataSet.ASSET_DBT_SOURCE_FRESHNESS_CRITERIA = KeywordField(
+    "assetDbtSourceFreshnessCriteria", "assetDbtSourceFreshnessCriteria"
+)
+DataSet.SAMPLE_DATA_URL = KeywordTextField(
+    "sampleDataUrl", "sampleDataUrl", "sampleDataUrl.text"
+)
 DataSet.ASSET_TAGS = KeywordTextField("assetTags", "assetTags", "assetTags.text")
-DataSet.ASSET_MC_INCIDENT_NAMES = KeywordField("assetMcIncidentNames", "assetMcIncidentNames")
-DataSet.ASSET_MC_INCIDENT_QUALIFIED_NAMES = KeywordTextField("assetMcIncidentQualifiedNames", "assetMcIncidentQualifiedNames", "assetMcIncidentQualifiedNames.text")
-DataSet.ASSET_MC_ALERT_QUALIFIED_NAMES = KeywordTextField("assetMcAlertQualifiedNames", "assetMcAlertQualifiedNames", "assetMcAlertQualifiedNames.text")
-DataSet.ASSET_MC_MONITOR_NAMES = KeywordField("assetMcMonitorNames", "assetMcMonitorNames")
-DataSet.ASSET_MC_MONITOR_QUALIFIED_NAMES = KeywordTextField("assetMcMonitorQualifiedNames", "assetMcMonitorQualifiedNames", "assetMcMonitorQualifiedNames.text")
-DataSet.ASSET_MC_MONITOR_STATUSES = KeywordField("assetMcMonitorStatuses", "assetMcMonitorStatuses")
-DataSet.ASSET_MC_MONITOR_TYPES = KeywordField("assetMcMonitorTypes", "assetMcMonitorTypes")
-DataSet.ASSET_MC_MONITOR_SCHEDULE_TYPES = KeywordField("assetMcMonitorScheduleTypes", "assetMcMonitorScheduleTypes")
-DataSet.ASSET_MC_INCIDENT_TYPES = KeywordField("assetMcIncidentTypes", "assetMcIncidentTypes")
-DataSet.ASSET_MC_INCIDENT_SUB_TYPES = KeywordField("assetMcIncidentSubTypes", "assetMcIncidentSubTypes")
-DataSet.ASSET_MC_INCIDENT_SEVERITIES = KeywordField("assetMcIncidentSeverities", "assetMcIncidentSeverities")
-DataSet.ASSET_MC_INCIDENT_PRIORITIES = KeywordField("assetMcIncidentPriorities", "assetMcIncidentPriorities")
-DataSet.ASSET_MC_INCIDENT_STATES = KeywordField("assetMcIncidentStates", "assetMcIncidentStates")
+DataSet.ASSET_MC_INCIDENT_NAMES = KeywordField(
+    "assetMcIncidentNames", "assetMcIncidentNames"
+)
+DataSet.ASSET_MC_INCIDENT_QUALIFIED_NAMES = KeywordTextField(
+    "assetMcIncidentQualifiedNames",
+    "assetMcIncidentQualifiedNames",
+    "assetMcIncidentQualifiedNames.text",
+)
+DataSet.ASSET_MC_ALERT_QUALIFIED_NAMES = KeywordTextField(
+    "assetMcAlertQualifiedNames",
+    "assetMcAlertQualifiedNames",
+    "assetMcAlertQualifiedNames.text",
+)
+DataSet.ASSET_MC_MONITOR_NAMES = KeywordField(
+    "assetMcMonitorNames", "assetMcMonitorNames"
+)
+DataSet.ASSET_MC_MONITOR_QUALIFIED_NAMES = KeywordTextField(
+    "assetMcMonitorQualifiedNames",
+    "assetMcMonitorQualifiedNames",
+    "assetMcMonitorQualifiedNames.text",
+)
+DataSet.ASSET_MC_MONITOR_STATUSES = KeywordField(
+    "assetMcMonitorStatuses", "assetMcMonitorStatuses"
+)
+DataSet.ASSET_MC_MONITOR_TYPES = KeywordField(
+    "assetMcMonitorTypes", "assetMcMonitorTypes"
+)
+DataSet.ASSET_MC_MONITOR_SCHEDULE_TYPES = KeywordField(
+    "assetMcMonitorScheduleTypes", "assetMcMonitorScheduleTypes"
+)
+DataSet.ASSET_MC_INCIDENT_TYPES = KeywordField(
+    "assetMcIncidentTypes", "assetMcIncidentTypes"
+)
+DataSet.ASSET_MC_INCIDENT_SUB_TYPES = KeywordField(
+    "assetMcIncidentSubTypes", "assetMcIncidentSubTypes"
+)
+DataSet.ASSET_MC_INCIDENT_SEVERITIES = KeywordField(
+    "assetMcIncidentSeverities", "assetMcIncidentSeverities"
+)
+DataSet.ASSET_MC_INCIDENT_PRIORITIES = KeywordField(
+    "assetMcIncidentPriorities", "assetMcIncidentPriorities"
+)
+DataSet.ASSET_MC_INCIDENT_STATES = KeywordField(
+    "assetMcIncidentStates", "assetMcIncidentStates"
+)
 DataSet.ASSET_MC_IS_MONITORED = BooleanField("assetMcIsMonitored", "assetMcIsMonitored")
-DataSet.ASSET_MC_LAST_SYNC_RUN_AT = NumericField("assetMcLastSyncRunAt", "assetMcLastSyncRunAt")
+DataSet.ASSET_MC_LAST_SYNC_RUN_AT = NumericField(
+    "assetMcLastSyncRunAt", "assetMcLastSyncRunAt"
+)
 DataSet.STARRED_BY = KeywordField("starredBy", "starredBy")
 DataSet.STARRED_DETAILS_LIST = KeywordField("starredDetailsList", "starredDetailsList")
 DataSet.STARRED_COUNT = NumericField("starredCount", "starredCount")
-DataSet.ASSET_ANOMALO_DQ_STATUS = KeywordField("assetAnomaloDQStatus", "assetAnomaloDQStatus")
-DataSet.ASSET_ANOMALO_CHECK_COUNT = NumericField("assetAnomaloCheckCount", "assetAnomaloCheckCount")
-DataSet.ASSET_ANOMALO_FAILED_CHECK_COUNT = NumericField("assetAnomaloFailedCheckCount", "assetAnomaloFailedCheckCount")
-DataSet.ASSET_ANOMALO_CHECK_STATUSES = KeywordField("assetAnomaloCheckStatuses", "assetAnomaloCheckStatuses")
-DataSet.ASSET_ANOMALO_LAST_CHECK_RUN_AT = NumericField("assetAnomaloLastCheckRunAt", "assetAnomaloLastCheckRunAt")
-DataSet.ASSET_ANOMALO_APPLIED_CHECK_TYPES = KeywordField("assetAnomaloAppliedCheckTypes", "assetAnomaloAppliedCheckTypes")
-DataSet.ASSET_ANOMALO_FAILED_CHECK_TYPES = KeywordField("assetAnomaloFailedCheckTypes", "assetAnomaloFailedCheckTypes")
-DataSet.ASSET_ANOMALO_SOURCE_URL = KeywordField("assetAnomaloSourceUrl", "assetAnomaloSourceUrl")
+DataSet.ASSET_ANOMALO_DQ_STATUS = KeywordField(
+    "assetAnomaloDQStatus", "assetAnomaloDQStatus"
+)
+DataSet.ASSET_ANOMALO_CHECK_COUNT = NumericField(
+    "assetAnomaloCheckCount", "assetAnomaloCheckCount"
+)
+DataSet.ASSET_ANOMALO_FAILED_CHECK_COUNT = NumericField(
+    "assetAnomaloFailedCheckCount", "assetAnomaloFailedCheckCount"
+)
+DataSet.ASSET_ANOMALO_CHECK_STATUSES = KeywordField(
+    "assetAnomaloCheckStatuses", "assetAnomaloCheckStatuses"
+)
+DataSet.ASSET_ANOMALO_LAST_CHECK_RUN_AT = NumericField(
+    "assetAnomaloLastCheckRunAt", "assetAnomaloLastCheckRunAt"
+)
+DataSet.ASSET_ANOMALO_APPLIED_CHECK_TYPES = KeywordField(
+    "assetAnomaloAppliedCheckTypes", "assetAnomaloAppliedCheckTypes"
+)
+DataSet.ASSET_ANOMALO_FAILED_CHECK_TYPES = KeywordField(
+    "assetAnomaloFailedCheckTypes", "assetAnomaloFailedCheckTypes"
+)
+DataSet.ASSET_ANOMALO_SOURCE_URL = KeywordField(
+    "assetAnomaloSourceUrl", "assetAnomaloSourceUrl"
+)
 DataSet.ASSET_SODA_DQ_STATUS = KeywordField("assetSodaDQStatus", "assetSodaDQStatus")
-DataSet.ASSET_SODA_CHECK_COUNT = NumericField("assetSodaCheckCount", "assetSodaCheckCount")
-DataSet.ASSET_SODA_LAST_SYNC_RUN_AT = NumericField("assetSodaLastSyncRunAt", "assetSodaLastSyncRunAt")
-DataSet.ASSET_SODA_LAST_SCAN_AT = NumericField("assetSodaLastScanAt", "assetSodaLastScanAt")
-DataSet.ASSET_SODA_CHECK_STATUSES = KeywordField("assetSodaCheckStatuses", "assetSodaCheckStatuses")
+DataSet.ASSET_SODA_CHECK_COUNT = NumericField(
+    "assetSodaCheckCount", "assetSodaCheckCount"
+)
+DataSet.ASSET_SODA_LAST_SYNC_RUN_AT = NumericField(
+    "assetSodaLastSyncRunAt", "assetSodaLastSyncRunAt"
+)
+DataSet.ASSET_SODA_LAST_SCAN_AT = NumericField(
+    "assetSodaLastScanAt", "assetSodaLastScanAt"
+)
+DataSet.ASSET_SODA_CHECK_STATUSES = KeywordField(
+    "assetSodaCheckStatuses", "assetSodaCheckStatuses"
+)
 DataSet.ASSET_SODA_SOURCE_URL = KeywordField("assetSodaSourceURL", "assetSodaSourceURL")
 DataSet.ASSET_ICON = KeywordField("assetIcon", "assetIcon")
-DataSet.ASSET_EXTERNAL_DQ_METADATA_DETAILS = KeywordField("assetExternalDQMetadataDetails", "assetExternalDQMetadataDetails")
+DataSet.ASSET_EXTERNAL_DQ_METADATA_DETAILS = KeywordField(
+    "assetExternalDQMetadataDetails", "assetExternalDQMetadataDetails"
+)
 DataSet.IS_PARTIAL = BooleanField("isPartial", "isPartial")
 DataSet.IS_AI_GENERATED = BooleanField("isAIGenerated", "isAIGenerated")
 DataSet.ASSET_COVER_IMAGE = KeywordField("assetCoverImage", "assetCoverImage")
 DataSet.ASSET_THEME_HEX = KeywordField("assetThemeHex", "assetThemeHex")
-DataSet.LEXICOGRAPHICAL_SORT_ORDER = KeywordField("lexicographicalSortOrder", "lexicographicalSortOrder")
+DataSet.LEXICOGRAPHICAL_SORT_ORDER = KeywordField(
+    "lexicographicalSortOrder", "lexicographicalSortOrder"
+)
 DataSet.HAS_CONTRACT = BooleanField("hasContract", "hasContract")
 DataSet.ASSET_REDIRECT_GUIDS = KeywordField("assetRedirectGUIDs", "assetRedirectGUIDs")
 DataSet.ASSET_POLICY_GUIDS = KeywordField("assetPolicyGUIDs", "assetPolicyGUIDs")
 DataSet.ASSET_POLICIES_COUNT = NumericField("assetPoliciesCount", "assetPoliciesCount")
 DataSet.DOMAIN_GUIDS = KeywordField("domainGUIDs", "domainGUIDs")
-DataSet.NON_COMPLIANT_ASSET_POLICY_GUIDS = KeywordField("nonCompliantAssetPolicyGUIDs", "nonCompliantAssetPolicyGUIDs")
+DataSet.NON_COMPLIANT_ASSET_POLICY_GUIDS = KeywordField(
+    "nonCompliantAssetPolicyGUIDs", "nonCompliantAssetPolicyGUIDs"
+)
 DataSet.PRODUCT_GUIDS = KeywordField("productGUIDs", "productGUIDs")
 DataSet.OUTPUT_PRODUCT_GUIDS = KeywordField("outputProductGUIDs", "outputProductGUIDs")
-DataSet.APPLICATION_QUALIFIED_NAME = KeywordField("applicationQualifiedName", "applicationQualifiedName")
-DataSet.APPLICATION_FIELD_QUALIFIED_NAME = KeywordField("applicationFieldQualifiedName", "applicationFieldQualifiedName")
-DataSet.ASSET_USER_DEFINED_TYPE = KeywordField("assetUserDefinedType", "assetUserDefinedType")
-DataSet.ASSET_INTERNAL_POPULARITY_SCORE = NumericRankField("assetInternalPopularityScore", "assetInternalPopularityScore", "assetInternalPopularityScore.rank")
-DataSet.ASSET_DQ_SCHEDULE_TYPE = KeywordField("assetDQScheduleType", "assetDQScheduleType")
-DataSet.ASSET_DQ_SCHEDULE_CRONTAB = KeywordField("assetDQScheduleCrontab", "assetDQScheduleCrontab")
-DataSet.ASSET_DQ_SCHEDULE_TIME_ZONE = KeywordField("assetDQScheduleTimeZone", "assetDQScheduleTimeZone")
-DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS = KeywordField("assetDQScheduleSourceSyncStatus", "assetDQScheduleSourceSyncStatus")
-DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT = NumericField("assetDQScheduleSourceSyncedAt", "assetDQScheduleSourceSyncedAt")
-DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE = TextField("assetDQScheduleSourceSyncErrorMessage", "assetDQScheduleSourceSyncErrorMessage")
-DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_CODE = KeywordField("assetDQScheduleSourceSyncErrorCode", "assetDQScheduleSourceSyncErrorCode")
-DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNC_RAW_ERROR = TextField("assetDQScheduleSourceSyncRawError", "assetDQScheduleSourceSyncRawError")
-DataSet.ASSET_DQ_RULE_ATTACHED_DIMENSIONS = KeywordField("assetDQRuleAttachedDimensions", "assetDQRuleAttachedDimensions")
-DataSet.ASSET_DQ_RULE_FAILED_DIMENSIONS = KeywordField("assetDQRuleFailedDimensions", "assetDQRuleFailedDimensions")
-DataSet.ASSET_DQ_RULE_PASSED_DIMENSIONS = KeywordField("assetDQRulePassedDimensions", "assetDQRulePassedDimensions")
-DataSet.ASSET_DQ_RULE_ATTACHED_RULE_TYPES = KeywordField("assetDQRuleAttachedRuleTypes", "assetDQRuleAttachedRuleTypes")
-DataSet.ASSET_DQ_RULE_FAILED_RULE_TYPES = KeywordField("assetDQRuleFailedRuleTypes", "assetDQRuleFailedRuleTypes")
-DataSet.ASSET_DQ_RULE_PASSED_RULE_TYPES = KeywordField("assetDQRulePassedRuleTypes", "assetDQRulePassedRuleTypes")
-DataSet.ASSET_DQ_RULE_RESULT_TAGS = KeywordField("assetDQRuleResultTags", "assetDQRuleResultTags")
-DataSet.ASSET_DQ_RULE_LAST_RUN_AT = NumericField("assetDQRuleLastRunAt", "assetDQRuleLastRunAt")
-DataSet.ASSET_DQ_MANUAL_RUN_STATUS = KeywordField("assetDQManualRunStatus", "assetDQManualRunStatus")
-DataSet.ASSET_DQ_RULE_TOTAL_COUNT = NumericField("assetDQRuleTotalCount", "assetDQRuleTotalCount")
-DataSet.ASSET_DQ_RULE_FAILED_COUNT = NumericField("assetDQRuleFailedCount", "assetDQRuleFailedCount")
-DataSet.ASSET_DQ_RULE_PASSED_COUNT = NumericField("assetDQRulePassedCount", "assetDQRulePassedCount")
+DataSet.APPLICATION_QUALIFIED_NAME = KeywordField(
+    "applicationQualifiedName", "applicationQualifiedName"
+)
+DataSet.APPLICATION_FIELD_QUALIFIED_NAME = KeywordField(
+    "applicationFieldQualifiedName", "applicationFieldQualifiedName"
+)
+DataSet.ASSET_USER_DEFINED_TYPE = KeywordField(
+    "assetUserDefinedType", "assetUserDefinedType"
+)
+DataSet.ASSET_INTERNAL_POPULARITY_SCORE = NumericRankField(
+    "assetInternalPopularityScore",
+    "assetInternalPopularityScore",
+    "assetInternalPopularityScore.rank",
+)
+DataSet.ASSET_DQ_SCHEDULE_TYPE = KeywordField(
+    "assetDQScheduleType", "assetDQScheduleType"
+)
+DataSet.ASSET_DQ_SCHEDULE_CRONTAB = KeywordField(
+    "assetDQScheduleCrontab", "assetDQScheduleCrontab"
+)
+DataSet.ASSET_DQ_SCHEDULE_TIME_ZONE = KeywordField(
+    "assetDQScheduleTimeZone", "assetDQScheduleTimeZone"
+)
+DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNC_STATUS = KeywordField(
+    "assetDQScheduleSourceSyncStatus", "assetDQScheduleSourceSyncStatus"
+)
+DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNCED_AT = NumericField(
+    "assetDQScheduleSourceSyncedAt", "assetDQScheduleSourceSyncedAt"
+)
+DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_MESSAGE = TextField(
+    "assetDQScheduleSourceSyncErrorMessage", "assetDQScheduleSourceSyncErrorMessage"
+)
+DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNC_ERROR_CODE = KeywordField(
+    "assetDQScheduleSourceSyncErrorCode", "assetDQScheduleSourceSyncErrorCode"
+)
+DataSet.ASSET_DQ_SCHEDULE_SOURCE_SYNC_RAW_ERROR = TextField(
+    "assetDQScheduleSourceSyncRawError", "assetDQScheduleSourceSyncRawError"
+)
+DataSet.ASSET_DQ_RULE_ATTACHED_DIMENSIONS = KeywordField(
+    "assetDQRuleAttachedDimensions", "assetDQRuleAttachedDimensions"
+)
+DataSet.ASSET_DQ_RULE_FAILED_DIMENSIONS = KeywordField(
+    "assetDQRuleFailedDimensions", "assetDQRuleFailedDimensions"
+)
+DataSet.ASSET_DQ_RULE_PASSED_DIMENSIONS = KeywordField(
+    "assetDQRulePassedDimensions", "assetDQRulePassedDimensions"
+)
+DataSet.ASSET_DQ_RULE_ATTACHED_RULE_TYPES = KeywordField(
+    "assetDQRuleAttachedRuleTypes", "assetDQRuleAttachedRuleTypes"
+)
+DataSet.ASSET_DQ_RULE_FAILED_RULE_TYPES = KeywordField(
+    "assetDQRuleFailedRuleTypes", "assetDQRuleFailedRuleTypes"
+)
+DataSet.ASSET_DQ_RULE_PASSED_RULE_TYPES = KeywordField(
+    "assetDQRulePassedRuleTypes", "assetDQRulePassedRuleTypes"
+)
+DataSet.ASSET_DQ_RULE_RESULT_TAGS = KeywordField(
+    "assetDQRuleResultTags", "assetDQRuleResultTags"
+)
+DataSet.ASSET_DQ_RULE_LAST_RUN_AT = NumericField(
+    "assetDQRuleLastRunAt", "assetDQRuleLastRunAt"
+)
+DataSet.ASSET_DQ_MANUAL_RUN_STATUS = KeywordField(
+    "assetDQManualRunStatus", "assetDQManualRunStatus"
+)
+DataSet.ASSET_DQ_RULE_TOTAL_COUNT = NumericField(
+    "assetDQRuleTotalCount", "assetDQRuleTotalCount"
+)
+DataSet.ASSET_DQ_RULE_FAILED_COUNT = NumericField(
+    "assetDQRuleFailedCount", "assetDQRuleFailedCount"
+)
+DataSet.ASSET_DQ_RULE_PASSED_COUNT = NumericField(
+    "assetDQRulePassedCount", "assetDQRulePassedCount"
+)
 DataSet.ASSET_DQ_RESULT = KeywordField("assetDQResult", "assetDQResult")
-DataSet.ASSET_DQ_FRESHNESS_VALUE = NumericField("assetDQFreshnessValue", "assetDQFreshnessValue")
-DataSet.ASSET_DQ_FRESHNESS_EXPECTATION = NumericField("assetDQFreshnessExpectation", "assetDQFreshnessExpectation")
-DataSet.ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME = KeywordField("assetDQRowScopeFilterColumnQualifiedName", "assetDQRowScopeFilterColumnQualifiedName")
-DataSet.ASSET_SPACE_QUALIFIED_NAME = KeywordField("assetSpaceQualifiedName", "assetSpaceQualifiedName")
+DataSet.ASSET_DQ_FRESHNESS_VALUE = NumericField(
+    "assetDQFreshnessValue", "assetDQFreshnessValue"
+)
+DataSet.ASSET_DQ_FRESHNESS_EXPECTATION = NumericField(
+    "assetDQFreshnessExpectation", "assetDQFreshnessExpectation"
+)
+DataSet.ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME = KeywordField(
+    "assetDQRowScopeFilterColumnQualifiedName",
+    "assetDQRowScopeFilterColumnQualifiedName",
+)
+DataSet.ASSET_SPACE_QUALIFIED_NAME = KeywordField(
+    "assetSpaceQualifiedName", "assetSpaceQualifiedName"
+)
 DataSet.ASSET_SPACE_NAME = KeywordField("assetSpaceName", "assetSpaceName")
-DataSet.ASSET_GCP_DATAPLEX_METADATA_DETAILS = KeywordField("assetGCPDataplexMetadataDetails", "assetGCPDataplexMetadataDetails")
-DataSet.ASSET_GCP_DATAPLEX_ASPECT_LIST = KeywordField("assetGCPDataplexAspectList", "assetGCPDataplexAspectList")
-DataSet.ASSET_GCP_DATAPLEX_ASPECT_FIELD_LIST = KeywordField("assetGCPDataplexAspectFieldList", "assetGCPDataplexAspectFieldList")
-DataSet.ASSET_SMUS_METADATA_FORM_NAMES = KeywordTextField("assetSmusMetadataFormNames", "assetSmusMetadataFormNames", "assetSmusMetadataFormNames.text")
-DataSet.ASSET_SMUS_METADATA_FORM_KEY_VALUE_DETAILS = KeywordTextField("assetSmusMetadataFormKeyValueDetails", "assetSmusMetadataFormKeyValueDetails", "assetSmusMetadataFormKeyValueDetails.text")
-DataSet.ASSET_SMUS_METADATA_FORM_DETAILS = KeywordField("assetSmusMetadataFormDetails", "assetSmusMetadataFormDetails")
+DataSet.ASSET_GCP_DATAPLEX_METADATA_DETAILS = KeywordField(
+    "assetGCPDataplexMetadataDetails", "assetGCPDataplexMetadataDetails"
+)
+DataSet.ASSET_GCP_DATAPLEX_ASPECT_LIST = KeywordField(
+    "assetGCPDataplexAspectList", "assetGCPDataplexAspectList"
+)
+DataSet.ASSET_GCP_DATAPLEX_ASPECT_FIELD_LIST = KeywordField(
+    "assetGCPDataplexAspectFieldList", "assetGCPDataplexAspectFieldList"
+)
+DataSet.ASSET_SMUS_METADATA_FORM_NAMES = KeywordTextField(
+    "assetSmusMetadataFormNames",
+    "assetSmusMetadataFormNames",
+    "assetSmusMetadataFormNames.text",
+)
+DataSet.ASSET_SMUS_METADATA_FORM_KEY_VALUE_DETAILS = KeywordTextField(
+    "assetSmusMetadataFormKeyValueDetails",
+    "assetSmusMetadataFormKeyValueDetails",
+    "assetSmusMetadataFormKeyValueDetails.text",
+)
+DataSet.ASSET_SMUS_METADATA_FORM_DETAILS = KeywordField(
+    "assetSmusMetadataFormDetails", "assetSmusMetadataFormDetails"
+)
 DataSet.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DataSet.APPLICATION = RelationField("application")
 DataSet.APPLICATION_FIELD = RelationField("applicationField")

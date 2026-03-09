@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,13 +49,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SAP(Asset):
@@ -140,7 +144,9 @@ class SAP(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -149,7 +155,9 @@ class SAP(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -176,7 +184,9 @@ class SAP(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -188,7 +198,9 @@ class SAP(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -202,8 +214,6 @@ class SAP(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SAP"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,6 +266,7 @@ class SAP(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SAPAttributes(AssetAttributes):
     """SAP-specific attributes for nested API format."""
 
@@ -279,6 +290,7 @@ class SAPAttributes(AssetAttributes):
 
     sap_field_order: Union[int, None, UnsetType] = UNSET
     """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
+
 
 class SAPRelationshipAttributes(AssetRelationshipAttributes):
     """SAP-specific relationship attributes for nested API format."""
@@ -307,7 +319,9 @@ class SAPRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -316,7 +330,9 @@ class SAPRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -343,7 +359,9 @@ class SAPRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -355,7 +373,9 @@ class SAPRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -367,6 +387,7 @@ class SAPRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SAPNested(AssetNested):
     """SAP in nested API format for high-performance serialization."""
 
@@ -374,6 +395,7 @@ class SAPNested(AssetNested):
     relationship_attributes: Union[SAPRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[SAPRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[SAPRelationshipAttributes, UnsetType] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -411,6 +433,7 @@ _SAP_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_sap_attrs(attrs: SAPAttributes, obj: SAP) -> None:
     """Populate SAP-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -421,6 +444,7 @@ def _populate_sap_attrs(attrs: SAPAttributes, obj: SAP) -> None:
     attrs.sap_data_type = obj.sap_data_type
     attrs.sap_field_count = obj.sap_field_count
     attrs.sap_field_order = obj.sap_field_order
+
 
 def _extract_sap_attrs(attrs: SAPAttributes) -> dict:
     """Extract all SAP attributes from the attrs struct into a flat dict."""
@@ -433,6 +457,7 @@ def _extract_sap_attrs(attrs: SAPAttributes) -> dict:
     result["sap_field_count"] = attrs.sap_field_count
     result["sap_field_order"] = attrs.sap_field_order
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -473,6 +498,7 @@ def _sap_to_nested(sap: SAP) -> SAPNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sap_from_nested(nested: SAPNested) -> SAP:
     """Convert nested format to flat SAP."""
     attrs = nested.attributes if nested.attributes is not UNSET else SAPAttributes()
@@ -482,7 +508,7 @@ def _sap_from_nested(nested: SAPNested) -> SAP:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_REL_FIELDS,
-        SAPRelationshipAttributes
+        SAPRelationshipAttributes,
     )
     return SAP(
         guid=nested.guid,
@@ -509,6 +535,7 @@ def _sap_from_nested(nested: SAPNested) -> SAP:
         **merged_rels,
     )
 
+
 def _sap_to_nested_bytes(sap: SAP, serde: Serde) -> bytes:
     """Convert flat SAP to nested JSON bytes."""
     return serde.encode(_sap_to_nested(sap))
@@ -518,6 +545,7 @@ def _sap_from_nested_bytes(data: bytes, serde: Serde) -> SAP:
     """Convert nested JSON bytes to flat SAP."""
     nested = serde.decode(data, SAPNested)
     return _sap_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization

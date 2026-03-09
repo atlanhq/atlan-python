@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .cognos_related import RelatedCognosColumn, RelatedCognosFolder
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -44,15 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .cognos_related import RelatedCognosColumn, RelatedCognosFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CognosDashboard(Asset):
@@ -159,7 +162,9 @@ class CognosDashboard(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -168,7 +173,9 @@ class CognosDashboard(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -195,7 +202,9 @@ class CognosDashboard(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -207,7 +216,9 @@ class CognosDashboard(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -229,7 +240,6 @@ class CognosDashboard(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -260,7 +270,9 @@ class CognosDashboard(Asset):
         return _cognos_dashboard_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> CognosDashboard:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> CognosDashboard:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -281,6 +293,7 @@ class CognosDashboard(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class CognosDashboardAttributes(AssetAttributes):
     """CognosDashboard-specific attributes for nested API format."""
@@ -311,6 +324,7 @@ class CognosDashboardAttributes(AssetAttributes):
 
     cognos_default_screen_tip: Union[str, None, UnsetType] = UNSET
     """Tooltip text present for the Cognos asset."""
+
 
 class CognosDashboardRelationshipAttributes(AssetRelationshipAttributes):
     """CognosDashboard-specific relationship attributes for nested API format."""
@@ -345,7 +359,9 @@ class CognosDashboardRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -354,7 +370,9 @@ class CognosDashboardRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -381,7 +399,9 @@ class CognosDashboardRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -393,7 +413,9 @@ class CognosDashboardRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -405,13 +427,21 @@ class CognosDashboardRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class CognosDashboardNested(AssetNested):
     """CognosDashboard in nested API format for high-performance serialization."""
 
     attributes: Union[CognosDashboardAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[CognosDashboardRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CognosDashboardRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[CognosDashboardRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[CognosDashboardRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        CognosDashboardRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CognosDashboardRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -451,7 +481,10 @@ _COGNOS_DASHBOARD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognos_dashboard_attrs(attrs: CognosDashboardAttributes, obj: CognosDashboard) -> None:
+
+def _populate_cognos_dashboard_attrs(
+    attrs: CognosDashboardAttributes, obj: CognosDashboard
+) -> None:
     """Populate CognosDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cognos_id = obj.cognos_id
@@ -463,6 +496,7 @@ def _populate_cognos_dashboard_attrs(attrs: CognosDashboardAttributes, obj: Cogn
     attrs.cognos_is_hidden = obj.cognos_is_hidden
     attrs.cognos_is_disabled = obj.cognos_is_disabled
     attrs.cognos_default_screen_tip = obj.cognos_default_screen_tip
+
 
 def _extract_cognos_dashboard_attrs(attrs: CognosDashboardAttributes) -> dict:
     """Extract all CognosDashboard attributes from the attrs struct into a flat dict."""
@@ -478,18 +512,23 @@ def _extract_cognos_dashboard_attrs(attrs: CognosDashboardAttributes) -> dict:
     result["cognos_default_screen_tip"] = attrs.cognos_default_screen_tip
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _cognos_dashboard_to_nested(cognos_dashboard: CognosDashboard) -> CognosDashboardNested:
+def _cognos_dashboard_to_nested(
+    cognos_dashboard: CognosDashboard,
+) -> CognosDashboardNested:
     """Convert flat CognosDashboard to nested format."""
     attrs = CognosDashboardAttributes()
     _populate_cognos_dashboard_attrs(attrs, cognos_dashboard)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cognos_dashboard, _COGNOS_DASHBOARD_REL_FIELDS, CognosDashboardRelationshipAttributes
+        cognos_dashboard,
+        _COGNOS_DASHBOARD_REL_FIELDS,
+        CognosDashboardRelationshipAttributes,
     )
     return CognosDashboardNested(
         guid=cognos_dashboard.guid,
@@ -517,16 +556,21 @@ def _cognos_dashboard_to_nested(cognos_dashboard: CognosDashboard) -> CognosDash
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognos_dashboard_from_nested(nested: CognosDashboardNested) -> CognosDashboard:
     """Convert nested format to flat CognosDashboard."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CognosDashboardAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CognosDashboardAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNOS_DASHBOARD_REL_FIELDS,
-        CognosDashboardRelationshipAttributes
+        CognosDashboardRelationshipAttributes,
     )
     return CognosDashboard(
         guid=nested.guid,
@@ -553,7 +597,10 @@ def _cognos_dashboard_from_nested(nested: CognosDashboardNested) -> CognosDashbo
         **merged_rels,
     )
 
-def _cognos_dashboard_to_nested_bytes(cognos_dashboard: CognosDashboard, serde: Serde) -> bytes:
+
+def _cognos_dashboard_to_nested_bytes(
+    cognos_dashboard: CognosDashboard, serde: Serde
+) -> bytes:
     """Convert flat CognosDashboard to nested JSON bytes."""
     return serde.encode(_cognos_dashboard_to_nested(cognos_dashboard))
 
@@ -562,6 +609,7 @@ def _cognos_dashboard_from_nested_bytes(data: bytes, serde: Serde) -> CognosDash
     """Convert nested JSON bytes to flat CognosDashboard."""
     nested = serde.decode(data, CognosDashboardNested)
     return _cognos_dashboard_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -575,13 +623,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 CognosDashboard.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosDashboard.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
-CognosDashboard.COGNOS_PARENT_NAME = KeywordTextField("cognosParentName", "cognosParentName", "cognosParentName.text")
-CognosDashboard.COGNOS_PARENT_QUALIFIED_NAME = KeywordField("cognosParentQualifiedName", "cognosParentQualifiedName")
+CognosDashboard.COGNOS_PARENT_NAME = KeywordTextField(
+    "cognosParentName", "cognosParentName", "cognosParentName.text"
+)
+CognosDashboard.COGNOS_PARENT_QUALIFIED_NAME = KeywordField(
+    "cognosParentQualifiedName", "cognosParentQualifiedName"
+)
 CognosDashboard.COGNOS_VERSION = KeywordField("cognosVersion", "cognosVersion")
 CognosDashboard.COGNOS_TYPE = KeywordField("cognosType", "cognosType")
 CognosDashboard.COGNOS_IS_HIDDEN = BooleanField("cognosIsHidden", "cognosIsHidden")
-CognosDashboard.COGNOS_IS_DISABLED = BooleanField("cognosIsDisabled", "cognosIsDisabled")
-CognosDashboard.COGNOS_DEFAULT_SCREEN_TIP = KeywordField("cognosDefaultScreenTip", "cognosDefaultScreenTip")
+CognosDashboard.COGNOS_IS_DISABLED = BooleanField(
+    "cognosIsDisabled", "cognosIsDisabled"
+)
+CognosDashboard.COGNOS_DEFAULT_SCREEN_TIP = KeywordField(
+    "cognosDefaultScreenTip", "cognosDefaultScreenTip"
+)
 CognosDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CognosDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CognosDashboard.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -592,7 +648,9 @@ CognosDashboard.COGNOS_COLUMNS = RelationField("cognosColumns")
 CognosDashboard.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CognosDashboard.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CognosDashboard.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-CognosDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+CognosDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 CognosDashboard.METRICS = RelationField("metrics")
 CognosDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CognosDashboard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")

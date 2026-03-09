@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,17 +48,18 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .sisense_related import (
+    RelatedSisenseDashboard,
+    RelatedSisenseFolder,
+    RelatedSisenseWidget,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .sisense_related import RelatedSisenseDashboard, RelatedSisenseFolder, RelatedSisenseWidget
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SisenseFolder(Asset):
@@ -123,7 +130,9 @@ class SisenseFolder(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -132,7 +141,9 @@ class SisenseFolder(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -159,7 +170,9 @@ class SisenseFolder(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -171,7 +184,9 @@ class SisenseFolder(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     sisense_child_folders: Union[List[RelatedSisenseFolder], None, UnsetType] = UNSET
@@ -202,10 +217,7 @@ class SisenseFolder(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -258,11 +270,13 @@ class SisenseFolder(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SisenseFolderAttributes(AssetAttributes):
     """SisenseFolder-specific attributes for nested API format."""
 
     sisense_folder_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent folder in which this folder exists."""
+
 
 class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     """SisenseFolder-specific relationship attributes for nested API format."""
@@ -291,7 +305,9 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -300,7 +316,9 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -327,7 +345,9 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -339,7 +359,9 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     sisense_child_folders: Union[List[RelatedSisenseFolder], None, UnsetType] = UNSET
@@ -363,13 +385,21 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SisenseFolderNested(AssetNested):
     """SisenseFolder in nested API format for high-performance serialization."""
 
     attributes: Union[SisenseFolderAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SisenseFolderRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SisenseFolderRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SisenseFolderRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[SisenseFolderRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        SisenseFolderRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SisenseFolderRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -411,16 +441,25 @@ _SISENSE_FOLDER_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sisense_folder_attrs(attrs: SisenseFolderAttributes, obj: SisenseFolder) -> None:
+
+def _populate_sisense_folder_attrs(
+    attrs: SisenseFolderAttributes, obj: SisenseFolder
+) -> None:
     """Populate SisenseFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sisense_folder_parent_folder_qualified_name = obj.sisense_folder_parent_folder_qualified_name
+    attrs.sisense_folder_parent_folder_qualified_name = (
+        obj.sisense_folder_parent_folder_qualified_name
+    )
+
 
 def _extract_sisense_folder_attrs(attrs: SisenseFolderAttributes) -> dict:
     """Extract all SisenseFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sisense_folder_parent_folder_qualified_name"] = attrs.sisense_folder_parent_folder_qualified_name
+    result["sisense_folder_parent_folder_qualified_name"] = (
+        attrs.sisense_folder_parent_folder_qualified_name
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -461,16 +500,21 @@ def _sisense_folder_to_nested(sisense_folder: SisenseFolder) -> SisenseFolderNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sisense_folder_from_nested(nested: SisenseFolderNested) -> SisenseFolder:
     """Convert nested format to flat SisenseFolder."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SisenseFolderAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SisenseFolderAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SISENSE_FOLDER_REL_FIELDS,
-        SisenseFolderRelationshipAttributes
+        SisenseFolderRelationshipAttributes,
     )
     return SisenseFolder(
         guid=nested.guid,
@@ -497,7 +541,10 @@ def _sisense_folder_from_nested(nested: SisenseFolderNested) -> SisenseFolder:
         **merged_rels,
     )
 
-def _sisense_folder_to_nested_bytes(sisense_folder: SisenseFolder, serde: Serde) -> bytes:
+
+def _sisense_folder_to_nested_bytes(
+    sisense_folder: SisenseFolder, serde: Serde
+) -> bytes:
     """Convert flat SisenseFolder to nested JSON bytes."""
     return serde.encode(_sisense_folder_to_nested(sisense_folder))
 
@@ -507,6 +554,7 @@ def _sisense_folder_from_nested_bytes(data: bytes, serde: Serde) -> SisenseFolde
     nested = serde.decode(data, SisenseFolderNested)
     return _sisense_folder_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -515,7 +563,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SisenseFolder.SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME = KeywordTextField("sisenseFolderParentFolderQualifiedName", "sisenseFolderParentFolderQualifiedName", "sisenseFolderParentFolderQualifiedName.text")
+SisenseFolder.SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME = KeywordTextField(
+    "sisenseFolderParentFolderQualifiedName",
+    "sisenseFolderParentFolderQualifiedName",
+    "sisenseFolderParentFolderQualifiedName.text",
+)
 SisenseFolder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SisenseFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SisenseFolder.ANOMALO_CHECKS = RelationField("anomaloChecks")

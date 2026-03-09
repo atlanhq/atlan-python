@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .custom_related import RelatedCustomEntity
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -44,15 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .custom_related import RelatedCustomEntity
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CustomEntity(Asset):
@@ -120,10 +123,14 @@ class CustomEntity(Asset):
     custom_parent_entity: Union[RelatedCustomEntity, None, UnsetType] = UNSET
     """Custom entity in which the child entities are contained."""
 
-    custom_related_to_entities: Union[List[RelatedCustomEntity], None, UnsetType] = UNSET
+    custom_related_to_entities: Union[List[RelatedCustomEntity], None, UnsetType] = (
+        UNSET
+    )
     """Target custom entity indicating where the relationship is directed."""
 
-    custom_related_from_entities: Union[List[RelatedCustomEntity], None, UnsetType] = UNSET
+    custom_related_from_entities: Union[List[RelatedCustomEntity], None, UnsetType] = (
+        UNSET
+    )
     """Source custom entity indicating where the relationship originates."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
@@ -135,7 +142,9 @@ class CustomEntity(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -144,7 +153,9 @@ class CustomEntity(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -171,7 +182,9 @@ class CustomEntity(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -183,7 +196,9 @@ class CustomEntity(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -202,10 +217,7 @@ class CustomEntity(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -258,11 +270,13 @@ class CustomEntity(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CustomEntityAttributes(AssetAttributes):
     """CustomEntity-specific attributes for nested API format."""
 
     custom_children_subtype: Union[str, None, UnsetType] = UNSET
     """Label of the children column for this asset type."""
+
 
 class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     """CustomEntity-specific relationship attributes for nested API format."""
@@ -288,10 +302,14 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     custom_parent_entity: Union[RelatedCustomEntity, None, UnsetType] = UNSET
     """Custom entity in which the child entities are contained."""
 
-    custom_related_to_entities: Union[List[RelatedCustomEntity], None, UnsetType] = UNSET
+    custom_related_to_entities: Union[List[RelatedCustomEntity], None, UnsetType] = (
+        UNSET
+    )
     """Target custom entity indicating where the relationship is directed."""
 
-    custom_related_from_entities: Union[List[RelatedCustomEntity], None, UnsetType] = UNSET
+    custom_related_from_entities: Union[List[RelatedCustomEntity], None, UnsetType] = (
+        UNSET
+    )
     """Source custom entity indicating where the relationship originates."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
@@ -303,7 +321,9 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -312,7 +332,9 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -339,7 +361,9 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -351,7 +375,9 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -363,13 +389,21 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class CustomEntityNested(AssetNested):
     """CustomEntity in nested API format for high-performance serialization."""
 
     attributes: Union[CustomEntityAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[CustomEntityRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CustomEntityRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[CustomEntityRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[CustomEntityRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        CustomEntityRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CustomEntityRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -411,16 +445,21 @@ _CUSTOM_ENTITY_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_custom_entity_attrs(attrs: CustomEntityAttributes, obj: CustomEntity) -> None:
+
+def _populate_custom_entity_attrs(
+    attrs: CustomEntityAttributes, obj: CustomEntity
+) -> None:
     """Populate CustomEntity-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.custom_children_subtype = obj.custom_children_subtype
+
 
 def _extract_custom_entity_attrs(attrs: CustomEntityAttributes) -> dict:
     """Extract all CustomEntity attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["custom_children_subtype"] = attrs.custom_children_subtype
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -461,16 +500,21 @@ def _custom_entity_to_nested(custom_entity: CustomEntity) -> CustomEntityNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _custom_entity_from_nested(nested: CustomEntityNested) -> CustomEntity:
     """Convert nested format to flat CustomEntity."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CustomEntityAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CustomEntityAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CUSTOM_ENTITY_REL_FIELDS,
-        CustomEntityRelationshipAttributes
+        CustomEntityRelationshipAttributes,
     )
     return CustomEntity(
         guid=nested.guid,
@@ -497,6 +541,7 @@ def _custom_entity_from_nested(nested: CustomEntityNested) -> CustomEntity:
         **merged_rels,
     )
 
+
 def _custom_entity_to_nested_bytes(custom_entity: CustomEntity, serde: Serde) -> bytes:
     """Convert flat CustomEntity to nested JSON bytes."""
     return serde.encode(_custom_entity_to_nested(custom_entity))
@@ -507,15 +552,15 @@ def _custom_entity_from_nested_bytes(data: bytes, serde: Serde) -> CustomEntity:
     nested = serde.decode(data, CustomEntityNested)
     return _custom_entity_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
-CustomEntity.CUSTOM_CHILDREN_SUBTYPE = KeywordField("customChildrenSubtype", "customChildrenSubtype")
+CustomEntity.CUSTOM_CHILDREN_SUBTYPE = KeywordField(
+    "customChildrenSubtype", "customChildrenSubtype"
+)
 CustomEntity.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CustomEntity.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CustomEntity.ANOMALO_CHECKS = RelationField("anomaloChecks")

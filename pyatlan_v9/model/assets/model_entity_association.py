@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -35,6 +41,7 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
@@ -43,15 +50,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .model_related import RelatedModelAttribute, RelatedModelEntity
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ModelEntityAssociation(Asset):
@@ -218,7 +221,9 @@ class ModelEntityAssociation(Asset):
     model_entity_association_from: Union[RelatedModelEntity, None, UnsetType] = UNSET
     """Entity from which this association is related."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -227,7 +232,9 @@ class ModelEntityAssociation(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -254,7 +261,9 @@ class ModelEntityAssociation(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -266,7 +275,9 @@ class ModelEntityAssociation(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -288,7 +299,6 @@ class ModelEntityAssociation(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -319,7 +329,9 @@ class ModelEntityAssociation(Asset):
         return _model_entity_association_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> ModelEntityAssociation:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> ModelEntityAssociation:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -340,6 +352,7 @@ class ModelEntityAssociation(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class ModelEntityAssociationAttributes(AssetAttributes):
     """ModelEntityAssociation-specific attributes for nested API format."""
@@ -416,6 +429,7 @@ class ModelEntityAssociationAttributes(AssetAttributes):
     model_expired_at_business_date: Union[int, None, UnsetType] = UNSET
     """Business expiration date for the asset."""
 
+
 class ModelEntityAssociationRelationshipAttributes(AssetRelationshipAttributes):
     """ModelEntityAssociation-specific relationship attributes for nested API format."""
 
@@ -449,7 +463,9 @@ class ModelEntityAssociationRelationshipAttributes(AssetRelationshipAttributes):
     model_entity_association_from: Union[RelatedModelEntity, None, UnsetType] = UNSET
     """Entity from which this association is related."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -458,7 +474,9 @@ class ModelEntityAssociationRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -485,7 +503,9 @@ class ModelEntityAssociationRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -497,7 +517,9 @@ class ModelEntityAssociationRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -509,13 +531,21 @@ class ModelEntityAssociationRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class ModelEntityAssociationNested(AssetNested):
     """ModelEntityAssociation in nested API format for high-performance serialization."""
 
     attributes: Union[ModelEntityAssociationAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ModelEntityAssociationRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ModelEntityAssociationRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ModelEntityAssociationRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        ModelEntityAssociationRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        ModelEntityAssociationRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ModelEntityAssociationRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -555,25 +585,44 @@ _MODEL_ENTITY_ASSOCIATION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_model_entity_association_attrs(attrs: ModelEntityAssociationAttributes, obj: ModelEntityAssociation) -> None:
+
+def _populate_model_entity_association_attrs(
+    attrs: ModelEntityAssociationAttributes, obj: ModelEntityAssociation
+) -> None:
     """Populate ModelEntityAssociation-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.model_entity_association_cardinality = obj.model_entity_association_cardinality
+    attrs.model_entity_association_cardinality = (
+        obj.model_entity_association_cardinality
+    )
     attrs.model_entity_association_label = obj.model_entity_association_label
-    attrs.model_entity_association_to_qualified_name = obj.model_entity_association_to_qualified_name
+    attrs.model_entity_association_to_qualified_name = (
+        obj.model_entity_association_to_qualified_name
+    )
     attrs.model_entity_association_to_label = obj.model_entity_association_to_label
-    attrs.model_entity_association_to_min_cardinality = obj.model_entity_association_to_min_cardinality
-    attrs.model_entity_association_to_max_cardinality = obj.model_entity_association_to_max_cardinality
-    attrs.model_entity_association_from_qualified_name = obj.model_entity_association_from_qualified_name
+    attrs.model_entity_association_to_min_cardinality = (
+        obj.model_entity_association_to_min_cardinality
+    )
+    attrs.model_entity_association_to_max_cardinality = (
+        obj.model_entity_association_to_max_cardinality
+    )
+    attrs.model_entity_association_from_qualified_name = (
+        obj.model_entity_association_from_qualified_name
+    )
     attrs.model_entity_association_from_label = obj.model_entity_association_from_label
-    attrs.model_entity_association_from_min_cardinality = obj.model_entity_association_from_min_cardinality
-    attrs.model_entity_association_from_max_cardinality = obj.model_entity_association_from_max_cardinality
+    attrs.model_entity_association_from_min_cardinality = (
+        obj.model_entity_association_from_min_cardinality
+    )
+    attrs.model_entity_association_from_max_cardinality = (
+        obj.model_entity_association_from_max_cardinality
+    )
     attrs.model_name = obj.model_name
     attrs.model_qualified_name = obj.model_qualified_name
     attrs.model_domain = obj.model_domain
     attrs.model_namespace = obj.model_namespace
     attrs.model_version_name = obj.model_version_name
-    attrs.model_version_agnostic_qualified_name = obj.model_version_agnostic_qualified_name
+    attrs.model_version_agnostic_qualified_name = (
+        obj.model_version_agnostic_qualified_name
+    )
     attrs.model_version_qualified_name = obj.model_version_qualified_name
     attrs.model_entity_name = obj.model_entity_name
     attrs.model_entity_qualified_name = obj.model_entity_qualified_name
@@ -583,25 +632,48 @@ def _populate_model_entity_association_attrs(attrs: ModelEntityAssociationAttrib
     attrs.model_expired_at_system_date = obj.model_expired_at_system_date
     attrs.model_expired_at_business_date = obj.model_expired_at_business_date
 
-def _extract_model_entity_association_attrs(attrs: ModelEntityAssociationAttributes) -> dict:
+
+def _extract_model_entity_association_attrs(
+    attrs: ModelEntityAssociationAttributes,
+) -> dict:
     """Extract all ModelEntityAssociation attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["model_entity_association_cardinality"] = attrs.model_entity_association_cardinality
+    result["model_entity_association_cardinality"] = (
+        attrs.model_entity_association_cardinality
+    )
     result["model_entity_association_label"] = attrs.model_entity_association_label
-    result["model_entity_association_to_qualified_name"] = attrs.model_entity_association_to_qualified_name
-    result["model_entity_association_to_label"] = attrs.model_entity_association_to_label
-    result["model_entity_association_to_min_cardinality"] = attrs.model_entity_association_to_min_cardinality
-    result["model_entity_association_to_max_cardinality"] = attrs.model_entity_association_to_max_cardinality
-    result["model_entity_association_from_qualified_name"] = attrs.model_entity_association_from_qualified_name
-    result["model_entity_association_from_label"] = attrs.model_entity_association_from_label
-    result["model_entity_association_from_min_cardinality"] = attrs.model_entity_association_from_min_cardinality
-    result["model_entity_association_from_max_cardinality"] = attrs.model_entity_association_from_max_cardinality
+    result["model_entity_association_to_qualified_name"] = (
+        attrs.model_entity_association_to_qualified_name
+    )
+    result["model_entity_association_to_label"] = (
+        attrs.model_entity_association_to_label
+    )
+    result["model_entity_association_to_min_cardinality"] = (
+        attrs.model_entity_association_to_min_cardinality
+    )
+    result["model_entity_association_to_max_cardinality"] = (
+        attrs.model_entity_association_to_max_cardinality
+    )
+    result["model_entity_association_from_qualified_name"] = (
+        attrs.model_entity_association_from_qualified_name
+    )
+    result["model_entity_association_from_label"] = (
+        attrs.model_entity_association_from_label
+    )
+    result["model_entity_association_from_min_cardinality"] = (
+        attrs.model_entity_association_from_min_cardinality
+    )
+    result["model_entity_association_from_max_cardinality"] = (
+        attrs.model_entity_association_from_max_cardinality
+    )
     result["model_name"] = attrs.model_name
     result["model_qualified_name"] = attrs.model_qualified_name
     result["model_domain"] = attrs.model_domain
     result["model_namespace"] = attrs.model_namespace
     result["model_version_name"] = attrs.model_version_name
-    result["model_version_agnostic_qualified_name"] = attrs.model_version_agnostic_qualified_name
+    result["model_version_agnostic_qualified_name"] = (
+        attrs.model_version_agnostic_qualified_name
+    )
     result["model_version_qualified_name"] = attrs.model_version_qualified_name
     result["model_entity_name"] = attrs.model_entity_name
     result["model_entity_qualified_name"] = attrs.model_entity_qualified_name
@@ -612,18 +684,23 @@ def _extract_model_entity_association_attrs(attrs: ModelEntityAssociationAttribu
     result["model_expired_at_business_date"] = attrs.model_expired_at_business_date
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _model_entity_association_to_nested(model_entity_association: ModelEntityAssociation) -> ModelEntityAssociationNested:
+def _model_entity_association_to_nested(
+    model_entity_association: ModelEntityAssociation,
+) -> ModelEntityAssociationNested:
     """Convert flat ModelEntityAssociation to nested format."""
     attrs = ModelEntityAssociationAttributes()
     _populate_model_entity_association_attrs(attrs, model_entity_association)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        model_entity_association, _MODEL_ENTITY_ASSOCIATION_REL_FIELDS, ModelEntityAssociationRelationshipAttributes
+        model_entity_association,
+        _MODEL_ENTITY_ASSOCIATION_REL_FIELDS,
+        ModelEntityAssociationRelationshipAttributes,
     )
     return ModelEntityAssociationNested(
         guid=model_entity_association.guid,
@@ -651,16 +728,23 @@ def _model_entity_association_to_nested(model_entity_association: ModelEntityAss
         remove_relationship_attributes=remove_rels,
     )
 
-def _model_entity_association_from_nested(nested: ModelEntityAssociationNested) -> ModelEntityAssociation:
+
+def _model_entity_association_from_nested(
+    nested: ModelEntityAssociationNested,
+) -> ModelEntityAssociation:
     """Convert nested format to flat ModelEntityAssociation."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ModelEntityAssociationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ModelEntityAssociationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MODEL_ENTITY_ASSOCIATION_REL_FIELDS,
-        ModelEntityAssociationRelationshipAttributes
+        ModelEntityAssociationRelationshipAttributes,
     )
     return ModelEntityAssociation(
         guid=nested.guid,
@@ -687,15 +771,21 @@ def _model_entity_association_from_nested(nested: ModelEntityAssociationNested) 
         **merged_rels,
     )
 
-def _model_entity_association_to_nested_bytes(model_entity_association: ModelEntityAssociation, serde: Serde) -> bytes:
+
+def _model_entity_association_to_nested_bytes(
+    model_entity_association: ModelEntityAssociation, serde: Serde
+) -> bytes:
     """Convert flat ModelEntityAssociation to nested JSON bytes."""
     return serde.encode(_model_entity_association_to_nested(model_entity_association))
 
 
-def _model_entity_association_from_nested_bytes(data: bytes, serde: Serde) -> ModelEntityAssociation:
+def _model_entity_association_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> ModelEntityAssociation:
     """Convert nested JSON bytes to flat ModelEntityAssociation."""
     nested = serde.decode(data, ModelEntityAssociationNested)
     return _model_entity_association_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -707,44 +797,104 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_CARDINALITY = KeywordField("modelEntityAssociationCardinality", "modelEntityAssociationCardinality")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_LABEL = KeywordField("modelEntityAssociationLabel", "modelEntityAssociationLabel")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO_QUALIFIED_NAME = KeywordField("modelEntityAssociationToQualifiedName", "modelEntityAssociationToQualifiedName")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO_LABEL = KeywordField("modelEntityAssociationToLabel", "modelEntityAssociationToLabel")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO_MIN_CARDINALITY = NumericField("modelEntityAssociationToMinCardinality", "modelEntityAssociationToMinCardinality")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO_MAX_CARDINALITY = NumericField("modelEntityAssociationToMaxCardinality", "modelEntityAssociationToMaxCardinality")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM_QUALIFIED_NAME = KeywordField("modelEntityAssociationFromQualifiedName", "modelEntityAssociationFromQualifiedName")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM_LABEL = KeywordField("modelEntityAssociationFromLabel", "modelEntityAssociationFromLabel")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM_MIN_CARDINALITY = NumericField("modelEntityAssociationFromMinCardinality", "modelEntityAssociationFromMinCardinality")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM_MAX_CARDINALITY = NumericField("modelEntityAssociationFromMaxCardinality", "modelEntityAssociationFromMaxCardinality")
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_CARDINALITY = KeywordField(
+    "modelEntityAssociationCardinality", "modelEntityAssociationCardinality"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_LABEL = KeywordField(
+    "modelEntityAssociationLabel", "modelEntityAssociationLabel"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO_QUALIFIED_NAME = KeywordField(
+    "modelEntityAssociationToQualifiedName", "modelEntityAssociationToQualifiedName"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO_LABEL = KeywordField(
+    "modelEntityAssociationToLabel", "modelEntityAssociationToLabel"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO_MIN_CARDINALITY = NumericField(
+    "modelEntityAssociationToMinCardinality", "modelEntityAssociationToMinCardinality"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO_MAX_CARDINALITY = NumericField(
+    "modelEntityAssociationToMaxCardinality", "modelEntityAssociationToMaxCardinality"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM_QUALIFIED_NAME = KeywordField(
+    "modelEntityAssociationFromQualifiedName", "modelEntityAssociationFromQualifiedName"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM_LABEL = KeywordField(
+    "modelEntityAssociationFromLabel", "modelEntityAssociationFromLabel"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM_MIN_CARDINALITY = NumericField(
+    "modelEntityAssociationFromMinCardinality",
+    "modelEntityAssociationFromMinCardinality",
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM_MAX_CARDINALITY = NumericField(
+    "modelEntityAssociationFromMaxCardinality",
+    "modelEntityAssociationFromMaxCardinality",
+)
 ModelEntityAssociation.MODEL_NAME = KeywordField("modelName", "modelName")
-ModelEntityAssociation.MODEL_QUALIFIED_NAME = KeywordField("modelQualifiedName", "modelQualifiedName")
-ModelEntityAssociation.MODEL_DOMAIN = KeywordTextField("modelDomain", "modelDomain", "modelDomain.text")
-ModelEntityAssociation.MODEL_NAMESPACE = KeywordTextField("modelNamespace", "modelNamespace", "modelNamespace.text")
-ModelEntityAssociation.MODEL_VERSION_NAME = KeywordTextField("modelVersionName", "modelVersionName", "modelVersionName.text")
-ModelEntityAssociation.MODEL_VERSION_AGNOSTIC_QUALIFIED_NAME = KeywordField("modelVersionAgnosticQualifiedName", "modelVersionAgnosticQualifiedName")
-ModelEntityAssociation.MODEL_VERSION_QUALIFIED_NAME = KeywordField("modelVersionQualifiedName", "modelVersionQualifiedName")
-ModelEntityAssociation.MODEL_ENTITY_NAME = KeywordTextField("modelEntityName", "modelEntityName", "modelEntityName.text")
-ModelEntityAssociation.MODEL_ENTITY_QUALIFIED_NAME = KeywordField("modelEntityQualifiedName", "modelEntityQualifiedName")
+ModelEntityAssociation.MODEL_QUALIFIED_NAME = KeywordField(
+    "modelQualifiedName", "modelQualifiedName"
+)
+ModelEntityAssociation.MODEL_DOMAIN = KeywordTextField(
+    "modelDomain", "modelDomain", "modelDomain.text"
+)
+ModelEntityAssociation.MODEL_NAMESPACE = KeywordTextField(
+    "modelNamespace", "modelNamespace", "modelNamespace.text"
+)
+ModelEntityAssociation.MODEL_VERSION_NAME = KeywordTextField(
+    "modelVersionName", "modelVersionName", "modelVersionName.text"
+)
+ModelEntityAssociation.MODEL_VERSION_AGNOSTIC_QUALIFIED_NAME = KeywordField(
+    "modelVersionAgnosticQualifiedName", "modelVersionAgnosticQualifiedName"
+)
+ModelEntityAssociation.MODEL_VERSION_QUALIFIED_NAME = KeywordField(
+    "modelVersionQualifiedName", "modelVersionQualifiedName"
+)
+ModelEntityAssociation.MODEL_ENTITY_NAME = KeywordTextField(
+    "modelEntityName", "modelEntityName", "modelEntityName.text"
+)
+ModelEntityAssociation.MODEL_ENTITY_QUALIFIED_NAME = KeywordField(
+    "modelEntityQualifiedName", "modelEntityQualifiedName"
+)
 ModelEntityAssociation.MODEL_TYPE = KeywordField("modelType", "modelType")
-ModelEntityAssociation.MODEL_SYSTEM_DATE = NumericField("modelSystemDate", "modelSystemDate")
-ModelEntityAssociation.MODEL_BUSINESS_DATE = NumericField("modelBusinessDate", "modelBusinessDate")
-ModelEntityAssociation.MODEL_EXPIRED_AT_SYSTEM_DATE = NumericField("modelExpiredAtSystemDate", "modelExpiredAtSystemDate")
-ModelEntityAssociation.MODEL_EXPIRED_AT_BUSINESS_DATE = NumericField("modelExpiredAtBusinessDate", "modelExpiredAtBusinessDate")
+ModelEntityAssociation.MODEL_SYSTEM_DATE = NumericField(
+    "modelSystemDate", "modelSystemDate"
+)
+ModelEntityAssociation.MODEL_BUSINESS_DATE = NumericField(
+    "modelBusinessDate", "modelBusinessDate"
+)
+ModelEntityAssociation.MODEL_EXPIRED_AT_SYSTEM_DATE = NumericField(
+    "modelExpiredAtSystemDate", "modelExpiredAtSystemDate"
+)
+ModelEntityAssociation.MODEL_EXPIRED_AT_BUSINESS_DATE = NumericField(
+    "modelExpiredAtBusinessDate", "modelExpiredAtBusinessDate"
+)
 ModelEntityAssociation.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-ModelEntityAssociation.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+ModelEntityAssociation.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 ModelEntityAssociation.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ModelEntityAssociation.APPLICATION = RelationField("application")
 ModelEntityAssociation.APPLICATION_FIELD = RelationField("applicationField")
-ModelEntityAssociation.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+ModelEntityAssociation.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 ModelEntityAssociation.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-ModelEntityAssociation.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO = RelationField("modelEntityAssociationTo")
-ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM = RelationField("modelEntityAssociationFrom")
-ModelEntityAssociation.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+ModelEntityAssociation.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_TO = RelationField(
+    "modelEntityAssociationTo"
+)
+ModelEntityAssociation.MODEL_ENTITY_ASSOCIATION_FROM = RelationField(
+    "modelEntityAssociationFrom"
+)
+ModelEntityAssociation.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 ModelEntityAssociation.METRICS = RelationField("metrics")
 ModelEntityAssociation.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-ModelEntityAssociation.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+ModelEntityAssociation.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 ModelEntityAssociation.MEANINGS = RelationField("meanings")
 ModelEntityAssociation.MC_MONITORS = RelationField("mcMonitors")
 ModelEntityAssociation.MC_INCIDENTS = RelationField("mcIncidents")
@@ -753,11 +903,15 @@ ModelEntityAssociation.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObject
 ModelEntityAssociation.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 ModelEntityAssociation.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 ModelEntityAssociation.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-ModelEntityAssociation.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+ModelEntityAssociation.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 ModelEntityAssociation.FILES = RelationField("files")
 ModelEntityAssociation.LINKS = RelationField("links")
 ModelEntityAssociation.README = RelationField("readme")
-ModelEntityAssociation.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+ModelEntityAssociation.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 ModelEntityAssociation.SODA_CHECKS = RelationField("sodaChecks")
 ModelEntityAssociation.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 ModelEntityAssociation.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

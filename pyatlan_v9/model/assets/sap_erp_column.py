@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,7 +41,12 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -42,19 +54,16 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapErpCdsView, RelatedSapErpTable, RelatedSapErpView
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .sap_related import RelatedSapErpCdsView, RelatedSapErpTable, RelatedSapErpView
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapErpColumn(Asset):
@@ -257,7 +266,9 @@ class SapErpColumn(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -287,7 +298,9 @@ class SapErpColumn(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -296,7 +309,9 @@ class SapErpColumn(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -311,7 +326,9 @@ class SapErpColumn(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -341,7 +358,9 @@ class SapErpColumn(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -362,10 +381,14 @@ class SapErpColumn(Asset):
     sap_erp_cds_view: Union[RelatedSapErpCdsView, None, UnsetType] = UNSET
     """SAP ERP CDS View in which this column exists."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -384,10 +407,7 @@ class SapErpColumn(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -439,6 +459,7 @@ class SapErpColumn(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class SapErpColumnAttributes(AssetAttributes):
     """SapErpColumn-specific attributes for nested API format."""
@@ -557,11 +578,14 @@ class SapErpColumnAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
 
 class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpColumn-specific relationship attributes for nested API format."""
@@ -590,7 +614,9 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -599,7 +625,9 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -614,7 +642,9 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -644,7 +674,9 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -665,10 +697,14 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_cds_view: Union[RelatedSapErpCdsView, None, UnsetType] = UNSET
     """SAP ERP CDS View in which this column exists."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -680,13 +716,21 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SapErpColumnNested(AssetNested):
     """SapErpColumn in nested API format for high-performance serialization."""
 
     attributes: Union[SapErpColumnAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SapErpColumnRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SapErpColumnRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SapErpColumnRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[SapErpColumnRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        SapErpColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SapErpColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -734,7 +778,10 @@ _SAP_ERP_COLUMN_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sap_erp_column_attrs(attrs: SapErpColumnAttributes, obj: SapErpColumn) -> None:
+
+def _populate_sap_erp_column_attrs(
+    attrs: SapErpColumnAttributes, obj: SapErpColumn
+) -> None:
     """Populate SapErpColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sap_data_element = obj.sap_data_element
@@ -778,6 +825,7 @@ def _populate_sap_erp_column_attrs(attrs: SapErpColumnAttributes, obj: SapErpCol
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
 
+
 def _extract_sap_erp_column_attrs(attrs: SapErpColumnAttributes) -> dict:
     """Extract all SapErpColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -819,9 +867,12 @@ def _extract_sap_erp_column_attrs(attrs: SapErpColumnAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -862,16 +913,21 @@ def _sap_erp_column_to_nested(sap_erp_column: SapErpColumn) -> SapErpColumnNeste
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sap_erp_column_from_nested(nested: SapErpColumnNested) -> SapErpColumn:
     """Convert nested format to flat SapErpColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapErpColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SapErpColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_COLUMN_REL_FIELDS,
-        SapErpColumnRelationshipAttributes
+        SapErpColumnRelationshipAttributes,
     )
     return SapErpColumn(
         guid=nested.guid,
@@ -898,7 +954,10 @@ def _sap_erp_column_from_nested(nested: SapErpColumnNested) -> SapErpColumn:
         **merged_rels,
     )
 
-def _sap_erp_column_to_nested_bytes(sap_erp_column: SapErpColumn, serde: Serde) -> bytes:
+
+def _sap_erp_column_to_nested_bytes(
+    sap_erp_column: SapErpColumn, serde: Serde
+) -> bytes:
     """Convert flat SapErpColumn to nested JSON bytes."""
     return serde.encode(_sap_erp_column_to_nested(sap_erp_column))
 
@@ -907,6 +966,7 @@ def _sap_erp_column_from_nested_bytes(data: bytes, serde: Serde) -> SapErpColumn
     """Convert nested JSON bytes to flat SapErpColumn."""
     nested = serde.decode(data, SapErpColumnNested)
     return _sap_erp_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -920,20 +980,38 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SapErpColumn.SAP_DATA_ELEMENT = KeywordField("sapDataElement", "sapDataElement")
-SapErpColumn.SAP_LOGICAL_DATA_TYPE = KeywordField("sapLogicalDataType", "sapLogicalDataType")
+SapErpColumn.SAP_LOGICAL_DATA_TYPE = KeywordField(
+    "sapLogicalDataType", "sapLogicalDataType"
+)
 SapErpColumn.SAP_LENGTH = KeywordField("sapLength", "sapLength")
 SapErpColumn.SAP_DECIMALS = KeywordField("sapDecimals", "sapDecimals")
 SapErpColumn.SAP_IS_PRIMARY = BooleanField("sapIsPrimary", "sapIsPrimary")
 SapErpColumn.SAP_IS_FOREIGN = BooleanField("sapIsForeign", "sapIsForeign")
 SapErpColumn.SAP_IS_MANDATORY = BooleanField("sapIsMandatory", "sapIsMandatory")
 SapErpColumn.SAP_ERP_TABLE_NAME = KeywordField("sapErpTableName", "sapErpTableName")
-SapErpColumn.SAP_ERP_TABLE_QUALIFIED_NAME = KeywordTextField("sapErpTableQualifiedName", "sapErpTableQualifiedName", "sapErpTableQualifiedName.text")
+SapErpColumn.SAP_ERP_TABLE_QUALIFIED_NAME = KeywordTextField(
+    "sapErpTableQualifiedName",
+    "sapErpTableQualifiedName",
+    "sapErpTableQualifiedName.text",
+)
 SapErpColumn.SAP_ERP_VIEW_NAME = KeywordField("sapErpViewName", "sapErpViewName")
-SapErpColumn.SAP_ERP_VIEW_QUALIFIED_NAME = KeywordTextField("sapErpViewQualifiedName", "sapErpViewQualifiedName", "sapErpViewQualifiedName.text")
-SapErpColumn.SAP_ERP_CDS_VIEW_NAME = KeywordField("sapErpCdsViewName", "sapErpCdsViewName")
-SapErpColumn.SAP_ERP_CDS_VIEW_QUALIFIED_NAME = KeywordTextField("sapErpCdsViewQualifiedName", "sapErpCdsViewQualifiedName", "sapErpCdsViewQualifiedName.text")
-SapErpColumn.SAP_CHECK_TABLE_NAME = KeywordField("sapCheckTableName", "sapCheckTableName")
-SapErpColumn.SAP_CHECK_TABLE_QUALIFIED_NAME = KeywordField("sapCheckTableQualifiedName", "sapCheckTableQualifiedName")
+SapErpColumn.SAP_ERP_VIEW_QUALIFIED_NAME = KeywordTextField(
+    "sapErpViewQualifiedName", "sapErpViewQualifiedName", "sapErpViewQualifiedName.text"
+)
+SapErpColumn.SAP_ERP_CDS_VIEW_NAME = KeywordField(
+    "sapErpCdsViewName", "sapErpCdsViewName"
+)
+SapErpColumn.SAP_ERP_CDS_VIEW_QUALIFIED_NAME = KeywordTextField(
+    "sapErpCdsViewQualifiedName",
+    "sapErpCdsViewQualifiedName",
+    "sapErpCdsViewQualifiedName.text",
+)
+SapErpColumn.SAP_CHECK_TABLE_NAME = KeywordField(
+    "sapCheckTableName", "sapCheckTableName"
+)
+SapErpColumn.SAP_CHECK_TABLE_QUALIFIED_NAME = KeywordField(
+    "sapCheckTableQualifiedName", "sapCheckTableQualifiedName"
+)
 SapErpColumn.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
 SapErpColumn.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpColumn.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
@@ -944,20 +1022,36 @@ SapErpColumn.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
 SapErpColumn.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SapErpColumn.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 SapErpColumn.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-SapErpColumn.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+SapErpColumn.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 SapErpColumn.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-SapErpColumn.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+SapErpColumn.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 SapErpColumn.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-SapErpColumn.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+SapErpColumn.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 SapErpColumn.TABLE_NAME = KeywordField("tableName", "tableName")
-SapErpColumn.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+SapErpColumn.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 SapErpColumn.VIEW_NAME = KeywordField("viewName", "viewName")
-SapErpColumn.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-SapErpColumn.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-SapErpColumn.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+SapErpColumn.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+SapErpColumn.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+SapErpColumn.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 SapErpColumn.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 SapErpColumn.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-SapErpColumn.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+SapErpColumn.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 SapErpColumn.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 SapErpColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SapErpColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -993,7 +1087,9 @@ SapErpColumn.SAP_ERP_TABLE = RelationField("sapErpTable")
 SapErpColumn.SAP_ERP_VIEW = RelationField("sapErpView")
 SapErpColumn.SAP_ERP_CDS_VIEW = RelationField("sapErpCdsView")
 SapErpColumn.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-SapErpColumn.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+SapErpColumn.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 SapErpColumn.SODA_CHECKS = RelationField("sodaChecks")
 SapErpColumn.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SapErpColumn.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

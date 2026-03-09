@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .ai_related import RelatedAI
@@ -46,6 +45,7 @@ class RelatedSageMaker(RelatedAI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMaker"
 
+
 class RelatedSageMakerFeatureGroup(RelatedSageMaker):
     """
     Related entity reference for SageMakerFeatureGroup assets.
@@ -75,6 +75,7 @@ class RelatedSageMakerFeatureGroup(RelatedSageMaker):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerFeatureGroup"
 
+
 class RelatedSageMakerFeature(RelatedSageMaker):
     """
     Related entity reference for SageMakerFeature assets.
@@ -100,6 +101,7 @@ class RelatedSageMakerFeature(RelatedSageMaker):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerFeature"
+
 
 class RelatedSageMakerModel(RelatedSageMaker):
     """
@@ -133,6 +135,7 @@ class RelatedSageMakerModel(RelatedSageMaker):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerModel"
 
+
 class RelatedSageMakerModelGroup(RelatedSageMaker):
     """
     Related entity reference for SageMakerModelGroup assets.
@@ -149,6 +152,7 @@ class RelatedSageMakerModelGroup(RelatedSageMaker):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SageMakerModelGroup"
+
 
 class RelatedSageMakerModelDeployment(RelatedSageMaker):
     """

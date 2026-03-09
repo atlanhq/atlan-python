@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -38,13 +44,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AWS(Asset):
@@ -134,7 +138,9 @@ class AWS(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -149,7 +155,9 @@ class AWS(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -161,7 +169,9 @@ class AWS(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -169,8 +179,6 @@ class AWS(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AWS"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -223,6 +231,7 @@ class AWS(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AWSAttributes(AssetAttributes):
     """AWS-specific attributes for nested API format."""
 
@@ -256,6 +265,7 @@ class AWSAttributes(AssetAttributes):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
+
 class AWSRelationshipAttributes(AssetRelationshipAttributes):
     """AWS-specific relationship attributes for nested API format."""
 
@@ -280,7 +290,9 @@ class AWSRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -295,7 +307,9 @@ class AWSRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -307,11 +321,14 @@ class AWSRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class AWSNested(AssetNested):
     """AWS in nested API format for high-performance serialization."""
@@ -320,6 +337,7 @@ class AWSNested(AssetNested):
     relationship_attributes: Union[AWSRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[AWSRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[AWSRelationshipAttributes, UnsetType] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -347,6 +365,7 @@ _AWS_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
+
 def _populate_aws_attrs(attrs: AWSAttributes, obj: AWS) -> None:
     """Populate AWS-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -360,6 +379,7 @@ def _populate_aws_attrs(attrs: AWSAttributes, obj: AWS) -> None:
     attrs.aws_owner_id = obj.aws_owner_id
     attrs.aws_tags = obj.aws_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_aws_attrs(attrs: AWSAttributes) -> dict:
     """Extract all AWS attributes from the attrs struct into a flat dict."""
@@ -375,6 +395,7 @@ def _extract_aws_attrs(attrs: AWSAttributes) -> dict:
     result["aws_tags"] = attrs.aws_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -415,6 +436,7 @@ def _aws_to_nested(aws: AWS) -> AWSNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _aws_from_nested(nested: AWSNested) -> AWS:
     """Convert nested format to flat AWS."""
     attrs = nested.attributes if nested.attributes is not UNSET else AWSAttributes()
@@ -424,7 +446,7 @@ def _aws_from_nested(nested: AWSNested) -> AWS:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AWS_REL_FIELDS,
-        AWSRelationshipAttributes
+        AWSRelationshipAttributes,
     )
     return AWS(
         guid=nested.guid,
@@ -451,6 +473,7 @@ def _aws_from_nested(nested: AWSNested) -> AWS:
         **merged_rels,
     )
 
+
 def _aws_to_nested_bytes(aws: AWS, serde: Serde) -> bytes:
     """Convert flat AWS to nested JSON bytes."""
     return serde.encode(_aws_to_nested(aws))
@@ -460,6 +483,7 @@ def _aws_from_nested_bytes(data: bytes, serde: Serde) -> AWS:
     """Convert nested JSON bytes to flat AWS."""
     nested = serde.decode(data, AWSNested)
     return _aws_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -476,10 +500,14 @@ AWS.AWS_SERVICE = KeywordField("awsService", "awsService")
 AWS.AWS_REGION = KeywordField("awsRegion", "awsRegion")
 AWS.AWS_ACCOUNT_ID = KeywordField("awsAccountId", "awsAccountId")
 AWS.AWS_RESOURCE_ID = KeywordField("awsResourceId", "awsResourceId")
-AWS.AWS_OWNER_NAME = KeywordTextField("awsOwnerName", "awsOwnerName", "awsOwnerName.text")
+AWS.AWS_OWNER_NAME = KeywordTextField(
+    "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+)
 AWS.AWS_OWNER_ID = KeywordField("awsOwnerId", "awsOwnerId")
 AWS.AWS_TAGS = KeywordField("awsTags", "awsTags")
-AWS.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+AWS.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 AWS.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AWS.APPLICATION = RelationField("application")
 AWS.APPLICATION_FIELD = RelationField("applicationField")

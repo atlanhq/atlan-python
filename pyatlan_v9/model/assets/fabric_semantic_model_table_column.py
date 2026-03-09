@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,6 +40,7 @@ from .asset import (
 )
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .fabric_related import RelatedFabricSemanticModelTable
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -44,15 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .fabric_related import RelatedFabricSemanticModelTable
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FabricSemanticModelTableColumn(Asset):
@@ -136,7 +139,9 @@ class FabricSemanticModelTableColumn(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -145,10 +150,14 @@ class FabricSemanticModelTableColumn(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    fabric_semantic_model_table: Union[RelatedFabricSemanticModelTable, None, UnsetType] = UNSET
+    fabric_semantic_model_table: Union[
+        RelatedFabricSemanticModelTable, None, UnsetType
+    ] = UNSET
     """Semantic model table containing the column."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -175,7 +184,9 @@ class FabricSemanticModelTableColumn(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -187,7 +198,9 @@ class FabricSemanticModelTableColumn(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -209,7 +222,6 @@ class FabricSemanticModelTableColumn(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -240,7 +252,9 @@ class FabricSemanticModelTableColumn(Asset):
         return _fabric_semantic_model_table_column_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> FabricSemanticModelTableColumn:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> FabricSemanticModelTableColumn:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -262,6 +276,7 @@ class FabricSemanticModelTableColumn(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FabricSemanticModelTableColumnAttributes(AssetAttributes):
     """FabricSemanticModelTableColumn-specific attributes for nested API format."""
 
@@ -279,6 +294,7 @@ class FabricSemanticModelTableColumnAttributes(AssetAttributes):
 
     fabric_ordinal: Union[int, None, UnsetType] = UNSET
     """Order/position of this asset within its parent."""
+
 
 class FabricSemanticModelTableColumnRelationshipAttributes(AssetRelationshipAttributes):
     """FabricSemanticModelTableColumn-specific relationship attributes for nested API format."""
@@ -307,7 +323,9 @@ class FabricSemanticModelTableColumnRelationshipAttributes(AssetRelationshipAttr
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -316,10 +334,14 @@ class FabricSemanticModelTableColumnRelationshipAttributes(AssetRelationshipAttr
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    fabric_semantic_model_table: Union[RelatedFabricSemanticModelTable, None, UnsetType] = UNSET
+    fabric_semantic_model_table: Union[
+        RelatedFabricSemanticModelTable, None, UnsetType
+    ] = UNSET
     """Semantic model table containing the column."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -346,7 +368,9 @@ class FabricSemanticModelTableColumnRelationshipAttributes(AssetRelationshipAttr
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -358,7 +382,9 @@ class FabricSemanticModelTableColumnRelationshipAttributes(AssetRelationshipAttr
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -370,13 +396,21 @@ class FabricSemanticModelTableColumnRelationshipAttributes(AssetRelationshipAttr
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class FabricSemanticModelTableColumnNested(AssetNested):
     """FabricSemanticModelTableColumn in nested API format for high-performance serialization."""
 
     attributes: Union[FabricSemanticModelTableColumnAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[FabricSemanticModelTableColumnRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[FabricSemanticModelTableColumnRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[FabricSemanticModelTableColumnRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        FabricSemanticModelTableColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        FabricSemanticModelTableColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        FabricSemanticModelTableColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -415,37 +449,54 @@ _FABRIC_SEMANTIC_MODEL_TABLE_COLUMN_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_fabric_semantic_model_table_column_attrs(attrs: FabricSemanticModelTableColumnAttributes, obj: FabricSemanticModelTableColumn) -> None:
+
+def _populate_fabric_semantic_model_table_column_attrs(
+    attrs: FabricSemanticModelTableColumnAttributes, obj: FabricSemanticModelTableColumn
+) -> None:
     """Populate FabricSemanticModelTableColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.fabric_semantic_model_table_qualified_name = obj.fabric_semantic_model_table_qualified_name
+    attrs.fabric_semantic_model_table_qualified_name = (
+        obj.fabric_semantic_model_table_qualified_name
+    )
     attrs.fabric_semantic_model_table_name = obj.fabric_semantic_model_table_name
     attrs.fabric_column_count = obj.fabric_column_count
     attrs.fabric_data_type = obj.fabric_data_type
     attrs.fabric_ordinal = obj.fabric_ordinal
 
-def _extract_fabric_semantic_model_table_column_attrs(attrs: FabricSemanticModelTableColumnAttributes) -> dict:
+
+def _extract_fabric_semantic_model_table_column_attrs(
+    attrs: FabricSemanticModelTableColumnAttributes,
+) -> dict:
     """Extract all FabricSemanticModelTableColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["fabric_semantic_model_table_qualified_name"] = attrs.fabric_semantic_model_table_qualified_name
+    result["fabric_semantic_model_table_qualified_name"] = (
+        attrs.fabric_semantic_model_table_qualified_name
+    )
     result["fabric_semantic_model_table_name"] = attrs.fabric_semantic_model_table_name
     result["fabric_column_count"] = attrs.fabric_column_count
     result["fabric_data_type"] = attrs.fabric_data_type
     result["fabric_ordinal"] = attrs.fabric_ordinal
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _fabric_semantic_model_table_column_to_nested(fabric_semantic_model_table_column: FabricSemanticModelTableColumn) -> FabricSemanticModelTableColumnNested:
+def _fabric_semantic_model_table_column_to_nested(
+    fabric_semantic_model_table_column: FabricSemanticModelTableColumn,
+) -> FabricSemanticModelTableColumnNested:
     """Convert flat FabricSemanticModelTableColumn to nested format."""
     attrs = FabricSemanticModelTableColumnAttributes()
-    _populate_fabric_semantic_model_table_column_attrs(attrs, fabric_semantic_model_table_column)
+    _populate_fabric_semantic_model_table_column_attrs(
+        attrs, fabric_semantic_model_table_column
+    )
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        fabric_semantic_model_table_column, _FABRIC_SEMANTIC_MODEL_TABLE_COLUMN_REL_FIELDS, FabricSemanticModelTableColumnRelationshipAttributes
+        fabric_semantic_model_table_column,
+        _FABRIC_SEMANTIC_MODEL_TABLE_COLUMN_REL_FIELDS,
+        FabricSemanticModelTableColumnRelationshipAttributes,
     )
     return FabricSemanticModelTableColumnNested(
         guid=fabric_semantic_model_table_column.guid,
@@ -473,16 +524,23 @@ def _fabric_semantic_model_table_column_to_nested(fabric_semantic_model_table_co
         remove_relationship_attributes=remove_rels,
     )
 
-def _fabric_semantic_model_table_column_from_nested(nested: FabricSemanticModelTableColumnNested) -> FabricSemanticModelTableColumn:
+
+def _fabric_semantic_model_table_column_from_nested(
+    nested: FabricSemanticModelTableColumnNested,
+) -> FabricSemanticModelTableColumn:
     """Convert nested format to flat FabricSemanticModelTableColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FabricSemanticModelTableColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else FabricSemanticModelTableColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FABRIC_SEMANTIC_MODEL_TABLE_COLUMN_REL_FIELDS,
-        FabricSemanticModelTableColumnRelationshipAttributes
+        FabricSemanticModelTableColumnRelationshipAttributes,
     )
     return FabricSemanticModelTableColumn(
         guid=nested.guid,
@@ -509,15 +567,25 @@ def _fabric_semantic_model_table_column_from_nested(nested: FabricSemanticModelT
         **merged_rels,
     )
 
-def _fabric_semantic_model_table_column_to_nested_bytes(fabric_semantic_model_table_column: FabricSemanticModelTableColumn, serde: Serde) -> bytes:
+
+def _fabric_semantic_model_table_column_to_nested_bytes(
+    fabric_semantic_model_table_column: FabricSemanticModelTableColumn, serde: Serde
+) -> bytes:
     """Convert flat FabricSemanticModelTableColumn to nested JSON bytes."""
-    return serde.encode(_fabric_semantic_model_table_column_to_nested(fabric_semantic_model_table_column))
+    return serde.encode(
+        _fabric_semantic_model_table_column_to_nested(
+            fabric_semantic_model_table_column
+        )
+    )
 
 
-def _fabric_semantic_model_table_column_from_nested_bytes(data: bytes, serde: Serde) -> FabricSemanticModelTableColumn:
+def _fabric_semantic_model_table_column_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> FabricSemanticModelTableColumn:
     """Convert nested JSON bytes to flat FabricSemanticModelTableColumn."""
     nested = serde.decode(data, FabricSemanticModelTableColumnNested)
     return _fabric_semantic_model_table_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -528,37 +596,81 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-FabricSemanticModelTableColumn.FABRIC_SEMANTIC_MODEL_TABLE_QUALIFIED_NAME = KeywordField("fabricSemanticModelTableQualifiedName", "fabricSemanticModelTableQualifiedName")
-FabricSemanticModelTableColumn.FABRIC_SEMANTIC_MODEL_TABLE_NAME = KeywordField("fabricSemanticModelTableName", "fabricSemanticModelTableName")
-FabricSemanticModelTableColumn.FABRIC_COLUMN_COUNT = NumericField("fabricColumnCount", "fabricColumnCount")
-FabricSemanticModelTableColumn.FABRIC_DATA_TYPE = KeywordField("fabricDataType", "fabricDataType")
-FabricSemanticModelTableColumn.FABRIC_ORDINAL = NumericField("fabricOrdinal", "fabricOrdinal")
-FabricSemanticModelTableColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-FabricSemanticModelTableColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+FabricSemanticModelTableColumn.FABRIC_SEMANTIC_MODEL_TABLE_QUALIFIED_NAME = (
+    KeywordField(
+        "fabricSemanticModelTableQualifiedName", "fabricSemanticModelTableQualifiedName"
+    )
+)
+FabricSemanticModelTableColumn.FABRIC_SEMANTIC_MODEL_TABLE_NAME = KeywordField(
+    "fabricSemanticModelTableName", "fabricSemanticModelTableName"
+)
+FabricSemanticModelTableColumn.FABRIC_COLUMN_COUNT = NumericField(
+    "fabricColumnCount", "fabricColumnCount"
+)
+FabricSemanticModelTableColumn.FABRIC_DATA_TYPE = KeywordField(
+    "fabricDataType", "fabricDataType"
+)
+FabricSemanticModelTableColumn.FABRIC_ORDINAL = NumericField(
+    "fabricOrdinal", "fabricOrdinal"
+)
+FabricSemanticModelTableColumn.INPUT_TO_AIRFLOW_TASKS = RelationField(
+    "inputToAirflowTasks"
+)
+FabricSemanticModelTableColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 FabricSemanticModelTableColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FabricSemanticModelTableColumn.APPLICATION = RelationField("application")
 FabricSemanticModelTableColumn.APPLICATION_FIELD = RelationField("applicationField")
-FabricSemanticModelTableColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-FabricSemanticModelTableColumn.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-FabricSemanticModelTableColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-FabricSemanticModelTableColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+FabricSemanticModelTableColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+FabricSemanticModelTableColumn.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+FabricSemanticModelTableColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+FabricSemanticModelTableColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 FabricSemanticModelTableColumn.METRICS = RelationField("metrics")
-FabricSemanticModelTableColumn.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-FabricSemanticModelTableColumn.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-FabricSemanticModelTableColumn.FABRIC_SEMANTIC_MODEL_TABLE = RelationField("fabricSemanticModelTable")
+FabricSemanticModelTableColumn.DQ_BASE_DATASET_RULES = RelationField(
+    "dqBaseDatasetRules"
+)
+FabricSemanticModelTableColumn.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+FabricSemanticModelTableColumn.FABRIC_SEMANTIC_MODEL_TABLE = RelationField(
+    "fabricSemanticModelTable"
+)
 FabricSemanticModelTableColumn.MEANINGS = RelationField("meanings")
 FabricSemanticModelTableColumn.MC_MONITORS = RelationField("mcMonitors")
 FabricSemanticModelTableColumn.MC_INCIDENTS = RelationField("mcIncidents")
-FabricSemanticModelTableColumn.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-FabricSemanticModelTableColumn.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+FabricSemanticModelTableColumn.PARTIAL_CHILD_FIELDS = RelationField(
+    "partialChildFields"
+)
+FabricSemanticModelTableColumn.PARTIAL_CHILD_OBJECTS = RelationField(
+    "partialChildObjects"
+)
 FabricSemanticModelTableColumn.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-FabricSemanticModelTableColumn.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-FabricSemanticModelTableColumn.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-FabricSemanticModelTableColumn.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+FabricSemanticModelTableColumn.OUTPUT_FROM_PROCESSES = RelationField(
+    "outputFromProcesses"
+)
+FabricSemanticModelTableColumn.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+FabricSemanticModelTableColumn.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 FabricSemanticModelTableColumn.FILES = RelationField("files")
 FabricSemanticModelTableColumn.LINKS = RelationField("links")
 FabricSemanticModelTableColumn.README = RelationField("readme")
-FabricSemanticModelTableColumn.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+FabricSemanticModelTableColumn.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 FabricSemanticModelTableColumn.SODA_CHECKS = RelationField("sodaChecks")
 FabricSemanticModelTableColumn.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-FabricSemanticModelTableColumn.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+FabricSemanticModelTableColumn.OUTPUT_FROM_SPARK_JOBS = RelationField(
+    "outputFromSparkJobs"
+)

@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -44,6 +44,7 @@ class RelatedCatalog(RelatedAsset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Catalog"
 
+
 class RelatedBI(RelatedCatalog):
     """
     Related entity reference for BI assets.
@@ -57,6 +58,7 @@ class RelatedBI(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "BI"
+
 
 class RelatedEventStore(RelatedCatalog):
     """
@@ -72,6 +74,7 @@ class RelatedEventStore(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "EventStore"
 
+
 class RelatedInsight(RelatedCatalog):
     """
     Related entity reference for Insight assets.
@@ -86,6 +89,7 @@ class RelatedInsight(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Insight"
 
+
 class RelatedNoSQL(RelatedCatalog):
     """
     Related entity reference for NoSQL assets.
@@ -96,12 +100,15 @@ class RelatedNoSQL(RelatedCatalog):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "NoSQL" so it serializes correctly
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "NoSQL"
+
 
 class RelatedObjectStore(RelatedCatalog):
     """
@@ -116,6 +123,7 @@ class RelatedObjectStore(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ObjectStore"
+
 
 class RelatedSaaS(RelatedCatalog):
     """

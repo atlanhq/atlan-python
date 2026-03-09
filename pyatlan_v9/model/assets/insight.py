@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,13 +49,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Insight(Asset):
@@ -112,7 +116,9 @@ class Insight(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -121,7 +127,9 @@ class Insight(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -148,7 +156,9 @@ class Insight(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -160,7 +170,9 @@ class Insight(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -174,8 +186,6 @@ class Insight(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Insight"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -228,10 +238,12 @@ class Insight(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class InsightAttributes(AssetAttributes):
     """Insight-specific attributes for nested API format."""
 
     pass
+
 
 class InsightRelationshipAttributes(AssetRelationshipAttributes):
     """Insight-specific relationship attributes for nested API format."""
@@ -260,7 +272,9 @@ class InsightRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -269,7 +283,9 @@ class InsightRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -296,7 +312,9 @@ class InsightRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -308,7 +326,9 @@ class InsightRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """"""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -320,13 +340,19 @@ class InsightRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class InsightNested(AssetNested):
     """Insight in nested API format for high-performance serialization."""
 
     attributes: Union[InsightAttributes, UnsetType] = UNSET
     relationship_attributes: Union[InsightRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[InsightRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[InsightRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[InsightRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[InsightRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -364,13 +390,16 @@ _INSIGHT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_insight_attrs(attrs: InsightAttributes, obj: Insight) -> None:
     """Populate Insight-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
+
 def _extract_insight_attrs(attrs: InsightAttributes) -> dict:
     """Extract all Insight attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -411,6 +440,7 @@ def _insight_to_nested(insight: Insight) -> InsightNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _insight_from_nested(nested: InsightNested) -> Insight:
     """Convert nested format to flat Insight."""
     attrs = nested.attributes if nested.attributes is not UNSET else InsightAttributes()
@@ -420,7 +450,7 @@ def _insight_from_nested(nested: InsightNested) -> Insight:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _INSIGHT_REL_FIELDS,
-        InsightRelationshipAttributes
+        InsightRelationshipAttributes,
     )
     return Insight(
         guid=nested.guid,
@@ -447,6 +477,7 @@ def _insight_from_nested(nested: InsightNested) -> Insight:
         **merged_rels,
     )
 
+
 def _insight_to_nested_bytes(insight: Insight, serde: Serde) -> bytes:
     """Convert flat Insight to nested JSON bytes."""
     return serde.encode(_insight_to_nested(insight))
@@ -456,6 +487,7 @@ def _insight_from_nested_bytes(data: bytes, serde: Serde) -> Insight:
     """Convert nested JSON bytes to flat Insight."""
     nested = serde.decode(data, InsightNested)
     return _insight_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
