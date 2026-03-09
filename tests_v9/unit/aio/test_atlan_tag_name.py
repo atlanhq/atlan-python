@@ -3,13 +3,13 @@
 
 import msgspec
 import pytest
+from pyatlan_v9.model.assets.purpose import PurposeNested, _purpose_from_nested
 
 import pyatlan.cache.aio.atlan_tag_cache
 from pyatlan.model.constants import DELETED_
 from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
 from pyatlan_v9.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
 from pyatlan_v9.model.assets import Purpose
-from pyatlan_v9.model.assets.purpose import PurposeNested, _purpose_from_nested
 from pyatlan_v9.model.core import AtlanTagName
 
 ATLAN_TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"

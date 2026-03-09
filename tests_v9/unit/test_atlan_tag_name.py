@@ -7,10 +7,10 @@ from __future__ import annotations
 
 import msgspec
 import pytest
+from pyatlan_v9.model.assets.purpose import PurposeNested, _purpose_from_nested
 
 from pyatlan.model.constants import DELETED_
 from pyatlan_v9.model import Purpose
-from pyatlan_v9.model.assets.purpose import PurposeNested, _purpose_from_nested
 from pyatlan_v9.model.core import AtlanRequest, AtlanResponse, AtlanTagName
 
 ATLAN_TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"
