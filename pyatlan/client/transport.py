@@ -62,6 +62,72 @@ def _create_mock_response(
     )
 
 
+async def _find_existing_policy_async(
+    client: Any, policy_name: str, persona_guid: str
+) -> Optional[dict]:
+    """Async version of _find_existing_policy for use with AsyncAtlanClient."""
+    try:
+        from pyatlan.client.constants import INDEX_SEARCH
+        from pyatlan.model.search import Bool, DSL, IndexSearchRequest, Term
+
+        query = Bool(
+            filter=[
+                Term(field="__typeName.keyword", value="AuthPolicy"),
+                Term(field="name.keyword", value=policy_name),
+                Term(field="__persona", value=persona_guid),
+            ]
+        )
+        search_request = IndexSearchRequest(
+            dsl=DSL(query=query, size=1, from_=0),
+            attributes=["name", "qualifiedName"],
+        )
+        raw_json = await client._call_api(INDEX_SEARCH, request_obj=search_request)
+        if raw_json and raw_json.get("entities"):
+            return raw_json["entities"][0]
+        return None
+    except Exception as e:
+        logger.debug(f"Error searching for existing policy (async): {e}")
+        return None
+
+
+async def _check_for_duplicate_policy_async(
+    client: Any, request: httpx.Request
+) -> Optional[httpx.Response]:
+    """Async version of _check_for_duplicate_policy for use with AsyncAtlanClient."""
+    try:
+        if request.method != "POST" or "/api/meta/entity/bulk" not in str(request.url):
+            return None
+        if not request.content:
+            return None
+
+        body = json.loads(request.content.decode("utf-8"))
+        for entity in body.get("entities", []):
+            if entity.get("typeName") != "AuthPolicy":
+                continue
+            policy_name = entity.get("attributes", {}).get("name")
+            access_control = entity.get("attributes", {}).get("accessControl")
+            persona_guid = (
+                access_control.get("guid")
+                if isinstance(access_control, dict)
+                else None
+            )
+            if not (policy_name and persona_guid):
+                continue
+            existing_policy = await _find_existing_policy_async(
+                client, policy_name, persona_guid
+            )
+            if existing_policy:
+                logger.info(
+                    f"Found existing policy '{policy_name}' with guid "
+                    f"{existing_policy.get('guid')} during retry check"
+                )
+                return _create_mock_response(existing_policy, entity.get("guid", "-1"))
+        return None
+    except Exception as e:
+        logger.debug(f"Duplicate policy check failed (will proceed with retry): {e}")
+        return None
+
+
 def _check_for_duplicate_policy(
     client: "AtlanClient", request: httpx.Request
 ) -> Optional[httpx.Response]:
@@ -307,7 +373,9 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
 
                 # ONLY during retry: check if this is a policy creation and if duplicate exists
                 if self._client:
-                    duplicate_response = _check_for_duplicate_policy(self._client, request)
+                    duplicate_response = await _check_for_duplicate_policy_async(
+                        self._client, request
+                    )
                     if duplicate_response:
                         logger.warning(
                             "RETRY PREVENTED: Policy already exists (likely from previous "
