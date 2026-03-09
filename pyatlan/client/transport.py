@@ -82,8 +82,11 @@ class PyatlanSyncTransport(httpx.BaseTransport):
         """
         logger.debug("handle_request started request=%s", request)
 
-        send_method = partial(self._transport.handle_request)
-        response = self._retry_operation(request, send_method)
+        if self.retry.is_retryable_method(request.method):
+            send_method = partial(self._transport.handle_request)
+            response = self._retry_operation(request, send_method)
+        else:
+            response = self._transport.handle_request(request)
 
         logger.debug(
             "handle_request finished request=%s response=%s", request, response
@@ -196,8 +199,11 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
         """
         logger.debug("handle_async_request started request=%s", request)
 
-        send_method = partial(self._transport.handle_async_request)
-        response = await self._retry_operation_async(request, send_method)
+        if self.retry.is_retryable_method(request.method):
+            send_method = partial(self._transport.handle_async_request)
+            response = await self._retry_operation_async(request, send_method)
+        else:
+            response = await self._transport.handle_async_request(request)
 
         logger.debug(
             "handle_async_request finished request=%s response=%s", request, response

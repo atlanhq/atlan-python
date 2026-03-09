@@ -293,7 +293,7 @@ class TestCheckForDuplicatePolicyAsync:
 class TestPyatlanSyncTransportRetry:
     def _make_transport(self, client=None):
         transport = PyatlanSyncTransport(
-            retry=Retry(total=3, backoff_factor=0),
+            retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
             client=client,
             trust_env=False,
         )
@@ -391,7 +391,7 @@ class TestPyatlanSyncTransportRetry:
 class TestPyatlanAsyncTransportRetry:
     def _make_transport(self, client=None):
         transport = PyatlanAsyncTransport(
-            retry=Retry(total=3, backoff_factor=0),
+            retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
             client=client,
             trust_env=False,
         )

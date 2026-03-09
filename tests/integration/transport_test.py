@@ -79,7 +79,7 @@ def test_duplicate_prevention_on_timeout(client: AtlanClient):  # noqa: F811
     policy_name = f"{MODULE_NAME}_DupCheck"
 
     transport = PyatlanSyncTransport(
-        retry=Retry(total=3, backoff_factor=0),
+        retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
         client=client,
         trust_env=True,
     )
@@ -151,7 +151,7 @@ def test_duplicate_prevention_short_circuits_when_policy_exists(
     }
 
     transport = PyatlanSyncTransport(
-        retry=Retry(total=3, backoff_factor=0),
+        retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
         client=client,
         trust_env=True,
     )
