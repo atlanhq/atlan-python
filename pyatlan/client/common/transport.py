@@ -17,7 +17,7 @@ import httpx
 
 from pyatlan.client.constants import BULK_UPDATE, INDEX_SEARCH
 from pyatlan.errors import ErrorCode
-from pyatlan.model.search import Bool, DSL, IndexSearchRequest, Term
+from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term
 
 logger = logging.getLogger(__name__)
 

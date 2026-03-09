@@ -1,3 +1,22 @@
+## 9.2.0 (March 9, 2026)
+
+### Breaking Changes
+
+- **Policy duplicate detection during retries**: When a policy creation request times out but actually succeeds on the backend, the SDK now detects the existing policy instead of blindly retrying and creating a duplicate. On retry, the transport layer searches for an existing `AuthPolicy` with the same name and persona GUID — if found, it returns a mock response containing the existing policy. Code that relied on retries always creating new policies will now receive the existing policy instead.
+
+### Experimental: `pyatlan_v9`
+
+- **IDE autocompletion**: Replaced custom AST-based lazy loading with `lazy_loader` + Pkl-generated `.pyi` stub file. All 860+ asset classes now have full IDE type hints and autocompletion while keeping lazy import performance.
+- **Pkl-generated `__init__.py` and `__init__.pyi`**: The Pkl renderer now aggregates all typedefs (via `import*` glob) to generate `__init__.py` (with `lazy_loader.attach()` mapping) and `__init__.pyi` (with explicit re-exports for IDEs) directly — no post-sync Python script needed. Hand-written types from `_init_manual.py` are included by reading the file at generation time.
+- **Model updates**: Regenerated all v9 models — GTC anchor regularization, entity lineage fields (`depth`, `immediate_upstream`, `immediate_downstream`), QuickSight `useLocalTypeAsPrefix`, fully Pkl-generated `DataQualityRule`, and referenceable field descriptors via overlays.
+- **`type_name` serialization fix**: `type_name` field default changed to `UNSET` so `omit_defaults=True` never omits `typeName` from API requests.
+- **Simplified `transform.py`**: Removed `_normalize_camel_key()` and related camelCase abbreviation handling — msgspec structs use explicit `field(name=...)` mappings. Asset registration now uses `cls.__name__` directly.
+
+### QOL Improvements
+
+- Regenerated latest typedef models.
+- Improved Claude Code review skill and added auto-review trigger on PR open.
+
 ## 9.1.0 (March 6, 2026)
 
 ### Breaking Changes

@@ -73,6 +73,9 @@ class RelatedAtlanAppInstalled(RelatedAtlanApp):
     atlan_app_deployment_config: Union[str, None, UnsetType] = UNSET
     """Configuration settings used by the atlan application."""
 
+    atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
+    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AtlanAppInstalled"
@@ -104,6 +107,9 @@ class RelatedAtlanAppDeployment(RelatedAtlanApp):
 
     atlan_app_error_details: Union[str, None, UnsetType] = UNSET
     """Detailed error message explaining why the deployment failed. Should only be populated when status = FAILED."""
+
+    atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
+    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

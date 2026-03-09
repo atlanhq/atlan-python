@@ -66,6 +66,7 @@ class AtlanAppInstalled(Asset):
     ATLAN_APP_CURRENT_VERSION_ID: ClassVar[Any] = None
     ATLAN_APP_CURRENT_VERSION_UUID: ClassVar[Any] = None
     ATLAN_APP_DEPLOYMENT_CONFIG: ClassVar[Any] = None
+    ATLAN_APP_DEPLOYMENT_NAME: ClassVar[Any] = None
     ATLAN_APP_QUALIFIED_NAME: ClassVar[Any] = None
     ATLAN_APP_NAME: ClassVar[Any] = None
     ATLAN_APP_METADATA: ClassVar[Any] = None
@@ -111,6 +112,9 @@ class AtlanAppInstalled(Asset):
 
     atlan_app_deployment_config: Union[str, None, UnsetType] = UNSET
     """Configuration settings used by the atlan application."""
+
+    atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
+    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""
@@ -293,6 +297,9 @@ class AtlanAppInstalledAttributes(AssetAttributes):
     atlan_app_deployment_config: Union[str, None, UnsetType] = UNSET
     """Configuration settings used by the atlan application."""
 
+    atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
+    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
+
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Atlan application this asset belongs to."""
 
@@ -470,6 +477,7 @@ def _populate_atlan_app_installed_attrs(
     attrs.atlan_app_current_version_id = obj.atlan_app_current_version_id
     attrs.atlan_app_current_version_uuid = obj.atlan_app_current_version_uuid
     attrs.atlan_app_deployment_config = obj.atlan_app_deployment_config
+    attrs.atlan_app_deployment_name = obj.atlan_app_deployment_name
     attrs.atlan_app_qualified_name = obj.atlan_app_qualified_name
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
@@ -482,6 +490,7 @@ def _extract_atlan_app_installed_attrs(attrs: AtlanAppInstalledAttributes) -> di
     result["atlan_app_current_version_id"] = attrs.atlan_app_current_version_id
     result["atlan_app_current_version_uuid"] = attrs.atlan_app_current_version_uuid
     result["atlan_app_deployment_config"] = attrs.atlan_app_deployment_config
+    result["atlan_app_deployment_name"] = attrs.atlan_app_deployment_name
     result["atlan_app_qualified_name"] = attrs.atlan_app_qualified_name
     result["atlan_app_name"] = attrs.atlan_app_name
     result["atlan_app_metadata"] = attrs.atlan_app_metadata
@@ -614,6 +623,9 @@ AtlanAppInstalled.ATLAN_APP_CURRENT_VERSION_UUID = KeywordField(
 )
 AtlanAppInstalled.ATLAN_APP_DEPLOYMENT_CONFIG = KeywordField(
     "atlanAppDeploymentConfig", "atlanAppDeploymentConfig"
+)
+AtlanAppInstalled.ATLAN_APP_DEPLOYMENT_NAME = KeywordField(
+    "atlanAppDeploymentName", "atlanAppDeploymentName"
 )
 AtlanAppInstalled.ATLAN_APP_QUALIFIED_NAME = KeywordField(
     "atlanAppQualifiedName", "atlanAppQualifiedName"
