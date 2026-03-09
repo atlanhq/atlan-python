@@ -30,30 +30,6 @@ _type_registry: dict[str, type] = {}
 _failed_imports: set[str] = set()
 
 
-def _get_type_name_default(cls: type) -> str | None:
-    """Extract the type_name default value from a msgspec Struct class.
-
-    For msgspec Structs, class attributes become field descriptors, so we need
-    to use msgspec.structs.fields() to get the actual default value.
-    """
-    try:
-        for field in msgspec.structs.fields(cls):
-            if field.name == "type_name":
-                default = field.default
-                if isinstance(default, str) and default != "UNSET":
-                    return default
-                return None
-    except TypeError:
-        # Not a msgspec Struct - fall back to getattr
-        pass
-
-    # Fallback for non-Struct classes
-    type_name = getattr(cls, "type_name", None)
-    if isinstance(type_name, str) and type_name != "UNSET":
-        return type_name
-    return None
-
-
 def register_asset(cls: _T) -> _T:
     """Decorator that registers an Asset subclass in the type registry.
 
@@ -65,15 +41,12 @@ def register_asset(cls: _T) -> _T:
 
         @register_asset
         class AtlasGlossaryTerm(Asset):
-            type_name: Union[str, UnsetType] = "AtlasGlossaryTerm"
             ...
 
-    The class is registered under its `type_name` field's default value.
-    Works with both msgspec Structs and regular classes.
+    The class is registered under its class name, which matches the Atlas
+    typeName (e.g., class Table -> typeName "Table").
     """
-    type_name = _get_type_name_default(cls)
-    if type_name:
-        _type_registry[type_name] = cls
+    _type_registry[cls.__name__] = cls
     return cls
 
 
@@ -244,25 +217,6 @@ _NESTED_BUCKETS = frozenset(
     ("attributes", "uniqueAttributes", "relationshipAttributes")
 )
 
-_CAMEL_ABBREV_RE = re.compile(r"([A-Z]{2,})(?=[A-Z][a-z]|$)")
-
-# Keys that use explicit msgspec.field(name="...") with trailing uppercase
-# (e.g. dataProductAssetsDSL). Normalization would turn them into Dsl;
-# preserve so struct field name matches.
-_PRESERVE_CAMEL_KEYS = frozenset({"dataProductAssetsDSL", "apiPathRawURI"})
-
-
-def _normalize_camel_key(key: str) -> str:
-    """Normalize uppercase abbreviations in camelCase keys for msgspec.
-
-    msgspec's rename="camel" expects apiPathRawUri, not apiPathRawURI.
-    This converts trailing/mid uppercase runs like URI→Uri, DSL→Dsl, DQ→Dq.
-    Keys in _PRESERVE_CAMEL_KEYS are left unchanged so they match struct fields.
-    """
-    if key in _PRESERVE_CAMEL_KEYS:
-        return key
-    return _CAMEL_ABBREV_RE.sub(lambda m: m.group(1).capitalize(), key)
-
 
 def _flatten_entity_dict(data: dict[str, Any]) -> dict[str, Any]:
     """Flatten one Atlas entity dict, merging ``attributes``,
@@ -276,9 +230,9 @@ def _flatten_entity_dict(data: dict[str, Any]) -> dict[str, Any]:
         if key in _NESTED_BUCKETS:
             if isinstance(value, dict):
                 for k, v in value.items():
-                    flattened[_normalize_camel_key(k)] = v
+                    flattened[k] = v
         else:
-            flattened[_normalize_camel_key(key)] = value
+            flattened[key] = value
 
     for key, value in list(flattened.items()):
         if isinstance(value, dict) and "typeName" in value:
