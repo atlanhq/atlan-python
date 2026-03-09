@@ -63,7 +63,7 @@ class QlikSpace(Asset):
     Instance of a Qlik space in Atlan.
     """
 
-    QLIK_TYPE: ClassVar[Any] = None
+    QLIK_SPACE_TYPE: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -103,7 +103,7 @@ class QlikSpace(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    qlik_type: Union[str, None, UnsetType] = UNSET
+    qlik_space_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -286,7 +286,7 @@ class QlikSpace(Asset):
 class QlikSpaceAttributes(AssetAttributes):
     """QlikSpace-specific attributes for nested API format."""
 
-    qlik_type: Union[str, None, UnsetType] = UNSET
+    qlik_space_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -471,7 +471,7 @@ _QLIK_SPACE_REL_FIELDS: List[str] = [
 def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> None:
     """Populate QlikSpace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.qlik_type = obj.qlik_type
+    attrs.qlik_space_type = obj.qlik_space_type
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -485,7 +485,7 @@ def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> No
 def _extract_qlik_space_attrs(attrs: QlikSpaceAttributes) -> dict:
     """Extract all QlikSpace attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["qlik_type"] = attrs.qlik_type
+    result["qlik_space_type"] = attrs.qlik_space_type
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -530,6 +530,9 @@ def _qlik_space_to_nested(qlik_space: QlikSpace) -> QlikSpaceNested:
         is_incomplete=qlik_space.is_incomplete,
         provenance_type=qlik_space.provenance_type,
         home_id=qlik_space.home_id,
+        depth=qlik_space.depth,
+        immediate_upstream=qlik_space.immediate_upstream,
+        immediate_downstream=qlik_space.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -561,7 +564,6 @@ def _qlik_space_from_nested(nested: QlikSpaceNested) -> QlikSpace:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -570,6 +572,9 @@ def _qlik_space_from_nested(nested: QlikSpaceNested) -> QlikSpace:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_space_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -597,7 +602,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QlikSpace.QLIK_TYPE = KeywordField("qlikType", "qlikType")
+QlikSpace.QLIK_SPACE_TYPE = KeywordField("qlikSpaceType", "qlikSpaceType")
 QlikSpace.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSpace.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSpace.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")

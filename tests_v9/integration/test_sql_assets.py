@@ -207,8 +207,8 @@ class TestSchema:
         database = client.asset.get_by_guid(
             databases[0].guid, Database, ignore_relationships=False
         )
-        assert database.attributes.schemas
-        schemas = database.attributes.schemas
+        assert database.schemas
+        schemas = database.schemas
         assert len(schemas) == 1
         assert schemas[0].guid == schema.guid
         TestSchema.schema = schema
@@ -242,10 +242,10 @@ class TestSchema:
         database = client.asset.get_by_guid(
             databases[0].guid, Database, ignore_relationships=False
         )
-        assert database.attributes.schemas
-        schemas = database.attributes.schemas
+        assert database.schemas
+        schemas = database.schemas
         assert len(schemas) == 2
-        # `database.attributes.schemas` ordering can differ,
+        # `database.schemas` ordering can differ,
         # so it's better to use "in" operator
         schema_guids = [schema.guid for schema in schemas]
         assert TestSchema.schema and TestSchema.schema.guid in schema_guids
@@ -317,8 +317,8 @@ class TestTable:
         schema = client.asset.get_by_guid(
             guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False
         )
-        assert schema.attributes.tables
-        tables = schema.attributes.tables
+        assert schema.tables
+        tables = schema.tables
         assert len(tables) == 1
         assert tables[0].guid == table.guid
         TestTable.table = table
@@ -357,10 +357,10 @@ class TestTable:
         schema = client.asset.get_by_guid(
             guid=schemas[0].guid, asset_type=Schema, ignore_relationships=False
         )
-        assert schema.attributes.tables
-        tables = schema.attributes.tables
+        assert schema.tables
+        tables = schema.tables
         assert len(tables) == 2
-        # `schema.attributes.tables` ordering can differ,
+        # `schema.tables` ordering can differ,
         # so it's better to use "in" operator
         table_guids = [table.guid for table in tables]
         assert TestTable.table and TestTable.table.guid in table_guids
@@ -746,8 +746,8 @@ class TestColumn:
         table = client.asset.get_by_guid(
             asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False
         )
-        assert table.attributes.columns
-        columns = table.attributes.columns
+        assert table.columns
+        columns = table.columns
         assert len(columns) == 1
         assert columns[0].guid == column.guid
         TestColumn.column = column
@@ -827,24 +827,20 @@ class TestColumn:
         table = client.asset.get_by_guid(
             asset_type=Table, guid=TestTable.table.guid, ignore_relationships=False
         )
-        assert table.attributes.columns
-        columns = table.attributes.columns
+        assert table.columns
+        columns = table.columns
 
         assert len(columns) == 2
-        # `table.attributes.columns` ordering can differ,
+        # `table.columns` ordering can differ,
         # so it's better to use "in" operator
         column_guids = [column.guid for column in columns]
         assert TestColumn.column and TestColumn.column.guid in column_guids
         assert overload_column.guid and overload_column.guid in column_guids
-        assert overload_column.attributes
-        assert overload_column.attributes.schema_name == TestSchema.schema.name
+        assert overload_column.schema_name == TestSchema.schema.name
+        assert overload_column.schema_qualified_name == TestSchema.schema.qualified_name
+        assert overload_column.database_name == TestDatabase.database.name
         assert (
-            overload_column.attributes.schema_qualified_name
-            == TestSchema.schema.qualified_name
-        )
-        assert overload_column.attributes.database_name == TestDatabase.database.name
-        assert (
-            overload_column.attributes.database_qualified_name
+            overload_column.database_qualified_name
             == TestDatabase.database.qualified_name
         )
 

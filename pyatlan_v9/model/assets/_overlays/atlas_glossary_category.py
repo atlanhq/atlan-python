@@ -1,4 +1,5 @@
 # STDLIB_IMPORT: import uuid
+# IMPORT: from .gtc_related import RelatedAtlasGlossary
 # INTERNAL_IMPORT: from pyatlan.utils import init_guid, validate_required_fields
 
     @classmethod

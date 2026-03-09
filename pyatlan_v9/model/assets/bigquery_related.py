@@ -59,19 +59,19 @@ class RelatedBigqueryRoutine(RelatedProcedure):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "BigqueryRoutine" so it serializes correctly
 
-    bigquery_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
+    bigquery_routine_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_return_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_security_type: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_ddl: Union[str, None, UnsetType] = UNSET
+    bigquery_routine_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
     def __post_init__(self) -> None:

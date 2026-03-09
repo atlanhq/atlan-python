@@ -68,7 +68,7 @@ class SisenseDashboard(Asset):
     """
 
     SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
-    SISENSE_WIDGET_COUNT: ClassVar[Any] = None
+    SISENSE_DASHBOARD_WIDGET_COUNT: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -104,7 +104,7 @@ class SisenseDashboard(Asset):
     sisense_dashboard_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this dashboard exists."""
 
-    sisense_widget_count: Union[int, None, UnsetType] = UNSET
+    sisense_dashboard_widget_count: Union[int, None, UnsetType] = UNSET
     """Number of widgets in this dashboard."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
@@ -277,7 +277,7 @@ class SisenseDashboardAttributes(AssetAttributes):
     sisense_dashboard_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the folder in which this dashboard exists."""
 
-    sisense_widget_count: Union[int, None, UnsetType] = UNSET
+    sisense_dashboard_widget_count: Union[int, None, UnsetType] = UNSET
     """Number of widgets in this dashboard."""
 
 
@@ -449,7 +449,7 @@ def _populate_sisense_dashboard_attrs(
     attrs.sisense_dashboard_folder_qualified_name = (
         obj.sisense_dashboard_folder_qualified_name
     )
-    attrs.sisense_widget_count = obj.sisense_widget_count
+    attrs.sisense_dashboard_widget_count = obj.sisense_dashboard_widget_count
 
 
 def _extract_sisense_dashboard_attrs(attrs: SisenseDashboardAttributes) -> dict:
@@ -458,7 +458,7 @@ def _extract_sisense_dashboard_attrs(attrs: SisenseDashboardAttributes) -> dict:
     result["sisense_dashboard_folder_qualified_name"] = (
         attrs.sisense_dashboard_folder_qualified_name
     )
-    result["sisense_widget_count"] = attrs.sisense_widget_count
+    result["sisense_dashboard_widget_count"] = attrs.sisense_dashboard_widget_count
     return result
 
 
@@ -499,6 +499,9 @@ def _sisense_dashboard_to_nested(
         is_incomplete=sisense_dashboard.is_incomplete,
         provenance_type=sisense_dashboard.provenance_type,
         home_id=sisense_dashboard.home_id,
+        depth=sisense_dashboard.depth,
+        immediate_upstream=sisense_dashboard.immediate_upstream,
+        immediate_downstream=sisense_dashboard.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -532,7 +535,6 @@ def _sisense_dashboard_from_nested(nested: SisenseDashboardNested) -> SisenseDas
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -541,6 +543,9 @@ def _sisense_dashboard_from_nested(nested: SisenseDashboardNested) -> SisenseDas
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sisense_dashboard_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -574,8 +579,8 @@ SisenseDashboard.SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME = KeywordTextField(
     "sisenseDashboardFolderQualifiedName",
     "sisenseDashboardFolderQualifiedName.text",
 )
-SisenseDashboard.SISENSE_WIDGET_COUNT = NumericField(
-    "sisenseWidgetCount", "sisenseWidgetCount"
+SisenseDashboard.SISENSE_DASHBOARD_WIDGET_COUNT = NumericField(
+    "sisenseDashboardWidgetCount", "sisenseDashboardWidgetCount"
 )
 SisenseDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SisenseDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

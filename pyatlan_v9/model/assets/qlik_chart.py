@@ -66,8 +66,8 @@ class QlikChart(Asset):
 
     QLIK_CHART_SUBTITLE: ClassVar[Any] = None
     QLIK_CHART_FOOTNOTE: ClassVar[Any] = None
-    QLIK_ORIENTATION: ClassVar[Any] = None
-    QLIK_TYPE: ClassVar[Any] = None
+    QLIK_CHART_ORIENTATION: ClassVar[Any] = None
+    QLIK_CHART_TYPE: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -113,10 +113,10 @@ class QlikChart(Asset):
     qlik_chart_footnote: Union[str, None, UnsetType] = UNSET
     """Footnote of this chart."""
 
-    qlik_orientation: Union[str, None, UnsetType] = UNSET
+    qlik_chart_orientation: Union[str, None, UnsetType] = UNSET
     """Orientation of this chart."""
 
-    qlik_type: Union[str, None, UnsetType] = UNSET
+    qlik_chart_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this chart, for example: bar, graph, pie, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -313,10 +313,10 @@ class QlikChartAttributes(AssetAttributes):
     qlik_chart_footnote: Union[str, None, UnsetType] = UNSET
     """Footnote of this chart."""
 
-    qlik_orientation: Union[str, None, UnsetType] = UNSET
+    qlik_chart_orientation: Union[str, None, UnsetType] = UNSET
     """Orientation of this chart."""
 
-    qlik_type: Union[str, None, UnsetType] = UNSET
+    qlik_chart_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this chart, for example: bar, graph, pie, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -503,8 +503,8 @@ def _populate_qlik_chart_attrs(attrs: QlikChartAttributes, obj: QlikChart) -> No
     _populate_asset_attrs(attrs, obj)
     attrs.qlik_chart_subtitle = obj.qlik_chart_subtitle
     attrs.qlik_chart_footnote = obj.qlik_chart_footnote
-    attrs.qlik_orientation = obj.qlik_orientation
-    attrs.qlik_type = obj.qlik_type
+    attrs.qlik_chart_orientation = obj.qlik_chart_orientation
+    attrs.qlik_chart_type = obj.qlik_chart_type
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -520,8 +520,8 @@ def _extract_qlik_chart_attrs(attrs: QlikChartAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["qlik_chart_subtitle"] = attrs.qlik_chart_subtitle
     result["qlik_chart_footnote"] = attrs.qlik_chart_footnote
-    result["qlik_orientation"] = attrs.qlik_orientation
-    result["qlik_type"] = attrs.qlik_type
+    result["qlik_chart_orientation"] = attrs.qlik_chart_orientation
+    result["qlik_chart_type"] = attrs.qlik_chart_type
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -566,6 +566,9 @@ def _qlik_chart_to_nested(qlik_chart: QlikChart) -> QlikChartNested:
         is_incomplete=qlik_chart.is_incomplete,
         provenance_type=qlik_chart.provenance_type,
         home_id=qlik_chart.home_id,
+        depth=qlik_chart.depth,
+        immediate_upstream=qlik_chart.immediate_upstream,
+        immediate_downstream=qlik_chart.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -597,7 +600,6 @@ def _qlik_chart_from_nested(nested: QlikChartNested) -> QlikChart:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -606,6 +608,9 @@ def _qlik_chart_from_nested(nested: QlikChartNested) -> QlikChart:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_chart_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -635,8 +640,10 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 QlikChart.QLIK_CHART_SUBTITLE = KeywordField("qlikChartSubtitle", "qlikChartSubtitle")
 QlikChart.QLIK_CHART_FOOTNOTE = KeywordField("qlikChartFootnote", "qlikChartFootnote")
-QlikChart.QLIK_ORIENTATION = KeywordField("qlikOrientation", "qlikOrientation")
-QlikChart.QLIK_TYPE = KeywordField("qlikType", "qlikType")
+QlikChart.QLIK_CHART_ORIENTATION = KeywordField(
+    "qlikChartOrientation", "qlikChartOrientation"
+)
+QlikChart.QLIK_CHART_TYPE = KeywordField("qlikChartType", "qlikChartType")
 QlikChart.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikChart.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikChart.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")

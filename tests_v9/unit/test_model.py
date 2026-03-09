@@ -18,12 +18,17 @@ from re import escape
 
 import pytest
 
+import pyatlan_v9.model.assets as _assets_pkg
 from pyatlan.utils import validate_single_required_field
 from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model.assets.asset import Asset
 from pyatlan_v9.model.assets.readme import Readme
 from pyatlan_v9.model.assets.table import Table
 from pyatlan_v9.model.enums import AnnouncementType, CertificateStatus
+
+# Force all lazy-loaded asset classes to be imported so __subclasses__() is complete
+for _name in dir(_assets_pkg):
+    getattr(_assets_pkg, _name, None)
 
 SCHEMA_QUALIFIED_NAME = "default/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE"
 TABLE_NAME = "MKT_EXPENSES"

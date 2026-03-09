@@ -63,11 +63,11 @@ class SageMakerFeatureGroup(Asset):
     Instance of a SageMaker Feature Store Feature Group in Atlan. Represents a collection of related features that can be used for machine learning training and inference.
     """
 
-    SAGE_MAKER_STATUS: ClassVar[Any] = None
-    SAGE_MAKER_RECORD_ID_NAME: ClassVar[Any] = None
-    SAGE_MAKER_GLUE_DATABASE_NAME: ClassVar[Any] = None
-    SAGE_MAKER_GLUE_TABLE_NAME: ClassVar[Any] = None
-    SAGE_MAKER_FEATURE_COUNT: ClassVar[Any] = None
+    SAGE_MAKER_FEATURE_GROUP_STATUS: ClassVar[Any] = None
+    SAGE_MAKER_FEATURE_GROUP_RECORD_ID_NAME: ClassVar[Any] = None
+    SAGE_MAKER_FEATURE_GROUP_GLUE_DATABASE_NAME: ClassVar[Any] = None
+    SAGE_MAKER_FEATURE_GROUP_GLUE_TABLE_NAME: ClassVar[Any] = None
+    SAGE_MAKER_FEATURE_GROUP_FEATURE_COUNT: ClassVar[Any] = None
     SAGE_MAKER_S3_URI: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
@@ -116,19 +116,19 @@ class SageMakerFeatureGroup(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Feature Group (e.g., Created, Creating, Failed)."""
 
-    sage_maker_record_id_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_record_id_name: Union[str, None, UnsetType] = UNSET
     """Name of the feature that serves as the record identifier."""
 
-    sage_maker_glue_database_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_glue_database_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue database name associated with this Feature Group."""
 
-    sage_maker_glue_table_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_glue_table_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue table name associated with this Feature Group."""
 
-    sage_maker_feature_count: Union[int, None, UnsetType] = UNSET
+    sage_maker_feature_group_feature_count: Union[int, None, UnsetType] = UNSET
     """Number of features in this Feature Group."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -354,19 +354,19 @@ class SageMakerFeatureGroup(Asset):
 class SageMakerFeatureGroupAttributes(AssetAttributes):
     """SageMakerFeatureGroup-specific attributes for nested API format."""
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Feature Group (e.g., Created, Creating, Failed)."""
 
-    sage_maker_record_id_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_record_id_name: Union[str, None, UnsetType] = UNSET
     """Name of the feature that serves as the record identifier."""
 
-    sage_maker_glue_database_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_glue_database_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue database name associated with this Feature Group."""
 
-    sage_maker_glue_table_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_glue_table_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue table name associated with this Feature Group."""
 
-    sage_maker_feature_count: Union[int, None, UnsetType] = UNSET
+    sage_maker_feature_group_feature_count: Union[int, None, UnsetType] = UNSET
     """Number of features in this Feature Group."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -595,11 +595,19 @@ def _populate_sage_maker_feature_group_attrs(
 ) -> None:
     """Populate SageMakerFeatureGroup-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sage_maker_status = obj.sage_maker_status
-    attrs.sage_maker_record_id_name = obj.sage_maker_record_id_name
-    attrs.sage_maker_glue_database_name = obj.sage_maker_glue_database_name
-    attrs.sage_maker_glue_table_name = obj.sage_maker_glue_table_name
-    attrs.sage_maker_feature_count = obj.sage_maker_feature_count
+    attrs.sage_maker_feature_group_status = obj.sage_maker_feature_group_status
+    attrs.sage_maker_feature_group_record_id_name = (
+        obj.sage_maker_feature_group_record_id_name
+    )
+    attrs.sage_maker_feature_group_glue_database_name = (
+        obj.sage_maker_feature_group_glue_database_name
+    )
+    attrs.sage_maker_feature_group_glue_table_name = (
+        obj.sage_maker_feature_group_glue_table_name
+    )
+    attrs.sage_maker_feature_group_feature_count = (
+        obj.sage_maker_feature_group_feature_count
+    )
     attrs.sage_maker_s3_uri = obj.sage_maker_s3_uri
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
@@ -629,11 +637,19 @@ def _extract_sage_maker_feature_group_attrs(
 ) -> dict:
     """Extract all SageMakerFeatureGroup attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sage_maker_status"] = attrs.sage_maker_status
-    result["sage_maker_record_id_name"] = attrs.sage_maker_record_id_name
-    result["sage_maker_glue_database_name"] = attrs.sage_maker_glue_database_name
-    result["sage_maker_glue_table_name"] = attrs.sage_maker_glue_table_name
-    result["sage_maker_feature_count"] = attrs.sage_maker_feature_count
+    result["sage_maker_feature_group_status"] = attrs.sage_maker_feature_group_status
+    result["sage_maker_feature_group_record_id_name"] = (
+        attrs.sage_maker_feature_group_record_id_name
+    )
+    result["sage_maker_feature_group_glue_database_name"] = (
+        attrs.sage_maker_feature_group_glue_database_name
+    )
+    result["sage_maker_feature_group_glue_table_name"] = (
+        attrs.sage_maker_feature_group_glue_table_name
+    )
+    result["sage_maker_feature_group_feature_count"] = (
+        attrs.sage_maker_feature_group_feature_count
+    )
     result["sage_maker_s3_uri"] = attrs.sage_maker_s3_uri
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
@@ -698,6 +714,9 @@ def _sage_maker_feature_group_to_nested(
         is_incomplete=sage_maker_feature_group.is_incomplete,
         provenance_type=sage_maker_feature_group.provenance_type,
         home_id=sage_maker_feature_group.home_id,
+        depth=sage_maker_feature_group.depth,
+        immediate_upstream=sage_maker_feature_group.immediate_upstream,
+        immediate_downstream=sage_maker_feature_group.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -733,7 +752,6 @@ def _sage_maker_feature_group_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -742,6 +760,9 @@ def _sage_maker_feature_group_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sage_maker_feature_group_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -773,20 +794,20 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SageMakerFeatureGroup.SAGE_MAKER_STATUS = KeywordField(
-    "sageMakerStatus", "sageMakerStatus"
+SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_STATUS = KeywordField(
+    "sageMakerFeatureGroupStatus", "sageMakerFeatureGroupStatus"
 )
-SageMakerFeatureGroup.SAGE_MAKER_RECORD_ID_NAME = KeywordField(
-    "sageMakerRecordIdName", "sageMakerRecordIdName"
+SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_RECORD_ID_NAME = KeywordField(
+    "sageMakerFeatureGroupRecordIdName", "sageMakerFeatureGroupRecordIdName"
 )
-SageMakerFeatureGroup.SAGE_MAKER_GLUE_DATABASE_NAME = KeywordField(
-    "sageMakerGlueDatabaseName", "sageMakerGlueDatabaseName"
+SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_GLUE_DATABASE_NAME = KeywordField(
+    "sageMakerFeatureGroupGlueDatabaseName", "sageMakerFeatureGroupGlueDatabaseName"
 )
-SageMakerFeatureGroup.SAGE_MAKER_GLUE_TABLE_NAME = KeywordField(
-    "sageMakerGlueTableName", "sageMakerGlueTableName"
+SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_GLUE_TABLE_NAME = KeywordField(
+    "sageMakerFeatureGroupGlueTableName", "sageMakerFeatureGroupGlueTableName"
 )
-SageMakerFeatureGroup.SAGE_MAKER_FEATURE_COUNT = NumericField(
-    "sageMakerFeatureCount", "sageMakerFeatureCount"
+SageMakerFeatureGroup.SAGE_MAKER_FEATURE_GROUP_FEATURE_COUNT = NumericField(
+    "sageMakerFeatureGroupFeatureCount", "sageMakerFeatureGroupFeatureCount"
 )
 SageMakerFeatureGroup.SAGE_MAKER_S3_URI = KeywordField(
     "sageMakerS3Uri", "sageMakerS3Uri"

@@ -376,6 +376,9 @@ class TestAsyncReferenceableCustomMetadata:
         mock_async_custom_metadata_cache.is_attr_archived = AsyncMock(
             return_value=False
         )
+        mock_async_custom_metadata_cache.get_attr_id_for_name = AsyncMock(
+            return_value=ATTR_FIRST_NAME_ID
+        )
 
         # Create an asset
         asset = Asset()
@@ -387,11 +390,12 @@ class TestAsyncReferenceableCustomMetadata:
         )
         custom_metadata[ATTR_FIRST_NAME] = "John"
 
-        # Test set_custom_metadata_async
+        # Test set_custom_metadata_async - immediately updates business_attributes
         await asset.set_custom_metadata_async(client, custom_metadata)
 
-        assert asset._async_metadata_proxy is not None
-        assert asset._async_metadata_proxy.modified
+        assert asset.business_attributes is not None
+        assert CM_ID in asset.business_attributes
+        assert asset.business_attributes[CM_ID][ATTR_FIRST_NAME_ID] == "John"
 
     @pytest.mark.asyncio
     async def test_flush_custom_metadata_async(
@@ -429,43 +433,32 @@ class TestAsyncReferenceableCustomMetadata:
         assert asset.business_attributes[CM_ID][ATTR_FIRST_NAME_ID] == "John"
 
     @pytest.mark.asyncio
-    async def test_async_metadata_proxy_independence(
+    async def test_async_metadata_operations_are_stateless(
         self, mock_async_custom_metadata_cache, client: AsyncAtlanClient
     ):
-        """Test that async and sync metadata proxies are independent"""
+        """Test that async metadata operations work without cached proxy state."""
         # Configure the mock
         mock_async_custom_metadata_cache.get_id_for_name = AsyncMock(return_value=CM_ID)
+        mock_async_custom_metadata_cache.get_name_for_id = AsyncMock(
+            return_value=CM_NAME
+        )
         mock_async_custom_metadata_cache.get_attr_map_for_id = AsyncMock(
             return_value=CM_ATTRIBUTES
         )
         mock_async_custom_metadata_cache.is_attr_archived = AsyncMock(
             return_value=False
         )
+        mock_async_custom_metadata_cache.get_attr_name_for_id = AsyncMock(
+            return_value=ATTR_FIRST_NAME
+        )
 
-        # Create an asset
+        # Create an asset with existing business attributes
         asset = Asset()
-        asset.business_attributes = None
+        asset.business_attributes = {CM_ID: {ATTR_FIRST_NAME_ID: "Jane"}}
 
-        await asset.get_custom_metadata_async(client, CM_NAME)
-
-        assert asset._async_metadata_proxy is not None
-        assert asset._metadata_proxy is None
-
-        from pyatlan.client.atlan import AtlanClient
-
-        with patch.object(AtlanClient, "custom_metadata_cache") as sync_mock_cache:
-            sync_mock_cache.get_id_for_name.return_value = CM_ID
-            sync_mock_cache.map_attr_id_to_name = {CM_ID: CM_ATTRIBUTES}
-            sync_mock_cache.is_attr_archived.return_value = False
-
-            sync_client = AtlanClient(
-                base_url="https://test.atlan.com", api_key="test-key"
-            )
-            asset.get_custom_metadata(sync_client, CM_NAME)
-
-            assert asset._async_metadata_proxy is not None
-            assert asset._metadata_proxy is not None
-            assert asset._async_metadata_proxy != asset._metadata_proxy
+        # get_custom_metadata_async should read from current business_attributes
+        cm = await asset.get_custom_metadata_async(client, CM_NAME)
+        assert isinstance(cm, AsyncCustomMetadataDict)
 
 
 class TestAsyncAttributeDefRichText:

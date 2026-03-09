@@ -67,8 +67,8 @@ class QuickSightDashboard(Asset):
     Instance of a QuickSight dashboard in Atlan. These are reports in QuickSight, created from analyses.
     """
 
-    QUICK_SIGHT_PUBLISHED_VERSION_NUMBER: ClassVar[Any] = None
-    QUICK_SIGHT_LAST_PUBLISHED_TIME: ClassVar[Any] = None
+    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[Any] = None
+    QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
@@ -103,10 +103,10 @@ class QuickSightDashboard(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_published_version_number: Union[int, None, UnsetType] = UNSET
+    quick_sight_dashboard_published_version_number: Union[int, None, UnsetType] = UNSET
     """Version number of the published dashboard."""
 
-    quick_sight_last_published_time: Union[int, None, UnsetType] = UNSET
+    quick_sight_dashboard_last_published_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this dashboard was last published, in milliseconds."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -332,10 +332,10 @@ class QuickSightDashboard(Asset):
 class QuickSightDashboardAttributes(AssetAttributes):
     """QuickSightDashboard-specific attributes for nested API format."""
 
-    quick_sight_published_version_number: Union[int, None, UnsetType] = UNSET
+    quick_sight_dashboard_published_version_number: Union[int, None, UnsetType] = UNSET
     """Version number of the published dashboard."""
 
-    quick_sight_last_published_time: Union[int, None, UnsetType] = UNSET
+    quick_sight_dashboard_last_published_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this dashboard was last published, in milliseconds."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -513,10 +513,12 @@ def _populate_quick_sight_dashboard_attrs(
 ) -> None:
     """Populate QuickSightDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_published_version_number = (
-        obj.quick_sight_published_version_number
+    attrs.quick_sight_dashboard_published_version_number = (
+        obj.quick_sight_dashboard_published_version_number
     )
-    attrs.quick_sight_last_published_time = obj.quick_sight_last_published_time
+    attrs.quick_sight_dashboard_last_published_time = (
+        obj.quick_sight_dashboard_last_published_time
+    )
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
@@ -525,10 +527,12 @@ def _populate_quick_sight_dashboard_attrs(
 def _extract_quick_sight_dashboard_attrs(attrs: QuickSightDashboardAttributes) -> dict:
     """Extract all QuickSightDashboard attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_published_version_number"] = (
-        attrs.quick_sight_published_version_number
+    result["quick_sight_dashboard_published_version_number"] = (
+        attrs.quick_sight_dashboard_published_version_number
     )
-    result["quick_sight_last_published_time"] = attrs.quick_sight_last_published_time
+    result["quick_sight_dashboard_last_published_time"] = (
+        attrs.quick_sight_dashboard_last_published_time
+    )
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
@@ -572,6 +576,9 @@ def _quick_sight_dashboard_to_nested(
         is_incomplete=quick_sight_dashboard.is_incomplete,
         provenance_type=quick_sight_dashboard.provenance_type,
         home_id=quick_sight_dashboard.home_id,
+        depth=quick_sight_dashboard.depth,
+        immediate_upstream=quick_sight_dashboard.immediate_upstream,
+        immediate_downstream=quick_sight_dashboard.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -607,7 +614,6 @@ def _quick_sight_dashboard_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -616,6 +622,9 @@ def _quick_sight_dashboard_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_quick_sight_dashboard_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -647,11 +656,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightDashboard.QUICK_SIGHT_PUBLISHED_VERSION_NUMBER = NumericField(
-    "quickSightPublishedVersionNumber", "quickSightPublishedVersionNumber"
+QuickSightDashboard.QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER = NumericField(
+    "quickSightDashboardPublishedVersionNumber",
+    "quickSightDashboardPublishedVersionNumber",
 )
-QuickSightDashboard.QUICK_SIGHT_LAST_PUBLISHED_TIME = NumericField(
-    "quickSightLastPublishedTime", "quickSightLastPublishedTime"
+QuickSightDashboard.QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME = NumericField(
+    "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
 )
 QuickSightDashboard.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
 QuickSightDashboard.QUICK_SIGHT_SHEET_ID = KeywordField(

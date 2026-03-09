@@ -134,7 +134,7 @@ class RelatedLookerView(RelatedLooker):
     looker_view_file_path: Union[str, None, UnsetType] = UNSET
     """File path of this view within the project."""
 
-    looker_file_name: Union[str, None, UnsetType] = UNSET
+    looker_view_file_name: Union[str, None, UnsetType] = UNSET
     """File name of this view."""
 
     def __post_init__(self) -> None:

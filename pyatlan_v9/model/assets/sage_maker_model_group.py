@@ -64,7 +64,7 @@ class SageMakerModelGroup(Asset):
     Instance of a SageMaker Model Package Group in Atlan. Represents a collection of versioned models that can be organized and managed together.
     """
 
-    SAGE_MAKER_STATUS: ClassVar[Any] = None
+    SAGE_MAKER_MODEL_GROUP_STATUS: ClassVar[Any] = None
     SAGE_MAKER_S3_URI: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
@@ -118,7 +118,7 @@ class SageMakerModelGroup(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_group_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Model Package Group."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -361,7 +361,7 @@ class SageMakerModelGroup(Asset):
 class SageMakerModelGroupAttributes(AssetAttributes):
     """SageMakerModelGroup-specific attributes for nested API format."""
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_group_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Model Package Group."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -609,7 +609,7 @@ def _populate_sage_maker_model_group_attrs(
 ) -> None:
     """Populate SageMakerModelGroup-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sage_maker_status = obj.sage_maker_status
+    attrs.sage_maker_model_group_status = obj.sage_maker_model_group_status
     attrs.sage_maker_s3_uri = obj.sage_maker_s3_uri
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
@@ -640,7 +640,7 @@ def _populate_sage_maker_model_group_attrs(
 def _extract_sage_maker_model_group_attrs(attrs: SageMakerModelGroupAttributes) -> dict:
     """Extract all SageMakerModelGroup attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sage_maker_status"] = attrs.sage_maker_status
+    result["sage_maker_model_group_status"] = attrs.sage_maker_model_group_status
     result["sage_maker_s3_uri"] = attrs.sage_maker_s3_uri
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
@@ -708,6 +708,9 @@ def _sage_maker_model_group_to_nested(
         is_incomplete=sage_maker_model_group.is_incomplete,
         provenance_type=sage_maker_model_group.provenance_type,
         home_id=sage_maker_model_group.home_id,
+        depth=sage_maker_model_group.depth,
+        immediate_upstream=sage_maker_model_group.immediate_upstream,
+        immediate_downstream=sage_maker_model_group.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -743,7 +746,6 @@ def _sage_maker_model_group_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -752,6 +754,9 @@ def _sage_maker_model_group_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sage_maker_model_group_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -782,8 +787,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SageMakerModelGroup.SAGE_MAKER_STATUS = KeywordField(
-    "sageMakerStatus", "sageMakerStatus"
+SageMakerModelGroup.SAGE_MAKER_MODEL_GROUP_STATUS = KeywordField(
+    "sageMakerModelGroupStatus", "sageMakerModelGroupStatus"
 )
 SageMakerModelGroup.SAGE_MAKER_S3_URI = KeywordField("sageMakerS3Uri", "sageMakerS3Uri")
 SageMakerModelGroup.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(

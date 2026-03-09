@@ -100,7 +100,7 @@ class RelatedCognosDatasource(RelatedCognos):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CognosDatasource" so it serializes correctly
 
-    cognos_connection_string: Union[str, None, UnsetType] = UNSET
+    cognos_datasource_connection_string: Union[str, None, UnsetType] = UNSET
     """Connection string of a Cognos datasource."""
 
     def __post_init__(self) -> None:
@@ -148,10 +148,10 @@ class RelatedCognosFolder(RelatedCognos):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CognosFolder" so it serializes correctly
 
-    cognos_sub_folder_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_sub_folder_count: Union[int, None, UnsetType] = UNSET
     """Number of sub-folders in the folder."""
 
-    cognos_child_objects_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_child_objects_count: Union[int, None, UnsetType] = UNSET
     """Number of children in the folder (excluding subfolders)."""
 
     def __post_init__(self) -> None:
@@ -214,13 +214,13 @@ class RelatedCognosColumn(RelatedCognos):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "CognosColumn" so it serializes correctly
 
-    cognos_datatype: Union[str, None, UnsetType] = UNSET
+    cognos_column_datatype: Union[str, None, UnsetType] = UNSET
     """Data type of the CognosColumn."""
 
-    cognos_nullable: Union[str, None, UnsetType] = UNSET
+    cognos_column_nullable: Union[str, None, UnsetType] = UNSET
     """Whether the CognosColumn is nullable."""
 
-    cognos_regular_aggregate: Union[str, None, UnsetType] = UNSET
+    cognos_column_regular_aggregate: Union[str, None, UnsetType] = UNSET
     """How data should be summarized when aggregated across different dimensions or groupings."""
 
     def __post_init__(self) -> None:

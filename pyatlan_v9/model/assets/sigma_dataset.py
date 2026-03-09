@@ -62,7 +62,7 @@ class SigmaDataset(Asset):
     Instance of a Sigma dataset in Atlan.
     """
 
-    SIGMA_COLUMN_COUNT: ClassVar[Any] = None
+    SIGMA_DATASET_COLUMN_COUNT: ClassVar[Any] = None
     SIGMA_WORKBOOK_QUALIFIED_NAME: ClassVar[Any] = None
     SIGMA_WORKBOOK_NAME: ClassVar[Any] = None
     SIGMA_PAGE_QUALIFIED_NAME: ClassVar[Any] = None
@@ -99,7 +99,7 @@ class SigmaDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sigma_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_dataset_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this dataset."""
 
     sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -275,7 +275,7 @@ class SigmaDataset(Asset):
 class SigmaDatasetAttributes(AssetAttributes):
     """SigmaDataset-specific attributes for nested API format."""
 
-    sigma_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_dataset_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this dataset."""
 
     sigma_workbook_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -456,7 +456,7 @@ def _populate_sigma_dataset_attrs(
 ) -> None:
     """Populate SigmaDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sigma_column_count = obj.sigma_column_count
+    attrs.sigma_dataset_column_count = obj.sigma_dataset_column_count
     attrs.sigma_workbook_qualified_name = obj.sigma_workbook_qualified_name
     attrs.sigma_workbook_name = obj.sigma_workbook_name
     attrs.sigma_page_qualified_name = obj.sigma_page_qualified_name
@@ -468,7 +468,7 @@ def _populate_sigma_dataset_attrs(
 def _extract_sigma_dataset_attrs(attrs: SigmaDatasetAttributes) -> dict:
     """Extract all SigmaDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sigma_column_count"] = attrs.sigma_column_count
+    result["sigma_dataset_column_count"] = attrs.sigma_dataset_column_count
     result["sigma_workbook_qualified_name"] = attrs.sigma_workbook_qualified_name
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
     result["sigma_page_qualified_name"] = attrs.sigma_page_qualified_name
@@ -513,6 +513,9 @@ def _sigma_dataset_to_nested(sigma_dataset: SigmaDataset) -> SigmaDatasetNested:
         is_incomplete=sigma_dataset.is_incomplete,
         provenance_type=sigma_dataset.provenance_type,
         home_id=sigma_dataset.home_id,
+        depth=sigma_dataset.depth,
+        immediate_upstream=sigma_dataset.immediate_upstream,
+        immediate_downstream=sigma_dataset.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -546,7 +549,6 @@ def _sigma_dataset_from_nested(nested: SigmaDatasetNested) -> SigmaDataset:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -555,6 +557,9 @@ def _sigma_dataset_from_nested(nested: SigmaDatasetNested) -> SigmaDataset:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sigma_dataset_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -582,7 +587,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SigmaDataset.SIGMA_COLUMN_COUNT = NumericField("sigmaColumnCount", "sigmaColumnCount")
+SigmaDataset.SIGMA_DATASET_COLUMN_COUNT = NumericField(
+    "sigmaDatasetColumnCount", "sigmaDatasetColumnCount"
+)
 SigmaDataset.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField(
     "sigmaWorkbookQualifiedName",
     "sigmaWorkbookQualifiedName",

@@ -36,7 +36,9 @@ def categorize_relationships(
     append_kwargs: dict[str, Any] = {}
     remove_kwargs: dict[str, Any] = {}
 
-    for field_name in rel_fields:
+    # Deduplicate field names (preserving order) to prevent duplicate processing
+    # when inherited fields appear in both parent and child _REL_FIELDS lists
+    for field_name in dict.fromkeys(rel_fields):
         value = getattr(entity, field_name, UNSET)
         if value is UNSET or value is None:
             continue
@@ -103,10 +105,12 @@ def merge_relationships(
     result: dict[str, Any] = {}
 
     # Merge in order of priority: replace, then append, then remove
+    # Deduplicate field names to prevent duplicate processing
+    deduped_fields = dict.fromkeys(rel_fields)
     for source in [replace_rels, append_rels, remove_rels]:
         if source is UNSET or source is None:
             continue
-        for field_name in rel_fields:
+        for field_name in deduped_fields:
             value = getattr(source, field_name, UNSET)
             if value is not UNSET and field_name not in result:
                 result[field_name] = value

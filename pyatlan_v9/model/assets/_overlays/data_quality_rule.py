@@ -340,6 +340,9 @@
             or DataQualityRuleThresholdCompareOperator.LESS_THAN_EQUAL
         )
 
+        # Deferred import to avoid circular dependency
+        from .data_quality_rule_template import DataQualityRuleTemplate
+
         rule = cls(
             name="",
             dq_rule_config_arguments=DataQualityRuleConfigArguments(
@@ -426,6 +429,9 @@
                     "dqRuleTemplateConfigThresholdUnit",
                     "default",
                 )
+
+        # Deferred import to avoid circular dependency
+        from .data_quality_rule_template import DataQualityRuleTemplate
 
         rule = cls(
             name="",

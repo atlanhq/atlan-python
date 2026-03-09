@@ -67,7 +67,7 @@ class QuickSightAnalysis(Asset):
     Instance of a QuickSight analysis in Atlan. In QuickSight, you analyze and visualize your data in analyses, which can be published as a dashboard to share with others.
     """
 
-    QUICK_SIGHT_STATUS: ClassVar[Any] = None
+    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[Any] = None
@@ -105,7 +105,7 @@ class QuickSightAnalysis(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_status: Union[str, None, UnsetType] = UNSET
+    quick_sight_analysis_status: Union[str, None, UnsetType] = UNSET
     """Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc."""
 
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
@@ -333,7 +333,7 @@ class QuickSightAnalysis(Asset):
 class QuickSightAnalysisAttributes(AssetAttributes):
     """QuickSightAnalysis-specific attributes for nested API format."""
 
-    quick_sight_status: Union[str, None, UnsetType] = UNSET
+    quick_sight_analysis_status: Union[str, None, UnsetType] = UNSET
     """Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc."""
 
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
@@ -522,7 +522,7 @@ def _populate_quick_sight_analysis_attrs(
 ) -> None:
     """Populate QuickSightAnalysis-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_status = obj.quick_sight_status
+    attrs.quick_sight_analysis_status = obj.quick_sight_analysis_status
     attrs.quick_sight_analysis_calculated_fields = (
         obj.quick_sight_analysis_calculated_fields
     )
@@ -538,7 +538,7 @@ def _populate_quick_sight_analysis_attrs(
 def _extract_quick_sight_analysis_attrs(attrs: QuickSightAnalysisAttributes) -> dict:
     """Extract all QuickSightAnalysis attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_status"] = attrs.quick_sight_status
+    result["quick_sight_analysis_status"] = attrs.quick_sight_analysis_status
     result["quick_sight_analysis_calculated_fields"] = (
         attrs.quick_sight_analysis_calculated_fields
     )
@@ -591,6 +591,9 @@ def _quick_sight_analysis_to_nested(
         is_incomplete=quick_sight_analysis.is_incomplete,
         provenance_type=quick_sight_analysis.provenance_type,
         home_id=quick_sight_analysis.home_id,
+        depth=quick_sight_analysis.depth,
+        immediate_upstream=quick_sight_analysis.immediate_upstream,
+        immediate_downstream=quick_sight_analysis.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -626,7 +629,6 @@ def _quick_sight_analysis_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -635,6 +637,9 @@ def _quick_sight_analysis_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_quick_sight_analysis_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -665,8 +670,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightAnalysis.QUICK_SIGHT_STATUS = KeywordField(
-    "quickSightStatus", "quickSightStatus"
+QuickSightAnalysis.QUICK_SIGHT_ANALYSIS_STATUS = KeywordField(
+    "quickSightAnalysisStatus", "quickSightAnalysisStatus"
 )
 QuickSightAnalysis.QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS = KeywordField(
     "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"

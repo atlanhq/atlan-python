@@ -73,7 +73,7 @@ class DatabricksAIModelContext(Asset):
     Instance of an ai model in databricks.
     """
 
-    DATABRICKS_METASTORE_ID: ClassVar[Any] = None
+    DATABRICKS_AI_MODEL_CONTEXT_METASTORE_ID: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -142,7 +142,9 @@ class DatabricksAIModelContext(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    databricks_metastore_id: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_context_metastore_id: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelContextMetastoreId")
+    )
     """The id of the model, common across versions."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -448,7 +450,9 @@ class DatabricksAIModelContext(Asset):
 class DatabricksAIModelContextAttributes(AssetAttributes):
     """DatabricksAIModelContext-specific attributes for nested API format."""
 
-    databricks_metastore_id: Union[str, None, UnsetType] = UNSET
+    databricks_ai_model_context_metastore_id: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="databricksAIModelContextMetastoreId")
+    )
     """The id of the model, common across versions."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -759,7 +763,9 @@ def _populate_databricks_ai_model_context_attrs(
 ) -> None:
     """Populate DatabricksAIModelContext-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_metastore_id = obj.databricks_metastore_id
+    attrs.databricks_ai_model_context_metastore_id = (
+        obj.databricks_ai_model_context_metastore_id
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -799,7 +805,9 @@ def _extract_databricks_ai_model_context_attrs(
 ) -> dict:
     """Extract all DatabricksAIModelContext attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_metastore_id"] = attrs.databricks_metastore_id
+    result["databricks_ai_model_context_metastore_id"] = (
+        attrs.databricks_ai_model_context_metastore_id
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -876,6 +884,9 @@ def _databricks_ai_model_context_to_nested(
         is_incomplete=databricks_ai_model_context.is_incomplete,
         provenance_type=databricks_ai_model_context.provenance_type,
         home_id=databricks_ai_model_context.home_id,
+        depth=databricks_ai_model_context.depth,
+        immediate_upstream=databricks_ai_model_context.immediate_upstream,
+        immediate_downstream=databricks_ai_model_context.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -911,7 +922,6 @@ def _databricks_ai_model_context_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -920,6 +930,9 @@ def _databricks_ai_model_context_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_databricks_ai_model_context_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -953,8 +966,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksAIModelContext.DATABRICKS_METASTORE_ID = KeywordField(
-    "databricksMetastoreId", "databricksMetastoreId"
+DatabricksAIModelContext.DATABRICKS_AI_MODEL_CONTEXT_METASTORE_ID = KeywordField(
+    "databricksAIModelContextMetastoreId", "databricksAIModelContextMetastoreId"
 )
 DatabricksAIModelContext.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksAIModelContext.QUERY_USER_COUNT = NumericField(

@@ -63,7 +63,7 @@ class SigmaDataElementField(Asset):
     Instance of a Sigma data element field in Atlan.
     """
 
-    SIGMA_IS_HIDDEN: ClassVar[Any] = None
+    SIGMA_DATA_ELEMENT_FIELD_IS_HIDDEN: ClassVar[Any] = None
     SIGMA_DATA_ELEMENT_FIELD_FORMULA: ClassVar[Any] = None
     SIGMA_WORKBOOK_QUALIFIED_NAME: ClassVar[Any] = None
     SIGMA_WORKBOOK_NAME: ClassVar[Any] = None
@@ -101,7 +101,7 @@ class SigmaDataElementField(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sigma_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sigma_data_element_field_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this field is hidden (true) or not (false)."""
 
     sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
@@ -288,7 +288,7 @@ class SigmaDataElementField(Asset):
 class SigmaDataElementFieldAttributes(AssetAttributes):
     """SigmaDataElementField-specific attributes for nested API format."""
 
-    sigma_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sigma_data_element_field_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this field is hidden (true) or not (false)."""
 
     sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
@@ -470,7 +470,7 @@ def _populate_sigma_data_element_field_attrs(
 ) -> None:
     """Populate SigmaDataElementField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sigma_is_hidden = obj.sigma_is_hidden
+    attrs.sigma_data_element_field_is_hidden = obj.sigma_data_element_field_is_hidden
     attrs.sigma_data_element_field_formula = obj.sigma_data_element_field_formula
     attrs.sigma_workbook_qualified_name = obj.sigma_workbook_qualified_name
     attrs.sigma_workbook_name = obj.sigma_workbook_name
@@ -485,7 +485,9 @@ def _extract_sigma_data_element_field_attrs(
 ) -> dict:
     """Extract all SigmaDataElementField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sigma_is_hidden"] = attrs.sigma_is_hidden
+    result["sigma_data_element_field_is_hidden"] = (
+        attrs.sigma_data_element_field_is_hidden
+    )
     result["sigma_data_element_field_formula"] = attrs.sigma_data_element_field_formula
     result["sigma_workbook_qualified_name"] = attrs.sigma_workbook_qualified_name
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
@@ -535,6 +537,9 @@ def _sigma_data_element_field_to_nested(
         is_incomplete=sigma_data_element_field.is_incomplete,
         provenance_type=sigma_data_element_field.provenance_type,
         home_id=sigma_data_element_field.home_id,
+        depth=sigma_data_element_field.depth,
+        immediate_upstream=sigma_data_element_field.immediate_upstream,
+        immediate_downstream=sigma_data_element_field.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -570,7 +575,6 @@ def _sigma_data_element_field_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -579,6 +583,9 @@ def _sigma_data_element_field_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sigma_data_element_field_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -610,7 +617,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SigmaDataElementField.SIGMA_IS_HIDDEN = BooleanField("sigmaIsHidden", "sigmaIsHidden")
+SigmaDataElementField.SIGMA_DATA_ELEMENT_FIELD_IS_HIDDEN = BooleanField(
+    "sigmaDataElementFieldIsHidden", "sigmaDataElementFieldIsHidden"
+)
 SigmaDataElementField.SIGMA_DATA_ELEMENT_FIELD_FORMULA = KeywordField(
     "sigmaDataElementFieldFormula", "sigmaDataElementFieldFormula"
 )

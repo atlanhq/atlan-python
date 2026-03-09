@@ -67,10 +67,10 @@ class AtlanAppTool(Asset):
     Instance of a tool defined in an Atlan application.
     """
 
-    ATLAN_APP_INPUT_SCHEMA: ClassVar[Any] = None
-    ATLAN_APP_OUTPUT_SCHEMA: ClassVar[Any] = None
-    ATLAN_APP_TASK_QUEUE: ClassVar[Any] = None
-    ATLAN_APP_CATEGORY: ClassVar[Any] = None
+    ATLAN_APP_TOOL_INPUT_SCHEMA: ClassVar[Any] = None
+    ATLAN_APP_TOOL_OUTPUT_SCHEMA: ClassVar[Any] = None
+    ATLAN_APP_TOOL_TASK_QUEUE: ClassVar[Any] = None
+    ATLAN_APP_TOOL_CATEGORY: ClassVar[Any] = None
     ATLAN_APP_QUALIFIED_NAME: ClassVar[Any] = None
     ATLAN_APP_NAME: ClassVar[Any] = None
     ATLAN_APP_METADATA: ClassVar[Any] = None
@@ -107,16 +107,16 @@ class AtlanAppTool(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    atlan_app_input_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_tool_input_schema: Union[str, None, UnsetType] = UNSET
     """Input schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_output_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_tool_output_schema: Union[str, None, UnsetType] = UNSET
     """Output schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_task_queue: Union[str, None, UnsetType] = UNSET
+    atlan_app_tool_task_queue: Union[str, None, UnsetType] = UNSET
     """Name of the Temporal task queue for the Atlan application tool."""
 
-    atlan_app_category: Union[str, None, UnsetType] = UNSET
+    atlan_app_tool_category: Union[str, None, UnsetType] = UNSET
     """Category of the tool."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -296,16 +296,16 @@ class AtlanAppTool(Asset):
 class AtlanAppToolAttributes(AssetAttributes):
     """AtlanAppTool-specific attributes for nested API format."""
 
-    atlan_app_input_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_tool_input_schema: Union[str, None, UnsetType] = UNSET
     """Input schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_output_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_tool_output_schema: Union[str, None, UnsetType] = UNSET
     """Output schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_task_queue: Union[str, None, UnsetType] = UNSET
+    atlan_app_tool_task_queue: Union[str, None, UnsetType] = UNSET
     """Name of the Temporal task queue for the Atlan application tool."""
 
-    atlan_app_category: Union[str, None, UnsetType] = UNSET
+    atlan_app_tool_category: Union[str, None, UnsetType] = UNSET
     """Category of the tool."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -486,10 +486,10 @@ def _populate_atlan_app_tool_attrs(
 ) -> None:
     """Populate AtlanAppTool-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.atlan_app_input_schema = obj.atlan_app_input_schema
-    attrs.atlan_app_output_schema = obj.atlan_app_output_schema
-    attrs.atlan_app_task_queue = obj.atlan_app_task_queue
-    attrs.atlan_app_category = obj.atlan_app_category
+    attrs.atlan_app_tool_input_schema = obj.atlan_app_tool_input_schema
+    attrs.atlan_app_tool_output_schema = obj.atlan_app_tool_output_schema
+    attrs.atlan_app_tool_task_queue = obj.atlan_app_tool_task_queue
+    attrs.atlan_app_tool_category = obj.atlan_app_tool_category
     attrs.atlan_app_qualified_name = obj.atlan_app_qualified_name
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
@@ -499,10 +499,10 @@ def _populate_atlan_app_tool_attrs(
 def _extract_atlan_app_tool_attrs(attrs: AtlanAppToolAttributes) -> dict:
     """Extract all AtlanAppTool attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["atlan_app_input_schema"] = attrs.atlan_app_input_schema
-    result["atlan_app_output_schema"] = attrs.atlan_app_output_schema
-    result["atlan_app_task_queue"] = attrs.atlan_app_task_queue
-    result["atlan_app_category"] = attrs.atlan_app_category
+    result["atlan_app_tool_input_schema"] = attrs.atlan_app_tool_input_schema
+    result["atlan_app_tool_output_schema"] = attrs.atlan_app_tool_output_schema
+    result["atlan_app_tool_task_queue"] = attrs.atlan_app_tool_task_queue
+    result["atlan_app_tool_category"] = attrs.atlan_app_tool_category
     result["atlan_app_qualified_name"] = attrs.atlan_app_qualified_name
     result["atlan_app_name"] = attrs.atlan_app_name
     result["atlan_app_metadata"] = attrs.atlan_app_metadata
@@ -543,6 +543,9 @@ def _atlan_app_tool_to_nested(atlan_app_tool: AtlanAppTool) -> AtlanAppToolNeste
         is_incomplete=atlan_app_tool.is_incomplete,
         provenance_type=atlan_app_tool.provenance_type,
         home_id=atlan_app_tool.home_id,
+        depth=atlan_app_tool.depth,
+        immediate_upstream=atlan_app_tool.immediate_upstream,
+        immediate_downstream=atlan_app_tool.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -576,7 +579,6 @@ def _atlan_app_tool_from_nested(nested: AtlanAppToolNested) -> AtlanAppTool:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -585,6 +587,9 @@ def _atlan_app_tool_from_nested(nested: AtlanAppToolNested) -> AtlanAppTool:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_atlan_app_tool_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -613,16 +618,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-AtlanAppTool.ATLAN_APP_INPUT_SCHEMA = TextField(
-    "atlanAppInputSchema", "atlanAppInputSchema"
+AtlanAppTool.ATLAN_APP_TOOL_INPUT_SCHEMA = TextField(
+    "atlanAppToolInputSchema", "atlanAppToolInputSchema"
 )
-AtlanAppTool.ATLAN_APP_OUTPUT_SCHEMA = TextField(
-    "atlanAppOutputSchema", "atlanAppOutputSchema"
+AtlanAppTool.ATLAN_APP_TOOL_OUTPUT_SCHEMA = TextField(
+    "atlanAppToolOutputSchema", "atlanAppToolOutputSchema"
 )
-AtlanAppTool.ATLAN_APP_TASK_QUEUE = KeywordField(
-    "atlanAppTaskQueue", "atlanAppTaskQueue"
+AtlanAppTool.ATLAN_APP_TOOL_TASK_QUEUE = KeywordField(
+    "atlanAppToolTaskQueue", "atlanAppToolTaskQueue"
 )
-AtlanAppTool.ATLAN_APP_CATEGORY = KeywordField("atlanAppCategory", "atlanAppCategory")
+AtlanAppTool.ATLAN_APP_TOOL_CATEGORY = KeywordField(
+    "atlanAppToolCategory", "atlanAppToolCategory"
+)
 AtlanAppTool.ATLAN_APP_QUALIFIED_NAME = KeywordField(
     "atlanAppQualifiedName", "atlanAppQualifiedName"
 )
