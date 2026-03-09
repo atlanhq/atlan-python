@@ -67,9 +67,9 @@ class SisenseWidget(Asset):
     Instance of a Sisense widget in Atlan.
     """
 
-    SISENSE_COLUMN_COUNT: ClassVar[Any] = None
-    SISENSE_SUB_TYPE: ClassVar[Any] = None
-    SISENSE_SIZE: ClassVar[Any] = None
+    SISENSE_WIDGET_COLUMN_COUNT: ClassVar[Any] = None
+    SISENSE_WIDGET_SUB_TYPE: ClassVar[Any] = None
+    SISENSE_WIDGET_SIZE: ClassVar[Any] = None
     SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[Any] = None
     SISENSE_WIDGET_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -104,13 +104,13 @@ class SisenseWidget(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sisense_column_count: Union[int, None, UnsetType] = UNSET
+    sisense_widget_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns used in this widget."""
 
-    sisense_sub_type: Union[str, None, UnsetType] = UNSET
+    sisense_widget_sub_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this widget."""
 
-    sisense_size: Union[str, None, UnsetType] = UNSET
+    sisense_widget_size: Union[str, None, UnsetType] = UNSET
     """Size of this widget."""
 
     sisense_widget_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -288,13 +288,13 @@ class SisenseWidget(Asset):
 class SisenseWidgetAttributes(AssetAttributes):
     """SisenseWidget-specific attributes for nested API format."""
 
-    sisense_column_count: Union[int, None, UnsetType] = UNSET
+    sisense_widget_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns used in this widget."""
 
-    sisense_sub_type: Union[str, None, UnsetType] = UNSET
+    sisense_widget_sub_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this widget."""
 
-    sisense_size: Union[str, None, UnsetType] = UNSET
+    sisense_widget_size: Union[str, None, UnsetType] = UNSET
     """Size of this widget."""
 
     sisense_widget_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -471,9 +471,9 @@ def _populate_sisense_widget_attrs(
 ) -> None:
     """Populate SisenseWidget-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sisense_column_count = obj.sisense_column_count
-    attrs.sisense_sub_type = obj.sisense_sub_type
-    attrs.sisense_size = obj.sisense_size
+    attrs.sisense_widget_column_count = obj.sisense_widget_column_count
+    attrs.sisense_widget_sub_type = obj.sisense_widget_sub_type
+    attrs.sisense_widget_size = obj.sisense_widget_size
     attrs.sisense_widget_dashboard_qualified_name = (
         obj.sisense_widget_dashboard_qualified_name
     )
@@ -485,9 +485,9 @@ def _populate_sisense_widget_attrs(
 def _extract_sisense_widget_attrs(attrs: SisenseWidgetAttributes) -> dict:
     """Extract all SisenseWidget attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sisense_column_count"] = attrs.sisense_column_count
-    result["sisense_sub_type"] = attrs.sisense_sub_type
-    result["sisense_size"] = attrs.sisense_size
+    result["sisense_widget_column_count"] = attrs.sisense_widget_column_count
+    result["sisense_widget_sub_type"] = attrs.sisense_widget_sub_type
+    result["sisense_widget_size"] = attrs.sisense_widget_size
     result["sisense_widget_dashboard_qualified_name"] = (
         attrs.sisense_widget_dashboard_qualified_name
     )
@@ -530,6 +530,9 @@ def _sisense_widget_to_nested(sisense_widget: SisenseWidget) -> SisenseWidgetNes
         is_incomplete=sisense_widget.is_incomplete,
         provenance_type=sisense_widget.provenance_type,
         home_id=sisense_widget.home_id,
+        depth=sisense_widget.depth,
+        immediate_upstream=sisense_widget.immediate_upstream,
+        immediate_downstream=sisense_widget.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -563,7 +566,6 @@ def _sisense_widget_from_nested(nested: SisenseWidgetNested) -> SisenseWidget:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -572,6 +574,9 @@ def _sisense_widget_from_nested(nested: SisenseWidgetNested) -> SisenseWidget:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sisense_widget_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -601,11 +606,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SisenseWidget.SISENSE_COLUMN_COUNT = NumericField(
-    "sisenseColumnCount", "sisenseColumnCount"
+SisenseWidget.SISENSE_WIDGET_COLUMN_COUNT = NumericField(
+    "sisenseWidgetColumnCount", "sisenseWidgetColumnCount"
 )
-SisenseWidget.SISENSE_SUB_TYPE = KeywordField("sisenseSubType", "sisenseSubType")
-SisenseWidget.SISENSE_SIZE = KeywordField("sisenseSize", "sisenseSize")
+SisenseWidget.SISENSE_WIDGET_SUB_TYPE = KeywordField(
+    "sisenseWidgetSubType", "sisenseWidgetSubType"
+)
+SisenseWidget.SISENSE_WIDGET_SIZE = KeywordField(
+    "sisenseWidgetSize", "sisenseWidgetSize"
+)
 SisenseWidget.SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
     "sisenseWidgetDashboardQualifiedName",
     "sisenseWidgetDashboardQualifiedName",

@@ -62,12 +62,12 @@ class SisenseDatamodel(Asset):
     Instance of a Sisense datamodel in Atlan. These group tables together that you can use to build dashboards.
     """
 
-    SISENSE_TABLE_COUNT: ClassVar[Any] = None
+    SISENSE_DATAMODEL_TABLE_COUNT: ClassVar[Any] = None
     SISENSE_DATAMODEL_SERVER: ClassVar[Any] = None
-    SISENSE_REVISION: ClassVar[Any] = None
-    SISENSE_LAST_BUILD_TIME: ClassVar[Any] = None
-    SISENSE_LAST_SUCCESSFUL_BUILD_TIME: ClassVar[Any] = None
-    SISENSE_LAST_PUBLISH_TIME: ClassVar[Any] = None
+    SISENSE_DATAMODEL_REVISION: ClassVar[Any] = None
+    SISENSE_DATAMODEL_LAST_BUILD_TIME: ClassVar[Any] = None
+    SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME: ClassVar[Any] = None
+    SISENSE_DATAMODEL_LAST_PUBLISH_TIME: ClassVar[Any] = None
     SISENSE_DATAMODEL_TYPE: ClassVar[Any] = None
     SISENSE_DATAMODEL_RELATION_TYPE: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -101,22 +101,22 @@ class SisenseDatamodel(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sisense_table_count: Union[int, None, UnsetType] = UNSET
+    sisense_datamodel_table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this datamodel."""
 
     sisense_datamodel_server: Union[str, None, UnsetType] = UNSET
     """Hostname of the server on which this datamodel was created."""
 
-    sisense_revision: Union[str, None, UnsetType] = UNSET
+    sisense_datamodel_revision: Union[str, None, UnsetType] = UNSET
     """Revision of this datamodel."""
 
-    sisense_last_build_time: Union[int, None, UnsetType] = UNSET
+    sisense_datamodel_last_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built, in milliseconds."""
 
-    sisense_last_successful_build_time: Union[int, None, UnsetType] = UNSET
+    sisense_datamodel_last_successful_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built successfully, in milliseconds."""
 
-    sisense_last_publish_time: Union[int, None, UnsetType] = UNSET
+    sisense_datamodel_last_publish_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last published, in milliseconds."""
 
     sisense_datamodel_type: Union[str, None, UnsetType] = UNSET
@@ -285,22 +285,22 @@ class SisenseDatamodel(Asset):
 class SisenseDatamodelAttributes(AssetAttributes):
     """SisenseDatamodel-specific attributes for nested API format."""
 
-    sisense_table_count: Union[int, None, UnsetType] = UNSET
+    sisense_datamodel_table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this datamodel."""
 
     sisense_datamodel_server: Union[str, None, UnsetType] = UNSET
     """Hostname of the server on which this datamodel was created."""
 
-    sisense_revision: Union[str, None, UnsetType] = UNSET
+    sisense_datamodel_revision: Union[str, None, UnsetType] = UNSET
     """Revision of this datamodel."""
 
-    sisense_last_build_time: Union[int, None, UnsetType] = UNSET
+    sisense_datamodel_last_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built, in milliseconds."""
 
-    sisense_last_successful_build_time: Union[int, None, UnsetType] = UNSET
+    sisense_datamodel_last_successful_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built successfully, in milliseconds."""
 
-    sisense_last_publish_time: Union[int, None, UnsetType] = UNSET
+    sisense_datamodel_last_publish_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last published, in milliseconds."""
 
     sisense_datamodel_type: Union[str, None, UnsetType] = UNSET
@@ -473,12 +473,14 @@ def _populate_sisense_datamodel_attrs(
 ) -> None:
     """Populate SisenseDatamodel-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sisense_table_count = obj.sisense_table_count
+    attrs.sisense_datamodel_table_count = obj.sisense_datamodel_table_count
     attrs.sisense_datamodel_server = obj.sisense_datamodel_server
-    attrs.sisense_revision = obj.sisense_revision
-    attrs.sisense_last_build_time = obj.sisense_last_build_time
-    attrs.sisense_last_successful_build_time = obj.sisense_last_successful_build_time
-    attrs.sisense_last_publish_time = obj.sisense_last_publish_time
+    attrs.sisense_datamodel_revision = obj.sisense_datamodel_revision
+    attrs.sisense_datamodel_last_build_time = obj.sisense_datamodel_last_build_time
+    attrs.sisense_datamodel_last_successful_build_time = (
+        obj.sisense_datamodel_last_successful_build_time
+    )
+    attrs.sisense_datamodel_last_publish_time = obj.sisense_datamodel_last_publish_time
     attrs.sisense_datamodel_type = obj.sisense_datamodel_type
     attrs.sisense_datamodel_relation_type = obj.sisense_datamodel_relation_type
 
@@ -486,14 +488,18 @@ def _populate_sisense_datamodel_attrs(
 def _extract_sisense_datamodel_attrs(attrs: SisenseDatamodelAttributes) -> dict:
     """Extract all SisenseDatamodel attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sisense_table_count"] = attrs.sisense_table_count
+    result["sisense_datamodel_table_count"] = attrs.sisense_datamodel_table_count
     result["sisense_datamodel_server"] = attrs.sisense_datamodel_server
-    result["sisense_revision"] = attrs.sisense_revision
-    result["sisense_last_build_time"] = attrs.sisense_last_build_time
-    result["sisense_last_successful_build_time"] = (
-        attrs.sisense_last_successful_build_time
+    result["sisense_datamodel_revision"] = attrs.sisense_datamodel_revision
+    result["sisense_datamodel_last_build_time"] = (
+        attrs.sisense_datamodel_last_build_time
     )
-    result["sisense_last_publish_time"] = attrs.sisense_last_publish_time
+    result["sisense_datamodel_last_successful_build_time"] = (
+        attrs.sisense_datamodel_last_successful_build_time
+    )
+    result["sisense_datamodel_last_publish_time"] = (
+        attrs.sisense_datamodel_last_publish_time
+    )
     result["sisense_datamodel_type"] = attrs.sisense_datamodel_type
     result["sisense_datamodel_relation_type"] = attrs.sisense_datamodel_relation_type
     return result
@@ -536,6 +542,9 @@ def _sisense_datamodel_to_nested(
         is_incomplete=sisense_datamodel.is_incomplete,
         provenance_type=sisense_datamodel.provenance_type,
         home_id=sisense_datamodel.home_id,
+        depth=sisense_datamodel.depth,
+        immediate_upstream=sisense_datamodel.immediate_upstream,
+        immediate_downstream=sisense_datamodel.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -569,7 +578,6 @@ def _sisense_datamodel_from_nested(nested: SisenseDatamodelNested) -> SisenseDat
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -578,6 +586,9 @@ def _sisense_datamodel_from_nested(nested: SisenseDatamodelNested) -> SisenseDat
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sisense_datamodel_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -606,21 +617,23 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SisenseDatamodel.SISENSE_TABLE_COUNT = NumericField(
-    "sisenseTableCount", "sisenseTableCount"
+SisenseDatamodel.SISENSE_DATAMODEL_TABLE_COUNT = NumericField(
+    "sisenseDatamodelTableCount", "sisenseDatamodelTableCount"
 )
 SisenseDatamodel.SISENSE_DATAMODEL_SERVER = KeywordField(
     "sisenseDatamodelServer", "sisenseDatamodelServer"
 )
-SisenseDatamodel.SISENSE_REVISION = KeywordField("sisenseRevision", "sisenseRevision")
-SisenseDatamodel.SISENSE_LAST_BUILD_TIME = NumericField(
-    "sisenseLastBuildTime", "sisenseLastBuildTime"
+SisenseDatamodel.SISENSE_DATAMODEL_REVISION = KeywordField(
+    "sisenseDatamodelRevision", "sisenseDatamodelRevision"
 )
-SisenseDatamodel.SISENSE_LAST_SUCCESSFUL_BUILD_TIME = NumericField(
-    "sisenseLastSuccessfulBuildTime", "sisenseLastSuccessfulBuildTime"
+SisenseDatamodel.SISENSE_DATAMODEL_LAST_BUILD_TIME = NumericField(
+    "sisenseDatamodelLastBuildTime", "sisenseDatamodelLastBuildTime"
 )
-SisenseDatamodel.SISENSE_LAST_PUBLISH_TIME = NumericField(
-    "sisenseLastPublishTime", "sisenseLastPublishTime"
+SisenseDatamodel.SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME = NumericField(
+    "sisenseDatamodelLastSuccessfulBuildTime", "sisenseDatamodelLastSuccessfulBuildTime"
+)
+SisenseDatamodel.SISENSE_DATAMODEL_LAST_PUBLISH_TIME = NumericField(
+    "sisenseDatamodelLastPublishTime", "sisenseDatamodelLastPublishTime"
 )
 SisenseDatamodel.SISENSE_DATAMODEL_TYPE = KeywordField(
     "sisenseDatamodelType", "sisenseDatamodelType"

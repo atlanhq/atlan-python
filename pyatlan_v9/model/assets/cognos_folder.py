@@ -72,8 +72,8 @@ class CognosFolder(Asset):
     Instance of a Cognos folder in Atlan.
     """
 
-    COGNOS_SUB_FOLDER_COUNT: ClassVar[Any] = None
-    COGNOS_CHILD_OBJECTS_COUNT: ClassVar[Any] = None
+    COGNOS_FOLDER_SUB_FOLDER_COUNT: ClassVar[Any] = None
+    COGNOS_FOLDER_CHILD_OBJECTS_COUNT: ClassVar[Any] = None
     COGNOS_ID: ClassVar[Any] = None
     COGNOS_PATH: ClassVar[Any] = None
     COGNOS_PARENT_NAME: ClassVar[Any] = None
@@ -121,10 +121,10 @@ class CognosFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    cognos_sub_folder_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_sub_folder_count: Union[int, None, UnsetType] = UNSET
     """Number of sub-folders in the folder."""
 
-    cognos_child_objects_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_child_objects_count: Union[int, None, UnsetType] = UNSET
     """Number of children in the folder (excluding subfolders)."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -337,10 +337,10 @@ class CognosFolder(Asset):
 class CognosFolderAttributes(AssetAttributes):
     """CognosFolder-specific attributes for nested API format."""
 
-    cognos_sub_folder_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_sub_folder_count: Union[int, None, UnsetType] = UNSET
     """Number of sub-folders in the folder."""
 
-    cognos_child_objects_count: Union[int, None, UnsetType] = UNSET
+    cognos_folder_child_objects_count: Union[int, None, UnsetType] = UNSET
     """Number of children in the folder (excluding subfolders)."""
 
     cognos_id: Union[str, None, UnsetType] = UNSET
@@ -560,8 +560,8 @@ def _populate_cognos_folder_attrs(
 ) -> None:
     """Populate CognosFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.cognos_sub_folder_count = obj.cognos_sub_folder_count
-    attrs.cognos_child_objects_count = obj.cognos_child_objects_count
+    attrs.cognos_folder_sub_folder_count = obj.cognos_folder_sub_folder_count
+    attrs.cognos_folder_child_objects_count = obj.cognos_folder_child_objects_count
     attrs.cognos_id = obj.cognos_id
     attrs.cognos_path = obj.cognos_path
     attrs.cognos_parent_name = obj.cognos_parent_name
@@ -576,8 +576,10 @@ def _populate_cognos_folder_attrs(
 def _extract_cognos_folder_attrs(attrs: CognosFolderAttributes) -> dict:
     """Extract all CognosFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cognos_sub_folder_count"] = attrs.cognos_sub_folder_count
-    result["cognos_child_objects_count"] = attrs.cognos_child_objects_count
+    result["cognos_folder_sub_folder_count"] = attrs.cognos_folder_sub_folder_count
+    result["cognos_folder_child_objects_count"] = (
+        attrs.cognos_folder_child_objects_count
+    )
     result["cognos_id"] = attrs.cognos_id
     result["cognos_path"] = attrs.cognos_path
     result["cognos_parent_name"] = attrs.cognos_parent_name
@@ -623,6 +625,9 @@ def _cognos_folder_to_nested(cognos_folder: CognosFolder) -> CognosFolderNested:
         is_incomplete=cognos_folder.is_incomplete,
         provenance_type=cognos_folder.provenance_type,
         home_id=cognos_folder.home_id,
+        depth=cognos_folder.depth,
+        immediate_upstream=cognos_folder.immediate_upstream,
+        immediate_downstream=cognos_folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -656,7 +661,6 @@ def _cognos_folder_from_nested(nested: CognosFolderNested) -> CognosFolder:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -665,6 +669,9 @@ def _cognos_folder_from_nested(nested: CognosFolderNested) -> CognosFolder:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cognos_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -693,11 +700,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CognosFolder.COGNOS_SUB_FOLDER_COUNT = NumericField(
-    "cognosSubFolderCount", "cognosSubFolderCount"
+CognosFolder.COGNOS_FOLDER_SUB_FOLDER_COUNT = NumericField(
+    "cognosFolderSubFolderCount", "cognosFolderSubFolderCount"
 )
-CognosFolder.COGNOS_CHILD_OBJECTS_COUNT = NumericField(
-    "cognosChildObjectsCount", "cognosChildObjectsCount"
+CognosFolder.COGNOS_FOLDER_CHILD_OBJECTS_COUNT = NumericField(
+    "cognosFolderChildObjectsCount", "cognosFolderChildObjectsCount"
 )
 CognosFolder.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosFolder.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")

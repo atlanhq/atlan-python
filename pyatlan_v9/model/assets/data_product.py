@@ -81,7 +81,7 @@ class DataProduct(Asset):
     DATA_PRODUCT_ASSETS_DSL: ClassVar[Any] = None
     DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER: ClassVar[Any] = None
     DATA_PRODUCT_SCORE_VALUE: ClassVar[Any] = None
-    DATA_MESH_SCORE_UPDATED_AT: ClassVar[Any] = None
+    DATA_PRODUCT_SCORE_UPDATED_AT: ClassVar[Any] = None
     DAAP_VISIBILITY_USERS: ClassVar[Any] = None
     DAAP_VISIBILITY_GROUPS: ClassVar[Any] = None
     DAAP_OUTPUT_PORT_GUIDS: ClassVar[Any] = None
@@ -157,7 +157,7 @@ class DataProduct(Asset):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
@@ -464,7 +464,7 @@ class DataProductAttributes(AssetAttributes):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
@@ -667,7 +667,7 @@ def _populate_data_product_attrs(
     attrs.data_product_assets_dsl = obj.data_product_assets_dsl
     attrs.data_product_assets_playbook_filter = obj.data_product_assets_playbook_filter
     attrs.data_product_score_value = obj.data_product_score_value
-    attrs.data_mesh_score_updated_at = obj.data_mesh_score_updated_at
+    attrs.data_product_score_updated_at = obj.data_product_score_updated_at
     attrs.daap_visibility_users = obj.daap_visibility_users
     attrs.daap_visibility_groups = obj.daap_visibility_groups
     attrs.daap_output_port_guids = obj.daap_output_port_guids
@@ -693,7 +693,7 @@ def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
         attrs.data_product_assets_playbook_filter
     )
     result["data_product_score_value"] = attrs.data_product_score_value
-    result["data_mesh_score_updated_at"] = attrs.data_mesh_score_updated_at
+    result["data_product_score_updated_at"] = attrs.data_product_score_updated_at
     result["daap_visibility_users"] = attrs.daap_visibility_users
     result["daap_visibility_groups"] = attrs.daap_visibility_groups
     result["daap_output_port_guids"] = attrs.daap_output_port_guids
@@ -737,6 +737,9 @@ def _data_product_to_nested(data_product: DataProduct) -> DataProductNested:
         is_incomplete=data_product.is_incomplete,
         provenance_type=data_product.provenance_type,
         home_id=data_product.home_id,
+        depth=data_product.depth,
+        immediate_upstream=data_product.immediate_upstream,
+        immediate_downstream=data_product.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -768,7 +771,6 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -777,6 +779,9 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_data_product_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -827,8 +832,8 @@ DataProduct.DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = KeywordField(
 DataProduct.DATA_PRODUCT_SCORE_VALUE = NumericField(
     "dataProductScoreValue", "dataProductScoreValue"
 )
-DataProduct.DATA_MESH_SCORE_UPDATED_AT = NumericField(
-    "dataMeshScoreUpdatedAt", "dataMeshScoreUpdatedAt"
+DataProduct.DATA_PRODUCT_SCORE_UPDATED_AT = NumericField(
+    "dataProductScoreUpdatedAt", "dataProductScoreUpdatedAt"
 )
 DataProduct.DAAP_VISIBILITY_USERS = KeywordField(
     "daapVisibilityUsers", "daapVisibilityUsers"

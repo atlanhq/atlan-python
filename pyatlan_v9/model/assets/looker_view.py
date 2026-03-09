@@ -65,7 +65,7 @@ class LookerView(Asset):
 
     PROJECT_NAME: ClassVar[Any] = None
     LOOKER_VIEW_FILE_PATH: ClassVar[Any] = None
-    LOOKER_FILE_NAME: ClassVar[Any] = None
+    LOOKER_VIEW_FILE_NAME: ClassVar[Any] = None
     LOOKER_SLUG: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -104,7 +104,7 @@ class LookerView(Asset):
     looker_view_file_path: Union[str, None, UnsetType] = UNSET
     """File path of this view within the project."""
 
-    looker_file_name: Union[str, None, UnsetType] = UNSET
+    looker_view_file_name: Union[str, None, UnsetType] = UNSET
     """File name of this view."""
 
     looker_slug: Union[str, None, UnsetType] = UNSET
@@ -278,7 +278,7 @@ class LookerViewAttributes(AssetAttributes):
     looker_view_file_path: Union[str, None, UnsetType] = UNSET
     """File path of this view within the project."""
 
-    looker_file_name: Union[str, None, UnsetType] = UNSET
+    looker_view_file_name: Union[str, None, UnsetType] = UNSET
     """File name of this view."""
 
     looker_slug: Union[str, None, UnsetType] = UNSET
@@ -444,7 +444,7 @@ def _populate_looker_view_attrs(attrs: LookerViewAttributes, obj: LookerView) ->
     _populate_asset_attrs(attrs, obj)
     attrs.project_name = obj.project_name
     attrs.looker_view_file_path = obj.looker_view_file_path
-    attrs.looker_file_name = obj.looker_file_name
+    attrs.looker_view_file_name = obj.looker_view_file_name
     attrs.looker_slug = obj.looker_slug
 
 
@@ -453,7 +453,7 @@ def _extract_looker_view_attrs(attrs: LookerViewAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["project_name"] = attrs.project_name
     result["looker_view_file_path"] = attrs.looker_view_file_path
-    result["looker_file_name"] = attrs.looker_file_name
+    result["looker_view_file_name"] = attrs.looker_view_file_name
     result["looker_slug"] = attrs.looker_slug
     return result
 
@@ -491,6 +491,9 @@ def _looker_view_to_nested(looker_view: LookerView) -> LookerViewNested:
         is_incomplete=looker_view.is_incomplete,
         provenance_type=looker_view.provenance_type,
         home_id=looker_view.home_id,
+        depth=looker_view.depth,
+        immediate_upstream=looker_view.immediate_upstream,
+        immediate_downstream=looker_view.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -522,7 +525,6 @@ def _looker_view_from_nested(nested: LookerViewNested) -> LookerView:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -531,6 +533,9 @@ def _looker_view_from_nested(nested: LookerViewNested) -> LookerView:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_looker_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -557,7 +562,9 @@ LookerView.PROJECT_NAME = KeywordField("projectName", "projectName")
 LookerView.LOOKER_VIEW_FILE_PATH = KeywordField(
     "lookerViewFilePath", "lookerViewFilePath"
 )
-LookerView.LOOKER_FILE_NAME = KeywordField("lookerFileName", "lookerFileName")
+LookerView.LOOKER_VIEW_FILE_NAME = KeywordField(
+    "lookerViewFileName", "lookerViewFileName"
+)
 LookerView.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
 LookerView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 LookerView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

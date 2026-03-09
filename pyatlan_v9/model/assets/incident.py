@@ -55,7 +55,7 @@ class Incident(Referenceable):
     Base class for Incident assets.
     """
 
-    ASSET_SEVERITY: ClassVar[Any] = None
+    INCIDENT_SEVERITY: ClassVar[Any] = None
     NAME: ClassVar[Any] = None
     DISPLAY_NAME: ClassVar[Any] = None
     DESCRIPTION: ClassVar[Any] = None
@@ -263,7 +263,7 @@ class Incident(Referenceable):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    asset_severity: Union[str, None, UnsetType] = UNSET
+    incident_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 
     name: Union[str, None, UnsetType] = UNSET
@@ -1048,7 +1048,7 @@ class Incident(Referenceable):
 class IncidentAttributes(ReferenceableAttributes):
     """Incident-specific attributes for nested API format."""
 
-    asset_severity: Union[str, None, UnsetType] = UNSET
+    incident_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 
     name: Union[str, None, UnsetType] = UNSET
@@ -1823,7 +1823,7 @@ _INCIDENT_REL_FIELDS: List[str] = [
 def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
     """Populate Incident-specific attributes on the attrs struct."""
     _populate_referenceable_attrs(attrs, obj)
-    attrs.asset_severity = obj.asset_severity
+    attrs.incident_severity = obj.incident_severity
     attrs.name = obj.name
     attrs.display_name = obj.display_name
     attrs.description = obj.description
@@ -2069,7 +2069,7 @@ def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
 def _extract_incident_attrs(attrs: IncidentAttributes) -> dict:
     """Extract all Incident attributes from the attrs struct into a flat dict."""
     result = _extract_referenceable_attrs(attrs)
-    result["asset_severity"] = attrs.asset_severity
+    result["incident_severity"] = attrs.incident_severity
     result["name"] = attrs.name
     result["display_name"] = attrs.display_name
     result["description"] = attrs.description
@@ -2380,6 +2380,9 @@ def _incident_to_nested(incident: Incident) -> IncidentNested:
         is_incomplete=incident.is_incomplete,
         provenance_type=incident.provenance_type,
         home_id=incident.home_id,
+        depth=incident.depth,
+        immediate_upstream=incident.immediate_upstream,
+        immediate_downstream=incident.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -2411,7 +2414,6 @@ def _incident_from_nested(nested: IncidentNested) -> Incident:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -2420,6 +2422,9 @@ def _incident_from_nested(nested: IncidentNested) -> Incident:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_incident_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -2450,7 +2455,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-Incident.ASSET_SEVERITY = KeywordField("assetSeverity", "assetSeverity")
+Incident.INCIDENT_SEVERITY = KeywordField("incidentSeverity", "incidentSeverity")
 Incident.NAME = KeywordField("name", "name")
 Incident.DISPLAY_NAME = KeywordField("displayName", "displayName")
 Incident.DESCRIPTION = KeywordField("description", "description")

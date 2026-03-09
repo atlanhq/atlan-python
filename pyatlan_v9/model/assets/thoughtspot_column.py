@@ -70,8 +70,8 @@ class ThoughtspotColumn(Asset):
     THOUGHTSPOT_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
     THOUGHTSPOT_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
     THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME: ClassVar[Any] = None
-    THOUGHTSPOT_DATA_TYPE: ClassVar[Any] = None
-    THOUGHTSPOT_TYPE: ClassVar[Any] = None
+    THOUGHTSPOT_COLUMN_DATA_TYPE: ClassVar[Any] = None
+    THOUGHTSPOT_COLUMN_TYPE: ClassVar[Any] = None
     THOUGHTSPOT_CHART_TYPE: ClassVar[Any] = None
     THOUGHTSPOT_QUESTION_TEXT: ClassVar[Any] = None
     THOUGHTSPOT_JOIN_COUNT: ClassVar[Any] = None
@@ -117,10 +117,10 @@ class ThoughtspotColumn(Asset):
     thoughtspot_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the worksheet in which this column exists."""
 
-    thoughtspot_data_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_column_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the technical format of data stored in a column such as integer, float, string, date, boolean etc."""
 
-    thoughtspot_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_column_type: Union[str, None, UnsetType] = UNSET
     """Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute."""
 
     thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
@@ -311,10 +311,10 @@ class ThoughtspotColumnAttributes(AssetAttributes):
     thoughtspot_worksheet_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the worksheet in which this column exists."""
 
-    thoughtspot_data_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_column_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the technical format of data stored in a column such as integer, float, string, date, boolean etc."""
 
-    thoughtspot_type: Union[str, None, UnsetType] = UNSET
+    thoughtspot_column_type: Union[str, None, UnsetType] = UNSET
     """Defines the analytical role of a column in data analysis categorizing it as a dimension, measure, or attribute."""
 
     thoughtspot_chart_type: Union[str, None, UnsetType] = UNSET
@@ -500,8 +500,8 @@ def _populate_thoughtspot_column_attrs(
     attrs.thoughtspot_worksheet_qualified_name = (
         obj.thoughtspot_worksheet_qualified_name
     )
-    attrs.thoughtspot_data_type = obj.thoughtspot_data_type
-    attrs.thoughtspot_type = obj.thoughtspot_type
+    attrs.thoughtspot_column_data_type = obj.thoughtspot_column_data_type
+    attrs.thoughtspot_column_type = obj.thoughtspot_column_type
     attrs.thoughtspot_chart_type = obj.thoughtspot_chart_type
     attrs.thoughtspot_question_text = obj.thoughtspot_question_text
     attrs.thoughtspot_join_count = obj.thoughtspot_join_count
@@ -516,8 +516,8 @@ def _extract_thoughtspot_column_attrs(attrs: ThoughtspotColumnAttributes) -> dic
     result["thoughtspot_worksheet_qualified_name"] = (
         attrs.thoughtspot_worksheet_qualified_name
     )
-    result["thoughtspot_data_type"] = attrs.thoughtspot_data_type
-    result["thoughtspot_type"] = attrs.thoughtspot_type
+    result["thoughtspot_column_data_type"] = attrs.thoughtspot_column_data_type
+    result["thoughtspot_column_type"] = attrs.thoughtspot_column_type
     result["thoughtspot_chart_type"] = attrs.thoughtspot_chart_type
     result["thoughtspot_question_text"] = attrs.thoughtspot_question_text
     result["thoughtspot_join_count"] = attrs.thoughtspot_join_count
@@ -562,6 +562,9 @@ def _thoughtspot_column_to_nested(
         is_incomplete=thoughtspot_column.is_incomplete,
         provenance_type=thoughtspot_column.provenance_type,
         home_id=thoughtspot_column.home_id,
+        depth=thoughtspot_column.depth,
+        immediate_upstream=thoughtspot_column.immediate_upstream,
+        immediate_downstream=thoughtspot_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -597,7 +600,6 @@ def _thoughtspot_column_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -606,6 +608,9 @@ def _thoughtspot_column_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_thoughtspot_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -652,10 +657,12 @@ ThoughtspotColumn.THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME = KeywordTextField(
     "thoughtspotWorksheetQualifiedName",
     "thoughtspotWorksheetQualifiedName.text",
 )
-ThoughtspotColumn.THOUGHTSPOT_DATA_TYPE = KeywordField(
-    "thoughtspotDataType", "thoughtspotDataType"
+ThoughtspotColumn.THOUGHTSPOT_COLUMN_DATA_TYPE = KeywordField(
+    "thoughtspotColumnDataType", "thoughtspotColumnDataType"
 )
-ThoughtspotColumn.THOUGHTSPOT_TYPE = KeywordField("thoughtspotType", "thoughtspotType")
+ThoughtspotColumn.THOUGHTSPOT_COLUMN_TYPE = KeywordField(
+    "thoughtspotColumnType", "thoughtspotColumnType"
+)
 ThoughtspotColumn.THOUGHTSPOT_CHART_TYPE = KeywordField(
     "thoughtspotChartType", "thoughtspotChartType"
 )

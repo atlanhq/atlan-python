@@ -76,7 +76,7 @@ class DynamoDBSecondaryIndex(Asset):
     Represents a DynamoDB secondary index asset in Atlan.
     """
 
-    DYNAMO_DB_PROJECTION_TYPE: ClassVar[Any] = None
+    DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE: ClassVar[Any] = None
     DYNAMO_DB_STATUS: ClassVar[Any] = None
     DYNAMO_DB_PARTITION_KEY: ClassVar[Any] = None
     DYNAMO_DB_SORT_KEY: ClassVar[Any] = None
@@ -170,8 +170,8 @@ class DynamoDBSecondaryIndex(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    dynamo_db_projection_type: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBProjectionType"
+    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
     )
     """Specifies attributes that are projected from the DynamoDB table into the index."""
 
@@ -537,8 +537,8 @@ class DynamoDBSecondaryIndex(Asset):
 class DynamoDBSecondaryIndexAttributes(AssetAttributes):
     """DynamoDBSecondaryIndex-specific attributes for nested API format."""
 
-    dynamo_db_projection_type: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBProjectionType"
+    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
     )
     """Specifies attributes that are projected from the DynamoDB table into the index."""
 
@@ -919,7 +919,9 @@ def _populate_dynamo_db_secondary_index_attrs(
 ) -> None:
     """Populate DynamoDBSecondaryIndex-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.dynamo_db_projection_type = obj.dynamo_db_projection_type
+    attrs.dynamo_db_secondary_index_projection_type = (
+        obj.dynamo_db_secondary_index_projection_type
+    )
     attrs.dynamo_db_status = obj.dynamo_db_status
     attrs.dynamo_db_partition_key = obj.dynamo_db_partition_key
     attrs.dynamo_db_sort_key = obj.dynamo_db_sort_key
@@ -978,7 +980,9 @@ def _extract_dynamo_db_secondary_index_attrs(
 ) -> dict:
     """Extract all DynamoDBSecondaryIndex attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dynamo_db_projection_type"] = attrs.dynamo_db_projection_type
+    result["dynamo_db_secondary_index_projection_type"] = (
+        attrs.dynamo_db_secondary_index_projection_type
+    )
     result["dynamo_db_status"] = attrs.dynamo_db_status
     result["dynamo_db_partition_key"] = attrs.dynamo_db_partition_key
     result["dynamo_db_sort_key"] = attrs.dynamo_db_sort_key
@@ -1072,6 +1076,9 @@ def _dynamo_db_secondary_index_to_nested(
         is_incomplete=dynamo_db_secondary_index.is_incomplete,
         provenance_type=dynamo_db_secondary_index.provenance_type,
         home_id=dynamo_db_secondary_index.home_id,
+        depth=dynamo_db_secondary_index.depth,
+        immediate_upstream=dynamo_db_secondary_index.immediate_upstream,
+        immediate_downstream=dynamo_db_secondary_index.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1107,7 +1114,6 @@ def _dynamo_db_secondary_index_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1116,6 +1122,9 @@ def _dynamo_db_secondary_index_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_dynamo_db_secondary_index_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1147,8 +1156,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DynamoDBSecondaryIndex.DYNAMO_DB_PROJECTION_TYPE = KeywordField(
-    "dynamoDBProjectionType", "dynamoDBProjectionType"
+DynamoDBSecondaryIndex.DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE = KeywordField(
+    "dynamoDBSecondaryIndexProjectionType", "dynamoDBSecondaryIndexProjectionType"
 )
 DynamoDBSecondaryIndex.DYNAMO_DB_STATUS = KeywordField(
     "dynamoDBStatus", "dynamoDBStatus"

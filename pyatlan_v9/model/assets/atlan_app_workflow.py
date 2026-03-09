@@ -68,13 +68,13 @@ class AtlanAppWorkflow(Asset):
     Instance of a workflow in an Atlan application.
     """
 
-    ATLAN_APP_VERSION: ClassVar[Any] = None
-    ATLAN_APP_SLUG: ClassVar[Any] = None
-    ATLAN_APP_DAG: ClassVar[Any] = None
-    ATLAN_APP_STATUS: ClassVar[Any] = None
-    ATLAN_APP_ERROR_HANDLING: ClassVar[Any] = None
-    ATLAN_APP_OWNERSHIP: ClassVar[Any] = None
-    ATLAN_APP_TRIGGERS: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_VERSION: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_SLUG: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_DAG: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_STATUS: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_ERROR_HANDLING: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_OWNERSHIP: ClassVar[Any] = None
+    ATLAN_APP_WORKFLOW_TRIGGERS: ClassVar[Any] = None
     ATLAN_APP_QUALIFIED_NAME: ClassVar[Any] = None
     ATLAN_APP_NAME: ClassVar[Any] = None
     ATLAN_APP_METADATA: ClassVar[Any] = None
@@ -112,25 +112,25 @@ class AtlanAppWorkflow(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    atlan_app_version: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the workflow."""
 
-    atlan_app_slug: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_slug: Union[str, None, UnsetType] = UNSET
     """Slug of the workflow."""
 
-    atlan_app_dag: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_dag: Union[str, None, UnsetType] = UNSET
     """Map of all activity steps for the workflow (escaped JSON string)."""
 
-    atlan_app_status: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_status: Union[str, None, UnsetType] = UNSET
     """Status of the workflow."""
 
-    atlan_app_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
+    atlan_app_workflow_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Error handling strategy for the workflow."""
 
-    atlan_app_ownership: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_ownership: Union[str, None, UnsetType] = UNSET
     """Ownership type of the workflow, indicating whether it is managed by Atlan or by a user."""
 
-    atlan_app_triggers: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_triggers: Union[str, None, UnsetType] = UNSET
     """Triggers configured for this workflow (escaped JSON string)."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -315,25 +315,25 @@ class AtlanAppWorkflow(Asset):
 class AtlanAppWorkflowAttributes(AssetAttributes):
     """AtlanAppWorkflow-specific attributes for nested API format."""
 
-    atlan_app_version: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the workflow."""
 
-    atlan_app_slug: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_slug: Union[str, None, UnsetType] = UNSET
     """Slug of the workflow."""
 
-    atlan_app_dag: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_dag: Union[str, None, UnsetType] = UNSET
     """Map of all activity steps for the workflow (escaped JSON string)."""
 
-    atlan_app_status: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_status: Union[str, None, UnsetType] = UNSET
     """Status of the workflow."""
 
-    atlan_app_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
+    atlan_app_workflow_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Error handling strategy for the workflow."""
 
-    atlan_app_ownership: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_ownership: Union[str, None, UnsetType] = UNSET
     """Ownership type of the workflow, indicating whether it is managed by Atlan or by a user."""
 
-    atlan_app_triggers: Union[str, None, UnsetType] = UNSET
+    atlan_app_workflow_triggers: Union[str, None, UnsetType] = UNSET
     """Triggers configured for this workflow (escaped JSON string)."""
 
     atlan_app_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -518,13 +518,13 @@ def _populate_atlan_app_workflow_attrs(
 ) -> None:
     """Populate AtlanAppWorkflow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.atlan_app_version = obj.atlan_app_version
-    attrs.atlan_app_slug = obj.atlan_app_slug
-    attrs.atlan_app_dag = obj.atlan_app_dag
-    attrs.atlan_app_status = obj.atlan_app_status
-    attrs.atlan_app_error_handling = obj.atlan_app_error_handling
-    attrs.atlan_app_ownership = obj.atlan_app_ownership
-    attrs.atlan_app_triggers = obj.atlan_app_triggers
+    attrs.atlan_app_workflow_version = obj.atlan_app_workflow_version
+    attrs.atlan_app_workflow_slug = obj.atlan_app_workflow_slug
+    attrs.atlan_app_workflow_dag = obj.atlan_app_workflow_dag
+    attrs.atlan_app_workflow_status = obj.atlan_app_workflow_status
+    attrs.atlan_app_workflow_error_handling = obj.atlan_app_workflow_error_handling
+    attrs.atlan_app_workflow_ownership = obj.atlan_app_workflow_ownership
+    attrs.atlan_app_workflow_triggers = obj.atlan_app_workflow_triggers
     attrs.atlan_app_qualified_name = obj.atlan_app_qualified_name
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
@@ -534,13 +534,15 @@ def _populate_atlan_app_workflow_attrs(
 def _extract_atlan_app_workflow_attrs(attrs: AtlanAppWorkflowAttributes) -> dict:
     """Extract all AtlanAppWorkflow attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["atlan_app_version"] = attrs.atlan_app_version
-    result["atlan_app_slug"] = attrs.atlan_app_slug
-    result["atlan_app_dag"] = attrs.atlan_app_dag
-    result["atlan_app_status"] = attrs.atlan_app_status
-    result["atlan_app_error_handling"] = attrs.atlan_app_error_handling
-    result["atlan_app_ownership"] = attrs.atlan_app_ownership
-    result["atlan_app_triggers"] = attrs.atlan_app_triggers
+    result["atlan_app_workflow_version"] = attrs.atlan_app_workflow_version
+    result["atlan_app_workflow_slug"] = attrs.atlan_app_workflow_slug
+    result["atlan_app_workflow_dag"] = attrs.atlan_app_workflow_dag
+    result["atlan_app_workflow_status"] = attrs.atlan_app_workflow_status
+    result["atlan_app_workflow_error_handling"] = (
+        attrs.atlan_app_workflow_error_handling
+    )
+    result["atlan_app_workflow_ownership"] = attrs.atlan_app_workflow_ownership
+    result["atlan_app_workflow_triggers"] = attrs.atlan_app_workflow_triggers
     result["atlan_app_qualified_name"] = attrs.atlan_app_qualified_name
     result["atlan_app_name"] = attrs.atlan_app_name
     result["atlan_app_metadata"] = attrs.atlan_app_metadata
@@ -585,6 +587,9 @@ def _atlan_app_workflow_to_nested(
         is_incomplete=atlan_app_workflow.is_incomplete,
         provenance_type=atlan_app_workflow.provenance_type,
         home_id=atlan_app_workflow.home_id,
+        depth=atlan_app_workflow.depth,
+        immediate_upstream=atlan_app_workflow.immediate_upstream,
+        immediate_downstream=atlan_app_workflow.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -618,7 +623,6 @@ def _atlan_app_workflow_from_nested(nested: AtlanAppWorkflowNested) -> AtlanAppW
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -627,6 +631,9 @@ def _atlan_app_workflow_from_nested(nested: AtlanAppWorkflowNested) -> AtlanAppW
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_atlan_app_workflow_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -657,17 +664,27 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-AtlanAppWorkflow.ATLAN_APP_VERSION = KeywordField("atlanAppVersion", "atlanAppVersion")
-AtlanAppWorkflow.ATLAN_APP_SLUG = KeywordField("atlanAppSlug", "atlanAppSlug")
-AtlanAppWorkflow.ATLAN_APP_DAG = TextField("atlanAppDag", "atlanAppDag")
-AtlanAppWorkflow.ATLAN_APP_STATUS = KeywordField("atlanAppStatus", "atlanAppStatus")
-AtlanAppWorkflow.ATLAN_APP_ERROR_HANDLING = KeywordField(
-    "atlanAppErrorHandling", "atlanAppErrorHandling"
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_VERSION = KeywordField(
+    "atlanAppWorkflowVersion", "atlanAppWorkflowVersion"
 )
-AtlanAppWorkflow.ATLAN_APP_OWNERSHIP = KeywordField(
-    "atlanAppOwnership", "atlanAppOwnership"
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_SLUG = KeywordField(
+    "atlanAppWorkflowSlug", "atlanAppWorkflowSlug"
 )
-AtlanAppWorkflow.ATLAN_APP_TRIGGERS = TextField("atlanAppTriggers", "atlanAppTriggers")
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_DAG = TextField(
+    "atlanAppWorkflowDag", "atlanAppWorkflowDag"
+)
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_STATUS = KeywordField(
+    "atlanAppWorkflowStatus", "atlanAppWorkflowStatus"
+)
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_ERROR_HANDLING = KeywordField(
+    "atlanAppWorkflowErrorHandling", "atlanAppWorkflowErrorHandling"
+)
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_OWNERSHIP = KeywordField(
+    "atlanAppWorkflowOwnership", "atlanAppWorkflowOwnership"
+)
+AtlanAppWorkflow.ATLAN_APP_WORKFLOW_TRIGGERS = TextField(
+    "atlanAppWorkflowTriggers", "atlanAppWorkflowTriggers"
+)
 AtlanAppWorkflow.ATLAN_APP_QUALIFIED_NAME = KeywordField(
     "atlanAppQualifiedName", "atlanAppQualifiedName"
 )

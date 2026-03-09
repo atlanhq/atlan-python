@@ -184,7 +184,6 @@ def _cognite3_d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DMode
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,

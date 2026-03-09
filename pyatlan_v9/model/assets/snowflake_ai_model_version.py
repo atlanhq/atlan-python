@@ -74,11 +74,11 @@ class SnowflakeAIModelVersion(Asset):
     Instance of an ai model version in snowflake.
     """
 
-    SNOWFLAKE_NAME: ClassVar[Any] = None
-    SNOWFLAKE_TYPE: ClassVar[Any] = None
-    SNOWFLAKE_ALIASES: ClassVar[Any] = None
-    SNOWFLAKE_METRICS: ClassVar[Any] = None
-    SNOWFLAKE_FUNCTIONS: ClassVar[Any] = None
+    SNOWFLAKE_AI_MODEL_VERSION_NAME: ClassVar[Any] = None
+    SNOWFLAKE_AI_MODEL_VERSION_TYPE: ClassVar[Any] = None
+    SNOWFLAKE_AI_MODEL_VERSION_ALIASES: ClassVar[Any] = None
+    SNOWFLAKE_AI_MODEL_VERSION_METRICS: ClassVar[Any] = None
+    SNOWFLAKE_AI_MODEL_VERSION_FUNCTIONS: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -142,19 +142,29 @@ class SnowflakeAIModelVersion(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    snowflake_name: Union[str, None, UnsetType] = UNSET
+    snowflake_ai_model_version_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="snowflakeAIModelVersionName"
+    )
     """Version part of the model name."""
 
-    snowflake_type: Union[str, None, UnsetType] = UNSET
+    snowflake_ai_model_version_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="snowflakeAIModelVersionType"
+    )
     """The type of the model version."""
 
-    snowflake_aliases: Union[List[str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_aliases: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionAliases")
+    )
     """The aliases for the model version."""
 
-    snowflake_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionMetrics")
+    )
     """Metrics for an individual experiment."""
 
-    snowflake_functions: Union[List[str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_functions: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionFunctions")
+    )
     """Functions used in the model version."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -441,19 +451,29 @@ class SnowflakeAIModelVersion(Asset):
 class SnowflakeAIModelVersionAttributes(AssetAttributes):
     """SnowflakeAIModelVersion-specific attributes for nested API format."""
 
-    snowflake_name: Union[str, None, UnsetType] = UNSET
+    snowflake_ai_model_version_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="snowflakeAIModelVersionName"
+    )
     """Version part of the model name."""
 
-    snowflake_type: Union[str, None, UnsetType] = UNSET
+    snowflake_ai_model_version_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="snowflakeAIModelVersionType"
+    )
     """The type of the model version."""
 
-    snowflake_aliases: Union[List[str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_aliases: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionAliases")
+    )
     """The aliases for the model version."""
 
-    snowflake_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionMetrics")
+    )
     """Metrics for an individual experiment."""
 
-    snowflake_functions: Union[List[str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_functions: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionFunctions")
+    )
     """Functions used in the model version."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -743,11 +763,13 @@ def _populate_snowflake_ai_model_version_attrs(
 ) -> None:
     """Populate SnowflakeAIModelVersion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.snowflake_name = obj.snowflake_name
-    attrs.snowflake_type = obj.snowflake_type
-    attrs.snowflake_aliases = obj.snowflake_aliases
-    attrs.snowflake_metrics = obj.snowflake_metrics
-    attrs.snowflake_functions = obj.snowflake_functions
+    attrs.snowflake_ai_model_version_name = obj.snowflake_ai_model_version_name
+    attrs.snowflake_ai_model_version_type = obj.snowflake_ai_model_version_type
+    attrs.snowflake_ai_model_version_aliases = obj.snowflake_ai_model_version_aliases
+    attrs.snowflake_ai_model_version_metrics = obj.snowflake_ai_model_version_metrics
+    attrs.snowflake_ai_model_version_functions = (
+        obj.snowflake_ai_model_version_functions
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -784,11 +806,17 @@ def _extract_snowflake_ai_model_version_attrs(
 ) -> dict:
     """Extract all SnowflakeAIModelVersion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["snowflake_name"] = attrs.snowflake_name
-    result["snowflake_type"] = attrs.snowflake_type
-    result["snowflake_aliases"] = attrs.snowflake_aliases
-    result["snowflake_metrics"] = attrs.snowflake_metrics
-    result["snowflake_functions"] = attrs.snowflake_functions
+    result["snowflake_ai_model_version_name"] = attrs.snowflake_ai_model_version_name
+    result["snowflake_ai_model_version_type"] = attrs.snowflake_ai_model_version_type
+    result["snowflake_ai_model_version_aliases"] = (
+        attrs.snowflake_ai_model_version_aliases
+    )
+    result["snowflake_ai_model_version_metrics"] = (
+        attrs.snowflake_ai_model_version_metrics
+    )
+    result["snowflake_ai_model_version_functions"] = (
+        attrs.snowflake_ai_model_version_functions
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -862,6 +890,9 @@ def _snowflake_ai_model_version_to_nested(
         is_incomplete=snowflake_ai_model_version.is_incomplete,
         provenance_type=snowflake_ai_model_version.provenance_type,
         home_id=snowflake_ai_model_version.home_id,
+        depth=snowflake_ai_model_version.depth,
+        immediate_upstream=snowflake_ai_model_version.immediate_upstream,
+        immediate_downstream=snowflake_ai_model_version.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -897,7 +928,6 @@ def _snowflake_ai_model_version_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -906,6 +936,9 @@ def _snowflake_ai_model_version_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_ai_model_version_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -939,16 +972,20 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SnowflakeAIModelVersion.SNOWFLAKE_NAME = KeywordField("snowflakeName", "snowflakeName")
-SnowflakeAIModelVersion.SNOWFLAKE_TYPE = KeywordField("snowflakeType", "snowflakeType")
-SnowflakeAIModelVersion.SNOWFLAKE_ALIASES = KeywordField(
-    "snowflakeAliases", "snowflakeAliases"
+SnowflakeAIModelVersion.SNOWFLAKE_AI_MODEL_VERSION_NAME = KeywordField(
+    "snowflakeAIModelVersionName", "snowflakeAIModelVersionName"
 )
-SnowflakeAIModelVersion.SNOWFLAKE_METRICS = KeywordField(
-    "snowflakeMetrics", "snowflakeMetrics"
+SnowflakeAIModelVersion.SNOWFLAKE_AI_MODEL_VERSION_TYPE = KeywordField(
+    "snowflakeAIModelVersionType", "snowflakeAIModelVersionType"
 )
-SnowflakeAIModelVersion.SNOWFLAKE_FUNCTIONS = KeywordField(
-    "snowflakeFunctions", "snowflakeFunctions"
+SnowflakeAIModelVersion.SNOWFLAKE_AI_MODEL_VERSION_ALIASES = KeywordField(
+    "snowflakeAIModelVersionAliases", "snowflakeAIModelVersionAliases"
+)
+SnowflakeAIModelVersion.SNOWFLAKE_AI_MODEL_VERSION_METRICS = KeywordField(
+    "snowflakeAIModelVersionMetrics", "snowflakeAIModelVersionMetrics"
+)
+SnowflakeAIModelVersion.SNOWFLAKE_AI_MODEL_VERSION_FUNCTIONS = KeywordField(
+    "snowflakeAIModelVersionFunctions", "snowflakeAIModelVersionFunctions"
 )
 SnowflakeAIModelVersion.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakeAIModelVersion.QUERY_USER_COUNT = NumericField(

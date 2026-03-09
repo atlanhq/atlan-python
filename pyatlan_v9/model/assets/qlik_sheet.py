@@ -64,7 +64,7 @@ class QlikSheet(Asset):
     Instance of a Qlik sheet in Atlan.
     """
 
-    QLIK_IS_APPROVED: ClassVar[Any] = None
+    QLIK_SHEET_IS_APPROVED: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -105,7 +105,7 @@ class QlikSheet(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    qlik_is_approved: Union[bool, None, UnsetType] = UNSET
+    qlik_sheet_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -299,7 +299,7 @@ class QlikSheet(Asset):
 class QlikSheetAttributes(AssetAttributes):
     """QlikSheet-specific attributes for nested API format."""
 
-    qlik_is_approved: Union[bool, None, UnsetType] = UNSET
+    qlik_sheet_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -488,7 +488,7 @@ _QLIK_SHEET_REL_FIELDS: List[str] = [
 def _populate_qlik_sheet_attrs(attrs: QlikSheetAttributes, obj: QlikSheet) -> None:
     """Populate QlikSheet-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.qlik_is_approved = obj.qlik_is_approved
+    attrs.qlik_sheet_is_approved = obj.qlik_sheet_is_approved
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -502,7 +502,7 @@ def _populate_qlik_sheet_attrs(attrs: QlikSheetAttributes, obj: QlikSheet) -> No
 def _extract_qlik_sheet_attrs(attrs: QlikSheetAttributes) -> dict:
     """Extract all QlikSheet attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["qlik_is_approved"] = attrs.qlik_is_approved
+    result["qlik_sheet_is_approved"] = attrs.qlik_sheet_is_approved
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -547,6 +547,9 @@ def _qlik_sheet_to_nested(qlik_sheet: QlikSheet) -> QlikSheetNested:
         is_incomplete=qlik_sheet.is_incomplete,
         provenance_type=qlik_sheet.provenance_type,
         home_id=qlik_sheet.home_id,
+        depth=qlik_sheet.depth,
+        immediate_upstream=qlik_sheet.immediate_upstream,
+        immediate_downstream=qlik_sheet.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -578,7 +581,6 @@ def _qlik_sheet_from_nested(nested: QlikSheetNested) -> QlikSheet:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -587,6 +589,9 @@ def _qlik_sheet_from_nested(nested: QlikSheetNested) -> QlikSheet:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_sheet_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -614,7 +619,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QlikSheet.QLIK_IS_APPROVED = BooleanField("qlikIsApproved", "qlikIsApproved")
+QlikSheet.QLIK_SHEET_IS_APPROVED = BooleanField(
+    "qlikSheetIsApproved", "qlikSheetIsApproved"
+)
 QlikSheet.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSheet.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSheet.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")

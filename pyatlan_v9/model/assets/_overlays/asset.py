@@ -122,6 +122,10 @@
         self.owner_users = None
         return self
 
+    def validate_required(self) -> None:
+        """Validate required fields before save (no-op in v9 msgspec models)."""
+        pass
+
     def flush_custom_metadata(self, client=None) -> None:
         """
         Flush (clear) all custom metadata on this asset.
@@ -130,6 +134,29 @@
             client: AtlanClient instance (for compatibility with legacy API)
         """
         self.business_attributes = {}
+
+    async def get_custom_metadata_async(self, client, name: str):
+        """Async: get custom metadata by name."""
+        from pyatlan_v9.model.aio.custom_metadata import AsyncCustomMetadataProxy
+
+        proxy = AsyncCustomMetadataProxy(
+            business_attributes=self.business_attributes, client=client
+        )
+        return await proxy.get_custom_metadata(name=name)
+
+    async def set_custom_metadata_async(self, client, custom_metadata) -> None:
+        """Async: set custom metadata and immediately update business_attributes."""
+        from pyatlan_v9.model.aio.custom_metadata import AsyncCustomMetadataProxy
+
+        proxy = AsyncCustomMetadataProxy(
+            business_attributes=self.business_attributes, client=client
+        )
+        await proxy.set_custom_metadata(custom_metadata=custom_metadata)
+        self.business_attributes = await proxy.business_attributes()
+
+    async def flush_custom_metadata_async(self, client=None) -> None:
+        """Flush custom metadata to business_attributes (no-op since set writes immediately)."""
+        pass
 
     @classmethod
     def updater(cls, qualified_name: str = "", name: str = "") -> "Asset":

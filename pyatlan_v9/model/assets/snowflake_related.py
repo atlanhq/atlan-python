@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from typing import Dict, List, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .referenceable_related import RelatedReferenceable
@@ -81,7 +82,7 @@ class RelatedSnowflakePipe(RelatedSnowflake):
     definition: Union[str, None, UnsetType] = UNSET
     """SQL definition of this pipe."""
 
-    snowflake_is_auto_ingest_enabled: Union[bool, None, UnsetType] = UNSET
+    snowflake_pipe_is_auto_ingest_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether auto-ingest is enabled for this pipe (true) or not (false)."""
 
     snowflake_pipe_notification_channel_name: Union[str, None, UnsetType] = UNSET
@@ -102,16 +103,16 @@ class RelatedSnowflakeStage(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeStage" so it serializes correctly
 
-    snowflake_external_location: Union[str, None, UnsetType] = UNSET
+    snowflake_stage_external_location: Union[str, None, UnsetType] = UNSET
     """The URL or cloud storage path specifying the external location where the stage data files are stored. This is NULL for internal stages."""
 
-    snowflake_external_location_region: Union[str, None, UnsetType] = UNSET
+    snowflake_stage_external_location_region: Union[str, None, UnsetType] = UNSET
     """The geographic region identifier where the external stage is located in cloud storage. This is NULL for internal stages."""
 
-    snowflake_storage_integration: Union[str, None, UnsetType] = UNSET
+    snowflake_stage_storage_integration: Union[str, None, UnsetType] = UNSET
     """The name of the storage integration associated with the stage; NULL for internal stages or stages that do not use a storage integration."""
 
-    snowflake_type: Union[str, None, UnsetType] = UNSET
+    snowflake_stage_type: Union[str, None, UnsetType] = UNSET
     """Categorization of the stage type in Snowflake, which can be 'Internal Named' or 'External Named', indicating whether the stage storage is within Snowflake or in external cloud storage."""
 
     def __post_init__(self) -> None:
@@ -129,19 +130,19 @@ class RelatedSnowflakeStream(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeStream" so it serializes correctly
 
-    snowflake_type: Union[str, None, UnsetType] = UNSET
+    snowflake_stream_type: Union[str, None, UnsetType] = UNSET
     """Type of this stream, for example: standard, append-only, insert-only, etc."""
 
-    snowflake_source_type: Union[str, None, UnsetType] = UNSET
+    snowflake_stream_source_type: Union[str, None, UnsetType] = UNSET
     """Type of the source of this stream."""
 
-    snowflake_mode: Union[str, None, UnsetType] = UNSET
+    snowflake_stream_mode: Union[str, None, UnsetType] = UNSET
     """Mode of this stream."""
 
-    snowflake_is_stale: Union[bool, None, UnsetType] = UNSET
+    snowflake_stream_is_stale: Union[bool, None, UnsetType] = UNSET
     """Whether this stream is stale (true) or not (false)."""
 
-    snowflake_stale_after: Union[int, None, UnsetType] = UNSET
+    snowflake_stream_stale_after: Union[int, None, UnsetType] = UNSET
     """Time (epoch) after which this stream will be stale, in milliseconds."""
 
     def __post_init__(self) -> None:
@@ -189,19 +190,29 @@ class RelatedSnowflakeAIModelVersion(RelatedSnowflake):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SnowflakeAIModelVersion" so it serializes correctly
 
-    snowflake_name: Union[str, None, UnsetType] = UNSET
+    snowflake_ai_model_version_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="snowflakeAIModelVersionName"
+    )
     """Version part of the model name."""
 
-    snowflake_type: Union[str, None, UnsetType] = UNSET
+    snowflake_ai_model_version_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="snowflakeAIModelVersionType"
+    )
     """The type of the model version."""
 
-    snowflake_aliases: Union[List[str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_aliases: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionAliases")
+    )
     """The aliases for the model version."""
 
-    snowflake_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionMetrics")
+    )
     """Metrics for an individual experiment."""
 
-    snowflake_functions: Union[List[str], None, UnsetType] = UNSET
+    snowflake_ai_model_version_functions: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="snowflakeAIModelVersionFunctions")
+    )
     """Functions used in the model version."""
 
     def __post_init__(self) -> None:

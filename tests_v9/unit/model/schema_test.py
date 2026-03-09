@@ -123,7 +123,7 @@ def test_unset_fields():
 
     assert schema.table_count is UNSET
     assert schema.views_count is UNSET
-    assert schema.sql_external_location is UNSET
+    assert schema.schema_external_location is UNSET
     assert schema.query_count is UNSET
     assert schema.sql_is_secure is UNSET
 

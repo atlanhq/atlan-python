@@ -11,9 +11,9 @@ import enum
 import json
 import os
 import re
+from collections.abc import Iterable
 from enum import Enum
 from pathlib import Path
-from collections.abc import Iterable
 from typing import Any, Dict, List, NamedTuple, Optional, Set
 
 import networkx as nx

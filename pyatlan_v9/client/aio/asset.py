@@ -2073,9 +2073,9 @@ class V9AsyncAssetClient:
         updated_asset = asset_type.updater(
             qualified_name=asset_qualified_name, name=asset_name
         )
-        updated_asset.asset_d_q_schedule_time_zone = schedule_time_zone
-        updated_asset.asset_d_q_schedule_crontab = schedule_crontab
-        updated_asset.asset_d_q_schedule_type = DataQualityScheduleType.CRON
+        updated_asset.asset_dq_schedule_time_zone = schedule_time_zone
+        updated_asset.asset_dq_schedule_crontab = schedule_crontab
+        updated_asset.asset_dq_schedule_type = DataQualityScheduleType.CRON
         return await self.save(updated_asset)
 
     @validate_arguments
@@ -2099,7 +2099,7 @@ class V9AsyncAssetClient:
         updated_asset = asset_type.updater(
             qualified_name=asset_qualified_name, name=asset_name
         )
-        updated_asset.asset_d_q_row_scope_filter_column_qualified_name = (
+        updated_asset.asset_dq_row_scope_filter_column_qualified_name = (
             row_scope_filter_column_qualified_name
         )
         return await self.save(updated_asset)

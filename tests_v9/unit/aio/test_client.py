@@ -488,7 +488,7 @@ async def test_append_with_valid_guid_when_terms_present_returns_asset_with_comb
     table.qualified_name = "table_qn"
 
     exisiting_term = AtlasGlossaryTerm()
-    table.attributes.meanings = [exisiting_term]
+    table.meanings = [exisiting_term]
 
     new_term = AtlasGlossaryTerm(qualified_name="new_term")
     terms = [new_term]
@@ -509,7 +509,7 @@ async def test_append_with_valid_guid_when_terms_present_returns_asset_with_comb
             mock_aexecute.return_value = mock_results
 
             async def mock_save_side_effect(entity):
-                entity.assigned_terms = table.attributes.meanings + terms
+                entity.assigned_terms = table.meanings + terms
                 return Mock(assets_updated=lambda asset_type: [entity])
 
             mock_save.side_effect = mock_save_side_effect
@@ -643,7 +643,7 @@ async def test_replace_terms():
     table.qualified_name = "table_qn"
 
     exisiting_term = AtlasGlossaryTerm()
-    table.attributes.meanings = [exisiting_term]
+    table.meanings = [exisiting_term]
 
     terms = [AtlasGlossaryTerm(qualified_name="new_term")]
 
@@ -798,7 +798,7 @@ async def test_remove_with_valid_guid_when_terms_present_returns_asset_with_term
     other_term = AtlasGlossaryTerm(
         qualified_name="other_term", guid="b267858d-8316-4c41-a56a-6e9b840cef4a"
     )
-    table.attributes.meanings = [existing_term, other_term]
+    table.meanings = [existing_term, other_term]
 
     with patch(
         "pyatlan_v9.model.fluent_search.FluentSearch.execute_async",
@@ -817,7 +817,7 @@ async def test_remove_with_valid_guid_when_terms_present_returns_asset_with_term
 
             async def mock_save_side_effect(entity):
                 entity.assigned_terms = [
-                    t for t in table.attributes.meanings if t != existing_term
+                    t for t in table.meanings if t != existing_term
                 ]
                 return Mock(assets_updated=lambda asset_type: [entity])
 
@@ -1690,7 +1690,7 @@ async def test_asset_get_lineage_list_response_with_custom_metadata(
         assert asset.type_name == "View"
         assert asset.guid == "test-guid"
         assert asset.qualified_name == "test-qn"
-        assert asset.attributes
+        assert asset.name == "test-name"
         assert asset.business_attributes
         assert asset.business_attributes == {"testcm1": {"testcm2": "test-cm-value"}}
 
@@ -2060,7 +2060,7 @@ async def test_asset_get_by_guid_without_asset_type(
     assert isinstance(response, Table)
     assert response.guid
     assert response.qualified_name
-    assert response.attributes
+    assert response.name
     mock_async_api_caller.reset_mock()
 
 
@@ -2077,7 +2077,7 @@ async def test_asset_retrieve_minimal_without_asset_type(
     assert isinstance(response, Table)
     assert response.guid
     assert response.qualified_name
-    assert response.attributes
+    assert response.name
     mock_async_api_caller.reset_mock()
 
 

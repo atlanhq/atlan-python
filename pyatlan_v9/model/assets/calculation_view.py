@@ -72,10 +72,10 @@ class CalculationView(Asset):
     """
 
     COLUMN_COUNT: ClassVar[Any] = None
-    SQL_VERSION_ID: ClassVar[Any] = None
-    SQL_ACTIVATED_BY: ClassVar[Any] = None
-    SQL_ACTIVATED_AT: ClassVar[Any] = None
-    SQL_PACKAGE_ID: ClassVar[Any] = None
+    CALCULATION_VIEW_VERSION_ID: ClassVar[Any] = None
+    CALCULATION_VIEW_ACTIVATED_BY: ClassVar[Any] = None
+    CALCULATION_VIEW_ACTIVATED_AT: ClassVar[Any] = None
+    CALCULATION_VIEW_PACKAGE_ID: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -135,16 +135,16 @@ class CalculationView(Asset):
     column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this calculation view."""
 
-    sql_version_id: Union[int, None, UnsetType] = UNSET
+    calculation_view_version_id: Union[int, None, UnsetType] = UNSET
     """The version ID of this calculation view."""
 
-    sql_activated_by: Union[str, None, UnsetType] = UNSET
+    calculation_view_activated_by: Union[str, None, UnsetType] = UNSET
     """The owner who activated the calculation view"""
 
-    sql_activated_at: Union[int, None, UnsetType] = UNSET
+    calculation_view_activated_at: Union[int, None, UnsetType] = UNSET
     """Time at which this calculation view was activated at"""
 
-    sql_package_id: Union[str, None, UnsetType] = UNSET
+    calculation_view_package_id: Union[str, None, UnsetType] = UNSET
     """The full package id path to which a calculation view belongs/resides in the repository."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -397,16 +397,16 @@ class CalculationViewAttributes(AssetAttributes):
     column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this calculation view."""
 
-    sql_version_id: Union[int, None, UnsetType] = UNSET
+    calculation_view_version_id: Union[int, None, UnsetType] = UNSET
     """The version ID of this calculation view."""
 
-    sql_activated_by: Union[str, None, UnsetType] = UNSET
+    calculation_view_activated_by: Union[str, None, UnsetType] = UNSET
     """The owner who activated the calculation view"""
 
-    sql_activated_at: Union[int, None, UnsetType] = UNSET
+    calculation_view_activated_at: Union[int, None, UnsetType] = UNSET
     """Time at which this calculation view was activated at"""
 
-    sql_package_id: Union[str, None, UnsetType] = UNSET
+    calculation_view_package_id: Union[str, None, UnsetType] = UNSET
     """The full package id path to which a calculation view belongs/resides in the repository."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -660,10 +660,10 @@ def _populate_calculation_view_attrs(
     """Populate CalculationView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.column_count = obj.column_count
-    attrs.sql_version_id = obj.sql_version_id
-    attrs.sql_activated_by = obj.sql_activated_by
-    attrs.sql_activated_at = obj.sql_activated_at
-    attrs.sql_package_id = obj.sql_package_id
+    attrs.calculation_view_version_id = obj.calculation_view_version_id
+    attrs.calculation_view_activated_by = obj.calculation_view_activated_by
+    attrs.calculation_view_activated_at = obj.calculation_view_activated_at
+    attrs.calculation_view_package_id = obj.calculation_view_package_id
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -688,10 +688,10 @@ def _extract_calculation_view_attrs(attrs: CalculationViewAttributes) -> dict:
     """Extract all CalculationView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["column_count"] = attrs.column_count
-    result["sql_version_id"] = attrs.sql_version_id
-    result["sql_activated_by"] = attrs.sql_activated_by
-    result["sql_activated_at"] = attrs.sql_activated_at
-    result["sql_package_id"] = attrs.sql_package_id
+    result["calculation_view_version_id"] = attrs.calculation_view_version_id
+    result["calculation_view_activated_by"] = attrs.calculation_view_activated_by
+    result["calculation_view_activated_at"] = attrs.calculation_view_activated_at
+    result["calculation_view_package_id"] = attrs.calculation_view_package_id
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -752,6 +752,9 @@ def _calculation_view_to_nested(
         is_incomplete=calculation_view.is_incomplete,
         provenance_type=calculation_view.provenance_type,
         home_id=calculation_view.home_id,
+        depth=calculation_view.depth,
+        immediate_upstream=calculation_view.immediate_upstream,
+        immediate_downstream=calculation_view.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -785,7 +788,6 @@ def _calculation_view_from_nested(nested: CalculationViewNested) -> CalculationV
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -794,6 +796,9 @@ def _calculation_view_from_nested(nested: CalculationViewNested) -> CalculationV
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_calculation_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -824,10 +829,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 CalculationView.COLUMN_COUNT = NumericField("columnCount", "columnCount")
-CalculationView.SQL_VERSION_ID = NumericField("sqlVersionId", "sqlVersionId")
-CalculationView.SQL_ACTIVATED_BY = KeywordField("sqlActivatedBy", "sqlActivatedBy")
-CalculationView.SQL_ACTIVATED_AT = NumericField("sqlActivatedAt", "sqlActivatedAt")
-CalculationView.SQL_PACKAGE_ID = KeywordField("sqlPackageId", "sqlPackageId")
+CalculationView.CALCULATION_VIEW_VERSION_ID = NumericField(
+    "calculationViewVersionId", "calculationViewVersionId"
+)
+CalculationView.CALCULATION_VIEW_ACTIVATED_BY = KeywordField(
+    "calculationViewActivatedBy", "calculationViewActivatedBy"
+)
+CalculationView.CALCULATION_VIEW_ACTIVATED_AT = NumericField(
+    "calculationViewActivatedAt", "calculationViewActivatedAt"
+)
+CalculationView.CALCULATION_VIEW_PACKAGE_ID = KeywordField(
+    "calculationViewPackageId", "calculationViewPackageId"
+)
 CalculationView.QUERY_COUNT = NumericField("queryCount", "queryCount")
 CalculationView.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 CalculationView.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")

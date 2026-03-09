@@ -61,7 +61,8 @@ Copy generated files from the staging dir to the SDK, **excluding** these files 
 
 | File | Reason |
 |------|--------|
-| `__init__.py` | Hand-written init with `__all__` |
+| `__init__.py` | Generated post-sync by `_generate_pkg_init.py` |
+| `__init__.pyi` | Generated post-sync by `_generate_pkg_init.py` |
 | `entity.py` | Patched: `_metadata_proxies`, `type_name: Any`, `SaveSemantic` |
 | `referenceable.py` | Patched: `InternalKeywordField`, field descriptors, helper exports |
 | `atlas_glossary.py` | Patched: GTC anchor-in-attributes handling |
@@ -75,6 +76,7 @@ Copy generated files from the staging dir to the SDK, **excluding** these files 
 ```bash
 rsync -av \
   --exclude='__init__.py' \
+  --exclude='__init__.pyi' \
   --exclude='entity.py' \
   --exclude='referenceable.py' \
   --exclude='atlas_glossary.py' \
@@ -102,7 +104,20 @@ rm -rf "$STAGING_DIR"
     """Attributes of the relationship itself (e.g., description, status, etc.)."""
 ```
 
-### 5. Run ruff auto-fix and format
+### 5. Regenerate `__init__.py` and `__init__.pyi`
+
+After syncing, regenerate the package init files from the `_init_*.py` modules:
+
+```bash
+cd "${SDK_DIR}"
+uv run python pyatlan_v9/model/assets/_generate_pkg_init.py
+```
+
+This scans all `_init_*.py` files and generates:
+- `__init__.py` with `lazy_loader.attach()` for lazy imports
+- `__init__.pyi` with explicit imports for IDE type hints
+
+### 6. Run ruff auto-fix and format
 
 After syncing and patching, run ruff to fix unused imports and format the generated files:
 
@@ -112,13 +127,13 @@ uv run ruff check --fix --select F401,F811 pyatlan_v9/
 uv run ruff format pyatlan_v9/
 ```
 
-### 6. Run tests (if args contain "test")
+### 7. Run tests (if args contain "test")
 
 ```bash
 cd "${SDK_DIR}" && python -m pytest tests_v9/unit/ -x -q
 ```
 
-### 7. Report summary
+### 8. Report summary
 
 Report: how many files were generated, how many synced, how many excluded, and test results if applicable.
 

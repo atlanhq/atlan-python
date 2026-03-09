@@ -69,8 +69,8 @@ class DatabricksNotebook(Asset):
     Base class for all databricks notebook assets.
     """
 
-    DATABRICKS_PATH: ClassVar[Any] = None
-    DATABRICKS_WORKSPACE_ID: ClassVar[Any] = None
+    DATABRICKS_NOTEBOOK_PATH: ClassVar[Any] = None
+    DATABRICKS_NOTEBOOK_WORKSPACE_ID: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -125,10 +125,10 @@ class DatabricksNotebook(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_path: Union[str, None, UnsetType] = UNSET
     """Path of the notebook."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_workspace_id: Union[str, None, UnsetType] = UNSET
     """Workspace Id of the notebook."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -364,10 +364,10 @@ class DatabricksNotebook(Asset):
 class DatabricksNotebookAttributes(AssetAttributes):
     """DatabricksNotebook-specific attributes for nested API format."""
 
-    databricks_path: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_path: Union[str, None, UnsetType] = UNSET
     """Path of the notebook."""
 
-    databricks_workspace_id: Union[str, None, UnsetType] = UNSET
+    databricks_notebook_workspace_id: Union[str, None, UnsetType] = UNSET
     """Workspace Id of the notebook."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -612,8 +612,8 @@ def _populate_databricks_notebook_attrs(
 ) -> None:
     """Populate DatabricksNotebook-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.databricks_path = obj.databricks_path
-    attrs.databricks_workspace_id = obj.databricks_workspace_id
+    attrs.databricks_notebook_path = obj.databricks_notebook_path
+    attrs.databricks_notebook_workspace_id = obj.databricks_notebook_workspace_id
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -637,8 +637,8 @@ def _populate_databricks_notebook_attrs(
 def _extract_databricks_notebook_attrs(attrs: DatabricksNotebookAttributes) -> dict:
     """Extract all DatabricksNotebook attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["databricks_path"] = attrs.databricks_path
-    result["databricks_workspace_id"] = attrs.databricks_workspace_id
+    result["databricks_notebook_path"] = attrs.databricks_notebook_path
+    result["databricks_notebook_workspace_id"] = attrs.databricks_notebook_workspace_id
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -699,6 +699,9 @@ def _databricks_notebook_to_nested(
         is_incomplete=databricks_notebook.is_incomplete,
         provenance_type=databricks_notebook.provenance_type,
         home_id=databricks_notebook.home_id,
+        depth=databricks_notebook.depth,
+        immediate_upstream=databricks_notebook.immediate_upstream,
+        immediate_downstream=databricks_notebook.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -734,7 +737,6 @@ def _databricks_notebook_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -743,6 +745,9 @@ def _databricks_notebook_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_databricks_notebook_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -774,9 +779,11 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksNotebook.DATABRICKS_PATH = KeywordField("databricksPath", "databricksPath")
-DatabricksNotebook.DATABRICKS_WORKSPACE_ID = KeywordField(
-    "databricksWorkspaceId", "databricksWorkspaceId"
+DatabricksNotebook.DATABRICKS_NOTEBOOK_PATH = KeywordField(
+    "databricksNotebookPath", "databricksNotebookPath"
+)
+DatabricksNotebook.DATABRICKS_NOTEBOOK_WORKSPACE_ID = KeywordField(
+    "databricksNotebookWorkspaceId", "databricksNotebookWorkspaceId"
 )
 DatabricksNotebook.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksNotebook.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")

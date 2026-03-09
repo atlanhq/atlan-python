@@ -124,7 +124,7 @@ class RelatedDataProduct(RelatedDataMesh):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
