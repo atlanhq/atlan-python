@@ -13,6 +13,7 @@ import os
 import re
 from enum import Enum
 from pathlib import Path
+from collections.abc import Iterable
 from typing import Any, Dict, List, NamedTuple, Optional, Set
 
 import networkx as nx
@@ -975,7 +976,7 @@ class Generator:
             ) as doc:
                 doc.write(content)
 
-    def render_mkdocs_docs(self, asset_infos):
+    def render_mkdocs_docs(self, asset_infos: "Iterable[AssetInfo]") -> None:
         """Generate docs/api/assets/*.md pages grouped by connector/platform."""
         # Map module_name → AssetInfo for all generated assets (excluding internal ones)
         by_module: Dict[str, List["AssetInfo"]] = {}
