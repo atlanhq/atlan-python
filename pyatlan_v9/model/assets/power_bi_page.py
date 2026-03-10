@@ -45,7 +45,7 @@ from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
-from .power_bi_related import RelatedPowerBIPage, RelatedPowerBIReport
+from .power_bi_related import RelatedPowerBIReport
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -101,6 +101,8 @@ class PowerBIPage(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "PowerBIPage"
 
     workspace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the workspace in which this page exists."""
@@ -243,76 +245,6 @@ class PowerBIPage(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this PowerBIPage instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.report is UNSET:
-                errors.append("report is required for creation")
-            if self.report_qualified_name is UNSET:
-                errors.append("report_qualified_name is required for creation")
-            if self.workspace_qualified_name is UNSET:
-                errors.append("workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"PowerBIPage validation failed: {errors}")
-
-    def minimize(self) -> "PowerBIPage":
-        """
-        Return a minimal copy of this PowerBIPage with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new PowerBIPage with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new PowerBIPage instance with only the minimum required fields.
-        """
-        self.validate()
-        return PowerBIPage(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedPowerBIPage":
-        """
-        Create a :class:`RelatedPowerBIPage` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedPowerBIPage reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedPowerBIPage(guid=self.guid)
-        return RelatedPowerBIPage(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -618,9 +550,6 @@ def _power_bi_page_to_nested(power_bi_page: PowerBIPage) -> PowerBIPageNested:
         is_incomplete=power_bi_page.is_incomplete,
         provenance_type=power_bi_page.provenance_type,
         home_id=power_bi_page.home_id,
-        depth=power_bi_page.depth,
-        immediate_upstream=power_bi_page.immediate_upstream,
-        immediate_downstream=power_bi_page.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -652,6 +581,7 @@ def _power_bi_page_from_nested(nested: PowerBIPageNested) -> PowerBIPage:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -660,9 +590,6 @@ def _power_bi_page_from_nested(nested: PowerBIPageNested) -> PowerBIPage:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_power_bi_page_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
