@@ -41,7 +41,7 @@ from .asset import (
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .mode_related import RelatedModeQuery
+from .mode_related import RelatedModeChart, RelatedModeQuery
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -238,6 +238,84 @@ class ModeChart(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this ModeChart instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.mode_query is UNSET:
+                errors.append("mode_query is required for creation")
+            if self.mode_query_name is UNSET:
+                errors.append("mode_query_name is required for creation")
+            if self.mode_query_qualified_name is UNSET:
+                errors.append("mode_query_qualified_name is required for creation")
+            if self.mode_report_name is UNSET:
+                errors.append("mode_report_name is required for creation")
+            if self.mode_report_qualified_name is UNSET:
+                errors.append("mode_report_qualified_name is required for creation")
+            if self.mode_workspace_name is UNSET:
+                errors.append("mode_workspace_name is required for creation")
+            if self.mode_workspace_qualified_name is UNSET:
+                errors.append("mode_workspace_qualified_name is required for creation")
+        if errors:
+            raise ValueError(f"ModeChart validation failed: {errors}")
+
+    def minimize(self) -> "ModeChart":
+        """
+        Return a minimal copy of this ModeChart with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new ModeChart with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new ModeChart instance with only the minimum required fields.
+        """
+        self.validate()
+        return ModeChart(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedModeChart":
+        """
+        Create a :class:`RelatedModeChart` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedModeChart reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedModeChart(guid=self.guid)
+        return RelatedModeChart(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

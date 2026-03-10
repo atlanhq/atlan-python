@@ -210,6 +210,70 @@ class FlowFolder(Asset):
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this FlowFolder instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+        if errors:
+            raise ValueError(f"FlowFolder validation failed: {errors}")
+
+    def minimize(self) -> "FlowFolder":
+        """
+        Return a minimal copy of this FlowFolder with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new FlowFolder with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new FlowFolder instance with only the minimum required fields.
+        """
+        self.validate()
+        return FlowFolder(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedFlowFolder":
+        """
+        Create a :class:`RelatedFlowFolder` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedFlowFolder reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedFlowFolder(guid=self.guid)
+        return RelatedFlowFolder(qualified_name=self.qualified_name)
+
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================

@@ -377,6 +377,76 @@ class DremioFolder(Asset):
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this DremioFolder instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.dremio_source is UNSET:
+                errors.append("dremio_source is required for creation")
+            if self.dremio_source_name is UNSET:
+                errors.append("dremio_source_name is required for creation")
+            if self.dremio_source_qualified_name is UNSET:
+                errors.append("dremio_source_qualified_name is required for creation")
+        if errors:
+            raise ValueError(f"DremioFolder validation failed: {errors}")
+
+    def minimize(self) -> "DremioFolder":
+        """
+        Return a minimal copy of this DremioFolder with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new DremioFolder with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new DremioFolder instance with only the minimum required fields.
+        """
+        self.validate()
+        return DremioFolder(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedDremioFolder":
+        """
+        Create a :class:`RelatedDremioFolder` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedDremioFolder reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedDremioFolder(guid=self.guid)
+        return RelatedDremioFolder(qualified_name=self.qualified_name)
+
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================

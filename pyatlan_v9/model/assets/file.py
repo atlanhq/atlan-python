@@ -215,6 +215,69 @@ class File(Asset):
     def __post_init__(self) -> None:
         self.type_name = "File"
 
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this File instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if for_creation:
+            if self.file_type is UNSET:
+                errors.append("file_type is required for creation")
+        if errors:
+            raise ValueError(f"File validation failed: {errors}")
+
+    def minimize(self) -> "File":
+        """
+        Return a minimal copy of this File with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new File with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new File instance with only the minimum required fields.
+        """
+        self.validate()
+        return File(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedFile":
+        """
+        Create a :class:`RelatedFile` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedFile reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedFile(guid=self.guid)
+        return RelatedFile(qualified_name=self.qualified_name)
+
     @classmethod
     @init_guid
     def creator(
