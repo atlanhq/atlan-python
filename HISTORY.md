@@ -1,3 +1,9 @@
+## 9.2.1 (March 10, 2026)
+
+### Experimental: `pyatlan_v9`
+
+- **Restored `validate()`, `minimize()`, `relate()` SDK methods**: All generated asset types now include `validate(for_creation=False)` for dry-run field validation (checks `type_name`, `name`, `qualified_name`, optional QN pattern matching, and hierarchy-specific fields when `for_creation=True`), `minimize()` to produce a minimal updater copy, and `relate()` to create a `Related{Type}` reference. These are purely opt-in — not called by any serde path. Overlay files can override any of these methods.
+
 ## 9.2.0 (March 9, 2026)
 
 ### Breaking Changes
