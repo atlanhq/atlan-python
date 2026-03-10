@@ -49,7 +49,7 @@ from .dbt_related import (
 from .fabric_related import RelatedFabricWorkspace
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
-from .mongo_db_related import RelatedMongoDBCollection, RelatedMongoDBDatabase
+from .mongo_db_related import RelatedMongoDBCollection
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
@@ -131,6 +131,8 @@ class MongoDBDatabase(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MongoDBDatabase"
 
     mongo_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBDatabaseCollectionCount"
@@ -331,66 +333,6 @@ class MongoDBDatabase(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MongoDBDatabase"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this MongoDBDatabase instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"MongoDBDatabase validation failed: {errors}")
-
-    def minimize(self) -> "MongoDBDatabase":
-        """
-        Return a minimal copy of this MongoDBDatabase with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new MongoDBDatabase with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new MongoDBDatabase instance with only the minimum required fields.
-        """
-        self.validate()
-        return MongoDBDatabase(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMongoDBDatabase":
-        """
-        Create a :class:`RelatedMongoDBDatabase` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedMongoDBDatabase reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedMongoDBDatabase(guid=self.guid)
-        return RelatedMongoDBDatabase(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -809,9 +751,6 @@ def _mongo_db_database_to_nested(
         is_incomplete=mongo_db_database.is_incomplete,
         provenance_type=mongo_db_database.provenance_type,
         home_id=mongo_db_database.home_id,
-        depth=mongo_db_database.depth,
-        immediate_upstream=mongo_db_database.immediate_upstream,
-        immediate_downstream=mongo_db_database.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -845,6 +784,7 @@ def _mongo_db_database_from_nested(nested: MongoDBDatabaseNested) -> MongoDBData
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -853,9 +793,6 @@ def _mongo_db_database_from_nested(nested: MongoDBDatabaseNested) -> MongoDBData
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_mongo_db_database_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
