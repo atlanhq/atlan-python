@@ -43,7 +43,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
-from .partial_related import RelatedPartialField, RelatedPartialObject
+from .partial_related import RelatedPartial, RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -207,6 +207,66 @@ class Partial(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Partial"
+
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this Partial instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"Partial validation failed: {errors}")
+
+    def minimize(self) -> "Partial":
+        """
+        Return a minimal copy of this Partial with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new Partial with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new Partial instance with only the minimum required fields.
+        """
+        self.validate()
+        return Partial(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedPartial":
+        """
+        Create a :class:`RelatedPartial` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedPartial reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedPartial(guid=self.guid)
+        return RelatedPartial(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

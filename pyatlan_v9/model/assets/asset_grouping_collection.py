@@ -38,7 +38,10 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .asset_grouping_related import RelatedAssetGroupingStrategy
+from .asset_grouping_related import (
+    RelatedAssetGroupingCollection,
+    RelatedAssetGroupingStrategy,
+)
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -198,6 +201,74 @@ class AssetGroupingCollection(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this AssetGroupingCollection instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.asset_grouping_strategy is UNSET:
+                errors.append("asset_grouping_strategy is required for creation")
+        if errors:
+            raise ValueError(f"AssetGroupingCollection validation failed: {errors}")
+
+    def minimize(self) -> "AssetGroupingCollection":
+        """
+        Return a minimal copy of this AssetGroupingCollection with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new AssetGroupingCollection with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new AssetGroupingCollection instance with only the minimum required fields.
+        """
+        self.validate()
+        return AssetGroupingCollection(
+            qualified_name=self.qualified_name, name=self.name
+        )
+
+    def relate(self) -> "RelatedAssetGroupingCollection":
+        """
+        Create a :class:`RelatedAssetGroupingCollection` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedAssetGroupingCollection reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedAssetGroupingCollection(guid=self.guid)
+        return RelatedAssetGroupingCollection(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

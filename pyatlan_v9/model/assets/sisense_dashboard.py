@@ -49,6 +49,7 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .sisense_related import (
+    RelatedSisenseDashboard,
     RelatedSisenseDatamodel,
     RelatedSisenseFolder,
     RelatedSisenseWidget,
@@ -216,6 +217,72 @@ class SisenseDashboard(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this SisenseDashboard instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.sisense_datamodels is UNSET:
+                errors.append("sisense_datamodels is required for creation")
+        if errors:
+            raise ValueError(f"SisenseDashboard validation failed: {errors}")
+
+    def minimize(self) -> "SisenseDashboard":
+        """
+        Return a minimal copy of this SisenseDashboard with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new SisenseDashboard with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new SisenseDashboard instance with only the minimum required fields.
+        """
+        self.validate()
+        return SisenseDashboard(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedSisenseDashboard":
+        """
+        Create a :class:`RelatedSisenseDashboard` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedSisenseDashboard reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedSisenseDashboard(guid=self.guid)
+        return RelatedSisenseDashboard(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)

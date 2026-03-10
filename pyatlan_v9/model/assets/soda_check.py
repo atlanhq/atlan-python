@@ -224,6 +224,66 @@ class SodaCheck(Asset):
         self.type_name = "SodaCheck"
 
     # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this SodaCheck instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"SodaCheck validation failed: {errors}")
+
+    def minimize(self) -> "SodaCheck":
+        """
+        Return a minimal copy of this SodaCheck with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new SodaCheck with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new SodaCheck instance with only the minimum required fields.
+        """
+        self.validate()
+        return SodaCheck(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedSodaCheck":
+        """
+        Create a :class:`RelatedSodaCheck` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedSodaCheck reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedSodaCheck(guid=self.guid)
+        return RelatedSodaCheck(qualified_name=self.qualified_name)
+
+    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 

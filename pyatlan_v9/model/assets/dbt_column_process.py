@@ -42,6 +42,7 @@ from .asset import (
 from .catalog_related import RelatedCatalog
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .dbt_related import RelatedDbtColumnProcess
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
 from .flow_related import RelatedFlowControlOperation
@@ -355,6 +356,66 @@ class DbtColumnProcess(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DbtColumnProcess"
+
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this DbtColumnProcess instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"DbtColumnProcess validation failed: {errors}")
+
+    def minimize(self) -> "DbtColumnProcess":
+        """
+        Return a minimal copy of this DbtColumnProcess with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new DbtColumnProcess with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new DbtColumnProcess instance with only the minimum required fields.
+        """
+        self.validate()
+        return DbtColumnProcess(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedDbtColumnProcess":
+        """
+        Create a :class:`RelatedDbtColumnProcess` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedDbtColumnProcess reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedDbtColumnProcess(guid=self.guid)
+        return RelatedDbtColumnProcess(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
