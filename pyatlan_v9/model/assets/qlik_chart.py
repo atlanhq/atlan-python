@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -46,7 +47,7 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .qlik_related import RelatedQlikChart, RelatedQlikColumn, RelatedQlikSheet
+from .qlik_related import RelatedQlikColumn, RelatedQlikSheet
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
@@ -66,8 +67,8 @@ class QlikChart(Asset):
 
     QLIK_CHART_SUBTITLE: ClassVar[Any] = None
     QLIK_CHART_FOOTNOTE: ClassVar[Any] = None
-    QLIK_CHART_ORIENTATION: ClassVar[Any] = None
-    QLIK_CHART_TYPE: ClassVar[Any] = None
+    QLIK_ORIENTATION: ClassVar[Any] = None
+    QLIK_TYPE: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -81,6 +82,8 @@ class QlikChart(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -107,16 +110,18 @@ class QlikChart(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "QlikChart"
+
     qlik_chart_subtitle: Union[str, None, UnsetType] = UNSET
     """Subtitle of this chart."""
 
     qlik_chart_footnote: Union[str, None, UnsetType] = UNSET
     """Footnote of this chart."""
 
-    qlik_chart_orientation: Union[str, None, UnsetType] = UNSET
+    qlik_orientation: Union[str, None, UnsetType] = UNSET
     """Orientation of this chart."""
 
-    qlik_chart_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this chart, for example: bar, graph, pie, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -157,6 +162,12 @@ class QlikChart(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -252,76 +263,6 @@ class QlikChart(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this QlikChart instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.qlik_sheet is UNSET:
-                errors.append("qlik_sheet is required for creation")
-            if self.qlik_app_qualified_name is UNSET:
-                errors.append("qlik_app_qualified_name is required for creation")
-            if self.qlik_space_qualified_name is UNSET:
-                errors.append("qlik_space_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"QlikChart validation failed: {errors}")
-
-    def minimize(self) -> "QlikChart":
-        """
-        Return a minimal copy of this QlikChart with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new QlikChart with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new QlikChart instance with only the minimum required fields.
-        """
-        self.validate()
-        return QlikChart(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQlikChart":
-        """
-        Create a :class:`RelatedQlikChart` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedQlikChart reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedQlikChart(guid=self.guid)
-        return RelatedQlikChart(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -383,10 +324,10 @@ class QlikChartAttributes(AssetAttributes):
     qlik_chart_footnote: Union[str, None, UnsetType] = UNSET
     """Footnote of this chart."""
 
-    qlik_chart_orientation: Union[str, None, UnsetType] = UNSET
+    qlik_orientation: Union[str, None, UnsetType] = UNSET
     """Orientation of this chart."""
 
-    qlik_chart_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this chart, for example: bar, graph, pie, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -431,6 +372,12 @@ class QlikChartRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -540,6 +487,8 @@ _QLIK_CHART_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -573,8 +522,8 @@ def _populate_qlik_chart_attrs(attrs: QlikChartAttributes, obj: QlikChart) -> No
     _populate_asset_attrs(attrs, obj)
     attrs.qlik_chart_subtitle = obj.qlik_chart_subtitle
     attrs.qlik_chart_footnote = obj.qlik_chart_footnote
-    attrs.qlik_chart_orientation = obj.qlik_chart_orientation
-    attrs.qlik_chart_type = obj.qlik_chart_type
+    attrs.qlik_orientation = obj.qlik_orientation
+    attrs.qlik_type = obj.qlik_type
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -590,8 +539,8 @@ def _extract_qlik_chart_attrs(attrs: QlikChartAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["qlik_chart_subtitle"] = attrs.qlik_chart_subtitle
     result["qlik_chart_footnote"] = attrs.qlik_chart_footnote
-    result["qlik_chart_orientation"] = attrs.qlik_chart_orientation
-    result["qlik_chart_type"] = attrs.qlik_chart_type
+    result["qlik_orientation"] = attrs.qlik_orientation
+    result["qlik_type"] = attrs.qlik_type
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -636,9 +585,6 @@ def _qlik_chart_to_nested(qlik_chart: QlikChart) -> QlikChartNested:
         is_incomplete=qlik_chart.is_incomplete,
         provenance_type=qlik_chart.provenance_type,
         home_id=qlik_chart.home_id,
-        depth=qlik_chart.depth,
-        immediate_upstream=qlik_chart.immediate_upstream,
-        immediate_downstream=qlik_chart.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -670,6 +616,7 @@ def _qlik_chart_from_nested(nested: QlikChartNested) -> QlikChart:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -678,9 +625,6 @@ def _qlik_chart_from_nested(nested: QlikChartNested) -> QlikChart:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_chart_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -710,10 +654,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 QlikChart.QLIK_CHART_SUBTITLE = KeywordField("qlikChartSubtitle", "qlikChartSubtitle")
 QlikChart.QLIK_CHART_FOOTNOTE = KeywordField("qlikChartFootnote", "qlikChartFootnote")
-QlikChart.QLIK_CHART_ORIENTATION = KeywordField(
-    "qlikChartOrientation", "qlikChartOrientation"
-)
-QlikChart.QLIK_CHART_TYPE = KeywordField("qlikChartType", "qlikChartType")
+QlikChart.QLIK_ORIENTATION = KeywordField("qlikOrientation", "qlikOrientation")
+QlikChart.QLIK_TYPE = KeywordField("qlikType", "qlikType")
 QlikChart.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikChart.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikChart.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")
@@ -731,6 +673,8 @@ QlikChart.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 QlikChart.ANOMALO_CHECKS = RelationField("anomaloChecks")
 QlikChart.APPLICATION = RelationField("application")
 QlikChart.APPLICATION_FIELD = RelationField("applicationField")
+QlikChart.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+QlikChart.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 QlikChart.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 QlikChart.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 QlikChart.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
