@@ -16,7 +16,6 @@ from typing import Any, Optional
 import httpx
 
 from pyatlan.client.constants import BULK_UPDATE, INDEX_SEARCH
-from pyatlan.errors import ErrorCode
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term
 
 logger = logging.getLogger(__name__)
@@ -91,8 +90,7 @@ def find_existing_policy(
     """
     Search for an existing AuthPolicy by name and persona GUID (synchronous).
 
-    Raises:
-        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the search call fails.
+    Returns None on failure so the retry loop can proceed normally.
     """
     try:
         search_request = build_policy_search_request(policy_name, persona_guid)
@@ -101,9 +99,14 @@ def find_existing_policy(
             return raw_json["entities"][0]
         return None
     except Exception as e:
-        raise ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY.exception_with_parameters(
-            policy_name, persona_guid, str(e)
-        ) from e
+        logger.warning(
+            "Duplicate policy search failed for '%s' (persona %s): %s. "
+            "Retry will proceed normally.",
+            policy_name,
+            persona_guid,
+            str(e),
+        )
+        return None
 
 
 async def find_existing_policy_async(
@@ -112,8 +115,7 @@ async def find_existing_policy_async(
     """
     Search for an existing AuthPolicy by name and persona GUID (asynchronous).
 
-    Raises:
-        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the search call fails.
+    Returns None on failure so the retry loop can proceed normally.
     """
     try:
         search_request = build_policy_search_request(policy_name, persona_guid)
@@ -122,9 +124,14 @@ async def find_existing_policy_async(
             return raw_json["entities"][0]
         return None
     except Exception as e:
-        raise ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY.exception_with_parameters(
-            policy_name, persona_guid, str(e)
-        ) from e
+        logger.warning(
+            "Duplicate policy search failed for '%s' (persona %s): %s. "
+            "Retry will proceed normally.",
+            policy_name,
+            persona_guid,
+            str(e),
+        )
+        return None
 
 
 def check_for_duplicate_policy(
@@ -137,8 +144,6 @@ def check_for_duplicate_policy(
     Returns a mock response with the existing policy if a duplicate is found,
     or None to let the retry proceed normally.
 
-    Raises:
-        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the duplicate search fails.
     """
     parsed = parse_auth_policy_entity(request)
     if not parsed:
@@ -165,8 +170,6 @@ async def check_for_duplicate_policy_async(
     Returns a mock response with the existing policy if a duplicate is found,
     or None to let the retry proceed normally.
 
-    Raises:
-        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the duplicate search fails.
     """
     parsed = parse_auth_policy_entity(request)
     if not parsed:

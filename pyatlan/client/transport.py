@@ -107,7 +107,13 @@ class PyatlanSyncTransport(httpx.BaseTransport):
                     "_retry_operation retrying response=%s retry=%s", response, retry
                 )
 
-                # ONLY during retry: check if this is a policy creation and if duplicate exists
+                retry = retry.increment()
+                retry.sleep(response)
+
+                # AFTER backoff: check if this is a policy creation and if duplicate exists.
+                # The sleep gives the index time to propagate the entity created by
+                # the previous request that may have succeeded server-side but timed
+                # out client-side.
                 if self._client:
                     duplicate_response = check_for_duplicate_policy(
                         self._client, request
@@ -118,9 +124,6 @@ class PyatlanSyncTransport(httpx.BaseTransport):
                             "request that timed out but succeeded). Returning existing policy."
                         )
                         return duplicate_response
-
-                retry = retry.increment()
-                retry.sleep(response)
 
             try:
                 response = send_method(request)
@@ -226,7 +229,13 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
                     retry,
                 )
 
-                # ONLY during retry: check if this is a policy creation and if duplicate exists
+                retry = retry.increment()
+                await retry.asleep(response)
+
+                # AFTER backoff: check if this is a policy creation and if duplicate exists.
+                # The sleep gives the index time to propagate the entity created by
+                # the previous request that may have succeeded server-side but timed
+                # out client-side.
                 if self._client:
                     duplicate_response = await check_for_duplicate_policy_async(
                         self._client, request
@@ -237,9 +246,6 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
                             "request that timed out but succeeded). Returning existing policy."
                         )
                         return duplicate_response
-
-                retry = retry.increment()
-                await retry.asleep(response)
 
             try:
                 response = await send_method(request)

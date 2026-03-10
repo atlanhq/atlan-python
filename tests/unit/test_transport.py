@@ -175,12 +175,11 @@ class TestFindExistingPolicy:
         result = find_existing_policy(client, POLICY_NAME, PERSONA_GUID)
         assert result is None
 
-    def test_raises_error_code_on_exception(self):
+    def test_returns_none_on_exception(self):
         client = MagicMock()
         client._call_api.side_effect = Exception("search failed")
-        with pytest.raises(Exception) as exc_info:
-            find_existing_policy(client, POLICY_NAME, PERSONA_GUID)
-        assert "ATLAN-PYTHON-500-007" in str(exc_info.value)
+        result = find_existing_policy(client, POLICY_NAME, PERSONA_GUID)
+        assert result is None
 
 
 # ---------------------------------------------------------------------------
@@ -204,12 +203,11 @@ class TestFindExistingPolicyAsync:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_raises_error_code_on_exception(self):
+    async def test_returns_none_on_exception(self):
         client = MagicMock()
         client._call_api = AsyncMock(side_effect=Exception("async search failed"))
-        with pytest.raises(Exception) as exc_info:
-            await find_existing_policy_async(client, POLICY_NAME, PERSONA_GUID)
-        assert "ATLAN-PYTHON-500-007" in str(exc_info.value)
+        result = await find_existing_policy_async(client, POLICY_NAME, PERSONA_GUID)
+        assert result is None
 
 
 # ---------------------------------------------------------------------------
@@ -244,13 +242,11 @@ class TestCheckForDuplicatePolicy:
         body = resp.json()
         assert body["guidAssignments"][TEMP_GUID] == EXISTING_GUID
 
-    def test_propagates_search_error(self):
+    def test_returns_none_on_search_error(self):
         client = MagicMock()
         client._call_api.side_effect = Exception("search failed")
         req = _make_bulk_request()
-        with pytest.raises(Exception) as exc_info:
-            check_for_duplicate_policy(client, req)
-        assert "ATLAN-PYTHON-500-007" in str(exc_info.value)
+        assert check_for_duplicate_policy(client, req) is None
 
 
 # ---------------------------------------------------------------------------
@@ -283,13 +279,11 @@ class TestCheckForDuplicatePolicyAsync:
         assert resp.json()["guidAssignments"][TEMP_GUID] == EXISTING_GUID
 
     @pytest.mark.asyncio
-    async def test_propagates_search_error(self):
+    async def test_returns_none_on_search_error(self):
         client = MagicMock()
         client._call_api = AsyncMock(side_effect=Exception("async search failed"))
         req = _make_bulk_request()
-        with pytest.raises(Exception) as exc_info:
-            await check_for_duplicate_policy_async(client, req)
-        assert "ATLAN-PYTHON-500-007" in str(exc_info.value)
+        assert await check_for_duplicate_policy_async(client, req) is None
 
 
 # ---------------------------------------------------------------------------
