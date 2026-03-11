@@ -5,9 +5,39 @@ import logging
 import os
 from typing import Optional
 
+import msgspec
+
 from pyatlan_v9.client.atlan import AtlanClient
 
 LOGGER = logging.getLogger(__name__)
+
+
+class PackageHeaders(msgspec.Struct, frozen=True, kw_only=True):
+    """Typed container for Atlan package HTTP headers."""
+
+    agent: str = "workflow"
+    workflow_id: Optional[str] = None
+    app_name: Optional[str] = None
+    run_id: Optional[str] = None
+
+    def to_headers(self) -> dict[str, str]:
+        return {
+            "x-atlan-agent": self.agent,
+            "x-atlan-agent-id": self.workflow_id or "",
+            "x-atlan-agent-app-name": self.app_name or "",
+            "x-atlan-agent-workflow-id": self.run_id or "",
+        }
+
+    @classmethod
+    def from_env(cls) -> Optional["PackageHeaders"]:
+        workflow_id = os.environ.get("X_ATLAN_AGENT_ID")
+        if not workflow_id:
+            return None
+        return cls(
+            workflow_id=workflow_id,
+            app_name=os.environ.get("X_ATLAN_AGENT_PACKAGE_NAME", ""),
+            run_id=os.environ.get("X_ATLAN_AGENT_WORKFLOW_ID", ""),
+        )
 
 
 def get_client(
@@ -70,36 +100,16 @@ def get_client(
 
 def set_package_headers(
     client: AtlanClient,
-    agent: str = "workflow",
-    workflow_id: Optional[str] = None,
-    app_name: Optional[str] = None,
-    run_id: Optional[str] = None,
+    headers: Optional[PackageHeaders] = None,
 ) -> AtlanClient:
     """
     Configure the AtlanClient with package headers.
 
-    Each header value can be passed explicitly; if omitted, falls back to the
-    corresponding environment variable (X_ATLAN_AGENT_ID,
-    X_ATLAN_AGENT_PACKAGE_NAME, X_ATLAN_AGENT_WORKFLOW_ID).
-
     :param client: AtlanClient instance to configure
-    :param agent: value for the x-atlan-agent header (default: "workflow")
-    :param workflow_id: value for the x-atlan-agent-id header (default: X_ATLAN_AGENT_ID env var)
-    :param app_name: value for the x-atlan-agent-package-name header
-        (default: X_ATLAN_AGENT_PACKAGE_NAME env var)
-    :param run_id: value for the x-atlan-agent-workflow-id header
-        (default: X_ATLAN_AGENT_WORKFLOW_ID env var)
+    :param headers: PackageHeaders instance; if None, reads from environment variables
     :returns: updated client instance
     """
-    resolved_workflow_id = workflow_id or os.environ.get("X_ATLAN_AGENT_ID")
-    if agent and resolved_workflow_id:
-        headers = {
-            "x-atlan-agent": agent,
-            "x-atlan-agent-id": resolved_workflow_id,
-            "x-atlan-agent-package-name": app_name
-            or os.environ.get("X_ATLAN_AGENT_PACKAGE_NAME", ""),
-            "x-atlan-agent-workflow-id": run_id
-            or os.environ.get("X_ATLAN_AGENT_WORKFLOW_ID", ""),
-        }
-        client.update_headers(headers)
+    pkg_headers = headers or PackageHeaders.from_env()
+    if pkg_headers and pkg_headers.workflow_id:
+        client.update_headers(pkg_headers.to_headers())
     return client

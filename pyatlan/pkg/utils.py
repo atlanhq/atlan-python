@@ -6,7 +6,7 @@ import os
 import sys
 from typing import Any, Dict, List, Mapping, Optional, Sequence, TypeVar, Union
 
-from pydantic.v1 import parse_obj_as, parse_raw_as
+from pydantic.v1 import BaseModel, parse_obj_as, parse_raw_as
 
 from pyatlan.client.aio import AsyncAtlanClient
 from pyatlan.client.atlan import AtlanClient
@@ -16,6 +16,38 @@ LOGGER = logging.getLogger(__name__)
 
 # Type variable for client types
 ClientType = TypeVar("ClientType", AtlanClient, AsyncAtlanClient)
+
+
+class PackageHeaders(BaseModel):
+    """Typed container for Atlan package HTTP headers."""
+
+    agent: str = "workflow"
+    workflow_id: Optional[str] = None
+    app_name: Optional[str] = None
+    run_id: Optional[str] = None
+
+    class Config:
+        allow_mutation = False
+
+    def to_headers(self) -> Dict[str, str]:
+        return {
+            "x-atlan-agent": self.agent,
+            "x-atlan-agent-id": self.workflow_id or "",
+            "x-atlan-agent-app-name": self.app_name or "",
+            "x-atlan-agent-workflow-id": self.run_id or "",
+        }
+
+    @classmethod
+    def from_env(cls) -> Optional["PackageHeaders"]:
+        workflow_id = os.environ.get("X_ATLAN_AGENT_ID")
+        if not workflow_id:
+            return None
+        return cls(
+            workflow_id=workflow_id,
+            app_name=os.environ.get("X_ATLAN_AGENT_PACKAGE_NAME", ""),
+            run_id=os.environ.get("X_ATLAN_AGENT_WORKFLOW_ID", ""),
+        )
+
 
 # Try to import OpenTelemetry libraries
 try:
@@ -186,45 +218,33 @@ def set_package_ops(run_time_config: RuntimeConfig) -> AtlanClient:
     :returns: an intialized AtlanClient that should be used for any calls to the SDK
     """
     client = get_client(run_time_config.user_id or "")
-    if run_time_config.agent == "workflow":
-        client = set_package_headers(client)
+    if run_time_config.agent:
+        client = set_package_headers(
+            client,
+            headers=PackageHeaders(
+                agent=run_time_config.agent,
+                workflow_id=run_time_config.agent_id,
+                app_name=run_time_config.agent_pkg,
+                run_id=run_time_config.agent_wfl,
+            ),
+        )
     return client
 
 
 def set_package_headers(
     client: ClientType,
-    agent: str = "workflow",
-    workflow_id: Optional[str] = None,
-    app_name: Optional[str] = None,
-    run_id: Optional[str] = None,
+    headers: Optional[PackageHeaders] = None,
 ) -> ClientType:
     """
     Configure the AtlanClient or AsyncAtlanClient with package headers.
 
-    Each header value can be passed explicitly; if omitted, falls back to the
-    corresponding environment variable (X_ATLAN_AGENT_ID,
-    X_ATLAN_AGENT_PACKAGE_NAME, X_ATLAN_AGENT_WORKFLOW_ID).
-
     :param client: AtlanClient or AsyncAtlanClient instance to configure
-    :param agent: value for the x-atlan-agent header (default: "workflow")
-    :param workflow_id: value for the x-atlan-agent-id header (default: X_ATLAN_AGENT_ID env var)
-    :param app_name: value for the x-atlan-agent-package-name header
-        (default: X_ATLAN_AGENT_PACKAGE_NAME env var)
-    :param run_id: value for the x-atlan-agent-workflow-id header
-        (default: X_ATLAN_AGENT_WORKFLOW_ID env var)
+    :param headers: PackageHeaders instance; if None, reads from environment variables
     :returns: updated client instance of the same type.
     """
-    resolved_workflow_id = workflow_id or os.environ.get("X_ATLAN_AGENT_ID")
-    if agent and resolved_workflow_id:
-        headers: Dict[str, str] = {
-            "x-atlan-agent": agent,
-            "x-atlan-agent-id": resolved_workflow_id,
-            "x-atlan-agent-package-name": app_name
-            or os.environ.get("X_ATLAN_AGENT_PACKAGE_NAME", ""),
-            "x-atlan-agent-workflow-id": run_id
-            or os.environ.get("X_ATLAN_AGENT_WORKFLOW_ID", ""),
-        }
-        client.update_headers(headers)
+    pkg_headers = headers or PackageHeaders.from_env()
+    if pkg_headers and pkg_headers.workflow_id:
+        client.update_headers(pkg_headers.to_headers())
     return client
 
 
