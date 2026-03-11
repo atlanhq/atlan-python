@@ -1,3 +1,10 @@
+## 9.2.2 (March 11, 2026)
+
+### QOL Improvements
+
+- **`PackageHeaders` model and backward-compatible header emission**: Introduced a typed `PackageHeaders` model to manage package-related HTTP headers. `set_package_headers` now accepts explicit header values, and the SDK emits both `package-name` and `app-name` headers to maintain backward compatibility with older backends.
+- **`/release` skill**: Added a Claude Code skill to automate SDK releases — bumps version, drafts release notes, commits, and tags.
+
 ## 9.2.1 (March 10, 2026)
 
 ### Experimental: `pyatlan_v9`
