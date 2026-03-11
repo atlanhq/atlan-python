@@ -40,6 +40,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -81,7 +82,7 @@ class Table(Asset):
     COLUMN_COUNT: ClassVar[Any] = None
     ROW_COUNT: ClassVar[Any] = None
     SIZE_BYTES: ClassVar[Any] = None
-    TABLE_OBJECT_COUNT: ClassVar[Any] = None
+    SQL_OBJECT_COUNT: ClassVar[Any] = None
     ALIAS: ClassVar[Any] = None
     IS_TEMPORARY: ClassVar[Any] = None
     IS_QUERY_PREVIEW: ClassVar[Any] = None
@@ -95,16 +96,16 @@ class Table(Asset):
     TABLE_DEFINITION: ClassVar[Any] = None
     PARTITION_LIST: ClassVar[Any] = None
     IS_SHARDED: ClassVar[Any] = None
-    TABLE_TYPE: ClassVar[Any] = None
+    SQL_TYPE: ClassVar[Any] = None
     ICEBERG_CATALOG_NAME: ClassVar[Any] = None
     ICEBERG_TABLE_TYPE: ClassVar[Any] = None
     ICEBERG_CATALOG_SOURCE: ClassVar[Any] = None
     ICEBERG_CATALOG_TABLE_NAME: ClassVar[Any] = None
-    TABLE_IMPALA_PARAMETERS: ClassVar[Any] = None
+    SQL_IMPALA_PARAMETERS: ClassVar[Any] = None
     ICEBERG_CATALOG_TABLE_NAMESPACE: ClassVar[Any] = None
-    TABLE_EXTERNAL_VOLUME_NAME: ClassVar[Any] = None
+    SQL_EXTERNAL_VOLUME_NAME: ClassVar[Any] = None
     ICEBERG_TABLE_BASE_LOCATION: ClassVar[Any] = None
-    TABLE_RETENTION_TIME: ClassVar[Any] = None
+    SQL_RETENTION_TIME: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -128,6 +129,8 @@ class Table(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -165,6 +168,8 @@ class Table(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Table"
+
     column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this table."""
 
@@ -174,7 +179,7 @@ class Table(Asset):
     size_bytes: Union[int, None, UnsetType] = UNSET
     """Size of this table, in bytes."""
 
-    table_object_count: Union[int, None, UnsetType] = UNSET
+    sql_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects in this table."""
 
     alias: Union[str, None, UnsetType] = UNSET
@@ -216,7 +221,7 @@ class Table(Asset):
     is_sharded: Union[bool, None, UnsetType] = UNSET
     """Whether this table is a sharded table (true) or not (false)."""
 
-    table_type: Union[str, None, UnsetType] = UNSET
+    sql_type: Union[str, None, UnsetType] = UNSET
     """Type of the table."""
 
     iceberg_catalog_name: Union[str, None, UnsetType] = UNSET
@@ -231,19 +236,19 @@ class Table(Asset):
     iceberg_catalog_table_name: Union[str, None, UnsetType] = UNSET
     """Catalog table name (actual table name on the catalog side)."""
 
-    table_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
+    sql_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Extra attributes for Impala"""
 
     iceberg_catalog_table_namespace: Union[str, None, UnsetType] = UNSET
     """Catalog table namespace (actual database name on the catalog side)."""
 
-    table_external_volume_name: Union[str, None, UnsetType] = UNSET
+    sql_external_volume_name: Union[str, None, UnsetType] = UNSET
     """External volume name for the table."""
 
     iceberg_table_base_location: Union[str, None, UnsetType] = UNSET
     """Iceberg table base location inside the external volume."""
 
-    table_retention_time: Union[int, None, UnsetType] = UNSET
+    sql_retention_time: Union[int, None, UnsetType] = UNSET
     """Data retention time in days."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -316,6 +321,12 @@ class Table(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -447,80 +458,6 @@ class Table(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Table instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.atlan_schema is UNSET:
-                errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"Table validation failed: {errors}")
-
-    def minimize(self) -> "Table":
-        """
-        Return a minimal copy of this Table with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Table with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Table instance with only the minimum required fields.
-        """
-        self.validate()
-        return Table(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTable":
-        """
-        Create a :class:`RelatedTable` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedTable reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedTable(guid=self.guid)
-        return RelatedTable(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -661,7 +598,7 @@ class TableAttributes(AssetAttributes):
     size_bytes: Union[int, None, UnsetType] = UNSET
     """Size of this table, in bytes."""
 
-    table_object_count: Union[int, None, UnsetType] = UNSET
+    sql_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects in this table."""
 
     alias: Union[str, None, UnsetType] = UNSET
@@ -703,7 +640,7 @@ class TableAttributes(AssetAttributes):
     is_sharded: Union[bool, None, UnsetType] = UNSET
     """Whether this table is a sharded table (true) or not (false)."""
 
-    table_type: Union[str, None, UnsetType] = UNSET
+    sql_type: Union[str, None, UnsetType] = UNSET
     """Type of the table."""
 
     iceberg_catalog_name: Union[str, None, UnsetType] = UNSET
@@ -718,19 +655,19 @@ class TableAttributes(AssetAttributes):
     iceberg_catalog_table_name: Union[str, None, UnsetType] = UNSET
     """Catalog table name (actual table name on the catalog side)."""
 
-    table_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
+    sql_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Extra attributes for Impala"""
 
     iceberg_catalog_table_namespace: Union[str, None, UnsetType] = UNSET
     """Catalog table namespace (actual database name on the catalog side)."""
 
-    table_external_volume_name: Union[str, None, UnsetType] = UNSET
+    sql_external_volume_name: Union[str, None, UnsetType] = UNSET
     """External volume name for the table."""
 
     iceberg_table_base_location: Union[str, None, UnsetType] = UNSET
     """Iceberg table base location inside the external volume."""
 
-    table_retention_time: Union[int, None, UnsetType] = UNSET
+    sql_retention_time: Union[int, None, UnsetType] = UNSET
     """Data retention time in days."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -807,6 +744,12 @@ class TableRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -953,6 +896,8 @@ _TABLE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -998,7 +943,7 @@ def _populate_table_attrs(attrs: TableAttributes, obj: Table) -> None:
     attrs.column_count = obj.column_count
     attrs.row_count = obj.row_count
     attrs.size_bytes = obj.size_bytes
-    attrs.table_object_count = obj.table_object_count
+    attrs.sql_object_count = obj.sql_object_count
     attrs.alias = obj.alias
     attrs.is_temporary = obj.is_temporary
     attrs.is_query_preview = obj.is_query_preview
@@ -1012,16 +957,16 @@ def _populate_table_attrs(attrs: TableAttributes, obj: Table) -> None:
     attrs.table_definition = obj.table_definition
     attrs.partition_list = obj.partition_list
     attrs.is_sharded = obj.is_sharded
-    attrs.table_type = obj.table_type
+    attrs.sql_type = obj.sql_type
     attrs.iceberg_catalog_name = obj.iceberg_catalog_name
     attrs.iceberg_table_type = obj.iceberg_table_type
     attrs.iceberg_catalog_source = obj.iceberg_catalog_source
     attrs.iceberg_catalog_table_name = obj.iceberg_catalog_table_name
-    attrs.table_impala_parameters = obj.table_impala_parameters
+    attrs.sql_impala_parameters = obj.sql_impala_parameters
     attrs.iceberg_catalog_table_namespace = obj.iceberg_catalog_table_namespace
-    attrs.table_external_volume_name = obj.table_external_volume_name
+    attrs.sql_external_volume_name = obj.sql_external_volume_name
     attrs.iceberg_table_base_location = obj.iceberg_table_base_location
-    attrs.table_retention_time = obj.table_retention_time
+    attrs.sql_retention_time = obj.sql_retention_time
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1048,7 +993,7 @@ def _extract_table_attrs(attrs: TableAttributes) -> dict:
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
     result["size_bytes"] = attrs.size_bytes
-    result["table_object_count"] = attrs.table_object_count
+    result["sql_object_count"] = attrs.sql_object_count
     result["alias"] = attrs.alias
     result["is_temporary"] = attrs.is_temporary
     result["is_query_preview"] = attrs.is_query_preview
@@ -1062,16 +1007,16 @@ def _extract_table_attrs(attrs: TableAttributes) -> dict:
     result["table_definition"] = attrs.table_definition
     result["partition_list"] = attrs.partition_list
     result["is_sharded"] = attrs.is_sharded
-    result["table_type"] = attrs.table_type
+    result["sql_type"] = attrs.sql_type
     result["iceberg_catalog_name"] = attrs.iceberg_catalog_name
     result["iceberg_table_type"] = attrs.iceberg_table_type
     result["iceberg_catalog_source"] = attrs.iceberg_catalog_source
     result["iceberg_catalog_table_name"] = attrs.iceberg_catalog_table_name
-    result["table_impala_parameters"] = attrs.table_impala_parameters
+    result["sql_impala_parameters"] = attrs.sql_impala_parameters
     result["iceberg_catalog_table_namespace"] = attrs.iceberg_catalog_table_namespace
-    result["table_external_volume_name"] = attrs.table_external_volume_name
+    result["sql_external_volume_name"] = attrs.sql_external_volume_name
     result["iceberg_table_base_location"] = attrs.iceberg_table_base_location
-    result["table_retention_time"] = attrs.table_retention_time
+    result["sql_retention_time"] = attrs.sql_retention_time
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1128,9 +1073,6 @@ def _table_to_nested(table: Table) -> TableNested:
         is_incomplete=table.is_incomplete,
         provenance_type=table.provenance_type,
         home_id=table.home_id,
-        depth=table.depth,
-        immediate_upstream=table.immediate_upstream,
-        immediate_downstream=table.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1160,6 +1102,7 @@ def _table_from_nested(nested: TableNested) -> Table:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1168,9 +1111,6 @@ def _table_from_nested(nested: TableNested) -> Table:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_table_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1201,7 +1141,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 Table.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 Table.ROW_COUNT = NumericField("rowCount", "rowCount")
 Table.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
-Table.TABLE_OBJECT_COUNT = NumericField("tableObjectCount", "tableObjectCount")
+Table.SQL_OBJECT_COUNT = NumericField("sqlObjectCount", "sqlObjectCount")
 Table.ALIAS = KeywordField("alias", "alias")
 Table.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 Table.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
@@ -1219,7 +1159,7 @@ Table.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
 Table.TABLE_DEFINITION = KeywordField("tableDefinition", "tableDefinition")
 Table.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 Table.IS_SHARDED = BooleanField("isSharded", "isSharded")
-Table.TABLE_TYPE = KeywordField("tableType", "tableType")
+Table.SQL_TYPE = KeywordField("sqlType", "sqlType")
 Table.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
 Table.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
 Table.ICEBERG_CATALOG_SOURCE = KeywordField(
@@ -1228,19 +1168,17 @@ Table.ICEBERG_CATALOG_SOURCE = KeywordField(
 Table.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
     "icebergCatalogTableName", "icebergCatalogTableName"
 )
-Table.TABLE_IMPALA_PARAMETERS = KeywordField(
-    "tableImpalaParameters", "tableImpalaParameters"
-)
+Table.SQL_IMPALA_PARAMETERS = KeywordField("sqlImpalaParameters", "sqlImpalaParameters")
 Table.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
     "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
 )
-Table.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
-    "tableExternalVolumeName", "tableExternalVolumeName"
+Table.SQL_EXTERNAL_VOLUME_NAME = KeywordField(
+    "sqlExternalVolumeName", "sqlExternalVolumeName"
 )
 Table.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
     "icebergTableBaseLocation", "icebergTableBaseLocation"
 )
-Table.TABLE_RETENTION_TIME = NumericField("tableRetentionTime", "tableRetentionTime")
+Table.SQL_RETENTION_TIME = NumericField("sqlRetentionTime", "sqlRetentionTime")
 Table.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Table.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Table.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
@@ -1272,6 +1210,8 @@ Table.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Table.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Table.APPLICATION = RelationField("application")
 Table.APPLICATION_FIELD = RelationField("applicationField")
+Table.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Table.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Table.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Table.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Table.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

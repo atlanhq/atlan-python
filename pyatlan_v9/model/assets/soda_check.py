@@ -38,6 +38,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -63,18 +64,20 @@ class SodaCheck(Asset):
     Instance of a Soda check in Atlan.
     """
 
-    SODA_CHECK_ID: ClassVar[Any] = None
-    SODA_CHECK_EVALUATION_STATUS: ClassVar[Any] = None
+    SODA_ID: ClassVar[Any] = None
+    SODA_EVALUATION_STATUS: ClassVar[Any] = None
     SODA_CHECK_DEFINITION: ClassVar[Any] = None
-    SODA_CHECK_LAST_SCAN_AT: ClassVar[Any] = None
-    SODA_CHECK_INCIDENT_COUNT: ClassVar[Any] = None
-    SODA_CHECK_LINKED_ASSET_QUALIFIED_NAME: ClassVar[Any] = None
+    SODA_LAST_SCAN_AT: ClassVar[Any] = None
+    SODA_INCIDENT_COUNT: ClassVar[Any] = None
+    SODA_LINKED_ASSET_QUALIFIED_NAME: ClassVar[Any] = None
     DQ_IS_PART_OF_CONTRACT: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -101,22 +104,24 @@ class SodaCheck(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    soda_check_id: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SodaCheck"
+
+    soda_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the check in Soda."""
 
-    soda_check_evaluation_status: Union[str, None, UnsetType] = UNSET
+    soda_evaluation_status: Union[str, None, UnsetType] = UNSET
     """Status of the check in Soda."""
 
     soda_check_definition: Union[str, None, UnsetType] = UNSET
     """Definition of the check in Soda."""
 
-    soda_check_last_scan_at: Union[int, None, UnsetType] = UNSET
+    soda_last_scan_at: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_check_incident_count: Union[int, None, UnsetType] = UNSET
+    soda_incident_count: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_check_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
+    soda_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
     """QualifiedName of the asset associated with the check."""
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
@@ -136,6 +141,12 @@ class SodaCheck(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -224,66 +235,6 @@ class SodaCheck(Asset):
         self.type_name = "SodaCheck"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SodaCheck instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SodaCheck validation failed: {errors}")
-
-    def minimize(self) -> "SodaCheck":
-        """
-        Return a minimal copy of this SodaCheck with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SodaCheck with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SodaCheck instance with only the minimum required fields.
-        """
-        self.validate()
-        return SodaCheck(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSodaCheck":
-        """
-        Create a :class:`RelatedSodaCheck` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSodaCheck reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSodaCheck(guid=self.guid)
-        return RelatedSodaCheck(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -338,22 +289,22 @@ class SodaCheck(Asset):
 class SodaCheckAttributes(AssetAttributes):
     """SodaCheck-specific attributes for nested API format."""
 
-    soda_check_id: Union[str, None, UnsetType] = UNSET
+    soda_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the check in Soda."""
 
-    soda_check_evaluation_status: Union[str, None, UnsetType] = UNSET
+    soda_evaluation_status: Union[str, None, UnsetType] = UNSET
     """Status of the check in Soda."""
 
     soda_check_definition: Union[str, None, UnsetType] = UNSET
     """Definition of the check in Soda."""
 
-    soda_check_last_scan_at: Union[int, None, UnsetType] = UNSET
+    soda_last_scan_at: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_check_incident_count: Union[int, None, UnsetType] = UNSET
+    soda_incident_count: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_check_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
+    soda_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
     """QualifiedName of the asset associated with the check."""
 
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
@@ -377,6 +328,12 @@ class SodaCheckRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -486,6 +443,8 @@ _SODA_CHECK_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -517,28 +476,24 @@ _SODA_CHECK_REL_FIELDS: List[str] = [
 def _populate_soda_check_attrs(attrs: SodaCheckAttributes, obj: SodaCheck) -> None:
     """Populate SodaCheck-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.soda_check_id = obj.soda_check_id
-    attrs.soda_check_evaluation_status = obj.soda_check_evaluation_status
+    attrs.soda_id = obj.soda_id
+    attrs.soda_evaluation_status = obj.soda_evaluation_status
     attrs.soda_check_definition = obj.soda_check_definition
-    attrs.soda_check_last_scan_at = obj.soda_check_last_scan_at
-    attrs.soda_check_incident_count = obj.soda_check_incident_count
-    attrs.soda_check_linked_asset_qualified_name = (
-        obj.soda_check_linked_asset_qualified_name
-    )
+    attrs.soda_last_scan_at = obj.soda_last_scan_at
+    attrs.soda_incident_count = obj.soda_incident_count
+    attrs.soda_linked_asset_qualified_name = obj.soda_linked_asset_qualified_name
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
 
 
 def _extract_soda_check_attrs(attrs: SodaCheckAttributes) -> dict:
     """Extract all SodaCheck attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["soda_check_id"] = attrs.soda_check_id
-    result["soda_check_evaluation_status"] = attrs.soda_check_evaluation_status
+    result["soda_id"] = attrs.soda_id
+    result["soda_evaluation_status"] = attrs.soda_evaluation_status
     result["soda_check_definition"] = attrs.soda_check_definition
-    result["soda_check_last_scan_at"] = attrs.soda_check_last_scan_at
-    result["soda_check_incident_count"] = attrs.soda_check_incident_count
-    result["soda_check_linked_asset_qualified_name"] = (
-        attrs.soda_check_linked_asset_qualified_name
-    )
+    result["soda_last_scan_at"] = attrs.soda_last_scan_at
+    result["soda_incident_count"] = attrs.soda_incident_count
+    result["soda_linked_asset_qualified_name"] = attrs.soda_linked_asset_qualified_name
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     return result
 
@@ -576,9 +531,6 @@ def _soda_check_to_nested(soda_check: SodaCheck) -> SodaCheckNested:
         is_incomplete=soda_check.is_incomplete,
         provenance_type=soda_check.provenance_type,
         home_id=soda_check.home_id,
-        depth=soda_check.depth,
-        immediate_upstream=soda_check.immediate_upstream,
-        immediate_downstream=soda_check.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -610,6 +562,7 @@ def _soda_check_from_nested(nested: SodaCheckNested) -> SodaCheck:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -618,9 +571,6 @@ def _soda_check_from_nested(nested: SodaCheckNested) -> SodaCheck:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_soda_check_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -648,21 +598,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SodaCheck.SODA_CHECK_ID = KeywordField("sodaCheckId", "sodaCheckId")
-SodaCheck.SODA_CHECK_EVALUATION_STATUS = KeywordField(
-    "sodaCheckEvaluationStatus", "sodaCheckEvaluationStatus"
+SodaCheck.SODA_ID = KeywordField("sodaId", "sodaId")
+SodaCheck.SODA_EVALUATION_STATUS = KeywordField(
+    "sodaEvaluationStatus", "sodaEvaluationStatus"
 )
 SodaCheck.SODA_CHECK_DEFINITION = KeywordField(
     "sodaCheckDefinition", "sodaCheckDefinition"
 )
-SodaCheck.SODA_CHECK_LAST_SCAN_AT = NumericField(
-    "sodaCheckLastScanAt", "sodaCheckLastScanAt"
-)
-SodaCheck.SODA_CHECK_INCIDENT_COUNT = NumericField(
-    "sodaCheckIncidentCount", "sodaCheckIncidentCount"
-)
-SodaCheck.SODA_CHECK_LINKED_ASSET_QUALIFIED_NAME = KeywordField(
-    "sodaCheckLinkedAssetQualifiedName", "sodaCheckLinkedAssetQualifiedName"
+SodaCheck.SODA_LAST_SCAN_AT = NumericField("sodaLastScanAt", "sodaLastScanAt")
+SodaCheck.SODA_INCIDENT_COUNT = NumericField("sodaIncidentCount", "sodaIncidentCount")
+SodaCheck.SODA_LINKED_ASSET_QUALIFIED_NAME = KeywordField(
+    "sodaLinkedAssetQualifiedName", "sodaLinkedAssetQualifiedName"
 )
 SodaCheck.DQ_IS_PART_OF_CONTRACT = BooleanField(
     "dqIsPartOfContract", "dqIsPartOfContract"
@@ -672,6 +618,8 @@ SodaCheck.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SodaCheck.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SodaCheck.APPLICATION = RelationField("application")
 SodaCheck.APPLICATION_FIELD = RelationField("applicationField")
+SodaCheck.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SodaCheck.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 SodaCheck.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SodaCheck.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SodaCheck.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
