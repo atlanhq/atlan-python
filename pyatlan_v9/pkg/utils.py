@@ -24,6 +24,7 @@ class PackageHeaders(msgspec.Struct, frozen=True, kw_only=True):
         return {
             "x-atlan-agent": self.agent,
             "x-atlan-agent-id": self.workflow_id or "",
+            "x-atlan-agent-package-name": self.app_name or "",
             "x-atlan-agent-app-name": self.app_name or "",
             "x-atlan-agent-workflow-id": self.run_id or "",
         }

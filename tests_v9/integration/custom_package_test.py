@@ -101,6 +101,7 @@ def test_set_package_headers(client: AtlanClient, mock_pkg_env):
     expected_headers = {
         "x-atlan-agent": "workflow",
         "x-atlan-agent-id": "agent_id_value",
+        "x-atlan-agent-package-name": "package_name_value",
         "x-atlan-agent-app-name": "package_name_value",
         "x-atlan-agent-workflow-id": "workflow_id_value",
     }
@@ -120,6 +121,7 @@ def test_set_package_headers_explicit_values(client: AtlanClient):
     expected_headers = {
         "x-atlan-agent": "custom-agent",
         "x-atlan-agent-id": "wf-123",
+        "x-atlan-agent-package-name": "my-app",
         "x-atlan-agent-app-name": "my-app",
         "x-atlan-agent-workflow-id": "run-456",
     }
@@ -137,6 +139,7 @@ def test_set_package_headers_explicit_overrides_env(client: AtlanClient, mock_pk
     expected_headers = {
         "x-atlan-agent": "workflow",
         "x-atlan-agent-id": "override-wf-id",
+        "x-atlan-agent-package-name": "override-app",
         "x-atlan-agent-app-name": "override-app",
         "x-atlan-agent-workflow-id": "",
     }
