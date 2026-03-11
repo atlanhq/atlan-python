@@ -1,12 +1,12 @@
 ---
 name: release
-description: Create a new SDK release — bump version, update HISTORY.md, commit, and tag
+description: Create a new SDK release — bump version, update HISTORY.md, and commit on a release branch
 allowed-tools: Read, Bash, Edit, Write, Glob, Grep, Agent, WebFetch
 ---
 
 # Create SDK Release
 
-Bumps the SDK version, generates release notes in HISTORY.md, commits, and creates a git tag.
+Bumps the SDK version, generates release notes in HISTORY.md, and commits on a dedicated release branch.
 
 ## Usage
 
@@ -36,10 +36,10 @@ Confirm the new version with the user before proceeding.
 
 Run:
 ```bash
-git log --oneline $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD
+git log --oneline $(git log --oneline | grep "\[release\]" | head -1 | awk '{print $1}')..HEAD
 ```
 
-If no tags exist, use all commits on the current branch. This gives you the list of changes to summarize.
+This finds commits since the last `[release]` commit. If none exist, use all commits on the current branch.
 
 Also check merged PRs for additional context:
 ```bash
@@ -78,38 +78,47 @@ Present the draft to the user for review and iterate until approved.
 
 ---
 
-### 4. Update version.txt
+### 4. Create release branch
+
+Checkout a new branch from main:
+
+```bash
+git checkout -b bump-to-release-X.Y.Z
+```
+
+---
+
+### 5. Update version.txt
 
 Write the new version number to `pyatlan/version.txt` (single line, no trailing newline beyond what was there).
 
 ---
 
-### 5. Update HISTORY.md
+### 6. Update HISTORY.md
 
 Prepend the new release notes to the top of `HISTORY.md`, followed by a blank line before the previous release.
 
 ---
 
-### 6. Commit and tag
+### 7. Commit
 
 ```bash
 git add pyatlan/version.txt HISTORY.md
 git commit -m "[release] Bumped to release X.Y.Z"
-git tag vX.Y.Z
 ```
 
 The commit message must follow the exact pattern: `[release] Bumped to release X.Y.Z`
 
-The tag must be `vX.Y.Z` (with the `v` prefix) — this is validated by `check_tag.py` during publishing.
+Do NOT create a git tag.
 
 ---
 
-### 7. Push
+### 8. Push
 
 Ask the user before pushing. When confirmed:
 
 ```bash
-git push && git push --tags
+git push -u origin bump-to-release-X.Y.Z
 ```
 
 ---
@@ -117,6 +126,4 @@ git push && git push --tags
 ## Notes
 
 - The version in `pyatlan/version.txt` is the single source of truth — `pyproject.toml` reads it dynamically
-- The git tag must match the version (`vX.Y.Z` ↔ `X.Y.Z`) — enforced by `check_tag.py` in CI
 - GitHub's `release.yml` auto-categorizes PRs by label into GitHub release notes, but `HISTORY.md` is the canonical changelog maintained manually
-- After pushing the tag, a GitHub Release should be created (manually or via GitHub UI) to trigger the PyPI publish workflow
