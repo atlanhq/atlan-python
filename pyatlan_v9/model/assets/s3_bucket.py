@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -48,7 +49,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .s3_related import RelatedS3Bucket, RelatedS3Object, RelatedS3Prefix
+from .s3_related import RelatedS3Object, RelatedS3Prefix
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -85,6 +86,8 @@ class S3Bucket(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -110,6 +113,8 @@ class S3Bucket(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "S3Bucket"
 
     s3_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects within the bucket."""
@@ -173,6 +178,12 @@ class S3Bucket(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -259,66 +270,6 @@ class S3Bucket(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "S3Bucket"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this S3Bucket instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"S3Bucket validation failed: {errors}")
-
-    def minimize(self) -> "S3Bucket":
-        """
-        Return a minimal copy of this S3Bucket with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new S3Bucket with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new S3Bucket instance with only the minimum required fields.
-        """
-        self.validate()
-        return S3Bucket(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedS3Bucket":
-        """
-        Create a :class:`RelatedS3Bucket` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedS3Bucket reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedS3Bucket(guid=self.guid)
-        return RelatedS3Bucket(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -496,6 +447,12 @@ class S3BucketRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -604,6 +561,8 @@ _S3_BUCKET_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -708,9 +667,6 @@ def _s3_bucket_to_nested(s3_bucket: S3Bucket) -> S3BucketNested:
         is_incomplete=s3_bucket.is_incomplete,
         provenance_type=s3_bucket.provenance_type,
         home_id=s3_bucket.home_id,
-        depth=s3_bucket.depth,
-        immediate_upstream=s3_bucket.immediate_upstream,
-        immediate_downstream=s3_bucket.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -742,6 +698,7 @@ def _s3_bucket_from_nested(nested: S3BucketNested) -> S3Bucket:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -750,9 +707,6 @@ def _s3_bucket_from_nested(nested: S3BucketNested) -> S3Bucket:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_s3_bucket_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -810,6 +764,8 @@ S3Bucket.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 S3Bucket.ANOMALO_CHECKS = RelationField("anomaloChecks")
 S3Bucket.APPLICATION = RelationField("application")
 S3Bucket.APPLICATION_FIELD = RelationField("applicationField")
+S3Bucket.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+S3Bucket.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 S3Bucket.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 S3Bucket.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 S3Bucket.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

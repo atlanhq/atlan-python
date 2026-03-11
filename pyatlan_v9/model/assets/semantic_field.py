@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -47,7 +48,6 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .semantic_related import RelatedSemanticField
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -74,6 +74,8 @@ class SemanticField(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -97,6 +99,8 @@ class SemanticField(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SemanticField"
 
     semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
@@ -133,6 +137,12 @@ class SemanticField(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -213,66 +223,6 @@ class SemanticField(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SemanticField"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SemanticField instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SemanticField validation failed: {errors}")
-
-    def minimize(self) -> "SemanticField":
-        """
-        Return a minimal copy of this SemanticField with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SemanticField with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SemanticField instance with only the minimum required fields.
-        """
-        self.validate()
-        return SemanticField(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSemanticField":
-        """
-        Create a :class:`RelatedSemanticField` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSemanticField reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSemanticField(guid=self.guid)
-        return RelatedSemanticField(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -368,6 +318,12 @@ class SemanticFieldRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -473,6 +429,8 @@ _SEMANTIC_FIELD_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -559,9 +517,6 @@ def _semantic_field_to_nested(semantic_field: SemanticField) -> SemanticFieldNes
         is_incomplete=semantic_field.is_incomplete,
         provenance_type=semantic_field.provenance_type,
         home_id=semantic_field.home_id,
-        depth=semantic_field.depth,
-        immediate_upstream=semantic_field.immediate_upstream,
-        immediate_downstream=semantic_field.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -595,6 +550,7 @@ def _semantic_field_from_nested(nested: SemanticFieldNested) -> SemanticField:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -603,9 +559,6 @@ def _semantic_field_from_nested(nested: SemanticFieldNested) -> SemanticField:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_semantic_field_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -652,6 +605,10 @@ SemanticField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks"
 SemanticField.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SemanticField.APPLICATION = RelationField("application")
 SemanticField.APPLICATION_FIELD = RelationField("applicationField")
+SemanticField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SemanticField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SemanticField.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SemanticField.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SemanticField.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
