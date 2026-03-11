@@ -10,7 +10,7 @@ from pyatlan.pkg.ui import UIConfig, UIStep
 from pyatlan.pkg.widgets import TextInput
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.client.impersonate import V9ImpersonationClient
-from pyatlan_v9.pkg.utils import get_client, set_package_headers
+from pyatlan_v9.pkg.utils import PackageHeaders, get_client, set_package_headers
 
 
 @pytest.fixture
@@ -18,7 +18,6 @@ def mock_pkg_env():
     with patch.dict(
         os.environ,
         {
-            "X_ATLAN_AGENT": "agent_value",
             "X_ATLAN_AGENT_ID": "agent_id_value",
             "X_ATLAN_AGENT_PACKAGE_NAME": "package_name_value",
             "X_ATLAN_AGENT_WORKFLOW_ID": "workflow_id_value",
@@ -100,12 +99,59 @@ def test_set_package_headers(client: AtlanClient, mock_pkg_env):
     mock_client = MagicMock(spec=client)
     updated_client = set_package_headers(mock_client)
     expected_headers = {
-        "x-atlan-agent": "agent_value",
+        "x-atlan-agent": "workflow",
         "x-atlan-agent-id": "agent_id_value",
         "x-atlan-agent-package-name": "package_name_value",
+        "x-atlan-agent-app-name": "package_name_value",
         "x-atlan-agent-workflow-id": "workflow_id_value",
     }
     mock_client.update_headers.assert_called_once_with(expected_headers)
+    assert updated_client == mock_client
+
+
+def test_set_package_headers_explicit_values(client: AtlanClient):
+    mock_client = MagicMock(spec=client)
+    headers = PackageHeaders(
+        agent="custom-agent",
+        workflow_id="wf-123",
+        app_name="my-app",
+        run_id="run-456",
+    )
+    updated_client = set_package_headers(mock_client, headers=headers)
+    expected_headers = {
+        "x-atlan-agent": "custom-agent",
+        "x-atlan-agent-id": "wf-123",
+        "x-atlan-agent-package-name": "my-app",
+        "x-atlan-agent-app-name": "my-app",
+        "x-atlan-agent-workflow-id": "run-456",
+    }
+    mock_client.update_headers.assert_called_once_with(expected_headers)
+    assert updated_client == mock_client
+
+
+def test_set_package_headers_explicit_overrides_env(client: AtlanClient, mock_pkg_env):
+    mock_client = MagicMock(spec=client)
+    headers = PackageHeaders(
+        workflow_id="override-wf-id",
+        app_name="override-app",
+    )
+    updated_client = set_package_headers(mock_client, headers=headers)
+    expected_headers = {
+        "x-atlan-agent": "workflow",
+        "x-atlan-agent-id": "override-wf-id",
+        "x-atlan-agent-package-name": "override-app",
+        "x-atlan-agent-app-name": "override-app",
+        "x-atlan-agent-workflow-id": "",
+    }
+    mock_client.update_headers.assert_called_once_with(expected_headers)
+    assert updated_client == mock_client
+
+
+def test_set_package_headers_no_workflow_id(client: AtlanClient):
+    mock_client = MagicMock(spec=client)
+    with patch.dict(os.environ, {}, clear=True):
+        updated_client = set_package_headers(mock_client)
+    mock_client.update_headers.assert_not_called()
     assert updated_client == mock_client
 
 
