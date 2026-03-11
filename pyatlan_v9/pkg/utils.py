@@ -68,25 +68,38 @@ def get_client(
     return client
 
 
-def set_package_headers(client: AtlanClient) -> AtlanClient:
+def set_package_headers(
+    client: AtlanClient,
+    agent: str = "workflow",
+    workflow_id: Optional[str] = None,
+    app_name: Optional[str] = None,
+    run_id: Optional[str] = None,
+) -> AtlanClient:
     """
-    Configure the AtlanClient with package headers from environment variables.
+    Configure the AtlanClient with package headers.
+
+    Each header value can be passed explicitly; if omitted, falls back to the
+    corresponding environment variable (X_ATLAN_AGENT_ID,
+    X_ATLAN_AGENT_PACKAGE_NAME, X_ATLAN_AGENT_WORKFLOW_ID).
 
     :param client: AtlanClient instance to configure
+    :param agent: value for the x-atlan-agent header (default: "workflow")
+    :param workflow_id: value for the x-atlan-agent-id header (default: X_ATLAN_AGENT_ID env var)
+    :param app_name: value for the x-atlan-agent-package-name header
+        (default: X_ATLAN_AGENT_PACKAGE_NAME env var)
+    :param run_id: value for the x-atlan-agent-workflow-id header
+        (default: X_ATLAN_AGENT_WORKFLOW_ID env var)
     :returns: updated client instance
     """
-    if (agent := os.environ.get("X_ATLAN_AGENT")) and (
-        agent_id := os.environ.get("X_ATLAN_AGENT_ID")
-    ):
+    resolved_workflow_id = workflow_id or os.environ.get("X_ATLAN_AGENT_ID")
+    if agent and resolved_workflow_id:
         headers = {
             "x-atlan-agent": agent,
-            "x-atlan-agent-id": agent_id,
-            "x-atlan-agent-package-name": os.environ.get(
-                "X_ATLAN_AGENT_PACKAGE_NAME", ""
-            ),
-            "x-atlan-agent-workflow-id": os.environ.get(
-                "X_ATLAN_AGENT_WORKFLOW_ID", ""
-            ),
+            "x-atlan-agent-id": resolved_workflow_id,
+            "x-atlan-agent-package-name": app_name
+            or os.environ.get("X_ATLAN_AGENT_PACKAGE_NAME", ""),
+            "x-atlan-agent-workflow-id": run_id
+            or os.environ.get("X_ATLAN_AGENT_WORKFLOW_ID", ""),
         }
         client.update_headers(headers)
     return client

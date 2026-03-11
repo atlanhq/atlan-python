@@ -100,12 +100,56 @@ def test_set_package_headers(client: AtlanClient, mock_pkg_env):
     mock_client = MagicMock(spec=client)
     updated_client = set_package_headers(mock_client)
     expected_headers = {
-        "x-atlan-agent": "agent_value",
+        "x-atlan-agent": "workflow",
         "x-atlan-agent-id": "agent_id_value",
         "x-atlan-agent-package-name": "package_name_value",
         "x-atlan-agent-workflow-id": "workflow_id_value",
     }
     mock_client.update_headers.assert_called_once_with(expected_headers)
+    assert updated_client == mock_client
+
+
+def test_set_package_headers_explicit_values(client: AtlanClient):
+    mock_client = MagicMock(spec=client)
+    updated_client = set_package_headers(
+        mock_client,
+        agent="custom-agent",
+        workflow_id="wf-123",
+        app_name="my-app",
+        run_id="run-456",
+    )
+    expected_headers = {
+        "x-atlan-agent": "custom-agent",
+        "x-atlan-agent-id": "wf-123",
+        "x-atlan-agent-package-name": "my-app",
+        "x-atlan-agent-workflow-id": "run-456",
+    }
+    mock_client.update_headers.assert_called_once_with(expected_headers)
+    assert updated_client == mock_client
+
+
+def test_set_package_headers_explicit_overrides_env(client: AtlanClient, mock_pkg_env):
+    mock_client = MagicMock(spec=client)
+    updated_client = set_package_headers(
+        mock_client,
+        workflow_id="override-wf-id",
+        app_name="override-app",
+    )
+    expected_headers = {
+        "x-atlan-agent": "workflow",
+        "x-atlan-agent-id": "override-wf-id",
+        "x-atlan-agent-package-name": "override-app",
+        "x-atlan-agent-workflow-id": "workflow_id_value",
+    }
+    mock_client.update_headers.assert_called_once_with(expected_headers)
+    assert updated_client == mock_client
+
+
+def test_set_package_headers_no_workflow_id(client: AtlanClient):
+    mock_client = MagicMock(spec=client)
+    with patch.dict(os.environ, {}, clear=True):
+        updated_client = set_package_headers(mock_client)
+    mock_client.update_headers.assert_not_called()
     assert updated_client == mock_client
 
 
