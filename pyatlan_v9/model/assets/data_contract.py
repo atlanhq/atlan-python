@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import re
 from json import JSONDecodeError, loads
-from typing import Type, Union
+from typing import TYPE_CHECKING, Tuple, Type, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -31,6 +31,10 @@ from .catalog import (
     CatalogRelationshipAttributes,
 )
 from .catalog_related import RelatedCatalog
+
+if TYPE_CHECKING:
+    from pyatlan_v9.client.atlan import AtlanClient
+    from pyatlan_v9.model.response import AssetMutationResponse
 
 
 @register_asset
@@ -94,6 +98,62 @@ class DataContract(Catalog):
             data_contract_spec=attrs.data_contract_spec,
             data_contract_asset_latest=asset_ref,
         )
+
+    @staticmethod
+    def save(
+        client: "AtlanClient",
+        contract: "DataContract",
+    ) -> "AssetMutationResponse":
+        """Save a DataContract.
+
+        The contract's ``data_contract_asset_latest`` relationship (set by
+        ``creator()``) links the contract to the governed asset automatically.
+
+        :param client: connectivity to an Atlan tenant
+        :param contract: DataContract to save (from ``DataContract.creator()``)
+        :returns: the result of the save
+        """
+        return client.asset.save(contract)
+
+    @staticmethod
+    def delete(
+        client: "AtlanClient",
+        contract_guid: str,
+        linked_asset_guid: str,
+    ) -> "Tuple[AssetMutationResponse, AssetMutationResponse]":
+        """Delete (purge) a DataContract and clean up the linked asset.
+
+        Uses hard-delete to avoid qualified-name conflicts on re-creation,
+        and clears ``hasContract``, ``dataContractLatest``, and
+        ``dataContractLatestCertified`` on the linked asset.
+
+        :param client: connectivity to an Atlan tenant
+        :param contract_guid: GUID of the DataContract to delete
+        :param linked_asset_guid: GUID of the asset the contract was linked to
+        :returns: tuple of (contract delete response, asset update response)
+        """
+        from pyatlan.client.constants import BULK_UPDATE
+        from pyatlan_v9.client.asset import _parse_mutation_response
+
+        delete_response = client.asset.purge_by_guid(contract_guid)
+
+        # Build raw payload because v9 Asset doesn't model these fields
+        asset_payload = {
+            "entities": [
+                {
+                    "guid": linked_asset_guid,
+                    "typeName": "IndistinctAsset",
+                    "attributes": {"hasContract": False},
+                    "relationshipAttributes": {
+                        "dataContractLatest": None,
+                        "dataContractLatestCertified": None,
+                    },
+                }
+            ]
+        }
+        raw_json = client._call_api(BULK_UPDATE, {}, asset_payload)
+        asset_response = _parse_mutation_response(raw_json)
+        return delete_response, asset_response
 
     @classmethod
     def updater(cls, *, qualified_name: str, name: str) -> "DataContract":

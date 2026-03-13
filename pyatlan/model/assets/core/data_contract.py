@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from json import JSONDecodeError, loads
-from typing import ClassVar, List, Optional, Type, Union
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Tuple, Type, Union
 
 from pydantic.v1 import Field, validator
 
@@ -20,6 +20,10 @@ from pyatlan.model.fields.atlan_fields import (
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .catalog import Catalog
+
+if TYPE_CHECKING:
+    from pyatlan.client.atlan import AtlanClient
+    from pyatlan.model.response import AssetMutationResponse
 
 
 class DataContract(Catalog):
@@ -46,6 +50,51 @@ class DataContract(Catalog):
             contract_spec=contract_spec,
         )
         return cls(attributes=attributes)
+
+    @staticmethod
+    def save(
+        client: "AtlanClient",
+        contract: "DataContract",
+    ) -> "AssetMutationResponse":
+        """Save a DataContract.
+
+        The contract's ``data_contract_asset_latest`` relationship (set by
+        ``creator()``) links the contract to the governed asset automatically.
+
+        :param client: connectivity to an Atlan tenant
+        :param contract: DataContract to save (from ``DataContract.creator()``)
+        :returns: the result of the save
+        """
+        return client.asset.save(contract)
+
+    @staticmethod
+    def delete(
+        client: "AtlanClient",
+        contract_guid: str,
+        linked_asset_guid: str,
+    ) -> "Tuple[AssetMutationResponse, AssetMutationResponse]":
+        """Delete (purge) a DataContract and clean up the linked asset.
+
+        Uses hard-delete to avoid qualified-name conflicts on re-creation,
+        and clears ``hasContract``, ``dataContractLatest``, and
+        ``dataContractLatestCertified`` on the linked asset.
+
+        :param client: connectivity to an Atlan tenant
+        :param contract_guid: GUID of the DataContract to delete
+        :param linked_asset_guid: GUID of the asset the contract was linked to
+        :returns: tuple of (contract delete response, asset update response)
+        """
+        from pyatlan.model.assets.core.indistinct_asset import IndistinctAsset
+
+        delete_response = client.asset.purge_by_guid(contract_guid)
+
+        asset_update = IndistinctAsset()
+        asset_update.guid = linked_asset_guid
+        asset_update.has_contract = False
+        asset_update.data_contract_latest = None  # type: ignore[assignment]
+        asset_update.data_contract_latest_certified = None  # type: ignore[assignment]
+        asset_response = client.asset.save(asset_update)
+        return delete_response, asset_response
 
     type_name: str = Field(default="DataContract", allow_mutation=False)
 

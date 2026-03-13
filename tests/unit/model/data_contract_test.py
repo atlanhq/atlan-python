@@ -1,11 +1,13 @@
 from json import dumps
 from typing import Union
+from unittest.mock import MagicMock
 
 import pytest
 
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import DataContract, Table
 from pyatlan.model.contract import DataContractSpec
+from pyatlan.model.response import AssetMutationResponse
 from tests.unit.model.constants import (
     ASSET_QUALIFIED_NAME,
     DATA_CONTRACT_JSON,
@@ -147,3 +149,45 @@ def test_trim_to_required():
         qualified_name=DATA_CONTRACT_QUALIFIED_NAME,
     ).trim_to_required()
     _assert_contract(test_contract, False)
+
+
+class TestSaveContract:
+    def test_save_delegates_to_asset_client(self):
+        """save() should delegate to client.asset.save()."""
+        mock_client = MagicMock()
+        contract = DataContract.creator(
+            asset_qualified_name=ASSET_QUALIFIED_NAME,
+            asset_type=Table,
+            contract_json=dumps(DATA_CONTRACT_JSON),
+        )
+        expected_response = MagicMock(spec=AssetMutationResponse)
+        mock_client.asset.save.return_value = expected_response
+
+        result = DataContract.save(client=mock_client, contract=contract)
+
+        assert result == expected_response
+        mock_client.asset.save.assert_called_once_with(contract)
+
+
+class TestDeleteContract:
+    def test_delete_purges_and_clears_linked_asset(self):
+        """delete() should purge the contract and clear linked asset state."""
+        mock_client = MagicMock()
+        delete_response = MagicMock(spec=AssetMutationResponse)
+        asset_response = MagicMock(spec=AssetMutationResponse)
+        mock_client.asset.purge_by_guid.return_value = delete_response
+        mock_client.asset.save.return_value = asset_response
+
+        result = DataContract.delete(
+            client=mock_client,
+            contract_guid="contract-guid-123",
+            linked_asset_guid="asset-guid-456",
+        )
+
+        assert result == (delete_response, asset_response)
+        mock_client.asset.purge_by_guid.assert_called_once_with("contract-guid-123")
+        asset_update = mock_client.asset.save.call_args[0][0]
+        assert asset_update.guid == "asset-guid-456"
+        assert asset_update.has_contract is False
+        assert asset_update.data_contract_latest is None
+        assert asset_update.data_contract_latest_certified is None
