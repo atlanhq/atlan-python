@@ -480,6 +480,36 @@ class TestAttributeDef:
                 == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
             )
 
+    def test_string_and_rich_text_are_distinct_enum_members(self):
+        """Test that STRING and RICH_TEXT are distinct enum members (not aliases)"""
+        assert (
+            AtlanCustomAttributePrimitiveType.STRING
+            is not AtlanCustomAttributePrimitiveType.RICH_TEXT
+        )
+        assert (
+            AtlanCustomAttributePrimitiveType.STRING
+            != AtlanCustomAttributePrimitiveType.RICH_TEXT
+        )
+        assert (
+            AtlanCustomAttributePrimitiveType.STRING.value
+            != AtlanCustomAttributePrimitiveType.RICH_TEXT.value
+        )
+
+    def test_string_attribute_is_not_rich_text(self, client: AtlanClient):
+        """Test that STRING attributes do NOT have is_rich_text set"""
+        with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:
+            mock_get_qa.return_value = set()
+            attr_def = AttributeDef.create(
+                client=client,
+                display_name="Plain String",
+                attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+            )
+
+        assert attr_def.options
+        assert attr_def.options.is_rich_text is False
+        assert attr_def.options.primitive_type == "string"
+        assert attr_def.type_name == "string"
+
     def test_rich_text_attribute_creation(self, client: AtlanClient):
         """Test that RICH_TEXT attributes are created with correct options"""
         with patch("pyatlan.model.typedef._get_all_qualified_names") as mock_get_qa:

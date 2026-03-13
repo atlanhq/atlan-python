@@ -402,7 +402,7 @@ class AtlanCustomAttributePrimitiveType(str, Enum):
     URL = "url"
     SQL = "SQL"
     LONG = "long"
-    RICH_TEXT = "string"
+    RICH_TEXT = "rich_text"
 
 
 class AtlanDeleteType(str, Enum):
