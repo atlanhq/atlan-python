@@ -17,7 +17,7 @@ class DQCondition(AtlanObject):
     """Data quality rule condition."""
 
     type: DataQualityRuleTemplateConfigRuleConditions = Field(description="")
-    value: Optional[Union[str, int, List[str], Dict[str, Any]]] = Field(
+    value: Optional[Union[int, str, List[str], Dict[str, Any]]] = Field(
         default=None, description=""
     )
     min_value: Optional[int] = Field(default=None, description="")
@@ -30,7 +30,7 @@ class DQCondition(AtlanObject):
     def __init__(
         self,
         type: DataQualityRuleTemplateConfigRuleConditions,
-        value: Optional[Union[str, int, List[str], Dict[str, Any]]] = None,
+        value: Optional[Union[int, str, List[str], Dict[str, Any]]] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
         reference_table: Optional[str] = None,
@@ -148,7 +148,7 @@ class DQRuleConditionsBuilder:
     def add_condition(
         self,
         type: DataQualityRuleTemplateConfigRuleConditions,
-        value: Optional[Union[str, int, List[str]]] = None,
+        value: Optional[Union[int, str, List[str]]] = None,
         min_value: Optional[int] = None,
         max_value: Optional[int] = None,
         reference_table: Optional[str] = None,
