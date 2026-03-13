@@ -310,8 +310,12 @@ def contract(
         asset_qualified_name=table.qualified_name,
         contract_json=dumps(contract_json),
     )
-    response = client.asset.save(contract)
-    result = response.assets_created(asset_type=DataContract)[0]
+    contract_response, _ = DataContract.save_contract(
+        client=client,
+        contract=contract,
+        linked_asset_guid=table.guid,
+    )
+    result = contract_response.assets_created(asset_type=DataContract)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=DataContract)
 
@@ -518,18 +522,25 @@ def test_product_get_assets(client: AtlanClient, product: DataProduct):
 
 
 @pytest.mark.order(after="test_retrieve_contract")
-def test_delete_contract(client: AtlanClient, contract: DataContract):
-    response = client.asset.purge_by_guid(contract.guid)
-    assert response
-    assert not response.assets_created(asset_type=DataContract)
-    assert not response.assets_updated(asset_type=DataContract)
-    deleted = response.assets_deleted(asset_type=DataContract)
+def test_delete_contract(client: AtlanClient, table: Table, contract: DataContract):
+    assert table.guid
+    delete_response, asset_response = DataContract.delete_contract(
+        client=client,
+        contract_guid=contract.guid,
+        linked_asset_guid=table.guid,
+    )
+    assert delete_response
+    assert not delete_response.assets_created(asset_type=DataContract)
+    assert not delete_response.assets_updated(asset_type=DataContract)
+    deleted = delete_response.assets_deleted(asset_type=DataContract)
     assert deleted
     assert len(deleted) == 1
     assert deleted[0].guid == contract.guid
     assert deleted[0].qualified_name == contract.qualified_name
     assert deleted[0].delete_handler == "PURGE"
     assert deleted[0].status == EntityStatus.DELETED
+    # Verify the linked asset was cleaned up
+    assert asset_response
 
 
 @pytest.mark.order(after="test_retrieve_product")

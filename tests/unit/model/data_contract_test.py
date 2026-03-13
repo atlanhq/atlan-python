@@ -1,11 +1,13 @@
 from json import dumps
 from typing import Union
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import DataContract
 from pyatlan.model.contract import DataContractSpec
+from pyatlan.model.response import AssetMutationResponse
 from tests.unit.model.constants import (
     ASSET_QUALIFIED_NAME,
     DATA_CONTRACT_JSON,
@@ -128,3 +130,84 @@ def test_trim_to_required():
         qualified_name=DATA_CONTRACT_QUALIFIED_NAME,
     ).trim_to_required()
     _assert_contract(test_contract, False)
+
+
+class TestSaveContract:
+    def test_save_contract_sets_data_contract_latest_and_has_contract(self):
+        """save_contract should save the contract then update the linked asset."""
+        mock_client = MagicMock()
+        contract = DataContract.creator(
+            asset_qualified_name=ASSET_QUALIFIED_NAME,
+            contract_json=dumps(DATA_CONTRACT_JSON),
+        )
+        saved_contract = MagicMock()
+        saved_contract.guid = "contract-guid-123"
+
+        contract_response = MagicMock(spec=AssetMutationResponse)
+        contract_response.assets_created.return_value = [saved_contract]
+        asset_response = MagicMock(spec=AssetMutationResponse)
+        mock_client.asset.save.side_effect = [contract_response, asset_response]
+
+        result = DataContract.save_contract(
+            client=mock_client,
+            contract=contract,
+            linked_asset_guid="asset-guid-456",
+        )
+
+        assert result == (contract_response, asset_response)
+        assert mock_client.asset.save.call_count == 2
+        # Verify the second save call updates the linked asset
+        asset_update = mock_client.asset.save.call_args_list[1][0][0]
+        assert asset_update.guid == "asset-guid-456"
+        assert asset_update.has_contract is True
+        assert asset_update.data_contract_latest is not None
+        assert asset_update.data_contract_latest.guid == "contract-guid-123"
+
+    def test_save_contract_handles_update(self):
+        """save_contract should work when contract is updated (not created)."""
+        mock_client = MagicMock()
+        contract = DataContract.creator(
+            asset_qualified_name=ASSET_QUALIFIED_NAME,
+            contract_json=dumps(DATA_CONTRACT_JSON),
+        )
+        saved_contract = MagicMock()
+        saved_contract.guid = "contract-guid-789"
+
+        contract_response = MagicMock(spec=AssetMutationResponse)
+        contract_response.assets_created.return_value = []
+        contract_response.assets_updated.return_value = [saved_contract]
+        asset_response = MagicMock(spec=AssetMutationResponse)
+        mock_client.asset.save.side_effect = [contract_response, asset_response]
+
+        result = DataContract.save_contract(
+            client=mock_client,
+            contract=contract,
+            linked_asset_guid="asset-guid-456",
+        )
+
+        assert result == (contract_response, asset_response)
+        assert mock_client.asset.save.call_count == 2
+
+
+class TestDeleteContract:
+    def test_delete_contract_purges_and_clears_has_contract(self):
+        """delete_contract should purge the contract and clear hasContract."""
+        mock_client = MagicMock()
+        delete_response = MagicMock(spec=AssetMutationResponse)
+        mock_client.asset.purge_by_guid.return_value = delete_response
+        asset_response = MagicMock(spec=AssetMutationResponse)
+        mock_client.asset.save.return_value = asset_response
+
+        result = DataContract.delete_contract(
+            client=mock_client,
+            contract_guid="contract-guid-123",
+            linked_asset_guid="asset-guid-456",
+        )
+
+        assert result == (delete_response, asset_response)
+        mock_client.asset.purge_by_guid.assert_called_once_with("contract-guid-123")
+        # Verify the asset update clears contract state
+        asset_update = mock_client.asset.save.call_args[0][0]
+        assert asset_update.guid == "asset-guid-456"
+        assert asset_update.has_contract is False
+        assert asset_update.data_contract_latest is None
