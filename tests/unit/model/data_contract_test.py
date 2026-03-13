@@ -1,13 +1,11 @@
 from json import dumps
 from typing import Union
-from unittest.mock import MagicMock
 
 import pytest
 
 from pyatlan.errors import InvalidRequestError
-from pyatlan.model.assets import DataContract
+from pyatlan.model.assets import DataContract, Table
 from pyatlan.model.contract import DataContractSpec
-from pyatlan.model.response import AssetMutationResponse
 from tests.unit.model.constants import (
     ASSET_QUALIFIED_NAME,
     DATA_CONTRACT_JSON,
@@ -44,6 +42,7 @@ def test_creator_with_missing_parameters_raise_value_error(
     with pytest.raises(ValueError, match=message):
         DataContract.creator(  # type: ignore
             asset_qualified_name=asset_qualified_name,
+            asset_type=Table,
             contract_json=contract_json,
             contract_spec=contract_spec,
         )
@@ -70,6 +69,7 @@ def test_creator_with_invalid_contract_json_raises_error(
     with pytest.raises(InvalidRequestError, match=error_msg):
         DataContract.creator(
             asset_qualified_name=asset_qualified_name,
+            asset_type=Table,
             contract_json=contract_json,
         )
 
@@ -77,6 +77,7 @@ def test_creator_with_invalid_contract_json_raises_error(
 def test_creator_atttributes_with_required_parameters():
     attributes = DataContract.Attributes.creator(
         asset_qualified_name=ASSET_QUALIFIED_NAME,
+        asset_type=Table,
         contract_json=dumps(DATA_CONTRACT_JSON),
     )
     _assert_contract(attributes, is_json=True)
@@ -85,6 +86,7 @@ def test_creator_atttributes_with_required_parameters():
 def test_creator_with_required_parameters_json():
     test_contract = DataContract.creator(
         asset_qualified_name=ASSET_QUALIFIED_NAME,
+        asset_type=Table,
         contract_json=dumps(DATA_CONTRACT_JSON),
     )
     _assert_contract(test_contract)
@@ -93,6 +95,7 @@ def test_creator_with_required_parameters_json():
 def test_creator_with_required_parameters_spec_str():
     test_contract = DataContract.creator(
         asset_qualified_name=ASSET_QUALIFIED_NAME,
+        asset_type=Table,
         contract_spec=DATA_CONTRACT_SPEC_STR,
     )
     _assert_contract(test_contract)
@@ -101,6 +104,7 @@ def test_creator_with_required_parameters_spec_str():
 def test_creator_with_required_parameters_spec_str_without_dataset():
     test_contract = DataContract.creator(
         asset_qualified_name=ASSET_QUALIFIED_NAME,
+        asset_type=Table,
         contract_spec=DATA_CONTRACT_SPEC_STR_WITHOUT_DATASET,
     )
     # Ensure the default contract name is extracted from the table's qualified name (QN).
@@ -111,9 +115,22 @@ def test_creator_with_required_parameters_spec_model():
     spec = DataContractSpec.from_yaml(DATA_CONTRACT_SPEC_STR)
     test_contract = DataContract.creator(
         asset_qualified_name=ASSET_QUALIFIED_NAME,
+        asset_type=Table,
         contract_spec=spec,
     )
     _assert_contract(test_contract)
+
+
+def test_creator_sets_data_contract_asset_latest():
+    """Creator should set data_contract_asset_latest with the correct asset ref."""
+    test_contract = DataContract.creator(
+        asset_qualified_name=ASSET_QUALIFIED_NAME,
+        asset_type=Table,
+        contract_json=dumps(DATA_CONTRACT_JSON),
+    )
+    ref = test_contract.data_contract_asset_latest
+    assert ref is not None
+    assert ref.unique_attributes == {"qualifiedName": ASSET_QUALIFIED_NAME}
 
 
 def test_create_for_modification():
@@ -130,84 +147,3 @@ def test_trim_to_required():
         qualified_name=DATA_CONTRACT_QUALIFIED_NAME,
     ).trim_to_required()
     _assert_contract(test_contract, False)
-
-
-class TestSaveContract:
-    def test_save_contract_sets_data_contract_latest_and_has_contract(self):
-        """save_contract should save the contract then update the linked asset."""
-        mock_client = MagicMock()
-        contract = DataContract.creator(
-            asset_qualified_name=ASSET_QUALIFIED_NAME,
-            contract_json=dumps(DATA_CONTRACT_JSON),
-        )
-        saved_contract = MagicMock()
-        saved_contract.guid = "contract-guid-123"
-
-        contract_response = MagicMock(spec=AssetMutationResponse)
-        contract_response.assets_created.return_value = [saved_contract]
-        asset_response = MagicMock(spec=AssetMutationResponse)
-        mock_client.asset.save.side_effect = [contract_response, asset_response]
-
-        result = DataContract.save(
-            client=mock_client,
-            contract=contract,
-            linked_asset_guid="asset-guid-456",
-        )
-
-        assert result == (contract_response, asset_response)
-        assert mock_client.asset.save.call_count == 2
-        # Verify the second save call updates the linked asset
-        asset_update = mock_client.asset.save.call_args_list[1][0][0]
-        assert asset_update.guid == "asset-guid-456"
-        assert asset_update.has_contract is True
-        assert asset_update.data_contract_latest is not None
-        assert asset_update.data_contract_latest.guid == "contract-guid-123"
-
-    def test_save_contract_handles_update(self):
-        """save_contract should work when contract is updated (not created)."""
-        mock_client = MagicMock()
-        contract = DataContract.creator(
-            asset_qualified_name=ASSET_QUALIFIED_NAME,
-            contract_json=dumps(DATA_CONTRACT_JSON),
-        )
-        saved_contract = MagicMock()
-        saved_contract.guid = "contract-guid-789"
-
-        contract_response = MagicMock(spec=AssetMutationResponse)
-        contract_response.assets_created.return_value = []
-        contract_response.assets_updated.return_value = [saved_contract]
-        asset_response = MagicMock(spec=AssetMutationResponse)
-        mock_client.asset.save.side_effect = [contract_response, asset_response]
-
-        result = DataContract.save(
-            client=mock_client,
-            contract=contract,
-            linked_asset_guid="asset-guid-456",
-        )
-
-        assert result == (contract_response, asset_response)
-        assert mock_client.asset.save.call_count == 2
-
-
-class TestDeleteContract:
-    def test_delete_contract_purges_and_clears_has_contract(self):
-        """delete_contract should purge the contract and clear hasContract."""
-        mock_client = MagicMock()
-        delete_response = MagicMock(spec=AssetMutationResponse)
-        mock_client.asset.purge_by_guid.return_value = delete_response
-        asset_response = MagicMock(spec=AssetMutationResponse)
-        mock_client.asset.save.return_value = asset_response
-
-        result = DataContract.delete(
-            client=mock_client,
-            contract_guid="contract-guid-123",
-            linked_asset_guid="asset-guid-456",
-        )
-
-        assert result == (delete_response, asset_response)
-        mock_client.asset.purge_by_guid.assert_called_once_with("contract-guid-123")
-        # Verify the asset update clears contract state
-        asset_update = mock_client.asset.save.call_args[0][0]
-        assert asset_update.guid == "asset-guid-456"
-        assert asset_update.has_contract is False
-        assert asset_update.data_contract_latest is None

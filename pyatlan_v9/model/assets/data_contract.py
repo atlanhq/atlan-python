@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import re
 from json import JSONDecodeError, loads
-from typing import TYPE_CHECKING, Tuple, Union
+from typing import Type, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -31,10 +31,6 @@ from .catalog import (
     CatalogRelationshipAttributes,
 )
 from .catalog_related import RelatedCatalog
-
-if TYPE_CHECKING:
-    from pyatlan_v9.client.atlan import AtlanClient
-    from pyatlan_v9.model.response import AssetMutationResponse
 
 
 @register_asset
@@ -73,20 +69,30 @@ class DataContract(Catalog):
         cls,
         *,
         asset_qualified_name: str,
+        asset_type: Type["Asset"],
         contract_json: Union[str, None] = None,
         contract_spec: Union[DataContractSpec, str, None] = None,
     ) -> "DataContract":
-        """Create a new DataContract asset."""
+        """Create a new DataContract asset.
+
+        :param asset_qualified_name: qualified name of the asset this contract governs
+        :param asset_type: the type of the governed asset (e.g. ``Table``, ``View``)
+        :param contract_json: deprecated JSON representation of the contract
+        :param contract_spec: YAML contract spec (string or ``DataContractSpec``)
+        """
         attrs = DataContract.Attributes.creator(
             asset_qualified_name=asset_qualified_name,
             contract_json=contract_json,
             contract_spec=contract_spec,
         )
+        asset_ref = RelatedAsset(qualified_name=asset_qualified_name)
+        asset_ref.type_name = asset_type.__name__
         return cls(
             name=attrs.name,
             qualified_name=attrs.qualified_name,
             data_contract_json=attrs.data_contract_json,
             data_contract_spec=attrs.data_contract_spec,
+            data_contract_asset_latest=asset_ref,
         )
 
     @classmethod
@@ -98,95 +104,6 @@ class DataContract(Catalog):
     def trim_to_required(self) -> "DataContract":
         """Return only required fields for update operations."""
         return DataContract.updater(qualified_name=self.qualified_name, name=self.name)
-
-    @staticmethod
-    def save(
-        client: "AtlanClient",
-        contract: "DataContract",
-        linked_asset_guid: str,
-    ) -> "Tuple[AssetMutationResponse, AssetMutationResponse]":
-        """Save a DataContract and link it to the associated asset.
-
-        After saving the contract, this method also sets ``dataContractLatest``
-        and ``hasContract`` on the linked asset so the UI Contracts tab works
-        correctly.
-
-        :param client: connectivity to an Atlan tenant
-        :param contract: DataContract to save (from ``DataContract.creator()``)
-        :param linked_asset_guid: GUID of the asset this contract is for
-        :returns: tuple of (contract save response, asset update response)
-        """
-        from pyatlan.client.constants import BULK_UPDATE
-        from pyatlan_v9.client.asset import _parse_mutation_response
-
-        contract_response = client.asset.save(contract)
-        contracts = contract_response.assets_created(
-            DataContract
-        ) or contract_response.assets_updated(DataContract)
-        if not contracts:
-            return contract_response, contract_response
-
-        saved = contracts[0]
-        # Build raw payload because v9 Asset doesn't model dataContractLatest
-        asset_payload = {
-            "entities": [
-                {
-                    "guid": linked_asset_guid,
-                    "typeName": "IndistinctAsset",
-                    "attributes": {"hasContract": True},
-                    "relationshipAttributes": {
-                        "dataContractLatest": {
-                            "guid": saved.guid,
-                            "typeName": "DataContract",
-                        }
-                    },
-                }
-            ]
-        }
-        raw_json = client._call_api(BULK_UPDATE, {}, asset_payload)
-        asset_response = _parse_mutation_response(raw_json)
-        return contract_response, asset_response
-
-    @staticmethod
-    def delete(
-        client: "AtlanClient",
-        contract_guid: str,
-        linked_asset_guid: str,
-    ) -> "Tuple[AssetMutationResponse, AssetMutationResponse]":
-        """Delete a DataContract and clean up the linked asset.
-
-        This method purges (hard-deletes) the contract to avoid qualified-name
-        conflicts on re-creation, and clears ``hasContract`` and
-        ``dataContractLatest`` on the linked asset.
-
-        :param client: connectivity to an Atlan tenant
-        :param contract_guid: GUID of the DataContract to delete
-        :param linked_asset_guid: GUID of the asset the contract was linked to
-        :returns: tuple of (contract delete response, asset update response)
-        """
-        from pyatlan.client.constants import BULK_UPDATE
-        from pyatlan_v9.client.asset import _parse_mutation_response
-
-        delete_response = client.asset.purge_by_guid(contract_guid)
-
-        # Build raw payload because v9 Asset doesn't model dataContractLatest
-        asset_payload = {
-            "entities": [
-                {
-                    "guid": linked_asset_guid,
-                    "typeName": "IndistinctAsset",
-                    "attributes": {
-                        "hasContract": False,
-                    },
-                    "relationshipAttributes": {
-                        "dataContractLatest": None,
-                    },
-                }
-            ]
-        }
-        raw_json = client._call_api(BULK_UPDATE, {}, asset_payload)
-        asset_response = _parse_mutation_response(raw_json)
-        return delete_response, asset_response
 
     def to_json(self, nested: bool = True, serde: Serde | None = None) -> str:
         """Convert to JSON string."""
