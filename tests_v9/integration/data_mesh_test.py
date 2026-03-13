@@ -310,7 +310,7 @@ def contract(
         asset_qualified_name=table.qualified_name,
         contract_json=dumps(contract_json),
     )
-    contract_response, _ = DataContract.save_contract(
+    contract_response, _ = DataContract.save(
         client=client,
         contract=contract,
         linked_asset_guid=table.guid,
@@ -524,7 +524,7 @@ def test_product_get_assets(client: AtlanClient, product: DataProduct):
 @pytest.mark.order(after="test_retrieve_contract")
 def test_delete_contract(client: AtlanClient, table: Table, contract: DataContract):
     assert table.guid
-    delete_response, asset_response = DataContract.delete_contract(
+    delete_response, asset_response = DataContract.delete(
         client=client,
         contract_guid=contract.guid,
         linked_asset_guid=table.guid,

@@ -60,7 +60,7 @@ class DataContract(Catalog):
         return cls(attributes=attributes)
 
     @staticmethod
-    def save_contract(
+    def save(
         client: AtlanClient,
         contract: DataContract,
         linked_asset_guid: str,
@@ -97,7 +97,7 @@ class DataContract(Catalog):
         return contract_response, asset_response
 
     @staticmethod
-    def delete_contract(
+    def delete(
         client: AtlanClient,
         contract_guid: str,
         linked_asset_guid: str,

@@ -307,7 +307,7 @@ def contract(
         asset_qualified_name=table.qualified_name,
         contract_json=dumps(contract_json),
     )
-    contract_response, _ = DataContract.save_contract(
+    contract_response, _ = DataContract.save(
         client=client,
         contract=contract,
         linked_asset_guid=table.guid,
@@ -345,6 +345,10 @@ def updated_contract(
 def test_contract(
     client: AtlanClient, table: Table, product: DataProduct, contract: DataContract
 ):
+    """Verify DataContract.save() sets dataContractLatest and hasContract on the
+    linked asset — the behaviour that was broken when using client.asset.save()
+    alone (Bug 1 / BLDX-721).
+    """
     assert product and product.guid
     product = client.asset.get_by_guid(
         guid=product.guid, asset_type=DataProduct, ignore_relationships=False
@@ -510,8 +514,12 @@ def test_product_get_assets(client: AtlanClient, product: DataProduct):
 
 @pytest.mark.order(after="test_retrieve_contract")
 def test_delete_contract(client: AtlanClient, table: Table, contract: DataContract):
+    """Verify DataContract.delete() purges the contract AND clears hasContract
+    on the linked asset — the cleanup that was missing when using
+    client.asset.purge_by_guid() alone (Bug 2 / BLDX-721).
+    """
     assert table.guid
-    delete_response, asset_response = DataContract.delete_contract(
+    delete_response, asset_response = DataContract.delete(
         client=client,
         contract_guid=contract.guid,
         linked_asset_guid=table.guid,

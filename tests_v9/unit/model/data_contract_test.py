@@ -176,7 +176,7 @@ class TestSaveContract:
         asset_response = MagicMock(spec=AssetMutationResponse)
         mock_client.asset.save.side_effect = [contract_response, asset_response]
 
-        result = DataContract.save_contract(
+        result = DataContract.save(
             client=mock_client,
             contract=contract,
             linked_asset_guid="asset-guid-456",
@@ -201,7 +201,7 @@ class TestDeleteContract:
         asset_response = MagicMock(spec=AssetMutationResponse)
         mock_client.asset.save.return_value = asset_response
 
-        result = DataContract.delete_contract(
+        result = DataContract.delete(
             client=mock_client,
             contract_guid="contract-guid-123",
             linked_asset_guid="asset-guid-456",

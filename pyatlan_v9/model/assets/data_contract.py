@@ -100,7 +100,7 @@ class DataContract(Catalog):
         return DataContract.updater(qualified_name=self.qualified_name, name=self.name)
 
     @staticmethod
-    def save_contract(
+    def save(
         client: "AtlanClient",
         contract: "DataContract",
         linked_asset_guid: str,
@@ -116,12 +116,11 @@ class DataContract(Catalog):
         :param linked_asset_guid: GUID of the asset this contract is for
         :returns: tuple of (contract save response, asset update response)
         """
-        from pyatlan.model.assets.core.data_contract import (
-            DataContract as V8DataContract,
-        )
+        from pyatlan.model.assets import DataContract as V8DataContract
         from pyatlan.model.assets.core.indistinct_asset import IndistinctAsset
 
         contract_response = client.asset.save(contract)
+        # Response contains v8 model objects since client.asset is v8
         contracts = (
             contract_response.assets_created(V8DataContract)
             or contract_response.assets_updated(V8DataContract)
@@ -140,7 +139,7 @@ class DataContract(Catalog):
         return contract_response, asset_response
 
     @staticmethod
-    def delete_contract(
+    def delete(
         client: "AtlanClient",
         contract_guid: str,
         linked_asset_guid: str,
