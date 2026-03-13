@@ -33,8 +33,8 @@ from .catalog import (
 from .catalog_related import RelatedCatalog
 
 if TYPE_CHECKING:
-    from pyatlan.client.atlan import AtlanClient
-    from pyatlan.model.response import AssetMutationResponse
+    from pyatlan_v9.client.atlan import AtlanClient
+    from pyatlan_v9.model.response import AssetMutationResponse
 
 
 @register_asset
@@ -116,26 +116,35 @@ class DataContract(Catalog):
         :param linked_asset_guid: GUID of the asset this contract is for
         :returns: tuple of (contract save response, asset update response)
         """
-        from pyatlan.model.assets import DataContract as V8DataContract
-        from pyatlan.model.assets.core.indistinct_asset import IndistinctAsset
+        from pyatlan.client.constants import BULK_UPDATE
+        from pyatlan_v9.client.asset import _parse_mutation_response
 
         contract_response = client.asset.save(contract)
-        # Response contains v8 model objects since client.asset is v8
-        contracts = (
-            contract_response.assets_created(V8DataContract)
-            or contract_response.assets_updated(V8DataContract)
-        )
+        contracts = contract_response.assets_created(
+            DataContract
+        ) or contract_response.assets_updated(DataContract)
         if not contracts:
             return contract_response, contract_response
 
         saved = contracts[0]
-        asset_update = IndistinctAsset()
-        asset_update.guid = linked_asset_guid
-        asset_update.data_contract_latest = V8DataContract.ref_by_guid(
-            saved.guid
-        )
-        asset_update.has_contract = True
-        asset_response = client.asset.save(asset_update)
+        # Build raw payload because v9 Asset doesn't model dataContractLatest
+        asset_payload = {
+            "entities": [
+                {
+                    "guid": linked_asset_guid,
+                    "typeName": "IndistinctAsset",
+                    "attributes": {"hasContract": True},
+                    "relationshipAttributes": {
+                        "dataContractLatest": {
+                            "guid": saved.guid,
+                            "typeName": "DataContract",
+                        }
+                    },
+                }
+            ]
+        }
+        raw_json = client._call_api(BULK_UPDATE, {}, asset_payload)
+        asset_response = _parse_mutation_response(raw_json)
         return contract_response, asset_response
 
     @staticmethod
@@ -155,15 +164,28 @@ class DataContract(Catalog):
         :param linked_asset_guid: GUID of the asset the contract was linked to
         :returns: tuple of (contract delete response, asset update response)
         """
-        from pyatlan.model.assets.core.indistinct_asset import IndistinctAsset
+        from pyatlan.client.constants import BULK_UPDATE
+        from pyatlan_v9.client.asset import _parse_mutation_response
 
         delete_response = client.asset.purge_by_guid(contract_guid)
 
-        asset_update = IndistinctAsset()
-        asset_update.guid = linked_asset_guid
-        asset_update.has_contract = False
-        asset_update.data_contract_latest = None  # type: ignore[assignment]
-        asset_response = client.asset.save(asset_update)
+        # Build raw payload because v9 Asset doesn't model dataContractLatest
+        asset_payload = {
+            "entities": [
+                {
+                    "guid": linked_asset_guid,
+                    "typeName": "IndistinctAsset",
+                    "attributes": {
+                        "hasContract": False,
+                    },
+                    "relationshipAttributes": {
+                        "dataContractLatest": None,
+                    },
+                }
+            ]
+        }
+        raw_json = client._call_api(BULK_UPDATE, {}, asset_payload)
+        asset_response = _parse_mutation_response(raw_json)
         return delete_response, asset_response
 
     def to_json(self, nested: bool = True, serde: Serde | None = None) -> str:

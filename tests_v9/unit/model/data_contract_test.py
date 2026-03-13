@@ -9,7 +9,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from pyatlan.model.response import AssetMutationResponse
+from pyatlan_v9.model.response import AssetMutationResponse
 from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model import DataContract
 from pyatlan_v9.model.contract import DataContractSpec
@@ -162,7 +162,7 @@ def test_trim_to_required():
 
 class TestSaveContract:
     def test_save_contract_sets_data_contract_latest_and_has_contract(self):
-        """save_contract should save the contract then update the linked asset."""
+        """save should save the contract then update the linked asset via raw API."""
         mock_client = MagicMock()
         contract = DataContract.creator(
             asset_qualified_name=ASSET_QUALIFIED_NAME,
@@ -173,8 +173,8 @@ class TestSaveContract:
 
         contract_response = MagicMock(spec=AssetMutationResponse)
         contract_response.assets_created.return_value = [saved_contract]
-        asset_response = MagicMock(spec=AssetMutationResponse)
-        mock_client.asset.save.side_effect = [contract_response, asset_response]
+        mock_client.asset.save.return_value = contract_response
+        mock_client._call_api.return_value = {"mutatedEntities": {}}
 
         result = DataContract.save(
             client=mock_client,
@@ -182,24 +182,32 @@ class TestSaveContract:
             linked_asset_guid="asset-guid-456",
         )
 
-        assert result == (contract_response, asset_response)
-        assert mock_client.asset.save.call_count == 2
-        # Verify the second save call updates the linked asset
-        asset_update = mock_client.asset.save.call_args_list[1][0][0]
-        assert asset_update.guid == "asset-guid-456"
-        assert asset_update.has_contract is True
-        assert asset_update.data_contract_latest is not None
-        assert asset_update.data_contract_latest.guid == "contract-guid-123"
+        assert result[0] == contract_response
+        mock_client.asset.save.assert_called_once()
+        # Verify the raw API call for the linked asset update
+        mock_client._call_api.assert_called_once()
+        call_args = mock_client._call_api.call_args
+        payload = call_args[0][2]
+        entity = payload["entities"][0]
+        assert entity["guid"] == "asset-guid-456"
+        assert entity["attributes"]["hasContract"] is True
+        assert (
+            entity["relationshipAttributes"]["dataContractLatest"]["guid"]
+            == "contract-guid-123"
+        )
+        assert (
+            entity["relationshipAttributes"]["dataContractLatest"]["typeName"]
+            == "DataContract"
+        )
 
 
 class TestDeleteContract:
     def test_delete_contract_purges_and_clears_has_contract(self):
-        """delete_contract should purge the contract and clear hasContract."""
+        """delete should purge the contract and clear hasContract via raw API."""
         mock_client = MagicMock()
         delete_response = MagicMock(spec=AssetMutationResponse)
         mock_client.asset.purge_by_guid.return_value = delete_response
-        asset_response = MagicMock(spec=AssetMutationResponse)
-        mock_client.asset.save.return_value = asset_response
+        mock_client._call_api.return_value = {"mutatedEntities": {}}
 
         result = DataContract.delete(
             client=mock_client,
@@ -207,10 +215,13 @@ class TestDeleteContract:
             linked_asset_guid="asset-guid-456",
         )
 
-        assert result == (delete_response, asset_response)
+        assert result[0] == delete_response
         mock_client.asset.purge_by_guid.assert_called_once_with("contract-guid-123")
-        # Verify the asset update clears contract state
-        asset_update = mock_client.asset.save.call_args[0][0]
-        assert asset_update.guid == "asset-guid-456"
-        assert asset_update.has_contract is False
-        assert asset_update.data_contract_latest is None
+        # Verify the raw API call clears contract state
+        mock_client._call_api.assert_called_once()
+        call_args = mock_client._call_api.call_args
+        payload = call_args[0][2]
+        entity = payload["entities"][0]
+        assert entity["guid"] == "asset-guid-456"
+        assert entity["attributes"]["hasContract"] is False
+        assert entity["relationshipAttributes"]["dataContractLatest"] is None

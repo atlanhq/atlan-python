@@ -79,19 +79,16 @@ class DataContract(Catalog):
         from pyatlan.model.assets.core.indistinct_asset import IndistinctAsset
 
         contract_response = client.asset.save(contract)
-        contracts = (
-            contract_response.assets_created(DataContract)
-            or contract_response.assets_updated(DataContract)
-        )
+        contracts = contract_response.assets_created(
+            DataContract
+        ) or contract_response.assets_updated(DataContract)
         if not contracts:
             return contract_response, contract_response
 
         saved = contracts[0]
         asset_update = IndistinctAsset()
         asset_update.guid = linked_asset_guid
-        asset_update.data_contract_latest = DataContract.ref_by_guid(
-            saved.guid
-        )
+        asset_update.data_contract_latest = DataContract.ref_by_guid(saved.guid)
         asset_update.has_contract = True
         asset_response = client.asset.save(asset_update)
         return contract_response, asset_response

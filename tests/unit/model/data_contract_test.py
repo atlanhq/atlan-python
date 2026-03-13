@@ -1,6 +1,6 @@
 from json import dumps
 from typing import Union
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
