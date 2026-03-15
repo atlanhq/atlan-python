@@ -41,9 +41,15 @@ class ModeChart(Mode):
     TBC
     """
 
+    MODE_REPORT: ClassVar[RelationField] = RelationField("modeReport")
+    """
+    Report to which this chart belongs.
+    """
+
     _convenience_properties: ClassVar[List[str]] = [
         "mode_chart_type",
         "mode_query",
+        "mode_report",
     ]
 
     @property
@@ -66,9 +72,22 @@ class ModeChart(Mode):
             self.attributes = self.Attributes()
         self.attributes.mode_query = mode_query
 
+    @property
+    def mode_report(self) -> Optional[ModeReport]:
+        return None if self.attributes is None else self.attributes.mode_report
+
+    @mode_report.setter
+    def mode_report(self, mode_report: Optional[ModeReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_report = mode_report
+
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(default=None, description="")
         mode_query: Optional[ModeQuery] = Field(
+            default=None, description=""
+        )  # relationship
+        mode_report: Optional[ModeReport] = Field(
             default=None, description=""
         )  # relationship
 
@@ -83,5 +102,6 @@ class ModeChart(Mode):
 
 
 from .mode_query import ModeQuery  # noqa: E402, F401
+from .mode_report import ModeReport  # noqa: E402, F401
 
 ModeChart.Attributes.update_forward_refs()
