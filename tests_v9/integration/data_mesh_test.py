@@ -334,6 +334,7 @@ def updated_contract(
     }
     contract = DataContract.creator(
         asset_qualified_name=table.qualified_name,
+        asset_type=Table,
         contract_json=dumps(contract_json),
     )
     response = client.asset.save(contract)
