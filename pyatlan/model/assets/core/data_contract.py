@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from json import JSONDecodeError, loads
-from typing import TYPE_CHECKING, ClassVar, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, ClassVar, List, Optional, Tuple, Type, Union, overload
 
 from pydantic.v1 import Field, validator
 
@@ -28,6 +28,26 @@ if TYPE_CHECKING:
 
 class DataContract(Catalog):
     """Description"""
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        asset_qualified_name: str,
+        asset_type: Type[Asset],
+        contract_json: str,
+    ) -> DataContract: ...
+
+    @overload
+    @classmethod
+    def creator(
+        cls,
+        *,
+        asset_qualified_name: str,
+        asset_type: Type[Asset],
+        contract_spec: Union[DataContractSpec, str],
+    ) -> DataContract: ...
 
     @classmethod
     @init_guid
