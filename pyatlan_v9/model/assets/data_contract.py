@@ -119,21 +119,31 @@ class DataContract(Catalog):
     def delete(
         client: "AtlanClient",
         contract_guid: str,
-        linked_asset_guid: str,
     ) -> "Tuple[AssetMutationResponse, AssetMutationResponse]":
         """Delete (purge) a DataContract and clean up the linked asset.
 
-        Uses hard-delete to avoid qualified-name conflicts on re-creation,
-        and clears ``hasContract``, ``dataContractLatest``, and
-        ``dataContractLatestCertified`` on the linked asset.
+        Retrieves the contract to find the linked asset, clears
+        ``hasContract``, ``dataContractLatest``, and
+        ``dataContractLatestCertified`` on it, then hard-deletes the contract.
 
         :param client: connectivity to an Atlan tenant
         :param contract_guid: GUID of the DataContract to delete
-        :param linked_asset_guid: GUID of the asset the contract was linked to
         :returns: tuple of (contract delete response, asset update response)
         """
         from pyatlan.client.constants import BULK_UPDATE
         from pyatlan_v9.client.asset import _parse_mutation_response
+
+        contract = client.asset.get_by_guid(
+            contract_guid,
+            asset_type=DataContract,
+            ignore_relationships=False,
+        )
+        linked_asset = contract.data_contract_asset_latest
+        if not linked_asset or not linked_asset.guid:
+            raise ValueError(
+                "Cannot determine the linked asset for this contract. "
+                "Ensure the contract has a valid data_contract_asset_latest relationship."
+            )
 
         delete_response = client.asset.purge_by_guid(contract_guid)
 
@@ -141,9 +151,13 @@ class DataContract(Catalog):
         asset_payload = {
             "entities": [
                 {
-                    "guid": linked_asset_guid,
-                    "typeName": "IndistinctAsset",
-                    "attributes": {"hasContract": False},
+                    "guid": linked_asset.guid,
+                    "typeName": linked_asset.type_name,
+                    "attributes": {
+                        "qualifiedName": linked_asset.qualified_name,
+                        "name": linked_asset.name or linked_asset.qualified_name,
+                        "hasContract": False,
+                    },
                     "relationshipAttributes": {
                         "dataContractLatest": None,
                         "dataContractLatestCertified": None,

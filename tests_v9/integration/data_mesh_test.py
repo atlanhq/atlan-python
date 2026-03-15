@@ -524,7 +524,6 @@ def test_delete_contract(client: AtlanClient, table: Table, contract: DataContra
     delete_response, asset_response = DataContract.delete(
         client=client,
         contract_guid=contract.guid,
-        linked_asset_guid=table.guid,
     )
     assert delete_response
     assert asset_response

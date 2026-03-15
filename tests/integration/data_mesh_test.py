@@ -331,6 +331,7 @@ def updated_contract(
     }
     contract = DataContract.creator(
         asset_qualified_name=table.qualified_name,
+        asset_type=Table,
         contract_json=dumps(contract_json),
     )
     response = client.asset.save(contract)
@@ -516,7 +517,6 @@ def test_delete_contract(client: AtlanClient, table: Table, contract: DataContra
     delete_response, asset_response = DataContract.delete(
         client=client,
         contract_guid=contract.guid,
-        linked_asset_guid=table.guid,
     )
     assert delete_response
     assert asset_response

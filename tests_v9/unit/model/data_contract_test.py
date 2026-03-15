@@ -198,9 +198,17 @@ class TestSaveContract:
 
 
 class TestDeleteContract:
-    def test_delete_purges_and_clears_linked_asset(self):
-        """delete() should purge the contract and clear linked asset state."""
+    def test_delete_retrieves_contract_and_clears_linked_asset(self):
+        """delete() should retrieve the contract, find the linked asset, clear state, and purge."""
         mock_client = MagicMock()
+
+        # Mock the contract retrieved by get_by_guid
+        mock_linked_asset = MagicMock()
+        mock_linked_asset.guid = "asset-guid-456"
+        mock_contract = MagicMock(spec=DataContract)
+        mock_contract.data_contract_asset_latest = mock_linked_asset
+        mock_client.asset.get_by_guid.return_value = mock_contract
+
         delete_response = MagicMock(spec=AssetMutationResponse)
         mock_client.asset.purge_by_guid.return_value = delete_response
         mock_client._call_api.return_value = {"mutatedEntities": {}}
@@ -208,10 +216,14 @@ class TestDeleteContract:
         result = DataContract.delete(
             client=mock_client,
             contract_guid="contract-guid-123",
-            linked_asset_guid="asset-guid-456",
         )
 
         assert result[0] == delete_response
+        mock_client.asset.get_by_guid.assert_called_once_with(
+            "contract-guid-123",
+            asset_type=DataContract,
+            ignore_relationships=False,
+        )
         mock_client.asset.purge_by_guid.assert_called_once_with("contract-guid-123")
         # Verify the raw API call clears contract state
         mock_client._call_api.assert_called_once()
@@ -221,3 +233,16 @@ class TestDeleteContract:
         assert entity["attributes"]["hasContract"] is False
         assert entity["relationshipAttributes"]["dataContractLatest"] is None
         assert entity["relationshipAttributes"]["dataContractLatestCertified"] is None
+
+    def test_delete_raises_when_no_linked_asset(self):
+        """delete() should raise ValueError when contract has no linked asset."""
+        mock_client = MagicMock()
+        mock_contract = MagicMock(spec=DataContract)
+        mock_contract.data_contract_asset_latest = None
+        mock_client.asset.get_by_guid.return_value = mock_contract
+
+        with pytest.raises(ValueError, match="Cannot determine the linked asset"):
+            DataContract.delete(
+                client=mock_client,
+                contract_guid="contract-guid-123",
+            )

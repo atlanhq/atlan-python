@@ -71,25 +71,38 @@ class DataContract(Catalog):
     def delete(
         client: "AtlanClient",
         contract_guid: str,
-        linked_asset_guid: str,
     ) -> "Tuple[AssetMutationResponse, AssetMutationResponse]":
         """Delete (purge) a DataContract and clean up the linked asset.
 
-        Uses hard-delete to avoid qualified-name conflicts on re-creation,
-        and clears ``hasContract``, ``dataContractLatest``, and
-        ``dataContractLatestCertified`` on the linked asset.
+        Retrieves the contract to find the linked asset, clears
+        ``hasContract``, ``dataContractLatest``, and
+        ``dataContractLatestCertified`` on it, then hard-deletes the contract.
 
         :param client: connectivity to an Atlan tenant
         :param contract_guid: GUID of the DataContract to delete
-        :param linked_asset_guid: GUID of the asset the contract was linked to
         :returns: tuple of (contract delete response, asset update response)
         """
         from pyatlan.model.assets.core.indistinct_asset import IndistinctAsset
 
+        contract = client.asset.get_by_guid(
+            contract_guid,
+            asset_type=DataContract,
+            ignore_relationships=False,
+        )
+        linked_asset = contract.data_contract_asset_latest
+        if not linked_asset or not linked_asset.guid:
+            raise ValueError(
+                "Cannot determine the linked asset for this contract. "
+                "Ensure the contract has a valid data_contract_asset_latest relationship."
+            )
+
         delete_response = client.asset.purge_by_guid(contract_guid)
 
         asset_update = IndistinctAsset()
-        asset_update.guid = linked_asset_guid
+        asset_update.type_name = linked_asset.type_name
+        asset_update.guid = linked_asset.guid
+        asset_update.qualified_name = linked_asset.qualified_name
+        asset_update.name = linked_asset.name or linked_asset.qualified_name
         asset_update.has_contract = False
         asset_update.data_contract_latest = None  # type: ignore[assignment]
         asset_update.data_contract_latest_certified = None  # type: ignore[assignment]
