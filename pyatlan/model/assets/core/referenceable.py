@@ -92,6 +92,15 @@ class Referenceable(AtlanObject):
             self.business_attributes = business_attrs
         return super().json(**kwargs)
 
+    def to_atlas_dict(self) -> "Dict[str, Any]":
+        """Return an Atlas-compatible dict for use with application-sdk JsonFileWriter.
+
+        Produces the standard Atlas entity format with camelCase keys and no None values::
+
+            {"typeName": "...", "attributes": {"qualifiedName": "...", ...}}
+        """
+        return loads(self.json(by_alias=True, exclude_none=True))
+
     def validate_required(self):
         if not self.create_time or self.created_by:
             self.attributes.validate_required()
