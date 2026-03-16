@@ -1,3 +1,22 @@
+## 9.3.0 (March 16, 2026)
+
+### New Features
+
+- **`ModeChart.to_atlas_dict()` and `mode_report` field**: Added `to_atlas_dict()` method and `mode_report` attribute to the `ModeChart` model.
+
+### Bug Fixes
+
+- **`DQCondition` value type ordering**: Reordered the `Union` type for `DQCondition.value` to prioritize `int` over `str`, preventing integer values from being incorrectly coerced to strings during deserialization.
+- **`RICH_TEXT` / `STRING` enum aliasing fix**: `AtlanCustomAttributePrimitiveType.RICH_TEXT` now has a distinct enum value (`"rich_text"`) instead of sharing `"string"` with `STRING`. Previously Python's Enum treated them as aliases, causing `STRING` attributes to incorrectly receive `is_rich_text=True` and RICH_TEXT multi-value restrictions to bleed into STRING attribute creation. The API-level primitive type sent in requests remains `"string"` for both (fixes PART-548).
+
+### Experimental: `pyatlan_v9`
+
+- **`RICH_TEXT` / `STRING` enum aliasing fix**: Same fix applied to `pyatlan_v9/model/typedef.py` — `RICH_TEXT` and `STRING` custom metadata attributes are now correctly distinguished in the v9 code path.
+
+### QOL Improvements
+
+- **Security guidelines for agents**: Added security guidelines documentation for agents interacting with the atlan-python SDK.
+
 ## 9.2.2 (March 11, 2026)
 
 ### QOL Improvements
