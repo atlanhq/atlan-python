@@ -71,6 +71,10 @@ CM_RICH_TEXT = f"{MODULE_NAME}_RICH_TEXT"
 CM_ATTR_RICH_TEXT_CONTENT = "Rich Content"
 CM_ATTR_RICH_TEXT_DESCRIPTION = "Rich Description"
 
+CM_STRING_VS_RICH_TEXT = f"{MODULE_NAME}_STR_RT"
+CM_ATTR_PLAIN_STRING = "Plain String"
+CM_ATTR_RICH_STRING = "Rich String"
+
 DQ_ENUM = f"{MODULE_NAME}_DataQualityType"
 DQ_TYPE_LIST = [
     "Accuracy",
@@ -201,6 +205,7 @@ def test_cm_ipr(cm_ipr: CustomMetadataDef, limit_attribute_applicability_kwargs)
     assert one_with_limited.description == ATTRIBUTE_DESCRIPTION
     assert one_with_limited.name != CM_ATTR_IPR_LICENSE
     assert one_with_limited.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert one_with_limited.options.is_rich_text is False
     assert not one_with_limited.options.multi_value_select
     options = one_with_limited.options
     for attribute in limit_attribute_applicability_kwargs.keys():
@@ -310,6 +315,7 @@ def test_cm_raci(
     assert one.name != CM_ATTR_RACI_ACCOUNTABLE
     assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
     assert one.options
+    assert one.options.is_rich_text is False
     assert not one.options.multi_value_select
     one = attributes[2]
     assert one.display_name == CM_ATTR_RACI_CONSULTED
@@ -330,6 +336,7 @@ def test_cm_raci(
     assert one.name != CM_ATTR_RACI_EXTRA
     assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
     assert one.options
+    assert one.options.is_rich_text is False
     assert not one.options.multi_value_select
 
 
@@ -576,6 +583,58 @@ def test_rich_text_cannot_be_multi_valued(client: AtlanClient):
 
     error = exc_info.value
     assert "ATLAN-PYTHON-400-076" in str(error)
+
+
+@pytest.fixture(scope="module")
+def cm_string_vs_rich_text(
+    client: AtlanClient,
+) -> Generator[CustomMetadataDef, None, None]:
+    attribute_defs = [
+        AttributeDef.create(
+            client=client,
+            display_name=CM_ATTR_PLAIN_STRING,
+            attribute_type=AtlanCustomAttributePrimitiveType.STRING,
+        ),
+        AttributeDef.create(
+            client=client,
+            display_name=CM_ATTR_RICH_STRING,
+            attribute_type=AtlanCustomAttributePrimitiveType.RICH_TEXT,
+        ),
+    ]
+    cm = create_custom_metadata(
+        client,
+        name=CM_STRING_VS_RICH_TEXT,
+        attribute_defs=attribute_defs,
+        logo="🔤",
+        locked=False,
+    )
+    yield cm
+    wait_for_successful_custometadatadef_purge(CM_STRING_VS_RICH_TEXT, client=client)
+
+
+def test_string_vs_rich_text(cm_string_vs_rich_text: CustomMetadataDef):
+    """Test that STRING and RICH_TEXT produce distinct CM attributes."""
+    attributes = cm_string_vs_rich_text.attribute_defs
+    assert attributes
+    assert len(attributes) == 2
+
+    # STRING attribute: is_rich_text must be False
+    plain = attributes[0]
+    assert plain.display_name == CM_ATTR_PLAIN_STRING
+    assert plain.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert plain.options
+    assert plain.options.is_rich_text is False
+    assert (
+        plain.options.primitive_type == AtlanCustomAttributePrimitiveType.STRING.value
+    )
+
+    # RICH_TEXT attribute: is_rich_text must be True
+    rich = attributes[1]
+    assert rich.display_name == CM_ATTR_RICH_STRING
+    assert rich.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert rich.options
+    assert rich.options.is_rich_text is True
+    assert rich.options.primitive_type == AtlanCustomAttributePrimitiveType.STRING.value
 
 
 @pytest.fixture(scope="module")
