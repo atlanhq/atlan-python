@@ -19,7 +19,7 @@ class DQCondition(msgspec.Struct, kw_only=True):
     type: DataQualityRuleTemplateConfigRuleConditions
     """Condition type."""
 
-    value: Union[str, int, list[str], dict[str, Any], None] = None
+    value: Union[int, str, list[str], dict[str, Any], None] = None
     """Condition value."""
 
     min_value: Union[int, None] = None
@@ -129,7 +129,7 @@ class DQRuleConditionsBuilder:
     def add_condition(
         self,
         type: DataQualityRuleTemplateConfigRuleConditions,
-        value: Union[str, int, list[str], None] = None,
+        value: Union[int, str, list[str], None] = None,
         min_value: Union[int, None] = None,
         max_value: Union[int, None] = None,
         reference_table: Union[str, None] = None,
