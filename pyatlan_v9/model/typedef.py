@@ -572,9 +572,14 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
                 ["type"],
                 [type],
             )
+            if attribute_type == AtlanCustomAttributePrimitiveType.RICH_TEXT:
+                primitive_type = AtlanCustomAttributePrimitiveType.STRING.value
+            else:
+                primitive_type = attribute_type.value
+
             options = AttributeDef.Options(
                 custom_metadata_version="v2",
-                primitive_type=attribute_type.value,
+                primitive_type=primitive_type,
                 applicable_entity_types='["Asset"]',
                 allow_search=False,
                 max_str_length="100000000",
@@ -1007,6 +1012,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
             AtlanCustomAttributePrimitiveType.GROUPS,
             AtlanCustomAttributePrimitiveType.URL,
             AtlanCustomAttributePrimitiveType.SQL,
+            AtlanCustomAttributePrimitiveType.RICH_TEXT,
         ):
             base_type = AtlanCustomAttributePrimitiveType.STRING.value
         else:
@@ -1135,6 +1141,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
             AtlanCustomAttributePrimitiveType.GROUPS,
             AtlanCustomAttributePrimitiveType.URL,
             AtlanCustomAttributePrimitiveType.SQL,
+            AtlanCustomAttributePrimitiveType.RICH_TEXT,
         ):
             base_type = AtlanCustomAttributePrimitiveType.STRING.value
         else:
