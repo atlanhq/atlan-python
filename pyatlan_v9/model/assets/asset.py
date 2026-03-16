@@ -31,6 +31,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset_related import RelatedAsset
+from .catalog_related import RelatedCatalog
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -989,6 +990,12 @@ class Asset(Referenceable):
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
+    data_contract_latest: Union[RelatedCatalog, None, UnsetType] = UNSET
+    """Latest data contract for this asset."""
+
+    data_contract_latest_certified: Union[RelatedCatalog, None, UnsetType] = UNSET
+    """Latest certified data contract for this asset."""
 
     def __post_init__(self) -> None:
         if self.type_name is UNSET:
@@ -2043,6 +2050,12 @@ class AssetRelationshipAttributes(ReferenceableRelationshipAttributes):
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+    data_contract_latest: Union[RelatedCatalog, None, UnsetType] = UNSET
+    """Latest data contract for this asset."""
+
+    data_contract_latest_certified: Union[RelatedCatalog, None, UnsetType] = UNSET
+    """Latest certified data contract for this asset."""
+
 
 class AssetNested(ReferenceableNested):
     """Asset in nested API format for high-performance serialization."""
@@ -2081,6 +2094,8 @@ _ASSET_REL_FIELDS: List[str] = [
     "readme",
     "schema_registry_subjects",
     "soda_checks",
+    "data_contract_latest",
+    "data_contract_latest_certified",
 ]
 
 

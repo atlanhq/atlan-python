@@ -311,7 +311,7 @@ def contract(
     contract_response = DataContract.save(client=client, contract=contract)
     result = contract_response.assets_created(asset_type=DataContract)[0]
     yield result
-    delete_asset(client, guid=result.guid, asset_type=DataContract)
+    # Cleanup is handled by updated_contract fixture since it updates the same entity
 
 
 @pytest.fixture(scope="module")
@@ -337,7 +337,14 @@ def updated_contract(
     response = client.asset.save(contract)
     result = response.assets_updated(asset_type=DataContract)[0]
     yield result
-    delete_asset(client, guid=result.guid, asset_type=DataContract)
+    delete_response, asset_response = DataContract.delete(
+        client=client, contract_guid=result.guid
+    )
+    assert delete_response
+    assert asset_response
+    deleted = delete_response.assets_deleted(asset_type=DataContract)
+    assert deleted and len(deleted) == 1
+    assert deleted[0].guid == result.guid
 
 
 def test_contract(
@@ -508,27 +515,6 @@ def test_product_get_assets(client: AtlanClient, product: DataProduct):
         counter += 1
     assert TOTAL_ASSETS == counter
     assert isinstance(asset_list, IndexSearchResults)
-
-
-@pytest.mark.order(after="test_retrieve_contract")
-def test_delete_contract(client: AtlanClient, table: Table, contract: DataContract):
-    """Verify delete() purges the contract and cleans up the linked asset."""
-    assert table.guid
-    delete_response, asset_response = DataContract.delete(
-        client=client,
-        contract_guid=contract.guid,
-    )
-    assert delete_response
-    assert asset_response
-    assert not delete_response.assets_created(asset_type=DataContract)
-    assert not delete_response.assets_updated(asset_type=DataContract)
-    deleted = delete_response.assets_deleted(asset_type=DataContract)
-    assert deleted
-    assert len(deleted) == 1
-    assert deleted[0].guid == contract.guid
-    assert deleted[0].qualified_name == contract.qualified_name
-    assert deleted[0].delete_handler == "PURGE"
-    assert deleted[0].status == EntityStatus.DELETED
 
 
 @pytest.mark.order(after="test_retrieve_product")

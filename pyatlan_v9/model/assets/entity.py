@@ -123,6 +123,9 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     status: Union[str, UnsetType] = UNSET
     """Entity status (ACTIVE, DELETED, PURGED)."""
 
+    delete_handler: Union[str, UnsetType] = UNSET
+    """Handler used for deletion of this entity (e.g. HARD, SOFT, PURGE)."""
+
     version: Union[int, UnsetType] = UNSET
     """Version number of this entity."""
 

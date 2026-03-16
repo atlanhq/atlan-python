@@ -102,12 +102,14 @@ class DataContract(Catalog):
         :param contract_guid: GUID of the DataContract to delete
         :returns: tuple of (contract delete response, asset update response)
         """
+        from pyatlan.model.assets.core.asset import Asset
         from pyatlan.model.assets.core.indistinct_asset import IndistinctAsset
 
         contract = client.asset.get_by_guid(
             contract_guid,
             asset_type=DataContract,
-            ignore_relationships=False,
+            attributes=[DataContract.DATA_CONTRACT_ASSET_LATEST],
+            related_attributes=[Asset.NAME, Asset.QUALIFIED_NAME, Asset.TYPE_NAME],
         )
         linked_asset = contract.data_contract_asset_latest
         if not linked_asset or not linked_asset.guid:
@@ -117,12 +119,11 @@ class DataContract(Catalog):
             )
 
         delete_response = client.asset.purge_by_guid(contract_guid)
-
         asset_update = IndistinctAsset()
         asset_update.type_name = linked_asset.type_name
         asset_update.guid = linked_asset.guid
         asset_update.qualified_name = linked_asset.qualified_name
-        asset_update.name = linked_asset.name or linked_asset.qualified_name
+        asset_update.name = linked_asset.name
         asset_update.has_contract = False
         asset_update.data_contract_latest = None  # type: ignore[assignment]
         asset_update.data_contract_latest_certified = None  # type: ignore[assignment]

@@ -195,10 +195,13 @@ class TestDeleteContract:
         )
 
         assert result == (delete_response, asset_response)
+        from pyatlan.model.assets import Asset
+
         mock_client.asset.get_by_guid.assert_called_once_with(
             "contract-guid-123",
             asset_type=DataContract,
-            ignore_relationships=False,
+            attributes=[DataContract.DATA_CONTRACT_ASSET_LATEST],
+            related_attributes=[Asset.NAME, Asset.QUALIFIED_NAME, Asset.TYPE_NAME],
         )
         mock_client.asset.purge_by_guid.assert_called_once_with("contract-guid-123")
         asset_update = mock_client.asset.save.call_args[0][0]

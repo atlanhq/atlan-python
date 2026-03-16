@@ -290,6 +290,7 @@ class ReferenceableNested(
     guid: Union[Any, UnsetType] = UNSET
     type_name: Union[Any, UnsetType] = UNSET
     status: Union[Any, UnsetType] = UNSET
+    delete_handler: Union[Any, UnsetType] = UNSET
     version: Union[Any, UnsetType] = UNSET
     create_time: Union[Any, UnsetType] = UNSET
     update_time: Union[Any, UnsetType] = UNSET
@@ -368,6 +369,7 @@ def _referenceable_to_nested(referenceable: Referenceable) -> ReferenceableNeste
         guid=referenceable.guid,
         type_name=referenceable.type_name,
         status=referenceable.status,
+        delete_handler=referenceable.delete_handler,
         version=referenceable.version,
         create_time=referenceable.create_time,
         update_time=referenceable.update_time,
@@ -413,6 +415,7 @@ def _referenceable_from_nested(nested: ReferenceableNested) -> Referenceable:
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
+        delete_handler=nested.delete_handler,
         version=nested.version,
         create_time=nested.create_time,
         update_time=nested.update_time,

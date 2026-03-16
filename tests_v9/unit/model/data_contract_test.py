@@ -204,7 +204,10 @@ class TestDeleteContract:
 
         # Mock the contract retrieved by get_by_guid
         mock_linked_asset = MagicMock()
+        mock_linked_asset.type_name = "Table"
         mock_linked_asset.guid = "asset-guid-456"
+        mock_linked_asset.qualified_name = "default/test/table-qn"
+        mock_linked_asset.name = "test-table"
         mock_contract = MagicMock(spec=DataContract)
         mock_contract.data_contract_asset_latest = mock_linked_asset
         mock_client.asset.get_by_guid.return_value = mock_contract
@@ -218,11 +221,19 @@ class TestDeleteContract:
             contract_guid="contract-guid-123",
         )
 
+        from pyatlan_v9.model.assets.asset import Asset
+        from pyatlan_v9.model.assets.referenceable import Referenceable
+
         assert result[0] == delete_response
         mock_client.asset.get_by_guid.assert_called_once_with(
             "contract-guid-123",
             asset_type=DataContract,
-            ignore_relationships=False,
+            attributes=["dataContractAssetLatest"],
+            related_attributes=[
+                Asset.NAME,
+                Referenceable.QUALIFIED_NAME,
+                Referenceable.TYPE_NAME,
+            ],
         )
         mock_client.asset.purge_by_guid.assert_called_once_with("contract-guid-123")
         # Verify the raw API call clears contract state
@@ -230,6 +241,9 @@ class TestDeleteContract:
         payload = mock_client._call_api.call_args[0][2]
         entity = payload["entities"][0]
         assert entity["guid"] == "asset-guid-456"
+        assert entity["typeName"] == "Table"
+        assert entity["attributes"]["qualifiedName"] == "default/test/table-qn"
+        assert entity["attributes"]["name"] == "test-table"
         assert entity["attributes"]["hasContract"] is False
         assert entity["relationshipAttributes"]["dataContractLatest"] is None
         assert entity["relationshipAttributes"]["dataContractLatestCertified"] is None

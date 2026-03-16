@@ -67,6 +67,9 @@ class DataContract(Catalog):
     data_contract_previous_version: Union[RelatedCatalog, None, UnsetType] = UNSET
     """Previous version in this contract chain."""
 
+    def __post_init__(self) -> None:
+        self.type_name = "DataContract"
+
     @classmethod
     @init_guid
     def creator(
@@ -132,11 +135,18 @@ class DataContract(Catalog):
         """
         from pyatlan.client.constants import BULK_UPDATE
         from pyatlan_v9.client.asset import _parse_mutation_response
+        from pyatlan_v9.model.assets.asset import Asset
+        from pyatlan_v9.model.assets.referenceable import Referenceable
 
         contract = client.asset.get_by_guid(
             contract_guid,
             asset_type=DataContract,
-            ignore_relationships=False,
+            attributes=["dataContractAssetLatest"],
+            related_attributes=[
+                Asset.NAME,
+                Referenceable.QUALIFIED_NAME,
+                Referenceable.TYPE_NAME,
+            ],
         )
         linked_asset = contract.data_contract_asset_latest
         if not linked_asset or not linked_asset.guid:
@@ -155,7 +165,7 @@ class DataContract(Catalog):
                     "typeName": linked_asset.type_name,
                     "attributes": {
                         "qualifiedName": linked_asset.qualified_name,
-                        "name": linked_asset.name or linked_asset.qualified_name,
+                        "name": linked_asset.name,
                         "hasContract": False,
                     },
                     "relationshipAttributes": {
