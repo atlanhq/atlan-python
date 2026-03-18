@@ -1321,7 +1321,7 @@ RESERVED_SERVICE_TYPES = {"atlas_core", "atlan", "aws", "azure", "gcp", "google"
 class EntityDef(TypeDef, kw_only=True):
     """Entity type definition."""
 
-    attribute_defs: List[Dict[str, Any]] = msgspec.field(default_factory=list)
+    attribute_defs: List[AttributeDef] = msgspec.field(default_factory=list)
     """Unused."""
 
     business_attribute_defs: Union[Dict[str, List[Dict[str, Any]]], None] = (
@@ -1332,7 +1332,7 @@ class EntityDef(TypeDef, kw_only=True):
     category: AtlanTypeCategory = AtlanTypeCategory.ENTITY
     """Type category for entity definitions."""
 
-    relationship_attribute_defs: List[Dict[str, Any]] = msgspec.field(
+    relationship_attribute_defs: List[RelationshipAttributeDef] = msgspec.field(
         default_factory=list
     )
     """Unused."""
@@ -1360,7 +1360,7 @@ class EntityDef(TypeDef, kw_only=True):
 class RelationshipDef(TypeDef, kw_only=True):
     """Relationship type definition."""
 
-    attribute_defs: List[Dict[str, Any]] = msgspec.field(default_factory=list)
+    attribute_defs: List[AttributeDef] = msgspec.field(default_factory=list)
     """Unused."""
 
     category: AtlanTypeCategory = AtlanTypeCategory.RELATIONSHIP
@@ -1372,13 +1372,13 @@ class RelationshipDef(TypeDef, kw_only=True):
     end_def2: Union[Dict[str, Any], None] = msgspec.field(default_factory=dict)
     """Unused."""
 
-    propagate_tags: str = "ONE_TO_TWO"
+    propagate_tags: Union[str, None] = None
     """Unused."""
 
-    relationship_category: str = "AGGREGATION"
+    relationship_category: Union[str, None] = None
     """Unused."""
 
-    relationship_label: str = "__SalesforceOrganization.reports"
+    relationship_label: Union[str, None] = None
     """Unused."""
 
     service_type: Union[str, None] = None
