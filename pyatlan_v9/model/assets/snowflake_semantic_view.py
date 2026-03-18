@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -60,10 +61,7 @@ from .semantic_related import (
     RelatedSemanticEntity,
     RelatedSemanticMeasure,
 )
-from .snowflake_related import (
-    RelatedSnowflakeSemanticLogicalTable,
-    RelatedSnowflakeSemanticView,
-)
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSchema
@@ -103,6 +101,8 @@ class SnowflakeSemanticView(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -137,6 +137,8 @@ class SnowflakeSemanticView(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SnowflakeSemanticView"
 
     snowflake_definition: Union[str, None, UnsetType] = UNSET
     """DDL definition of the semantic view (via GET_DDL)."""
@@ -211,6 +213,12 @@ class SnowflakeSemanticView(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -298,7 +306,7 @@ class SnowflakeSemanticView(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     semantic_dimensions: Union[List[RelatedSemanticDimension], None, UnsetType] = UNSET
     """Dimensions that exist within this semantic model."""
@@ -336,78 +344,6 @@ class SnowflakeSemanticView(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SnowflakeSemanticView instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SnowflakeSemanticView validation failed: {errors}")
-
-    def minimize(self) -> "SnowflakeSemanticView":
-        """
-        Return a minimal copy of this SnowflakeSemanticView with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SnowflakeSemanticView with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SnowflakeSemanticView instance with only the minimum required fields.
-        """
-        self.validate()
-        return SnowflakeSemanticView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSnowflakeSemanticView":
-        """
-        Create a :class:`RelatedSnowflakeSemanticView` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSnowflakeSemanticView reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSnowflakeSemanticView(guid=self.guid)
-        return RelatedSnowflakeSemanticView(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -544,6 +480,12 @@ class SnowflakeSemanticViewRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -630,7 +572,7 @@ class SnowflakeSemanticViewRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     semantic_dimensions: Union[List[RelatedSemanticDimension], None, UnsetType] = UNSET
     """Dimensions that exist within this semantic model."""
@@ -685,6 +627,8 @@ _SNOWFLAKE_SEMANTIC_VIEW_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -814,9 +758,6 @@ def _snowflake_semantic_view_to_nested(
         is_incomplete=snowflake_semantic_view.is_incomplete,
         provenance_type=snowflake_semantic_view.provenance_type,
         home_id=snowflake_semantic_view.home_id,
-        depth=snowflake_semantic_view.depth,
-        immediate_upstream=snowflake_semantic_view.immediate_upstream,
-        immediate_downstream=snowflake_semantic_view.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -852,6 +793,7 @@ def _snowflake_semantic_view_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -860,9 +802,6 @@ def _snowflake_semantic_view_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_semantic_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -942,6 +881,10 @@ SnowflakeSemanticView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 SnowflakeSemanticView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SnowflakeSemanticView.APPLICATION = RelationField("application")
 SnowflakeSemanticView.APPLICATION_FIELD = RelationField("applicationField")
+SnowflakeSemanticView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SnowflakeSemanticView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SnowflakeSemanticView.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
 )
