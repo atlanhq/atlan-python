@@ -454,7 +454,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
     class Options(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
         """Extensible options for a custom metadata attribute."""
 
-        custom_metadata_version: str = "v2"
+        custom_metadata_version: Union[str, msgspec.UnsetType] = msgspec.UNSET
         """Indicates the version of the custom metadata structure."""
 
         description: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
@@ -550,8 +550,14 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
         )
         """Other asset type names to restrict the attribute (JSON-encoded)."""
 
-        is_rich_text: Union[bool, None] = False
+        is_rich_text: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether this attribute supports rich text formatting."""
+
+        def __post_init__(self) -> None:
+            if self.custom_metadata_version is msgspec.UNSET:
+                self.custom_metadata_version = "v2"
+            if self.is_rich_text is msgspec.UNSET:
+                self.is_rich_text = False
 
         def __setattr__(self, name: str, value: object) -> None:
             super().__setattr__(name, value)
