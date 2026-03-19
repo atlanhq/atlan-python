@@ -230,37 +230,37 @@ def _get_all_qualified_names(client: AtlanClient, asset_type: str) -> Set[str]:
 # =============================================================================
 
 
-class TypeDef(msgspec.Struct, kw_only=True, rename="camel"):
+class TypeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
     """Base type definition."""
 
     category: AtlanTypeCategory
     """Type of the type definition."""
 
-    create_time: Union[int, None] = None
+    create_time: Union[int, None, msgspec.UnsetType] = msgspec.UNSET
     """Time (epoch) at which this object was created, in milliseconds."""
 
-    created_by: Union[str, None] = None
+    created_by: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Username of the user who created the object."""
 
-    description: Union[str, None] = None
+    description: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Description of the type definition."""
 
-    guid: Union[str, None] = None
+    guid: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Unique identifier that represents the type definition."""
 
-    name: Union[str, None] = None
+    name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Unique name of this type definition."""
 
-    type_version: Union[str, None] = None
+    type_version: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Internal use only."""
 
-    update_time: Union[int, None] = None
+    update_time: Union[int, None, msgspec.UnsetType] = msgspec.UNSET
     """Time (epoch) at which this object was last updated, in milliseconds."""
 
-    updated_by: Union[str, None] = None
+    updated_by: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Username of the user who last updated the object."""
 
-    version: Union[int, None] = None
+    version: Union[int, None, msgspec.UnsetType] = msgspec.UNSET
     """Version of this type definition."""
 
 
@@ -272,16 +272,16 @@ class TypeDef(msgspec.Struct, kw_only=True, rename="camel"):
 class EnumDef(TypeDef, kw_only=True):
     """Enumeration type definition."""
 
-    class ElementDef(msgspec.Struct, kw_only=True, rename="camel"):
+    class ElementDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
         """One element (valid value) within an enumeration."""
 
         value: str
         """One unique value within the enumeration."""
 
-        description: Union[str, None] = None
+        description: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Unused."""
 
-        ordinal: Union[int, None] = None
+        ordinal: Union[int, None, msgspec.UnsetType] = msgspec.UNSET
         """Unique numeric identifier for the value."""
 
         @staticmethod
@@ -330,13 +330,13 @@ class EnumDef(TypeDef, kw_only=True):
     category: AtlanTypeCategory = AtlanTypeCategory.ENUM
     """Type category for enumeration definitions."""
 
-    element_defs: List[EnumDef.ElementDef] = msgspec.field(default_factory=list)
+    element_defs: Union[List[EnumDef.ElementDef], msgspec.UnsetType] = msgspec.UNSET
     """Valid values for the enumeration."""
 
-    options: Union[Dict[str, Any], None] = None
+    options: Union[Dict[str, Any], None, msgspec.UnsetType] = msgspec.UNSET
     """Optional properties of the type definition."""
 
-    service_type: Union[str, None] = None
+    service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Internal use only."""
 
     @staticmethod
@@ -448,7 +448,7 @@ class EnumDef(TypeDef, kw_only=True):
 _OPTIONS_PARENT_MAP: dict[int, Any] = {}
 
 
-class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
+class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
     """Custom metadata attribute definition."""
 
     class Options(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
@@ -457,94 +457,94 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
         custom_metadata_version: str = "v2"
         """Indicates the version of the custom metadata structure."""
 
-        description: Union[str, None] = None
+        description: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Optional description of the attribute."""
 
-        applicable_entity_types: Union[str, None] = None
+        applicable_entity_types: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Set of entities on which this attribute can be applied (JSON-encoded)."""
 
-        custom_applicable_entity_types: Union[str, None] = None
+        custom_applicable_entity_types: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Deprecated: see applicable_asset_types, applicable_glossary_types."""
 
-        allow_search: Union[bool, None] = None
+        allow_search: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether the attribute should be searchable (true) or not (false)."""
 
-        max_str_length: Union[str, None] = None
+        max_str_length: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Maximum length allowed for a string value."""
 
-        allow_filtering: Union[bool, None] = None
+        allow_filtering: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether this attribute should appear in the filterable facets."""
 
-        multi_value_select: Union[bool, None] = None
+        multi_value_select: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether this attribute can have multiple values."""
 
-        show_in_overview: Union[bool, None] = None
+        show_in_overview: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether users will see this attribute in the overview tab."""
 
-        is_deprecated: Union[str, None] = None
+        is_deprecated: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether the attribute is deprecated ('true') or not."""
 
-        is_enum: Union[bool, None] = None
+        is_enum: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether the attribute is an enumeration."""
 
-        enum_type: Union[str, None] = None
+        enum_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Name of the enumeration (options), when the attribute is an enumeration."""
 
-        custom_type: Union[str, None] = None
+        custom_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Used for Atlan-specific types like users, groups, url, and SQL."""
 
-        has_time_precision: Union[bool, None] = None
+        has_time_precision: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """If true for a date attribute, time-level precision is also available."""
 
-        is_archived: Union[bool, None] = None
+        is_archived: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether the attribute has been deleted."""
 
-        archived_at: Union[int, None] = None
+        archived_at: Union[int, None, msgspec.UnsetType] = msgspec.UNSET
         """When the attribute was deleted."""
 
-        archived_by: Union[str, None] = None
+        archived_by: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """User who deleted the attribute."""
 
-        is_soft_reference: Union[str, None] = None
+        is_soft_reference: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """TBC"""
 
-        is_append_on_partial_update: Union[str, None] = None
+        is_append_on_partial_update: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """TBC"""
 
-        primitive_type: Union[str, None] = None
+        primitive_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Type of the attribute."""
 
-        applicable_connections: Union[str, None] = None
+        applicable_connections: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Qualified names of connections to restrict the attribute (JSON-encoded)."""
 
-        applicable_glossaries: Union[str, None] = None
+        applicable_glossaries: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Qualified names of glossaries to restrict the attribute (JSON-encoded)."""
 
-        applicable_domains: Union[str, None] = None
+        applicable_domains: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Qualified names of domains to restrict the attribute (JSON-encoded)."""
 
-        applicable_asset_types: Union[str, None] = msgspec.field(
-            default=None, name="assetTypesList"
+        applicable_asset_types: Union[str, None, msgspec.UnsetType] = msgspec.field(
+            default=msgspec.UNSET, name="assetTypesList"
         )
         """Asset type names to restrict the attribute (JSON-encoded)."""
 
-        applicable_glossary_types: Union[str, None] = msgspec.field(
-            default=None, name="glossaryTypeList"
+        applicable_glossary_types: Union[str, None, msgspec.UnsetType] = msgspec.field(
+            default=msgspec.UNSET, name="glossaryTypeList"
         )
         """Glossary type names to restrict the attribute (JSON-encoded)."""
 
-        applicable_domain_types: Union[str, None] = msgspec.field(
-            default=None, name="domainTypesList"
+        applicable_domain_types: Union[str, None, msgspec.UnsetType] = msgspec.field(
+            default=msgspec.UNSET, name="domainTypesList"
         )
         """Data product type names to restrict the attribute (JSON-encoded)."""
 
-        applicable_ai_asset_types: Union[str, None] = msgspec.field(
-            default=None, name="aiAssetsTypeList"
+        applicable_ai_asset_types: Union[str, None, msgspec.UnsetType] = msgspec.field(
+            default=msgspec.UNSET, name="aiAssetsTypeList"
         )
         """AI asset type names to restrict the attribute (JSON-encoded)."""
 
-        applicable_other_asset_types: Union[str, None] = msgspec.field(
-            default=None, name="otherAssetTypeList"
+        applicable_other_asset_types: Union[str, None, msgspec.UnsetType] = msgspec.field(
+            default=msgspec.UNSET, name="otherAssetTypeList"
         )
         """Other asset type names to restrict the attribute (JSON-encoded)."""
 
@@ -604,79 +604,79 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
                 options.multi_value_select = False
             return options
 
-    is_new: Union[bool, None] = None
+    is_new: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """Whether the attribute is being newly created."""
 
-    cardinality: Union[Cardinality, None] = None
+    cardinality: Union[Cardinality, None, msgspec.UnsetType] = msgspec.UNSET
     """Whether the attribute allows a single or multiple values."""
 
-    constraints: Union[List[Dict[str, Any]], None] = None
+    constraints: Union[List[Dict[str, Any]], None, msgspec.UnsetType] = msgspec.UNSET
     """Internal use only."""
 
-    enum_values: Union[List[str], None] = None
+    enum_values: Union[List[str], None, msgspec.UnsetType] = msgspec.UNSET
     """List of values for an enumeration."""
 
-    description: Union[str, None] = None
+    description: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Description of the attribute definition."""
 
-    default_value: Union[str, None] = None
+    default_value: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Default value for this attribute (if any)."""
 
-    display_name: Union[str, None] = None
+    display_name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Name to use within all user interactions through the UI."""
 
-    name: Union[str, None] = None
+    name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Unique name of this attribute definition."""
 
-    include_in_notification: Union[bool, None] = None
+    include_in_notification: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """TBC"""
 
-    index_type: Union[IndexType, None] = None
+    index_type: Union[IndexType, None, msgspec.UnsetType] = msgspec.UNSET
     """Index type for the attribute."""
 
-    is_indexable: Union[bool, None] = None
+    is_indexable: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """When true, values for this attribute will be indexed for searching."""
 
-    is_optional: Union[bool, None] = None
+    is_optional: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """When true, a value will not be required for this attribute."""
 
-    is_unique: Union[bool, None] = None
+    is_unique: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """When true, this attribute must be unique across all assets."""
 
-    options: Union[AttributeDef.Options, None] = msgspec.field(default_factory=Options)
+    options: Union[AttributeDef.Options, None, msgspec.UnsetType] = msgspec.UNSET
     """Extensible options for the attribute."""
 
-    search_weight: Union[float, None] = None
+    search_weight: Union[float, None, msgspec.UnsetType] = msgspec.UNSET
     """TBC"""
 
-    skip_scrubbing: Union[bool, None] = None
+    skip_scrubbing: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """When true, scrubbing of data will be skipped."""
 
-    type_name: Union[str, None] = None
+    type_name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Type of this attribute."""
 
-    values_min_count: Union[float, None] = None
+    values_min_count: Union[float, None, msgspec.UnsetType] = msgspec.UNSET
     """Minimum number of values for this attribute."""
 
-    values_max_count: Union[float, None] = None
+    values_max_count: Union[float, None, msgspec.UnsetType] = msgspec.UNSET
     """Maximum number of values for this attribute."""
 
-    index_type_es_config: Union[Dict[str, Any], None] = msgspec.field(
-        default=None, name="indexTypeESConfig"
+    index_type_es_config: Union[Dict[str, Any], None, msgspec.UnsetType] = msgspec.field(
+        default=msgspec.UNSET, name="indexTypeESConfig"
     )
     """Internal use only."""
 
-    index_type_es_fields: Union[Dict[str, Dict[str, str]], None] = msgspec.field(
-        default=None, name="indexTypeESFields"
+    index_type_es_fields: Union[Dict[str, Dict[str, str]], None, msgspec.UnsetType] = msgspec.field(
+        default=msgspec.UNSET, name="indexTypeESFields"
     )
     """Internal use only."""
 
-    is_default_value_null: Union[bool, None] = None
+    is_default_value_null: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """TBC"""
 
     def __post_init__(self):
         """Register back-reference from Options to this AttributeDef."""
-        if self.options is not None:
+        if self.options is not None and self.options is not msgspec.UNSET:
             _OPTIONS_PARENT_MAP[id(self.options)] = self
 
     # --- Convenience property accessors ---
@@ -686,14 +686,14 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 
     def _get_option_set(self, attr: str) -> Set[str]:
         """Helper to parse a JSON-encoded set from options."""
-        val = getattr(self.options, attr, None) if self.options else None
+        val = getattr(self.options, attr, None) if self.options and self.options is not msgspec.UNSET else None
         if val:
             return set(json.loads(val))
         return set()
 
     def _set_option_json(self, attr: str, value: Set[str]) -> None:
         """Helper to set a JSON-encoded set on options."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         setattr(self.options, attr, json.dumps(list(value)))
 
@@ -717,7 +717,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
         self, asset_types: Union[Set[str], AssetTypes]
     ) -> None:
         """Set asset types to which to restrict the attribute."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(asset_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
@@ -743,7 +743,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 
     def set_applicable_glossary_types(self, glossary_types: GlossaryTypes) -> None:
         """Set glossary types to which to restrict the attribute."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(glossary_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
@@ -761,7 +761,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 
     def set_applicable_domain_types(self, domain_types: DomainTypes) -> None:
         """Set domain types to which to restrict the attribute."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(domain_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
@@ -779,7 +779,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 
     def set_applicable_ai_asset_types(self, ai_asset_types: AIAssetTypes) -> None:
         """Set AI asset types to which to restrict the attribute."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(ai_asset_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
@@ -799,7 +799,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
         self, other_asset_types: OtherAssetTypes
     ) -> None:
         """Set other asset types to which to restrict the attribute."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(other_asset_types, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
@@ -819,7 +819,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 
     def set_applicable_connections(self, connections: Set[str]) -> None:
         """Set connections to which to restrict the attribute."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(connections, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
@@ -833,7 +833,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 
     def set_applicable_glossaries(self, glossaries: Set[str]) -> None:
         """Set glossaries to which to restrict the attribute."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(glossaries, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
@@ -847,7 +847,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 
     def set_applicable_domains(self, domains: Set[str]) -> None:
         """Set domains to which to restrict the attribute."""
-        if self.options is None:
+        if self.options is None or self.options is msgspec.UNSET:
             raise ErrorCode.MISSING_OPTIONS.exception_with_parameters()
         if not isinstance(domains, set):
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
@@ -1204,10 +1204,10 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel"):
 class RelationshipAttributeDef(AttributeDef, kw_only=True):
     """Relationship attribute definition."""
 
-    is_legacy_attribute: Union[bool, None] = None
+    is_legacy_attribute: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
 
-    relationship_type_name: Union[str, None] = None
+    relationship_type_name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Name of the relationship type."""
 
 
@@ -1222,10 +1222,10 @@ class StructDef(TypeDef, kw_only=True):
     category: AtlanTypeCategory = AtlanTypeCategory.STRUCT
     """Type category for struct definitions."""
 
-    attribute_defs: Union[List[AttributeDef], None] = None
+    attribute_defs: Union[List[AttributeDef], None, msgspec.UnsetType] = msgspec.UNSET
     """List of attributes that should be available in the type definition."""
 
-    service_type: Union[str, None] = None
+    service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Internal use only."""
 
 
@@ -1237,31 +1237,31 @@ class StructDef(TypeDef, kw_only=True):
 class AtlanTagDef(TypeDef, kw_only=True):
     """Classification (Atlan tag) type definition."""
 
-    attribute_defs: Union[List[AttributeDef], None] = None
+    attribute_defs: Union[List[AttributeDef], None, msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
 
     category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
     """Type category for classification definitions."""
 
-    display_name: Union[str, None] = None
+    display_name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Name used for display purposes (in user interfaces)."""
 
-    entity_types: Union[List[str], None] = None
+    entity_types: Union[List[str], None, msgspec.UnsetType] = msgspec.UNSET
     """A list of entity types that this classification can be used against."""
 
-    options: Union[Dict[str, Any], None] = None
+    options: Union[Dict[str, Any], None, msgspec.UnsetType] = msgspec.UNSET
     """Optional properties of the type definition."""
 
-    sub_types: Union[List[str], None] = None
+    sub_types: Union[List[str], None, msgspec.UnsetType] = msgspec.UNSET
     """List of sub-types that extend from this type definition."""
 
-    super_types: Union[List[str], None] = None
+    super_types: Union[List[str], None, msgspec.UnsetType] = msgspec.UNSET
     """List of super-types that this type definition extends."""
 
-    service_type: Union[str, None] = None
+    service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Name used for display purposes."""
 
-    skip_display_name_uniqueness_check: Union[bool, None] = None
+    skip_display_name_uniqueness_check: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
     """TBC"""
 
     @staticmethod
@@ -1321,35 +1321,66 @@ RESERVED_SERVICE_TYPES = {"atlas_core", "atlan", "aws", "azure", "gcp", "google"
 class EntityDef(TypeDef, kw_only=True):
     """Entity type definition."""
 
-    attribute_defs: List[AttributeDef] = msgspec.field(default_factory=list)
+    attribute_defs: Union[List[AttributeDef], msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
 
-    business_attribute_defs: Union[Dict[str, List[Dict[str, Any]]], None] = (
-        msgspec.field(default_factory=dict)
-    )
+    business_attribute_defs: Union[Dict[str, List[Dict[str, Any]]], None, msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
 
     category: AtlanTypeCategory = AtlanTypeCategory.ENTITY
     """Type category for entity definitions."""
 
-    relationship_attribute_defs: List[RelationshipAttributeDef] = msgspec.field(
-        default_factory=list
-    )
+    relationship_attribute_defs: Union[List[RelationshipAttributeDef], msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
 
-    service_type: Union[str, None] = None
+    service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Internal use only."""
 
-    sub_types: List[str] = msgspec.field(default_factory=list)
+    sub_types: Union[List[str], msgspec.UnsetType] = msgspec.UNSET
     """List of sub-types that extend from this type definition."""
 
-    super_types: List[str] = msgspec.field(default_factory=list)
+    super_types: Union[List[str], msgspec.UnsetType] = msgspec.UNSET
     """List of super-types that this type definition extends."""
 
     @property
     def reserved_type(self) -> bool:
         """Whether this entity definition is a reserved (built-in) type."""
         return self.service_type in RESERVED_SERVICE_TYPES
+
+
+# =============================================================================
+# RELATIONSHIP END DEFINITION
+# =============================================================================
+
+
+class RelationshipEndDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
+    """Defines the structure of one end of a relationship.
+
+    Despite Java's ``RelationshipEndDef extends AttributeDef``, analysis of
+    415 real RelationshipDef payloads (830 end-def objects) shows that only
+    six fields are ever present in endDef1/endDef2 JSON:
+    ``type``, ``name``, ``description``, ``cardinality``,
+    ``isContainer``, ``isLegacyAttribute``.
+    Inheriting the full 20+ field AttributeDef would be misleading.
+    """
+
+    type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
+    """Name of the entity-type definition at this end of the relationship."""
+
+    name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
+    """Name of the attribute representing this end of the relationship."""
+
+    description: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
+    """Description of the relationship from this end."""
+
+    cardinality: Union[Cardinality, None, msgspec.UnsetType] = msgspec.UNSET
+    """Cardinality of this end of the relationship."""
+
+    is_container: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
+    """Whether this end of the relationship "owns" (contains) the other end's assets."""
+
+    is_legacy_attribute: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
+    """Unused legacy flag."""
 
 
 # =============================================================================
@@ -1360,29 +1391,38 @@ class EntityDef(TypeDef, kw_only=True):
 class RelationshipDef(TypeDef, kw_only=True):
     """Relationship type definition."""
 
-    attribute_defs: List[AttributeDef] = msgspec.field(default_factory=list)
+    attribute_defs: Union[List[AttributeDef], msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
 
     category: AtlanTypeCategory = AtlanTypeCategory.RELATIONSHIP
     """Type category for relationship definitions."""
 
-    end_def1: Union[Dict[str, Any], None] = msgspec.field(default_factory=dict)
-    """Unused."""
+    end_def1: Union[RelationshipEndDef, None, msgspec.UnsetType] = msgspec.UNSET
+    """Definition for the first endpoint of the relationship."""
 
-    end_def2: Union[Dict[str, Any], None] = msgspec.field(default_factory=dict)
-    """Unused."""
+    end_def2: Union[RelationshipEndDef, None, msgspec.UnsetType] = msgspec.UNSET
+    """Definition for the second endpoint of the relationship."""
 
-    propagate_tags: Union[str, None] = None
-    """Unused."""
+    propagate_tags: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
+    """Whether Atlan tags propagate through this relationship, and in which direction."""
 
-    relationship_category: Union[str, None] = None
-    """Unused."""
+    relationship_attribute_defs: Union[List[RelationshipAttributeDef], msgspec.UnsetType] = msgspec.UNSET
+    """Relationship attributes that can exist for this relationship type."""
 
-    relationship_label: Union[str, None] = None
-    """Unused."""
+    relationship_category: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
+    """Style of relationship with regard to containment and lifecycle."""
 
-    service_type: Union[str, None] = None
+    relationship_label: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
+    """Label used to identify the relationship."""
+
+    service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Internal use only."""
+
+    sub_types: Union[List[str], msgspec.UnsetType] = msgspec.UNSET
+    """List of sub-types that extend from this relationship type."""
+
+    super_types: Union[List[str], msgspec.UnsetType] = msgspec.UNSET
+    """List of super-types that this relationship type extends."""
 
 
 # =============================================================================
@@ -1393,28 +1433,28 @@ class RelationshipDef(TypeDef, kw_only=True):
 class CustomMetadataDef(TypeDef, kw_only=True):
     """Custom metadata (business metadata) type definition."""
 
-    class Options(msgspec.Struct, kw_only=True, rename="camel"):
+    class Options(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
         """Options for a custom metadata definition."""
 
-        emoji: Union[str, None] = None
+        emoji: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """If the logoType is emoji, this holds the emoji character."""
 
-        image_id: Union[str, None] = None
+        image_id: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """The id of the image used for the logo."""
 
-        is_locked: Union[bool, None] = None
+        is_locked: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether the custom metadata can be managed in the UI (false) or not (true)."""
 
-        logo_type: Union[str, None] = None
+        logo_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Type of logo used for the custom metadata."""
 
-        logo_url: Union[str, None] = None
+        logo_url: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """If the logoType is image, this holds a URL to the image."""
 
-        icon_color: Union[AtlanTagColor, None] = None
+        icon_color: Union[AtlanTagColor, None, msgspec.UnsetType] = msgspec.UNSET
         """Color to use for the icon."""
 
-        icon_name: Union[AtlanIcon, None] = None
+        icon_name: Union[AtlanIcon, None, msgspec.UnsetType] = msgspec.UNSET
         """Icon to use to represent the custom metadata."""
 
         @staticmethod
@@ -1465,16 +1505,16 @@ class CustomMetadataDef(TypeDef, kw_only=True):
                 is_locked=locked,
             )
 
-    attribute_defs: List[AttributeDef] = msgspec.field(default_factory=list)
+    attribute_defs: Union[List[AttributeDef], msgspec.UnsetType] = msgspec.UNSET
     """List of custom attributes defined within the custom metadata."""
 
     category: AtlanTypeCategory = AtlanTypeCategory.CUSTOM_METADATA
     """Type category for custom metadata definitions."""
 
-    display_name: Union[str, None] = None
+    display_name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Name used for display purposes (in user interfaces)."""
 
-    options: Union[CustomMetadataDef.Options, None] = None
+    options: Union[CustomMetadataDef.Options, None, msgspec.UnsetType] = msgspec.UNSET
     """Optional properties of the type definition."""
 
     @staticmethod
@@ -1547,7 +1587,8 @@ class TypeDefResponse(msgspec.Struct, kw_only=True, rename="camel", omit_default
                 self._reserved_entity_defs.append(entity_def)
             else:
                 self._custom_entity_defs.append(entity_def)
-                self._custom_entity_def_names.add(entity_def.name)
+                if entity_def.name is not msgspec.UNSET:
+                    self._custom_entity_def_names.add(entity_def.name)
 
     @property
     def reserved_entity_defs(self) -> List[EntityDef]:
