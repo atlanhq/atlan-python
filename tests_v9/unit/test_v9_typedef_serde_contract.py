@@ -28,19 +28,15 @@ Invariants that must never be broken:
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import msgspec
 import pytest
 
 from pyatlan_v9.model.typedef import (
     AttributeDef,
-    CustomMetadataDef,
-    EntityDef,
     EnumDef,
-    RelationshipDef,
     RelationshipEndDef,
-    StructDef,
     TypeDefResponse,
 )
 
@@ -188,7 +184,9 @@ class TestSparseRoundTrip:
         """
         sparse_source = {"name": "x", "typeName": "string"}
         full_payload = _payload(
-            entityDefs=[{"name": "E", "typeVersion": "1.0", "attributeDefs": [sparse_source]}]
+            entityDefs=[
+                {"name": "E", "typeVersion": "1.0", "attributeDefs": [sparse_source]}
+            ]
         )
         decoded = _decode(full_payload)
         re_encoded_attr = _encode(decoded)["entityDefs"][0]["attributeDefs"][0]
@@ -378,7 +376,9 @@ class TestRelationshipDefNoStaleDefaults:
         )
         decoded = _decode(raw)
         re_encoded = _encode(decoded)
-        assert re_encoded["relationshipDefs"][0]["relationshipCategory"] == "COMPOSITION"
+        assert (
+            re_encoded["relationshipDefs"][0]["relationshipCategory"] == "COMPOSITION"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -791,7 +791,11 @@ class TestRelationshipEndDefStronglyTyped:
                     "endDef1": {"type": "A", "name": "r1", "isContainer": False},
                     "endDef2": {"type": "B", "name": "r2", "isContainer": False},
                     "relationshipAttributeDefs": [
-                        {"name": "label", "typeName": "string", "relationshipTypeName": "R"}
+                        {
+                            "name": "label",
+                            "typeName": "string",
+                            "relationshipTypeName": "R",
+                        }
                     ],
                 }
             ]

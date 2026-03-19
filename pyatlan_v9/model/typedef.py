@@ -463,7 +463,9 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
         applicable_entity_types: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
         """Set of entities on which this attribute can be applied (JSON-encoded)."""
 
-        custom_applicable_entity_types: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
+        custom_applicable_entity_types: Union[str, None, msgspec.UnsetType] = (
+            msgspec.UNSET
+        )
         """Deprecated: see applicable_asset_types, applicable_glossary_types."""
 
         allow_search: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
@@ -543,8 +545,8 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
         )
         """AI asset type names to restrict the attribute (JSON-encoded)."""
 
-        applicable_other_asset_types: Union[str, None, msgspec.UnsetType] = msgspec.field(
-            default=msgspec.UNSET, name="otherAssetTypeList"
+        applicable_other_asset_types: Union[str, None, msgspec.UnsetType] = (
+            msgspec.field(default=msgspec.UNSET, name="otherAssetTypeList")
         )
         """Other asset type names to restrict the attribute (JSON-encoded)."""
 
@@ -661,13 +663,13 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
     values_max_count: Union[float, None, msgspec.UnsetType] = msgspec.UNSET
     """Maximum number of values for this attribute."""
 
-    index_type_es_config: Union[Dict[str, Any], None, msgspec.UnsetType] = msgspec.field(
-        default=msgspec.UNSET, name="indexTypeESConfig"
+    index_type_es_config: Union[Dict[str, Any], None, msgspec.UnsetType] = (
+        msgspec.field(default=msgspec.UNSET, name="indexTypeESConfig")
     )
     """Internal use only."""
 
-    index_type_es_fields: Union[Dict[str, Dict[str, str]], None, msgspec.UnsetType] = msgspec.field(
-        default=msgspec.UNSET, name="indexTypeESFields"
+    index_type_es_fields: Union[Dict[str, Dict[str, str]], None, msgspec.UnsetType] = (
+        msgspec.field(default=msgspec.UNSET, name="indexTypeESFields")
     )
     """Internal use only."""
 
@@ -686,7 +688,11 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
 
     def _get_option_set(self, attr: str) -> Set[str]:
         """Helper to parse a JSON-encoded set from options."""
-        val = getattr(self.options, attr, None) if self.options and self.options is not msgspec.UNSET else None
+        val = (
+            getattr(self.options, attr, None)
+            if self.options and self.options is not msgspec.UNSET
+            else None
+        )
         if val:
             return set(json.loads(val))
         return set()
@@ -1261,7 +1267,9 @@ class AtlanTagDef(TypeDef, kw_only=True):
     service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Name used for display purposes."""
 
-    skip_display_name_uniqueness_check: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
+    skip_display_name_uniqueness_check: Union[bool, None, msgspec.UnsetType] = (
+        msgspec.UNSET
+    )
     """TBC"""
 
     @staticmethod
@@ -1324,13 +1332,17 @@ class EntityDef(TypeDef, kw_only=True):
     attribute_defs: Union[List[AttributeDef], msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
 
-    business_attribute_defs: Union[Dict[str, List[Dict[str, Any]]], None, msgspec.UnsetType] = msgspec.UNSET
+    business_attribute_defs: Union[
+        Dict[str, List[Dict[str, Any]]], None, msgspec.UnsetType
+    ] = msgspec.UNSET
     """Unused."""
 
     category: AtlanTypeCategory = AtlanTypeCategory.ENTITY
     """Type category for entity definitions."""
 
-    relationship_attribute_defs: Union[List[RelationshipAttributeDef], msgspec.UnsetType] = msgspec.UNSET
+    relationship_attribute_defs: Union[
+        List[RelationshipAttributeDef], msgspec.UnsetType
+    ] = msgspec.UNSET
     """Unused."""
 
     service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
@@ -1353,7 +1365,9 @@ class EntityDef(TypeDef, kw_only=True):
 # =============================================================================
 
 
-class RelationshipEndDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
+class RelationshipEndDef(
+    msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True
+):
     """Defines the structure of one end of a relationship.
 
     Despite Java's ``RelationshipEndDef extends AttributeDef``, analysis of
@@ -1406,7 +1420,9 @@ class RelationshipDef(TypeDef, kw_only=True):
     propagate_tags: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Whether Atlan tags propagate through this relationship, and in which direction."""
 
-    relationship_attribute_defs: Union[List[RelationshipAttributeDef], msgspec.UnsetType] = msgspec.UNSET
+    relationship_attribute_defs: Union[
+        List[RelationshipAttributeDef], msgspec.UnsetType
+    ] = msgspec.UNSET
     """Relationship attributes that can exist for this relationship type."""
 
     relationship_category: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
