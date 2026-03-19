@@ -340,8 +340,8 @@ class TestRelationshipDefNoStaleDefaults:
         decoded = _decode(raw)
         re_encoded = _encode(decoded)
         rel_out = re_encoded["relationshipDefs"][0]
-        assert "propagateTagPropagation" not in rel_out, (
-            "propagateTagPropagation injected with stale default — would corrupt Atlas writes."
+        assert "propagateTags" not in rel_out, (
+            "propagateTags injected with stale default — would corrupt Atlas writes."
         )
 
     def test_relationship_category_absent_from_output_when_not_in_source(self) -> None:
@@ -494,8 +494,8 @@ class TestStrictFalseDecoding:
     numbers as strings. The decoder must accept these without raising.
     """
 
-    def test_string_boolean_is_locked_accepted(self) -> None:
-        """isLocked: 'true' (string) must decode without error."""
+    def test_string_boolean_is_optional_accepted(self) -> None:
+        """isOptional: 'true' (string) must decode without error."""
         raw = _payload(
             entityDefs=[
                 {
@@ -529,9 +529,9 @@ class TestStrictFalseDecoding:
         with pytest.raises(msgspec.ValidationError):
             strict_decoder.decode(raw)
 
-    def test_string_encoded_integer_cardinality_accepted(self) -> None:
-        """isIndexable: '1' (string-encoded int treated as truthy) — strict=False coerces str→bool."""
-        # strict=False coerces str → bool/int, not int → str.
+    def test_string_boolean_is_indexable_accepted(self) -> None:
+        """isIndexable: 'false' (string) must decode without error — strict=False coerces str→bool."""
+        # strict=False coerces str → bool, not int → str.
         # The common Atlas pattern is string-encoded booleans ("true"/"false").
         raw = _payload(
             entityDefs=[
