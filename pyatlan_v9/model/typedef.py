@@ -233,7 +233,7 @@ def _get_all_qualified_names(client: AtlanClient, asset_type: str) -> Set[str]:
 class TypeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=True):
     """Base type definition."""
 
-    category: AtlanTypeCategory
+    category: Union[AtlanTypeCategory, msgspec.UnsetType] = msgspec.UNSET
     """Type of the type definition."""
 
     create_time: Union[int, None, msgspec.UnsetType] = msgspec.UNSET
@@ -327,9 +327,6 @@ class EnumDef(TypeDef, kw_only=True):
                     unique_elements.add(element)
             return extended_list
 
-    category: AtlanTypeCategory = AtlanTypeCategory.ENUM
-    """Type category for enumeration definitions."""
-
     element_defs: Union[List[EnumDef.ElementDef], msgspec.UnsetType] = msgspec.UNSET
     """Valid values for the enumeration."""
 
@@ -338,6 +335,9 @@ class EnumDef(TypeDef, kw_only=True):
 
     service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Internal use only."""
+
+    def __post_init__(self) -> None:
+        self.category = AtlanTypeCategory.ENUM
 
     @staticmethod
     def creator(name: str, values: List[str]) -> EnumDef:
@@ -1225,14 +1225,14 @@ class RelationshipAttributeDef(AttributeDef, kw_only=True):
 class StructDef(TypeDef, kw_only=True):
     """Struct type definition."""
 
-    category: AtlanTypeCategory = AtlanTypeCategory.STRUCT
-    """Type category for struct definitions."""
-
     attribute_defs: Union[List[AttributeDef], None, msgspec.UnsetType] = msgspec.UNSET
     """List of attributes that should be available in the type definition."""
 
     service_type: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Internal use only."""
+
+    def __post_init__(self) -> None:
+        self.category = AtlanTypeCategory.STRUCT
 
 
 # =============================================================================
@@ -1245,9 +1245,6 @@ class AtlanTagDef(TypeDef, kw_only=True):
 
     attribute_defs: Union[List[AttributeDef], None, msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
-
-    category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
-    """Type category for classification definitions."""
 
     display_name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Name used for display purposes (in user interfaces)."""
@@ -1271,6 +1268,9 @@ class AtlanTagDef(TypeDef, kw_only=True):
         msgspec.UNSET
     )
     """TBC"""
+
+    def __post_init__(self) -> None:
+        self.category = AtlanTypeCategory.CLASSIFICATION
 
     @staticmethod
     def creator(
@@ -1337,9 +1337,6 @@ class EntityDef(TypeDef, kw_only=True):
     ] = msgspec.UNSET
     """Unused."""
 
-    category: AtlanTypeCategory = AtlanTypeCategory.ENTITY
-    """Type category for entity definitions."""
-
     relationship_attribute_defs: Union[
         List[RelationshipAttributeDef], msgspec.UnsetType
     ] = msgspec.UNSET
@@ -1353,6 +1350,9 @@ class EntityDef(TypeDef, kw_only=True):
 
     super_types: Union[List[str], msgspec.UnsetType] = msgspec.UNSET
     """List of super-types that this type definition extends."""
+
+    def __post_init__(self) -> None:
+        self.category = AtlanTypeCategory.ENTITY
 
     @property
     def reserved_type(self) -> bool:
@@ -1408,9 +1408,6 @@ class RelationshipDef(TypeDef, kw_only=True):
     attribute_defs: Union[List[AttributeDef], msgspec.UnsetType] = msgspec.UNSET
     """Unused."""
 
-    category: AtlanTypeCategory = AtlanTypeCategory.RELATIONSHIP
-    """Type category for relationship definitions."""
-
     end_def1: Union[RelationshipEndDef, None, msgspec.UnsetType] = msgspec.UNSET
     """Definition for the first endpoint of the relationship."""
 
@@ -1439,6 +1436,9 @@ class RelationshipDef(TypeDef, kw_only=True):
 
     super_types: Union[List[str], msgspec.UnsetType] = msgspec.UNSET
     """List of super-types that this relationship type extends."""
+
+    def __post_init__(self) -> None:
+        self.category = AtlanTypeCategory.RELATIONSHIP
 
 
 # =============================================================================
@@ -1524,14 +1524,14 @@ class CustomMetadataDef(TypeDef, kw_only=True):
     attribute_defs: Union[List[AttributeDef], msgspec.UnsetType] = msgspec.UNSET
     """List of custom attributes defined within the custom metadata."""
 
-    category: AtlanTypeCategory = AtlanTypeCategory.CUSTOM_METADATA
-    """Type category for custom metadata definitions."""
-
     display_name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Name used for display purposes (in user interfaces)."""
 
     options: Union[CustomMetadataDef.Options, None, msgspec.UnsetType] = msgspec.UNSET
     """Optional properties of the type definition."""
+
+    def __post_init__(self) -> None:
+        self.category = AtlanTypeCategory.CUSTOM_METADATA
 
     @staticmethod
     def creator(

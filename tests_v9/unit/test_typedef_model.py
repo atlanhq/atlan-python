@@ -96,7 +96,7 @@ def check_type_def_properties(type_def: TypeDef, source: dict):
         if key in source:
             assert value == source[key]
         else:
-            assert value is None
+            assert value is msgspec.UNSET
 
     check_property("create_time")
     check_property("created_by")
@@ -120,7 +120,7 @@ def check_attribute(model: object, attribute_name: str, source: dict):
     else:
         # Since "options" are now initialized with a default factory
         if attribute_name != "options":
-            assert getattr(model, attribute_name) is None
+            assert getattr(model, attribute_name) is msgspec.UNSET
 
 
 def check_has_attributes(type_def: TypeDef, type_def_json: dict):
@@ -588,4 +588,6 @@ class TestAttributeDef:
         # Cannot be multi-valued
         assert options.multi_value_select is False
         # Should not have custom_type set (that's for SQL, URL, etc.)
-        assert not hasattr(options, "custom_type") or options.custom_type is None
+        assert (
+            not hasattr(options, "custom_type") or options.custom_type is msgspec.UNSET
+        )

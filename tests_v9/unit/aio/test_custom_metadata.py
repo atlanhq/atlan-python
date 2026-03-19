@@ -2,6 +2,7 @@
 # Copyright 2025 Atlan Pte. Ltd.
 from unittest.mock import AsyncMock, patch
 
+import msgspec
 import pytest
 
 from pyatlan_v9.client.aio.atlan import AsyncAtlanClient
@@ -553,4 +554,6 @@ class TestAsyncAttributeDefRichText:
         # Cannot be multi-valued
         assert options.multi_value_select is False
         # Should not have custom_type set (that's for SQL, URL, etc.)
-        assert not hasattr(options, "custom_type") or options.custom_type is None
+        assert (
+            not hasattr(options, "custom_type") or options.custom_type is msgspec.UNSET
+        )
