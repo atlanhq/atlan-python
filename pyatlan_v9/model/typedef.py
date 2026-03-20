@@ -627,7 +627,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
     description: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
     """Description of the attribute definition."""
 
-    default_value: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
+    default_value: Union[Any, None, msgspec.UnsetType] = msgspec.UNSET
     """Default value for this attribute (if any)."""
 
     display_name: Union[str, None, msgspec.UnsetType] = msgspec.UNSET
@@ -674,7 +674,7 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
     )
     """Internal use only."""
 
-    index_type_es_fields: Union[Dict[str, Dict[str, str]], None, msgspec.UnsetType] = (
+    index_type_es_fields: Union[Dict[str, Dict[str, Any]], None, msgspec.UnsetType] = (
         msgspec.field(default=msgspec.UNSET, name="indexTypeESFields")
     )
     """Internal use only."""
