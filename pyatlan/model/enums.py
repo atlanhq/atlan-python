@@ -2476,6 +2476,7 @@ class DataQualityRuleTemplateType(str, Enum):
     RECON_SUM = "RECON_SUM"
     RECON_DUPLICATE_COUNT = "RECON_DUPLICATE_COUNT"
     RECON_UNIQUE_COUNT = "RECON_UNIQUE_COUNT"
+    DATE_NOT_IN_FUTURE = "DATE_NOT_IN_FUTURE"
 
 
 class DataQualityRuleTemplateConfigRuleConditions(str, Enum):
@@ -2504,6 +2505,9 @@ class DataQualityRuleTemplateConfigRuleConditions(str, Enum):
     SUM_RECON = "SUM_RECON"
     DUPLICATE_COUNT_RECON = "DUPLICATE_COUNT_RECON"
     UNIQUE_COUNT_RECON = "UNIQUE_COUNT_RECON"
+
+    # Date conditions
+    DATE_NOT_IN_FUTURE = "DATE_NOT_IN_FUTURE"
 
 
 # **************************************

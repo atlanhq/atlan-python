@@ -93,6 +93,8 @@ class DQCondition(AtlanObject):
                 ["target_table", "target_column"],
                 [self.target_table, self.target_column],
             )
+        elif self.type == DataQualityRuleTemplateConfigRuleConditions.DATE_NOT_IN_FUTURE:
+            pass  # No parameters required
         else:
             validate_required_fields(["value"], [self.value])
             if self.type in [
@@ -133,6 +135,8 @@ class DQCondition(AtlanObject):
                 "target_table": self.target_table,
                 "target_column": self.target_column,
             }
+        elif self.type == DataQualityRuleTemplateConfigRuleConditions.DATE_NOT_IN_FUTURE:
+            pass  # No value needed
         else:
             result["value"] = {"value": self.value}
 
