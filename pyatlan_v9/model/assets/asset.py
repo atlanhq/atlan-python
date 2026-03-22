@@ -30,7 +30,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
-from .asset_related import RelatedAsset
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -77,6 +77,7 @@ class Asset(Referenceable):
     ANNOUNCEMENT_TYPE: ClassVar[Any] = None
     ANNOUNCEMENT_UPDATED_AT: ClassVar[Any] = None
     ANNOUNCEMENT_UPDATED_BY: ClassVar[Any] = None
+    ASSET_ANNOUNCEMENT_EXPIRED_AT: ClassVar[Any] = None
     OWNER_USERS: ClassVar[Any] = None
     OWNER_GROUPS: ClassVar[Any] = None
     ADMIN_USERS: ClassVar[Any] = None
@@ -241,6 +242,8 @@ class Asset(Referenceable):
     ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME: ClassVar[Any] = None
     ASSET_SPACE_QUALIFIED_NAME: ClassVar[Any] = None
     ASSET_SPACE_NAME: ClassVar[Any] = None
+    ASSET_IMMUTA_REQUEST_URL: ClassVar[Any] = None
+    ASSET_IMMUTA_REQUEST_TYPE: ClassVar[Any] = None
     ASSET_GCP_DATAPLEX_METADATA_DETAILS: ClassVar[Any] = None
     ASSET_GCP_DATAPLEX_ASPECT_LIST: ClassVar[Any] = None
     ASSET_GCP_DATAPLEX_ASPECT_FIELD_LIST: ClassVar[Any] = None
@@ -250,6 +253,8 @@ class Asset(Referenceable):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     METRICS: ClassVar[Any] = None
@@ -319,6 +324,9 @@ class Asset(Referenceable):
 
     announcement_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated the announcement."""
+
+    asset_announcement_expired_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the announcement expires, in milliseconds. When set, the announcement will no longer be displayed after this time."""
 
     owner_users: Union[Set[str], None, UnsetType] = UNSET
     """List of users who own this asset."""
@@ -902,6 +910,12 @@ class Asset(Referenceable):
     asset_space_name: Union[str, None, UnsetType] = UNSET
     """Name of the space that contains this asset."""
 
+    asset_immuta_request_url: Union[str, None, UnsetType] = UNSET
+    """URL of the request form on Immuta relevant to the asset."""
+
+    asset_immuta_request_type: Union[str, None, UnsetType] = UNSET
+    """The type of request form on Immuta applicable for the asset."""
+
     asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = (
         msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
     )
@@ -938,6 +952,12 @@ class Asset(Referenceable):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -985,7 +1005,7 @@ class Asset(Referenceable):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -993,66 +1013,6 @@ class Asset(Referenceable):
     def __post_init__(self) -> None:
         if self.type_name is UNSET:
             self.type_name = "Asset"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Asset instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Asset validation failed: {errors}")
-
-    def minimize(self) -> "Asset":
-        """
-        Return a minimal copy of this Asset with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Asset with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Asset instance with only the minimum required fields.
-        """
-        self.validate()
-        return Asset(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAsset":
-        """
-        Create a :class:`RelatedAsset` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedAsset reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedAsset(guid=self.guid)
-        return RelatedAsset(qualified_name=self.qualified_name)
 
     @classmethod
     def ref_by_guid(
@@ -1369,6 +1329,9 @@ class AssetAttributes(ReferenceableAttributes):
     announcement_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated the announcement."""
 
+    asset_announcement_expired_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the announcement expires, in milliseconds. When set, the announcement will no longer be displayed after this time."""
+
     owner_users: Union[Set[str], None, UnsetType] = UNSET
     """List of users who own this asset."""
 
@@ -1951,6 +1914,12 @@ class AssetAttributes(ReferenceableAttributes):
     asset_space_name: Union[str, None, UnsetType] = UNSET
     """Name of the space that contains this asset."""
 
+    asset_immuta_request_url: Union[str, None, UnsetType] = UNSET
+    """URL of the request form on Immuta relevant to the asset."""
+
+    asset_immuta_request_type: Union[str, None, UnsetType] = UNSET
+    """The type of request form on Immuta applicable for the asset."""
+
     asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = (
         msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
     )
@@ -1991,6 +1960,12 @@ class AssetRelationshipAttributes(ReferenceableRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -2038,7 +2013,7 @@ class AssetRelationshipAttributes(ReferenceableRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -2066,6 +2041,8 @@ _ASSET_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "metrics",
@@ -2109,6 +2086,7 @@ def _populate_asset_attrs(attrs: AssetAttributes, obj: Asset) -> None:
     attrs.announcement_type = obj.announcement_type
     attrs.announcement_updated_at = obj.announcement_updated_at
     attrs.announcement_updated_by = obj.announcement_updated_by
+    attrs.asset_announcement_expired_at = obj.asset_announcement_expired_at
     attrs.owner_users = obj.owner_users
     attrs.owner_groups = obj.owner_groups
     attrs.admin_users = obj.admin_users
@@ -2317,6 +2295,8 @@ def _populate_asset_attrs(attrs: AssetAttributes, obj: Asset) -> None:
     )
     attrs.asset_space_qualified_name = obj.asset_space_qualified_name
     attrs.asset_space_name = obj.asset_space_name
+    attrs.asset_immuta_request_url = obj.asset_immuta_request_url
+    attrs.asset_immuta_request_type = obj.asset_immuta_request_type
     attrs.asset_gcp_dataplex_metadata_details = obj.asset_gcp_dataplex_metadata_details
     attrs.asset_gcp_dataplex_aspect_list = obj.asset_gcp_dataplex_aspect_list
     attrs.asset_gcp_dataplex_aspect_field_list = (
@@ -2354,6 +2334,7 @@ def _extract_asset_attrs(attrs: AssetAttributes) -> dict:
     result["announcement_type"] = attrs.announcement_type
     result["announcement_updated_at"] = attrs.announcement_updated_at
     result["announcement_updated_by"] = attrs.announcement_updated_by
+    result["asset_announcement_expired_at"] = attrs.asset_announcement_expired_at
     result["owner_users"] = attrs.owner_users
     result["owner_groups"] = attrs.owner_groups
     result["admin_users"] = attrs.admin_users
@@ -2594,6 +2575,8 @@ def _extract_asset_attrs(attrs: AssetAttributes) -> dict:
     )
     result["asset_space_qualified_name"] = attrs.asset_space_qualified_name
     result["asset_space_name"] = attrs.asset_space_name
+    result["asset_immuta_request_url"] = attrs.asset_immuta_request_url
+    result["asset_immuta_request_type"] = attrs.asset_immuta_request_type
     result["asset_gcp_dataplex_metadata_details"] = (
         attrs.asset_gcp_dataplex_metadata_details
     )
@@ -2642,9 +2625,6 @@ def _asset_to_nested(asset: Asset) -> AssetNested:
         is_incomplete=asset.is_incomplete,
         provenance_type=asset.provenance_type,
         home_id=asset.home_id,
-        depth=asset.depth,
-        immediate_upstream=asset.immediate_upstream,
-        immediate_downstream=asset.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -2674,6 +2654,7 @@ def _asset_from_nested(nested: AssetNested) -> Asset:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -2682,9 +2663,6 @@ def _asset_from_nested(nested: AssetNested) -> Asset:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_asset_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -2752,6 +2730,9 @@ Asset.ANNOUNCEMENT_UPDATED_AT = NumericField(
 )
 Asset.ANNOUNCEMENT_UPDATED_BY = KeywordField(
     "announcementUpdatedBy", "announcementUpdatedBy"
+)
+Asset.ASSET_ANNOUNCEMENT_EXPIRED_AT = NumericField(
+    "assetAnnouncementExpiredAt", "assetAnnouncementExpiredAt"
 )
 Asset.OWNER_USERS = KeywordField("ownerUsers", "ownerUsers")
 Asset.OWNER_GROUPS = KeywordField("ownerGroups", "ownerGroups")
@@ -3142,6 +3123,12 @@ Asset.ASSET_SPACE_QUALIFIED_NAME = KeywordField(
     "assetSpaceQualifiedName", "assetSpaceQualifiedName"
 )
 Asset.ASSET_SPACE_NAME = KeywordField("assetSpaceName", "assetSpaceName")
+Asset.ASSET_IMMUTA_REQUEST_URL = KeywordField(
+    "assetImmutaRequestUrl", "assetImmutaRequestUrl"
+)
+Asset.ASSET_IMMUTA_REQUEST_TYPE = KeywordField(
+    "assetImmutaRequestType", "assetImmutaRequestType"
+)
 Asset.ASSET_GCP_DATAPLEX_METADATA_DETAILS = KeywordField(
     "assetGCPDataplexMetadataDetails", "assetGCPDataplexMetadataDetails"
 )
@@ -3167,6 +3154,8 @@ Asset.ASSET_SMUS_METADATA_FORM_DETAILS = KeywordField(
 Asset.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Asset.APPLICATION = RelationField("application")
 Asset.APPLICATION_FIELD = RelationField("applicationField")
+Asset.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Asset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Asset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Asset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Asset.METRICS = RelationField("metrics")

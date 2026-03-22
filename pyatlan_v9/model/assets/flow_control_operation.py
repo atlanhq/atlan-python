@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .flow_related import RelatedFlowControlOperation
@@ -76,6 +77,8 @@ class FlowControlOperation(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     METRICS: ClassVar[Any] = None
@@ -96,6 +99,8 @@ class FlowControlOperation(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "FlowControlOperation"
 
     flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
@@ -147,6 +152,12 @@ class FlowControlOperation(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -211,7 +222,7 @@ class FlowControlOperation(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -224,70 +235,6 @@ class FlowControlOperation(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this FlowControlOperation instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"FlowControlOperation validation failed: {errors}")
-
-    def minimize(self) -> "FlowControlOperation":
-        """
-        Return a minimal copy of this FlowControlOperation with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new FlowControlOperation with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new FlowControlOperation instance with only the minimum required fields.
-        """
-        self.validate()
-        return FlowControlOperation(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFlowControlOperation":
-        """
-        Create a :class:`RelatedFlowControlOperation` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedFlowControlOperation reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedFlowControlOperation(guid=self.guid)
-        return RelatedFlowControlOperation(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -401,6 +348,12 @@ class FlowControlOperationRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -464,7 +417,7 @@ class FlowControlOperationRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -494,6 +447,8 @@ _FLOW_CONTROL_OPERATION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "metrics",
@@ -599,9 +554,6 @@ def _flow_control_operation_to_nested(
         is_incomplete=flow_control_operation.is_incomplete,
         provenance_type=flow_control_operation.provenance_type,
         home_id=flow_control_operation.home_id,
-        depth=flow_control_operation.depth,
-        immediate_upstream=flow_control_operation.immediate_upstream,
-        immediate_downstream=flow_control_operation.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -637,6 +589,7 @@ def _flow_control_operation_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -645,9 +598,6 @@ def _flow_control_operation_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_flow_control_operation_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -712,6 +662,10 @@ FlowControlOperation.FLOW_INPUT_PARAMETERS = KeywordField(
 FlowControlOperation.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FlowControlOperation.APPLICATION = RelationField("application")
 FlowControlOperation.APPLICATION_FIELD = RelationField("applicationField")
+FlowControlOperation.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+FlowControlOperation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 FlowControlOperation.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 FlowControlOperation.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 FlowControlOperation.METRICS = RelationField("metrics")

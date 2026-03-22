@@ -38,10 +38,11 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .mode_related import RelatedModeCollection, RelatedModeReport, RelatedModeWorkspace
+from .mode_related import RelatedModeReport, RelatedModeWorkspace
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -79,6 +80,8 @@ class ModeCollection(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -104,6 +107,8 @@ class ModeCollection(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ModeCollection"
 
     mode_collection_type: Union[str, None, UnsetType] = UNSET
     """Type of this collection."""
@@ -152,6 +157,12 @@ class ModeCollection(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -225,7 +236,7 @@ class ModeCollection(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -244,76 +255,6 @@ class ModeCollection(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this ModeCollection instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.mode_workspace is UNSET:
-                errors.append("mode_workspace is required for creation")
-            if self.mode_workspace_name is UNSET:
-                errors.append("mode_workspace_name is required for creation")
-            if self.mode_workspace_qualified_name is UNSET:
-                errors.append("mode_workspace_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"ModeCollection validation failed: {errors}")
-
-    def minimize(self) -> "ModeCollection":
-        """
-        Return a minimal copy of this ModeCollection with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new ModeCollection with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new ModeCollection instance with only the minimum required fields.
-        """
-        self.validate()
-        return ModeCollection(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedModeCollection":
-        """
-        Create a :class:`RelatedModeCollection` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedModeCollection reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedModeCollection(guid=self.guid)
-        return RelatedModeCollection(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -422,6 +363,12 @@ class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -494,7 +441,7 @@ class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -532,6 +479,8 @@ _MODE_COLLECTION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -630,9 +579,6 @@ def _mode_collection_to_nested(mode_collection: ModeCollection) -> ModeCollectio
         is_incomplete=mode_collection.is_incomplete,
         provenance_type=mode_collection.provenance_type,
         home_id=mode_collection.home_id,
-        depth=mode_collection.depth,
-        immediate_upstream=mode_collection.immediate_upstream,
-        immediate_downstream=mode_collection.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -666,6 +612,7 @@ def _mode_collection_from_nested(nested: ModeCollectionNested) -> ModeCollection
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -674,9 +621,6 @@ def _mode_collection_from_nested(nested: ModeCollectionNested) -> ModeCollection
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_mode_collection_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -737,6 +681,10 @@ ModeCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks
 ModeCollection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ModeCollection.APPLICATION = RelationField("application")
 ModeCollection.APPLICATION_FIELD = RelationField("applicationField")
+ModeCollection.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+ModeCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ModeCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ModeCollection.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ModeCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

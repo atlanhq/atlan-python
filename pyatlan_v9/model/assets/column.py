@@ -44,6 +44,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -92,8 +93,8 @@ class Column(Asset):
 
     DATA_TYPE: ClassVar[Any] = None
     SUB_DATA_TYPE: ClassVar[Any] = None
-    COLUMN_COMPRESSION: ClassVar[Any] = None
-    COLUMN_ENCODING: ClassVar[Any] = None
+    SQL_COMPRESSION: ClassVar[Any] = None
+    SQL_ENCODING: ClassVar[Any] = None
     RAW_DATA_TYPE_DEFINITION: ClassVar[Any] = None
     ORDER: ClassVar[Any] = None
     NESTED_COLUMN_ORDER: ClassVar[Any] = None
@@ -118,46 +119,46 @@ class Column(Asset):
     VALIDATIONS: ClassVar[Any] = None
     PARENT_COLUMN_QUALIFIED_NAME: ClassVar[Any] = None
     PARENT_COLUMN_NAME: ClassVar[Any] = None
-    COLUMN_DISTINCT_VALUES_COUNT: ClassVar[Any] = None
-    COLUMN_DISTINCT_VALUES_COUNT_LONG: ClassVar[Any] = None
-    COLUMN_HISTOGRAM: ClassVar[Any] = None
-    COLUMN_MAX: ClassVar[Any] = None
-    COLUMN_MIN: ClassVar[Any] = None
-    COLUMN_MEAN: ClassVar[Any] = None
-    COLUMN_SUM: ClassVar[Any] = None
-    COLUMN_MEDIAN: ClassVar[Any] = None
-    COLUMN_STANDARD_DEVIATION: ClassVar[Any] = None
-    COLUMN_UNIQUE_VALUES_COUNT: ClassVar[Any] = None
-    COLUMN_UNIQUE_VALUES_COUNT_LONG: ClassVar[Any] = None
-    COLUMN_AVERAGE: ClassVar[Any] = None
-    COLUMN_AVERAGE_LENGTH: ClassVar[Any] = None
-    COLUMN_DUPLICATE_VALUES_COUNT: ClassVar[Any] = None
-    COLUMN_DUPLICATE_VALUES_COUNT_LONG: ClassVar[Any] = None
-    COLUMN_MAXIMUM_STRING_LENGTH: ClassVar[Any] = None
+    SQL_DISTINCT_VALUES_COUNT: ClassVar[Any] = None
+    SQL_DISTINCT_VALUES_COUNT_LONG: ClassVar[Any] = None
+    SQL_HISTOGRAM: ClassVar[Any] = None
+    SQL_MAX: ClassVar[Any] = None
+    SQL_MIN: ClassVar[Any] = None
+    SQL_MEAN: ClassVar[Any] = None
+    SQL_SUM: ClassVar[Any] = None
+    SQL_MEDIAN: ClassVar[Any] = None
+    SQL_STANDARD_DEVIATION: ClassVar[Any] = None
+    SQL_UNIQUE_VALUES_COUNT: ClassVar[Any] = None
+    SQL_UNIQUE_VALUES_COUNT_LONG: ClassVar[Any] = None
+    SQL_AVERAGE: ClassVar[Any] = None
+    SQL_AVERAGE_LENGTH: ClassVar[Any] = None
+    SQL_DUPLICATE_VALUES_COUNT: ClassVar[Any] = None
+    SQL_DUPLICATE_VALUES_COUNT_LONG: ClassVar[Any] = None
+    SQL_MAXIMUM_STRING_LENGTH: ClassVar[Any] = None
     COLUMN_MAXS: ClassVar[Any] = None
-    COLUMN_MINIMUM_STRING_LENGTH: ClassVar[Any] = None
+    SQL_MINIMUM_STRING_LENGTH: ClassVar[Any] = None
     COLUMN_MINS: ClassVar[Any] = None
-    COLUMN_MISSING_VALUES_COUNT: ClassVar[Any] = None
-    COLUMN_MISSING_VALUES_COUNT_LONG: ClassVar[Any] = None
-    COLUMN_MISSING_VALUES_PERCENTAGE: ClassVar[Any] = None
-    COLUMN_UNIQUENESS_PERCENTAGE: ClassVar[Any] = None
-    COLUMN_VARIANCE: ClassVar[Any] = None
+    SQL_MISSING_VALUES_COUNT: ClassVar[Any] = None
+    SQL_MISSING_VALUES_COUNT_LONG: ClassVar[Any] = None
+    SQL_MISSING_VALUES_PERCENTAGE: ClassVar[Any] = None
+    SQL_UNIQUENESS_PERCENTAGE: ClassVar[Any] = None
+    SQL_VARIANCE: ClassVar[Any] = None
     COLUMN_TOP_VALUES: ClassVar[Any] = None
-    COLUMN_MAX_VALUE: ClassVar[Any] = None
-    COLUMN_MIN_VALUE: ClassVar[Any] = None
-    COLUMN_MEAN_VALUE: ClassVar[Any] = None
-    COLUMN_SUM_VALUE: ClassVar[Any] = None
-    COLUMN_MEDIAN_VALUE: ClassVar[Any] = None
-    COLUMN_STANDARD_DEVIATION_VALUE: ClassVar[Any] = None
-    COLUMN_AVERAGE_VALUE: ClassVar[Any] = None
-    COLUMN_VARIANCE_VALUE: ClassVar[Any] = None
-    COLUMN_AVERAGE_LENGTH_VALUE: ClassVar[Any] = None
-    COLUMN_DISTRIBUTION_HISTOGRAM: ClassVar[Any] = None
-    COLUMN_DEPTH_LEVEL: ClassVar[Any] = None
+    SQL_MAX_VALUE: ClassVar[Any] = None
+    SQL_MIN_VALUE: ClassVar[Any] = None
+    SQL_MEAN_VALUE: ClassVar[Any] = None
+    SQL_SUM_VALUE: ClassVar[Any] = None
+    SQL_MEDIAN_VALUE: ClassVar[Any] = None
+    SQL_STANDARD_DEVIATION_VALUE: ClassVar[Any] = None
+    SQL_AVERAGE_VALUE: ClassVar[Any] = None
+    SQL_VARIANCE_VALUE: ClassVar[Any] = None
+    SQL_AVERAGE_LENGTH_VALUE: ClassVar[Any] = None
+    SQL_DISTRIBUTION_HISTOGRAM: ClassVar[Any] = None
+    SQL_DEPTH_LEVEL: ClassVar[Any] = None
     NOSQL_COLLECTION_NAME: ClassVar[Any] = None
     NOSQL_COLLECTION_QUALIFIED_NAME: ClassVar[Any] = None
-    COLUMN_IS_MEASURE: ClassVar[Any] = None
-    COLUMN_MEASURE_TYPE: ClassVar[Any] = None
+    SQL_IS_MEASURE: ClassVar[Any] = None
+    SQL_MEASURE_TYPE: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -182,6 +183,8 @@ class Column(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     COSMOS_MONGO_DB_COLLECTION: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -232,16 +235,18 @@ class Column(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Column"
+
     data_type: Union[str, None, UnsetType] = UNSET
     """Data type of values in this column."""
 
     sub_data_type: Union[str, None, UnsetType] = UNSET
     """Sub-data type of this column."""
 
-    column_compression: Union[str, None, UnsetType] = UNSET
+    sql_compression: Union[str, None, UnsetType] = UNSET
     """Compression type of this column."""
 
-    column_encoding: Union[str, None, UnsetType] = UNSET
+    sql_encoding: Union[str, None, UnsetType] = UNSET
     """Encoding type of this column."""
 
     raw_data_type_definition: Union[str, None, UnsetType] = UNSET
@@ -316,112 +321,112 @@ class Column(Asset):
     parent_column_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    column_distinct_values_count: Union[int, None, UnsetType] = UNSET
+    sql_distinct_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
+    sql_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
-    column_max: Union[float, None, UnsetType] = UNSET
+    sql_max: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min: Union[float, None, UnsetType] = UNSET
+    sql_min: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean: Union[float, None, UnsetType] = UNSET
+    sql_mean: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum: Union[float, None, UnsetType] = UNSET
+    sql_sum: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median: Union[float, None, UnsetType] = UNSET
+    sql_median: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation: Union[float, None, UnsetType] = UNSET
+    sql_standard_deviation: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_unique_values_count: Union[int, None, UnsetType] = UNSET
+    sql_unique_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_unique_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_unique_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_average: Union[float, None, UnsetType] = UNSET
+    sql_average: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_average_length: Union[float, None, UnsetType] = UNSET
+    sql_average_length: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_duplicate_values_count: Union[int, None, UnsetType] = UNSET
+    sql_duplicate_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_maximum_string_length: Union[int, None, UnsetType] = UNSET
+    sql_maximum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the longest value in a string column."""
 
     column_maxs: Union[List[str], None, UnsetType] = UNSET
     """List of the greatest values in a column."""
 
-    column_minimum_string_length: Union[int, None, UnsetType] = UNSET
+    sql_minimum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the shortest value in a string column."""
 
     column_mins: Union[List[str], None, UnsetType] = UNSET
     """List of the least values in a column."""
 
-    column_missing_values_count: Union[int, None, UnsetType] = UNSET
+    sql_missing_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_missing_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_percentage: Union[float, None, UnsetType] = UNSET
+    sql_missing_values_percentage: Union[float, None, UnsetType] = UNSET
     """Percentage of rows in a column that do not contain content."""
 
-    column_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
+    sql_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
     """Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique."""
 
-    column_variance: Union[float, None, UnsetType] = UNSET
+    sql_variance: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
     column_top_values: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of top values in this column."""
 
-    column_max_value: Union[float, None, UnsetType] = UNSET
+    sql_max_value: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min_value: Union[float, None, UnsetType] = UNSET
+    sql_min_value: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean_value: Union[float, None, UnsetType] = UNSET
+    sql_mean_value: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum_value: Union[float, None, UnsetType] = UNSET
+    sql_sum_value: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median_value: Union[float, None, UnsetType] = UNSET
+    sql_median_value: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation_value: Union[float, None, UnsetType] = UNSET
+    sql_standard_deviation_value: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_average_value: Union[float, None, UnsetType] = UNSET
+    sql_average_value: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_variance_value: Union[float, None, UnsetType] = UNSET
+    sql_variance_value: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    column_average_length_value: Union[float, None, UnsetType] = UNSET
+    sql_average_length_value: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_distribution_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
+    sql_distribution_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Detailed information representing a histogram of values for a column."""
 
-    column_depth_level: Union[int, None, UnsetType] = UNSET
+    sql_depth_level: Union[int, None, UnsetType] = UNSET
     """Level of nesting of this column, used for STRUCT and NESTED columns."""
 
     nosql_collection_name: Union[str, None, UnsetType] = UNSET
@@ -430,10 +435,10 @@ class Column(Asset):
     nosql_collection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    column_is_measure: Union[bool, None, UnsetType] = UNSET
+    sql_is_measure: Union[bool, None, UnsetType] = UNSET
     """When true, this column is of type measure/calculated."""
 
-    column_measure_type: Union[str, None, UnsetType] = UNSET
+    sql_measure_type: Union[str, None, UnsetType] = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -511,6 +516,12 @@ class Column(Asset):
         RelatedCosmosMongoDBCollection, None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -658,7 +669,7 @@ class Column(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
         UNSET
@@ -689,99 +700,6 @@ class Column(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Column instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-            if self.order is UNSET:
-                errors.append("order is required for creation")
-            if (
-                self.table is UNSET
-                and self.table_partition is UNSET
-                and self.view is UNSET
-                and self.materialised_view is UNSET
-            ):
-                errors.append(
-                    "one of table, table_partition, view, materialised_view is required for creation"
-                )
-            if self.table is not UNSET or self.table_partition is not UNSET:
-                if self.table_name is UNSET:
-                    errors.append("table_name is required for creation")
-                if self.table_qualified_name is UNSET:
-                    errors.append("table_qualified_name is required for creation")
-            if self.view is not UNSET or self.materialised_view is not UNSET:
-                if self.view_name is UNSET:
-                    errors.append("view_name is required for creation")
-                if self.view_qualified_name is UNSET:
-                    errors.append("view_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"Column validation failed: {errors}")
-
-    def minimize(self) -> "Column":
-        """
-        Return a minimal copy of this Column with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Column with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Column instance with only the minimum required fields.
-        """
-        self.validate()
-        return Column(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedColumn":
-        """
-        Create a :class:`RelatedColumn` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedColumn reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedColumn(guid=self.guid)
-        return RelatedColumn(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -1040,10 +958,10 @@ class ColumnAttributes(AssetAttributes):
     sub_data_type: Union[str, None, UnsetType] = UNSET
     """Sub-data type of this column."""
 
-    column_compression: Union[str, None, UnsetType] = UNSET
+    sql_compression: Union[str, None, UnsetType] = UNSET
     """Compression type of this column."""
 
-    column_encoding: Union[str, None, UnsetType] = UNSET
+    sql_encoding: Union[str, None, UnsetType] = UNSET
     """Encoding type of this column."""
 
     raw_data_type_definition: Union[str, None, UnsetType] = UNSET
@@ -1118,112 +1036,112 @@ class ColumnAttributes(AssetAttributes):
     parent_column_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    column_distinct_values_count: Union[int, None, UnsetType] = UNSET
+    sql_distinct_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
+    sql_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
-    column_max: Union[float, None, UnsetType] = UNSET
+    sql_max: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min: Union[float, None, UnsetType] = UNSET
+    sql_min: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean: Union[float, None, UnsetType] = UNSET
+    sql_mean: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum: Union[float, None, UnsetType] = UNSET
+    sql_sum: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median: Union[float, None, UnsetType] = UNSET
+    sql_median: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation: Union[float, None, UnsetType] = UNSET
+    sql_standard_deviation: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_unique_values_count: Union[int, None, UnsetType] = UNSET
+    sql_unique_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_unique_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_unique_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_average: Union[float, None, UnsetType] = UNSET
+    sql_average: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_average_length: Union[float, None, UnsetType] = UNSET
+    sql_average_length: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_duplicate_values_count: Union[int, None, UnsetType] = UNSET
+    sql_duplicate_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_maximum_string_length: Union[int, None, UnsetType] = UNSET
+    sql_maximum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the longest value in a string column."""
 
     column_maxs: Union[List[str], None, UnsetType] = UNSET
     """List of the greatest values in a column."""
 
-    column_minimum_string_length: Union[int, None, UnsetType] = UNSET
+    sql_minimum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the shortest value in a string column."""
 
     column_mins: Union[List[str], None, UnsetType] = UNSET
     """List of the least values in a column."""
 
-    column_missing_values_count: Union[int, None, UnsetType] = UNSET
+    sql_missing_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_missing_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_percentage: Union[float, None, UnsetType] = UNSET
+    sql_missing_values_percentage: Union[float, None, UnsetType] = UNSET
     """Percentage of rows in a column that do not contain content."""
 
-    column_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
+    sql_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
     """Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique."""
 
-    column_variance: Union[float, None, UnsetType] = UNSET
+    sql_variance: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
     column_top_values: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of top values in this column."""
 
-    column_max_value: Union[float, None, UnsetType] = UNSET
+    sql_max_value: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min_value: Union[float, None, UnsetType] = UNSET
+    sql_min_value: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean_value: Union[float, None, UnsetType] = UNSET
+    sql_mean_value: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum_value: Union[float, None, UnsetType] = UNSET
+    sql_sum_value: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median_value: Union[float, None, UnsetType] = UNSET
+    sql_median_value: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation_value: Union[float, None, UnsetType] = UNSET
+    sql_standard_deviation_value: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_average_value: Union[float, None, UnsetType] = UNSET
+    sql_average_value: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_variance_value: Union[float, None, UnsetType] = UNSET
+    sql_variance_value: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    column_average_length_value: Union[float, None, UnsetType] = UNSET
+    sql_average_length_value: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_distribution_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
+    sql_distribution_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Detailed information representing a histogram of values for a column."""
 
-    column_depth_level: Union[int, None, UnsetType] = UNSET
+    sql_depth_level: Union[int, None, UnsetType] = UNSET
     """Level of nesting of this column, used for STRUCT and NESTED columns."""
 
     nosql_collection_name: Union[str, None, UnsetType] = UNSET
@@ -1232,10 +1150,10 @@ class ColumnAttributes(AssetAttributes):
     nosql_collection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    column_is_measure: Union[bool, None, UnsetType] = UNSET
+    sql_is_measure: Union[bool, None, UnsetType] = UNSET
     """When true, this column is of type measure/calculated."""
 
-    column_measure_type: Union[str, None, UnsetType] = UNSET
+    sql_measure_type: Union[str, None, UnsetType] = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -1317,6 +1235,12 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
         RelatedCosmosMongoDBCollection, None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -1464,7 +1388,7 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
         UNSET
@@ -1511,6 +1435,8 @@ _COLUMN_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "cosmos_mongo_db_collection",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -1568,8 +1494,8 @@ def _populate_column_attrs(attrs: ColumnAttributes, obj: Column) -> None:
     _populate_asset_attrs(attrs, obj)
     attrs.data_type = obj.data_type
     attrs.sub_data_type = obj.sub_data_type
-    attrs.column_compression = obj.column_compression
-    attrs.column_encoding = obj.column_encoding
+    attrs.sql_compression = obj.sql_compression
+    attrs.sql_encoding = obj.sql_encoding
     attrs.raw_data_type_definition = obj.raw_data_type_definition
     attrs.order = obj.order
     attrs.nested_column_order = obj.nested_column_order
@@ -1594,46 +1520,46 @@ def _populate_column_attrs(attrs: ColumnAttributes, obj: Column) -> None:
     attrs.validations = obj.validations
     attrs.parent_column_qualified_name = obj.parent_column_qualified_name
     attrs.parent_column_name = obj.parent_column_name
-    attrs.column_distinct_values_count = obj.column_distinct_values_count
-    attrs.column_distinct_values_count_long = obj.column_distinct_values_count_long
-    attrs.column_histogram = obj.column_histogram
-    attrs.column_max = obj.column_max
-    attrs.column_min = obj.column_min
-    attrs.column_mean = obj.column_mean
-    attrs.column_sum = obj.column_sum
-    attrs.column_median = obj.column_median
-    attrs.column_standard_deviation = obj.column_standard_deviation
-    attrs.column_unique_values_count = obj.column_unique_values_count
-    attrs.column_unique_values_count_long = obj.column_unique_values_count_long
-    attrs.column_average = obj.column_average
-    attrs.column_average_length = obj.column_average_length
-    attrs.column_duplicate_values_count = obj.column_duplicate_values_count
-    attrs.column_duplicate_values_count_long = obj.column_duplicate_values_count_long
-    attrs.column_maximum_string_length = obj.column_maximum_string_length
+    attrs.sql_distinct_values_count = obj.sql_distinct_values_count
+    attrs.sql_distinct_values_count_long = obj.sql_distinct_values_count_long
+    attrs.sql_histogram = obj.sql_histogram
+    attrs.sql_max = obj.sql_max
+    attrs.sql_min = obj.sql_min
+    attrs.sql_mean = obj.sql_mean
+    attrs.sql_sum = obj.sql_sum
+    attrs.sql_median = obj.sql_median
+    attrs.sql_standard_deviation = obj.sql_standard_deviation
+    attrs.sql_unique_values_count = obj.sql_unique_values_count
+    attrs.sql_unique_values_count_long = obj.sql_unique_values_count_long
+    attrs.sql_average = obj.sql_average
+    attrs.sql_average_length = obj.sql_average_length
+    attrs.sql_duplicate_values_count = obj.sql_duplicate_values_count
+    attrs.sql_duplicate_values_count_long = obj.sql_duplicate_values_count_long
+    attrs.sql_maximum_string_length = obj.sql_maximum_string_length
     attrs.column_maxs = obj.column_maxs
-    attrs.column_minimum_string_length = obj.column_minimum_string_length
+    attrs.sql_minimum_string_length = obj.sql_minimum_string_length
     attrs.column_mins = obj.column_mins
-    attrs.column_missing_values_count = obj.column_missing_values_count
-    attrs.column_missing_values_count_long = obj.column_missing_values_count_long
-    attrs.column_missing_values_percentage = obj.column_missing_values_percentage
-    attrs.column_uniqueness_percentage = obj.column_uniqueness_percentage
-    attrs.column_variance = obj.column_variance
+    attrs.sql_missing_values_count = obj.sql_missing_values_count
+    attrs.sql_missing_values_count_long = obj.sql_missing_values_count_long
+    attrs.sql_missing_values_percentage = obj.sql_missing_values_percentage
+    attrs.sql_uniqueness_percentage = obj.sql_uniqueness_percentage
+    attrs.sql_variance = obj.sql_variance
     attrs.column_top_values = obj.column_top_values
-    attrs.column_max_value = obj.column_max_value
-    attrs.column_min_value = obj.column_min_value
-    attrs.column_mean_value = obj.column_mean_value
-    attrs.column_sum_value = obj.column_sum_value
-    attrs.column_median_value = obj.column_median_value
-    attrs.column_standard_deviation_value = obj.column_standard_deviation_value
-    attrs.column_average_value = obj.column_average_value
-    attrs.column_variance_value = obj.column_variance_value
-    attrs.column_average_length_value = obj.column_average_length_value
-    attrs.column_distribution_histogram = obj.column_distribution_histogram
-    attrs.column_depth_level = obj.column_depth_level
+    attrs.sql_max_value = obj.sql_max_value
+    attrs.sql_min_value = obj.sql_min_value
+    attrs.sql_mean_value = obj.sql_mean_value
+    attrs.sql_sum_value = obj.sql_sum_value
+    attrs.sql_median_value = obj.sql_median_value
+    attrs.sql_standard_deviation_value = obj.sql_standard_deviation_value
+    attrs.sql_average_value = obj.sql_average_value
+    attrs.sql_variance_value = obj.sql_variance_value
+    attrs.sql_average_length_value = obj.sql_average_length_value
+    attrs.sql_distribution_histogram = obj.sql_distribution_histogram
+    attrs.sql_depth_level = obj.sql_depth_level
     attrs.nosql_collection_name = obj.nosql_collection_name
     attrs.nosql_collection_qualified_name = obj.nosql_collection_qualified_name
-    attrs.column_is_measure = obj.column_is_measure
-    attrs.column_measure_type = obj.column_measure_type
+    attrs.sql_is_measure = obj.sql_is_measure
+    attrs.sql_measure_type = obj.sql_measure_type
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1659,8 +1585,8 @@ def _extract_column_attrs(attrs: ColumnAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["data_type"] = attrs.data_type
     result["sub_data_type"] = attrs.sub_data_type
-    result["column_compression"] = attrs.column_compression
-    result["column_encoding"] = attrs.column_encoding
+    result["sql_compression"] = attrs.sql_compression
+    result["sql_encoding"] = attrs.sql_encoding
     result["raw_data_type_definition"] = attrs.raw_data_type_definition
     result["order"] = attrs.order
     result["nested_column_order"] = attrs.nested_column_order
@@ -1685,50 +1611,46 @@ def _extract_column_attrs(attrs: ColumnAttributes) -> dict:
     result["validations"] = attrs.validations
     result["parent_column_qualified_name"] = attrs.parent_column_qualified_name
     result["parent_column_name"] = attrs.parent_column_name
-    result["column_distinct_values_count"] = attrs.column_distinct_values_count
-    result["column_distinct_values_count_long"] = (
-        attrs.column_distinct_values_count_long
-    )
-    result["column_histogram"] = attrs.column_histogram
-    result["column_max"] = attrs.column_max
-    result["column_min"] = attrs.column_min
-    result["column_mean"] = attrs.column_mean
-    result["column_sum"] = attrs.column_sum
-    result["column_median"] = attrs.column_median
-    result["column_standard_deviation"] = attrs.column_standard_deviation
-    result["column_unique_values_count"] = attrs.column_unique_values_count
-    result["column_unique_values_count_long"] = attrs.column_unique_values_count_long
-    result["column_average"] = attrs.column_average
-    result["column_average_length"] = attrs.column_average_length
-    result["column_duplicate_values_count"] = attrs.column_duplicate_values_count
-    result["column_duplicate_values_count_long"] = (
-        attrs.column_duplicate_values_count_long
-    )
-    result["column_maximum_string_length"] = attrs.column_maximum_string_length
+    result["sql_distinct_values_count"] = attrs.sql_distinct_values_count
+    result["sql_distinct_values_count_long"] = attrs.sql_distinct_values_count_long
+    result["sql_histogram"] = attrs.sql_histogram
+    result["sql_max"] = attrs.sql_max
+    result["sql_min"] = attrs.sql_min
+    result["sql_mean"] = attrs.sql_mean
+    result["sql_sum"] = attrs.sql_sum
+    result["sql_median"] = attrs.sql_median
+    result["sql_standard_deviation"] = attrs.sql_standard_deviation
+    result["sql_unique_values_count"] = attrs.sql_unique_values_count
+    result["sql_unique_values_count_long"] = attrs.sql_unique_values_count_long
+    result["sql_average"] = attrs.sql_average
+    result["sql_average_length"] = attrs.sql_average_length
+    result["sql_duplicate_values_count"] = attrs.sql_duplicate_values_count
+    result["sql_duplicate_values_count_long"] = attrs.sql_duplicate_values_count_long
+    result["sql_maximum_string_length"] = attrs.sql_maximum_string_length
     result["column_maxs"] = attrs.column_maxs
-    result["column_minimum_string_length"] = attrs.column_minimum_string_length
+    result["sql_minimum_string_length"] = attrs.sql_minimum_string_length
     result["column_mins"] = attrs.column_mins
-    result["column_missing_values_count"] = attrs.column_missing_values_count
-    result["column_missing_values_count_long"] = attrs.column_missing_values_count_long
-    result["column_missing_values_percentage"] = attrs.column_missing_values_percentage
-    result["column_uniqueness_percentage"] = attrs.column_uniqueness_percentage
-    result["column_variance"] = attrs.column_variance
+    result["sql_missing_values_count"] = attrs.sql_missing_values_count
+    result["sql_missing_values_count_long"] = attrs.sql_missing_values_count_long
+    result["sql_missing_values_percentage"] = attrs.sql_missing_values_percentage
+    result["sql_uniqueness_percentage"] = attrs.sql_uniqueness_percentage
+    result["sql_variance"] = attrs.sql_variance
     result["column_top_values"] = attrs.column_top_values
-    result["column_max_value"] = attrs.column_max_value
-    result["column_min_value"] = attrs.column_min_value
-    result["column_mean_value"] = attrs.column_mean_value
-    result["column_sum_value"] = attrs.column_sum_value
-    result["column_median_value"] = attrs.column_median_value
-    result["column_standard_deviation_value"] = attrs.column_standard_deviation_value
-    result["column_average_value"] = attrs.column_average_value
-    result["column_variance_value"] = attrs.column_variance_value
-    result["column_average_length_value"] = attrs.column_average_length_value
-    result["column_distribution_histogram"] = attrs.column_distribution_histogram
-    result["column_depth_level"] = attrs.column_depth_level
+    result["sql_max_value"] = attrs.sql_max_value
+    result["sql_min_value"] = attrs.sql_min_value
+    result["sql_mean_value"] = attrs.sql_mean_value
+    result["sql_sum_value"] = attrs.sql_sum_value
+    result["sql_median_value"] = attrs.sql_median_value
+    result["sql_standard_deviation_value"] = attrs.sql_standard_deviation_value
+    result["sql_average_value"] = attrs.sql_average_value
+    result["sql_variance_value"] = attrs.sql_variance_value
+    result["sql_average_length_value"] = attrs.sql_average_length_value
+    result["sql_distribution_histogram"] = attrs.sql_distribution_histogram
+    result["sql_depth_level"] = attrs.sql_depth_level
     result["nosql_collection_name"] = attrs.nosql_collection_name
     result["nosql_collection_qualified_name"] = attrs.nosql_collection_qualified_name
-    result["column_is_measure"] = attrs.column_is_measure
-    result["column_measure_type"] = attrs.column_measure_type
+    result["sql_is_measure"] = attrs.sql_is_measure
+    result["sql_measure_type"] = attrs.sql_measure_type
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1785,9 +1707,6 @@ def _column_to_nested(column: Column) -> ColumnNested:
         is_incomplete=column.is_incomplete,
         provenance_type=column.provenance_type,
         home_id=column.home_id,
-        depth=column.depth,
-        immediate_upstream=column.immediate_upstream,
-        immediate_downstream=column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1817,6 +1736,7 @@ def _column_from_nested(nested: ColumnNested) -> Column:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1825,9 +1745,6 @@ def _column_from_nested(nested: ColumnNested) -> Column:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1858,8 +1775,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 Column.DATA_TYPE = KeywordTextField("dataType", "dataType", "dataType.text")
 Column.SUB_DATA_TYPE = KeywordField("subDataType", "subDataType")
-Column.COLUMN_COMPRESSION = KeywordField("columnCompression", "columnCompression")
-Column.COLUMN_ENCODING = KeywordField("columnEncoding", "columnEncoding")
+Column.SQL_COMPRESSION = KeywordField("sqlCompression", "sqlCompression")
+Column.SQL_ENCODING = KeywordField("sqlEncoding", "sqlEncoding")
 Column.RAW_DATA_TYPE_DEFINITION = KeywordField(
     "rawDataTypeDefinition", "rawDataTypeDefinition"
 )
@@ -1892,86 +1809,82 @@ Column.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField(
     "parentColumnQualifiedName.text",
 )
 Column.PARENT_COLUMN_NAME = KeywordField("parentColumnName", "parentColumnName")
-Column.COLUMN_DISTINCT_VALUES_COUNT = NumericField(
-    "columnDistinctValuesCount", "columnDistinctValuesCount"
+Column.SQL_DISTINCT_VALUES_COUNT = NumericField(
+    "sqlDistinctValuesCount", "sqlDistinctValuesCount"
 )
-Column.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField(
-    "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
+Column.SQL_DISTINCT_VALUES_COUNT_LONG = NumericField(
+    "sqlDistinctValuesCountLong", "sqlDistinctValuesCountLong"
 )
-Column.COLUMN_HISTOGRAM = KeywordField("columnHistogram", "columnHistogram")
-Column.COLUMN_MAX = NumericField("columnMax", "columnMax")
-Column.COLUMN_MIN = NumericField("columnMin", "columnMin")
-Column.COLUMN_MEAN = NumericField("columnMean", "columnMean")
-Column.COLUMN_SUM = NumericField("columnSum", "columnSum")
-Column.COLUMN_MEDIAN = NumericField("columnMedian", "columnMedian")
-Column.COLUMN_STANDARD_DEVIATION = NumericField(
-    "columnStandardDeviation", "columnStandardDeviation"
+Column.SQL_HISTOGRAM = KeywordField("sqlHistogram", "sqlHistogram")
+Column.SQL_MAX = NumericField("sqlMax", "sqlMax")
+Column.SQL_MIN = NumericField("sqlMin", "sqlMin")
+Column.SQL_MEAN = NumericField("sqlMean", "sqlMean")
+Column.SQL_SUM = NumericField("sqlSum", "sqlSum")
+Column.SQL_MEDIAN = NumericField("sqlMedian", "sqlMedian")
+Column.SQL_STANDARD_DEVIATION = NumericField(
+    "sqlStandardDeviation", "sqlStandardDeviation"
 )
-Column.COLUMN_UNIQUE_VALUES_COUNT = NumericField(
-    "columnUniqueValuesCount", "columnUniqueValuesCount"
+Column.SQL_UNIQUE_VALUES_COUNT = NumericField(
+    "sqlUniqueValuesCount", "sqlUniqueValuesCount"
 )
-Column.COLUMN_UNIQUE_VALUES_COUNT_LONG = NumericField(
-    "columnUniqueValuesCountLong", "columnUniqueValuesCountLong"
+Column.SQL_UNIQUE_VALUES_COUNT_LONG = NumericField(
+    "sqlUniqueValuesCountLong", "sqlUniqueValuesCountLong"
 )
-Column.COLUMN_AVERAGE = NumericField("columnAverage", "columnAverage")
-Column.COLUMN_AVERAGE_LENGTH = NumericField(
-    "columnAverageLength", "columnAverageLength"
+Column.SQL_AVERAGE = NumericField("sqlAverage", "sqlAverage")
+Column.SQL_AVERAGE_LENGTH = NumericField("sqlAverageLength", "sqlAverageLength")
+Column.SQL_DUPLICATE_VALUES_COUNT = NumericField(
+    "sqlDuplicateValuesCount", "sqlDuplicateValuesCount"
 )
-Column.COLUMN_DUPLICATE_VALUES_COUNT = NumericField(
-    "columnDuplicateValuesCount", "columnDuplicateValuesCount"
+Column.SQL_DUPLICATE_VALUES_COUNT_LONG = NumericField(
+    "sqlDuplicateValuesCountLong", "sqlDuplicateValuesCountLong"
 )
-Column.COLUMN_DUPLICATE_VALUES_COUNT_LONG = NumericField(
-    "columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong"
-)
-Column.COLUMN_MAXIMUM_STRING_LENGTH = NumericField(
-    "columnMaximumStringLength", "columnMaximumStringLength"
+Column.SQL_MAXIMUM_STRING_LENGTH = NumericField(
+    "sqlMaximumStringLength", "sqlMaximumStringLength"
 )
 Column.COLUMN_MAXS = KeywordField("columnMaxs", "columnMaxs")
-Column.COLUMN_MINIMUM_STRING_LENGTH = NumericField(
-    "columnMinimumStringLength", "columnMinimumStringLength"
+Column.SQL_MINIMUM_STRING_LENGTH = NumericField(
+    "sqlMinimumStringLength", "sqlMinimumStringLength"
 )
 Column.COLUMN_MINS = KeywordField("columnMins", "columnMins")
-Column.COLUMN_MISSING_VALUES_COUNT = NumericField(
-    "columnMissingValuesCount", "columnMissingValuesCount"
+Column.SQL_MISSING_VALUES_COUNT = NumericField(
+    "sqlMissingValuesCount", "sqlMissingValuesCount"
 )
-Column.COLUMN_MISSING_VALUES_COUNT_LONG = NumericField(
-    "columnMissingValuesCountLong", "columnMissingValuesCountLong"
+Column.SQL_MISSING_VALUES_COUNT_LONG = NumericField(
+    "sqlMissingValuesCountLong", "sqlMissingValuesCountLong"
 )
-Column.COLUMN_MISSING_VALUES_PERCENTAGE = NumericField(
-    "columnMissingValuesPercentage", "columnMissingValuesPercentage"
+Column.SQL_MISSING_VALUES_PERCENTAGE = NumericField(
+    "sqlMissingValuesPercentage", "sqlMissingValuesPercentage"
 )
-Column.COLUMN_UNIQUENESS_PERCENTAGE = NumericField(
-    "columnUniquenessPercentage", "columnUniquenessPercentage"
+Column.SQL_UNIQUENESS_PERCENTAGE = NumericField(
+    "sqlUniquenessPercentage", "sqlUniquenessPercentage"
 )
-Column.COLUMN_VARIANCE = NumericField("columnVariance", "columnVariance")
+Column.SQL_VARIANCE = NumericField("sqlVariance", "sqlVariance")
 Column.COLUMN_TOP_VALUES = KeywordField("columnTopValues", "columnTopValues")
-Column.COLUMN_MAX_VALUE = NumericField("columnMaxValue", "columnMaxValue")
-Column.COLUMN_MIN_VALUE = NumericField("columnMinValue", "columnMinValue")
-Column.COLUMN_MEAN_VALUE = NumericField("columnMeanValue", "columnMeanValue")
-Column.COLUMN_SUM_VALUE = NumericField("columnSumValue", "columnSumValue")
-Column.COLUMN_MEDIAN_VALUE = NumericField("columnMedianValue", "columnMedianValue")
-Column.COLUMN_STANDARD_DEVIATION_VALUE = NumericField(
-    "columnStandardDeviationValue", "columnStandardDeviationValue"
+Column.SQL_MAX_VALUE = NumericField("sqlMaxValue", "sqlMaxValue")
+Column.SQL_MIN_VALUE = NumericField("sqlMinValue", "sqlMinValue")
+Column.SQL_MEAN_VALUE = NumericField("sqlMeanValue", "sqlMeanValue")
+Column.SQL_SUM_VALUE = NumericField("sqlSumValue", "sqlSumValue")
+Column.SQL_MEDIAN_VALUE = NumericField("sqlMedianValue", "sqlMedianValue")
+Column.SQL_STANDARD_DEVIATION_VALUE = NumericField(
+    "sqlStandardDeviationValue", "sqlStandardDeviationValue"
 )
-Column.COLUMN_AVERAGE_VALUE = NumericField("columnAverageValue", "columnAverageValue")
-Column.COLUMN_VARIANCE_VALUE = NumericField(
-    "columnVarianceValue", "columnVarianceValue"
+Column.SQL_AVERAGE_VALUE = NumericField("sqlAverageValue", "sqlAverageValue")
+Column.SQL_VARIANCE_VALUE = NumericField("sqlVarianceValue", "sqlVarianceValue")
+Column.SQL_AVERAGE_LENGTH_VALUE = NumericField(
+    "sqlAverageLengthValue", "sqlAverageLengthValue"
 )
-Column.COLUMN_AVERAGE_LENGTH_VALUE = NumericField(
-    "columnAverageLengthValue", "columnAverageLengthValue"
+Column.SQL_DISTRIBUTION_HISTOGRAM = KeywordField(
+    "sqlDistributionHistogram", "sqlDistributionHistogram"
 )
-Column.COLUMN_DISTRIBUTION_HISTOGRAM = KeywordField(
-    "columnDistributionHistogram", "columnDistributionHistogram"
-)
-Column.COLUMN_DEPTH_LEVEL = NumericField("columnDepthLevel", "columnDepthLevel")
+Column.SQL_DEPTH_LEVEL = NumericField("sqlDepthLevel", "sqlDepthLevel")
 Column.NOSQL_COLLECTION_NAME = KeywordField(
     "nosqlCollectionName", "nosqlCollectionName"
 )
 Column.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField(
     "nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName"
 )
-Column.COLUMN_IS_MEASURE = BooleanField("columnIsMeasure", "columnIsMeasure")
-Column.COLUMN_MEASURE_TYPE = KeywordField("columnMeasureType", "columnMeasureType")
+Column.SQL_IS_MEASURE = BooleanField("sqlIsMeasure", "sqlIsMeasure")
+Column.SQL_MEASURE_TYPE = KeywordField("sqlMeasureType", "sqlMeasureType")
 Column.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Column.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Column.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
@@ -2008,6 +1921,8 @@ Column.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Column.APPLICATION = RelationField("application")
 Column.APPLICATION_FIELD = RelationField("applicationField")
 Column.COSMOS_MONGO_DB_COLLECTION = RelationField("cosmosMongoDBCollection")
+Column.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Column.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Column.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Column.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Column.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
