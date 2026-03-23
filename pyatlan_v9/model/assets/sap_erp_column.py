@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -54,12 +55,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import (
-    RelatedSapErpCdsView,
-    RelatedSapErpColumn,
-    RelatedSapErpTable,
-    RelatedSapErpView,
-)
+from .sap_related import RelatedSapErpCdsView, RelatedSapErpTable, RelatedSapErpView
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
@@ -76,21 +72,21 @@ class SapErpColumn(Asset):
     Instance of a SAP Column in Atlan.
     """
 
-    SAP_ERP_COLUMN_DATA_ELEMENT: ClassVar[Any] = None
-    SAP_ERP_COLUMN_LOGICAL_DATA_TYPE: ClassVar[Any] = None
-    SAP_ERP_COLUMN_LENGTH: ClassVar[Any] = None
-    SAP_ERP_COLUMN_DECIMALS: ClassVar[Any] = None
-    SAP_ERP_COLUMN_IS_PRIMARY: ClassVar[Any] = None
-    SAP_ERP_COLUMN_IS_FOREIGN: ClassVar[Any] = None
-    SAP_ERP_COLUMN_IS_MANDATORY: ClassVar[Any] = None
+    SAP_DATA_ELEMENT: ClassVar[Any] = None
+    SAP_LOGICAL_DATA_TYPE: ClassVar[Any] = None
+    SAP_LENGTH: ClassVar[Any] = None
+    SAP_DECIMALS: ClassVar[Any] = None
+    SAP_IS_PRIMARY: ClassVar[Any] = None
+    SAP_IS_FOREIGN: ClassVar[Any] = None
+    SAP_IS_MANDATORY: ClassVar[Any] = None
     SAP_ERP_TABLE_NAME: ClassVar[Any] = None
     SAP_ERP_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
     SAP_ERP_VIEW_NAME: ClassVar[Any] = None
     SAP_ERP_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
     SAP_ERP_CDS_VIEW_NAME: ClassVar[Any] = None
     SAP_ERP_CDS_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
-    SAP_ERP_COLUMN_CHECK_TABLE_NAME: ClassVar[Any] = None
-    SAP_ERP_COLUMN_CHECK_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
+    SAP_CHECK_TABLE_NAME: ClassVar[Any] = None
+    SAP_CHECK_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
     SAP_LOGICAL_NAME: ClassVar[Any] = None
     SAP_PACKAGE_NAME: ClassVar[Any] = None
@@ -121,6 +117,8 @@ class SapErpColumn(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -155,25 +153,27 @@ class SapErpColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sap_erp_column_data_element: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SapErpColumn"
+
+    sap_data_element: Union[str, None, UnsetType] = UNSET
     """Represents the SAP ERP data element, providing semantic information about the column."""
 
-    sap_erp_column_logical_data_type: Union[str, None, UnsetType] = UNSET
+    sap_logical_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the logical data type of values in this SAP ERP column"""
 
-    sap_erp_column_length: Union[str, None, UnsetType] = UNSET
+    sap_length: Union[str, None, UnsetType] = UNSET
     """Indicates the maximum length of the values that the SAP ERP column can store."""
 
-    sap_erp_column_decimals: Union[str, None, UnsetType] = UNSET
+    sap_decimals: Union[str, None, UnsetType] = UNSET
     """Defines the number of decimal places allowed for numeric values in the SAP ERP column."""
 
-    sap_erp_column_is_primary: Union[bool, None, UnsetType] = UNSET
+    sap_is_primary: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the primary key for the SAP ERP table or view."""
 
-    sap_erp_column_is_foreign: Union[bool, None, UnsetType] = UNSET
+    sap_is_foreign: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the foreign key for the SAP ERP table or view."""
 
-    sap_erp_column_is_mandatory: Union[bool, None, UnsetType] = UNSET
+    sap_is_mandatory: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this column can be null."""
 
     sap_erp_table_name: Union[str, None, UnsetType] = UNSET
@@ -194,10 +194,10 @@ class SapErpColumn(Asset):
     sap_erp_cds_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP CDS view in which this column asset exists."""
 
-    sap_erp_column_check_table_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_name: Union[str, None, UnsetType] = UNSET
     """Defines the SAP ERP table name used as a foreign key reference to validate permissible values for this column."""
 
-    sap_erp_column_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP Table used as a foreign key reference to validate permissible values for this column."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -291,6 +291,12 @@ class SapErpColumn(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -387,7 +393,7 @@ class SapErpColumn(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -411,76 +417,6 @@ class SapErpColumn(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SapErpColumn instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.sap_erp_table is UNSET:
-                errors.append("sap_erp_table is required for creation")
-            if self.sap_erp_table_name is UNSET:
-                errors.append("sap_erp_table_name is required for creation")
-            if self.sap_erp_table_qualified_name is UNSET:
-                errors.append("sap_erp_table_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SapErpColumn validation failed: {errors}")
-
-    def minimize(self) -> "SapErpColumn":
-        """
-        Return a minimal copy of this SapErpColumn with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SapErpColumn with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SapErpColumn instance with only the minimum required fields.
-        """
-        self.validate()
-        return SapErpColumn(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpColumn":
-        """
-        Create a :class:`RelatedSapErpColumn` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSapErpColumn reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSapErpColumn(guid=self.guid)
-        return RelatedSapErpColumn(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -537,25 +473,25 @@ class SapErpColumn(Asset):
 class SapErpColumnAttributes(AssetAttributes):
     """SapErpColumn-specific attributes for nested API format."""
 
-    sap_erp_column_data_element: Union[str, None, UnsetType] = UNSET
+    sap_data_element: Union[str, None, UnsetType] = UNSET
     """Represents the SAP ERP data element, providing semantic information about the column."""
 
-    sap_erp_column_logical_data_type: Union[str, None, UnsetType] = UNSET
+    sap_logical_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the logical data type of values in this SAP ERP column"""
 
-    sap_erp_column_length: Union[str, None, UnsetType] = UNSET
+    sap_length: Union[str, None, UnsetType] = UNSET
     """Indicates the maximum length of the values that the SAP ERP column can store."""
 
-    sap_erp_column_decimals: Union[str, None, UnsetType] = UNSET
+    sap_decimals: Union[str, None, UnsetType] = UNSET
     """Defines the number of decimal places allowed for numeric values in the SAP ERP column."""
 
-    sap_erp_column_is_primary: Union[bool, None, UnsetType] = UNSET
+    sap_is_primary: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the primary key for the SAP ERP table or view."""
 
-    sap_erp_column_is_foreign: Union[bool, None, UnsetType] = UNSET
+    sap_is_foreign: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the foreign key for the SAP ERP table or view."""
 
-    sap_erp_column_is_mandatory: Union[bool, None, UnsetType] = UNSET
+    sap_is_mandatory: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this column can be null."""
 
     sap_erp_table_name: Union[str, None, UnsetType] = UNSET
@@ -576,10 +512,10 @@ class SapErpColumnAttributes(AssetAttributes):
     sap_erp_cds_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP CDS view in which this column asset exists."""
 
-    sap_erp_column_check_table_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_name: Union[str, None, UnsetType] = UNSET
     """Defines the SAP ERP table name used as a foreign key reference to validate permissible values for this column."""
 
-    sap_erp_column_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP Table used as a foreign key reference to validate permissible values for this column."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -678,6 +614,12 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -773,7 +715,7 @@ class SapErpColumnRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -816,6 +758,8 @@ _SAP_ERP_COLUMN_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -857,23 +801,21 @@ def _populate_sap_erp_column_attrs(
 ) -> None:
     """Populate SapErpColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_erp_column_data_element = obj.sap_erp_column_data_element
-    attrs.sap_erp_column_logical_data_type = obj.sap_erp_column_logical_data_type
-    attrs.sap_erp_column_length = obj.sap_erp_column_length
-    attrs.sap_erp_column_decimals = obj.sap_erp_column_decimals
-    attrs.sap_erp_column_is_primary = obj.sap_erp_column_is_primary
-    attrs.sap_erp_column_is_foreign = obj.sap_erp_column_is_foreign
-    attrs.sap_erp_column_is_mandatory = obj.sap_erp_column_is_mandatory
+    attrs.sap_data_element = obj.sap_data_element
+    attrs.sap_logical_data_type = obj.sap_logical_data_type
+    attrs.sap_length = obj.sap_length
+    attrs.sap_decimals = obj.sap_decimals
+    attrs.sap_is_primary = obj.sap_is_primary
+    attrs.sap_is_foreign = obj.sap_is_foreign
+    attrs.sap_is_mandatory = obj.sap_is_mandatory
     attrs.sap_erp_table_name = obj.sap_erp_table_name
     attrs.sap_erp_table_qualified_name = obj.sap_erp_table_qualified_name
     attrs.sap_erp_view_name = obj.sap_erp_view_name
     attrs.sap_erp_view_qualified_name = obj.sap_erp_view_qualified_name
     attrs.sap_erp_cds_view_name = obj.sap_erp_cds_view_name
     attrs.sap_erp_cds_view_qualified_name = obj.sap_erp_cds_view_qualified_name
-    attrs.sap_erp_column_check_table_name = obj.sap_erp_column_check_table_name
-    attrs.sap_erp_column_check_table_qualified_name = (
-        obj.sap_erp_column_check_table_qualified_name
-    )
+    attrs.sap_check_table_name = obj.sap_check_table_name
+    attrs.sap_check_table_qualified_name = obj.sap_check_table_qualified_name
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -904,23 +846,21 @@ def _populate_sap_erp_column_attrs(
 def _extract_sap_erp_column_attrs(attrs: SapErpColumnAttributes) -> dict:
     """Extract all SapErpColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_erp_column_data_element"] = attrs.sap_erp_column_data_element
-    result["sap_erp_column_logical_data_type"] = attrs.sap_erp_column_logical_data_type
-    result["sap_erp_column_length"] = attrs.sap_erp_column_length
-    result["sap_erp_column_decimals"] = attrs.sap_erp_column_decimals
-    result["sap_erp_column_is_primary"] = attrs.sap_erp_column_is_primary
-    result["sap_erp_column_is_foreign"] = attrs.sap_erp_column_is_foreign
-    result["sap_erp_column_is_mandatory"] = attrs.sap_erp_column_is_mandatory
+    result["sap_data_element"] = attrs.sap_data_element
+    result["sap_logical_data_type"] = attrs.sap_logical_data_type
+    result["sap_length"] = attrs.sap_length
+    result["sap_decimals"] = attrs.sap_decimals
+    result["sap_is_primary"] = attrs.sap_is_primary
+    result["sap_is_foreign"] = attrs.sap_is_foreign
+    result["sap_is_mandatory"] = attrs.sap_is_mandatory
     result["sap_erp_table_name"] = attrs.sap_erp_table_name
     result["sap_erp_table_qualified_name"] = attrs.sap_erp_table_qualified_name
     result["sap_erp_view_name"] = attrs.sap_erp_view_name
     result["sap_erp_view_qualified_name"] = attrs.sap_erp_view_qualified_name
     result["sap_erp_cds_view_name"] = attrs.sap_erp_cds_view_name
     result["sap_erp_cds_view_qualified_name"] = attrs.sap_erp_cds_view_qualified_name
-    result["sap_erp_column_check_table_name"] = attrs.sap_erp_column_check_table_name
-    result["sap_erp_column_check_table_qualified_name"] = (
-        attrs.sap_erp_column_check_table_qualified_name
-    )
+    result["sap_check_table_name"] = attrs.sap_check_table_name
+    result["sap_check_table_qualified_name"] = attrs.sap_check_table_qualified_name
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -984,9 +924,6 @@ def _sap_erp_column_to_nested(sap_erp_column: SapErpColumn) -> SapErpColumnNeste
         is_incomplete=sap_erp_column.is_incomplete,
         provenance_type=sap_erp_column.provenance_type,
         home_id=sap_erp_column.home_id,
-        depth=sap_erp_column.depth,
-        immediate_upstream=sap_erp_column.immediate_upstream,
-        immediate_downstream=sap_erp_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1020,6 +957,7 @@ def _sap_erp_column_from_nested(nested: SapErpColumnNested) -> SapErpColumn:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1028,9 +966,6 @@ def _sap_erp_column_from_nested(nested: SapErpColumnNested) -> SapErpColumn:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1061,27 +996,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpColumn.SAP_ERP_COLUMN_DATA_ELEMENT = KeywordField(
-    "sapErpColumnDataElement", "sapErpColumnDataElement"
+SapErpColumn.SAP_DATA_ELEMENT = KeywordField("sapDataElement", "sapDataElement")
+SapErpColumn.SAP_LOGICAL_DATA_TYPE = KeywordField(
+    "sapLogicalDataType", "sapLogicalDataType"
 )
-SapErpColumn.SAP_ERP_COLUMN_LOGICAL_DATA_TYPE = KeywordField(
-    "sapErpColumnLogicalDataType", "sapErpColumnLogicalDataType"
-)
-SapErpColumn.SAP_ERP_COLUMN_LENGTH = KeywordField(
-    "sapErpColumnLength", "sapErpColumnLength"
-)
-SapErpColumn.SAP_ERP_COLUMN_DECIMALS = KeywordField(
-    "sapErpColumnDecimals", "sapErpColumnDecimals"
-)
-SapErpColumn.SAP_ERP_COLUMN_IS_PRIMARY = BooleanField(
-    "sapErpColumnIsPrimary", "sapErpColumnIsPrimary"
-)
-SapErpColumn.SAP_ERP_COLUMN_IS_FOREIGN = BooleanField(
-    "sapErpColumnIsForeign", "sapErpColumnIsForeign"
-)
-SapErpColumn.SAP_ERP_COLUMN_IS_MANDATORY = BooleanField(
-    "sapErpColumnIsMandatory", "sapErpColumnIsMandatory"
-)
+SapErpColumn.SAP_LENGTH = KeywordField("sapLength", "sapLength")
+SapErpColumn.SAP_DECIMALS = KeywordField("sapDecimals", "sapDecimals")
+SapErpColumn.SAP_IS_PRIMARY = BooleanField("sapIsPrimary", "sapIsPrimary")
+SapErpColumn.SAP_IS_FOREIGN = BooleanField("sapIsForeign", "sapIsForeign")
+SapErpColumn.SAP_IS_MANDATORY = BooleanField("sapIsMandatory", "sapIsMandatory")
 SapErpColumn.SAP_ERP_TABLE_NAME = KeywordField("sapErpTableName", "sapErpTableName")
 SapErpColumn.SAP_ERP_TABLE_QUALIFIED_NAME = KeywordTextField(
     "sapErpTableQualifiedName",
@@ -1100,11 +1023,11 @@ SapErpColumn.SAP_ERP_CDS_VIEW_QUALIFIED_NAME = KeywordTextField(
     "sapErpCdsViewQualifiedName",
     "sapErpCdsViewQualifiedName.text",
 )
-SapErpColumn.SAP_ERP_COLUMN_CHECK_TABLE_NAME = KeywordField(
-    "sapErpColumnCheckTableName", "sapErpColumnCheckTableName"
+SapErpColumn.SAP_CHECK_TABLE_NAME = KeywordField(
+    "sapCheckTableName", "sapCheckTableName"
 )
-SapErpColumn.SAP_ERP_COLUMN_CHECK_TABLE_QUALIFIED_NAME = KeywordField(
-    "sapErpColumnCheckTableQualifiedName", "sapErpColumnCheckTableQualifiedName"
+SapErpColumn.SAP_CHECK_TABLE_QUALIFIED_NAME = KeywordField(
+    "sapCheckTableQualifiedName", "sapCheckTableQualifiedName"
 )
 SapErpColumn.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
 SapErpColumn.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
@@ -1152,6 +1075,10 @@ SapErpColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SapErpColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpColumn.APPLICATION = RelationField("application")
 SapErpColumn.APPLICATION_FIELD = RelationField("applicationField")
+SapErpColumn.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SapErpColumn.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SapErpColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SapErpColumn.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SapErpColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
