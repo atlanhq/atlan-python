@@ -849,7 +849,7 @@ def test_search_by_any_accountable(
         assert isinstance(t, AtlasGlossaryTerm)
         assert t.guid == term.guid
         assert t.qualified_name == term.qualified_name
-        anchor = t.attributes.anchor
+        anchor = t.anchor
         assert anchor
         assert anchor.name == glossary.name
         _validate_raci_attributes_replacement(
@@ -890,7 +890,7 @@ def test_search_by_specific_accountable(
         assert isinstance(t, AtlasGlossaryTerm)
         assert t.guid == term.guid
         assert t.qualified_name == term.qualified_name
-        anchor = t.attributes.anchor
+        anchor = t.anchor
         assert anchor
         assert anchor.name == glossary.name
 

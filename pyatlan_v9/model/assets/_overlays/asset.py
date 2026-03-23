@@ -128,12 +128,47 @@
 
     def flush_custom_metadata(self, client=None) -> None:
         """
-        Flush (clear) all custom metadata on this asset.
+        Flush custom metadata to business_attributes.
+
+        In v9, set_custom_metadata already writes to business_attributes directly,
+        so this is a no-op for compatibility with the legacy API.
 
         Args:
             client: AtlanClient instance (for compatibility with legacy API)
         """
-        self.business_attributes = {}
+        pass
+
+    def get_custom_metadata(self, client, name: str):
+        """Get custom metadata by name.
+
+        Args:
+            client: AtlanClient instance
+            name: human-readable name of the custom metadata set
+
+        Returns:
+            CustomMetadataDict for the requested set
+        """
+        from pyatlan_v9.model.custom_metadata import CustomMetadataProxy
+
+        proxy = CustomMetadataProxy(
+            business_attributes=self.business_attributes, client=client
+        )
+        return proxy.get_custom_metadata(name=name)
+
+    def set_custom_metadata(self, custom_metadata, client=None) -> None:
+        """Set custom metadata on this asset.
+
+        Args:
+            custom_metadata: CustomMetadataDict to set
+            client: AtlanClient instance (for compatibility with legacy API)
+        """
+        from pyatlan_v9.model.custom_metadata import CustomMetadataProxy
+
+        proxy = CustomMetadataProxy(
+            business_attributes=self.business_attributes, client=client or custom_metadata._client
+        )
+        proxy.set_custom_metadata(custom_metadata=custom_metadata)
+        self.business_attributes = proxy.business_attributes
 
     async def get_custom_metadata_async(self, client, name: str):
         """Async: get custom metadata by name."""
