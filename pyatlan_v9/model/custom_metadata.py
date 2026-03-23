@@ -119,7 +119,10 @@ class CustomMetadataProxy:
         self._metadata: Union[dict[str, CustomMetadataDict], None] = None
         self._business_attributes = business_attributes
         self._modified = False
-        if self._business_attributes is None:
+        if self._business_attributes is None or not isinstance(
+            self._business_attributes, dict
+        ):
+            self._business_attributes = None
             return
         self._metadata = {}
         for cm_id, cm_attributes in self._business_attributes.items():
