@@ -34,17 +34,32 @@ Confirm the new version with the user before proceeding.
 
 ### 2. Gather changes since last release
 
-Run:
+**Always gather from `origin/main`** — that's where PRs are merged. The current working branch is irrelevant here.
+
+Step 1 — find the last release commit on main and list everything since it:
 ```bash
-git log --oneline $(git log --oneline | grep "\[release\]" | head -1 | awk '{print $1}')..HEAD
+git fetch origin main --quiet
+git log --oneline $(git log --oneline origin/main | grep "\[release\]" | head -1 | awk '{print $1}')..origin/main
 ```
 
-This finds commits since the last `[release]` commit. If none exist, use all commits on the current branch.
-
-Also check merged PRs for additional context:
+Step 2 — extract PR numbers from merge commits and fetch details for each:
 ```bash
-gh pr list --state merged --base main --limit 30 --json title,labels,number,mergedAt
+git log --oneline $(git log --oneline origin/main | grep "\[release\]" | head -1 | awk '{print $1}')..origin/main | grep "Merge pull request" | grep -oE '#[0-9]+' | tr -d '#'
 ```
+
+Then for each PR number, run:
+```bash
+gh pr view <number> --json title,labels,body,mergedAt
+```
+
+If `gh` is not authenticated, fall back to the commit subjects alone — do NOT skip this step or silently use an empty list. Note any PRs you couldn't fetch so the user knows the notes may be incomplete.
+
+Step 3 — also run this to catch non-merge commits (direct pushes, fixups, etc.):
+```bash
+git log --oneline --no-merges $(git log --oneline origin/main | grep "\[release\]" | head -1 | awk '{print $1}')..origin/main
+```
+
+Use all of this — PR titles, PR bodies, labels, and direct commit messages — to write the release notes.
 
 ---
 
