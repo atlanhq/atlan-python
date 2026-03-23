@@ -1,3 +1,13 @@
+## 9.3.1 (March 23, 2026)
+
+### Experimental: `pyatlan_v9`
+
+- **`typedef` typing corrections and serialization fixes**: Corrected field types in `RelationshipDef` and removed hardcoded defaults (PR #867). Optional typedef fields now use `msgspec.UNSET` so they are omitted from serialization rather than emitted as `null` (PR #870). `AttributeDef.default_value` and `index_type_es_fields` relaxed to `Any` to accommodate varied server responses (PR #872). `is_rich_text` and `custom_metadata_version` now default to `UNSET` via `__post_init__` and the `category` field is no longer silently dropped by `omit_defaults` (PR #870).
+
+### Packages
+
+- **Trivy action updated to `0.35.0`**: Keeps the security scanning workflow on a stable release (PR #871).
+
 ## 9.3.0 (March 16, 2026)
 
 ### New Features
