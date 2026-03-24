@@ -1215,7 +1215,8 @@ class Asset(Referenceable):
         from pyatlan_v9.model.custom_metadata import CustomMetadataProxy
 
         proxy = CustomMetadataProxy(
-            business_attributes=self.business_attributes, client=client or custom_metadata._client
+            business_attributes=self.business_attributes,
+            client=client or custom_metadata._client,
         )
         proxy.set_custom_metadata(custom_metadata=custom_metadata)
         self.business_attributes = proxy.business_attributes

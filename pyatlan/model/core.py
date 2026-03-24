@@ -294,6 +294,11 @@ class AtlanTag(AtlanObject):
         example=EntityStatus.ACTIVE,
         alias="entityStatus",
     )
+    display_name: Optional[str] = Field(
+        default=None,
+        description="Human-readable display name of the Atlan tag.",
+        alias="displayName",
+    )
     propagate: Optional[bool] = Field(
         default=False,
         description="whether to propagate the Atlan tag (True) or not (False)",
