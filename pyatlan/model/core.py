@@ -274,6 +274,9 @@ class Announcement:
 
 
 class AtlanTag(AtlanObject):
+    class Config:
+        extra = "forbid"
+
     type_name: Optional[AtlanTagName] = Field(
         default=None,
         description="Name of the type definition that defines this instance.\n",
