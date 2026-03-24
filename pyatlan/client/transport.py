@@ -106,21 +106,24 @@ class PyatlanSyncTransport(httpx.BaseTransport):
                 logger.debug(
                     "_retry_operation retrying response=%s retry=%s", response, retry
                 )
-
-                # ONLY during retry: check if this is a policy creation and if duplicate exists
-                if self._client:
-                    duplicate_response = check_for_duplicate_policy(
-                        self._client, request
-                    )
-                    if duplicate_response:
-                        logger.warning(
-                            "RETRY PREVENTED: Policy already exists (likely from previous "
-                            "request that timed out but succeeded). Returning existing policy."
-                        )
-                        return duplicate_response
-
                 retry = retry.increment()
                 retry.sleep(response)
+
+            # Check before EVERY attempt (first + retries).
+            # On the first attempt this catches automation re-runs where the policy
+            # was already created by a previous run.
+            # On retries, the preceding sleep gives the index time to propagate an
+            # entity that was committed server-side before a gateway timeout.
+            if self._client:
+                duplicate_response = check_for_duplicate_policy(
+                    self._client, request
+                )
+                if duplicate_response:
+                    logger.warning(
+                        "DUPLICATE PREVENTED: Policy already exists. "
+                        "Returning existing policy instead of creating a duplicate."
+                    )
+                    return duplicate_response
 
             try:
                 response = send_method(request)
@@ -225,21 +228,24 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
                     response,
                     retry,
                 )
-
-                # ONLY during retry: check if this is a policy creation and if duplicate exists
-                if self._client:
-                    duplicate_response = await check_for_duplicate_policy_async(
-                        self._client, request
-                    )
-                    if duplicate_response:
-                        logger.warning(
-                            "RETRY PREVENTED: Policy already exists (likely from previous "
-                            "request that timed out but succeeded). Returning existing policy."
-                        )
-                        return duplicate_response
-
                 retry = retry.increment()
                 await retry.asleep(response)
+
+            # Check before EVERY attempt (first + retries).
+            # On the first attempt this catches automation re-runs where the policy
+            # was already created by a previous run.
+            # On retries, the preceding sleep gives the index time to propagate an
+            # entity that was committed server-side before a gateway timeout.
+            if self._client:
+                duplicate_response = await check_for_duplicate_policy_async(
+                    self._client, request
+                )
+                if duplicate_response:
+                    logger.warning(
+                        "DUPLICATE PREVENTED: Policy already exists. "
+                        "Returning existing policy instead of creating a duplicate."
+                    )
+                    return duplicate_response
 
             try:
                 response = await send_method(request)

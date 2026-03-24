@@ -105,9 +105,10 @@ async def test_async_duplicate_prevention_on_timeout(
 
     transport = PyatlanAsyncTransport(
         retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
-        client=client,
         trust_env=True,
     )
+    # Set client reference after construction to avoid validation issues
+    transport._client = client
     assert client._async_session is not None
     original_transport = client._async_session._transport
     client._async_session._transport = transport
@@ -183,9 +184,10 @@ async def test_async_duplicate_prevention_short_circuits_when_policy_exists(
 
     transport = PyatlanAsyncTransport(
         retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
-        client=client,
         trust_env=True,
     )
+    # Set client reference after construction to avoid validation issues
+    transport._client = client
     assert client._async_session is not None
     original_transport = client._async_session._transport
     client._async_session._transport = transport
@@ -207,10 +209,23 @@ async def test_async_duplicate_prevention_short_circuits_when_policy_exists(
 
     transport._transport.handle_async_request = intercepting_handle  # type: ignore[method-assign]
 
+    duplicate_check_count = 0
+
+    async def mock_find_existing_policy_async(*args, **kwargs):
+        """Return None on first check, existing_policy on retry check."""
+        nonlocal duplicate_check_count
+        duplicate_check_count += 1
+        if duplicate_check_count == 1:
+            # First check (before first attempt): no duplicate yet
+            return None
+        else:
+            # Second check (before retry): duplicate exists now
+            return existing_policy
+
     try:
         with patch(
             "pyatlan.client.common.transport.find_existing_policy_async",
-            new=AsyncMock(return_value=existing_policy),
+            new=AsyncMock(side_effect=mock_find_existing_policy_async),
         ):
             policy = Persona.create_metadata_policy(
                 name=policy_name,

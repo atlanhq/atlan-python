@@ -17,20 +17,22 @@ import httpx
 
 from pyatlan.client.constants import BULK_UPDATE, INDEX_SEARCH
 from pyatlan.errors import ErrorCode
-from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term
+from pyatlan.model.search import Bool, DSL, IndexSearchRequest, Prefix, Term
 
 logger = logging.getLogger(__name__)
 
 
 def build_policy_search_request(
-    policy_name: str, persona_guid: str
+    policy_name: str, persona_qualified_name: str
 ) -> IndexSearchRequest:
     """Build an IndexSearchRequest to find an existing AuthPolicy by name and persona."""
     query = Bool(
         filter=[
+            Term(field="__state", value="ACTIVE"),
             Term(field="__typeName.keyword", value="AuthPolicy"),
+            Term(field="policyCategory", value="persona"),
             Term(field="name.keyword", value=policy_name),
-            Term(field="__persona", value=persona_guid),
+            Prefix(field="qualifiedName", value=persona_qualified_name),
         ]
     )
     return IndexSearchRequest(
@@ -85,17 +87,84 @@ def parse_auth_policy_entity(request: httpx.Request) -> Optional[tuple[str, str,
     return None
 
 
+def get_persona_qualified_name(client: Any, persona_guid: str) -> Optional[str]:
+    """
+    Fetch the qualifiedName of a Persona by its GUID via IndexSearch (synchronous).
+    """
+    try:
+        query = Bool(
+            filter=[
+                Term(field="__typeName.keyword", value="Persona"),
+                Term(field="__guid", value=persona_guid),
+            ]
+        )
+        search = IndexSearchRequest(
+            dsl=DSL(query=query, size=1, from_=0),
+            attributes=["qualifiedName"],
+        )
+        raw_json = client._call_api(INDEX_SEARCH, request_obj=search)
+        if raw_json and raw_json.get("entities"):
+            return raw_json["entities"][0].get("attributes", {}).get("qualifiedName")
+        return None
+    except Exception as e:
+        logger.debug(
+            "get_persona_qualified_name: could not fetch qualifiedName for persona %s: %s",
+            persona_guid,
+            e,
+        )
+        return None
+
+
+async def get_persona_qualified_name_async(
+    client: Any, persona_guid: str
+) -> Optional[str]:
+    """
+    Fetch the qualifiedName of a Persona by its GUID via IndexSearch (asynchronous).
+    """
+    try:
+        query = Bool(
+            filter=[
+                Term(field="__typeName.keyword", value="Persona"),
+                Term(field="__guid", value=persona_guid),
+            ]
+        )
+        search = IndexSearchRequest(
+            dsl=DSL(query=query, size=1, from_=0),
+            attributes=["qualifiedName"],
+        )
+        raw_json = await client._call_api(INDEX_SEARCH, request_obj=search)
+        if raw_json and raw_json.get("entities"):
+            return raw_json["entities"][0].get("attributes", {}).get("qualifiedName")
+        return None
+    except Exception as e:
+        logger.debug(
+            "get_persona_qualified_name_async: could not fetch qualifiedName for persona %s: %s",
+            persona_guid,
+            e,
+        )
+        return None
+
+
 def find_existing_policy(
     client: Any, policy_name: str, persona_guid: str
 ) -> Optional[dict]:
     """
     Search for an existing AuthPolicy by name and persona GUID (synchronous).
 
+    First resolves the persona GUID to its qualifiedName, then uses a qualifiedName
+    prefix query to scope the search to that persona.
+
     Raises:
-        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the search call fails.
+        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the policy search call fails.
     """
+    persona_qualified_name = get_persona_qualified_name(client, persona_guid)
+    if not persona_qualified_name:
+        raise ErrorCode.UNABLE_TO_RESOLVE_PERSONA_QUALIFIED_NAME.exception_with_parameters(
+            persona_guid
+        )
+
     try:
-        search_request = build_policy_search_request(policy_name, persona_guid)
+        search_request = build_policy_search_request(policy_name, persona_qualified_name)
         raw_json = client._call_api(INDEX_SEARCH, request_obj=search_request)
         if raw_json and raw_json.get("entities"):
             return raw_json["entities"][0]
@@ -112,11 +181,20 @@ async def find_existing_policy_async(
     """
     Search for an existing AuthPolicy by name and persona GUID (asynchronous).
 
+    First resolves the persona GUID to its qualifiedName, then uses a qualifiedName
+    prefix query to scope the search to that persona.
+
     Raises:
-        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the search call fails.
+        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the policy search call fails.
     """
+    persona_qualified_name = await get_persona_qualified_name_async(client, persona_guid)
+    if not persona_qualified_name:
+        raise ErrorCode.UNABLE_TO_RESOLVE_PERSONA_QUALIFIED_NAME.exception_with_parameters(
+            persona_guid
+        )
+
     try:
-        search_request = build_policy_search_request(policy_name, persona_guid)
+        search_request = build_policy_search_request(policy_name, persona_qualified_name)
         raw_json = await client._call_api(INDEX_SEARCH, request_obj=search_request)
         if raw_json and raw_json.get("entities"):
             return raw_json["entities"][0]
@@ -132,24 +210,36 @@ def check_for_duplicate_policy(
 ) -> Optional[httpx.Response]:
     """
     Check whether a bulk POST is creating an AuthPolicy that already exists (synchronous).
-    Only called during retry attempts, never on the first request.
+    Called before every attempt — including the first — so that repeated automation
+    runs that don't pre-check for an existing policy are handled transparently.
 
     Returns a mock response with the existing policy if a duplicate is found,
-    or None to let the retry proceed normally.
+    or None to let the request proceed normally.
 
-    Raises:
-        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the duplicate search fails.
+    Never raises: search failures are logged and treated as "not found" so that
+    a degraded index cannot block policy creation entirely.
     """
     parsed = parse_auth_policy_entity(request)
     if not parsed:
         return None
 
     policy_name, persona_guid, temp_guid = parsed
-    existing_policy = find_existing_policy(client, policy_name, persona_guid)
+    try:
+        existing_policy = find_existing_policy(client, policy_name, persona_guid)
+    except Exception as e:
+        logger.warning(
+            "Duplicate policy search failed for '%s' (persona %s): %s. "
+            "Proceeding with request.",
+            policy_name,
+            persona_guid,
+            str(e),
+        )
+        return None
     if existing_policy:
         logger.info(
-            f"Found existing policy '{policy_name}' with guid "
-            f"{existing_policy.get('guid')} during retry check"
+            "Found existing policy '%s' with guid %s — returning it instead of creating a duplicate.",
+            policy_name,
+            existing_policy.get("guid"),
         )
         return create_mock_response(existing_policy, temp_guid)
     return None
@@ -160,26 +250,38 @@ async def check_for_duplicate_policy_async(
 ) -> Optional[httpx.Response]:
     """
     Check whether a bulk POST is creating an AuthPolicy that already exists (asynchronous).
-    Only called during retry attempts, never on the first request.
+    Called before every attempt — including the first — so that repeated automation
+    runs that don't pre-check for an existing policy are handled transparently.
 
     Returns a mock response with the existing policy if a duplicate is found,
-    or None to let the retry proceed normally.
+    or None to let the request proceed normally.
 
-    Raises:
-        ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the duplicate search fails.
+    Never raises: search failures are logged and treated as "not found" so that
+    a degraded index cannot block policy creation entirely.
     """
     parsed = parse_auth_policy_entity(request)
     if not parsed:
         return None
 
     policy_name, persona_guid, temp_guid = parsed
-    existing_policy = await find_existing_policy_async(
-        client, policy_name, persona_guid
-    )
+    try:
+        existing_policy = await find_existing_policy_async(
+            client, policy_name, persona_guid
+        )
+    except Exception as e:
+        logger.warning(
+            "Duplicate policy search failed for '%s' (persona %s): %s. "
+            "Proceeding with request.",
+            policy_name,
+            persona_guid,
+            str(e),
+        )
+        return None
     if existing_policy:
         logger.info(
-            f"Found existing policy '{policy_name}' with guid "
-            f"{existing_policy.get('guid')} during retry check"
+            "Found existing policy '%s' with guid %s — returning it instead of creating a duplicate.",
+            policy_name,
+            existing_policy.get("guid"),
         )
         return create_mock_response(existing_policy, temp_guid)
     return None

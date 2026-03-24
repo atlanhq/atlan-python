@@ -99,9 +99,10 @@ def test_duplicate_prevention_on_timeout(
 
     transport = PyatlanSyncTransport(
         retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
-        client=client,
         trust_env=True,
     )
+    # Set client reference after construction to avoid validation issues
+    transport._client = client
     original_transport = client._session._transport
     client._session._transport = transport
 
@@ -175,9 +176,10 @@ def test_duplicate_prevention_short_circuits_when_policy_exists(
 
     transport = PyatlanSyncTransport(
         retry=Retry(total=3, backoff_factor=0, allowed_methods=["POST"]),
-        client=client,
         trust_env=True,
     )
+    # Set client reference after construction to avoid validation issues
+    transport._client = client
     original_transport = client._session._transport
     client._session._transport = transport
 
@@ -198,10 +200,23 @@ def test_duplicate_prevention_short_circuits_when_policy_exists(
 
     transport._transport.handle_request = intercepting_handle  # type: ignore[method-assign]
 
+    duplicate_check_count = 0
+
+    def mock_find_existing_policy(*args, **kwargs):
+        """Return None on first check, existing_policy on retry check."""
+        nonlocal duplicate_check_count
+        duplicate_check_count += 1
+        if duplicate_check_count == 1:
+            # First check (before first attempt): no duplicate yet
+            return None
+        else:
+            # Second check (before retry): duplicate exists now
+            return existing_policy
+
     try:
         with patch(
             "pyatlan.client.common.transport.find_existing_policy",
-            return_value=existing_policy,
+            side_effect=mock_find_existing_policy,
         ):
             policy = Persona.create_metadata_policy(
                 name=policy_name,

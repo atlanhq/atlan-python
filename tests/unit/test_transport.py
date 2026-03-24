@@ -155,29 +155,46 @@ class TestCreateMockResponse:
 
 
 class TestFindExistingPolicy:
-    def _make_client(self, raw_json):
+    def _make_client(self, persona_response, policy_response):
+        """Mock client with two API calls: persona lookup + policy search."""
         client = MagicMock()
-        client._call_api.return_value = raw_json
+        client._call_api.side_effect = [persona_response, policy_response]
         return client
 
     def test_returns_policy_when_found(self):
-        client = self._make_client({"entities": [EXISTING_POLICY]})
+        # First call: persona lookup, Second call: policy search
+        client = self._make_client(
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            {"entities": [EXISTING_POLICY]},
+        )
         result = find_existing_policy(client, POLICY_NAME, PERSONA_GUID)
         assert result == EXISTING_POLICY
 
     def test_returns_none_when_no_entities(self):
-        client = self._make_client({"entities": []})
+        # First call: persona lookup, Second call: empty entities
+        client = self._make_client(
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            {"entities": []},
+        )
         result = find_existing_policy(client, POLICY_NAME, PERSONA_GUID)
         assert result is None
 
     def test_returns_none_when_raw_json_is_none(self):
-        client = self._make_client(None)
+        # First call: persona lookup, Second call: None
+        client = self._make_client(
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            None,
+        )
         result = find_existing_policy(client, POLICY_NAME, PERSONA_GUID)
         assert result is None
 
     def test_raises_error_code_on_exception(self):
         client = MagicMock()
-        client._call_api.side_effect = Exception("search failed")
+        # First call: persona lookup succeeds, Second call: policy search fails
+        client._call_api.side_effect = [
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            Exception("search failed"),
+        ]
         with pytest.raises(Exception) as exc_info:
             find_existing_policy(client, POLICY_NAME, PERSONA_GUID)
         assert "ATLAN-PYTHON-500-007" in str(exc_info.value)
@@ -192,21 +209,39 @@ class TestFindExistingPolicyAsync:
     @pytest.mark.asyncio
     async def test_returns_policy_when_found(self):
         client = MagicMock()
-        client._call_api = AsyncMock(return_value={"entities": [EXISTING_POLICY]})
+        # First call: persona lookup, Second call: policy search
+        client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                {"entities": [EXISTING_POLICY]},
+            ]
+        )
         result = await find_existing_policy_async(client, POLICY_NAME, PERSONA_GUID)
         assert result == EXISTING_POLICY
 
     @pytest.mark.asyncio
     async def test_returns_none_when_no_entities(self):
         client = MagicMock()
-        client._call_api = AsyncMock(return_value={"entities": []})
+        # First call: persona lookup, Second call: empty entities
+        client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                {"entities": []},
+            ]
+        )
         result = await find_existing_policy_async(client, POLICY_NAME, PERSONA_GUID)
         assert result is None
 
     @pytest.mark.asyncio
     async def test_raises_error_code_on_exception(self):
         client = MagicMock()
-        client._call_api = AsyncMock(side_effect=Exception("async search failed"))
+        # First call: persona lookup succeeds, Second call: policy search fails
+        client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                Exception("async search failed"),
+            ]
+        )
         with pytest.raises(Exception) as exc_info:
             await find_existing_policy_async(client, POLICY_NAME, PERSONA_GUID)
         assert "ATLAN-PYTHON-500-007" in str(exc_info.value)
@@ -219,10 +254,13 @@ class TestFindExistingPolicyAsync:
 
 class TestCheckForDuplicatePolicy:
     def _make_client(self, existing=None):
+        """Mock client with two API calls: persona lookup + policy search."""
         client = MagicMock()
-        client._call_api.return_value = (
-            {"entities": [existing]} if existing else {"entities": []}
-        )
+        # First call: persona lookup, Second call: policy search
+        client._call_api.side_effect = [
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            {"entities": [existing]} if existing else {"entities": []},
+        ]
         return client
 
     def test_returns_none_for_non_bulk_request(self):
@@ -244,13 +282,12 @@ class TestCheckForDuplicatePolicy:
         body = resp.json()
         assert body["guidAssignments"][TEMP_GUID] == EXISTING_GUID
 
-    def test_propagates_search_error(self):
+    def test_returns_none_on_search_error(self):
+        """Search failures must not propagate — degrade gracefully so the save can proceed."""
         client = MagicMock()
         client._call_api.side_effect = Exception("search failed")
         req = _make_bulk_request()
-        with pytest.raises(Exception) as exc_info:
-            check_for_duplicate_policy(client, req)
-        assert "ATLAN-PYTHON-500-007" in str(exc_info.value)
+        assert check_for_duplicate_policy(client, req) is None
 
 
 # ---------------------------------------------------------------------------
@@ -268,14 +305,26 @@ class TestCheckForDuplicatePolicyAsync:
     @pytest.mark.asyncio
     async def test_returns_none_when_no_duplicate_found(self):
         client = MagicMock()
-        client._call_api = AsyncMock(return_value={"entities": []})
+        # First call: persona lookup, Second call: empty policy search
+        client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                {"entities": []},
+            ]
+        )
         req = _make_bulk_request()
         assert await check_for_duplicate_policy_async(client, req) is None
 
     @pytest.mark.asyncio
     async def test_returns_mock_response_when_duplicate_found(self):
         client = MagicMock()
-        client._call_api = AsyncMock(return_value={"entities": [EXISTING_POLICY]})
+        # First call: persona lookup, Second call: existing policy found
+        client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                {"entities": [EXISTING_POLICY]},
+            ]
+        )
         req = _make_bulk_request()
         resp = await check_for_duplicate_policy_async(client, req)
         assert resp is not None
@@ -283,13 +332,18 @@ class TestCheckForDuplicatePolicyAsync:
         assert resp.json()["guidAssignments"][TEMP_GUID] == EXISTING_GUID
 
     @pytest.mark.asyncio
-    async def test_propagates_search_error(self):
+    async def test_returns_none_on_search_error(self):
+        """Search failures must not propagate — degrade gracefully so the save can proceed."""
         client = MagicMock()
-        client._call_api = AsyncMock(side_effect=Exception("async search failed"))
+        # First call: persona lookup succeeds, Second call: search fails
+        client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                Exception("async search failed"),
+            ]
+        )
         req = _make_bulk_request()
-        with pytest.raises(Exception) as exc_info:
-            await check_for_duplicate_policy_async(client, req)
-        assert "ATLAN-PYTHON-500-007" in str(exc_info.value)
+        assert await check_for_duplicate_policy_async(client, req) is None
 
 
 # ---------------------------------------------------------------------------
@@ -332,34 +386,36 @@ class TestPyatlanSyncTransportRetry:
         assert resp.status_code == 200
         assert call_count == 2
 
-    def test_duplicate_prevention_short_circuits_retry(self):
-        """On retry, duplicate check returns mock response — inner transport not called again."""
+    def test_duplicate_prevention_short_circuits_on_first_attempt(self):
+        """When a duplicate exists the inner transport is never called at all."""
         mock_client = MagicMock()
-        mock_client._call_api.return_value = {"entities": [EXISTING_POLICY]}
+        # First call: persona lookup, Second call: existing policy found
+        mock_client._call_api.side_effect = [
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            {"entities": [EXISTING_POLICY]},
+        ]
         transport = self._make_transport(client=mock_client)
-
-        call_count = 0
-
-        def side_effect(req):
-            nonlocal call_count
-            call_count += 1
-            if call_count == 1:
-                raise httpx.ReadTimeout("timeout", request=req)
-            return httpx.Response(200)
-
-        transport._transport.handle_request = side_effect
+        inner_mock = MagicMock(return_value=httpx.Response(200))
+        transport._transport.handle_request = inner_mock
         req = _make_bulk_request()
         resp = transport.handle_request(req)
 
-        # Inner transport called only once (timeout) — retry short-circuited
-        assert call_count == 1
+        inner_mock.assert_not_called()
         assert resp.status_code == 200
         assert resp.json()["guidAssignments"][TEMP_GUID] == EXISTING_GUID
 
     def test_retry_proceeds_when_no_duplicate(self):
         """If no duplicate found, transport retries normally."""
         mock_client = MagicMock()
-        mock_client._call_api.return_value = {"entities": []}
+        # Mock multiple calls for duplicate checks before each attempt
+        # First attempt: persona + policy (no duplicate)
+        # Second attempt: persona + policy (no duplicate)
+        mock_client._call_api.side_effect = [
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            {"entities": []},
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            {"entities": []},
+        ]
         transport = self._make_transport(client=mock_client)
 
         call_count = 0
@@ -378,16 +434,41 @@ class TestPyatlanSyncTransportRetry:
         assert call_count == 2
         assert resp.status_code == 200
 
-    def test_no_duplicate_check_on_first_attempt(self):
-        """Duplicate check must NOT run on the first attempt."""
+    def test_duplicate_check_runs_on_first_attempt(self):
+        """Duplicate check must run before the first attempt to catch automation re-runs."""
         mock_client = MagicMock()
+        # First call: persona lookup, Second call: policy search
+        mock_client._call_api.side_effect = [
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            {"entities": []},
+        ]
         transport = self._make_transport(client=mock_client)
         transport._transport.handle_request = MagicMock(
             return_value=httpx.Response(200)
         )
         req = _make_bulk_request()
         transport.handle_request(req)
-        mock_client._call_api.assert_not_called()
+        # Should be called twice: persona lookup + policy search
+        assert mock_client._call_api.call_count == 2
+
+    def test_automation_rerun_prevented_on_first_attempt(self):
+        """Automation runs the same policy creation twice; second run must not create a duplicate."""
+        mock_client = MagicMock()
+        # First call: persona lookup, Second call: existing policy found
+        mock_client._call_api.side_effect = [
+            {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+            {"entities": [EXISTING_POLICY]},
+        ]
+        transport = self._make_transport(client=mock_client)
+        inner_mock = MagicMock(return_value=httpx.Response(200))
+        transport._transport.handle_request = inner_mock
+        req = _make_bulk_request()
+        resp = transport.handle_request(req)
+
+        # Inner transport never called — existing policy returned immediately
+        inner_mock.assert_not_called()
+        assert resp.status_code == 200
+        assert resp.json()["guidAssignments"][TEMP_GUID] == EXISTING_GUID
 
 
 # ---------------------------------------------------------------------------
@@ -405,36 +486,64 @@ class TestPyatlanAsyncTransportRetry:
         return transport
 
     @pytest.mark.asyncio
-    async def test_duplicate_prevention_short_circuits_retry(self):
+    async def test_duplicate_prevention_short_circuits_on_first_attempt(self):
+        """When a duplicate exists the inner transport is never called at all."""
         mock_client = MagicMock()
-        mock_client._call_api = AsyncMock(return_value={"entities": [EXISTING_POLICY]})
+        # First call: persona lookup, Second call: existing policy found
+        mock_client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                {"entities": [EXISTING_POLICY]},
+            ]
+        )
         transport = self._make_transport(client=mock_client)
-
-        call_count = 0
-
-        async def side_effect(req):
-            nonlocal call_count
-            call_count += 1
-            if call_count == 1:
-                raise httpx.ReadTimeout("timeout", request=req)
-            return httpx.Response(200)
-
-        transport._transport.handle_async_request = side_effect
+        inner_mock = AsyncMock(return_value=httpx.Response(200))
+        transport._transport.handle_async_request = inner_mock
         req = _make_bulk_request()
         resp = await transport.handle_async_request(req)
 
-        assert call_count == 1
+        inner_mock.assert_not_called()
         assert resp.status_code == 200
         assert resp.json()["guidAssignments"][TEMP_GUID] == EXISTING_GUID
 
     @pytest.mark.asyncio
-    async def test_no_duplicate_check_on_first_attempt(self):
+    async def test_duplicate_check_runs_on_first_attempt(self):
+        """Duplicate check must run before the first attempt to catch automation re-runs."""
         mock_client = MagicMock()
-        mock_client._call_api = AsyncMock()
+        # First call: persona lookup, Second call: policy search
+        mock_client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                {"entities": []},
+            ]
+        )
         transport = self._make_transport(client=mock_client)
         transport._transport.handle_async_request = AsyncMock(
             return_value=httpx.Response(200)
         )
         req = _make_bulk_request()
         await transport.handle_async_request(req)
-        mock_client._call_api.assert_not_called()
+        # Should be called twice: persona lookup + policy search
+        assert mock_client._call_api.call_count == 2
+
+    @pytest.mark.asyncio
+    async def test_automation_rerun_prevented_on_first_attempt(self):
+        """Automation runs the same policy creation twice; second run must not create a duplicate."""
+        mock_client = MagicMock()
+        # First call: persona lookup, Second call: existing policy found
+        mock_client._call_api = AsyncMock(
+            side_effect=[
+                {"entities": [{"attributes": {"qualifiedName": "default/persona"}}]},
+                {"entities": [EXISTING_POLICY]},
+            ]
+        )
+        transport = self._make_transport(client=mock_client)
+        inner_mock = AsyncMock(return_value=httpx.Response(200))
+        transport._transport.handle_async_request = inner_mock
+        req = _make_bulk_request()
+        resp = await transport.handle_async_request(req)
+
+        # Inner transport never called — existing policy returned immediately
+        inner_mock.assert_not_called()
+        assert resp.status_code == 200
+        assert resp.json()["guidAssignments"][TEMP_GUID] == EXISTING_GUID
