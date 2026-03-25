@@ -1061,6 +1061,13 @@ class ErrorCode(Enum):
         "Check your backend connectivity and ensure the Atlan search service is accessible.",
         ApiError,
     )
+    UNABLE_TO_RESOLVE_PERSONA_QUALIFIED_NAME = (
+        500,
+        "ATLAN-PYTHON-500-008",
+        "Unable to resolve the qualifiedName for persona with GUID '{0}'.",
+        "Verify the persona exists and the Atlan search service is accessible.",
+        ApiError,
+    )
 
     def __init__(
         self,
