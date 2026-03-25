@@ -63,7 +63,10 @@ def create_mock_response(
 def parse_auth_policy_entity(request: httpx.Request) -> Optional[tuple[str, str, str]]:
     """
     Parse the request body and return (policy_name, persona_guid, temp_guid)
-    if the request is a bulk POST containing an AuthPolicy, else None.
+    if the request is a bulk POST containing a NEW AuthPolicy creation, else None.
+
+    Only matches policy CREATES (temp GUIDs starting with "-"), not UPDATES
+    (real GUIDs), to prevent suppressing legitimate policy modifications.
     """
     if request.method != "POST" or BULK_UPDATE.path not in str(request.url):
         return None
@@ -81,13 +84,24 @@ def parse_auth_policy_entity(request: httpx.Request) -> Optional[tuple[str, str,
     for entity in body.get("entities", []):
         if entity.get("typeName") != "AuthPolicy":
             continue
+
+        entity_guid = entity.get("guid", "-1")
+        # Only match policy CREATES (temp GUIDs like "-1", "-2", etc.)
+        # Skip policy UPDATES (real GUIDs) to avoid suppressing modifications
+        if not isinstance(entity_guid, str) or not entity_guid.startswith("-"):
+            logger.debug(
+                "parse_auth_policy_entity: skipping duplicate check for policy with GUID %s (likely an update or invalid type)",
+                entity_guid,
+            )
+            continue
+
         policy_name = entity.get("attributes", {}).get("name")
         access_control = entity.get("attributes", {}).get("accessControl")
         persona_guid = (
             access_control.get("guid") if isinstance(access_control, dict) else None
         )
         if policy_name and persona_guid:
-            return policy_name, persona_guid, entity.get("guid", "-1")
+            return policy_name, persona_guid, entity_guid
     return None
 
 

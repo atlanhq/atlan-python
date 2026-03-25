@@ -118,6 +118,49 @@ class TestParseAuthPolicyEntity:
         req = httpx.Request("POST", BULK_URL, content=b"\xff\xfe")
         assert parse_auth_policy_entity(req) is None
 
+    def test_returns_none_for_policy_update_with_real_guid(self):
+        """Policy updates (real GUIDs) should not be matched to prevent suppressing updates."""
+        req = _make_bulk_request(temp_guid=EXISTING_GUID)
+        assert parse_auth_policy_entity(req) is None
+
+    def test_returns_none_for_none_guid(self):
+        """None GUID should not crash and should be skipped."""
+        import json
+
+        body = {
+            "entities": [
+                {
+                    "typeName": "AuthPolicy",
+                    "guid": None,
+                    "attributes": {
+                        "name": POLICY_NAME,
+                        "accessControl": {"guid": PERSONA_GUID},
+                    },
+                }
+            ]
+        }
+        req = httpx.Request("POST", BULK_URL, content=json.dumps(body).encode())
+        assert parse_auth_policy_entity(req) is None
+
+    def test_returns_none_for_integer_guid(self):
+        """Integer GUID should not crash and should be skipped."""
+        import json
+
+        body = {
+            "entities": [
+                {
+                    "typeName": "AuthPolicy",
+                    "guid": -1,
+                    "attributes": {
+                        "name": POLICY_NAME,
+                        "accessControl": {"guid": PERSONA_GUID},
+                    },
+                }
+            ]
+        }
+        req = httpx.Request("POST", BULK_URL, content=json.dumps(body).encode())
+        assert parse_auth_policy_entity(req) is None
+
 
 # ---------------------------------------------------------------------------
 # create_mock_response
