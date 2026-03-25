@@ -38,9 +38,9 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .fivetran_related import RelatedFivetranConnector
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -63,58 +63,55 @@ class FivetranConnector(Asset):
     Instance of a Fivetran connector asset in Atlan.
     """
 
-    FIVETRAN_CONNECTOR_LAST_SYNC_ID: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_STARTED_AT: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_FINISHED_AT: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_REASON: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_TASK_TYPE: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_RESCHEDULED_AT: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_TABLES_SYNCED: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_EXTRACT_TIME_SECONDS: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_EXTRACT_VOLUME_MEGABYTES: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_LOAD_TIME_SECONDS: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_LOAD_VOLUME_MEGABYTES: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_PROCESS_TIME_SECONDS: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_PROCESS_VOLUME_MEGABYTES: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_LAST_SYNC_TOTAL_TIME_SECONDS: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_NAME: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_TYPE: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_URL: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_DESTINATION_NAME: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_DESTINATION_TYPE: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_DESTINATION_URL: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_SYNC_SETUP_ON: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_SYNC_FREQUENCY: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_SYNC_PAUSED: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_SYNC_SETUP_USER_FULL_NAME: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_SYNC_SETUP_USER_EMAIL: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_FREE: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_PAID: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_TOTAL: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_FREE: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_PAID: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_TOTAL: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_FREE_PERCENTAGE_OF_ACCOUNT: ClassVar[Any] = (
-        None
-    )
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_PAID_PERCENTAGE_OF_ACCOUNT: ClassVar[Any] = (
-        None
-    )
-    FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_TOTAL_PERCENTAGE_OF_ACCOUNT: ClassVar[
-        Any
-    ] = None
-    FIVETRAN_CONNECTOR_TOTAL_TABLES_SYNCED: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_ID: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_STARTED_AT: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_FINISHED_AT: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_REASON: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_TASK_TYPE: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_RESCHEDULED_AT: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_TABLES_SYNCED: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_EXTRACT_TIME_SECONDS: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_EXTRACT_VOLUME_MEGABYTES: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_LOAD_TIME_SECONDS: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_LOAD_VOLUME_MEGABYTES: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_PROCESS_TIME_SECONDS: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_PROCESS_VOLUME_MEGABYTES: ClassVar[Any] = None
+    FIVETRAN_LAST_SYNC_TOTAL_TIME_SECONDS: ClassVar[Any] = None
+    FIVETRAN_NAME: ClassVar[Any] = None
+    FIVETRAN_TYPE: ClassVar[Any] = None
+    FIVETRAN_URL: ClassVar[Any] = None
+    FIVETRAN_DESTINATION_NAME: ClassVar[Any] = None
+    FIVETRAN_DESTINATION_TYPE: ClassVar[Any] = None
+    FIVETRAN_DESTINATION_URL: ClassVar[Any] = None
+    FIVETRAN_SYNC_SETUP_ON: ClassVar[Any] = None
+    FIVETRAN_SYNC_FREQUENCY: ClassVar[Any] = None
+    FIVETRAN_SYNC_PAUSED: ClassVar[Any] = None
+    FIVETRAN_SYNC_SETUP_USER_FULL_NAME: ClassVar[Any] = None
+    FIVETRAN_SYNC_SETUP_USER_EMAIL: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_FREE: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_PAID: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_TOTAL: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_FREE: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_PAID: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_TOTAL: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_FREE_PERCENTAGE_OF_ACCOUNT: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_PAID_PERCENTAGE_OF_ACCOUNT: ClassVar[Any] = None
+    FIVETRAN_MONTHLY_ACTIVE_ROWS_TOTAL_PERCENTAGE_OF_ACCOUNT: ClassVar[Any] = None
+    FIVETRAN_TOTAL_TABLES_SYNCED: ClassVar[Any] = None
     FIVETRAN_CONNECTOR_TOP_TABLES_BY_MAR: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_USAGE_COST: ClassVar[Any] = None
-    FIVETRAN_CONNECTOR_CREDITS_USED: ClassVar[Any] = None
+    FIVETRAN_USAGE_COST: ClassVar[Any] = None
+    FIVETRAN_CREDITS_USED: ClassVar[Any] = None
     FIVETRAN_WORKFLOW_NAME: ClassVar[Any] = None
     FIVETRAN_LAST_SYNC_STATUS: ClassVar[Any] = None
     FIVETRAN_LAST_SYNC_RECORDS_UPDATED: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -140,139 +137,127 @@ class FivetranConnector(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    fivetran_connector_last_sync_id: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "FivetranConnector"
+
+    fivetran_last_sync_id: Union[str, None, UnsetType] = UNSET
     """ID of the latest sync"""
 
-    fivetran_connector_last_sync_started_at: Union[int, None, UnsetType] = UNSET
+    fivetran_last_sync_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) when the latest sync started on Fivetran, in milliseconds"""
 
-    fivetran_connector_last_sync_finished_at: Union[int, None, UnsetType] = UNSET
+    fivetran_last_sync_finished_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) when the latest sync finished on Fivetran, in milliseconds"""
 
-    fivetran_connector_last_sync_reason: Union[str, None, UnsetType] = UNSET
+    fivetran_last_sync_reason: Union[str, None, UnsetType] = UNSET
     """Failure reason for the latest sync on Fivetran. If status is FAILURE, this is the description of the reason why the sync failed. If status is FAILURE_WITH_TASK, this is the description of the Error. If status is RESCHEDULED, this is the description of the reason why the sync is rescheduled."""
 
-    fivetran_connector_last_sync_task_type: Union[str, None, UnsetType] = UNSET
+    fivetran_last_sync_task_type: Union[str, None, UnsetType] = UNSET
     """Failure task type for the latest sync on Fivetran. If status is FAILURE_WITH_TASK or RESCHEDULED, this field displays the type of the Error that caused the failure or rescheduling, respectively, e.g., reconnect, update_service_account, etc."""
 
-    fivetran_connector_last_sync_rescheduled_at: Union[int, None, UnsetType] = UNSET
+    fivetran_last_sync_rescheduled_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) at which the latest sync is rescheduled at on Fivetran"""
 
-    fivetran_connector_last_sync_tables_synced: Union[int, None, UnsetType] = UNSET
+    fivetran_last_sync_tables_synced: Union[int, None, UnsetType] = UNSET
     """Number of tables synced in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_extract_time_seconds: Union[float, None, UnsetType] = (
-        UNSET
-    )
+    fivetran_last_sync_extract_time_seconds: Union[float, None, UnsetType] = UNSET
     """Extract time in seconds in the latest sync on fivetran"""
 
-    fivetran_connector_last_sync_extract_volume_megabytes: Union[
-        float, None, UnsetType
-    ] = UNSET
+    fivetran_last_sync_extract_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Extracted data volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_load_time_seconds: Union[float, None, UnsetType] = (
-        UNSET
-    )
+    fivetran_last_sync_load_time_seconds: Union[float, None, UnsetType] = UNSET
     """Load time in seconds in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_load_volume_megabytes: Union[
-        float, None, UnsetType
-    ] = UNSET
+    fivetran_last_sync_load_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Loaded data volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_process_time_seconds: Union[float, None, UnsetType] = (
-        UNSET
-    )
+    fivetran_last_sync_process_time_seconds: Union[float, None, UnsetType] = UNSET
     """Process time in seconds in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_process_volume_megabytes: Union[
-        float, None, UnsetType
-    ] = UNSET
+    fivetran_last_sync_process_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Process volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_total_time_seconds: Union[float, None, UnsetType] = (
-        UNSET
-    )
+    fivetran_last_sync_total_time_seconds: Union[float, None, UnsetType] = UNSET
     """Total sync time in seconds in the latest sync on Fivetran"""
 
-    fivetran_connector_name: Union[str, None, UnsetType] = UNSET
+    fivetran_name: Union[str, None, UnsetType] = UNSET
     """Connector name added by the user on Fivetran"""
 
-    fivetran_connector_type: Union[str, None, UnsetType] = UNSET
+    fivetran_type: Union[str, None, UnsetType] = UNSET
     """Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc."""
 
-    fivetran_connector_url: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="fivetranConnectorURL"
+    fivetran_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="fivetranURL"
     )
     """URL to open the connector details on Fivetran"""
 
-    fivetran_connector_destination_name: Union[str, None, UnsetType] = UNSET
+    fivetran_destination_name: Union[str, None, UnsetType] = UNSET
     """Destination name added by the user on Fivetran"""
 
-    fivetran_connector_destination_type: Union[str, None, UnsetType] = UNSET
+    fivetran_destination_type: Union[str, None, UnsetType] = UNSET
     """Type of destination on Fivetran. Eg: redshift, bigquery etc."""
 
-    fivetran_connector_destination_url: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="fivetranConnectorDestinationURL"
+    fivetran_destination_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="fivetranDestinationURL"
     )
     """URL to open the destination details on Fivetran"""
 
-    fivetran_connector_sync_setup_on: Union[int, None, UnsetType] = UNSET
+    fivetran_sync_setup_on: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) on which the connector was setup on Fivetran, in milliseconds"""
 
-    fivetran_connector_sync_frequency: Union[str, None, UnsetType] = UNSET
+    fivetran_sync_frequency: Union[str, None, UnsetType] = UNSET
     """Sync frequency for the connector in number of hours. Eg: Every 6 hours"""
 
-    fivetran_connector_sync_paused: Union[bool, None, UnsetType] = UNSET
+    fivetran_sync_paused: Union[bool, None, UnsetType] = UNSET
     """Boolean to indicate whether the sync for this connector is paused or not"""
 
-    fivetran_connector_sync_setup_user_full_name: Union[str, None, UnsetType] = UNSET
+    fivetran_sync_setup_user_full_name: Union[str, None, UnsetType] = UNSET
     """Full name of the user who setup the connector on Fivetran"""
 
-    fivetran_connector_sync_setup_user_email: Union[str, None, UnsetType] = UNSET
+    fivetran_sync_setup_user_email: Union[str, None, UnsetType] = UNSET
     """Email ID of the user who setpu the connector on Fivetran"""
 
-    fivetran_connector_monthly_active_rows_free: Union[int, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_free: Union[int, None, UnsetType] = UNSET
     """Free Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_connector_monthly_active_rows_paid: Union[int, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_paid: Union[int, None, UnsetType] = UNSET
     """Paid Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_connector_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
     """Total Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_connector_monthly_active_rows_change_percentage_free: Union[
+    fivetran_monthly_active_rows_change_percentage_free: Union[
         float, None, UnsetType
     ] = UNSET
     """Increase in the percentage of free MAR compared to the previous month"""
 
-    fivetran_connector_monthly_active_rows_change_percentage_paid: Union[
+    fivetran_monthly_active_rows_change_percentage_paid: Union[
         float, None, UnsetType
     ] = UNSET
     """Increase in the percentage of paid MAR compared to the previous month"""
 
-    fivetran_connector_monthly_active_rows_change_percentage_total: Union[
+    fivetran_monthly_active_rows_change_percentage_total: Union[
         float, None, UnsetType
     ] = UNSET
     """Increase in the percentage of total MAR compared to the previous month"""
 
-    fivetran_connector_monthly_active_rows_free_percentage_of_account: Union[
+    fivetran_monthly_active_rows_free_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
     """Percentage of the account's total free MAR used by this connector"""
 
-    fivetran_connector_monthly_active_rows_paid_percentage_of_account: Union[
+    fivetran_monthly_active_rows_paid_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
     """Percentage of the account's total paid MAR used by this connector"""
 
-    fivetran_connector_monthly_active_rows_total_percentage_of_account: Union[
+    fivetran_monthly_active_rows_total_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
     """Percentage of the account's total MAR used by this connector"""
 
-    fivetran_connector_total_tables_synced: Union[int, None, UnsetType] = UNSET
+    fivetran_total_tables_synced: Union[int, None, UnsetType] = UNSET
     """Total number of tables synced by this connector"""
 
     fivetran_connector_top_tables_by_mar: Union[str, None, UnsetType] = msgspec.field(
@@ -280,10 +265,10 @@ class FivetranConnector(Asset):
     )
     """Total five tables sorted by MAR synced by this connector"""
 
-    fivetran_connector_usage_cost: Union[float, None, UnsetType] = UNSET
+    fivetran_usage_cost: Union[float, None, UnsetType] = UNSET
     """Total usage cost by this destination"""
 
-    fivetran_connector_credits_used: Union[float, None, UnsetType] = UNSET
+    fivetran_credits_used: Union[float, None, UnsetType] = UNSET
     """Total credits used by this destination"""
 
     fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
@@ -294,6 +279,9 @@ class FivetranConnector(Asset):
 
     fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
     """Number of records updated in the latest sync on Fivetran"""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -309,6 +297,12 @@ class FivetranConnector(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -379,7 +373,7 @@ class FivetranConnector(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -392,66 +386,6 @@ class FivetranConnector(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "FivetranConnector"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this FivetranConnector instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"FivetranConnector validation failed: {errors}")
-
-    def minimize(self) -> "FivetranConnector":
-        """
-        Return a minimal copy of this FivetranConnector with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new FivetranConnector with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new FivetranConnector instance with only the minimum required fields.
-        """
-        self.validate()
-        return FivetranConnector(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFivetranConnector":
-        """
-        Create a :class:`RelatedFivetranConnector` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedFivetranConnector reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedFivetranConnector(guid=self.guid)
-        return RelatedFivetranConnector(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -510,139 +444,125 @@ class FivetranConnector(Asset):
 class FivetranConnectorAttributes(AssetAttributes):
     """FivetranConnector-specific attributes for nested API format."""
 
-    fivetran_connector_last_sync_id: Union[str, None, UnsetType] = UNSET
+    fivetran_last_sync_id: Union[str, None, UnsetType] = UNSET
     """ID of the latest sync"""
 
-    fivetran_connector_last_sync_started_at: Union[int, None, UnsetType] = UNSET
+    fivetran_last_sync_started_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) when the latest sync started on Fivetran, in milliseconds"""
 
-    fivetran_connector_last_sync_finished_at: Union[int, None, UnsetType] = UNSET
+    fivetran_last_sync_finished_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) when the latest sync finished on Fivetran, in milliseconds"""
 
-    fivetran_connector_last_sync_reason: Union[str, None, UnsetType] = UNSET
+    fivetran_last_sync_reason: Union[str, None, UnsetType] = UNSET
     """Failure reason for the latest sync on Fivetran. If status is FAILURE, this is the description of the reason why the sync failed. If status is FAILURE_WITH_TASK, this is the description of the Error. If status is RESCHEDULED, this is the description of the reason why the sync is rescheduled."""
 
-    fivetran_connector_last_sync_task_type: Union[str, None, UnsetType] = UNSET
+    fivetran_last_sync_task_type: Union[str, None, UnsetType] = UNSET
     """Failure task type for the latest sync on Fivetran. If status is FAILURE_WITH_TASK or RESCHEDULED, this field displays the type of the Error that caused the failure or rescheduling, respectively, e.g., reconnect, update_service_account, etc."""
 
-    fivetran_connector_last_sync_rescheduled_at: Union[int, None, UnsetType] = UNSET
+    fivetran_last_sync_rescheduled_at: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) at which the latest sync is rescheduled at on Fivetran"""
 
-    fivetran_connector_last_sync_tables_synced: Union[int, None, UnsetType] = UNSET
+    fivetran_last_sync_tables_synced: Union[int, None, UnsetType] = UNSET
     """Number of tables synced in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_extract_time_seconds: Union[float, None, UnsetType] = (
-        UNSET
-    )
+    fivetran_last_sync_extract_time_seconds: Union[float, None, UnsetType] = UNSET
     """Extract time in seconds in the latest sync on fivetran"""
 
-    fivetran_connector_last_sync_extract_volume_megabytes: Union[
-        float, None, UnsetType
-    ] = UNSET
+    fivetran_last_sync_extract_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Extracted data volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_load_time_seconds: Union[float, None, UnsetType] = (
-        UNSET
-    )
+    fivetran_last_sync_load_time_seconds: Union[float, None, UnsetType] = UNSET
     """Load time in seconds in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_load_volume_megabytes: Union[
-        float, None, UnsetType
-    ] = UNSET
+    fivetran_last_sync_load_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Loaded data volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_process_time_seconds: Union[float, None, UnsetType] = (
-        UNSET
-    )
+    fivetran_last_sync_process_time_seconds: Union[float, None, UnsetType] = UNSET
     """Process time in seconds in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_process_volume_megabytes: Union[
-        float, None, UnsetType
-    ] = UNSET
+    fivetran_last_sync_process_volume_megabytes: Union[float, None, UnsetType] = UNSET
     """Process volume in metabytes in the latest sync on Fivetran"""
 
-    fivetran_connector_last_sync_total_time_seconds: Union[float, None, UnsetType] = (
-        UNSET
-    )
+    fivetran_last_sync_total_time_seconds: Union[float, None, UnsetType] = UNSET
     """Total sync time in seconds in the latest sync on Fivetran"""
 
-    fivetran_connector_name: Union[str, None, UnsetType] = UNSET
+    fivetran_name: Union[str, None, UnsetType] = UNSET
     """Connector name added by the user on Fivetran"""
 
-    fivetran_connector_type: Union[str, None, UnsetType] = UNSET
+    fivetran_type: Union[str, None, UnsetType] = UNSET
     """Type of connector on Fivetran. Eg: snowflake, google_analytics, notion etc."""
 
-    fivetran_connector_url: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="fivetranConnectorURL"
+    fivetran_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="fivetranURL"
     )
     """URL to open the connector details on Fivetran"""
 
-    fivetran_connector_destination_name: Union[str, None, UnsetType] = UNSET
+    fivetran_destination_name: Union[str, None, UnsetType] = UNSET
     """Destination name added by the user on Fivetran"""
 
-    fivetran_connector_destination_type: Union[str, None, UnsetType] = UNSET
+    fivetran_destination_type: Union[str, None, UnsetType] = UNSET
     """Type of destination on Fivetran. Eg: redshift, bigquery etc."""
 
-    fivetran_connector_destination_url: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="fivetranConnectorDestinationURL"
+    fivetran_destination_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="fivetranDestinationURL"
     )
     """URL to open the destination details on Fivetran"""
 
-    fivetran_connector_sync_setup_on: Union[int, None, UnsetType] = UNSET
+    fivetran_sync_setup_on: Union[int, None, UnsetType] = UNSET
     """Timestamp (epoch) on which the connector was setup on Fivetran, in milliseconds"""
 
-    fivetran_connector_sync_frequency: Union[str, None, UnsetType] = UNSET
+    fivetran_sync_frequency: Union[str, None, UnsetType] = UNSET
     """Sync frequency for the connector in number of hours. Eg: Every 6 hours"""
 
-    fivetran_connector_sync_paused: Union[bool, None, UnsetType] = UNSET
+    fivetran_sync_paused: Union[bool, None, UnsetType] = UNSET
     """Boolean to indicate whether the sync for this connector is paused or not"""
 
-    fivetran_connector_sync_setup_user_full_name: Union[str, None, UnsetType] = UNSET
+    fivetran_sync_setup_user_full_name: Union[str, None, UnsetType] = UNSET
     """Full name of the user who setup the connector on Fivetran"""
 
-    fivetran_connector_sync_setup_user_email: Union[str, None, UnsetType] = UNSET
+    fivetran_sync_setup_user_email: Union[str, None, UnsetType] = UNSET
     """Email ID of the user who setpu the connector on Fivetran"""
 
-    fivetran_connector_monthly_active_rows_free: Union[int, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_free: Union[int, None, UnsetType] = UNSET
     """Free Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_connector_monthly_active_rows_paid: Union[int, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_paid: Union[int, None, UnsetType] = UNSET
     """Paid Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_connector_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
+    fivetran_monthly_active_rows_total: Union[int, None, UnsetType] = UNSET
     """Total Monthly Active Rows used by the connector in the past month"""
 
-    fivetran_connector_monthly_active_rows_change_percentage_free: Union[
+    fivetran_monthly_active_rows_change_percentage_free: Union[
         float, None, UnsetType
     ] = UNSET
     """Increase in the percentage of free MAR compared to the previous month"""
 
-    fivetran_connector_monthly_active_rows_change_percentage_paid: Union[
+    fivetran_monthly_active_rows_change_percentage_paid: Union[
         float, None, UnsetType
     ] = UNSET
     """Increase in the percentage of paid MAR compared to the previous month"""
 
-    fivetran_connector_monthly_active_rows_change_percentage_total: Union[
+    fivetran_monthly_active_rows_change_percentage_total: Union[
         float, None, UnsetType
     ] = UNSET
     """Increase in the percentage of total MAR compared to the previous month"""
 
-    fivetran_connector_monthly_active_rows_free_percentage_of_account: Union[
+    fivetran_monthly_active_rows_free_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
     """Percentage of the account's total free MAR used by this connector"""
 
-    fivetran_connector_monthly_active_rows_paid_percentage_of_account: Union[
+    fivetran_monthly_active_rows_paid_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
     """Percentage of the account's total paid MAR used by this connector"""
 
-    fivetran_connector_monthly_active_rows_total_percentage_of_account: Union[
+    fivetran_monthly_active_rows_total_percentage_of_account: Union[
         float, None, UnsetType
     ] = UNSET
     """Percentage of the account's total MAR used by this connector"""
 
-    fivetran_connector_total_tables_synced: Union[int, None, UnsetType] = UNSET
+    fivetran_total_tables_synced: Union[int, None, UnsetType] = UNSET
     """Total number of tables synced by this connector"""
 
     fivetran_connector_top_tables_by_mar: Union[str, None, UnsetType] = msgspec.field(
@@ -650,10 +570,10 @@ class FivetranConnectorAttributes(AssetAttributes):
     )
     """Total five tables sorted by MAR synced by this connector"""
 
-    fivetran_connector_usage_cost: Union[float, None, UnsetType] = UNSET
+    fivetran_usage_cost: Union[float, None, UnsetType] = UNSET
     """Total usage cost by this destination"""
 
-    fivetran_connector_credits_used: Union[float, None, UnsetType] = UNSET
+    fivetran_credits_used: Union[float, None, UnsetType] = UNSET
     """Total credits used by this destination"""
 
     fivetran_workflow_name: Union[str, None, UnsetType] = UNSET
@@ -664,6 +584,9 @@ class FivetranConnectorAttributes(AssetAttributes):
 
     fivetran_last_sync_records_updated: Union[int, None, UnsetType] = UNSET
     """Number of records updated in the latest sync on Fivetran"""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
 
 class FivetranConnectorRelationshipAttributes(AssetRelationshipAttributes):
@@ -683,6 +606,12 @@ class FivetranConnectorRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -753,7 +682,7 @@ class FivetranConnectorRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -791,6 +720,8 @@ _FIVETRAN_CONNECTOR_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -823,205 +754,163 @@ def _populate_fivetran_connector_attrs(
 ) -> None:
     """Populate FivetranConnector-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.fivetran_connector_last_sync_id = obj.fivetran_connector_last_sync_id
-    attrs.fivetran_connector_last_sync_started_at = (
-        obj.fivetran_connector_last_sync_started_at
+    attrs.fivetran_last_sync_id = obj.fivetran_last_sync_id
+    attrs.fivetran_last_sync_started_at = obj.fivetran_last_sync_started_at
+    attrs.fivetran_last_sync_finished_at = obj.fivetran_last_sync_finished_at
+    attrs.fivetran_last_sync_reason = obj.fivetran_last_sync_reason
+    attrs.fivetran_last_sync_task_type = obj.fivetran_last_sync_task_type
+    attrs.fivetran_last_sync_rescheduled_at = obj.fivetran_last_sync_rescheduled_at
+    attrs.fivetran_last_sync_tables_synced = obj.fivetran_last_sync_tables_synced
+    attrs.fivetran_last_sync_extract_time_seconds = (
+        obj.fivetran_last_sync_extract_time_seconds
     )
-    attrs.fivetran_connector_last_sync_finished_at = (
-        obj.fivetran_connector_last_sync_finished_at
+    attrs.fivetran_last_sync_extract_volume_megabytes = (
+        obj.fivetran_last_sync_extract_volume_megabytes
     )
-    attrs.fivetran_connector_last_sync_reason = obj.fivetran_connector_last_sync_reason
-    attrs.fivetran_connector_last_sync_task_type = (
-        obj.fivetran_connector_last_sync_task_type
+    attrs.fivetran_last_sync_load_time_seconds = (
+        obj.fivetran_last_sync_load_time_seconds
     )
-    attrs.fivetran_connector_last_sync_rescheduled_at = (
-        obj.fivetran_connector_last_sync_rescheduled_at
+    attrs.fivetran_last_sync_load_volume_megabytes = (
+        obj.fivetran_last_sync_load_volume_megabytes
     )
-    attrs.fivetran_connector_last_sync_tables_synced = (
-        obj.fivetran_connector_last_sync_tables_synced
+    attrs.fivetran_last_sync_process_time_seconds = (
+        obj.fivetran_last_sync_process_time_seconds
     )
-    attrs.fivetran_connector_last_sync_extract_time_seconds = (
-        obj.fivetran_connector_last_sync_extract_time_seconds
+    attrs.fivetran_last_sync_process_volume_megabytes = (
+        obj.fivetran_last_sync_process_volume_megabytes
     )
-    attrs.fivetran_connector_last_sync_extract_volume_megabytes = (
-        obj.fivetran_connector_last_sync_extract_volume_megabytes
+    attrs.fivetran_last_sync_total_time_seconds = (
+        obj.fivetran_last_sync_total_time_seconds
     )
-    attrs.fivetran_connector_last_sync_load_time_seconds = (
-        obj.fivetran_connector_last_sync_load_time_seconds
+    attrs.fivetran_name = obj.fivetran_name
+    attrs.fivetran_type = obj.fivetran_type
+    attrs.fivetran_url = obj.fivetran_url
+    attrs.fivetran_destination_name = obj.fivetran_destination_name
+    attrs.fivetran_destination_type = obj.fivetran_destination_type
+    attrs.fivetran_destination_url = obj.fivetran_destination_url
+    attrs.fivetran_sync_setup_on = obj.fivetran_sync_setup_on
+    attrs.fivetran_sync_frequency = obj.fivetran_sync_frequency
+    attrs.fivetran_sync_paused = obj.fivetran_sync_paused
+    attrs.fivetran_sync_setup_user_full_name = obj.fivetran_sync_setup_user_full_name
+    attrs.fivetran_sync_setup_user_email = obj.fivetran_sync_setup_user_email
+    attrs.fivetran_monthly_active_rows_free = obj.fivetran_monthly_active_rows_free
+    attrs.fivetran_monthly_active_rows_paid = obj.fivetran_monthly_active_rows_paid
+    attrs.fivetran_monthly_active_rows_total = obj.fivetran_monthly_active_rows_total
+    attrs.fivetran_monthly_active_rows_change_percentage_free = (
+        obj.fivetran_monthly_active_rows_change_percentage_free
     )
-    attrs.fivetran_connector_last_sync_load_volume_megabytes = (
-        obj.fivetran_connector_last_sync_load_volume_megabytes
+    attrs.fivetran_monthly_active_rows_change_percentage_paid = (
+        obj.fivetran_monthly_active_rows_change_percentage_paid
     )
-    attrs.fivetran_connector_last_sync_process_time_seconds = (
-        obj.fivetran_connector_last_sync_process_time_seconds
+    attrs.fivetran_monthly_active_rows_change_percentage_total = (
+        obj.fivetran_monthly_active_rows_change_percentage_total
     )
-    attrs.fivetran_connector_last_sync_process_volume_megabytes = (
-        obj.fivetran_connector_last_sync_process_volume_megabytes
+    attrs.fivetran_monthly_active_rows_free_percentage_of_account = (
+        obj.fivetran_monthly_active_rows_free_percentage_of_account
     )
-    attrs.fivetran_connector_last_sync_total_time_seconds = (
-        obj.fivetran_connector_last_sync_total_time_seconds
+    attrs.fivetran_monthly_active_rows_paid_percentage_of_account = (
+        obj.fivetran_monthly_active_rows_paid_percentage_of_account
     )
-    attrs.fivetran_connector_name = obj.fivetran_connector_name
-    attrs.fivetran_connector_type = obj.fivetran_connector_type
-    attrs.fivetran_connector_url = obj.fivetran_connector_url
-    attrs.fivetran_connector_destination_name = obj.fivetran_connector_destination_name
-    attrs.fivetran_connector_destination_type = obj.fivetran_connector_destination_type
-    attrs.fivetran_connector_destination_url = obj.fivetran_connector_destination_url
-    attrs.fivetran_connector_sync_setup_on = obj.fivetran_connector_sync_setup_on
-    attrs.fivetran_connector_sync_frequency = obj.fivetran_connector_sync_frequency
-    attrs.fivetran_connector_sync_paused = obj.fivetran_connector_sync_paused
-    attrs.fivetran_connector_sync_setup_user_full_name = (
-        obj.fivetran_connector_sync_setup_user_full_name
+    attrs.fivetran_monthly_active_rows_total_percentage_of_account = (
+        obj.fivetran_monthly_active_rows_total_percentage_of_account
     )
-    attrs.fivetran_connector_sync_setup_user_email = (
-        obj.fivetran_connector_sync_setup_user_email
-    )
-    attrs.fivetran_connector_monthly_active_rows_free = (
-        obj.fivetran_connector_monthly_active_rows_free
-    )
-    attrs.fivetran_connector_monthly_active_rows_paid = (
-        obj.fivetran_connector_monthly_active_rows_paid
-    )
-    attrs.fivetran_connector_monthly_active_rows_total = (
-        obj.fivetran_connector_monthly_active_rows_total
-    )
-    attrs.fivetran_connector_monthly_active_rows_change_percentage_free = (
-        obj.fivetran_connector_monthly_active_rows_change_percentage_free
-    )
-    attrs.fivetran_connector_monthly_active_rows_change_percentage_paid = (
-        obj.fivetran_connector_monthly_active_rows_change_percentage_paid
-    )
-    attrs.fivetran_connector_monthly_active_rows_change_percentage_total = (
-        obj.fivetran_connector_monthly_active_rows_change_percentage_total
-    )
-    attrs.fivetran_connector_monthly_active_rows_free_percentage_of_account = (
-        obj.fivetran_connector_monthly_active_rows_free_percentage_of_account
-    )
-    attrs.fivetran_connector_monthly_active_rows_paid_percentage_of_account = (
-        obj.fivetran_connector_monthly_active_rows_paid_percentage_of_account
-    )
-    attrs.fivetran_connector_monthly_active_rows_total_percentage_of_account = (
-        obj.fivetran_connector_monthly_active_rows_total_percentage_of_account
-    )
-    attrs.fivetran_connector_total_tables_synced = (
-        obj.fivetran_connector_total_tables_synced
-    )
+    attrs.fivetran_total_tables_synced = obj.fivetran_total_tables_synced
     attrs.fivetran_connector_top_tables_by_mar = (
         obj.fivetran_connector_top_tables_by_mar
     )
-    attrs.fivetran_connector_usage_cost = obj.fivetran_connector_usage_cost
-    attrs.fivetran_connector_credits_used = obj.fivetran_connector_credits_used
+    attrs.fivetran_usage_cost = obj.fivetran_usage_cost
+    attrs.fivetran_credits_used = obj.fivetran_credits_used
     attrs.fivetran_workflow_name = obj.fivetran_workflow_name
     attrs.fivetran_last_sync_status = obj.fivetran_last_sync_status
     attrs.fivetran_last_sync_records_updated = obj.fivetran_last_sync_records_updated
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_fivetran_connector_attrs(attrs: FivetranConnectorAttributes) -> dict:
     """Extract all FivetranConnector attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["fivetran_connector_last_sync_id"] = attrs.fivetran_connector_last_sync_id
-    result["fivetran_connector_last_sync_started_at"] = (
-        attrs.fivetran_connector_last_sync_started_at
+    result["fivetran_last_sync_id"] = attrs.fivetran_last_sync_id
+    result["fivetran_last_sync_started_at"] = attrs.fivetran_last_sync_started_at
+    result["fivetran_last_sync_finished_at"] = attrs.fivetran_last_sync_finished_at
+    result["fivetran_last_sync_reason"] = attrs.fivetran_last_sync_reason
+    result["fivetran_last_sync_task_type"] = attrs.fivetran_last_sync_task_type
+    result["fivetran_last_sync_rescheduled_at"] = (
+        attrs.fivetran_last_sync_rescheduled_at
     )
-    result["fivetran_connector_last_sync_finished_at"] = (
-        attrs.fivetran_connector_last_sync_finished_at
+    result["fivetran_last_sync_tables_synced"] = attrs.fivetran_last_sync_tables_synced
+    result["fivetran_last_sync_extract_time_seconds"] = (
+        attrs.fivetran_last_sync_extract_time_seconds
     )
-    result["fivetran_connector_last_sync_reason"] = (
-        attrs.fivetran_connector_last_sync_reason
+    result["fivetran_last_sync_extract_volume_megabytes"] = (
+        attrs.fivetran_last_sync_extract_volume_megabytes
     )
-    result["fivetran_connector_last_sync_task_type"] = (
-        attrs.fivetran_connector_last_sync_task_type
+    result["fivetran_last_sync_load_time_seconds"] = (
+        attrs.fivetran_last_sync_load_time_seconds
     )
-    result["fivetran_connector_last_sync_rescheduled_at"] = (
-        attrs.fivetran_connector_last_sync_rescheduled_at
+    result["fivetran_last_sync_load_volume_megabytes"] = (
+        attrs.fivetran_last_sync_load_volume_megabytes
     )
-    result["fivetran_connector_last_sync_tables_synced"] = (
-        attrs.fivetran_connector_last_sync_tables_synced
+    result["fivetran_last_sync_process_time_seconds"] = (
+        attrs.fivetran_last_sync_process_time_seconds
     )
-    result["fivetran_connector_last_sync_extract_time_seconds"] = (
-        attrs.fivetran_connector_last_sync_extract_time_seconds
+    result["fivetran_last_sync_process_volume_megabytes"] = (
+        attrs.fivetran_last_sync_process_volume_megabytes
     )
-    result["fivetran_connector_last_sync_extract_volume_megabytes"] = (
-        attrs.fivetran_connector_last_sync_extract_volume_megabytes
+    result["fivetran_last_sync_total_time_seconds"] = (
+        attrs.fivetran_last_sync_total_time_seconds
     )
-    result["fivetran_connector_last_sync_load_time_seconds"] = (
-        attrs.fivetran_connector_last_sync_load_time_seconds
+    result["fivetran_name"] = attrs.fivetran_name
+    result["fivetran_type"] = attrs.fivetran_type
+    result["fivetran_url"] = attrs.fivetran_url
+    result["fivetran_destination_name"] = attrs.fivetran_destination_name
+    result["fivetran_destination_type"] = attrs.fivetran_destination_type
+    result["fivetran_destination_url"] = attrs.fivetran_destination_url
+    result["fivetran_sync_setup_on"] = attrs.fivetran_sync_setup_on
+    result["fivetran_sync_frequency"] = attrs.fivetran_sync_frequency
+    result["fivetran_sync_paused"] = attrs.fivetran_sync_paused
+    result["fivetran_sync_setup_user_full_name"] = (
+        attrs.fivetran_sync_setup_user_full_name
     )
-    result["fivetran_connector_last_sync_load_volume_megabytes"] = (
-        attrs.fivetran_connector_last_sync_load_volume_megabytes
+    result["fivetran_sync_setup_user_email"] = attrs.fivetran_sync_setup_user_email
+    result["fivetran_monthly_active_rows_free"] = (
+        attrs.fivetran_monthly_active_rows_free
     )
-    result["fivetran_connector_last_sync_process_time_seconds"] = (
-        attrs.fivetran_connector_last_sync_process_time_seconds
+    result["fivetran_monthly_active_rows_paid"] = (
+        attrs.fivetran_monthly_active_rows_paid
     )
-    result["fivetran_connector_last_sync_process_volume_megabytes"] = (
-        attrs.fivetran_connector_last_sync_process_volume_megabytes
+    result["fivetran_monthly_active_rows_total"] = (
+        attrs.fivetran_monthly_active_rows_total
     )
-    result["fivetran_connector_last_sync_total_time_seconds"] = (
-        attrs.fivetran_connector_last_sync_total_time_seconds
+    result["fivetran_monthly_active_rows_change_percentage_free"] = (
+        attrs.fivetran_monthly_active_rows_change_percentage_free
     )
-    result["fivetran_connector_name"] = attrs.fivetran_connector_name
-    result["fivetran_connector_type"] = attrs.fivetran_connector_type
-    result["fivetran_connector_url"] = attrs.fivetran_connector_url
-    result["fivetran_connector_destination_name"] = (
-        attrs.fivetran_connector_destination_name
+    result["fivetran_monthly_active_rows_change_percentage_paid"] = (
+        attrs.fivetran_monthly_active_rows_change_percentage_paid
     )
-    result["fivetran_connector_destination_type"] = (
-        attrs.fivetran_connector_destination_type
+    result["fivetran_monthly_active_rows_change_percentage_total"] = (
+        attrs.fivetran_monthly_active_rows_change_percentage_total
     )
-    result["fivetran_connector_destination_url"] = (
-        attrs.fivetran_connector_destination_url
+    result["fivetran_monthly_active_rows_free_percentage_of_account"] = (
+        attrs.fivetran_monthly_active_rows_free_percentage_of_account
     )
-    result["fivetran_connector_sync_setup_on"] = attrs.fivetran_connector_sync_setup_on
-    result["fivetran_connector_sync_frequency"] = (
-        attrs.fivetran_connector_sync_frequency
+    result["fivetran_monthly_active_rows_paid_percentage_of_account"] = (
+        attrs.fivetran_monthly_active_rows_paid_percentage_of_account
     )
-    result["fivetran_connector_sync_paused"] = attrs.fivetran_connector_sync_paused
-    result["fivetran_connector_sync_setup_user_full_name"] = (
-        attrs.fivetran_connector_sync_setup_user_full_name
+    result["fivetran_monthly_active_rows_total_percentage_of_account"] = (
+        attrs.fivetran_monthly_active_rows_total_percentage_of_account
     )
-    result["fivetran_connector_sync_setup_user_email"] = (
-        attrs.fivetran_connector_sync_setup_user_email
-    )
-    result["fivetran_connector_monthly_active_rows_free"] = (
-        attrs.fivetran_connector_monthly_active_rows_free
-    )
-    result["fivetran_connector_monthly_active_rows_paid"] = (
-        attrs.fivetran_connector_monthly_active_rows_paid
-    )
-    result["fivetran_connector_monthly_active_rows_total"] = (
-        attrs.fivetran_connector_monthly_active_rows_total
-    )
-    result["fivetran_connector_monthly_active_rows_change_percentage_free"] = (
-        attrs.fivetran_connector_monthly_active_rows_change_percentage_free
-    )
-    result["fivetran_connector_monthly_active_rows_change_percentage_paid"] = (
-        attrs.fivetran_connector_monthly_active_rows_change_percentage_paid
-    )
-    result["fivetran_connector_monthly_active_rows_change_percentage_total"] = (
-        attrs.fivetran_connector_monthly_active_rows_change_percentage_total
-    )
-    result["fivetran_connector_monthly_active_rows_free_percentage_of_account"] = (
-        attrs.fivetran_connector_monthly_active_rows_free_percentage_of_account
-    )
-    result["fivetran_connector_monthly_active_rows_paid_percentage_of_account"] = (
-        attrs.fivetran_connector_monthly_active_rows_paid_percentage_of_account
-    )
-    result["fivetran_connector_monthly_active_rows_total_percentage_of_account"] = (
-        attrs.fivetran_connector_monthly_active_rows_total_percentage_of_account
-    )
-    result["fivetran_connector_total_tables_synced"] = (
-        attrs.fivetran_connector_total_tables_synced
-    )
+    result["fivetran_total_tables_synced"] = attrs.fivetran_total_tables_synced
     result["fivetran_connector_top_tables_by_mar"] = (
         attrs.fivetran_connector_top_tables_by_mar
     )
-    result["fivetran_connector_usage_cost"] = attrs.fivetran_connector_usage_cost
-    result["fivetran_connector_credits_used"] = attrs.fivetran_connector_credits_used
+    result["fivetran_usage_cost"] = attrs.fivetran_usage_cost
+    result["fivetran_credits_used"] = attrs.fivetran_credits_used
     result["fivetran_workflow_name"] = attrs.fivetran_workflow_name
     result["fivetran_last_sync_status"] = attrs.fivetran_last_sync_status
     result["fivetran_last_sync_records_updated"] = (
         attrs.fivetran_last_sync_records_updated
     )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -1062,9 +951,6 @@ def _fivetran_connector_to_nested(
         is_incomplete=fivetran_connector.is_incomplete,
         provenance_type=fivetran_connector.provenance_type,
         home_id=fivetran_connector.home_id,
-        depth=fivetran_connector.depth,
-        immediate_upstream=fivetran_connector.immediate_upstream,
-        immediate_downstream=fivetran_connector.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1100,6 +986,7 @@ def _fivetran_connector_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1108,9 +995,6 @@ def _fivetran_connector_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_fivetran_connector_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1143,146 +1027,125 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_ID = KeywordField(
-    "fivetranConnectorLastSyncId", "fivetranConnectorLastSyncId"
+FivetranConnector.FIVETRAN_LAST_SYNC_ID = KeywordField(
+    "fivetranLastSyncId", "fivetranLastSyncId"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_STARTED_AT = NumericField(
-    "fivetranConnectorLastSyncStartedAt", "fivetranConnectorLastSyncStartedAt"
+FivetranConnector.FIVETRAN_LAST_SYNC_STARTED_AT = NumericField(
+    "fivetranLastSyncStartedAt", "fivetranLastSyncStartedAt"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_FINISHED_AT = NumericField(
-    "fivetranConnectorLastSyncFinishedAt", "fivetranConnectorLastSyncFinishedAt"
+FivetranConnector.FIVETRAN_LAST_SYNC_FINISHED_AT = NumericField(
+    "fivetranLastSyncFinishedAt", "fivetranLastSyncFinishedAt"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_REASON = KeywordTextField(
-    "fivetranConnectorLastSyncReason",
-    "fivetranConnectorLastSyncReason",
-    "fivetranConnectorLastSyncReason.text",
+FivetranConnector.FIVETRAN_LAST_SYNC_REASON = KeywordTextField(
+    "fivetranLastSyncReason", "fivetranLastSyncReason", "fivetranLastSyncReason.text"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_TASK_TYPE = KeywordField(
-    "fivetranConnectorLastSyncTaskType", "fivetranConnectorLastSyncTaskType"
+FivetranConnector.FIVETRAN_LAST_SYNC_TASK_TYPE = KeywordField(
+    "fivetranLastSyncTaskType", "fivetranLastSyncTaskType"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_RESCHEDULED_AT = NumericField(
-    "fivetranConnectorLastSyncRescheduledAt", "fivetranConnectorLastSyncRescheduledAt"
+FivetranConnector.FIVETRAN_LAST_SYNC_RESCHEDULED_AT = NumericField(
+    "fivetranLastSyncRescheduledAt", "fivetranLastSyncRescheduledAt"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_TABLES_SYNCED = NumericField(
-    "fivetranConnectorLastSyncTablesSynced", "fivetranConnectorLastSyncTablesSynced"
+FivetranConnector.FIVETRAN_LAST_SYNC_TABLES_SYNCED = NumericField(
+    "fivetranLastSyncTablesSynced", "fivetranLastSyncTablesSynced"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_EXTRACT_TIME_SECONDS = NumericField(
-    "fivetranConnectorLastSyncExtractTimeSeconds",
-    "fivetranConnectorLastSyncExtractTimeSeconds",
+FivetranConnector.FIVETRAN_LAST_SYNC_EXTRACT_TIME_SECONDS = NumericField(
+    "fivetranLastSyncExtractTimeSeconds", "fivetranLastSyncExtractTimeSeconds"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_EXTRACT_VOLUME_MEGABYTES = NumericField(
-    "fivetranConnectorLastSyncExtractVolumeMegabytes",
-    "fivetranConnectorLastSyncExtractVolumeMegabytes",
+FivetranConnector.FIVETRAN_LAST_SYNC_EXTRACT_VOLUME_MEGABYTES = NumericField(
+    "fivetranLastSyncExtractVolumeMegabytes", "fivetranLastSyncExtractVolumeMegabytes"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_LOAD_TIME_SECONDS = NumericField(
-    "fivetranConnectorLastSyncLoadTimeSeconds",
-    "fivetranConnectorLastSyncLoadTimeSeconds",
+FivetranConnector.FIVETRAN_LAST_SYNC_LOAD_TIME_SECONDS = NumericField(
+    "fivetranLastSyncLoadTimeSeconds", "fivetranLastSyncLoadTimeSeconds"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_LOAD_VOLUME_MEGABYTES = NumericField(
-    "fivetranConnectorLastSyncLoadVolumeMegabytes",
-    "fivetranConnectorLastSyncLoadVolumeMegabytes",
+FivetranConnector.FIVETRAN_LAST_SYNC_LOAD_VOLUME_MEGABYTES = NumericField(
+    "fivetranLastSyncLoadVolumeMegabytes", "fivetranLastSyncLoadVolumeMegabytes"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_PROCESS_TIME_SECONDS = NumericField(
-    "fivetranConnectorLastSyncProcessTimeSeconds",
-    "fivetranConnectorLastSyncProcessTimeSeconds",
+FivetranConnector.FIVETRAN_LAST_SYNC_PROCESS_TIME_SECONDS = NumericField(
+    "fivetranLastSyncProcessTimeSeconds", "fivetranLastSyncProcessTimeSeconds"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_PROCESS_VOLUME_MEGABYTES = NumericField(
-    "fivetranConnectorLastSyncProcessVolumeMegabytes",
-    "fivetranConnectorLastSyncProcessVolumeMegabytes",
+FivetranConnector.FIVETRAN_LAST_SYNC_PROCESS_VOLUME_MEGABYTES = NumericField(
+    "fivetranLastSyncProcessVolumeMegabytes", "fivetranLastSyncProcessVolumeMegabytes"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_LAST_SYNC_TOTAL_TIME_SECONDS = NumericField(
-    "fivetranConnectorLastSyncTotalTimeSeconds",
-    "fivetranConnectorLastSyncTotalTimeSeconds",
+FivetranConnector.FIVETRAN_LAST_SYNC_TOTAL_TIME_SECONDS = NumericField(
+    "fivetranLastSyncTotalTimeSeconds", "fivetranLastSyncTotalTimeSeconds"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_NAME = KeywordField(
-    "fivetranConnectorName", "fivetranConnectorName"
+FivetranConnector.FIVETRAN_NAME = KeywordField("fivetranName", "fivetranName")
+FivetranConnector.FIVETRAN_TYPE = KeywordField("fivetranType", "fivetranType")
+FivetranConnector.FIVETRAN_URL = KeywordField("fivetranURL", "fivetranURL")
+FivetranConnector.FIVETRAN_DESTINATION_NAME = KeywordField(
+    "fivetranDestinationName", "fivetranDestinationName"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_TYPE = KeywordField(
-    "fivetranConnectorType", "fivetranConnectorType"
+FivetranConnector.FIVETRAN_DESTINATION_TYPE = KeywordField(
+    "fivetranDestinationType", "fivetranDestinationType"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_URL = KeywordField(
-    "fivetranConnectorURL", "fivetranConnectorURL"
+FivetranConnector.FIVETRAN_DESTINATION_URL = KeywordField(
+    "fivetranDestinationURL", "fivetranDestinationURL"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_DESTINATION_NAME = KeywordField(
-    "fivetranConnectorDestinationName", "fivetranConnectorDestinationName"
+FivetranConnector.FIVETRAN_SYNC_SETUP_ON = NumericField(
+    "fivetranSyncSetupOn", "fivetranSyncSetupOn"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_DESTINATION_TYPE = KeywordField(
-    "fivetranConnectorDestinationType", "fivetranConnectorDestinationType"
+FivetranConnector.FIVETRAN_SYNC_FREQUENCY = KeywordField(
+    "fivetranSyncFrequency", "fivetranSyncFrequency"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_DESTINATION_URL = KeywordField(
-    "fivetranConnectorDestinationURL", "fivetranConnectorDestinationURL"
+FivetranConnector.FIVETRAN_SYNC_PAUSED = BooleanField(
+    "fivetranSyncPaused", "fivetranSyncPaused"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_SYNC_SETUP_ON = NumericField(
-    "fivetranConnectorSyncSetupOn", "fivetranConnectorSyncSetupOn"
+FivetranConnector.FIVETRAN_SYNC_SETUP_USER_FULL_NAME = KeywordField(
+    "fivetranSyncSetupUserFullName", "fivetranSyncSetupUserFullName"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_SYNC_FREQUENCY = KeywordField(
-    "fivetranConnectorSyncFrequency", "fivetranConnectorSyncFrequency"
+FivetranConnector.FIVETRAN_SYNC_SETUP_USER_EMAIL = KeywordField(
+    "fivetranSyncSetupUserEmail", "fivetranSyncSetupUserEmail"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_SYNC_PAUSED = BooleanField(
-    "fivetranConnectorSyncPaused", "fivetranConnectorSyncPaused"
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_FREE = NumericField(
+    "fivetranMonthlyActiveRowsFree", "fivetranMonthlyActiveRowsFree"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_SYNC_SETUP_USER_FULL_NAME = KeywordField(
-    "fivetranConnectorSyncSetupUserFullName", "fivetranConnectorSyncSetupUserFullName"
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_PAID = NumericField(
+    "fivetranMonthlyActiveRowsPaid", "fivetranMonthlyActiveRowsPaid"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_SYNC_SETUP_USER_EMAIL = KeywordField(
-    "fivetranConnectorSyncSetupUserEmail", "fivetranConnectorSyncSetupUserEmail"
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_TOTAL = NumericField(
+    "fivetranMonthlyActiveRowsTotal", "fivetranMonthlyActiveRowsTotal"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_FREE = NumericField(
-    "fivetranConnectorMonthlyActiveRowsFree", "fivetranConnectorMonthlyActiveRowsFree"
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_FREE = NumericField(
+    "fivetranMonthlyActiveRowsChangePercentageFree",
+    "fivetranMonthlyActiveRowsChangePercentageFree",
 )
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_PAID = NumericField(
-    "fivetranConnectorMonthlyActiveRowsPaid", "fivetranConnectorMonthlyActiveRowsPaid"
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_PAID = NumericField(
+    "fivetranMonthlyActiveRowsChangePercentagePaid",
+    "fivetranMonthlyActiveRowsChangePercentagePaid",
 )
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_TOTAL = NumericField(
-    "fivetranConnectorMonthlyActiveRowsTotal", "fivetranConnectorMonthlyActiveRowsTotal"
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_TOTAL = NumericField(
+    "fivetranMonthlyActiveRowsChangePercentageTotal",
+    "fivetranMonthlyActiveRowsChangePercentageTotal",
 )
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_FREE = (
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_FREE_PERCENTAGE_OF_ACCOUNT = (
     NumericField(
-        "fivetranConnectorMonthlyActiveRowsChangePercentageFree",
-        "fivetranConnectorMonthlyActiveRowsChangePercentageFree",
+        "fivetranMonthlyActiveRowsFreePercentageOfAccount",
+        "fivetranMonthlyActiveRowsFreePercentageOfAccount",
     )
 )
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_PAID = (
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_PAID_PERCENTAGE_OF_ACCOUNT = (
     NumericField(
-        "fivetranConnectorMonthlyActiveRowsChangePercentagePaid",
-        "fivetranConnectorMonthlyActiveRowsChangePercentagePaid",
+        "fivetranMonthlyActiveRowsPaidPercentageOfAccount",
+        "fivetranMonthlyActiveRowsPaidPercentageOfAccount",
     )
 )
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_CHANGE_PERCENTAGE_TOTAL = (
+FivetranConnector.FIVETRAN_MONTHLY_ACTIVE_ROWS_TOTAL_PERCENTAGE_OF_ACCOUNT = (
     NumericField(
-        "fivetranConnectorMonthlyActiveRowsChangePercentageTotal",
-        "fivetranConnectorMonthlyActiveRowsChangePercentageTotal",
+        "fivetranMonthlyActiveRowsTotalPercentageOfAccount",
+        "fivetranMonthlyActiveRowsTotalPercentageOfAccount",
     )
 )
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_FREE_PERCENTAGE_OF_ACCOUNT = (
-    NumericField(
-        "fivetranConnectorMonthlyActiveRowsFreePercentageOfAccount",
-        "fivetranConnectorMonthlyActiveRowsFreePercentageOfAccount",
-    )
-)
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_PAID_PERCENTAGE_OF_ACCOUNT = (
-    NumericField(
-        "fivetranConnectorMonthlyActiveRowsPaidPercentageOfAccount",
-        "fivetranConnectorMonthlyActiveRowsPaidPercentageOfAccount",
-    )
-)
-FivetranConnector.FIVETRAN_CONNECTOR_MONTHLY_ACTIVE_ROWS_TOTAL_PERCENTAGE_OF_ACCOUNT = (
-    NumericField(
-        "fivetranConnectorMonthlyActiveRowsTotalPercentageOfAccount",
-        "fivetranConnectorMonthlyActiveRowsTotalPercentageOfAccount",
-    )
-)
-FivetranConnector.FIVETRAN_CONNECTOR_TOTAL_TABLES_SYNCED = NumericField(
-    "fivetranConnectorTotalTablesSynced", "fivetranConnectorTotalTablesSynced"
+FivetranConnector.FIVETRAN_TOTAL_TABLES_SYNCED = NumericField(
+    "fivetranTotalTablesSynced", "fivetranTotalTablesSynced"
 )
 FivetranConnector.FIVETRAN_CONNECTOR_TOP_TABLES_BY_MAR = KeywordField(
     "fivetranConnectorTopTablesByMAR", "fivetranConnectorTopTablesByMAR"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_USAGE_COST = NumericField(
-    "fivetranConnectorUsageCost", "fivetranConnectorUsageCost"
+FivetranConnector.FIVETRAN_USAGE_COST = NumericField(
+    "fivetranUsageCost", "fivetranUsageCost"
 )
-FivetranConnector.FIVETRAN_CONNECTOR_CREDITS_USED = NumericField(
-    "fivetranConnectorCreditsUsed", "fivetranConnectorCreditsUsed"
+FivetranConnector.FIVETRAN_CREDITS_USED = NumericField(
+    "fivetranCreditsUsed", "fivetranCreditsUsed"
 )
 FivetranConnector.FIVETRAN_WORKFLOW_NAME = KeywordField(
     "fivetranWorkflowName", "fivetranWorkflowName"
@@ -1293,11 +1156,18 @@ FivetranConnector.FIVETRAN_LAST_SYNC_STATUS = KeywordField(
 FivetranConnector.FIVETRAN_LAST_SYNC_RECORDS_UPDATED = NumericField(
     "fivetranLastSyncRecordsUpdated", "fivetranLastSyncRecordsUpdated"
 )
+FivetranConnector.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 FivetranConnector.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 FivetranConnector.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 FivetranConnector.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FivetranConnector.APPLICATION = RelationField("application")
 FivetranConnector.APPLICATION_FIELD = RelationField("applicationField")
+FivetranConnector.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+FivetranConnector.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 FivetranConnector.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 FivetranConnector.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 FivetranConnector.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
