@@ -21,6 +21,7 @@ from .referenceable_related import RelatedReferenceable
 
 __all__ = [
     "RelatedDataMesh",
+    "RelatedDataMeshDataset",
     "RelatedStakeholderTitle",
     "RelatedDataDomain",
     "RelatedDataProduct",
@@ -47,6 +48,24 @@ class RelatedDataMesh(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataMesh"
+
+
+class RelatedDataMeshDataset(RelatedDataMesh):
+    """
+    Related entity reference for DataMeshDataset assets.
+
+    Extends RelatedDataMesh with DataMeshDataset-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "DataMeshDataset" so it serializes correctly
+
+    data_mesh_dataset_type: Union[str, None, UnsetType] = UNSET
+    """Type classification of this dataset (Raw, Refined, or Aggregated)."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "DataMeshDataset"
 
 
 class RelatedStakeholderTitle(RelatedDataMesh):
@@ -124,7 +143,7 @@ class RelatedDataProduct(RelatedDataMesh):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET

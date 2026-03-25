@@ -130,6 +130,14 @@ class RelatedDataQualityRule(RelatedDataQuality):
     dq_rule_row_scope_filtering_enabled: Union[bool, None, UnsetType] = UNSET
     """Whether row scope filtering is enabled for this data quality rule (true) or not (false)."""
 
+    dq_rule_latest_result_details: Union[str, None, UnsetType] = UNSET
+    """JSON string with anomaly detection result details (forecast, upper_bound, lower_bound, is_anomaly) from Snowflake AD."""
+
+    dq_rule_ad_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleADStatus"
+    )
+    """Anomaly detection lifecycle status for this rule."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataQualityRule"
