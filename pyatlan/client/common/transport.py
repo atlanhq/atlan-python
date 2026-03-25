@@ -168,7 +168,9 @@ def find_existing_policy(
         )
 
     try:
-        search_request = build_policy_search_request(policy_name, persona_qualified_name)
+        search_request = build_policy_search_request(
+            policy_name, persona_qualified_name
+        )
         raw_json = client._call_api(INDEX_SEARCH, request_obj=search_request)
         if raw_json and raw_json.get("entities"):
             return raw_json["entities"][0]
@@ -191,14 +193,18 @@ async def find_existing_policy_async(
     Raises:
         ErrorCode.UNABLE_TO_SEARCH_EXISTING_POLICY: if the policy search call fails.
     """
-    persona_qualified_name = await get_persona_qualified_name_async(client, persona_guid)
+    persona_qualified_name = await get_persona_qualified_name_async(
+        client, persona_guid
+    )
     if not persona_qualified_name:
         raise ErrorCode.UNABLE_TO_RESOLVE_PERSONA_QUALIFIED_NAME.exception_with_parameters(
             persona_guid
         )
 
     try:
-        search_request = build_policy_search_request(policy_name, persona_qualified_name)
+        search_request = build_policy_search_request(
+            policy_name, persona_qualified_name
+        )
         raw_json = await client._call_api(INDEX_SEARCH, request_obj=search_request)
         if raw_json and raw_json.get("entities"):
             return raw_json["entities"][0]

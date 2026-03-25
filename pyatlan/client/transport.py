@@ -115,9 +115,7 @@ class PyatlanSyncTransport(httpx.BaseTransport):
             # On retries, the preceding sleep gives the index time to propagate an
             # entity that was committed server-side before a gateway timeout.
             if self._client:
-                duplicate_response = check_for_duplicate_policy(
-                    self._client, request
-                )
+                duplicate_response = check_for_duplicate_policy(self._client, request)
                 if duplicate_response:
                     logger.warning(
                         "DUPLICATE PREVENTED: Policy already exists. "
