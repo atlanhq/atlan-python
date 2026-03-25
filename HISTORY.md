@@ -1,3 +1,14 @@
+## 9.3.2 (March 25, 2026)
+
+### Bug Fixes
+
+- **Policy duplicate detection — allow updates to proceed**: Revised the duplicate-detection logic (introduced in 9.2.0) so that legitimate policy *updates* are no longer blocked. The duplication check now only intercepts retried creations, not update requests.
+- **`AtlanTag` `displayName` field**: The `AtlanTag` classification model now accepts a `displayName` field that was previously rejected during deserialization.
+
+### Experimental: `pyatlan_v9`
+
+- **Sync `get`/`set_custom_metadata` on `Asset`**: Added synchronous `get_custom_metadata()` and `set_custom_metadata()` methods to the v9 `Asset` class, and fixed related custom metadata integration tests.
+
 ## 9.3.1 (March 23, 2026)
 
 ### Experimental: `pyatlan_v9`
