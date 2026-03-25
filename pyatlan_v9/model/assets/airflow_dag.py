@@ -26,7 +26,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .airflow_related import RelatedAirflowDag, RelatedAirflowTask
+from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -72,12 +73,15 @@ class AirflowDag(Asset):
     AIRFLOW_RUN_START_TIME: ClassVar[Any] = None
     AIRFLOW_RUN_END_TIME: ClassVar[Any] = None
     AIRFLOW_RUN_OPEN_LINEAGE_STATE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -102,6 +106,8 @@ class AirflowDag(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SPARK_ORCHESTRATED_ASSETS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "AirflowDag"
 
     airflow_dag_schedule: Union[str, None, UnsetType] = UNSET
     """Schedule for the DAG."""
@@ -133,6 +139,9 @@ class AirflowDag(Asset):
     airflow_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """State of the run in OpenLineage."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks that exist within this DAG."""
 
@@ -150,6 +159,12 @@ class AirflowDag(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -217,7 +232,7 @@ class AirflowDag(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -233,66 +248,6 @@ class AirflowDag(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AirflowDag"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this AirflowDag instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"AirflowDag validation failed: {errors}")
-
-    def minimize(self) -> "AirflowDag":
-        """
-        Return a minimal copy of this AirflowDag with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new AirflowDag with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new AirflowDag instance with only the minimum required fields.
-        """
-        self.validate()
-        return AirflowDag(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAirflowDag":
-        """
-        Create a :class:`RelatedAirflowDag` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedAirflowDag reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedAirflowDag(guid=self.guid)
-        return RelatedAirflowDag(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -409,6 +364,9 @@ class AirflowDagAttributes(AssetAttributes):
     airflow_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """State of the run in OpenLineage."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     """AirflowDag-specific relationship attributes for nested API format."""
@@ -430,6 +388,12 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -497,7 +461,7 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -537,6 +501,8 @@ _AIRFLOW_DAG_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -577,6 +543,7 @@ def _populate_airflow_dag_attrs(attrs: AirflowDagAttributes, obj: AirflowDag) ->
     attrs.airflow_run_start_time = obj.airflow_run_start_time
     attrs.airflow_run_end_time = obj.airflow_run_end_time
     attrs.airflow_run_open_lineage_state = obj.airflow_run_open_lineage_state
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_airflow_dag_attrs(attrs: AirflowDagAttributes) -> dict:
@@ -592,6 +559,7 @@ def _extract_airflow_dag_attrs(attrs: AirflowDagAttributes) -> dict:
     result["airflow_run_start_time"] = attrs.airflow_run_start_time
     result["airflow_run_end_time"] = attrs.airflow_run_end_time
     result["airflow_run_open_lineage_state"] = attrs.airflow_run_open_lineage_state
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -628,9 +596,6 @@ def _airflow_dag_to_nested(airflow_dag: AirflowDag) -> AirflowDagNested:
         is_incomplete=airflow_dag.is_incomplete,
         provenance_type=airflow_dag.provenance_type,
         home_id=airflow_dag.home_id,
-        depth=airflow_dag.depth,
-        immediate_upstream=airflow_dag.immediate_upstream,
-        immediate_downstream=airflow_dag.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -662,6 +627,7 @@ def _airflow_dag_from_nested(nested: AirflowDagNested) -> AirflowDag:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -670,9 +636,6 @@ def _airflow_dag_from_nested(nested: AirflowDagNested) -> AirflowDag:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_airflow_dag_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -719,12 +682,17 @@ AirflowDag.AIRFLOW_RUN_END_TIME = NumericField("airflowRunEndTime", "airflowRunE
 AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_STATE = KeywordField(
     "airflowRunOpenLineageState", "airflowRunOpenLineageState"
 )
+AirflowDag.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 AirflowDag.AIRFLOW_TASKS = RelationField("airflowTasks")
 AirflowDag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AirflowDag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AirflowDag.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AirflowDag.APPLICATION = RelationField("application")
 AirflowDag.APPLICATION_FIELD = RelationField("applicationField")
+AirflowDag.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+AirflowDag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 AirflowDag.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AirflowDag.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AirflowDag.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

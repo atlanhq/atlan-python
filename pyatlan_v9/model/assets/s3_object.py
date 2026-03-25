@@ -41,6 +41,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -50,7 +51,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .s3_related import RelatedS3Bucket, RelatedS3Object, RelatedS3Prefix
+from .s3_related import RelatedS3Bucket, RelatedS3Prefix
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -82,6 +83,7 @@ class S3Object(Asset):
     S3_ENCRYPTION: ClassVar[Any] = None
     S3_PARENT_PREFIX_QUALIFIED_NAME: ClassVar[Any] = None
     S3_PREFIX_HIERARCHY: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     AWS_ARN: ClassVar[Any] = None
     AWS_PARTITION: ClassVar[Any] = None
     AWS_SERVICE: ClassVar[Any] = None
@@ -97,6 +99,8 @@ class S3Object(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -122,6 +126,8 @@ class S3Object(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "S3Object"
 
     s3_object_last_modified_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this object was last updated, in milliseconds, or when it was created if it has never been modified."""
@@ -171,6 +177,9 @@ class S3Object(Asset):
     s3_prefix_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Ordered array of prefix assets with qualified name and name representing the complete prefix hierarchy path for this asset, from immediate parent to root prefix."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     aws_arn: Union[str, None, UnsetType] = UNSET
     """DEPRECATED: This legacy attribute must be unique across all AWS asset instances. This can create non-obvious edge cases for creating / updating assets, and we therefore recommended NOT using it. See and use cloudResourceName instead."""
 
@@ -215,6 +224,12 @@ class S3Object(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -288,7 +303,7 @@ class S3Object(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -307,76 +322,6 @@ class S3Object(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this S3Object instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.bucket is UNSET:
-                errors.append("bucket is required for creation")
-            if self.s3_bucket_name is UNSET:
-                errors.append("s3_bucket_name is required for creation")
-            if self.s3_bucket_qualified_name is UNSET:
-                errors.append("s3_bucket_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"S3Object validation failed: {errors}")
-
-    def minimize(self) -> "S3Object":
-        """
-        Return a minimal copy of this S3Object with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new S3Object with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new S3Object instance with only the minimum required fields.
-        """
-        self.validate()
-        return S3Object(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedS3Object":
-        """
-        Create a :class:`RelatedS3Object` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedS3Object reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedS3Object(guid=self.guid)
-        return RelatedS3Object(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -631,6 +576,9 @@ class S3ObjectAttributes(AssetAttributes):
     s3_prefix_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Ordered array of prefix assets with qualified name and name representing the complete prefix hierarchy path for this asset, from immediate parent to root prefix."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     aws_arn: Union[str, None, UnsetType] = UNSET
     """DEPRECATED: This legacy attribute must be unique across all AWS asset instances. This can create non-obvious edge cases for creating / updating assets, and we therefore recommended NOT using it. See and use cloudResourceName instead."""
 
@@ -679,6 +627,12 @@ class S3ObjectRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -752,7 +706,7 @@ class S3ObjectRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -788,6 +742,8 @@ _S3_OBJECT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -835,6 +791,7 @@ def _populate_s3_object_attrs(attrs: S3ObjectAttributes, obj: S3Object) -> None:
     attrs.s3_encryption = obj.s3_encryption
     attrs.s3_parent_prefix_qualified_name = obj.s3_parent_prefix_qualified_name
     attrs.s3_prefix_hierarchy = obj.s3_prefix_hierarchy
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.aws_arn = obj.aws_arn
     attrs.aws_partition = obj.aws_partition
     attrs.aws_service = obj.aws_service
@@ -868,6 +825,7 @@ def _extract_s3_object_attrs(attrs: S3ObjectAttributes) -> dict:
     result["s3_encryption"] = attrs.s3_encryption
     result["s3_parent_prefix_qualified_name"] = attrs.s3_parent_prefix_qualified_name
     result["s3_prefix_hierarchy"] = attrs.s3_prefix_hierarchy
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["aws_arn"] = attrs.aws_arn
     result["aws_partition"] = attrs.aws_partition
     result["aws_service"] = attrs.aws_service
@@ -914,9 +872,6 @@ def _s3_object_to_nested(s3_object: S3Object) -> S3ObjectNested:
         is_incomplete=s3_object.is_incomplete,
         provenance_type=s3_object.provenance_type,
         home_id=s3_object.home_id,
-        depth=s3_object.depth,
-        immediate_upstream=s3_object.immediate_upstream,
-        immediate_downstream=s3_object.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -948,6 +903,7 @@ def _s3_object_from_nested(nested: S3ObjectNested) -> S3Object:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -956,9 +912,6 @@ def _s3_object_from_nested(nested: S3ObjectNested) -> S3Object:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_s3_object_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1023,6 +976,7 @@ S3Object.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField(
     "s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName"
 )
 S3Object.S3_PREFIX_HIERARCHY = KeywordField("s3PrefixHierarchy", "s3PrefixHierarchy")
+S3Object.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 S3Object.AWS_ARN = KeywordTextField("awsArn", "awsArn", "awsArn.text")
 S3Object.AWS_PARTITION = KeywordField("awsPartition", "awsPartition")
 S3Object.AWS_SERVICE = KeywordField("awsService", "awsService")
@@ -1042,6 +996,8 @@ S3Object.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 S3Object.ANOMALO_CHECKS = RelationField("anomaloChecks")
 S3Object.APPLICATION = RelationField("application")
 S3Object.APPLICATION_FIELD = RelationField("applicationField")
+S3Object.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+S3Object.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 S3Object.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 S3Object.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 S3Object.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
