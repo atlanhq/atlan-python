@@ -40,6 +40,9 @@ class RelatedCatalog(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Catalog" so it serializes correctly
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Catalog"

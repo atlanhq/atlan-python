@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -50,7 +51,6 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .sage_maker_unified_studio_related import (
     RelatedSageMakerUnifiedStudioAssetSchema,
     RelatedSageMakerUnifiedStudioProject,
-    RelatedSageMakerUnifiedStudioPublishedAsset,
     RelatedSageMakerUnifiedStudioSubscribedAsset,
 )
 from .schema_registry_related import RelatedSchemaRegistrySubject
@@ -75,6 +75,7 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
     SMUS_DOMAIN_UNIT_ID: ClassVar[Any] = None
     SMUS_PROJECT_ID: ClassVar[Any] = None
     SMUS_OWNING_PROJECT_ID: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     SMUS_ASSET_SUMMARY: ClassVar[Any] = None
     SMUS_ASSET_TECHNICAL_NAME: ClassVar[Any] = None
     SMUS_ASSET_TYPE: ClassVar[Any] = None
@@ -85,6 +86,8 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -112,6 +115,8 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "SageMakerUnifiedStudioPublishedAsset"
+
     smus_published_asset_subscriptions_count: Union[int, None, UnsetType] = UNSET
     """Number of subscriptions for the published asset."""
 
@@ -132,6 +137,9 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
 
     smus_owning_project_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio project which owns the asset."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     smus_asset_summary: Union[str, None, UnsetType] = UNSET
     """Summary text for the asset in SageMaker Unified Studio."""
@@ -162,6 +170,12 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -242,7 +256,7 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -261,78 +275,6 @@ class SageMakerUnifiedStudioPublishedAsset(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SageMakerUnifiedStudioPublishedAsset instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.smus_project is UNSET:
-                errors.append("smus_project is required for creation")
-        if errors:
-            raise ValueError(
-                f"SageMakerUnifiedStudioPublishedAsset validation failed: {errors}"
-            )
-
-    def minimize(self) -> "SageMakerUnifiedStudioPublishedAsset":
-        """
-        Return a minimal copy of this SageMakerUnifiedStudioPublishedAsset with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SageMakerUnifiedStudioPublishedAsset with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SageMakerUnifiedStudioPublishedAsset instance with only the minimum required fields.
-        """
-        self.validate()
-        return SageMakerUnifiedStudioPublishedAsset(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedSageMakerUnifiedStudioPublishedAsset":
-        """
-        Create a :class:`RelatedSageMakerUnifiedStudioPublishedAsset` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSageMakerUnifiedStudioPublishedAsset reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSageMakerUnifiedStudioPublishedAsset(guid=self.guid)
-        return RelatedSageMakerUnifiedStudioPublishedAsset(
-            qualified_name=self.qualified_name
-        )
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -414,6 +356,9 @@ class SageMakerUnifiedStudioPublishedAssetAttributes(AssetAttributes):
     smus_owning_project_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio project which owns the asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     smus_asset_summary: Union[str, None, UnsetType] = UNSET
     """Summary text for the asset in SageMaker Unified Studio."""
 
@@ -449,6 +394,12 @@ class SageMakerUnifiedStudioPublishedAssetRelationshipAttributes(
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -529,7 +480,7 @@ class SageMakerUnifiedStudioPublishedAssetRelationshipAttributes(
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -567,6 +518,8 @@ _SAGE_MAKER_UNIFIED_STUDIO_PUBLISHED_ASSET_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -611,6 +564,7 @@ def _populate_sage_maker_unified_studio_published_asset_attrs(
     attrs.smus_domain_unit_id = obj.smus_domain_unit_id
     attrs.smus_project_id = obj.smus_project_id
     attrs.smus_owning_project_id = obj.smus_owning_project_id
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.smus_asset_summary = obj.smus_asset_summary
     attrs.smus_asset_technical_name = obj.smus_asset_technical_name
     attrs.smus_asset_type = obj.smus_asset_type
@@ -632,6 +586,7 @@ def _extract_sage_maker_unified_studio_published_asset_attrs(
     result["smus_domain_unit_id"] = attrs.smus_domain_unit_id
     result["smus_project_id"] = attrs.smus_project_id
     result["smus_owning_project_id"] = attrs.smus_owning_project_id
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["smus_asset_summary"] = attrs.smus_asset_summary
     result["smus_asset_technical_name"] = attrs.smus_asset_technical_name
     result["smus_asset_type"] = attrs.smus_asset_type
@@ -679,9 +634,6 @@ def _sage_maker_unified_studio_published_asset_to_nested(
         is_incomplete=sage_maker_unified_studio_published_asset.is_incomplete,
         provenance_type=sage_maker_unified_studio_published_asset.provenance_type,
         home_id=sage_maker_unified_studio_published_asset.home_id,
-        depth=sage_maker_unified_studio_published_asset.depth,
-        immediate_upstream=sage_maker_unified_studio_published_asset.immediate_upstream,
-        immediate_downstream=sage_maker_unified_studio_published_asset.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -717,6 +669,7 @@ def _sage_maker_unified_studio_published_asset_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -725,9 +678,6 @@ def _sage_maker_unified_studio_published_asset_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sage_maker_unified_studio_published_asset_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -786,6 +736,9 @@ SageMakerUnifiedStudioPublishedAsset.SMUS_PROJECT_ID = KeywordField(
 SageMakerUnifiedStudioPublishedAsset.SMUS_OWNING_PROJECT_ID = KeywordField(
     "smusOwningProjectId", "smusOwningProjectId"
 )
+SageMakerUnifiedStudioPublishedAsset.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SageMakerUnifiedStudioPublishedAsset.SMUS_ASSET_SUMMARY = KeywordField(
     "smusAssetSummary", "smusAssetSummary"
 )
@@ -811,6 +764,12 @@ SageMakerUnifiedStudioPublishedAsset.ANOMALO_CHECKS = RelationField("anomaloChec
 SageMakerUnifiedStudioPublishedAsset.APPLICATION = RelationField("application")
 SageMakerUnifiedStudioPublishedAsset.APPLICATION_FIELD = RelationField(
     "applicationField"
+)
+SageMakerUnifiedStudioPublishedAsset.DATA_CONTRACT_LATEST = RelationField(
+    "dataContractLatest"
+)
+SageMakerUnifiedStudioPublishedAsset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
 )
 SageMakerUnifiedStudioPublishedAsset.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"

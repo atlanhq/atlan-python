@@ -37,12 +37,12 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
-from .notebook_related import RelatedNotebook
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
@@ -62,11 +62,14 @@ class Notebook(Asset):
     Base class for all notebook assets.
     """
 
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -91,6 +94,11 @@ class Notebook(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Notebook"
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -105,6 +113,12 @@ class Notebook(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -172,7 +186,7 @@ class Notebook(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -185,66 +199,6 @@ class Notebook(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Notebook"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Notebook instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Notebook validation failed: {errors}")
-
-    def minimize(self) -> "Notebook":
-        """
-        Return a minimal copy of this Notebook with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Notebook with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Notebook instance with only the minimum required fields.
-        """
-        self.validate()
-        return Notebook(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedNotebook":
-        """
-        Create a :class:`RelatedNotebook` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedNotebook reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedNotebook(guid=self.guid)
-        return RelatedNotebook(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -301,7 +255,8 @@ class Notebook(Asset):
 class NotebookAttributes(AssetAttributes):
     """Notebook-specific attributes for nested API format."""
 
-    pass
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
 
 class NotebookRelationshipAttributes(AssetRelationshipAttributes):
@@ -321,6 +276,12 @@ class NotebookRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -388,7 +349,7 @@ class NotebookRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -424,6 +385,8 @@ _NOTEBOOK_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -453,11 +416,14 @@ _NOTEBOOK_REL_FIELDS: List[str] = [
 def _populate_notebook_attrs(attrs: NotebookAttributes, obj: Notebook) -> None:
     """Populate Notebook-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_notebook_attrs(attrs: NotebookAttributes) -> dict:
     """Extract all Notebook attributes from the attrs struct into a flat dict."""
-    return _extract_asset_attrs(attrs)
+    result = _extract_asset_attrs(attrs)
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    return result
 
 
 # =============================================================================
@@ -493,9 +459,6 @@ def _notebook_to_nested(notebook: Notebook) -> NotebookNested:
         is_incomplete=notebook.is_incomplete,
         provenance_type=notebook.provenance_type,
         home_id=notebook.home_id,
-        depth=notebook.depth,
-        immediate_upstream=notebook.immediate_upstream,
-        immediate_downstream=notebook.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -527,6 +490,7 @@ def _notebook_from_nested(nested: NotebookNested) -> Notebook:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -535,9 +499,6 @@ def _notebook_from_nested(nested: NotebookNested) -> Notebook:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_notebook_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -558,13 +519,16 @@ def _notebook_from_nested_bytes(data: bytes, serde: Serde) -> Notebook:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
+Notebook.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Notebook.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Notebook.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Notebook.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Notebook.APPLICATION = RelationField("application")
 Notebook.APPLICATION_FIELD = RelationField("applicationField")
+Notebook.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Notebook.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Notebook.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Notebook.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Notebook.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

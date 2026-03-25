@@ -40,6 +40,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -59,7 +60,7 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_related import RelatedColumn, RelatedMaterialisedView, RelatedSchema
+from .sql_related import RelatedColumn, RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -102,11 +103,14 @@ class MaterialisedView(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -139,6 +143,8 @@ class MaterialisedView(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MaterialisedView"
 
     refresh_mode: Union[str, None, UnsetType] = UNSET
     """Refresh mode for this materialized view."""
@@ -232,6 +238,9 @@ class MaterialisedView(Asset):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -246,6 +255,12 @@ class MaterialisedView(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -339,7 +354,7 @@ class MaterialisedView(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -365,80 +380,6 @@ class MaterialisedView(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this MaterialisedView instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.atlan_schema is UNSET:
-                errors.append("atlan_schema is required for creation")
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"MaterialisedView validation failed: {errors}")
-
-    def minimize(self) -> "MaterialisedView":
-        """
-        Return a minimal copy of this MaterialisedView with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new MaterialisedView with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new MaterialisedView instance with only the minimum required fields.
-        """
-        self.validate()
-        return MaterialisedView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMaterialisedView":
-        """
-        Create a :class:`RelatedMaterialisedView` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedMaterialisedView reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedMaterialisedView(guid=self.guid)
-        return RelatedMaterialisedView(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -687,6 +628,9 @@ class MaterialisedViewAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     """MaterialisedView-specific relationship attributes for nested API format."""
@@ -705,6 +649,12 @@ class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -798,7 +748,7 @@ class MaterialisedViewRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -841,6 +791,8 @@ _MATERIALISED_VIEW_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -911,6 +863,7 @@ def _populate_materialised_view_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_materialised_view_attrs(attrs: MaterialisedViewAttributes) -> dict:
@@ -948,6 +901,7 @@ def _extract_materialised_view_attrs(attrs: MaterialisedViewAttributes) -> dict:
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -988,9 +942,6 @@ def _materialised_view_to_nested(
         is_incomplete=materialised_view.is_incomplete,
         provenance_type=materialised_view.provenance_type,
         home_id=materialised_view.home_id,
-        depth=materialised_view.depth,
-        immediate_upstream=materialised_view.immediate_upstream,
-        immediate_downstream=materialised_view.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1024,6 +975,7 @@ def _materialised_view_from_nested(nested: MaterialisedViewNested) -> Materialis
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1032,9 +984,6 @@ def _materialised_view_from_nested(nested: MaterialisedViewNested) -> Materialis
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_materialised_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1112,11 +1061,18 @@ MaterialisedView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 MaterialisedView.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+MaterialisedView.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 MaterialisedView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MaterialisedView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MaterialisedView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MaterialisedView.APPLICATION = RelationField("application")
 MaterialisedView.APPLICATION_FIELD = RelationField("applicationField")
+MaterialisedView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+MaterialisedView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 MaterialisedView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MaterialisedView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MaterialisedView.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

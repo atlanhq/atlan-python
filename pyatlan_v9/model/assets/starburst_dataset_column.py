@@ -40,6 +40,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -74,7 +75,7 @@ from .sql_related import (
     RelatedTablePartition,
     RelatedView,
 )
-from .starburst_related import RelatedStarburstDataset, RelatedStarburstDatasetColumn
+from .starburst_related import RelatedStarburstDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -109,6 +110,7 @@ class StarburstDatasetColumn(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     DATA_TYPE: ClassVar[Any] = None
     SUB_DATA_TYPE: ClassVar[Any] = None
     COLUMN_COMPRESSION: ClassVar[Any] = None
@@ -183,6 +185,8 @@ class StarburstDatasetColumn(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     COSMOS_MONGO_DB_COLLECTION: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -233,6 +237,8 @@ class StarburstDatasetColumn(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     STARBURST_DATASET: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "StarburstDatasetColumn"
 
     starburst_sql_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the corresponding SQL Column. Enables cross-stream lookup between the Data Product perspective and the SQL perspective of the same underlying column."""
@@ -301,6 +307,9 @@ class StarburstDatasetColumn(Asset):
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     data_type: Union[str, None, UnsetType] = UNSET
     """Data type of values in this column."""
@@ -526,6 +535,12 @@ class StarburstDatasetColumn(Asset):
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -672,7 +687,7 @@ class StarburstDatasetColumn(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
         UNSET
@@ -706,82 +721,6 @@ class StarburstDatasetColumn(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this StarburstDatasetColumn instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.starburst_dataset is UNSET:
-                errors.append("starburst_dataset is required for creation")
-            if self.starburst_dataset_name is UNSET:
-                errors.append("starburst_dataset_name is required for creation")
-            if self.starburst_dataset_qualified_name is UNSET:
-                errors.append(
-                    "starburst_dataset_qualified_name is required for creation"
-                )
-            if self.order is UNSET:
-                errors.append("order is required for creation")
-        if errors:
-            raise ValueError(f"StarburstDatasetColumn validation failed: {errors}")
-
-    def minimize(self) -> "StarburstDatasetColumn":
-        """
-        Return a minimal copy of this StarburstDatasetColumn with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new StarburstDatasetColumn with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new StarburstDatasetColumn instance with only the minimum required fields.
-        """
-        self.validate()
-        return StarburstDatasetColumn(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedStarburstDatasetColumn":
-        """
-        Create a :class:`RelatedStarburstDatasetColumn` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedStarburstDatasetColumn reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedStarburstDatasetColumn(guid=self.guid)
-        return RelatedStarburstDatasetColumn(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -907,6 +846,9 @@ class StarburstDatasetColumnAttributes(AssetAttributes):
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     data_type: Union[str, None, UnsetType] = UNSET
     """Data type of values in this column."""
@@ -1136,6 +1078,12 @@ class StarburstDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -1282,7 +1230,7 @@ class StarburstDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
         UNSET
@@ -1334,6 +1282,8 @@ _STARBURST_DATASET_COLUMN_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "cosmos_mongo_db_collection",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -1414,6 +1364,7 @@ def _populate_starburst_dataset_column_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.data_type = obj.data_type
     attrs.sub_data_type = obj.sub_data_type
     attrs.column_compression = obj.column_compression
@@ -1515,6 +1466,7 @@ def _extract_starburst_dataset_column_attrs(
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["data_type"] = attrs.data_type
     result["sub_data_type"] = attrs.sub_data_type
     result["column_compression"] = attrs.column_compression
@@ -1627,9 +1579,6 @@ def _starburst_dataset_column_to_nested(
         is_incomplete=starburst_dataset_column.is_incomplete,
         provenance_type=starburst_dataset_column.provenance_type,
         home_id=starburst_dataset_column.home_id,
-        depth=starburst_dataset_column.depth,
-        immediate_upstream=starburst_dataset_column.immediate_upstream,
-        immediate_downstream=starburst_dataset_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1665,6 +1614,7 @@ def _starburst_dataset_column_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1673,9 +1623,6 @@ def _starburst_dataset_column_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_starburst_dataset_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1758,6 +1705,9 @@ StarburstDatasetColumn.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 StarburstDatasetColumn.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+StarburstDatasetColumn.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 StarburstDatasetColumn.DATA_TYPE = KeywordTextField(
     "dataType", "dataType", "dataType.text"
 )
@@ -1921,6 +1871,10 @@ StarburstDatasetColumn.APPLICATION = RelationField("application")
 StarburstDatasetColumn.APPLICATION_FIELD = RelationField("applicationField")
 StarburstDatasetColumn.COSMOS_MONGO_DB_COLLECTION = RelationField(
     "cosmosMongoDBCollection"
+)
+StarburstDatasetColumn.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+StarburstDatasetColumn.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
 )
 StarburstDatasetColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
