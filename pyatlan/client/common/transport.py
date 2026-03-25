@@ -25,7 +25,11 @@ logger = logging.getLogger(__name__)
 def build_policy_search_request(
     policy_name: str, persona_qualified_name: str
 ) -> IndexSearchRequest:
-    """Build an IndexSearchRequest to find an existing AuthPolicy by name and persona."""
+    """
+    Build an IndexSearchRequest to find an existing AuthPolicy by name and persona.
+    Using persona GUID directly returns associated assets, not policies.
+    Policies require a hierarchical (prefix) match to be correctly retrieved.
+    """
     query = Bool(
         filter=[
             Term(field="__state", value="ACTIVE"),
