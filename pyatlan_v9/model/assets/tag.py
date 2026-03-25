@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -49,7 +50,6 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .tag_related import RelatedTag
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -66,11 +66,14 @@ class Tag(Asset):
     TAG_ATTRIBUTES: ClassVar[Any] = None
     TAG_ALLOWED_VALUES: ClassVar[Any] = None
     MAPPED_CLASSIFICATION_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -95,6 +98,8 @@ class Tag(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Tag"
+
     tag_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the tag in the source system."""
 
@@ -106,6 +111,9 @@ class Tag(Asset):
 
     mapped_classification_name: Union[str, None, UnsetType] = UNSET
     """Name of the classification in Atlan that is mapped to this tag."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -121,6 +129,12 @@ class Tag(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -188,7 +202,7 @@ class Tag(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -201,73 +215,6 @@ class Tag(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Tag"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Tag instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if for_creation:
-            if self.tag_id is UNSET:
-                errors.append("tag_id is required for creation")
-            if self.tag_allowed_values is UNSET:
-                errors.append("tag_allowed_values is required for creation")
-            if self.mapped_classification_name is UNSET:
-                errors.append("mapped_classification_name is required for creation")
-        if errors:
-            raise ValueError(f"Tag validation failed: {errors}")
-
-    def minimize(self) -> "Tag":
-        """
-        Return a minimal copy of this Tag with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Tag with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Tag instance with only the minimum required fields.
-        """
-        self.validate()
-        return Tag(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTag":
-        """
-        Create a :class:`RelatedTag` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedTag reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedTag(guid=self.guid)
-        return RelatedTag(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -336,6 +283,9 @@ class TagAttributes(AssetAttributes):
     mapped_classification_name: Union[str, None, UnsetType] = UNSET
     """Name of the classification in Atlan that is mapped to this tag."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class TagRelationshipAttributes(AssetRelationshipAttributes):
     """Tag-specific relationship attributes for nested API format."""
@@ -354,6 +304,12 @@ class TagRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -421,7 +377,7 @@ class TagRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -453,6 +409,8 @@ _TAG_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -486,6 +444,7 @@ def _populate_tag_attrs(attrs: TagAttributes, obj: Tag) -> None:
     attrs.tag_attributes = obj.tag_attributes
     attrs.tag_allowed_values = obj.tag_allowed_values
     attrs.mapped_classification_name = obj.mapped_classification_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_tag_attrs(attrs: TagAttributes) -> dict:
@@ -495,6 +454,7 @@ def _extract_tag_attrs(attrs: TagAttributes) -> dict:
     result["tag_attributes"] = attrs.tag_attributes
     result["tag_allowed_values"] = attrs.tag_allowed_values
     result["mapped_classification_name"] = attrs.mapped_classification_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -531,9 +491,6 @@ def _tag_to_nested(tag: Tag) -> TagNested:
         is_incomplete=tag.is_incomplete,
         provenance_type=tag.provenance_type,
         home_id=tag.home_id,
-        depth=tag.depth,
-        immediate_upstream=tag.immediate_upstream,
-        immediate_downstream=tag.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -563,6 +520,7 @@ def _tag_from_nested(nested: TagNested) -> Tag:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -571,9 +529,6 @@ def _tag_from_nested(nested: TagNested) -> Tag:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_tag_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -608,11 +563,14 @@ Tag.TAG_ALLOWED_VALUES = KeywordTextField(
 Tag.MAPPED_CLASSIFICATION_NAME = KeywordField(
     "mappedClassificationName", "mappedClassificationName"
 )
+Tag.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Tag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Tag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Tag.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Tag.APPLICATION = RelationField("application")
 Tag.APPLICATION_FIELD = RelationField("applicationField")
+Tag.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Tag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Tag.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Tag.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Tag.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
