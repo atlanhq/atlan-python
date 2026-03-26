@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -47,7 +48,6 @@ from .micro_strategy_related import (
     RelatedMicroStrategyDossier,
     RelatedMicroStrategyFact,
     RelatedMicroStrategyMetric,
-    RelatedMicroStrategyProject,
     RelatedMicroStrategyReport,
     RelatedMicroStrategyVisualization,
 )
@@ -82,11 +82,14 @@ class MicroStrategyProject(Asset):
     MICRO_STRATEGY_CERTIFIED_BY: ClassVar[Any] = None
     MICRO_STRATEGY_CERTIFIED_AT: ClassVar[Any] = None
     MICRO_STRATEGY_LOCATION: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -119,6 +122,8 @@ class MicroStrategyProject(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "MicroStrategyProject"
+
     micro_strategy_project_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the project in which this asset exists."""
 
@@ -149,6 +154,9 @@ class MicroStrategyProject(Asset):
     micro_strategy_location: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Location of this asset in MicroStrategy."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -163,6 +171,12 @@ class MicroStrategyProject(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -266,7 +280,7 @@ class MicroStrategyProject(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -279,66 +293,6 @@ class MicroStrategyProject(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MicroStrategyProject"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this MicroStrategyProject instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"MicroStrategyProject validation failed: {errors}")
-
-    def minimize(self) -> "MicroStrategyProject":
-        """
-        Return a minimal copy of this MicroStrategyProject with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new MicroStrategyProject with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new MicroStrategyProject instance with only the minimum required fields.
-        """
-        self.validate()
-        return MicroStrategyProject(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMicroStrategyProject":
-        """
-        Create a :class:`RelatedMicroStrategyProject` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedMicroStrategyProject reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedMicroStrategyProject(guid=self.guid)
-        return RelatedMicroStrategyProject(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -427,6 +381,9 @@ class MicroStrategyProjectAttributes(AssetAttributes):
     micro_strategy_location: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Location of this asset in MicroStrategy."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
     """MicroStrategyProject-specific relationship attributes for nested API format."""
@@ -445,6 +402,12 @@ class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -548,7 +511,7 @@ class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -586,6 +549,8 @@ _MICRO_STRATEGY_PROJECT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -639,6 +604,7 @@ def _populate_micro_strategy_project_attrs(
     attrs.micro_strategy_certified_by = obj.micro_strategy_certified_by
     attrs.micro_strategy_certified_at = obj.micro_strategy_certified_at
     attrs.micro_strategy_location = obj.micro_strategy_location
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_micro_strategy_project_attrs(
@@ -662,6 +628,7 @@ def _extract_micro_strategy_project_attrs(
     result["micro_strategy_certified_by"] = attrs.micro_strategy_certified_by
     result["micro_strategy_certified_at"] = attrs.micro_strategy_certified_at
     result["micro_strategy_location"] = attrs.micro_strategy_location
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -702,9 +669,6 @@ def _micro_strategy_project_to_nested(
         is_incomplete=micro_strategy_project.is_incomplete,
         provenance_type=micro_strategy_project.provenance_type,
         home_id=micro_strategy_project.home_id,
-        depth=micro_strategy_project.depth,
-        immediate_upstream=micro_strategy_project.immediate_upstream,
-        immediate_downstream=micro_strategy_project.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -740,6 +704,7 @@ def _micro_strategy_project_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -748,9 +713,6 @@ def _micro_strategy_project_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_micro_strategy_project_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -821,11 +783,18 @@ MicroStrategyProject.MICRO_STRATEGY_CERTIFIED_AT = NumericField(
 MicroStrategyProject.MICRO_STRATEGY_LOCATION = KeywordField(
     "microStrategyLocation", "microStrategyLocation"
 )
+MicroStrategyProject.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 MicroStrategyProject.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MicroStrategyProject.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MicroStrategyProject.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MicroStrategyProject.APPLICATION = RelationField("application")
 MicroStrategyProject.APPLICATION_FIELD = RelationField("applicationField")
+MicroStrategyProject.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+MicroStrategyProject.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 MicroStrategyProject.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MicroStrategyProject.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MicroStrategyProject.MODEL_IMPLEMENTED_ENTITIES = RelationField(
