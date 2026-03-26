@@ -40,6 +40,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -56,10 +57,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import (
-    RelatedSnowflakeSemanticLogicalTable,
-    RelatedSnowflakeSemanticMetric,
-)
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn
@@ -100,6 +98,7 @@ class SnowflakeSemanticMetric(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     METRIC_TYPE: ClassVar[Any] = None
     METRIC_SQL: ClassVar[Any] = None
     METRIC_FILTERS: ClassVar[Any] = None
@@ -110,6 +109,8 @@ class SnowflakeSemanticMetric(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -144,6 +145,8 @@ class SnowflakeSemanticMetric(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SnowflakeSemanticMetric"
 
     snowflake_semantic_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the semantic view in which this metric exists."""
@@ -222,6 +225,9 @@ class SnowflakeSemanticMetric(Asset):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
@@ -253,6 +259,12 @@ class SnowflakeSemanticMetric(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -349,7 +361,7 @@ class SnowflakeSemanticMetric(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_table: Union[
         RelatedSnowflakeSemanticLogicalTable, None, UnsetType
@@ -380,90 +392,6 @@ class SnowflakeSemanticMetric(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SnowflakeSemanticMetric instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.snowflake_semantic_logical_table is UNSET:
-                errors.append(
-                    "snowflake_semantic_logical_table is required for creation"
-                )
-            if self.snowflake_semantic_view_name is UNSET:
-                errors.append("snowflake_semantic_view_name is required for creation")
-            if self.snowflake_semantic_view_qualified_name is UNSET:
-                errors.append(
-                    "snowflake_semantic_view_qualified_name is required for creation"
-                )
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SnowflakeSemanticMetric validation failed: {errors}")
-
-    def minimize(self) -> "SnowflakeSemanticMetric":
-        """
-        Return a minimal copy of this SnowflakeSemanticMetric with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SnowflakeSemanticMetric with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SnowflakeSemanticMetric instance with only the minimum required fields.
-        """
-        self.validate()
-        return SnowflakeSemanticMetric(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedSnowflakeSemanticMetric":
-        """
-        Create a :class:`RelatedSnowflakeSemanticMetric` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSnowflakeSemanticMetric reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSnowflakeSemanticMetric(guid=self.guid)
-        return RelatedSnowflakeSemanticMetric(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -599,6 +527,9 @@ class SnowflakeSemanticMetricAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
@@ -634,6 +565,12 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -730,7 +667,7 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_table: Union[
         RelatedSnowflakeSemanticLogicalTable, None, UnsetType
@@ -778,6 +715,8 @@ _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -855,6 +794,7 @@ def _populate_snowflake_semantic_metric_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.metric_type = obj.metric_type
     attrs.metric_sql = obj.metric_sql
     attrs.metric_filters = obj.metric_filters
@@ -904,6 +844,7 @@ def _extract_snowflake_semantic_metric_attrs(
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["metric_type"] = attrs.metric_type
     result["metric_sql"] = attrs.metric_sql
     result["metric_filters"] = attrs.metric_filters
@@ -949,9 +890,6 @@ def _snowflake_semantic_metric_to_nested(
         is_incomplete=snowflake_semantic_metric.is_incomplete,
         provenance_type=snowflake_semantic_metric.provenance_type,
         home_id=snowflake_semantic_metric.home_id,
-        depth=snowflake_semantic_metric.depth,
-        immediate_upstream=snowflake_semantic_metric.immediate_upstream,
-        immediate_downstream=snowflake_semantic_metric.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -987,6 +925,7 @@ def _snowflake_semantic_metric_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -995,9 +934,6 @@ def _snowflake_semantic_metric_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_semantic_metric_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1088,6 +1024,9 @@ SnowflakeSemanticMetric.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 SnowflakeSemanticMetric.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+SnowflakeSemanticMetric.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SnowflakeSemanticMetric.METRIC_TYPE = KeywordField("metricType", "metricType")
 SnowflakeSemanticMetric.METRIC_SQL = KeywordField("metricSQL", "metricSQL")
 SnowflakeSemanticMetric.METRIC_FILTERS = KeywordField("metricFilters", "metricFilters")
@@ -1104,6 +1043,10 @@ SnowflakeSemanticMetric.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 SnowflakeSemanticMetric.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SnowflakeSemanticMetric.APPLICATION = RelationField("application")
 SnowflakeSemanticMetric.APPLICATION_FIELD = RelationField("applicationField")
+SnowflakeSemanticMetric.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SnowflakeSemanticMetric.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SnowflakeSemanticMetric.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
 )

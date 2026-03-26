@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -47,11 +48,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .sisense_related import (
-    RelatedSisenseDashboard,
-    RelatedSisenseDatamodel,
-    RelatedSisenseDatamodelTable,
-)
+from .sisense_related import RelatedSisenseDashboard, RelatedSisenseDatamodelTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -66,19 +63,22 @@ class SisenseDatamodel(Asset):
     Instance of a Sisense datamodel in Atlan. These group tables together that you can use to build dashboards.
     """
 
-    SISENSE_DATAMODEL_TABLE_COUNT: ClassVar[Any] = None
+    SISENSE_TABLE_COUNT: ClassVar[Any] = None
     SISENSE_DATAMODEL_SERVER: ClassVar[Any] = None
-    SISENSE_DATAMODEL_REVISION: ClassVar[Any] = None
-    SISENSE_DATAMODEL_LAST_BUILD_TIME: ClassVar[Any] = None
-    SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME: ClassVar[Any] = None
-    SISENSE_DATAMODEL_LAST_PUBLISH_TIME: ClassVar[Any] = None
+    SISENSE_REVISION: ClassVar[Any] = None
+    SISENSE_LAST_BUILD_TIME: ClassVar[Any] = None
+    SISENSE_LAST_SUCCESSFUL_BUILD_TIME: ClassVar[Any] = None
+    SISENSE_LAST_PUBLISH_TIME: ClassVar[Any] = None
     SISENSE_DATAMODEL_TYPE: ClassVar[Any] = None
     SISENSE_DATAMODEL_RELATION_TYPE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -105,22 +105,24 @@ class SisenseDatamodel(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sisense_datamodel_table_count: Union[int, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SisenseDatamodel"
+
+    sisense_table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this datamodel."""
 
     sisense_datamodel_server: Union[str, None, UnsetType] = UNSET
     """Hostname of the server on which this datamodel was created."""
 
-    sisense_datamodel_revision: Union[str, None, UnsetType] = UNSET
+    sisense_revision: Union[str, None, UnsetType] = UNSET
     """Revision of this datamodel."""
 
-    sisense_datamodel_last_build_time: Union[int, None, UnsetType] = UNSET
+    sisense_last_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built, in milliseconds."""
 
-    sisense_datamodel_last_successful_build_time: Union[int, None, UnsetType] = UNSET
+    sisense_last_successful_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built successfully, in milliseconds."""
 
-    sisense_datamodel_last_publish_time: Union[int, None, UnsetType] = UNSET
+    sisense_last_publish_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last published, in milliseconds."""
 
     sisense_datamodel_type: Union[str, None, UnsetType] = UNSET
@@ -128,6 +130,9 @@ class SisenseDatamodel(Asset):
 
     sisense_datamodel_relation_type: Union[str, None, UnsetType] = UNSET
     """Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -143,6 +148,12 @@ class SisenseDatamodel(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -210,7 +221,7 @@ class SisenseDatamodel(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     sisense_datamodel_tables: Union[
         List[RelatedSisenseDatamodelTable], None, UnsetType
@@ -231,66 +242,6 @@ class SisenseDatamodel(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SisenseDatamodel"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SisenseDatamodel instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SisenseDatamodel validation failed: {errors}")
-
-    def minimize(self) -> "SisenseDatamodel":
-        """
-        Return a minimal copy of this SisenseDatamodel with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SisenseDatamodel with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SisenseDatamodel instance with only the minimum required fields.
-        """
-        self.validate()
-        return SisenseDatamodel(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSisenseDatamodel":
-        """
-        Create a :class:`RelatedSisenseDatamodel` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSisenseDatamodel reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSisenseDatamodel(guid=self.guid)
-        return RelatedSisenseDatamodel(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -349,22 +300,22 @@ class SisenseDatamodel(Asset):
 class SisenseDatamodelAttributes(AssetAttributes):
     """SisenseDatamodel-specific attributes for nested API format."""
 
-    sisense_datamodel_table_count: Union[int, None, UnsetType] = UNSET
+    sisense_table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this datamodel."""
 
     sisense_datamodel_server: Union[str, None, UnsetType] = UNSET
     """Hostname of the server on which this datamodel was created."""
 
-    sisense_datamodel_revision: Union[str, None, UnsetType] = UNSET
+    sisense_revision: Union[str, None, UnsetType] = UNSET
     """Revision of this datamodel."""
 
-    sisense_datamodel_last_build_time: Union[int, None, UnsetType] = UNSET
+    sisense_last_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built, in milliseconds."""
 
-    sisense_datamodel_last_successful_build_time: Union[int, None, UnsetType] = UNSET
+    sisense_last_successful_build_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last built successfully, in milliseconds."""
 
-    sisense_datamodel_last_publish_time: Union[int, None, UnsetType] = UNSET
+    sisense_last_publish_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) when this datamodel was last published, in milliseconds."""
 
     sisense_datamodel_type: Union[str, None, UnsetType] = UNSET
@@ -372,6 +323,9 @@ class SisenseDatamodelAttributes(AssetAttributes):
 
     sisense_datamodel_relation_type: Union[str, None, UnsetType] = UNSET
     """Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
 
 class SisenseDatamodelRelationshipAttributes(AssetRelationshipAttributes):
@@ -391,6 +345,12 @@ class SisenseDatamodelRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -458,7 +418,7 @@ class SisenseDatamodelRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     sisense_datamodel_tables: Union[
         List[RelatedSisenseDatamodelTable], None, UnsetType
@@ -504,6 +464,8 @@ _SISENSE_DATAMODEL_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -537,35 +499,31 @@ def _populate_sisense_datamodel_attrs(
 ) -> None:
     """Populate SisenseDatamodel-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sisense_datamodel_table_count = obj.sisense_datamodel_table_count
+    attrs.sisense_table_count = obj.sisense_table_count
     attrs.sisense_datamodel_server = obj.sisense_datamodel_server
-    attrs.sisense_datamodel_revision = obj.sisense_datamodel_revision
-    attrs.sisense_datamodel_last_build_time = obj.sisense_datamodel_last_build_time
-    attrs.sisense_datamodel_last_successful_build_time = (
-        obj.sisense_datamodel_last_successful_build_time
-    )
-    attrs.sisense_datamodel_last_publish_time = obj.sisense_datamodel_last_publish_time
+    attrs.sisense_revision = obj.sisense_revision
+    attrs.sisense_last_build_time = obj.sisense_last_build_time
+    attrs.sisense_last_successful_build_time = obj.sisense_last_successful_build_time
+    attrs.sisense_last_publish_time = obj.sisense_last_publish_time
     attrs.sisense_datamodel_type = obj.sisense_datamodel_type
     attrs.sisense_datamodel_relation_type = obj.sisense_datamodel_relation_type
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_sisense_datamodel_attrs(attrs: SisenseDatamodelAttributes) -> dict:
     """Extract all SisenseDatamodel attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sisense_datamodel_table_count"] = attrs.sisense_datamodel_table_count
+    result["sisense_table_count"] = attrs.sisense_table_count
     result["sisense_datamodel_server"] = attrs.sisense_datamodel_server
-    result["sisense_datamodel_revision"] = attrs.sisense_datamodel_revision
-    result["sisense_datamodel_last_build_time"] = (
-        attrs.sisense_datamodel_last_build_time
+    result["sisense_revision"] = attrs.sisense_revision
+    result["sisense_last_build_time"] = attrs.sisense_last_build_time
+    result["sisense_last_successful_build_time"] = (
+        attrs.sisense_last_successful_build_time
     )
-    result["sisense_datamodel_last_successful_build_time"] = (
-        attrs.sisense_datamodel_last_successful_build_time
-    )
-    result["sisense_datamodel_last_publish_time"] = (
-        attrs.sisense_datamodel_last_publish_time
-    )
+    result["sisense_last_publish_time"] = attrs.sisense_last_publish_time
     result["sisense_datamodel_type"] = attrs.sisense_datamodel_type
     result["sisense_datamodel_relation_type"] = attrs.sisense_datamodel_relation_type
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -606,9 +564,6 @@ def _sisense_datamodel_to_nested(
         is_incomplete=sisense_datamodel.is_incomplete,
         provenance_type=sisense_datamodel.provenance_type,
         home_id=sisense_datamodel.home_id,
-        depth=sisense_datamodel.depth,
-        immediate_upstream=sisense_datamodel.immediate_upstream,
-        immediate_downstream=sisense_datamodel.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -642,6 +597,7 @@ def _sisense_datamodel_from_nested(nested: SisenseDatamodelNested) -> SisenseDat
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -650,9 +606,6 @@ def _sisense_datamodel_from_nested(nested: SisenseDatamodelNested) -> SisenseDat
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sisense_datamodel_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -681,23 +634,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SisenseDatamodel.SISENSE_DATAMODEL_TABLE_COUNT = NumericField(
-    "sisenseDatamodelTableCount", "sisenseDatamodelTableCount"
+SisenseDatamodel.SISENSE_TABLE_COUNT = NumericField(
+    "sisenseTableCount", "sisenseTableCount"
 )
 SisenseDatamodel.SISENSE_DATAMODEL_SERVER = KeywordField(
     "sisenseDatamodelServer", "sisenseDatamodelServer"
 )
-SisenseDatamodel.SISENSE_DATAMODEL_REVISION = KeywordField(
-    "sisenseDatamodelRevision", "sisenseDatamodelRevision"
+SisenseDatamodel.SISENSE_REVISION = KeywordField("sisenseRevision", "sisenseRevision")
+SisenseDatamodel.SISENSE_LAST_BUILD_TIME = NumericField(
+    "sisenseLastBuildTime", "sisenseLastBuildTime"
 )
-SisenseDatamodel.SISENSE_DATAMODEL_LAST_BUILD_TIME = NumericField(
-    "sisenseDatamodelLastBuildTime", "sisenseDatamodelLastBuildTime"
+SisenseDatamodel.SISENSE_LAST_SUCCESSFUL_BUILD_TIME = NumericField(
+    "sisenseLastSuccessfulBuildTime", "sisenseLastSuccessfulBuildTime"
 )
-SisenseDatamodel.SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME = NumericField(
-    "sisenseDatamodelLastSuccessfulBuildTime", "sisenseDatamodelLastSuccessfulBuildTime"
-)
-SisenseDatamodel.SISENSE_DATAMODEL_LAST_PUBLISH_TIME = NumericField(
-    "sisenseDatamodelLastPublishTime", "sisenseDatamodelLastPublishTime"
+SisenseDatamodel.SISENSE_LAST_PUBLISH_TIME = NumericField(
+    "sisenseLastPublishTime", "sisenseLastPublishTime"
 )
 SisenseDatamodel.SISENSE_DATAMODEL_TYPE = KeywordField(
     "sisenseDatamodelType", "sisenseDatamodelType"
@@ -705,11 +656,18 @@ SisenseDatamodel.SISENSE_DATAMODEL_TYPE = KeywordField(
 SisenseDatamodel.SISENSE_DATAMODEL_RELATION_TYPE = KeywordField(
     "sisenseDatamodelRelationType", "sisenseDatamodelRelationType"
 )
+SisenseDatamodel.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SisenseDatamodel.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SisenseDatamodel.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SisenseDatamodel.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SisenseDatamodel.APPLICATION = RelationField("application")
 SisenseDatamodel.APPLICATION_FIELD = RelationField("applicationField")
+SisenseDatamodel.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SisenseDatamodel.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SisenseDatamodel.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SisenseDatamodel.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SisenseDatamodel.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

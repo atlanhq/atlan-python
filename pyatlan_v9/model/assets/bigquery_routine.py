@@ -38,7 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .bigquery_related import RelatedBigqueryRoutine
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -71,11 +71,11 @@ class BigqueryRoutine(Asset):
     Instance of a bigquery routine in atlan. Can be a stored procedure, udf, or tvf.
     """
 
-    BIGQUERY_ROUTINE_TYPE: ClassVar[Any] = None
-    BIGQUERY_ROUTINE_ARGUMENTS: ClassVar[Any] = None
-    BIGQUERY_ROUTINE_RETURN_TYPE: ClassVar[Any] = None
-    BIGQUERY_ROUTINE_SECURITY_TYPE: ClassVar[Any] = None
-    BIGQUERY_ROUTINE_DDL: ClassVar[Any] = None
+    BIGQUERY_TYPE: ClassVar[Any] = None
+    BIGQUERY_ARGUMENTS: ClassVar[Any] = None
+    BIGQUERY_RETURN_TYPE: ClassVar[Any] = None
+    BIGQUERY_SECURITY_TYPE: ClassVar[Any] = None
+    BIGQUERY_DDL: ClassVar[Any] = None
     DEFINITION: ClassVar[Any] = None
     SQL_LANGUAGE: ClassVar[Any] = None
     SQL_RUNTIME_VERSION: ClassVar[Any] = None
@@ -106,11 +106,14 @@ class BigqueryRoutine(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -144,19 +147,21 @@ class BigqueryRoutine(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    bigquery_routine_type: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "BigqueryRoutine"
+
+    bigquery_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_routine_arguments: Union[List[str], None, UnsetType] = UNSET
+    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_routine_return_type: Union[str, None, UnsetType] = UNSET
+    bigquery_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_routine_security_type: Union[str, None, UnsetType] = UNSET
+    bigquery_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_routine_ddl: Union[str, None, UnsetType] = UNSET
+    bigquery_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
     definition: Union[str, None, UnsetType] = UNSET
@@ -251,6 +256,9 @@ class BigqueryRoutine(Asset):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -265,6 +273,12 @@ class BigqueryRoutine(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -358,7 +372,7 @@ class BigqueryRoutine(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -376,69 +390,6 @@ class BigqueryRoutine(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "BigqueryRoutine"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this BigqueryRoutine instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if for_creation:
-            if self.definition is UNSET:
-                errors.append("definition is required for creation")
-        if errors:
-            raise ValueError(f"BigqueryRoutine validation failed: {errors}")
-
-    def minimize(self) -> "BigqueryRoutine":
-        """
-        Return a minimal copy of this BigqueryRoutine with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new BigqueryRoutine with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new BigqueryRoutine instance with only the minimum required fields.
-        """
-        self.validate()
-        return BigqueryRoutine(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedBigqueryRoutine":
-        """
-        Create a :class:`RelatedBigqueryRoutine` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedBigqueryRoutine reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedBigqueryRoutine(guid=self.guid)
-        return RelatedBigqueryRoutine(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -497,19 +448,19 @@ class BigqueryRoutine(Asset):
 class BigqueryRoutineAttributes(AssetAttributes):
     """BigqueryRoutine-specific attributes for nested API format."""
 
-    bigquery_routine_type: Union[str, None, UnsetType] = UNSET
+    bigquery_type: Union[str, None, UnsetType] = UNSET
     """Type of bigquery routine (sp, udf, or tvf)."""
 
-    bigquery_routine_arguments: Union[List[str], None, UnsetType] = UNSET
+    bigquery_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the routine."""
 
-    bigquery_routine_return_type: Union[str, None, UnsetType] = UNSET
+    bigquery_return_type: Union[str, None, UnsetType] = UNSET
     """Return data type of the bigquery routine (null for stored procedures)."""
 
-    bigquery_routine_security_type: Union[str, None, UnsetType] = UNSET
+    bigquery_security_type: Union[str, None, UnsetType] = UNSET
     """Security type of the routine, always null."""
 
-    bigquery_routine_ddl: Union[str, None, UnsetType] = UNSET
+    bigquery_ddl: Union[str, None, UnsetType] = UNSET
     """The ddl statement used to create the bigquery routine."""
 
     definition: Union[str, None, UnsetType] = UNSET
@@ -604,6 +555,9 @@ class BigqueryRoutineAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class BigqueryRoutineRelationshipAttributes(AssetRelationshipAttributes):
     """BigqueryRoutine-specific relationship attributes for nested API format."""
@@ -622,6 +576,12 @@ class BigqueryRoutineRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -715,7 +675,7 @@ class BigqueryRoutineRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -758,6 +718,8 @@ _BIGQUERY_ROUTINE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -798,11 +760,11 @@ def _populate_bigquery_routine_attrs(
 ) -> None:
     """Populate BigqueryRoutine-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.bigquery_routine_type = obj.bigquery_routine_type
-    attrs.bigquery_routine_arguments = obj.bigquery_routine_arguments
-    attrs.bigquery_routine_return_type = obj.bigquery_routine_return_type
-    attrs.bigquery_routine_security_type = obj.bigquery_routine_security_type
-    attrs.bigquery_routine_ddl = obj.bigquery_routine_ddl
+    attrs.bigquery_type = obj.bigquery_type
+    attrs.bigquery_arguments = obj.bigquery_arguments
+    attrs.bigquery_return_type = obj.bigquery_return_type
+    attrs.bigquery_security_type = obj.bigquery_security_type
+    attrs.bigquery_ddl = obj.bigquery_ddl
     attrs.definition = obj.definition
     attrs.sql_language = obj.sql_language
     attrs.sql_runtime_version = obj.sql_runtime_version
@@ -833,16 +795,17 @@ def _populate_bigquery_routine_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_bigquery_routine_attrs(attrs: BigqueryRoutineAttributes) -> dict:
     """Extract all BigqueryRoutine attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["bigquery_routine_type"] = attrs.bigquery_routine_type
-    result["bigquery_routine_arguments"] = attrs.bigquery_routine_arguments
-    result["bigquery_routine_return_type"] = attrs.bigquery_routine_return_type
-    result["bigquery_routine_security_type"] = attrs.bigquery_routine_security_type
-    result["bigquery_routine_ddl"] = attrs.bigquery_routine_ddl
+    result["bigquery_type"] = attrs.bigquery_type
+    result["bigquery_arguments"] = attrs.bigquery_arguments
+    result["bigquery_return_type"] = attrs.bigquery_return_type
+    result["bigquery_security_type"] = attrs.bigquery_security_type
+    result["bigquery_ddl"] = attrs.bigquery_ddl
     result["definition"] = attrs.definition
     result["sql_language"] = attrs.sql_language
     result["sql_runtime_version"] = attrs.sql_runtime_version
@@ -875,6 +838,7 @@ def _extract_bigquery_routine_attrs(attrs: BigqueryRoutineAttributes) -> dict:
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -915,9 +879,6 @@ def _bigquery_routine_to_nested(
         is_incomplete=bigquery_routine.is_incomplete,
         provenance_type=bigquery_routine.provenance_type,
         home_id=bigquery_routine.home_id,
-        depth=bigquery_routine.depth,
-        immediate_upstream=bigquery_routine.immediate_upstream,
-        immediate_downstream=bigquery_routine.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -951,6 +912,7 @@ def _bigquery_routine_from_nested(nested: BigqueryRoutineNested) -> BigqueryRout
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -959,9 +921,6 @@ def _bigquery_routine_from_nested(nested: BigqueryRoutineNested) -> BigqueryRout
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_bigquery_routine_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -992,21 +951,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-BigqueryRoutine.BIGQUERY_ROUTINE_TYPE = KeywordField(
-    "bigqueryRoutineType", "bigqueryRoutineType"
+BigqueryRoutine.BIGQUERY_TYPE = KeywordField("bigqueryType", "bigqueryType")
+BigqueryRoutine.BIGQUERY_ARGUMENTS = KeywordField(
+    "bigqueryArguments", "bigqueryArguments"
 )
-BigqueryRoutine.BIGQUERY_ROUTINE_ARGUMENTS = KeywordField(
-    "bigqueryRoutineArguments", "bigqueryRoutineArguments"
+BigqueryRoutine.BIGQUERY_RETURN_TYPE = KeywordField(
+    "bigqueryReturnType", "bigqueryReturnType"
 )
-BigqueryRoutine.BIGQUERY_ROUTINE_RETURN_TYPE = KeywordField(
-    "bigqueryRoutineReturnType", "bigqueryRoutineReturnType"
+BigqueryRoutine.BIGQUERY_SECURITY_TYPE = KeywordField(
+    "bigquerySecurityType", "bigquerySecurityType"
 )
-BigqueryRoutine.BIGQUERY_ROUTINE_SECURITY_TYPE = KeywordField(
-    "bigqueryRoutineSecurityType", "bigqueryRoutineSecurityType"
-)
-BigqueryRoutine.BIGQUERY_ROUTINE_DDL = KeywordField(
-    "bigqueryRoutineDdl", "bigqueryRoutineDdl"
-)
+BigqueryRoutine.BIGQUERY_DDL = KeywordField("bigqueryDdl", "bigqueryDdl")
 BigqueryRoutine.DEFINITION = KeywordField("definition", "definition")
 BigqueryRoutine.SQL_LANGUAGE = KeywordTextField(
     "sqlLanguage", "sqlLanguage", "sqlLanguage.text"
@@ -1065,11 +1020,18 @@ BigqueryRoutine.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 BigqueryRoutine.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+BigqueryRoutine.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 BigqueryRoutine.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 BigqueryRoutine.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 BigqueryRoutine.ANOMALO_CHECKS = RelationField("anomaloChecks")
 BigqueryRoutine.APPLICATION = RelationField("application")
 BigqueryRoutine.APPLICATION_FIELD = RelationField("applicationField")
+BigqueryRoutine.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+BigqueryRoutine.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 BigqueryRoutine.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 BigqueryRoutine.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 BigqueryRoutine.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
