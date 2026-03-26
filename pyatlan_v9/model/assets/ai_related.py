@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Dict, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -133,6 +133,15 @@ class RelatedAIModelVersion(RelatedAI):
 
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AIModelVersion" so it serializes correctly
+
+    ai_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the AI model to which this version belongs, used to navigate from a version back to its parent model."""
+
+    ai_model_version_stage: Union[str, None, UnsetType] = UNSET
+    """Lifecycle deployment stage of this AI model version, indicating its readiness for production use."""
+
+    ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

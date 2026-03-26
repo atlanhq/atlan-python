@@ -76,16 +76,16 @@ class RelatedWorkflowRun(RelatedWorkflow):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "WorkflowRun" so it serializes correctly
 
-    workflow_run_workflow_guid: Union[str, None, UnsetType] = UNSET
+    workflow_workflow_guid: Union[str, None, UnsetType] = UNSET
     """GUID of the workflow from which this run was created."""
 
-    workflow_run_type: Union[str, None, UnsetType] = UNSET
+    workflow_type: Union[str, None, UnsetType] = UNSET
     """Type of the workflow from which this run was created."""
 
-    workflow_run_action_choices: Union[List[str], None, UnsetType] = UNSET
+    workflow_action_choices: Union[List[str], None, UnsetType] = UNSET
     """List of workflow run action choices."""
 
-    workflow_run_on_asset_guid: Union[str, None, UnsetType] = UNSET
+    workflow_on_asset_guid: Union[str, None, UnsetType] = UNSET
     """The asset for which this run was created."""
 
     workflow_run_comment: Union[str, None, UnsetType] = UNSET
@@ -94,19 +94,19 @@ class RelatedWorkflowRun(RelatedWorkflow):
     workflow_run_config: Union[str, None, UnsetType] = UNSET
     """Details of the approval workflow run."""
 
-    workflow_run_status: Union[str, None, UnsetType] = UNSET
+    workflow_status: Union[str, None, UnsetType] = UNSET
     """Status of the run."""
 
-    workflow_run_expires_at: Union[int, None, UnsetType] = UNSET
+    workflow_expires_at: Union[int, None, UnsetType] = UNSET
     """Time at which this run will expire."""
 
-    workflow_run_created_by: Union[str, None, UnsetType] = UNSET
+    workflow_created_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who created this workflow run."""
 
-    workflow_run_updated_by: Union[str, None, UnsetType] = UNSET
+    workflow_updated_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who updated this workflow run."""
 
-    workflow_run_deleted_at: Union[int, None, UnsetType] = UNSET
+    workflow_deleted_at: Union[int, None, UnsetType] = UNSET
     """Deletion time of this workflow run."""
 
     def __post_init__(self) -> None:

@@ -40,6 +40,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -50,7 +51,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .dynamo_db_related import RelatedDynamoDBAttribute, RelatedDynamoDBTable
+from .dynamo_db_related import RelatedDynamoDBTable
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
@@ -66,6 +67,11 @@ from .snowflake_related import (
 )
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightFilter,
+    RelatedSqlInsightJoin,
+)
 from .sql_related import (
     RelatedCalculationView,
     RelatedColumn,
@@ -93,6 +99,7 @@ class DynamoDBAttribute(Asset):
     DYNAMO_DB_READ_CAPACITY_UNITS: ClassVar[Any] = None
     DYNAMO_DB_WRITE_CAPACITY_UNITS: ClassVar[Any] = None
     NO_SQL_SCHEMA_DEFINITION: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     DATA_TYPE: ClassVar[Any] = None
     SUB_DATA_TYPE: ClassVar[Any] = None
     COLUMN_COMPRESSION: ClassVar[Any] = None
@@ -161,6 +168,11 @@ class DynamoDBAttribute(Asset):
     NOSQL_COLLECTION_QUALIFIED_NAME: ClassVar[Any] = None
     COLUMN_IS_MEASURE: ClassVar[Any] = None
     COLUMN_MEASURE_TYPE: ClassVar[Any] = None
+    COLUMN_AI_INSIGHTS_IS_MEASURE: ClassVar[Any] = None
+    COLUMN_AI_INSIGHTS_MEASURE_TYPE: ClassVar[Any] = None
+    COLUMN_AI_INSIGHTS_IS_DIMENSION: ClassVar[Any] = None
+    COLUMN_AI_INSIGHTS_DIMENSION_TYPE: ClassVar[Any] = None
+    COLUMN_AI_INSIGHTS_FOREIGN_KEY_COLUMN_QUALIFIED_NAME: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -179,12 +191,19 @@ class DynamoDBAttribute(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    SQL_HAS_AI_INSIGHTS: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     COSMOS_MONGO_DB_COLLECTION: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -235,6 +254,12 @@ class DynamoDBAttribute(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_FILTERS: ClassVar[Any] = None
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DynamoDBAttribute"
 
     dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dynamoDBStatus"
@@ -265,6 +290,9 @@ class DynamoDBAttribute(Asset):
         default=UNSET, name="noSQLSchemaDefinition"
     )
     """Represents attributes for describing the key schema for the table and indexes."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     data_type: Union[str, None, UnsetType] = UNSET
     """Data type of values in this column."""
@@ -470,6 +498,23 @@ class DynamoDBAttribute(Asset):
     column_measure_type: Union[str, None, UnsetType] = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
 
+    column_ai_insights_is_measure: Union[bool, None, UnsetType] = UNSET
+    """When true, this column is identified as a measure/calculated column by AI analysis of query patterns."""
+
+    column_ai_insights_measure_type: Union[str, None, UnsetType] = UNSET
+    """Type of measure/calculated column as classified by AI analysis, for example: base, calculated, derived."""
+
+    column_ai_insights_is_dimension: Union[bool, None, UnsetType] = UNSET
+    """When true, this column is identified as a dimension by AI analysis of query patterns."""
+
+    column_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
+    """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
+
+    column_ai_insights_foreign_key_column_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
+    """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
+
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 
@@ -526,6 +571,21 @@ class DynamoDBAttribute(Asset):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -545,6 +605,12 @@ class DynamoDBAttribute(Asset):
         RelatedCosmosMongoDBCollection, None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -697,7 +763,7 @@ class DynamoDBAttribute(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
         UNSET
@@ -718,6 +784,24 @@ class DynamoDBAttribute(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_filters: Union[List[RelatedSqlInsightFilter], None, UnsetType] = UNSET
+    """Filter insights for this column."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
+
     def __post_init__(self) -> None:
         self.type_name = "DynamoDBAttribute"
 
@@ -726,78 +810,6 @@ class DynamoDBAttribute(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DynamoDBAttribute instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.table is UNSET:
-                errors.append("table is required for creation")
-            if self.table_name is UNSET:
-                errors.append("table_name is required for creation")
-            if self.table_qualified_name is UNSET:
-                errors.append("table_qualified_name is required for creation")
-            if self.order is UNSET:
-                errors.append("order is required for creation")
-        if errors:
-            raise ValueError(f"DynamoDBAttribute validation failed: {errors}")
-
-    def minimize(self) -> "DynamoDBAttribute":
-        """
-        Return a minimal copy of this DynamoDBAttribute with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DynamoDBAttribute with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DynamoDBAttribute instance with only the minimum required fields.
-        """
-        self.validate()
-        return DynamoDBAttribute(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDynamoDBAttribute":
-        """
-        Create a :class:`RelatedDynamoDBAttribute` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDynamoDBAttribute reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDynamoDBAttribute(guid=self.guid)
-        return RelatedDynamoDBAttribute(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -886,6 +898,9 @@ class DynamoDBAttributeAttributes(AssetAttributes):
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     data_type: Union[str, None, UnsetType] = UNSET
     """Data type of values in this column."""
 
@@ -1090,6 +1105,23 @@ class DynamoDBAttributeAttributes(AssetAttributes):
     column_measure_type: Union[str, None, UnsetType] = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
 
+    column_ai_insights_is_measure: Union[bool, None, UnsetType] = UNSET
+    """When true, this column is identified as a measure/calculated column by AI analysis of query patterns."""
+
+    column_ai_insights_measure_type: Union[str, None, UnsetType] = UNSET
+    """Type of measure/calculated column as classified by AI analysis, for example: base, calculated, derived."""
+
+    column_ai_insights_is_dimension: Union[bool, None, UnsetType] = UNSET
+    """When true, this column is identified as a dimension by AI analysis of query patterns."""
+
+    column_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
+    """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
+
+    column_ai_insights_foreign_key_column_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
+    """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
+
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
 
@@ -1146,6 +1178,21 @@ class DynamoDBAttributeAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
 
 class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     """DynamoDBAttribute-specific relationship attributes for nested API format."""
@@ -1169,6 +1216,12 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
         RelatedCosmosMongoDBCollection, None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -1321,7 +1374,7 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
         UNSET
@@ -1341,6 +1394,24 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_filters: Union[List[RelatedSqlInsightFilter], None, UnsetType] = UNSET
+    """Filter insights for this column."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
 
 
 class DynamoDBAttributeNested(AssetNested):
@@ -1370,6 +1441,8 @@ _DYNAMO_DB_ATTRIBUTE_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "cosmos_mongo_db_collection",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -1420,6 +1493,10 @@ _DYNAMO_DB_ATTRIBUTE_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
+    "sql_insight_outgoing_joins",
+    "sql_insight_incoming_joins",
+    "sql_insight_filters",
+    "sql_insight_business_questions",
 ]
 
 
@@ -1434,6 +1511,7 @@ def _populate_dynamo_db_attribute_attrs(
     attrs.dynamo_db_read_capacity_units = obj.dynamo_db_read_capacity_units
     attrs.dynamo_db_write_capacity_units = obj.dynamo_db_write_capacity_units
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.data_type = obj.data_type
     attrs.sub_data_type = obj.sub_data_type
     attrs.column_compression = obj.column_compression
@@ -1502,6 +1580,13 @@ def _populate_dynamo_db_attribute_attrs(
     attrs.nosql_collection_qualified_name = obj.nosql_collection_qualified_name
     attrs.column_is_measure = obj.column_is_measure
     attrs.column_measure_type = obj.column_measure_type
+    attrs.column_ai_insights_is_measure = obj.column_ai_insights_is_measure
+    attrs.column_ai_insights_measure_type = obj.column_ai_insights_measure_type
+    attrs.column_ai_insights_is_dimension = obj.column_ai_insights_is_dimension
+    attrs.column_ai_insights_dimension_type = obj.column_ai_insights_dimension_type
+    attrs.column_ai_insights_foreign_key_column_qualified_name = (
+        obj.column_ai_insights_foreign_key_column_qualified_name
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1520,6 +1605,15 @@ def _populate_dynamo_db_attribute_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.sql_has_ai_insights = obj.sql_has_ai_insights
+    attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
+    attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
 
 
 def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> dict:
@@ -1531,6 +1625,7 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
     result["dynamo_db_read_capacity_units"] = attrs.dynamo_db_read_capacity_units
     result["dynamo_db_write_capacity_units"] = attrs.dynamo_db_write_capacity_units
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["data_type"] = attrs.data_type
     result["sub_data_type"] = attrs.sub_data_type
     result["column_compression"] = attrs.column_compression
@@ -1603,6 +1698,15 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
     result["nosql_collection_qualified_name"] = attrs.nosql_collection_qualified_name
     result["column_is_measure"] = attrs.column_is_measure
     result["column_measure_type"] = attrs.column_measure_type
+    result["column_ai_insights_is_measure"] = attrs.column_ai_insights_is_measure
+    result["column_ai_insights_measure_type"] = attrs.column_ai_insights_measure_type
+    result["column_ai_insights_is_dimension"] = attrs.column_ai_insights_is_dimension
+    result["column_ai_insights_dimension_type"] = (
+        attrs.column_ai_insights_dimension_type
+    )
+    result["column_ai_insights_foreign_key_column_qualified_name"] = (
+        attrs.column_ai_insights_foreign_key_column_qualified_name
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1623,6 +1727,17 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
+    result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
     return result
 
 
@@ -1663,9 +1778,6 @@ def _dynamo_db_attribute_to_nested(
         is_incomplete=dynamo_db_attribute.is_incomplete,
         provenance_type=dynamo_db_attribute.provenance_type,
         home_id=dynamo_db_attribute.home_id,
-        depth=dynamo_db_attribute.depth,
-        immediate_upstream=dynamo_db_attribute.immediate_upstream,
-        immediate_downstream=dynamo_db_attribute.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1701,6 +1813,7 @@ def _dynamo_db_attribute_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1709,9 +1822,6 @@ def _dynamo_db_attribute_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dynamo_db_attribute_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1759,6 +1869,9 @@ DynamoDBAttribute.DYNAMO_DB_WRITE_CAPACITY_UNITS = NumericField(
 )
 DynamoDBAttribute.NO_SQL_SCHEMA_DEFINITION = KeywordField(
     "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
+DynamoDBAttribute.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
 )
 DynamoDBAttribute.DATA_TYPE = KeywordTextField("dataType", "dataType", "dataType.text")
 DynamoDBAttribute.SUB_DATA_TYPE = KeywordField("subDataType", "subDataType")
@@ -1890,6 +2003,22 @@ DynamoDBAttribute.COLUMN_IS_MEASURE = BooleanField("columnIsMeasure", "columnIsM
 DynamoDBAttribute.COLUMN_MEASURE_TYPE = KeywordField(
     "columnMeasureType", "columnMeasureType"
 )
+DynamoDBAttribute.COLUMN_AI_INSIGHTS_IS_MEASURE = BooleanField(
+    "columnAiInsightsIsMeasure", "columnAiInsightsIsMeasure"
+)
+DynamoDBAttribute.COLUMN_AI_INSIGHTS_MEASURE_TYPE = KeywordField(
+    "columnAiInsightsMeasureType", "columnAiInsightsMeasureType"
+)
+DynamoDBAttribute.COLUMN_AI_INSIGHTS_IS_DIMENSION = BooleanField(
+    "columnAiInsightsIsDimension", "columnAiInsightsIsDimension"
+)
+DynamoDBAttribute.COLUMN_AI_INSIGHTS_DIMENSION_TYPE = KeywordField(
+    "columnAiInsightsDimensionType", "columnAiInsightsDimensionType"
+)
+DynamoDBAttribute.COLUMN_AI_INSIGHTS_FOREIGN_KEY_COLUMN_QUALIFIED_NAME = KeywordField(
+    "columnAiInsightsForeignKeyColumnQualifiedName",
+    "columnAiInsightsForeignKeyColumnQualifiedName",
+)
 DynamoDBAttribute.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DynamoDBAttribute.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DynamoDBAttribute.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
@@ -1924,12 +2053,32 @@ DynamoDBAttribute.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 DynamoDBAttribute.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+DynamoDBAttribute.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+DynamoDBAttribute.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+DynamoDBAttribute.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+DynamoDBAttribute.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+DynamoDBAttribute.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
 DynamoDBAttribute.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DynamoDBAttribute.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DynamoDBAttribute.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DynamoDBAttribute.APPLICATION = RelationField("application")
 DynamoDBAttribute.APPLICATION_FIELD = RelationField("applicationField")
 DynamoDBAttribute.COSMOS_MONGO_DB_COLLECTION = RelationField("cosmosMongoDBCollection")
+DynamoDBAttribute.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DynamoDBAttribute.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DynamoDBAttribute.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DynamoDBAttribute.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DynamoDBAttribute.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -1986,3 +2135,9 @@ DynamoDBAttribute.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
 DynamoDBAttribute.SODA_CHECKS = RelationField("sodaChecks")
 DynamoDBAttribute.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DynamoDBAttribute.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+DynamoDBAttribute.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+DynamoDBAttribute.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+DynamoDBAttribute.SQL_INSIGHT_FILTERS = RelationField("sqlInsightFilters")
+DynamoDBAttribute.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)
