@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -45,7 +46,7 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .redash_related import RelatedRedashQuery, RelatedRedashVisualization
+from .redash_related import RelatedRedashVisualization
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
@@ -70,11 +71,14 @@ class RedashQuery(Asset):
     REDASH_QUERY_LAST_EXECUTED_AT: ClassVar[Any] = None
     REDASH_QUERY_SCHEDULE_HUMANIZED: ClassVar[Any] = None
     REDASH_IS_PUBLISHED: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -100,6 +104,8 @@ class RedashQuery(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "RedashQuery"
+
     redash_query_sql: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="redashQuerySQL"
     )
@@ -123,6 +129,9 @@ class RedashQuery(Asset):
     redash_is_published: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -137,6 +146,12 @@ class RedashQuery(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -209,7 +224,7 @@ class RedashQuery(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -222,66 +237,6 @@ class RedashQuery(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "RedashQuery"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this RedashQuery instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"RedashQuery validation failed: {errors}")
-
-    def minimize(self) -> "RedashQuery":
-        """
-        Return a minimal copy of this RedashQuery with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new RedashQuery with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new RedashQuery instance with only the minimum required fields.
-        """
-        self.validate()
-        return RedashQuery(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedRedashQuery":
-        """
-        Create a :class:`RelatedRedashQuery` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedRedashQuery reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedRedashQuery(guid=self.guid)
-        return RelatedRedashQuery(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -361,6 +316,9 @@ class RedashQueryAttributes(AssetAttributes):
     redash_is_published: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is published in Redash (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     """RedashQuery-specific relationship attributes for nested API format."""
@@ -379,6 +337,12 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -451,7 +415,7 @@ class RedashQueryRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -487,6 +451,8 @@ _REDASH_QUERY_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -526,6 +492,7 @@ def _populate_redash_query_attrs(
     attrs.redash_query_last_executed_at = obj.redash_query_last_executed_at
     attrs.redash_query_schedule_humanized = obj.redash_query_schedule_humanized
     attrs.redash_is_published = obj.redash_is_published
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_redash_query_attrs(attrs: RedashQueryAttributes) -> dict:
@@ -540,6 +507,7 @@ def _extract_redash_query_attrs(attrs: RedashQueryAttributes) -> dict:
     result["redash_query_last_executed_at"] = attrs.redash_query_last_executed_at
     result["redash_query_schedule_humanized"] = attrs.redash_query_schedule_humanized
     result["redash_is_published"] = attrs.redash_is_published
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -576,9 +544,6 @@ def _redash_query_to_nested(redash_query: RedashQuery) -> RedashQueryNested:
         is_incomplete=redash_query.is_incomplete,
         provenance_type=redash_query.provenance_type,
         home_id=redash_query.home_id,
-        depth=redash_query.depth,
-        immediate_upstream=redash_query.immediate_upstream,
-        immediate_downstream=redash_query.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -610,6 +575,7 @@ def _redash_query_from_nested(nested: RedashQueryNested) -> RedashQuery:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -618,9 +584,6 @@ def _redash_query_from_nested(nested: RedashQueryNested) -> RedashQuery:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_redash_query_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -668,11 +631,18 @@ RedashQuery.REDASH_QUERY_SCHEDULE_HUMANIZED = KeywordTextField(
     "redashQueryScheduleHumanized.text",
 )
 RedashQuery.REDASH_IS_PUBLISHED = BooleanField("redashIsPublished", "redashIsPublished")
+RedashQuery.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 RedashQuery.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 RedashQuery.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 RedashQuery.ANOMALO_CHECKS = RelationField("anomaloChecks")
 RedashQuery.APPLICATION = RelationField("application")
 RedashQuery.APPLICATION_FIELD = RelationField("applicationField")
+RedashQuery.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+RedashQuery.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 RedashQuery.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 RedashQuery.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 RedashQuery.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

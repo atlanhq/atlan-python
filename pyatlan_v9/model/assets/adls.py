@@ -25,7 +25,6 @@ from pyatlan_v9.model.conversion_utils import (
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .adls_related import RelatedADLS
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -38,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -64,6 +64,7 @@ class ADLS(Asset):
 
     ADLS_ACCOUNT_QUALIFIED_NAME: ClassVar[Any] = None
     ADLS_ACCOUNT_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     AZURE_RESOURCE_ID: ClassVar[Any] = None
     AZURE_LOCATION: ClassVar[Any] = None
     ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[Any] = None
@@ -74,6 +75,8 @@ class ADLS(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -98,11 +101,16 @@ class ADLS(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "ADLS"
+
     adls_account_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the account for this ADLS asset."""
 
     adls_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account for this ADLS asset."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     azure_resource_id: Union[str, None, UnsetType] = UNSET
     """Resource identifier of this asset in Azure."""
@@ -133,6 +141,12 @@ class ADLS(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -200,7 +214,7 @@ class ADLS(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -213,66 +227,6 @@ class ADLS(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ADLS"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this ADLS instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"ADLS validation failed: {errors}")
-
-    def minimize(self) -> "ADLS":
-        """
-        Return a minimal copy of this ADLS with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new ADLS with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new ADLS instance with only the minimum required fields.
-        """
-        self.validate()
-        return ADLS(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedADLS":
-        """
-        Create a :class:`RelatedADLS` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedADLS reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedADLS(guid=self.guid)
-        return RelatedADLS(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -335,6 +289,9 @@ class ADLSAttributes(AssetAttributes):
     adls_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account for this ADLS asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     azure_resource_id: Union[str, None, UnsetType] = UNSET
     """Resource identifier of this asset in Azure."""
 
@@ -368,6 +325,12 @@ class ADLSRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -435,7 +398,7 @@ class ADLSRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -467,6 +430,8 @@ _ADLS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -498,6 +463,7 @@ def _populate_adls_attrs(attrs: ADLSAttributes, obj: ADLS) -> None:
     _populate_asset_attrs(attrs, obj)
     attrs.adls_account_qualified_name = obj.adls_account_qualified_name
     attrs.adls_account_name = obj.adls_account_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.azure_resource_id = obj.azure_resource_id
     attrs.azure_location = obj.azure_location
     attrs.adls_account_secondary_location = obj.adls_account_secondary_location
@@ -510,6 +476,7 @@ def _extract_adls_attrs(attrs: ADLSAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["adls_account_qualified_name"] = attrs.adls_account_qualified_name
     result["adls_account_name"] = attrs.adls_account_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["azure_resource_id"] = attrs.azure_resource_id
     result["azure_location"] = attrs.azure_location
     result["adls_account_secondary_location"] = attrs.adls_account_secondary_location
@@ -551,9 +518,6 @@ def _adls_to_nested(adls: ADLS) -> ADLSNested:
         is_incomplete=adls.is_incomplete,
         provenance_type=adls.provenance_type,
         home_id=adls.home_id,
-        depth=adls.depth,
-        immediate_upstream=adls.immediate_upstream,
-        immediate_downstream=adls.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -583,6 +547,7 @@ def _adls_from_nested(nested: ADLSNested) -> ADLS:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -591,9 +556,6 @@ def _adls_from_nested(nested: ADLSNested) -> ADLS:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_adls_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -626,6 +588,7 @@ ADLS.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField(
     "adlsAccountQualifiedName.text",
 )
 ADLS.ADLS_ACCOUNT_NAME = KeywordField("adlsAccountName", "adlsAccountName")
+ADLS.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 ADLS.AZURE_RESOURCE_ID = KeywordTextField(
     "azureResourceId", "azureResourceId", "azureResourceId.text"
 )
@@ -642,6 +605,8 @@ ADLS.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ADLS.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ADLS.APPLICATION = RelationField("application")
 ADLS.APPLICATION_FIELD = RelationField("applicationField")
+ADLS.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+ADLS.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 ADLS.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ADLS.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ADLS.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

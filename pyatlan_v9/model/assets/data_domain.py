@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataDomain, RelatedDataProduct, RelatedStakeholder
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -65,11 +66,14 @@ class DataDomain(Asset):
 
     PARENT_DOMAIN_QUALIFIED_NAME: ClassVar[Any] = None
     SUPER_DOMAIN_QUALIFIED_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     SUB_DOMAINS: ClassVar[Any] = None
     PARENT_DOMAIN: ClassVar[Any] = None
     DATA_PRODUCTS: ClassVar[Any] = None
@@ -98,11 +102,16 @@ class DataDomain(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "DataDomain"
+
     parent_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent domain in which this asset exists."""
 
     super_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the top-level domain in which this asset exists."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -118,6 +127,12 @@ class DataDomain(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     sub_domains: Union[List[RelatedDataDomain], None, UnsetType] = UNSET
     """Sub-data domains that exist within this data domain."""
@@ -197,7 +212,7 @@ class DataDomain(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -210,66 +225,6 @@ class DataDomain(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DataDomain"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DataDomain instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DataDomain validation failed: {errors}")
-
-    def minimize(self) -> "DataDomain":
-        """
-        Return a minimal copy of this DataDomain with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DataDomain with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DataDomain instance with only the minimum required fields.
-        """
-        self.validate()
-        return DataDomain(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataDomain":
-        """
-        Create a :class:`RelatedDataDomain` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDataDomain reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDataDomain(guid=self.guid)
-        return RelatedDataDomain(qualified_name=self.qualified_name)
 
     @classmethod
     def _get_super_domain_qualified_name(
@@ -393,6 +348,9 @@ class DataDomainAttributes(AssetAttributes):
     super_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the top-level domain in which this asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class DataDomainRelationshipAttributes(AssetRelationshipAttributes):
     """DataDomain-specific relationship attributes for nested API format."""
@@ -411,6 +369,12 @@ class DataDomainRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     sub_domains: Union[List[RelatedDataDomain], None, UnsetType] = UNSET
     """Sub-data domains that exist within this data domain."""
@@ -490,7 +454,7 @@ class DataDomainRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -526,6 +490,8 @@ _DATA_DOMAIN_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "sub_domains",
     "parent_domain",
     "data_products",
@@ -561,6 +527,7 @@ def _populate_data_domain_attrs(attrs: DataDomainAttributes, obj: DataDomain) ->
     _populate_asset_attrs(attrs, obj)
     attrs.parent_domain_qualified_name = obj.parent_domain_qualified_name
     attrs.super_domain_qualified_name = obj.super_domain_qualified_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_data_domain_attrs(attrs: DataDomainAttributes) -> dict:
@@ -568,6 +535,7 @@ def _extract_data_domain_attrs(attrs: DataDomainAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["parent_domain_qualified_name"] = attrs.parent_domain_qualified_name
     result["super_domain_qualified_name"] = attrs.super_domain_qualified_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -604,9 +572,6 @@ def _data_domain_to_nested(data_domain: DataDomain) -> DataDomainNested:
         is_incomplete=data_domain.is_incomplete,
         provenance_type=data_domain.provenance_type,
         home_id=data_domain.home_id,
-        depth=data_domain.depth,
-        immediate_upstream=data_domain.immediate_upstream,
-        immediate_downstream=data_domain.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -638,6 +603,7 @@ def _data_domain_from_nested(nested: DataDomainNested) -> DataDomain:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -646,9 +612,6 @@ def _data_domain_from_nested(nested: DataDomainNested) -> DataDomain:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_data_domain_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -670,6 +633,7 @@ def _data_domain_from_nested_bytes(data: bytes, serde: Serde) -> DataDomain:
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
     KeywordTextField,
     RelationField,
 )
@@ -684,11 +648,16 @@ DataDomain.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField(
     "superDomainQualifiedName",
     "superDomainQualifiedName.text",
 )
+DataDomain.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DataDomain.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataDomain.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataDomain.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DataDomain.APPLICATION = RelationField("application")
 DataDomain.APPLICATION_FIELD = RelationField("applicationField")
+DataDomain.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DataDomain.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DataDomain.SUB_DOMAINS = RelationField("subDomains")
 DataDomain.PARENT_DOMAIN = RelationField("parentDomain")
 DataDomain.DATA_PRODUCTS = RelationField("dataProducts")

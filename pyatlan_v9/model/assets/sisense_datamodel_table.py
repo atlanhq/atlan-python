@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -48,11 +49,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .sisense_related import (
-    RelatedSisenseDatamodel,
-    RelatedSisenseDatamodelTable,
-    RelatedSisenseWidget,
-)
+from .sisense_related import RelatedSisenseDatamodel, RelatedSisenseWidget
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -68,18 +65,21 @@ class SisenseDatamodelTable(Asset):
     """
 
     SISENSE_DATAMODEL_QUALIFIED_NAME: ClassVar[Any] = None
-    SISENSE_DATAMODEL_TABLE_COLUMN_COUNT: ClassVar[Any] = None
-    SISENSE_DATAMODEL_TABLE_TYPE: ClassVar[Any] = None
+    SISENSE_COLUMN_COUNT: ClassVar[Any] = None
+    SISENSE_TYPE: ClassVar[Any] = None
     SISENSE_DATAMODEL_TABLE_EXPRESSION: ClassVar[Any] = None
-    SISENSE_DATAMODEL_TABLE_IS_MATERIALIZED: ClassVar[Any] = None
-    SISENSE_DATAMODEL_TABLE_IS_HIDDEN: ClassVar[Any] = None
-    SISENSE_DATAMODEL_TABLE_SCHEDULE: ClassVar[Any] = None
-    SISENSE_DATAMODEL_TABLE_LIVE_QUERY_SETTINGS: ClassVar[Any] = None
+    SISENSE_IS_MATERIALIZED: ClassVar[Any] = None
+    SISENSE_IS_HIDDEN: ClassVar[Any] = None
+    SISENSE_SCHEDULE: ClassVar[Any] = None
+    SISENSE_LIVE_QUERY_SETTINGS: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -106,29 +106,34 @@ class SisenseDatamodelTable(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "SisenseDatamodelTable"
+
     sisense_datamodel_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the datamodel in which this datamodel table exists."""
 
-    sisense_datamodel_table_column_count: Union[int, None, UnsetType] = UNSET
+    sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this datamodel table."""
 
-    sisense_datamodel_table_type: Union[str, None, UnsetType] = UNSET
+    sisense_type: Union[str, None, UnsetType] = UNSET
     """Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables."""
 
     sisense_datamodel_table_expression: Union[str, None, UnsetType] = UNSET
     """SQL expression of this datamodel table."""
 
-    sisense_datamodel_table_is_materialized: Union[bool, None, UnsetType] = UNSET
+    sisense_is_materialized: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is materialised (true) or not (false)."""
 
-    sisense_datamodel_table_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sisense_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is hidden in Sisense (true) or not (false)."""
 
-    sisense_datamodel_table_schedule: Union[str, None, UnsetType] = UNSET
+    sisense_schedule: Union[str, None, UnsetType] = UNSET
     """JSON specifying the refresh schedule of this datamodel table."""
 
-    sisense_datamodel_table_live_query_settings: Union[str, None, UnsetType] = UNSET
+    sisense_live_query_settings: Union[str, None, UnsetType] = UNSET
     """JSON specifying the LiveQuery settings of this datamodel table."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -144,6 +149,12 @@ class SisenseDatamodelTable(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -211,7 +222,7 @@ class SisenseDatamodelTable(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     sisense_datamodel: Union[RelatedSisenseDatamodel, None, UnsetType] = UNSET
     """Datamodel in which this datamodel table exists."""
@@ -236,76 +247,6 @@ class SisenseDatamodelTable(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SisenseDatamodelTable instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.sisense_datamodel is UNSET:
-                errors.append("sisense_datamodel is required for creation")
-            if self.sisense_datamodel_qualified_name is UNSET:
-                errors.append(
-                    "sisense_datamodel_qualified_name is required for creation"
-                )
-        if errors:
-            raise ValueError(f"SisenseDatamodelTable validation failed: {errors}")
-
-    def minimize(self) -> "SisenseDatamodelTable":
-        """
-        Return a minimal copy of this SisenseDatamodelTable with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SisenseDatamodelTable with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SisenseDatamodelTable instance with only the minimum required fields.
-        """
-        self.validate()
-        return SisenseDatamodelTable(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSisenseDatamodelTable":
-        """
-        Create a :class:`RelatedSisenseDatamodelTable` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSisenseDatamodelTable reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSisenseDatamodelTable(guid=self.guid)
-        return RelatedSisenseDatamodelTable(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -367,26 +308,29 @@ class SisenseDatamodelTableAttributes(AssetAttributes):
     sisense_datamodel_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the datamodel in which this datamodel table exists."""
 
-    sisense_datamodel_table_column_count: Union[int, None, UnsetType] = UNSET
+    sisense_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this datamodel table."""
 
-    sisense_datamodel_table_type: Union[str, None, UnsetType] = UNSET
+    sisense_type: Union[str, None, UnsetType] = UNSET
     """Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables."""
 
     sisense_datamodel_table_expression: Union[str, None, UnsetType] = UNSET
     """SQL expression of this datamodel table."""
 
-    sisense_datamodel_table_is_materialized: Union[bool, None, UnsetType] = UNSET
+    sisense_is_materialized: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is materialised (true) or not (false)."""
 
-    sisense_datamodel_table_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sisense_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this datamodel table is hidden in Sisense (true) or not (false)."""
 
-    sisense_datamodel_table_schedule: Union[str, None, UnsetType] = UNSET
+    sisense_schedule: Union[str, None, UnsetType] = UNSET
     """JSON specifying the refresh schedule of this datamodel table."""
 
-    sisense_datamodel_table_live_query_settings: Union[str, None, UnsetType] = UNSET
+    sisense_live_query_settings: Union[str, None, UnsetType] = UNSET
     """JSON specifying the LiveQuery settings of this datamodel table."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
 
 class SisenseDatamodelTableRelationshipAttributes(AssetRelationshipAttributes):
@@ -406,6 +350,12 @@ class SisenseDatamodelTableRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -473,7 +423,7 @@ class SisenseDatamodelTableRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     sisense_datamodel: Union[RelatedSisenseDatamodel, None, UnsetType] = UNSET
     """Datamodel in which this datamodel table exists."""
@@ -517,6 +467,8 @@ _SISENSE_DATAMODEL_TABLE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -551,19 +503,14 @@ def _populate_sisense_datamodel_table_attrs(
     """Populate SisenseDatamodelTable-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sisense_datamodel_qualified_name = obj.sisense_datamodel_qualified_name
-    attrs.sisense_datamodel_table_column_count = (
-        obj.sisense_datamodel_table_column_count
-    )
-    attrs.sisense_datamodel_table_type = obj.sisense_datamodel_table_type
+    attrs.sisense_column_count = obj.sisense_column_count
+    attrs.sisense_type = obj.sisense_type
     attrs.sisense_datamodel_table_expression = obj.sisense_datamodel_table_expression
-    attrs.sisense_datamodel_table_is_materialized = (
-        obj.sisense_datamodel_table_is_materialized
-    )
-    attrs.sisense_datamodel_table_is_hidden = obj.sisense_datamodel_table_is_hidden
-    attrs.sisense_datamodel_table_schedule = obj.sisense_datamodel_table_schedule
-    attrs.sisense_datamodel_table_live_query_settings = (
-        obj.sisense_datamodel_table_live_query_settings
-    )
+    attrs.sisense_is_materialized = obj.sisense_is_materialized
+    attrs.sisense_is_hidden = obj.sisense_is_hidden
+    attrs.sisense_schedule = obj.sisense_schedule
+    attrs.sisense_live_query_settings = obj.sisense_live_query_settings
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_sisense_datamodel_table_attrs(
@@ -572,23 +519,16 @@ def _extract_sisense_datamodel_table_attrs(
     """Extract all SisenseDatamodelTable attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["sisense_datamodel_qualified_name"] = attrs.sisense_datamodel_qualified_name
-    result["sisense_datamodel_table_column_count"] = (
-        attrs.sisense_datamodel_table_column_count
-    )
-    result["sisense_datamodel_table_type"] = attrs.sisense_datamodel_table_type
+    result["sisense_column_count"] = attrs.sisense_column_count
+    result["sisense_type"] = attrs.sisense_type
     result["sisense_datamodel_table_expression"] = (
         attrs.sisense_datamodel_table_expression
     )
-    result["sisense_datamodel_table_is_materialized"] = (
-        attrs.sisense_datamodel_table_is_materialized
-    )
-    result["sisense_datamodel_table_is_hidden"] = (
-        attrs.sisense_datamodel_table_is_hidden
-    )
-    result["sisense_datamodel_table_schedule"] = attrs.sisense_datamodel_table_schedule
-    result["sisense_datamodel_table_live_query_settings"] = (
-        attrs.sisense_datamodel_table_live_query_settings
-    )
+    result["sisense_is_materialized"] = attrs.sisense_is_materialized
+    result["sisense_is_hidden"] = attrs.sisense_is_hidden
+    result["sisense_schedule"] = attrs.sisense_schedule
+    result["sisense_live_query_settings"] = attrs.sisense_live_query_settings
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -629,9 +569,6 @@ def _sisense_datamodel_table_to_nested(
         is_incomplete=sisense_datamodel_table.is_incomplete,
         provenance_type=sisense_datamodel_table.provenance_type,
         home_id=sisense_datamodel_table.home_id,
-        depth=sisense_datamodel_table.depth,
-        immediate_upstream=sisense_datamodel_table.immediate_upstream,
-        immediate_downstream=sisense_datamodel_table.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -667,6 +604,7 @@ def _sisense_datamodel_table_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -675,9 +613,6 @@ def _sisense_datamodel_table_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sisense_datamodel_table_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -715,26 +650,27 @@ SisenseDatamodelTable.SISENSE_DATAMODEL_QUALIFIED_NAME = KeywordTextField(
     "sisenseDatamodelQualifiedName",
     "sisenseDatamodelQualifiedName.text",
 )
-SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_COLUMN_COUNT = NumericField(
-    "sisenseDatamodelTableColumnCount", "sisenseDatamodelTableColumnCount"
+SisenseDatamodelTable.SISENSE_COLUMN_COUNT = NumericField(
+    "sisenseColumnCount", "sisenseColumnCount"
 )
-SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_TYPE = KeywordField(
-    "sisenseDatamodelTableType", "sisenseDatamodelTableType"
-)
+SisenseDatamodelTable.SISENSE_TYPE = KeywordField("sisenseType", "sisenseType")
 SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_EXPRESSION = KeywordField(
     "sisenseDatamodelTableExpression", "sisenseDatamodelTableExpression"
 )
-SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_IS_MATERIALIZED = BooleanField(
-    "sisenseDatamodelTableIsMaterialized", "sisenseDatamodelTableIsMaterialized"
+SisenseDatamodelTable.SISENSE_IS_MATERIALIZED = BooleanField(
+    "sisenseIsMaterialized", "sisenseIsMaterialized"
 )
-SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_IS_HIDDEN = BooleanField(
-    "sisenseDatamodelTableIsHidden", "sisenseDatamodelTableIsHidden"
+SisenseDatamodelTable.SISENSE_IS_HIDDEN = BooleanField(
+    "sisenseIsHidden", "sisenseIsHidden"
 )
-SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_SCHEDULE = KeywordField(
-    "sisenseDatamodelTableSchedule", "sisenseDatamodelTableSchedule"
+SisenseDatamodelTable.SISENSE_SCHEDULE = KeywordField(
+    "sisenseSchedule", "sisenseSchedule"
 )
-SisenseDatamodelTable.SISENSE_DATAMODEL_TABLE_LIVE_QUERY_SETTINGS = KeywordField(
-    "sisenseDatamodelTableLiveQuerySettings", "sisenseDatamodelTableLiveQuerySettings"
+SisenseDatamodelTable.SISENSE_LIVE_QUERY_SETTINGS = KeywordField(
+    "sisenseLiveQuerySettings", "sisenseLiveQuerySettings"
+)
+SisenseDatamodelTable.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
 )
 SisenseDatamodelTable.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SisenseDatamodelTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
@@ -743,6 +679,10 @@ SisenseDatamodelTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 SisenseDatamodelTable.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SisenseDatamodelTable.APPLICATION = RelationField("application")
 SisenseDatamodelTable.APPLICATION_FIELD = RelationField("applicationField")
+SisenseDatamodelTable.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SisenseDatamodelTable.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SisenseDatamodelTable.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
 )

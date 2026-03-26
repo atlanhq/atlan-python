@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -65,6 +66,10 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -104,11 +109,19 @@ class DremioFolder(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    SQL_HAS_AI_INSIGHTS: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -145,6 +158,11 @@ class DremioFolder(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DremioFolder"
 
     dremio_parent_asset_type: Union[str, None, UnsetType] = UNSET
     """Type of top level asset that contains this folder."""
@@ -229,6 +247,24 @@ class DremioFolder(Asset):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -243,6 +279,12 @@ class DremioFolder(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -352,7 +394,7 @@ class DremioFolder(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -368,6 +410,21 @@ class DremioFolder(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
+
     def __post_init__(self) -> None:
         self.type_name = "DremioFolder"
 
@@ -376,76 +433,6 @@ class DremioFolder(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DremioFolder instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.dremio_source is UNSET:
-                errors.append("dremio_source is required for creation")
-            if self.dremio_source_name is UNSET:
-                errors.append("dremio_source_name is required for creation")
-            if self.dremio_source_qualified_name is UNSET:
-                errors.append("dremio_source_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"DremioFolder validation failed: {errors}")
-
-    def minimize(self) -> "DremioFolder":
-        """
-        Return a minimal copy of this DremioFolder with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DremioFolder with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DremioFolder instance with only the minimum required fields.
-        """
-        self.validate()
-        return DremioFolder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDremioFolder":
-        """
-        Create a :class:`RelatedDremioFolder` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDremioFolder reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDremioFolder(guid=self.guid)
-        return RelatedDremioFolder(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -585,6 +572,24 @@ class DremioFolderAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     """DremioFolder-specific relationship attributes for nested API format."""
@@ -603,6 +608,12 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -712,7 +723,7 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -727,6 +738,21 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
 
 
 class DremioFolderNested(AssetNested):
@@ -755,6 +781,8 @@ _DREMIO_FOLDER_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -791,6 +819,9 @@ _DREMIO_FOLDER_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
+    "sql_insight_outgoing_joins",
+    "sql_insight_incoming_joins",
+    "sql_insight_business_questions",
 ]
 
 
@@ -826,6 +857,16 @@ def _populate_dremio_folder_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.sql_has_ai_insights = obj.sql_has_ai_insights
+    attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
+    attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_dremio_folder_attrs(attrs: DremioFolderAttributes) -> dict:
@@ -862,6 +903,18 @@ def _extract_dremio_folder_attrs(attrs: DremioFolderAttributes) -> dict:
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
+    result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -898,9 +951,6 @@ def _dremio_folder_to_nested(dremio_folder: DremioFolder) -> DremioFolderNested:
         is_incomplete=dremio_folder.is_incomplete,
         provenance_type=dremio_folder.provenance_type,
         home_id=dremio_folder.home_id,
-        depth=dremio_folder.depth,
-        immediate_upstream=dremio_folder.immediate_upstream,
-        immediate_downstream=dremio_folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -934,6 +984,7 @@ def _dremio_folder_from_nested(nested: DremioFolderNested) -> DremioFolder:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -942,9 +993,6 @@ def _dremio_folder_from_nested(nested: DremioFolderNested) -> DremioFolder:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dremio_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1025,11 +1073,32 @@ DremioFolder.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 DremioFolder.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+DremioFolder.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
+DremioFolder.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+DremioFolder.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+DremioFolder.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+DremioFolder.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+DremioFolder.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DremioFolder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DremioFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DremioFolder.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DremioFolder.APPLICATION = RelationField("application")
 DremioFolder.APPLICATION_FIELD = RelationField("applicationField")
+DremioFolder.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DremioFolder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DremioFolder.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DremioFolder.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DremioFolder.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -1068,3 +1137,8 @@ DremioFolder.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
 DremioFolder.SODA_CHECKS = RelationField("sodaChecks")
 DremioFolder.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DremioFolder.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+DremioFolder.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+DremioFolder.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+DremioFolder.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)
