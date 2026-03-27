@@ -27,7 +27,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .adls_related import RelatedADLSAccount, RelatedADLSContainer, RelatedADLSObject
+from .adls_related import RelatedADLSAccount, RelatedADLSObject
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -40,6 +40,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -84,6 +85,8 @@ class ADLSContainer(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -107,6 +110,8 @@ class ADLSContainer(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ADLSContainer"
 
     adls_container_url: Union[str, None, UnsetType] = UNSET
     """URL of this container."""
@@ -169,6 +174,12 @@ class ADLSContainer(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -255,76 +266,6 @@ class ADLSContainer(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this ADLSContainer instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.adls_account is UNSET:
-                errors.append("adls_account is required for creation")
-            if self.adls_account_name is UNSET:
-                errors.append("adls_account_name is required for creation")
-            if self.adls_account_qualified_name is UNSET:
-                errors.append("adls_account_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"ADLSContainer validation failed: {errors}")
-
-    def minimize(self) -> "ADLSContainer":
-        """
-        Return a minimal copy of this ADLSContainer with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new ADLSContainer with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new ADLSContainer instance with only the minimum required fields.
-        """
-        self.validate()
-        return ADLSContainer(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedADLSContainer":
-        """
-        Create a :class:`RelatedADLSContainer` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedADLSContainer reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedADLSContainer(guid=self.guid)
-        return RelatedADLSContainer(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -493,6 +434,12 @@ class ADLSContainerRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -599,6 +546,8 @@ _ADLS_CONTAINER_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -701,9 +650,6 @@ def _adls_container_to_nested(adls_container: ADLSContainer) -> ADLSContainerNes
         is_incomplete=adls_container.is_incomplete,
         provenance_type=adls_container.provenance_type,
         home_id=adls_container.home_id,
-        depth=adls_container.depth,
-        immediate_upstream=adls_container.immediate_upstream,
-        immediate_downstream=adls_container.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -737,6 +683,7 @@ def _adls_container_from_nested(nested: ADLSContainerNested) -> ADLSContainer:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -745,9 +692,6 @@ def _adls_container_from_nested(nested: ADLSContainerNested) -> ADLSContainer:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_adls_container_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -819,6 +763,10 @@ ADLSContainer.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks"
 ADLSContainer.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ADLSContainer.APPLICATION = RelationField("application")
 ADLSContainer.APPLICATION_FIELD = RelationField("applicationField")
+ADLSContainer.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+ADLSContainer.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ADLSContainer.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ADLSContainer.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ADLSContainer.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -87,6 +88,8 @@ class S3Prefix(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -114,6 +117,8 @@ class S3Prefix(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "S3Prefix"
 
     s3_bucket_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the bucket in which this prefix exists."""
@@ -183,6 +188,12 @@ class S3Prefix(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -281,76 +292,6 @@ class S3Prefix(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this S3Prefix instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.s3_bucket is UNSET:
-                errors.append("s3_bucket is required for creation")
-            if self.s3_bucket_name is UNSET:
-                errors.append("s3_bucket_name is required for creation")
-            if self.s3_bucket_qualified_name is UNSET:
-                errors.append("s3_bucket_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"S3Prefix validation failed: {errors}")
-
-    def minimize(self) -> "S3Prefix":
-        """
-        Return a minimal copy of this S3Prefix with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new S3Prefix with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new S3Prefix instance with only the minimum required fields.
-        """
-        self.validate()
-        return S3Prefix(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedS3Prefix":
-        """
-        Create a :class:`RelatedS3Prefix` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedS3Prefix reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedS3Prefix(guid=self.guid)
-        return RelatedS3Prefix(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -480,6 +421,12 @@ class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -594,6 +541,8 @@ _S3_PREFIX_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -704,9 +653,6 @@ def _s3_prefix_to_nested(s3_prefix: S3Prefix) -> S3PrefixNested:
         is_incomplete=s3_prefix.is_incomplete,
         provenance_type=s3_prefix.provenance_type,
         home_id=s3_prefix.home_id,
-        depth=s3_prefix.depth,
-        immediate_upstream=s3_prefix.immediate_upstream,
-        immediate_downstream=s3_prefix.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -738,6 +684,7 @@ def _s3_prefix_from_nested(nested: S3PrefixNested) -> S3Prefix:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -746,9 +693,6 @@ def _s3_prefix_from_nested(nested: S3PrefixNested) -> S3Prefix:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_s3_prefix_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -807,6 +751,8 @@ S3Prefix.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 S3Prefix.ANOMALO_CHECKS = RelationField("anomaloChecks")
 S3Prefix.APPLICATION = RelationField("application")
 S3Prefix.APPLICATION_FIELD = RelationField("applicationField")
+S3Prefix.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+S3Prefix.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 S3Prefix.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 S3Prefix.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 S3Prefix.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
