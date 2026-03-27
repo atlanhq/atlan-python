@@ -49,22 +49,22 @@ class RelatedSodaCheck(RelatedSoda):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SodaCheck" so it serializes correctly
 
-    soda_check_id: Union[str, None, UnsetType] = UNSET
+    soda_id: Union[str, None, UnsetType] = UNSET
     """Identifier of the check in Soda."""
 
-    soda_check_evaluation_status: Union[str, None, UnsetType] = UNSET
+    soda_evaluation_status: Union[str, None, UnsetType] = UNSET
     """Status of the check in Soda."""
 
     soda_check_definition: Union[str, None, UnsetType] = UNSET
     """Definition of the check in Soda."""
 
-    soda_check_last_scan_at: Union[int, None, UnsetType] = UNSET
+    soda_last_scan_at: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_check_incident_count: Union[int, None, UnsetType] = UNSET
+    soda_incident_count: Union[int, None, UnsetType] = UNSET
     """"""
 
-    soda_check_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
+    soda_linked_asset_qualified_name: Union[str, None, UnsetType] = UNSET
     """QualifiedName of the asset associated with the check."""
 
     def __post_init__(self) -> None:
