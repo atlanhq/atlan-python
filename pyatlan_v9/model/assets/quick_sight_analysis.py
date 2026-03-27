@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -47,7 +48,6 @@ from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .quick_sight_related import (
-    RelatedQuickSightAnalysis,
     RelatedQuickSightAnalysisVisual,
     RelatedQuickSightFolder,
 )
@@ -68,18 +68,21 @@ class QuickSightAnalysis(Asset):
     Instance of a QuickSight analysis in Atlan. In QuickSight, you analyze and visualize your data in analyses, which can be published as a dashboard to share with others.
     """
 
-    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[Any] = None
+    QUICK_SIGHT_STATUS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[Any] = None
     QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -106,7 +109,9 @@ class QuickSightAnalysis(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_analysis_status: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "QuickSightAnalysis"
+
+    quick_sight_status: Union[str, None, UnsetType] = UNSET
     """Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc."""
 
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
@@ -129,6 +134,9 @@ class QuickSightAnalysis(Asset):
     quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
     """Name of the QuickSight sheet."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -143,6 +151,12 @@ class QuickSightAnalysis(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -220,7 +234,7 @@ class QuickSightAnalysis(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -239,72 +253,6 @@ class QuickSightAnalysis(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this QuickSightAnalysis instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.quick_sight_analysis_folders is UNSET:
-                errors.append("quick_sight_analysis_folders is required for creation")
-        if errors:
-            raise ValueError(f"QuickSightAnalysis validation failed: {errors}")
-
-    def minimize(self) -> "QuickSightAnalysis":
-        """
-        Return a minimal copy of this QuickSightAnalysis with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new QuickSightAnalysis with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new QuickSightAnalysis instance with only the minimum required fields.
-        """
-        self.validate()
-        return QuickSightAnalysis(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQuickSightAnalysis":
-        """
-        Create a :class:`RelatedQuickSightAnalysis` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedQuickSightAnalysis reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedQuickSightAnalysis(guid=self.guid)
-        return RelatedQuickSightAnalysis(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -400,7 +348,7 @@ class QuickSightAnalysis(Asset):
 class QuickSightAnalysisAttributes(AssetAttributes):
     """QuickSightAnalysis-specific attributes for nested API format."""
 
-    quick_sight_analysis_status: Union[str, None, UnsetType] = UNSET
+    quick_sight_status: Union[str, None, UnsetType] = UNSET
     """Status of this analysis, for example: CREATION_IN_PROGRESS, UPDATE_SUCCESSFUL, etc."""
 
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
@@ -423,6 +371,9 @@ class QuickSightAnalysisAttributes(AssetAttributes):
     quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
     """Name of the QuickSight sheet."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class QuickSightAnalysisRelationshipAttributes(AssetRelationshipAttributes):
     """QuickSightAnalysis-specific relationship attributes for nested API format."""
@@ -441,6 +392,12 @@ class QuickSightAnalysisRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -518,7 +475,7 @@ class QuickSightAnalysisRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -556,6 +513,8 @@ _QUICK_SIGHT_ANALYSIS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -589,7 +548,7 @@ def _populate_quick_sight_analysis_attrs(
 ) -> None:
     """Populate QuickSightAnalysis-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_analysis_status = obj.quick_sight_analysis_status
+    attrs.quick_sight_status = obj.quick_sight_status
     attrs.quick_sight_analysis_calculated_fields = (
         obj.quick_sight_analysis_calculated_fields
     )
@@ -600,12 +559,13 @@ def _populate_quick_sight_analysis_attrs(
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_quick_sight_analysis_attrs(attrs: QuickSightAnalysisAttributes) -> dict:
     """Extract all QuickSightAnalysis attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_analysis_status"] = attrs.quick_sight_analysis_status
+    result["quick_sight_status"] = attrs.quick_sight_status
     result["quick_sight_analysis_calculated_fields"] = (
         attrs.quick_sight_analysis_calculated_fields
     )
@@ -618,6 +578,7 @@ def _extract_quick_sight_analysis_attrs(attrs: QuickSightAnalysisAttributes) -> 
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -658,9 +619,6 @@ def _quick_sight_analysis_to_nested(
         is_incomplete=quick_sight_analysis.is_incomplete,
         provenance_type=quick_sight_analysis.provenance_type,
         home_id=quick_sight_analysis.home_id,
-        depth=quick_sight_analysis.depth,
-        immediate_upstream=quick_sight_analysis.immediate_upstream,
-        immediate_downstream=quick_sight_analysis.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -696,6 +654,7 @@ def _quick_sight_analysis_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -704,9 +663,6 @@ def _quick_sight_analysis_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_quick_sight_analysis_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -737,8 +693,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightAnalysis.QUICK_SIGHT_ANALYSIS_STATUS = KeywordField(
-    "quickSightAnalysisStatus", "quickSightAnalysisStatus"
+QuickSightAnalysis.QUICK_SIGHT_STATUS = KeywordField(
+    "quickSightStatus", "quickSightStatus"
 )
 QuickSightAnalysis.QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS = KeywordField(
     "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
@@ -756,11 +712,18 @@ QuickSightAnalysis.QUICK_SIGHT_SHEET_ID = KeywordField(
 QuickSightAnalysis.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
     "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
 )
+QuickSightAnalysis.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 QuickSightAnalysis.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 QuickSightAnalysis.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 QuickSightAnalysis.ANOMALO_CHECKS = RelationField("anomaloChecks")
 QuickSightAnalysis.APPLICATION = RelationField("application")
 QuickSightAnalysis.APPLICATION_FIELD = RelationField("applicationField")
+QuickSightAnalysis.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+QuickSightAnalysis.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 QuickSightAnalysis.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 QuickSightAnalysis.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 QuickSightAnalysis.MODEL_IMPLEMENTED_ENTITIES = RelationField(

@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -68,11 +69,14 @@ class SisenseFolder(Asset):
     """
 
     SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -101,8 +105,13 @@ class SisenseFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "SisenseFolder"
+
     sisense_folder_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent folder in which this folder exists."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -118,6 +127,12 @@ class SisenseFolder(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -185,7 +200,7 @@ class SisenseFolder(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     sisense_child_folders: Union[List[RelatedSisenseFolder], None, UnsetType] = UNSET
     """Sub-folders that exist within this folder."""
@@ -216,70 +231,6 @@ class SisenseFolder(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SisenseFolder instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SisenseFolder validation failed: {errors}")
-
-    def minimize(self) -> "SisenseFolder":
-        """
-        Return a minimal copy of this SisenseFolder with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SisenseFolder with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SisenseFolder instance with only the minimum required fields.
-        """
-        self.validate()
-        return SisenseFolder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSisenseFolder":
-        """
-        Create a :class:`RelatedSisenseFolder` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSisenseFolder reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSisenseFolder(guid=self.guid)
-        return RelatedSisenseFolder(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -339,6 +290,9 @@ class SisenseFolderAttributes(AssetAttributes):
     sisense_folder_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the parent folder in which this folder exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     """SisenseFolder-specific relationship attributes for nested API format."""
@@ -357,6 +311,12 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -424,7 +384,7 @@ class SisenseFolderRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     sisense_child_folders: Union[List[RelatedSisenseFolder], None, UnsetType] = UNSET
     """Sub-folders that exist within this folder."""
@@ -474,6 +434,8 @@ _SISENSE_FOLDER_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -512,6 +474,7 @@ def _populate_sisense_folder_attrs(
     attrs.sisense_folder_parent_folder_qualified_name = (
         obj.sisense_folder_parent_folder_qualified_name
     )
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_sisense_folder_attrs(attrs: SisenseFolderAttributes) -> dict:
@@ -520,6 +483,7 @@ def _extract_sisense_folder_attrs(attrs: SisenseFolderAttributes) -> dict:
     result["sisense_folder_parent_folder_qualified_name"] = (
         attrs.sisense_folder_parent_folder_qualified_name
     )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -556,9 +520,6 @@ def _sisense_folder_to_nested(sisense_folder: SisenseFolder) -> SisenseFolderNes
         is_incomplete=sisense_folder.is_incomplete,
         provenance_type=sisense_folder.provenance_type,
         home_id=sisense_folder.home_id,
-        depth=sisense_folder.depth,
-        immediate_upstream=sisense_folder.immediate_upstream,
-        immediate_downstream=sisense_folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -592,6 +553,7 @@ def _sisense_folder_from_nested(nested: SisenseFolderNested) -> SisenseFolder:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -600,9 +562,6 @@ def _sisense_folder_from_nested(nested: SisenseFolderNested) -> SisenseFolder:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sisense_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -626,6 +585,7 @@ def _sisense_folder_from_nested_bytes(data: bytes, serde: Serde) -> SisenseFolde
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
     KeywordTextField,
     RelationField,
 )
@@ -635,11 +595,18 @@ SisenseFolder.SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME = KeywordTextField(
     "sisenseFolderParentFolderQualifiedName",
     "sisenseFolderParentFolderQualifiedName.text",
 )
+SisenseFolder.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SisenseFolder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SisenseFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SisenseFolder.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SisenseFolder.APPLICATION = RelationField("application")
 SisenseFolder.APPLICATION_FIELD = RelationField("applicationField")
+SisenseFolder.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SisenseFolder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SisenseFolder.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SisenseFolder.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SisenseFolder.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

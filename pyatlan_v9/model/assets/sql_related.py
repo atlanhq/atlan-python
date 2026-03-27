@@ -101,6 +101,24 @@ class RelatedSQL(RelatedCatalog):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SQL"
@@ -119,16 +137,16 @@ class RelatedCalculationView(RelatedSQL):
     column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this calculation view."""
 
-    calculation_view_version_id: Union[int, None, UnsetType] = UNSET
+    sql_version_id: Union[int, None, UnsetType] = UNSET
     """The version ID of this calculation view."""
 
-    calculation_view_activated_by: Union[str, None, UnsetType] = UNSET
+    sql_activated_by: Union[str, None, UnsetType] = UNSET
     """The owner who activated the calculation view"""
 
-    calculation_view_activated_at: Union[int, None, UnsetType] = UNSET
+    sql_activated_at: Union[int, None, UnsetType] = UNSET
     """Time at which this calculation view was activated at"""
 
-    calculation_view_package_id: Union[str, None, UnsetType] = UNSET
+    sql_package_id: Union[str, None, UnsetType] = UNSET
     """The full package id path to which a calculation view belongs/resides in the repository."""
 
     def __post_init__(self) -> None:
@@ -152,10 +170,10 @@ class RelatedColumn(RelatedSQL):
     sub_data_type: Union[str, None, UnsetType] = UNSET
     """Sub-data type of this column."""
 
-    column_compression: Union[str, None, UnsetType] = UNSET
+    sql_compression: Union[str, None, UnsetType] = UNSET
     """Compression type of this column."""
 
-    column_encoding: Union[str, None, UnsetType] = UNSET
+    sql_encoding: Union[str, None, UnsetType] = UNSET
     """Encoding type of this column."""
 
     raw_data_type_definition: Union[str, None, UnsetType] = UNSET
@@ -230,112 +248,112 @@ class RelatedColumn(RelatedSQL):
     parent_column_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the column this column is nested within, for STRUCT and NESTED columns."""
 
-    column_distinct_values_count: Union[int, None, UnsetType] = UNSET
+    sql_distinct_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
-    column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
+    sql_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
-    column_max: Union[float, None, UnsetType] = UNSET
+    sql_max: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min: Union[float, None, UnsetType] = UNSET
+    sql_min: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean: Union[float, None, UnsetType] = UNSET
+    sql_mean: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum: Union[float, None, UnsetType] = UNSET
+    sql_sum: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median: Union[float, None, UnsetType] = UNSET
+    sql_median: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation: Union[float, None, UnsetType] = UNSET
+    sql_standard_deviation: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_unique_values_count: Union[int, None, UnsetType] = UNSET
+    sql_unique_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_unique_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_unique_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in which a value in this column appears only once."""
 
-    column_average: Union[float, None, UnsetType] = UNSET
+    sql_average: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_average_length: Union[float, None, UnsetType] = UNSET
+    sql_average_length: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_duplicate_values_count: Union[int, None, UnsetType] = UNSET
+    sql_duplicate_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_duplicate_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain duplicate values."""
 
-    column_maximum_string_length: Union[int, None, UnsetType] = UNSET
+    sql_maximum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the longest value in a string column."""
 
     column_maxs: Union[List[str], None, UnsetType] = UNSET
     """List of the greatest values in a column."""
 
-    column_minimum_string_length: Union[int, None, UnsetType] = UNSET
+    sql_minimum_string_length: Union[int, None, UnsetType] = UNSET
     """Length of the shortest value in a string column."""
 
     column_mins: Union[List[str], None, UnsetType] = UNSET
     """List of the least values in a column."""
 
-    column_missing_values_count: Union[int, None, UnsetType] = UNSET
+    sql_missing_values_count: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_count_long: Union[int, None, UnsetType] = UNSET
+    sql_missing_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows in a column that do not contain content."""
 
-    column_missing_values_percentage: Union[float, None, UnsetType] = UNSET
+    sql_missing_values_percentage: Union[float, None, UnsetType] = UNSET
     """Percentage of rows in a column that do not contain content."""
 
-    column_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
+    sql_uniqueness_percentage: Union[float, None, UnsetType] = UNSET
     """Ratio indicating how unique data in this column is: 0 indicates that all values are the same, 100 indicates that all values in this column are unique."""
 
-    column_variance: Union[float, None, UnsetType] = UNSET
+    sql_variance: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
     column_top_values: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of top values in this column."""
 
-    column_max_value: Union[float, None, UnsetType] = UNSET
+    sql_max_value: Union[float, None, UnsetType] = UNSET
     """Greatest value in a numeric column."""
 
-    column_min_value: Union[float, None, UnsetType] = UNSET
+    sql_min_value: Union[float, None, UnsetType] = UNSET
     """Least value in a numeric column."""
 
-    column_mean_value: Union[float, None, UnsetType] = UNSET
+    sql_mean_value: Union[float, None, UnsetType] = UNSET
     """Arithmetic mean of the values in a numeric column."""
 
-    column_sum_value: Union[float, None, UnsetType] = UNSET
+    sql_sum_value: Union[float, None, UnsetType] = UNSET
     """Calculated sum of the values in a numeric column."""
 
-    column_median_value: Union[float, None, UnsetType] = UNSET
+    sql_median_value: Union[float, None, UnsetType] = UNSET
     """Calculated median of the values in a numeric column."""
 
-    column_standard_deviation_value: Union[float, None, UnsetType] = UNSET
+    sql_standard_deviation_value: Union[float, None, UnsetType] = UNSET
     """Calculated standard deviation of the values in a numeric column."""
 
-    column_average_value: Union[float, None, UnsetType] = UNSET
+    sql_average_value: Union[float, None, UnsetType] = UNSET
     """Average value in this column."""
 
-    column_variance_value: Union[float, None, UnsetType] = UNSET
+    sql_variance_value: Union[float, None, UnsetType] = UNSET
     """Calculated variance of the values in a numeric column."""
 
-    column_average_length_value: Union[float, None, UnsetType] = UNSET
+    sql_average_length_value: Union[float, None, UnsetType] = UNSET
     """Average length of values in a string column."""
 
-    column_distribution_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
+    sql_distribution_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Detailed information representing a histogram of values for a column."""
 
-    column_depth_level: Union[int, None, UnsetType] = UNSET
+    sql_depth_level: Union[int, None, UnsetType] = UNSET
     """Level of nesting of this column, used for STRUCT and NESTED columns."""
 
     nosql_collection_name: Union[str, None, UnsetType] = UNSET
@@ -344,11 +362,28 @@ class RelatedColumn(RelatedSQL):
     nosql_collection_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the cosmos/mongo collection in which this SQL asset (column) exists, or empty if it does not exist within a cosmos/mongo collection."""
 
-    column_is_measure: Union[bool, None, UnsetType] = UNSET
+    sql_is_measure: Union[bool, None, UnsetType] = UNSET
     """When true, this column is of type measure/calculated."""
 
-    column_measure_type: Union[str, None, UnsetType] = UNSET
+    sql_measure_type: Union[str, None, UnsetType] = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
+
+    sql_ai_insights_is_measure: Union[bool, None, UnsetType] = UNSET
+    """When true, this column is identified as a measure/calculated column by AI analysis of query patterns."""
+
+    sql_ai_insights_measure_type: Union[str, None, UnsetType] = UNSET
+    """Type of measure/calculated column as classified by AI analysis, for example: base, calculated, derived."""
+
+    sql_ai_insights_is_dimension: Union[bool, None, UnsetType] = UNSET
+    """When true, this column is identified as a dimension by AI analysis of query patterns."""
+
+    sql_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
+    """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
+
+    sql_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
+    """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
@@ -386,45 +421,45 @@ class RelatedFunction(RelatedSQL):
     function_definition: Union[str, None, UnsetType] = UNSET
     """Code or set of statements that determine the output of the function."""
 
-    function_return_type: Union[str, None, UnsetType] = UNSET
+    sql_return_type: Union[str, None, UnsetType] = UNSET
     """Data type of the value returned by the function."""
 
-    function_arguments: Union[List[str], None, UnsetType] = UNSET
+    sql_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the function."""
 
-    function_language: Union[str, None, UnsetType] = UNSET
+    sql_language: Union[str, None, UnsetType] = UNSET
     """Programming language in which the function is written."""
 
-    function_type: Union[str, None, UnsetType] = UNSET
+    sql_type: Union[str, None, UnsetType] = UNSET
     """Type of function."""
 
-    function_is_external: Union[bool, None, UnsetType] = UNSET
+    sql_is_external: Union[bool, None, UnsetType] = UNSET
     """Whether the function is stored or executed externally (true) or internally (false)."""
 
-    function_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="functionIsDMF"
+    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlIsDMF"
     )
     """Whether the function is a data metric function."""
 
-    function_is_secure: Union[bool, None, UnsetType] = UNSET
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether sensitive information of the function is omitted for unauthorized users (true) or not (false)."""
 
-    function_is_memoizable: Union[bool, None, UnsetType] = UNSET
+    sql_is_memoizable: Union[bool, None, UnsetType] = UNSET
     """Whether the function must re-compute if there are no underlying changes in the values (false) or not (true)."""
 
-    function_runtime_version: Union[str, None, UnsetType] = UNSET
+    sql_runtime_version: Union[str, None, UnsetType] = UNSET
     """Version of the language runtime used by the function."""
 
-    function_external_access_integrations: Union[str, None, UnsetType] = UNSET
+    sql_external_access_integrations: Union[str, None, UnsetType] = UNSET
     """Names of external access integrations used by the function."""
 
-    function_secrets: Union[str, None, UnsetType] = UNSET
+    sql_secrets: Union[str, None, UnsetType] = UNSET
     """Secret variables used by the function."""
 
-    function_packages: Union[str, None, UnsetType] = UNSET
+    sql_packages: Union[str, None, UnsetType] = UNSET
     """Packages requested by the function."""
 
-    function_installed_packages: Union[str, None, UnsetType] = UNSET
+    sql_installed_packages: Union[str, None, UnsetType] = UNSET
     """Packages actually installed for the function."""
 
     def __post_init__(self) -> None:
@@ -598,7 +633,7 @@ class RelatedSchema(RelatedSQL):
     table_count: Union[int, None, UnsetType] = UNSET
     """Number of tables in this schema."""
 
-    schema_external_location: Union[str, None, UnsetType] = UNSET
+    sql_external_location: Union[str, None, UnsetType] = UNSET
     """External location of this schema, for example: an S3 object location."""
 
     views_count: Union[int, None, UnsetType] = UNSET
@@ -631,7 +666,7 @@ class RelatedTable(RelatedSQL):
     size_bytes: Union[int, None, UnsetType] = UNSET
     """Size of this table, in bytes."""
 
-    table_object_count: Union[int, None, UnsetType] = UNSET
+    sql_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects in this table."""
 
     alias: Union[str, None, UnsetType] = UNSET
@@ -673,7 +708,7 @@ class RelatedTable(RelatedSQL):
     is_sharded: Union[bool, None, UnsetType] = UNSET
     """Whether this table is a sharded table (true) or not (false)."""
 
-    table_type: Union[str, None, UnsetType] = UNSET
+    sql_type: Union[str, None, UnsetType] = UNSET
     """Type of the table."""
 
     iceberg_catalog_name: Union[str, None, UnsetType] = UNSET
@@ -688,19 +723,19 @@ class RelatedTable(RelatedSQL):
     iceberg_catalog_table_name: Union[str, None, UnsetType] = UNSET
     """Catalog table name (actual table name on the catalog side)."""
 
-    table_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
+    sql_impala_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Extra attributes for Impala"""
 
     iceberg_catalog_table_namespace: Union[str, None, UnsetType] = UNSET
     """Catalog table namespace (actual database name on the catalog side)."""
 
-    table_external_volume_name: Union[str, None, UnsetType] = UNSET
+    sql_external_volume_name: Union[str, None, UnsetType] = UNSET
     """External volume name for the table."""
 
     iceberg_table_base_location: Union[str, None, UnsetType] = UNSET
     """Iceberg table base location inside the external volume."""
 
-    table_retention_time: Union[int, None, UnsetType] = UNSET
+    sql_retention_time: Union[int, None, UnsetType] = UNSET
     """Data retention time in days."""
 
     def __post_init__(self) -> None:
