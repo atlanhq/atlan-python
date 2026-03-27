@@ -43,6 +43,7 @@ class AsyncBatch:
         case_insensitive: bool = False,
         table_view_agnostic: bool = False,
         creation_handling: AssetCreationHandling = AssetCreationHandling.FULL,
+        append_atlan_tags: bool = False,
     ):
         """
         Create a new async batch of assets to be bulk-saved.
@@ -68,10 +69,15 @@ class AsyncBatch:
             view if not found as a table, and vice versa)
         :param creation_handling: when allowing assets to be created,
             how to handle those creations (full assets or partial assets).
+        :param append_atlan_tags: if True, Atlan tags on assets in the batch
+            will be added/updated/removed using the add_or_update_classifications
+            and remove_classifications fields, without replacing all existing tags.
+            When True, replace_atlan_tags is ignored.
         """
         self._client: AsyncAtlanClient = client
         self._max_size: int = max_size
         self._replace_atlan_tags: bool = replace_atlan_tags
+        self._append_atlan_tags: bool = append_atlan_tags
         self._custom_metadata_handling: CustomMetadataHandling = (
             custom_metadata_handling
         )
@@ -320,7 +326,9 @@ class AsyncBatch:
                 try:
                     if self._custom_metadata_handling == CustomMetadataHandling.IGNORE:
                         response = await self._client.asset.save(
-                            revised, replace_atlan_tags=self._replace_atlan_tags
+                            revised,
+                            replace_atlan_tags=self._replace_atlan_tags,
+                            append_atlan_tags=self._append_atlan_tags,
                         )
                     elif (
                         self._custom_metadata_handling
@@ -331,7 +339,9 @@ class AsyncBatch:
                         )
                     elif self._custom_metadata_handling == CustomMetadataHandling.MERGE:
                         response = await self._client.asset.save_merging_cm(
-                            revised, replace_atlan_tags=self._replace_atlan_tags
+                            revised,
+                            replace_atlan_tags=self._replace_atlan_tags,
+                            append_atlan_tags=self._append_atlan_tags,
                         )
                     else:
                         raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
