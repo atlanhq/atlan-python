@@ -10,9 +10,11 @@ This module provides convenient imports for all DataMesh types and their Related
 
 from .data_domain import DataDomain
 from .data_mesh import DataMesh
+from .data_mesh_dataset import DataMeshDataset
 from .data_mesh_related import (
     RelatedDataDomain,
     RelatedDataMesh,
+    RelatedDataMeshDataset,
     RelatedDataProduct,
     RelatedStakeholder,
     RelatedStakeholderTitle,
@@ -22,9 +24,11 @@ from .data_product import DataProduct
 __all__ = [
     "DataDomain",
     "DataMesh",
+    "DataMeshDataset",
     "DataProduct",
     "RelatedDataDomain",
     "RelatedDataMesh",
+    "RelatedDataMeshDataset",
     "RelatedDataProduct",
     "RelatedStakeholder",
     "RelatedStakeholderTitle",
