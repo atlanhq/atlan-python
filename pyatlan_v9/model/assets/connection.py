@@ -40,7 +40,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .connection_related import RelatedConnection
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -101,6 +101,8 @@ class Connection(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     METRICS: ClassVar[Any] = None
@@ -118,6 +120,8 @@ class Connection(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Connection"
 
     category: Union[str, None, UnsetType] = UNSET
     """Type of connection, for example WAREHOUSE, RDBMS, etc."""
@@ -252,6 +256,12 @@ class Connection(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -308,7 +318,7 @@ class Connection(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -321,67 +331,6 @@ class Connection(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^default/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Connection instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if errors:
-            raise ValueError(f"Connection validation failed: {errors}")
-
-    def minimize(self) -> "Connection":
-        """
-        Return a minimal copy of this Connection with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Connection with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Connection instance with only the minimum required fields.
-        """
-        self.validate()
-        return Connection(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedConnection":
-        """
-        Create a :class:`RelatedConnection` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedConnection reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedConnection(guid=self.guid)
-        return RelatedConnection(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -725,6 +674,12 @@ class ConnectionRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -781,7 +736,7 @@ class ConnectionRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -809,6 +764,8 @@ _CONNECTION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "metrics",
@@ -969,9 +926,6 @@ def _connection_to_nested(connection: Connection) -> ConnectionNested:
         is_incomplete=connection.is_incomplete,
         provenance_type=connection.provenance_type,
         home_id=connection.home_id,
-        depth=connection.depth,
-        immediate_upstream=connection.immediate_upstream,
-        immediate_downstream=connection.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1003,6 +957,7 @@ def _connection_from_nested(nested: ConnectionNested) -> Connection:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1011,9 +966,6 @@ def _connection_from_nested(nested: ConnectionNested) -> Connection:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_connection_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1128,6 +1080,8 @@ Connection.VECTOR_EMBEDDINGS_UPDATED_AT = NumericField(
 Connection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Connection.APPLICATION = RelationField("application")
 Connection.APPLICATION_FIELD = RelationField("applicationField")
+Connection.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Connection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Connection.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Connection.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Connection.METRICS = RelationField("metrics")

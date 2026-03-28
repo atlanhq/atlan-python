@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -48,7 +49,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .semantic_related import RelatedSemanticDimension, RelatedSemanticModel
+from .semantic_related import RelatedSemanticModel
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -63,6 +64,7 @@ class SemanticDimension(Asset):
     Base class for semantic dimensions across different sources.
     """
 
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     SEMANTIC_EXPRESSION: ClassVar[Any] = None
     SEMANTIC_TYPE: ClassVar[Any] = None
     SEMANTIC_SYNONYMS: ClassVar[Any] = None
@@ -75,6 +77,8 @@ class SemanticDimension(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -99,6 +103,11 @@ class SemanticDimension(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SemanticDimension"
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
@@ -135,6 +144,12 @@ class SemanticDimension(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -202,7 +217,7 @@ class SemanticDimension(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
     """Semantic model in which this dimension exists."""
@@ -224,72 +239,6 @@ class SemanticDimension(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SemanticDimension instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.semantic_model is UNSET:
-                errors.append("semantic_model is required for creation")
-        if errors:
-            raise ValueError(f"SemanticDimension validation failed: {errors}")
-
-    def minimize(self) -> "SemanticDimension":
-        """
-        Return a minimal copy of this SemanticDimension with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SemanticDimension with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SemanticDimension instance with only the minimum required fields.
-        """
-        self.validate()
-        return SemanticDimension(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSemanticDimension":
-        """
-        Create a :class:`RelatedSemanticDimension` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSemanticDimension reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSemanticDimension(guid=self.guid)
-        return RelatedSemanticDimension(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -348,6 +297,9 @@ class SemanticDimension(Asset):
 class SemanticDimensionAttributes(AssetAttributes):
     """SemanticDimension-specific attributes for nested API format."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
 
@@ -387,6 +339,12 @@ class SemanticDimensionRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -454,7 +412,7 @@ class SemanticDimensionRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
     """Semantic model in which this dimension exists."""
@@ -495,6 +453,8 @@ _SEMANTIC_DIMENSION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -527,6 +487,7 @@ def _populate_semantic_dimension_attrs(
 ) -> None:
     """Populate SemanticDimension-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
     attrs.semantic_synonyms = obj.semantic_synonyms
@@ -539,6 +500,7 @@ def _populate_semantic_dimension_attrs(
 def _extract_semantic_dimension_attrs(attrs: SemanticDimensionAttributes) -> dict:
     """Extract all SemanticDimension attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
     result["semantic_synonyms"] = attrs.semantic_synonyms
@@ -586,9 +548,6 @@ def _semantic_dimension_to_nested(
         is_incomplete=semantic_dimension.is_incomplete,
         provenance_type=semantic_dimension.provenance_type,
         home_id=semantic_dimension.home_id,
-        depth=semantic_dimension.depth,
-        immediate_upstream=semantic_dimension.immediate_upstream,
-        immediate_downstream=semantic_dimension.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -624,6 +583,7 @@ def _semantic_dimension_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -632,9 +592,6 @@ def _semantic_dimension_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_semantic_dimension_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -665,6 +622,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
+SemanticDimension.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SemanticDimension.SEMANTIC_EXPRESSION = KeywordField(
     "semanticExpression", "semanticExpression"
 )
@@ -687,6 +647,10 @@ SemanticDimension.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTa
 SemanticDimension.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SemanticDimension.APPLICATION = RelationField("application")
 SemanticDimension.APPLICATION_FIELD = RelationField("applicationField")
+SemanticDimension.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SemanticDimension.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SemanticDimension.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SemanticDimension.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SemanticDimension.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

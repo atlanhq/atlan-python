@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -45,7 +46,6 @@ from .looker_related import (
     RelatedLookerDashboard,
     RelatedLookerField,
     RelatedLookerFolder,
-    RelatedLookerLook,
     RelatedLookerModel,
     RelatedLookerQuery,
     RelatedLookerTile,
@@ -82,11 +82,14 @@ class LookerLook(Asset):
     LOOKER_SOURCE_QUERY_ID: ClassVar[Any] = None
     MODEL_NAME: ClassVar[Any] = None
     LOOKER_SLUG: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -116,6 +119,8 @@ class LookerLook(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "LookerLook"
 
     folder_name: Union[str, None, UnsetType] = UNSET
     """Name of the folder in which the Look is organized."""
@@ -150,6 +155,9 @@ class LookerLook(Asset):
     looker_slug: Union[str, None, UnsetType] = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -164,6 +172,12 @@ class LookerLook(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -249,7 +263,7 @@ class LookerLook(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -268,74 +282,6 @@ class LookerLook(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this LookerLook instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.folder is UNSET:
-                errors.append("folder is required for creation")
-            if self.folder_name is UNSET:
-                errors.append("folder_name is required for creation")
-        if errors:
-            raise ValueError(f"LookerLook validation failed: {errors}")
-
-    def minimize(self) -> "LookerLook":
-        """
-        Return a minimal copy of this LookerLook with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new LookerLook with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new LookerLook instance with only the minimum required fields.
-        """
-        self.validate()
-        return LookerLook(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedLookerLook":
-        """
-        Create a :class:`RelatedLookerLook` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedLookerLook reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedLookerLook(guid=self.guid)
-        return RelatedLookerLook(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -425,6 +371,9 @@ class LookerLookAttributes(AssetAttributes):
     looker_slug: Union[str, None, UnsetType] = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class LookerLookRelationshipAttributes(AssetRelationshipAttributes):
     """LookerLook-specific relationship attributes for nested API format."""
@@ -443,6 +392,12 @@ class LookerLookRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -528,7 +483,7 @@ class LookerLookRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -564,6 +519,8 @@ _LOOKER_LOOK_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -610,6 +567,7 @@ def _populate_looker_look_attrs(attrs: LookerLookAttributes, obj: LookerLook) ->
     attrs.looker_source_query_id = obj.looker_source_query_id
     attrs.model_name = obj.model_name
     attrs.looker_slug = obj.looker_slug
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_looker_look_attrs(attrs: LookerLookAttributes) -> dict:
@@ -626,6 +584,7 @@ def _extract_looker_look_attrs(attrs: LookerLookAttributes) -> dict:
     result["looker_source_query_id"] = attrs.looker_source_query_id
     result["model_name"] = attrs.model_name
     result["looker_slug"] = attrs.looker_slug
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -662,9 +621,6 @@ def _looker_look_to_nested(looker_look: LookerLook) -> LookerLookNested:
         is_incomplete=looker_look.is_incomplete,
         provenance_type=looker_look.provenance_type,
         home_id=looker_look.home_id,
-        depth=looker_look.depth,
-        immediate_upstream=looker_look.immediate_upstream,
-        immediate_downstream=looker_look.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -696,6 +652,7 @@ def _looker_look_from_nested(nested: LookerLookNested) -> LookerLook:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -704,9 +661,6 @@ def _looker_look_from_nested(nested: LookerLookNested) -> LookerLook:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_looker_look_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -754,11 +708,16 @@ LookerLook.LOOKER_SOURCE_QUERY_ID = KeywordField(
 )
 LookerLook.MODEL_NAME = KeywordField("modelName", "modelName")
 LookerLook.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
+LookerLook.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 LookerLook.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 LookerLook.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 LookerLook.ANOMALO_CHECKS = RelationField("anomaloChecks")
 LookerLook.APPLICATION = RelationField("application")
 LookerLook.APPLICATION_FIELD = RelationField("applicationField")
+LookerLook.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+LookerLook.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 LookerLook.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 LookerLook.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 LookerLook.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
