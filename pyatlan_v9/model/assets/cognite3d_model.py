@@ -38,7 +38,8 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cognite_related import RelatedCognite3DModel, RelatedCogniteAsset
+from .cognite_related import RelatedCogniteAsset
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -69,6 +70,8 @@ class Cognite3DModel(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     COGNITE_ASSET: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -93,6 +96,8 @@ class Cognite3DModel(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Cognite3DModel"
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -110,6 +115,12 @@ class Cognite3DModel(Asset):
 
     cognite_asset: Union[RelatedCogniteAsset, None, UnsetType] = UNSET
     """Asset in which this 3D model exists."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -197,72 +208,6 @@ class Cognite3DModel(Asset):
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Cognite3DModel instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cognite_asset is UNSET:
-                errors.append("cognite_asset is required for creation")
-        if errors:
-            raise ValueError(f"Cognite3DModel validation failed: {errors}")
-
-    def minimize(self) -> "Cognite3DModel":
-        """
-        Return a minimal copy of this Cognite3DModel with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Cognite3DModel with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Cognite3DModel instance with only the minimum required fields.
-        """
-        self.validate()
-        return Cognite3DModel(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCognite3DModel":
-        """
-        Create a :class:`RelatedCognite3DModel` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedCognite3DModel reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedCognite3DModel(guid=self.guid)
-        return RelatedCognite3DModel(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -341,6 +286,12 @@ class Cognite3DModelRelationshipAttributes(AssetRelationshipAttributes):
 
     cognite_asset: Union[RelatedCogniteAsset, None, UnsetType] = UNSET
     """Asset in which this 3D model exists."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -447,6 +398,8 @@ _COGNITE3D_MODEL_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "cognite_asset",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -520,9 +473,6 @@ def _cognite3d_model_to_nested(cognite3d_model: Cognite3DModel) -> Cognite3DMode
         is_incomplete=cognite3d_model.is_incomplete,
         provenance_type=cognite3d_model.provenance_type,
         home_id=cognite3d_model.home_id,
-        depth=cognite3d_model.depth,
-        immediate_upstream=cognite3d_model.immediate_upstream,
-        immediate_downstream=cognite3d_model.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -556,6 +506,7 @@ def _cognite3d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DModel
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -564,9 +515,6 @@ def _cognite3d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DModel
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_cognite3d_model_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -597,6 +545,10 @@ Cognite3DModel.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Cognite3DModel.APPLICATION = RelationField("application")
 Cognite3DModel.APPLICATION_FIELD = RelationField("applicationField")
 Cognite3DModel.COGNITE_ASSET = RelationField("cogniteAsset")
+Cognite3DModel.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Cognite3DModel.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 Cognite3DModel.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Cognite3DModel.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Cognite3DModel.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
