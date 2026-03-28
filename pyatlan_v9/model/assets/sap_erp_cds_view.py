@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -46,11 +47,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import (
-    RelatedSapErpCdsView,
-    RelatedSapErpColumn,
-    RelatedSapErpComponent,
-)
+from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -66,10 +63,9 @@ class SapErpCdsView(Asset):
     Instance of a SAP CDS View in Atlan.
     """
 
-    SAP_ERP_CDS_VIEW_TECHNICAL_NAME: ClassVar[Any] = None
-    SAP_ERP_CDS_VIEW_SOURCE_NAME: ClassVar[Any] = None
-    SAP_ERP_CDS_VIEW_SOURCE_TYPE: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
+    SAP_SOURCE_NAME: ClassVar[Any] = None
+    SAP_SOURCE_TYPE: ClassVar[Any] = None
     SAP_LOGICAL_NAME: ClassVar[Any] = None
     SAP_PACKAGE_NAME: ClassVar[Any] = None
     SAP_COMPONENT_NAME: ClassVar[Any] = None
@@ -81,6 +77,8 @@ class SapErpCdsView(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -107,17 +105,16 @@ class SapErpCdsView(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sap_erp_cds_view_technical_name: Union[str, None, UnsetType] = UNSET
-    """The technical database view name of the SAP ERP CDS View."""
-
-    sap_erp_cds_view_source_name: Union[str, None, UnsetType] = UNSET
-    """The source name of the SAP ERP CDS View Definition."""
-
-    sap_erp_cds_view_source_type: Union[str, None, UnsetType] = UNSET
-    """The source type of the SAP ERP CDS View Definition."""
+    type_name: Union[str, UnsetType] = "SapErpCdsView"
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
+
+    sap_source_name: Union[str, None, UnsetType] = UNSET
+    """The source name of the SAP ERP CDS View Definition."""
+
+    sap_source_type: Union[str, None, UnsetType] = UNSET
+    """The source type of the SAP ERP CDS View Definition."""
 
     sap_logical_name: Union[str, None, UnsetType] = UNSET
     """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
@@ -151,6 +148,12 @@ class SapErpCdsView(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -224,7 +227,7 @@ class SapErpCdsView(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -237,66 +240,6 @@ class SapErpCdsView(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpCdsView"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SapErpCdsView instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpCdsView validation failed: {errors}")
-
-    def minimize(self) -> "SapErpCdsView":
-        """
-        Return a minimal copy of this SapErpCdsView with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SapErpCdsView with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SapErpCdsView instance with only the minimum required fields.
-        """
-        self.validate()
-        return SapErpCdsView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpCdsView":
-        """
-        Create a :class:`RelatedSapErpCdsView` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSapErpCdsView reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSapErpCdsView(guid=self.guid)
-        return RelatedSapErpCdsView(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -353,17 +296,14 @@ class SapErpCdsView(Asset):
 class SapErpCdsViewAttributes(AssetAttributes):
     """SapErpCdsView-specific attributes for nested API format."""
 
-    sap_erp_cds_view_technical_name: Union[str, None, UnsetType] = UNSET
-    """The technical database view name of the SAP ERP CDS View."""
-
-    sap_erp_cds_view_source_name: Union[str, None, UnsetType] = UNSET
-    """The source name of the SAP ERP CDS View Definition."""
-
-    sap_erp_cds_view_source_type: Union[str, None, UnsetType] = UNSET
-    """The source type of the SAP ERP CDS View Definition."""
-
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
+
+    sap_source_name: Union[str, None, UnsetType] = UNSET
+    """The source name of the SAP ERP CDS View Definition."""
+
+    sap_source_type: Union[str, None, UnsetType] = UNSET
+    """The source type of the SAP ERP CDS View Definition."""
 
     sap_logical_name: Union[str, None, UnsetType] = UNSET
     """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
@@ -401,6 +341,12 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -474,7 +420,7 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -512,6 +458,8 @@ _SAP_ERP_CDS_VIEW_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -545,10 +493,9 @@ def _populate_sap_erp_cds_view_attrs(
 ) -> None:
     """Populate SapErpCdsView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_erp_cds_view_technical_name = obj.sap_erp_cds_view_technical_name
-    attrs.sap_erp_cds_view_source_name = obj.sap_erp_cds_view_source_name
-    attrs.sap_erp_cds_view_source_type = obj.sap_erp_cds_view_source_type
     attrs.sap_technical_name = obj.sap_technical_name
+    attrs.sap_source_name = obj.sap_source_name
+    attrs.sap_source_type = obj.sap_source_type
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
     attrs.sap_component_name = obj.sap_component_name
@@ -560,10 +507,9 @@ def _populate_sap_erp_cds_view_attrs(
 def _extract_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes) -> dict:
     """Extract all SapErpCdsView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_erp_cds_view_technical_name"] = attrs.sap_erp_cds_view_technical_name
-    result["sap_erp_cds_view_source_name"] = attrs.sap_erp_cds_view_source_name
-    result["sap_erp_cds_view_source_type"] = attrs.sap_erp_cds_view_source_type
     result["sap_technical_name"] = attrs.sap_technical_name
+    result["sap_source_name"] = attrs.sap_source_name
+    result["sap_source_type"] = attrs.sap_source_type
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
     result["sap_component_name"] = attrs.sap_component_name
@@ -608,9 +554,6 @@ def _sap_erp_cds_view_to_nested(sap_erp_cds_view: SapErpCdsView) -> SapErpCdsVie
         is_incomplete=sap_erp_cds_view.is_incomplete,
         provenance_type=sap_erp_cds_view.provenance_type,
         home_id=sap_erp_cds_view.home_id,
-        depth=sap_erp_cds_view.depth,
-        immediate_upstream=sap_erp_cds_view.immediate_upstream,
-        immediate_downstream=sap_erp_cds_view.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -644,6 +587,7 @@ def _sap_erp_cds_view_from_nested(nested: SapErpCdsViewNested) -> SapErpCdsView:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -652,9 +596,6 @@ def _sap_erp_cds_view_from_nested(nested: SapErpCdsViewNested) -> SapErpCdsView:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_cds_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -683,16 +624,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpCdsView.SAP_ERP_CDS_VIEW_TECHNICAL_NAME = KeywordField(
-    "sapErpCdsViewTechnicalName", "sapErpCdsViewTechnicalName"
-)
-SapErpCdsView.SAP_ERP_CDS_VIEW_SOURCE_NAME = KeywordField(
-    "sapErpCdsViewSourceName", "sapErpCdsViewSourceName"
-)
-SapErpCdsView.SAP_ERP_CDS_VIEW_SOURCE_TYPE = KeywordField(
-    "sapErpCdsViewSourceType", "sapErpCdsViewSourceType"
-)
 SapErpCdsView.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
+SapErpCdsView.SAP_SOURCE_NAME = KeywordField("sapSourceName", "sapSourceName")
+SapErpCdsView.SAP_SOURCE_TYPE = KeywordField("sapSourceType", "sapSourceType")
 SapErpCdsView.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpCdsView.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
 SapErpCdsView.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentName")
@@ -704,6 +638,10 @@ SapErpCdsView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks"
 SapErpCdsView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpCdsView.APPLICATION = RelationField("application")
 SapErpCdsView.APPLICATION_FIELD = RelationField("applicationField")
+SapErpCdsView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SapErpCdsView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SapErpCdsView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SapErpCdsView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SapErpCdsView.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
