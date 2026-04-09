@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -47,7 +48,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .document_db_related import RelatedDocumentDBCollection, RelatedDocumentDBDatabase
+from .document_db_related import RelatedDocumentDBCollection
 from .fabric_related import RelatedFabricWorkspace
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -60,6 +61,10 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 from .sql_related import RelatedSchema
 
 # =============================================================================
@@ -75,6 +80,7 @@ class DocumentDBDatabase(Asset):
 
     DOCUMENT_DB_DATABASE_COLLECTION_COUNT: ClassVar[Any] = None
     NO_SQL_SCHEMA_DEFINITION: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     SCHEMA_COUNT: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
@@ -94,11 +100,19 @@ class DocumentDBDatabase(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    SQL_HAS_AI_INSIGHTS: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -132,6 +146,11 @@ class DocumentDBDatabase(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DocumentDBDatabase"
 
     document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
         default=UNSET, name="documentDBDatabaseCollectionCount"
@@ -142,6 +161,9 @@ class DocumentDBDatabase(Asset):
         default=UNSET, name="noSQLSchemaDefinition"
     )
     """Represents attributes for describing the key schema for the table and indexes."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     schema_count: Union[int, None, UnsetType] = UNSET
     """Number of schemas in this database."""
@@ -202,6 +224,24 @@ class DocumentDBDatabase(Asset):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -216,6 +256,12 @@ class DocumentDBDatabase(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -314,7 +360,7 @@ class DocumentDBDatabase(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -330,68 +376,23 @@ class DocumentDBDatabase(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
+
     def __post_init__(self) -> None:
         self.type_name = "DocumentDBDatabase"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DocumentDBDatabase instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DocumentDBDatabase validation failed: {errors}")
-
-    def minimize(self) -> "DocumentDBDatabase":
-        """
-        Return a minimal copy of this DocumentDBDatabase with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DocumentDBDatabase with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DocumentDBDatabase instance with only the minimum required fields.
-        """
-        self.validate()
-        return DocumentDBDatabase(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDocumentDBDatabase":
-        """
-        Create a :class:`RelatedDocumentDBDatabase` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDocumentDBDatabase reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDocumentDBDatabase(guid=self.guid)
-        return RelatedDocumentDBDatabase(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -494,6 +495,9 @@ class DocumentDBDatabaseAttributes(AssetAttributes):
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     schema_count: Union[int, None, UnsetType] = UNSET
     """Number of schemas in this database."""
 
@@ -553,6 +557,24 @@ class DocumentDBDatabaseAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
 
 class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     """DocumentDBDatabase-specific relationship attributes for nested API format."""
@@ -571,6 +593,12 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -669,7 +697,7 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -684,6 +712,21 @@ class DocumentDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
 
 
 class DocumentDBDatabaseNested(AssetNested):
@@ -712,6 +755,8 @@ _DOCUMENT_DB_DATABASE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -745,6 +790,9 @@ _DOCUMENT_DB_DATABASE_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
+    "sql_insight_outgoing_joins",
+    "sql_insight_incoming_joins",
+    "sql_insight_business_questions",
 ]
 
 
@@ -757,6 +805,7 @@ def _populate_document_db_database_attrs(
         obj.document_db_database_collection_count
     )
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.schema_count = obj.schema_count
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
@@ -776,6 +825,16 @@ def _populate_document_db_database_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.sql_has_ai_insights = obj.sql_has_ai_insights
+    attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
+    attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
+    attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
 
 
 def _extract_document_db_database_attrs(attrs: DocumentDBDatabaseAttributes) -> dict:
@@ -785,6 +844,7 @@ def _extract_document_db_database_attrs(attrs: DocumentDBDatabaseAttributes) -> 
         attrs.document_db_database_collection_count
     )
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["schema_count"] = attrs.schema_count
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
@@ -806,6 +866,20 @@ def _extract_document_db_database_attrs(attrs: DocumentDBDatabaseAttributes) -> 
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
+    result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     return result
 
 
@@ -846,9 +920,6 @@ def _document_db_database_to_nested(
         is_incomplete=document_db_database.is_incomplete,
         provenance_type=document_db_database.provenance_type,
         home_id=document_db_database.home_id,
-        depth=document_db_database.depth,
-        immediate_upstream=document_db_database.immediate_upstream,
-        immediate_downstream=document_db_database.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -884,6 +955,7 @@ def _document_db_database_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -892,9 +964,6 @@ def _document_db_database_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_document_db_database_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -932,6 +1001,9 @@ DocumentDBDatabase.DOCUMENT_DB_DATABASE_COLLECTION_COUNT = NumericField(
 DocumentDBDatabase.NO_SQL_SCHEMA_DEFINITION = KeywordField(
     "noSQLSchemaDefinition", "noSQLSchemaDefinition"
 )
+DocumentDBDatabase.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DocumentDBDatabase.SCHEMA_COUNT = NumericField("schemaCount", "schemaCount")
 DocumentDBDatabase.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DocumentDBDatabase.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
@@ -967,11 +1039,34 @@ DocumentDBDatabase.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 DocumentDBDatabase.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+DocumentDBDatabase.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+DocumentDBDatabase.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+DocumentDBDatabase.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+DocumentDBDatabase.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+DocumentDBDatabase.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+DocumentDBDatabase.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
 DocumentDBDatabase.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DocumentDBDatabase.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DocumentDBDatabase.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DocumentDBDatabase.APPLICATION = RelationField("application")
 DocumentDBDatabase.APPLICATION_FIELD = RelationField("applicationField")
+DocumentDBDatabase.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DocumentDBDatabase.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DocumentDBDatabase.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DocumentDBDatabase.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DocumentDBDatabase.MODEL_IMPLEMENTED_ENTITIES = RelationField(
@@ -1011,3 +1106,8 @@ DocumentDBDatabase.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
 DocumentDBDatabase.SODA_CHECKS = RelationField("sodaChecks")
 DocumentDBDatabase.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DocumentDBDatabase.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+DocumentDBDatabase.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+DocumentDBDatabase.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+DocumentDBDatabase.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)
