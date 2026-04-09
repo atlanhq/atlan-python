@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -64,11 +65,14 @@ class MonteCarlo(Asset):
     MC_LABELS: ClassVar[Any] = None
     MC_ASSET_QUALIFIED_NAMES: ClassVar[Any] = None
     DQ_IS_PART_OF_CONTRACT: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -102,6 +106,9 @@ class MonteCarlo(Asset):
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -116,6 +123,12 @@ class MonteCarlo(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -183,7 +196,7 @@ class MonteCarlo(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -321,6 +334,9 @@ class MonteCarloAttributes(AssetAttributes):
     dq_is_part_of_contract: Union[bool, None, UnsetType] = UNSET
     """Whether this data quality is part of contract (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     """MonteCarlo-specific relationship attributes for nested API format."""
@@ -339,6 +355,12 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -406,7 +428,7 @@ class MonteCarloRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -442,6 +464,8 @@ _MONTE_CARLO_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -474,6 +498,7 @@ def _populate_monte_carlo_attrs(attrs: MonteCarloAttributes, obj: MonteCarlo) ->
     attrs.mc_labels = obj.mc_labels
     attrs.mc_asset_qualified_names = obj.mc_asset_qualified_names
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_monte_carlo_attrs(attrs: MonteCarloAttributes) -> dict:
@@ -482,6 +507,7 @@ def _extract_monte_carlo_attrs(attrs: MonteCarloAttributes) -> dict:
     result["mc_labels"] = attrs.mc_labels
     result["mc_asset_qualified_names"] = attrs.mc_asset_qualified_names
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -596,11 +622,16 @@ MonteCarlo.MC_ASSET_QUALIFIED_NAMES = KeywordField(
 MonteCarlo.DQ_IS_PART_OF_CONTRACT = BooleanField(
     "dqIsPartOfContract", "dqIsPartOfContract"
 )
+MonteCarlo.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 MonteCarlo.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MonteCarlo.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MonteCarlo.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MonteCarlo.APPLICATION = RelationField("application")
 MonteCarlo.APPLICATION_FIELD = RelationField("applicationField")
+MonteCarlo.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+MonteCarlo.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 MonteCarlo.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MonteCarlo.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MonteCarlo.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

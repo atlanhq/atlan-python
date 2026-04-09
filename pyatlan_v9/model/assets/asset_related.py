@@ -91,6 +91,9 @@ class RelatedAsset(RelatedReferenceable):
     announcement_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated the announcement."""
 
+    asset_announcement_expired_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the announcement expires, in milliseconds. When set, the announcement will no longer be displayed after this time."""
+
     owner_users: Union[Set[str], None, UnsetType] = UNSET
     """List of users who own this asset."""
 
@@ -673,6 +676,12 @@ class RelatedAsset(RelatedReferenceable):
     asset_space_name: Union[str, None, UnsetType] = UNSET
     """Name of the space that contains this asset."""
 
+    asset_immuta_request_url: Union[str, None, UnsetType] = UNSET
+    """URL of the request form on Immuta relevant to the asset."""
+
+    asset_immuta_request_type: Union[str, None, UnsetType] = UNSET
+    """The type of request form on Immuta applicable for the asset."""
+
     asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = (
         msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
     )
@@ -700,6 +709,12 @@ class RelatedAsset(RelatedReferenceable):
         UNSET
     )
     """AWS SMUS Asset MetadataForm details"""
+
+    asset_ai_alias: Union[List[str], None, UnsetType] = UNSET
+    """List of AI-generated aliases for this asset, to aid in search and discovery."""
+
+    asset_has_ai_readme: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has an AI-generated readme."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

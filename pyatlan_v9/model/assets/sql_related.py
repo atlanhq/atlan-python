@@ -101,6 +101,24 @@ class RelatedSQL(RelatedCatalog):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SQL"
@@ -349,6 +367,23 @@ class RelatedColumn(RelatedSQL):
 
     column_measure_type: Union[str, None, UnsetType] = UNSET
     """The type of measure/calculated column this is, eg: base, calculated, derived."""
+
+    column_ai_insights_is_measure: Union[bool, None, UnsetType] = UNSET
+    """When true, this column is identified as a measure/calculated column by AI analysis of query patterns."""
+
+    column_ai_insights_measure_type: Union[str, None, UnsetType] = UNSET
+    """Type of measure/calculated column as classified by AI analysis, for example: base, calculated, derived."""
+
+    column_ai_insights_is_dimension: Union[bool, None, UnsetType] = UNSET
+    """When true, this column is identified as a dimension by AI analysis of query patterns."""
+
+    column_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
+    """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
+
+    column_ai_insights_foreign_key_column_qualified_name: Union[
+        str, None, UnsetType
+    ] = UNSET
+    """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

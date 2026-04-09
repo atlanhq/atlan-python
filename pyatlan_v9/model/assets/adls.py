@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -64,6 +65,7 @@ class ADLS(Asset):
 
     ADLS_ACCOUNT_QUALIFIED_NAME: ClassVar[Any] = None
     ADLS_ACCOUNT_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     AZURE_RESOURCE_ID: ClassVar[Any] = None
     AZURE_LOCATION: ClassVar[Any] = None
     ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[Any] = None
@@ -74,6 +76,8 @@ class ADLS(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -104,6 +108,9 @@ class ADLS(Asset):
     adls_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account for this ADLS asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     azure_resource_id: Union[str, None, UnsetType] = UNSET
     """Resource identifier of this asset in Azure."""
 
@@ -133,6 +140,12 @@ class ADLS(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -200,7 +213,7 @@ class ADLS(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -335,6 +348,9 @@ class ADLSAttributes(AssetAttributes):
     adls_account_name: Union[str, None, UnsetType] = UNSET
     """Name of the account for this ADLS asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     azure_resource_id: Union[str, None, UnsetType] = UNSET
     """Resource identifier of this asset in Azure."""
 
@@ -368,6 +384,12 @@ class ADLSRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -435,7 +457,7 @@ class ADLSRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -467,6 +489,8 @@ _ADLS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -498,6 +522,7 @@ def _populate_adls_attrs(attrs: ADLSAttributes, obj: ADLS) -> None:
     _populate_asset_attrs(attrs, obj)
     attrs.adls_account_qualified_name = obj.adls_account_qualified_name
     attrs.adls_account_name = obj.adls_account_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.azure_resource_id = obj.azure_resource_id
     attrs.azure_location = obj.azure_location
     attrs.adls_account_secondary_location = obj.adls_account_secondary_location
@@ -510,6 +535,7 @@ def _extract_adls_attrs(attrs: ADLSAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["adls_account_qualified_name"] = attrs.adls_account_qualified_name
     result["adls_account_name"] = attrs.adls_account_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["azure_resource_id"] = attrs.azure_resource_id
     result["azure_location"] = attrs.azure_location
     result["adls_account_secondary_location"] = attrs.adls_account_secondary_location
@@ -626,6 +652,7 @@ ADLS.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField(
     "adlsAccountQualifiedName.text",
 )
 ADLS.ADLS_ACCOUNT_NAME = KeywordField("adlsAccountName", "adlsAccountName")
+ADLS.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 ADLS.AZURE_RESOURCE_ID = KeywordTextField(
     "azureResourceId", "azureResourceId", "azureResourceId.text"
 )
@@ -642,6 +669,8 @@ ADLS.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ADLS.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ADLS.APPLICATION = RelationField("application")
 ADLS.APPLICATION_FIELD = RelationField("applicationField")
+ADLS.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+ADLS.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 ADLS.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ADLS.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ADLS.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

@@ -45,6 +45,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -90,6 +91,7 @@ class AdfActivity(Asset):
     ADF_PIPELINE_QUALIFIED_NAME: ClassVar[Any] = None
     ADF_FACTORY_NAME: ClassVar[Any] = None
     ADF_ASSET_FOLDER_PATH: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     ADF_LINKEDSERVICES: ClassVar[Any] = None
     ADF_DATASETS: ClassVar[Any] = None
     ADF_DATAFLOW: ClassVar[Any] = None
@@ -100,6 +102,8 @@ class AdfActivity(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -187,6 +191,9 @@ class AdfActivity(Asset):
     adf_asset_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path in which this ADF asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     adf_linkedservices: Union[List[RelatedAdfLinkedservice], None, UnsetType] = UNSET
     """ADF activities that are associated with this ADF Linkedservice."""
 
@@ -216,6 +223,12 @@ class AdfActivity(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -283,7 +296,7 @@ class AdfActivity(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -489,6 +502,9 @@ class AdfActivityAttributes(AssetAttributes):
     adf_asset_folder_path: Union[str, None, UnsetType] = UNSET
     """Defines the folder path in which this ADF asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     """AdfActivity-specific relationship attributes for nested API format."""
@@ -522,6 +538,12 @@ class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -589,7 +611,7 @@ class AdfActivityRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -630,6 +652,8 @@ _ADF_ACTIVITY_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -682,6 +706,7 @@ def _populate_adf_activity_attrs(
     attrs.adf_pipeline_qualified_name = obj.adf_pipeline_qualified_name
     attrs.adf_factory_name = obj.adf_factory_name
     attrs.adf_asset_folder_path = obj.adf_asset_folder_path
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_adf_activity_attrs(attrs: AdfActivityAttributes) -> dict:
@@ -712,6 +737,7 @@ def _extract_adf_activity_attrs(attrs: AdfActivityAttributes) -> dict:
     result["adf_pipeline_qualified_name"] = attrs.adf_pipeline_qualified_name
     result["adf_factory_name"] = attrs.adf_factory_name
     result["adf_asset_folder_path"] = attrs.adf_asset_folder_path
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -876,6 +902,9 @@ AdfActivity.ADF_FACTORY_NAME = KeywordField("adfFactoryName", "adfFactoryName")
 AdfActivity.ADF_ASSET_FOLDER_PATH = KeywordField(
     "adfAssetFolderPath", "adfAssetFolderPath"
 )
+AdfActivity.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 AdfActivity.ADF_LINKEDSERVICES = RelationField("adfLinkedservices")
 AdfActivity.ADF_DATASETS = RelationField("adfDatasets")
 AdfActivity.ADF_DATAFLOW = RelationField("adfDataflow")
@@ -886,6 +915,10 @@ AdfActivity.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AdfActivity.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AdfActivity.APPLICATION = RelationField("application")
 AdfActivity.APPLICATION_FIELD = RelationField("applicationField")
+AdfActivity.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+AdfActivity.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 AdfActivity.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AdfActivity.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AdfActivity.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

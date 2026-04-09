@@ -41,6 +41,7 @@ from .asset_grouping_related import (
     RelatedAssetGroupingCollection,
     RelatedAssetGroupingStrategy,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -65,12 +66,15 @@ class AssetGroupingStrategy(Asset):
     Reusable strategy for identifying a dynamic set of assets.
     """
 
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     ASSET_GROUPING_COLLECTIONS: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -95,6 +99,9 @@ class AssetGroupingStrategy(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -114,6 +121,12 @@ class AssetGroupingStrategy(Asset):
         List[RelatedAssetGroupingCollection], None, UnsetType
     ] = UNSET
     """Collections derived from this grouping strategy."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -181,7 +194,7 @@ class AssetGroupingStrategy(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -312,7 +325,8 @@ class AssetGroupingStrategy(Asset):
 class AssetGroupingStrategyAttributes(AssetAttributes):
     """AssetGroupingStrategy-specific attributes for nested API format."""
 
-    pass
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
 
 class AssetGroupingStrategyRelationshipAttributes(AssetRelationshipAttributes):
@@ -337,6 +351,12 @@ class AssetGroupingStrategyRelationshipAttributes(AssetRelationshipAttributes):
         List[RelatedAssetGroupingCollection], None, UnsetType
     ] = UNSET
     """Collections derived from this grouping strategy."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -404,7 +424,7 @@ class AssetGroupingStrategyRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -443,6 +463,8 @@ _ASSET_GROUPING_STRATEGY_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "asset_grouping_collections",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -474,13 +496,16 @@ def _populate_asset_grouping_strategy_attrs(
 ) -> None:
     """Populate AssetGroupingStrategy-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_asset_grouping_strategy_attrs(
     attrs: AssetGroupingStrategyAttributes,
 ) -> dict:
     """Extract all AssetGroupingStrategy attributes from the attrs struct into a flat dict."""
-    return _extract_asset_attrs(attrs)
+    result = _extract_asset_attrs(attrs)
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    return result
 
 
 # =============================================================================
@@ -593,8 +618,11 @@ def _asset_grouping_strategy_from_nested_bytes(
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
+AssetGroupingStrategy.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 AssetGroupingStrategy.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AssetGroupingStrategy.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
     "outputFromAirflowTasks"
@@ -604,6 +632,10 @@ AssetGroupingStrategy.APPLICATION = RelationField("application")
 AssetGroupingStrategy.APPLICATION_FIELD = RelationField("applicationField")
 AssetGroupingStrategy.ASSET_GROUPING_COLLECTIONS = RelationField(
     "assetGroupingCollections"
+)
+AssetGroupingStrategy.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+AssetGroupingStrategy.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
 )
 AssetGroupingStrategy.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"

@@ -41,6 +41,7 @@ from .azure_service_bus_related import (
     RelatedAzureServiceBusSchema,
     RelatedAzureServiceBusTopic,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -68,12 +69,15 @@ class AzureServiceBusSchema(Asset):
     AZURE_SERVICE_BUS_NAMESPACE_QUALIFIED_NAME: ClassVar[Any] = None
     AZURE_SERVICE_BUS_NAMESPACE_NAME: ClassVar[Any] = None
     AZURE_SERVICE_BUS_SCHEMA_QUALIFIED_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     AZURE_SERVICE_BUS_TOPICS: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -107,6 +111,9 @@ class AzureServiceBusSchema(Asset):
     azure_service_bus_schema_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the AzureServiceBus Schema in which this asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -126,6 +133,12 @@ class AzureServiceBusSchema(Asset):
         List[RelatedAzureServiceBusTopic], None, UnsetType
     ] = UNSET
     """AzureServiceBusTopic assets containing this AzureServiceBusSchema."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -193,7 +206,7 @@ class AzureServiceBusSchema(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -333,6 +346,9 @@ class AzureServiceBusSchemaAttributes(AssetAttributes):
     azure_service_bus_schema_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the AzureServiceBus Schema in which this asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class AzureServiceBusSchemaRelationshipAttributes(AssetRelationshipAttributes):
     """AzureServiceBusSchema-specific relationship attributes for nested API format."""
@@ -356,6 +372,12 @@ class AzureServiceBusSchemaRelationshipAttributes(AssetRelationshipAttributes):
         List[RelatedAzureServiceBusTopic], None, UnsetType
     ] = UNSET
     """AzureServiceBusTopic assets containing this AzureServiceBusSchema."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -423,7 +445,7 @@ class AzureServiceBusSchemaRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -462,6 +484,8 @@ _AZURE_SERVICE_BUS_SCHEMA_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "azure_service_bus_topics",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -500,6 +524,7 @@ def _populate_azure_service_bus_schema_attrs(
     attrs.azure_service_bus_schema_qualified_name = (
         obj.azure_service_bus_schema_qualified_name
     )
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_azure_service_bus_schema_attrs(
@@ -514,6 +539,7 @@ def _extract_azure_service_bus_schema_attrs(
     result["azure_service_bus_schema_qualified_name"] = (
         attrs.azure_service_bus_schema_qualified_name
     )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -644,6 +670,9 @@ AzureServiceBusSchema.AZURE_SERVICE_BUS_NAMESPACE_NAME = KeywordTextField(
 AzureServiceBusSchema.AZURE_SERVICE_BUS_SCHEMA_QUALIFIED_NAME = KeywordField(
     "azureServiceBusSchemaQualifiedName", "azureServiceBusSchemaQualifiedName"
 )
+AzureServiceBusSchema.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 AzureServiceBusSchema.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AzureServiceBusSchema.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
     "outputFromAirflowTasks"
@@ -652,6 +681,10 @@ AzureServiceBusSchema.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AzureServiceBusSchema.APPLICATION = RelationField("application")
 AzureServiceBusSchema.APPLICATION_FIELD = RelationField("applicationField")
 AzureServiceBusSchema.AZURE_SERVICE_BUS_TOPICS = RelationField("azureServiceBusTopics")
+AzureServiceBusSchema.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+AzureServiceBusSchema.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 AzureServiceBusSchema.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
 )

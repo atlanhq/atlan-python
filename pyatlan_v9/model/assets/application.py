@@ -39,6 +39,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -64,6 +65,7 @@ class Application(Asset):
     """
 
     APP_ID: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -71,6 +73,8 @@ class Application(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     APPLICATION_CHILD_FIELDS: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -98,6 +102,9 @@ class Application(Asset):
     app_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the application asset from the source system."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -120,6 +127,12 @@ class Application(Asset):
         UNSET
     )
     """ApplicationFields owned by the Application."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -187,7 +200,7 @@ class Application(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -353,6 +366,9 @@ class ApplicationAttributes(AssetAttributes):
     app_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the application asset from the source system."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class ApplicationRelationshipAttributes(AssetRelationshipAttributes):
     """Application-specific relationship attributes for nested API format."""
@@ -379,6 +395,12 @@ class ApplicationRelationshipAttributes(AssetRelationshipAttributes):
         UNSET
     )
     """ApplicationFields owned by the Application."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -446,7 +468,7 @@ class ApplicationRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -484,6 +506,8 @@ _APPLICATION_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "application_child_fields",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -514,12 +538,14 @@ def _populate_application_attrs(attrs: ApplicationAttributes, obj: Application) 
     """Populate Application-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.app_id = obj.app_id
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_application_attrs(attrs: ApplicationAttributes) -> dict:
     """Extract all Application attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["app_id"] = attrs.app_id
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -624,6 +650,9 @@ def _application_from_nested_bytes(data: bytes, serde: Serde) -> Application:
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
 Application.APP_ID = KeywordField("appId", "appId")
+Application.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 Application.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Application.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Application.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -631,6 +660,10 @@ Application.APPLICATION_OWNED_ASSETS = RelationField("applicationOwnedAssets")
 Application.APPLICATION = RelationField("application")
 Application.APPLICATION_FIELD = RelationField("applicationField")
 Application.APPLICATION_CHILD_FIELDS = RelationField("applicationChildFields")
+Application.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Application.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 Application.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Application.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Application.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

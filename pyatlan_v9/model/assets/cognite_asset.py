@@ -45,6 +45,7 @@ from .cognite_related import (
     RelatedCogniteSequence,
     RelatedCogniteTimeSeries,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -69,6 +70,7 @@ class CogniteAsset(Asset):
     Instance of a Cognite asset in Atlan.
     """
 
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -79,6 +81,8 @@ class CogniteAsset(Asset):
     COGNITE_SEQUENCES: ClassVar[Any] = None
     COGNITE_TIMESERIES: ClassVar[Any] = None
     COGNITE3DMODELS: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -102,6 +106,9 @@ class CogniteAsset(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -132,6 +139,12 @@ class CogniteAsset(Asset):
 
     cognite3dmodels: Union[List[RelatedCognite3DModel], None, UnsetType] = UNSET
     """3D models that exist within this asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -199,7 +212,7 @@ class CogniteAsset(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -328,7 +341,8 @@ class CogniteAsset(Asset):
 class CogniteAssetAttributes(AssetAttributes):
     """CogniteAsset-specific attributes for nested API format."""
 
-    pass
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
 
 class CogniteAssetRelationshipAttributes(AssetRelationshipAttributes):
@@ -363,6 +377,12 @@ class CogniteAssetRelationshipAttributes(AssetRelationshipAttributes):
 
     cognite3dmodels: Union[List[RelatedCognite3DModel], None, UnsetType] = UNSET
     """3D models that exist within this asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -430,7 +450,7 @@ class CogniteAssetRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -473,6 +493,8 @@ _COGNITE_ASSET_REL_FIELDS: List[str] = [
     "cognite_sequences",
     "cognite_timeseries",
     "cognite3dmodels",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -504,11 +526,14 @@ def _populate_cognite_asset_attrs(
 ) -> None:
     """Populate CogniteAsset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_cognite_asset_attrs(attrs: CogniteAssetAttributes) -> dict:
     """Extract all CogniteAsset attributes from the attrs struct into a flat dict."""
-    return _extract_asset_attrs(attrs)
+    result = _extract_asset_attrs(attrs)
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    return result
 
 
 # =============================================================================
@@ -611,8 +636,11 @@ def _cognite_asset_from_nested_bytes(data: bytes, serde: Serde) -> CogniteAsset:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
+CogniteAsset.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 CogniteAsset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CogniteAsset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CogniteAsset.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -623,6 +651,10 @@ CogniteAsset.COGNITE_FILES = RelationField("cogniteFiles")
 CogniteAsset.COGNITE_SEQUENCES = RelationField("cogniteSequences")
 CogniteAsset.COGNITE_TIMESERIES = RelationField("cogniteTimeseries")
 CogniteAsset.COGNITE3DMODELS = RelationField("cognite3dmodels")
+CogniteAsset.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+CogniteAsset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 CogniteAsset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CogniteAsset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CogniteAsset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

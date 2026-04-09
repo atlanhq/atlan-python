@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .flow_related import RelatedFlowFolder
@@ -75,6 +76,8 @@ class FlowFolder(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     METRICS: ClassVar[Any] = None
@@ -144,6 +147,12 @@ class FlowFolder(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -196,7 +205,7 @@ class FlowFolder(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -384,6 +393,12 @@ class FlowFolderRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
 
@@ -436,7 +451,7 @@ class FlowFolderRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -464,6 +479,8 @@ _FLOW_FOLDER_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "metrics",
@@ -661,6 +678,8 @@ FlowFolder.FLOW_INPUT_PARAMETERS = KeywordField(
 FlowFolder.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FlowFolder.APPLICATION = RelationField("application")
 FlowFolder.APPLICATION_FIELD = RelationField("applicationField")
+FlowFolder.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+FlowFolder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 FlowFolder.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 FlowFolder.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 FlowFolder.METRICS = RelationField("metrics")

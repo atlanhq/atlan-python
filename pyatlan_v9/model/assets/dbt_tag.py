@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import RelatedDbtTag
@@ -82,6 +83,7 @@ class DbtTag(Asset):
     DBT_CONNECTION_CONTEXT: ClassVar[Any] = None
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[Any] = None
     DBT_JOB_RUNS: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     TAG_ID: ClassVar[Any] = None
     TAG_ATTRIBUTES: ClassVar[Any] = None
     TAG_ALLOWED_VALUES: ClassVar[Any] = None
@@ -91,6 +93,8 @@ class DbtTag(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -172,6 +176,9 @@ class DbtTag(Asset):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     tag_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the tag in the source system."""
 
@@ -198,6 +205,12 @@ class DbtTag(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -265,7 +278,7 @@ class DbtTag(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -467,6 +480,9 @@ class DbtTagAttributes(AssetAttributes):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     tag_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the tag in the source system."""
 
@@ -497,6 +513,12 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -564,7 +586,7 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -600,6 +622,8 @@ _DBT_TAG_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -648,6 +672,7 @@ def _populate_dbt_tag_attrs(attrs: DbtTagAttributes, obj: DbtTag) -> None:
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.tag_id = obj.tag_id
     attrs.tag_attributes = obj.tag_attributes
     attrs.tag_allowed_values = obj.tag_allowed_values
@@ -676,6 +701,7 @@ def _extract_dbt_tag_attrs(attrs: DbtTagAttributes) -> dict:
     result["dbt_connection_context"] = attrs.dbt_connection_context
     result["dbt_semantic_layer_proxy_url"] = attrs.dbt_semantic_layer_proxy_url
     result["dbt_job_runs"] = attrs.dbt_job_runs
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["tag_id"] = attrs.tag_id
     result["tag_attributes"] = attrs.tag_attributes
     result["tag_allowed_values"] = attrs.tag_allowed_values
@@ -815,6 +841,7 @@ DbtTag.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
     "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
 )
 DbtTag.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
+DbtTag.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 DbtTag.TAG_ID = KeywordField("tagId", "tagId")
 DbtTag.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
 DbtTag.TAG_ALLOWED_VALUES = KeywordTextField(
@@ -828,6 +855,8 @@ DbtTag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DbtTag.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DbtTag.APPLICATION = RelationField("application")
 DbtTag.APPLICATION_FIELD = RelationField("applicationField")
+DbtTag.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DbtTag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DbtTag.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DbtTag.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DbtTag.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

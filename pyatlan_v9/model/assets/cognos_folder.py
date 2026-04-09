@@ -48,6 +48,7 @@ from .cognos_related import (
     RelatedCognosPackage,
     RelatedCognosReport,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -83,6 +84,7 @@ class CognosFolder(Asset):
     COGNOS_IS_HIDDEN: ClassVar[Any] = None
     COGNOS_IS_DISABLED: ClassVar[Any] = None
     COGNOS_DEFAULT_SCREEN_TIP: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -97,6 +99,8 @@ class CognosFolder(Asset):
     COGNOS_DATASETS: ClassVar[Any] = None
     COGNOS_SUB_FOLDERS: ClassVar[Any] = None
     COGNOS_FOLDER: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -154,6 +158,9 @@ class CognosFolder(Asset):
     cognos_default_screen_tip: Union[str, None, UnsetType] = UNSET
     """Tooltip text present for the Cognos asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -195,6 +202,12 @@ class CognosFolder(Asset):
 
     cognos_folder: Union[RelatedCognosFolder, None, UnsetType] = UNSET
     """Parent folder containing this folder."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -262,7 +275,7 @@ class CognosFolder(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -434,6 +447,9 @@ class CognosFolderAttributes(AssetAttributes):
     cognos_default_screen_tip: Union[str, None, UnsetType] = UNSET
     """Tooltip text present for the Cognos asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class CognosFolderRelationshipAttributes(AssetRelationshipAttributes):
     """CognosFolder-specific relationship attributes for nested API format."""
@@ -479,6 +495,12 @@ class CognosFolderRelationshipAttributes(AssetRelationshipAttributes):
 
     cognos_folder: Union[RelatedCognosFolder, None, UnsetType] = UNSET
     """Parent folder containing this folder."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -546,7 +568,7 @@ class CognosFolderRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -593,6 +615,8 @@ _COGNOS_FOLDER_REL_FIELDS: List[str] = [
     "cognos_datasets",
     "cognos_sub_folders",
     "cognos_folder",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -635,6 +659,7 @@ def _populate_cognos_folder_attrs(
     attrs.cognos_is_hidden = obj.cognos_is_hidden
     attrs.cognos_is_disabled = obj.cognos_is_disabled
     attrs.cognos_default_screen_tip = obj.cognos_default_screen_tip
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_cognos_folder_attrs(attrs: CognosFolderAttributes) -> dict:
@@ -653,6 +678,7 @@ def _extract_cognos_folder_attrs(attrs: CognosFolderAttributes) -> dict:
     result["cognos_is_hidden"] = attrs.cognos_is_hidden
     result["cognos_is_disabled"] = attrs.cognos_is_disabled
     result["cognos_default_screen_tip"] = attrs.cognos_default_screen_tip
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -785,6 +811,9 @@ CognosFolder.COGNOS_IS_DISABLED = BooleanField("cognosIsDisabled", "cognosIsDisa
 CognosFolder.COGNOS_DEFAULT_SCREEN_TIP = KeywordField(
     "cognosDefaultScreenTip", "cognosDefaultScreenTip"
 )
+CognosFolder.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 CognosFolder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CognosFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CognosFolder.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -799,6 +828,10 @@ CognosFolder.COGNOS_PACKAGES = RelationField("cognosPackages")
 CognosFolder.COGNOS_DATASETS = RelationField("cognosDatasets")
 CognosFolder.COGNOS_SUB_FOLDERS = RelationField("cognosSubFolders")
 CognosFolder.COGNOS_FOLDER = RelationField("cognosFolder")
+CognosFolder.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+CognosFolder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 CognosFolder.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CognosFolder.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CognosFolder.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

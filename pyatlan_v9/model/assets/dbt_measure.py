@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import RelatedDbtMeasure
@@ -83,6 +84,7 @@ class DbtMeasure(Asset):
     DBT_CONNECTION_CONTEXT: ClassVar[Any] = None
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[Any] = None
     DBT_JOB_RUNS: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     SEMANTIC_EXPRESSION: ClassVar[Any] = None
     SEMANTIC_TYPE: ClassVar[Any] = None
     SEMANTIC_SYNONYMS: ClassVar[Any] = None
@@ -95,6 +97,8 @@ class DbtMeasure(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -180,6 +184,9 @@ class DbtMeasure(Asset):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
 
@@ -215,6 +222,12 @@ class DbtMeasure(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -282,7 +295,7 @@ class DbtMeasure(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
     """Semantic model in which this measure exists."""
@@ -474,6 +487,9 @@ class DbtMeasureAttributes(AssetAttributes):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
 
@@ -513,6 +529,12 @@ class DbtMeasureRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -580,7 +602,7 @@ class DbtMeasureRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
     """Semantic model in which this measure exists."""
@@ -619,6 +641,8 @@ _DBT_MEASURE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -669,6 +693,7 @@ def _populate_dbt_measure_attrs(attrs: DbtMeasureAttributes, obj: DbtMeasure) ->
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
     attrs.semantic_synonyms = obj.semantic_synonyms
@@ -703,6 +728,7 @@ def _extract_dbt_measure_attrs(attrs: DbtMeasureAttributes) -> dict:
     result["dbt_connection_context"] = attrs.dbt_connection_context
     result["dbt_semantic_layer_proxy_url"] = attrs.dbt_semantic_layer_proxy_url
     result["dbt_job_runs"] = attrs.dbt_job_runs
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
     result["semantic_synonyms"] = attrs.semantic_synonyms
@@ -852,6 +878,9 @@ DbtMeasure.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
     "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
 )
 DbtMeasure.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
+DbtMeasure.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DbtMeasure.SEMANTIC_EXPRESSION = KeywordField(
     "semanticExpression", "semanticExpression"
 )
@@ -870,6 +899,8 @@ DbtMeasure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DbtMeasure.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DbtMeasure.APPLICATION = RelationField("application")
 DbtMeasure.APPLICATION_FIELD = RelationField("applicationField")
+DbtMeasure.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DbtMeasure.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DbtMeasure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DbtMeasure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DbtMeasure.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

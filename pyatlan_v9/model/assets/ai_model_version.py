@@ -15,7 +15,7 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -40,6 +40,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -64,6 +65,9 @@ class AIModelVersion(Asset):
     Base class for all AIModelVersion types.
     """
 
+    AI_MODEL_QUALIFIED_NAME: ClassVar[Any] = None
+    AI_MODEL_VERSION_STAGE: ClassVar[Any] = None
+    AI_MODEL_VERSION_METRICS: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_BIAS_MITIGATION_CONFIG: ClassVar[Any] = None
@@ -71,12 +75,15 @@ class AIModelVersion(Asset):
     ETHICAL_AI_TRANSPARENCY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_ACCOUNTABILITY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     AI_MODEL: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -100,6 +107,15 @@ class AIModelVersion(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    ai_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the AI model to which this version belongs, used to navigate from a version back to its parent model."""
+
+    ai_model_version_stage: Union[str, None, UnsetType] = UNSET
+    """Lifecycle deployment stage of this AI model version, indicating its readiness for production use."""
+
+    ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
 
     ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIPrivacyConfig"
@@ -136,6 +152,9 @@ class AIModelVersion(Asset):
     )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     ai_model: Union[RelatedAIModel, None, UnsetType] = UNSET
     """Model containing the versions."""
 
@@ -153,6 +172,12 @@ class AIModelVersion(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -220,7 +245,7 @@ class AIModelVersion(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -274,6 +299,8 @@ class AIModelVersion(Asset):
                 errors.append("connection_qualified_name is required for creation")
             if self.ai_model is UNSET:
                 errors.append("ai_model is required for creation")
+            if self.ai_model_qualified_name is UNSET:
+                errors.append("ai_model_qualified_name is required for creation")
         if errors:
             raise ValueError(f"AIModelVersion validation failed: {errors}")
 
@@ -361,6 +388,15 @@ class AIModelVersion(Asset):
 class AIModelVersionAttributes(AssetAttributes):
     """AIModelVersion-specific attributes for nested API format."""
 
+    ai_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the AI model to which this version belongs, used to navigate from a version back to its parent model."""
+
+    ai_model_version_stage: Union[str, None, UnsetType] = UNSET
+    """Lifecycle deployment stage of this AI model version, indicating its readiness for production use."""
+
+    ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
+
     ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIPrivacyConfig"
     )
@@ -396,6 +432,9 @@ class AIModelVersionAttributes(AssetAttributes):
     )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     """AIModelVersion-specific relationship attributes for nested API format."""
@@ -417,6 +456,12 @@ class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -484,7 +529,7 @@ class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -523,6 +568,8 @@ _AI_MODEL_VERSION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -554,6 +601,9 @@ def _populate_ai_model_version_attrs(
 ) -> None:
     """Populate AIModelVersion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.ai_model_qualified_name = obj.ai_model_qualified_name
+    attrs.ai_model_version_stage = obj.ai_model_version_stage
+    attrs.ai_model_version_metrics = obj.ai_model_version_metrics
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
     attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
@@ -565,11 +615,15 @@ def _populate_ai_model_version_attrs(
     attrs.ethical_ai_environmental_consciousness_config = (
         obj.ethical_ai_environmental_consciousness_config
     )
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_ai_model_version_attrs(attrs: AIModelVersionAttributes) -> dict:
     """Extract all AIModelVersion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
+    result["ai_model_qualified_name"] = attrs.ai_model_qualified_name
+    result["ai_model_version_stage"] = attrs.ai_model_version_stage
+    result["ai_model_version_metrics"] = attrs.ai_model_version_metrics
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
     result["ethical_ai_bias_mitigation_config"] = (
@@ -583,6 +637,7 @@ def _extract_ai_model_version_attrs(attrs: AIModelVersionAttributes) -> dict:
     result["ethical_ai_environmental_consciousness_config"] = (
         attrs.ethical_ai_environmental_consciousness_config
     )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -694,6 +749,15 @@ def _ai_model_version_from_nested_bytes(data: bytes, serde: Serde) -> AIModelVer
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
+AIModelVersion.AI_MODEL_QUALIFIED_NAME = KeywordField(
+    "aiModelQualifiedName", "aiModelQualifiedName"
+)
+AIModelVersion.AI_MODEL_VERSION_STAGE = KeywordField(
+    "aiModelVersionStage", "aiModelVersionStage"
+)
+AIModelVersion.AI_MODEL_VERSION_METRICS = KeywordField(
+    "aiModelVersionMetrics", "aiModelVersionMetrics"
+)
 AIModelVersion.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
     "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
 )
@@ -716,12 +780,19 @@ AIModelVersion.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
     "ethicalAIEnvironmentalConsciousnessConfig",
     "ethicalAIEnvironmentalConsciousnessConfig",
 )
+AIModelVersion.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 AIModelVersion.AI_MODEL = RelationField("aiModel")
 AIModelVersion.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AIModelVersion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AIModelVersion.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AIModelVersion.APPLICATION = RelationField("application")
 AIModelVersion.APPLICATION_FIELD = RelationField("applicationField")
+AIModelVersion.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+AIModelVersion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 AIModelVersion.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AIModelVersion.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AIModelVersion.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

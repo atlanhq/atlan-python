@@ -39,6 +39,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .catalog_related import RelatedCatalog
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -86,11 +87,14 @@ class ModelEntity(Asset):
     MODEL_BUSINESS_DATE: ClassVar[Any] = None
     MODEL_EXPIRED_AT_SYSTEM_DATE: ClassVar[Any] = None
     MODEL_EXPIRED_AT_BUSINESS_DATE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_VERSIONS: ClassVar[Any] = None
@@ -178,6 +182,9 @@ class ModelEntity(Asset):
     model_expired_at_business_date: Union[int, None, UnsetType] = UNSET
     """Business expiration date for the asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -192,6 +199,12 @@ class ModelEntity(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -300,7 +313,7 @@ class ModelEntity(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -493,6 +506,9 @@ class ModelEntityAttributes(AssetAttributes):
     model_expired_at_business_date: Union[int, None, UnsetType] = UNSET
     """Business expiration date for the asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     """ModelEntity-specific relationship attributes for nested API format."""
@@ -511,6 +527,12 @@ class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -619,7 +641,7 @@ class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -655,6 +677,8 @@ _MODEL_ENTITY_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_versions",
@@ -717,6 +741,7 @@ def _populate_model_entity_attrs(
     attrs.model_business_date = obj.model_business_date
     attrs.model_expired_at_system_date = obj.model_expired_at_system_date
     attrs.model_expired_at_business_date = obj.model_expired_at_business_date
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_model_entity_attrs(attrs: ModelEntityAttributes) -> dict:
@@ -744,6 +769,7 @@ def _extract_model_entity_attrs(attrs: ModelEntityAttributes) -> dict:
     result["model_business_date"] = attrs.model_business_date
     result["model_expired_at_system_date"] = attrs.model_expired_at_system_date
     result["model_expired_at_business_date"] = attrs.model_expired_at_business_date
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -900,11 +926,18 @@ ModelEntity.MODEL_EXPIRED_AT_SYSTEM_DATE = NumericField(
 ModelEntity.MODEL_EXPIRED_AT_BUSINESS_DATE = NumericField(
     "modelExpiredAtBusinessDate", "modelExpiredAtBusinessDate"
 )
+ModelEntity.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 ModelEntity.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModelEntity.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModelEntity.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ModelEntity.APPLICATION = RelationField("application")
 ModelEntity.APPLICATION_FIELD = RelationField("applicationField")
+ModelEntity.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+ModelEntity.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ModelEntity.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ModelEntity.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ModelEntity.MODEL_VERSIONS = RelationField("modelVersions")

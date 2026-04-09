@@ -38,6 +38,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .catalog_related import RelatedCatalog
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -88,11 +89,14 @@ class ModelAttribute(Asset):
     MODEL_BUSINESS_DATE: ClassVar[Any] = None
     MODEL_EXPIRED_AT_SYSTEM_DATE: ClassVar[Any] = None
     MODEL_EXPIRED_AT_BUSINESS_DATE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -189,6 +193,9 @@ class ModelAttribute(Asset):
     model_expired_at_business_date: Union[int, None, UnsetType] = UNSET
     """Business expiration date for the asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -203,6 +210,12 @@ class ModelAttribute(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -298,7 +311,7 @@ class ModelAttribute(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -493,6 +506,9 @@ class ModelAttributeAttributes(AssetAttributes):
     model_expired_at_business_date: Union[int, None, UnsetType] = UNSET
     """Business expiration date for the asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class ModelAttributeRelationshipAttributes(AssetRelationshipAttributes):
     """ModelAttribute-specific relationship attributes for nested API format."""
@@ -511,6 +527,12 @@ class ModelAttributeRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -606,7 +628,7 @@ class ModelAttributeRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -644,6 +666,8 @@ _MODEL_ATTRIBUTE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -705,6 +729,7 @@ def _populate_model_attribute_attrs(
     attrs.model_business_date = obj.model_business_date
     attrs.model_expired_at_system_date = obj.model_expired_at_system_date
     attrs.model_expired_at_business_date = obj.model_expired_at_business_date
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_model_attribute_attrs(attrs: ModelAttributeAttributes) -> dict:
@@ -736,6 +761,7 @@ def _extract_model_attribute_attrs(attrs: ModelAttributeAttributes) -> dict:
     result["model_business_date"] = attrs.model_business_date
     result["model_expired_at_system_date"] = attrs.model_expired_at_system_date
     result["model_expired_at_business_date"] = attrs.model_expired_at_business_date
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -911,11 +937,18 @@ ModelAttribute.MODEL_EXPIRED_AT_SYSTEM_DATE = NumericField(
 ModelAttribute.MODEL_EXPIRED_AT_BUSINESS_DATE = NumericField(
     "modelExpiredAtBusinessDate", "modelExpiredAtBusinessDate"
 )
+ModelAttribute.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 ModelAttribute.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModelAttribute.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModelAttribute.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ModelAttribute.APPLICATION = RelationField("application")
 ModelAttribute.APPLICATION_FIELD = RelationField("applicationField")
+ModelAttribute.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+ModelAttribute.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ModelAttribute.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ModelAttribute.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ModelAttribute.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

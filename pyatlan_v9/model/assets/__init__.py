@@ -9,6 +9,18 @@ from .entity import AtlasClassification, Entity, TermAssignment
 from .related_entity import RelatedEntity, SaveSemantic
 
 __PYATLAN_V9_ASSETS__ = {
+    "_init_access_control": [
+        "AccessControl",
+        "AuthPolicy",
+        "AuthService",
+        "Persona",
+        "Purpose",
+        "RelatedAccessControl",
+        "RelatedAuthPolicy",
+        "RelatedAuthService",
+        "RelatedPersona",
+        "RelatedPurpose",
+    ],
     "_init_adf": [
         "ADF",
         "AdfActivity",
@@ -153,6 +165,9 @@ __PYATLAN_V9_ASSETS__ = {
     ],
     "_init_business_policy": [
         "BusinessPolicy",
+        "BusinessPolicyException",
+        "BusinessPolicyIncident",
+        "BusinessPolicyLog",
         "RelatedBusinessPolicy",
         "RelatedBusinessPolicyException",
         "RelatedBusinessPolicyIncident",
@@ -267,12 +282,15 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedCustom",
         "RelatedCustomEntity",
     ],
+    "_init_data_contract": ["DataContract", "RelatedDataContract"],
     "_init_data_mesh": [
         "DataDomain",
         "DataMesh",
+        "DataMeshDataset",
         "DataProduct",
         "RelatedDataDomain",
         "RelatedDataMesh",
+        "RelatedDataMeshDataset",
         "RelatedDataProduct",
         "RelatedStakeholder",
         "RelatedStakeholderTitle",
@@ -485,12 +503,16 @@ __PYATLAN_V9_ASSETS__ = {
     ],
     "_init_kafka": [
         "Kafka",
+        "KafkaCluster",
         "KafkaConsumerGroup",
+        "KafkaField",
         "KafkaTopic",
         "RelatedAzureEventHub",
         "RelatedAzureEventHubConsumerGroup",
         "RelatedKafka",
+        "RelatedKafkaCluster",
         "RelatedKafkaConsumerGroup",
+        "RelatedKafkaField",
         "RelatedKafkaTopic",
     ],
     "_init_looker": [
@@ -833,8 +855,10 @@ __PYATLAN_V9_ASSETS__ = {
     "_init_schema_registry": [
         "RelatedSchemaRegistry",
         "RelatedSchemaRegistrySubject",
+        "RelatedSchemaRegistryVersion",
         "SchemaRegistry",
         "SchemaRegistrySubject",
+        "SchemaRegistryVersion",
     ],
     "_init_semantic": [
         "RelatedSemantic",
@@ -941,6 +965,16 @@ __PYATLAN_V9_ASSETS__ = {
         "TablePartition",
         "View",
     ],
+    "_init_sql_insight": [
+        "RelatedSqlInsight",
+        "RelatedSqlInsightBusinessQuestion",
+        "RelatedSqlInsightFilter",
+        "RelatedSqlInsightJoin",
+        "SqlInsight",
+        "SqlInsightBusinessQuestion",
+        "SqlInsightFilter",
+        "SqlInsightJoin",
+    ],
     "_init_starburst": [
         "RelatedStarburst",
         "RelatedStarburstDataset",
@@ -948,6 +982,16 @@ __PYATLAN_V9_ASSETS__ = {
         "Starburst",
         "StarburstDataset",
         "StarburstDatasetColumn",
+    ],
+    "_init_superset": [
+        "RelatedSuperset",
+        "RelatedSupersetChart",
+        "RelatedSupersetDashboard",
+        "RelatedSupersetDataset",
+        "Superset",
+        "SupersetChart",
+        "SupersetDashboard",
+        "SupersetDataset",
     ],
     "_init_tableau": [
         "RelatedTableau",

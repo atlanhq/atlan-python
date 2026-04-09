@@ -39,6 +39,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import RelatedDbtMetric, RelatedDbtModel
@@ -89,6 +90,7 @@ class DbtMetric(Asset):
     DBT_CONNECTION_CONTEXT: ClassVar[Any] = None
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[Any] = None
     DBT_JOB_RUNS: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     METRIC_TYPE: ClassVar[Any] = None
     METRIC_SQL: ClassVar[Any] = None
     METRIC_FILTERS: ClassVar[Any] = None
@@ -99,6 +101,8 @@ class DbtMetric(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -200,6 +204,9 @@ class DbtMetric(Asset):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
@@ -231,6 +238,12 @@ class DbtMetric(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -313,7 +326,7 @@ class DbtMetric(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -514,6 +527,9 @@ class DbtMetricAttributes(AssetAttributes):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
@@ -549,6 +565,12 @@ class DbtMetricRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -631,7 +653,7 @@ class DbtMetricRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -667,6 +689,8 @@ _DBT_METRIC_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -725,6 +749,7 @@ def _populate_dbt_metric_attrs(attrs: DbtMetricAttributes, obj: DbtMetric) -> No
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.metric_type = obj.metric_type
     attrs.metric_sql = obj.metric_sql
     attrs.metric_filters = obj.metric_filters
@@ -761,6 +786,7 @@ def _extract_dbt_metric_attrs(attrs: DbtMetricAttributes) -> dict:
     result["dbt_connection_context"] = attrs.dbt_connection_context
     result["dbt_semantic_layer_proxy_url"] = attrs.dbt_semantic_layer_proxy_url
     result["dbt_job_runs"] = attrs.dbt_job_runs
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["metric_type"] = attrs.metric_type
     result["metric_sql"] = attrs.metric_sql
     result["metric_filters"] = attrs.metric_filters
@@ -914,6 +940,9 @@ DbtMetric.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
     "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
 )
 DbtMetric.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
+DbtMetric.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DbtMetric.METRIC_TYPE = KeywordField("metricType", "metricType")
 DbtMetric.METRIC_SQL = KeywordField("metricSQL", "metricSQL")
 DbtMetric.METRIC_FILTERS = KeywordField("metricFilters", "metricFilters")
@@ -926,6 +955,8 @@ DbtMetric.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DbtMetric.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DbtMetric.APPLICATION = RelationField("application")
 DbtMetric.APPLICATION_FIELD = RelationField("applicationField")
+DbtMetric.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DbtMetric.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DbtMetric.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DbtMetric.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DbtMetric.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -74,11 +75,14 @@ class SisenseDatamodel(Asset):
     SISENSE_DATAMODEL_LAST_PUBLISH_TIME: ClassVar[Any] = None
     SISENSE_DATAMODEL_TYPE: ClassVar[Any] = None
     SISENSE_DATAMODEL_RELATION_TYPE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -129,6 +133,9 @@ class SisenseDatamodel(Asset):
     sisense_datamodel_relation_type: Union[str, None, UnsetType] = UNSET
     """Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -143,6 +150,12 @@ class SisenseDatamodel(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -210,7 +223,7 @@ class SisenseDatamodel(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     sisense_datamodel_tables: Union[
         List[RelatedSisenseDatamodelTable], None, UnsetType
@@ -373,6 +386,9 @@ class SisenseDatamodelAttributes(AssetAttributes):
     sisense_datamodel_relation_type: Union[str, None, UnsetType] = UNSET
     """Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class SisenseDatamodelRelationshipAttributes(AssetRelationshipAttributes):
     """SisenseDatamodel-specific relationship attributes for nested API format."""
@@ -391,6 +407,12 @@ class SisenseDatamodelRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -458,7 +480,7 @@ class SisenseDatamodelRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     sisense_datamodel_tables: Union[
         List[RelatedSisenseDatamodelTable], None, UnsetType
@@ -504,6 +526,8 @@ _SISENSE_DATAMODEL_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -547,6 +571,7 @@ def _populate_sisense_datamodel_attrs(
     attrs.sisense_datamodel_last_publish_time = obj.sisense_datamodel_last_publish_time
     attrs.sisense_datamodel_type = obj.sisense_datamodel_type
     attrs.sisense_datamodel_relation_type = obj.sisense_datamodel_relation_type
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_sisense_datamodel_attrs(attrs: SisenseDatamodelAttributes) -> dict:
@@ -566,6 +591,7 @@ def _extract_sisense_datamodel_attrs(attrs: SisenseDatamodelAttributes) -> dict:
     )
     result["sisense_datamodel_type"] = attrs.sisense_datamodel_type
     result["sisense_datamodel_relation_type"] = attrs.sisense_datamodel_relation_type
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -705,11 +731,18 @@ SisenseDatamodel.SISENSE_DATAMODEL_TYPE = KeywordField(
 SisenseDatamodel.SISENSE_DATAMODEL_RELATION_TYPE = KeywordField(
     "sisenseDatamodelRelationType", "sisenseDatamodelRelationType"
 )
+SisenseDatamodel.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SisenseDatamodel.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SisenseDatamodel.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SisenseDatamodel.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SisenseDatamodel.APPLICATION = RelationField("application")
 SisenseDatamodel.APPLICATION_FIELD = RelationField("applicationField")
+SisenseDatamodel.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SisenseDatamodel.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SisenseDatamodel.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SisenseDatamodel.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SisenseDatamodel.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

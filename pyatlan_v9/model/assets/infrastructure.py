@@ -28,6 +28,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset_related import RelatedInfrastructure
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -74,6 +75,7 @@ class Infrastructure(Referenceable):
     ANNOUNCEMENT_TYPE: ClassVar[Any] = None
     ANNOUNCEMENT_UPDATED_AT: ClassVar[Any] = None
     ANNOUNCEMENT_UPDATED_BY: ClassVar[Any] = None
+    ASSET_ANNOUNCEMENT_EXPIRED_AT: ClassVar[Any] = None
     OWNER_USERS: ClassVar[Any] = None
     OWNER_GROUPS: ClassVar[Any] = None
     ADMIN_USERS: ClassVar[Any] = None
@@ -238,15 +240,21 @@ class Infrastructure(Referenceable):
     ASSET_DQ_ROW_SCOPE_FILTER_COLUMN_QUALIFIED_NAME: ClassVar[Any] = None
     ASSET_SPACE_QUALIFIED_NAME: ClassVar[Any] = None
     ASSET_SPACE_NAME: ClassVar[Any] = None
+    ASSET_IMMUTA_REQUEST_URL: ClassVar[Any] = None
+    ASSET_IMMUTA_REQUEST_TYPE: ClassVar[Any] = None
     ASSET_GCP_DATAPLEX_METADATA_DETAILS: ClassVar[Any] = None
     ASSET_GCP_DATAPLEX_ASPECT_LIST: ClassVar[Any] = None
     ASSET_GCP_DATAPLEX_ASPECT_FIELD_LIST: ClassVar[Any] = None
     ASSET_SMUS_METADATA_FORM_NAMES: ClassVar[Any] = None
     ASSET_SMUS_METADATA_FORM_KEY_VALUE_DETAILS: ClassVar[Any] = None
     ASSET_SMUS_METADATA_FORM_DETAILS: ClassVar[Any] = None
+    ASSET_AI_ALIAS: ClassVar[Any] = None
+    ASSET_HAS_AI_README: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     METRICS: ClassVar[Any] = None
@@ -316,6 +324,9 @@ class Infrastructure(Referenceable):
 
     announcement_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated the announcement."""
+
+    asset_announcement_expired_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the announcement expires, in milliseconds. When set, the announcement will no longer be displayed after this time."""
 
     owner_users: Union[Set[str], None, UnsetType] = UNSET
     """List of users who own this asset."""
@@ -899,6 +910,12 @@ class Infrastructure(Referenceable):
     asset_space_name: Union[str, None, UnsetType] = UNSET
     """Name of the space that contains this asset."""
 
+    asset_immuta_request_url: Union[str, None, UnsetType] = UNSET
+    """URL of the request form on Immuta relevant to the asset."""
+
+    asset_immuta_request_type: Union[str, None, UnsetType] = UNSET
+    """The type of request form on Immuta applicable for the asset."""
+
     asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = (
         msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
     )
@@ -927,6 +944,12 @@ class Infrastructure(Referenceable):
     )
     """AWS SMUS Asset MetadataForm details"""
 
+    asset_ai_alias: Union[List[str], None, UnsetType] = UNSET
+    """List of AI-generated aliases for this asset, to aid in search and discovery."""
+
+    asset_has_ai_readme: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has an AI-generated readme."""
+
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
@@ -935,6 +958,12 @@ class Infrastructure(Referenceable):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -982,7 +1011,7 @@ class Infrastructure(Referenceable):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -1159,6 +1188,9 @@ class InfrastructureAttributes(ReferenceableAttributes):
     announcement_updated_by: Union[str, None, UnsetType] = UNSET
     """Name of the user who last updated the announcement."""
 
+    asset_announcement_expired_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the announcement expires, in milliseconds. When set, the announcement will no longer be displayed after this time."""
+
     owner_users: Union[Set[str], None, UnsetType] = UNSET
     """List of users who own this asset."""
 
@@ -1741,6 +1773,12 @@ class InfrastructureAttributes(ReferenceableAttributes):
     asset_space_name: Union[str, None, UnsetType] = UNSET
     """Name of the space that contains this asset."""
 
+    asset_immuta_request_url: Union[str, None, UnsetType] = UNSET
+    """URL of the request form on Immuta relevant to the asset."""
+
+    asset_immuta_request_type: Union[str, None, UnsetType] = UNSET
+    """The type of request form on Immuta applicable for the asset."""
+
     asset_gcp_dataplex_metadata_details: Union[Dict[str, Any], None, UnsetType] = (
         msgspec.field(default=UNSET, name="assetGCPDataplexMetadataDetails")
     )
@@ -1769,6 +1807,12 @@ class InfrastructureAttributes(ReferenceableAttributes):
     )
     """AWS SMUS Asset MetadataForm details"""
 
+    asset_ai_alias: Union[List[str], None, UnsetType] = UNSET
+    """List of AI-generated aliases for this asset, to aid in search and discovery."""
+
+    asset_has_ai_readme: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has an AI-generated readme."""
+
 
 class InfrastructureRelationshipAttributes(ReferenceableRelationshipAttributes):
     """Infrastructure-specific relationship attributes for nested API format."""
@@ -1781,6 +1825,12 @@ class InfrastructureRelationshipAttributes(ReferenceableRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -1828,7 +1878,7 @@ class InfrastructureRelationshipAttributes(ReferenceableRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -1858,6 +1908,8 @@ _INFRASTRUCTURE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "metrics",
@@ -1903,6 +1955,7 @@ def _populate_infrastructure_attrs(
     attrs.announcement_type = obj.announcement_type
     attrs.announcement_updated_at = obj.announcement_updated_at
     attrs.announcement_updated_by = obj.announcement_updated_by
+    attrs.asset_announcement_expired_at = obj.asset_announcement_expired_at
     attrs.owner_users = obj.owner_users
     attrs.owner_groups = obj.owner_groups
     attrs.admin_users = obj.admin_users
@@ -2111,6 +2164,8 @@ def _populate_infrastructure_attrs(
     )
     attrs.asset_space_qualified_name = obj.asset_space_qualified_name
     attrs.asset_space_name = obj.asset_space_name
+    attrs.asset_immuta_request_url = obj.asset_immuta_request_url
+    attrs.asset_immuta_request_type = obj.asset_immuta_request_type
     attrs.asset_gcp_dataplex_metadata_details = obj.asset_gcp_dataplex_metadata_details
     attrs.asset_gcp_dataplex_aspect_list = obj.asset_gcp_dataplex_aspect_list
     attrs.asset_gcp_dataplex_aspect_field_list = (
@@ -2121,6 +2176,8 @@ def _populate_infrastructure_attrs(
         obj.asset_smus_metadata_form_key_value_details
     )
     attrs.asset_smus_metadata_form_details = obj.asset_smus_metadata_form_details
+    attrs.asset_ai_alias = obj.asset_ai_alias
+    attrs.asset_has_ai_readme = obj.asset_has_ai_readme
 
 
 def _extract_infrastructure_attrs(attrs: InfrastructureAttributes) -> dict:
@@ -2148,6 +2205,7 @@ def _extract_infrastructure_attrs(attrs: InfrastructureAttributes) -> dict:
     result["announcement_type"] = attrs.announcement_type
     result["announcement_updated_at"] = attrs.announcement_updated_at
     result["announcement_updated_by"] = attrs.announcement_updated_by
+    result["asset_announcement_expired_at"] = attrs.asset_announcement_expired_at
     result["owner_users"] = attrs.owner_users
     result["owner_groups"] = attrs.owner_groups
     result["admin_users"] = attrs.admin_users
@@ -2388,6 +2446,8 @@ def _extract_infrastructure_attrs(attrs: InfrastructureAttributes) -> dict:
     )
     result["asset_space_qualified_name"] = attrs.asset_space_qualified_name
     result["asset_space_name"] = attrs.asset_space_name
+    result["asset_immuta_request_url"] = attrs.asset_immuta_request_url
+    result["asset_immuta_request_type"] = attrs.asset_immuta_request_type
     result["asset_gcp_dataplex_metadata_details"] = (
         attrs.asset_gcp_dataplex_metadata_details
     )
@@ -2400,6 +2460,8 @@ def _extract_infrastructure_attrs(attrs: InfrastructureAttributes) -> dict:
         attrs.asset_smus_metadata_form_key_value_details
     )
     result["asset_smus_metadata_form_details"] = attrs.asset_smus_metadata_form_details
+    result["asset_ai_alias"] = attrs.asset_ai_alias
+    result["asset_has_ai_readme"] = attrs.asset_has_ai_readme
     return result
 
 
@@ -2556,6 +2618,9 @@ Infrastructure.ANNOUNCEMENT_UPDATED_AT = NumericField(
 )
 Infrastructure.ANNOUNCEMENT_UPDATED_BY = KeywordField(
     "announcementUpdatedBy", "announcementUpdatedBy"
+)
+Infrastructure.ASSET_ANNOUNCEMENT_EXPIRED_AT = NumericField(
+    "assetAnnouncementExpiredAt", "assetAnnouncementExpiredAt"
 )
 Infrastructure.OWNER_USERS = KeywordField("ownerUsers", "ownerUsers")
 Infrastructure.OWNER_GROUPS = KeywordField("ownerGroups", "ownerGroups")
@@ -2974,6 +3039,12 @@ Infrastructure.ASSET_SPACE_QUALIFIED_NAME = KeywordField(
     "assetSpaceQualifiedName", "assetSpaceQualifiedName"
 )
 Infrastructure.ASSET_SPACE_NAME = KeywordField("assetSpaceName", "assetSpaceName")
+Infrastructure.ASSET_IMMUTA_REQUEST_URL = KeywordField(
+    "assetImmutaRequestUrl", "assetImmutaRequestUrl"
+)
+Infrastructure.ASSET_IMMUTA_REQUEST_TYPE = KeywordField(
+    "assetImmutaRequestType", "assetImmutaRequestType"
+)
 Infrastructure.ASSET_GCP_DATAPLEX_METADATA_DETAILS = KeywordField(
     "assetGCPDataplexMetadataDetails", "assetGCPDataplexMetadataDetails"
 )
@@ -2996,9 +3067,17 @@ Infrastructure.ASSET_SMUS_METADATA_FORM_KEY_VALUE_DETAILS = KeywordTextField(
 Infrastructure.ASSET_SMUS_METADATA_FORM_DETAILS = KeywordField(
     "assetSmusMetadataFormDetails", "assetSmusMetadataFormDetails"
 )
+Infrastructure.ASSET_AI_ALIAS = TextField("assetAiAlias", "assetAiAlias")
+Infrastructure.ASSET_HAS_AI_README = BooleanField(
+    "assetHasAiReadme", "assetHasAiReadme"
+)
 Infrastructure.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Infrastructure.APPLICATION = RelationField("application")
 Infrastructure.APPLICATION_FIELD = RelationField("applicationField")
+Infrastructure.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+Infrastructure.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 Infrastructure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Infrastructure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Infrastructure.METRICS = RelationField("metrics")

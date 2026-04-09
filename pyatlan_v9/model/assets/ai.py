@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -70,11 +71,14 @@ class AI(Asset):
     ETHICAL_AI_TRANSPARENCY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_ACCOUNTABILITY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -134,6 +138,9 @@ class AI(Asset):
     )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -148,6 +155,12 @@ class AI(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -215,7 +228,7 @@ class AI(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -379,6 +392,9 @@ class AIAttributes(AssetAttributes):
     )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class AIRelationshipAttributes(AssetRelationshipAttributes):
     """AI-specific relationship attributes for nested API format."""
@@ -397,6 +413,12 @@ class AIRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -464,7 +486,7 @@ class AIRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -496,6 +518,8 @@ _AI_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -536,6 +560,7 @@ def _populate_ai_attrs(attrs: AIAttributes, obj: AI) -> None:
     attrs.ethical_ai_environmental_consciousness_config = (
         obj.ethical_ai_environmental_consciousness_config
     )
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_ai_attrs(attrs: AIAttributes) -> dict:
@@ -554,6 +579,7 @@ def _extract_ai_attrs(attrs: AIAttributes) -> dict:
     result["ethical_ai_environmental_consciousness_config"] = (
         attrs.ethical_ai_environmental_consciousness_config
     )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -677,11 +703,14 @@ AI.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
     "ethicalAIEnvironmentalConsciousnessConfig",
     "ethicalAIEnvironmentalConsciousnessConfig",
 )
+AI.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 AI.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AI.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AI.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AI.APPLICATION = RelationField("application")
 AI.APPLICATION_FIELD = RelationField("applicationField")
+AI.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+AI.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 AI.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AI.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AI.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

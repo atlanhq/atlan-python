@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .data_studio_related import RelatedDataStudio
@@ -62,6 +63,7 @@ class DataStudio(Asset):
     Base class for Google Data Studio assets.
     """
 
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     GOOGLE_SERVICE: ClassVar[Any] = None
     GOOGLE_PROJECT_NAME: ClassVar[Any] = None
     GOOGLE_PROJECT_ID: ClassVar[Any] = None
@@ -76,6 +78,8 @@ class DataStudio(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -99,6 +103,9 @@ class DataStudio(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
@@ -141,6 +148,12 @@ class DataStudio(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -208,7 +221,7 @@ class DataStudio(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -337,6 +350,9 @@ class DataStudio(Asset):
 class DataStudioAttributes(AssetAttributes):
     """DataStudio-specific attributes for nested API format."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
@@ -382,6 +398,12 @@ class DataStudioRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -449,7 +471,7 @@ class DataStudioRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -485,6 +507,8 @@ _DATA_STUDIO_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -514,6 +538,7 @@ _DATA_STUDIO_REL_FIELDS: List[str] = [
 def _populate_data_studio_attrs(attrs: DataStudioAttributes, obj: DataStudio) -> None:
     """Populate DataStudio-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.google_service = obj.google_service
     attrs.google_project_name = obj.google_project_name
     attrs.google_project_id = obj.google_project_id
@@ -528,6 +553,7 @@ def _populate_data_studio_attrs(attrs: DataStudioAttributes, obj: DataStudio) ->
 def _extract_data_studio_attrs(attrs: DataStudioAttributes) -> dict:
     """Extract all DataStudio attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["google_service"] = attrs.google_service
     result["google_project_name"] = attrs.google_project_name
     result["google_project_id"] = attrs.google_project_id
@@ -645,6 +671,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
+DataStudio.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DataStudio.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
 DataStudio.GOOGLE_PROJECT_NAME = KeywordTextField(
     "googleProjectName", "googleProjectName", "googleProjectName.text"
@@ -669,6 +698,8 @@ DataStudio.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataStudio.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DataStudio.APPLICATION = RelationField("application")
 DataStudio.APPLICATION_FIELD = RelationField("applicationField")
+DataStudio.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DataStudio.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DataStudio.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DataStudio.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DataStudio.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

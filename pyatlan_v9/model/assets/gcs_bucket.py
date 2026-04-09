@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcs_related import RelatedGCSBucket, RelatedGCSObject
@@ -77,6 +78,7 @@ class GCSBucket(Asset):
     GCS_REQUESTER_PAYS: ClassVar[Any] = None
     GCS_ACCESS_CONTROL: ClassVar[Any] = None
     GCS_META_GENERATION_ID: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     GOOGLE_SERVICE: ClassVar[Any] = None
     GOOGLE_PROJECT_NAME: ClassVar[Any] = None
     GOOGLE_PROJECT_ID: ClassVar[Any] = None
@@ -91,6 +93,8 @@ class GCSBucket(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -155,6 +159,9 @@ class GCSBucket(Asset):
     gcs_meta_generation_id: Union[int, None, UnsetType] = UNSET
     """Version of metadata for this asset at this generation. Used for preconditions and detecting changes in metadata. A metageneration number is only meaningful in the context of a particular generation of a particular asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
@@ -196,6 +203,12 @@ class GCSBucket(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -266,7 +279,7 @@ class GCSBucket(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -489,6 +502,9 @@ class GCSBucketAttributes(AssetAttributes):
     gcs_meta_generation_id: Union[int, None, UnsetType] = UNSET
     """Version of metadata for this asset at this generation. Used for preconditions and detecting changes in metadata. A metageneration number is only meaningful in the context of a particular generation of a particular asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
@@ -534,6 +550,12 @@ class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -604,7 +626,7 @@ class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -640,6 +662,8 @@ _GCS_BUCKET_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -683,6 +707,7 @@ def _populate_gcs_bucket_attrs(attrs: GCSBucketAttributes, obj: GCSBucket) -> No
     attrs.gcs_requester_pays = obj.gcs_requester_pays
     attrs.gcs_access_control = obj.gcs_access_control
     attrs.gcs_meta_generation_id = obj.gcs_meta_generation_id
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.google_service = obj.google_service
     attrs.google_project_name = obj.google_project_name
     attrs.google_project_id = obj.google_project_id
@@ -712,6 +737,7 @@ def _extract_gcs_bucket_attrs(attrs: GCSBucketAttributes) -> dict:
     result["gcs_requester_pays"] = attrs.gcs_requester_pays
     result["gcs_access_control"] = attrs.gcs_access_control
     result["gcs_meta_generation_id"] = attrs.gcs_meta_generation_id
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["google_service"] = attrs.google_service
     result["google_project_name"] = attrs.google_project_name
     result["google_project_id"] = attrs.google_project_id
@@ -857,6 +883,9 @@ GCSBucket.GCS_ACCESS_CONTROL = KeywordField("gcsAccessControl", "gcsAccessContro
 GCSBucket.GCS_META_GENERATION_ID = NumericField(
     "gcsMetaGenerationId", "gcsMetaGenerationId"
 )
+GCSBucket.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 GCSBucket.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
 GCSBucket.GOOGLE_PROJECT_NAME = KeywordTextField(
     "googleProjectName", "googleProjectName", "googleProjectName.text"
@@ -881,6 +910,8 @@ GCSBucket.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 GCSBucket.ANOMALO_CHECKS = RelationField("anomaloChecks")
 GCSBucket.APPLICATION = RelationField("application")
 GCSBucket.APPLICATION_FIELD = RelationField("applicationField")
+GCSBucket.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+GCSBucket.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 GCSBucket.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 GCSBucket.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 GCSBucket.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
