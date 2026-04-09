@@ -45,7 +45,12 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
-from .data_mesh_related import RelatedDataDomain, RelatedDataProduct
+from .data_contract_related import RelatedDataContract
+from .data_mesh_related import (
+    RelatedDataDomain,
+    RelatedDataMeshDataset,
+    RelatedDataProduct,
+)
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -81,7 +86,7 @@ class DataProduct(Asset):
     DATA_PRODUCT_ASSETS_DSL: ClassVar[Any] = None
     DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER: ClassVar[Any] = None
     DATA_PRODUCT_SCORE_VALUE: ClassVar[Any] = None
-    DATA_PRODUCT_SCORE_UPDATED_AT: ClassVar[Any] = None
+    DATA_MESH_SCORE_UPDATED_AT: ClassVar[Any] = None
     DAAP_VISIBILITY_USERS: ClassVar[Any] = None
     DAAP_VISIBILITY_GROUPS: ClassVar[Any] = None
     DAAP_OUTPUT_PORT_GUIDS: ClassVar[Any] = None
@@ -89,12 +94,16 @@ class DataProduct(Asset):
     DAAP_LINEAGE_STATUS: ClassVar[Any] = None
     PARENT_DOMAIN_QUALIFIED_NAME: ClassVar[Any] = None
     SUPER_DOMAIN_QUALIFIED_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     DATA_DOMAIN: ClassVar[Any] = None
+    DATA_MESH_DATASETS: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     OUTPUT_PORTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -121,6 +130,8 @@ class DataProduct(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     STARBURST_DATASETS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DataProduct"
 
     data_product_status: Union[str, None, UnsetType] = UNSET
     """Status of this data product."""
@@ -157,7 +168,7 @@ class DataProduct(Asset):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
@@ -181,6 +192,9 @@ class DataProduct(Asset):
     super_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the top-level domain in which this asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -196,8 +210,17 @@ class DataProduct(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     data_domain: Union[RelatedDataDomain, None, UnsetType] = UNSET
     """Data domain in which this data product exists."""
+
+    data_mesh_datasets: Union[List[RelatedDataMeshDataset], None, UnsetType] = UNSET
+    """Datasets associated with this data product."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -271,7 +294,7 @@ class DataProduct(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -293,70 +316,6 @@ class DataProduct(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/product/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DataProduct instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.data_domain is UNSET:
-                errors.append("data_domain is required for creation")
-        if errors:
-            raise ValueError(f"DataProduct validation failed: {errors}")
-
-    def minimize(self) -> "DataProduct":
-        """
-        Return a minimal copy of this DataProduct with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DataProduct with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DataProduct instance with only the minimum required fields.
-        """
-        self.validate()
-        return DataProduct(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataProduct":
-        """
-        Create a :class:`RelatedDataProduct` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDataProduct reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDataProduct(guid=self.guid)
-        return RelatedDataProduct(qualified_name=self.qualified_name)
 
     @classmethod
     def _get_super_domain_qualified_name(
@@ -528,7 +487,7 @@ class DataProductAttributes(AssetAttributes):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
@@ -552,6 +511,9 @@ class DataProductAttributes(AssetAttributes):
     super_domain_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the top-level domain in which this asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     """DataProduct-specific relationship attributes for nested API format."""
@@ -571,8 +533,17 @@ class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
+
     data_domain: Union[RelatedDataDomain, None, UnsetType] = UNSET
     """Data domain in which this data product exists."""
+
+    data_mesh_datasets: Union[List[RelatedDataMeshDataset], None, UnsetType] = UNSET
+    """Datasets associated with this data product."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -646,7 +617,7 @@ class DataProductRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -685,7 +656,10 @@ _DATA_PRODUCT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "data_domain",
+    "data_mesh_datasets",
     "output_port_data_products",
     "output_ports",
     "input_port_data_products",
@@ -731,7 +705,7 @@ def _populate_data_product_attrs(
     attrs.data_product_assets_dsl = obj.data_product_assets_dsl
     attrs.data_product_assets_playbook_filter = obj.data_product_assets_playbook_filter
     attrs.data_product_score_value = obj.data_product_score_value
-    attrs.data_product_score_updated_at = obj.data_product_score_updated_at
+    attrs.data_mesh_score_updated_at = obj.data_mesh_score_updated_at
     attrs.daap_visibility_users = obj.daap_visibility_users
     attrs.daap_visibility_groups = obj.daap_visibility_groups
     attrs.daap_output_port_guids = obj.daap_output_port_guids
@@ -739,6 +713,7 @@ def _populate_data_product_attrs(
     attrs.daap_lineage_status = obj.daap_lineage_status
     attrs.parent_domain_qualified_name = obj.parent_domain_qualified_name
     attrs.super_domain_qualified_name = obj.super_domain_qualified_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
@@ -757,7 +732,7 @@ def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
         attrs.data_product_assets_playbook_filter
     )
     result["data_product_score_value"] = attrs.data_product_score_value
-    result["data_product_score_updated_at"] = attrs.data_product_score_updated_at
+    result["data_mesh_score_updated_at"] = attrs.data_mesh_score_updated_at
     result["daap_visibility_users"] = attrs.daap_visibility_users
     result["daap_visibility_groups"] = attrs.daap_visibility_groups
     result["daap_output_port_guids"] = attrs.daap_output_port_guids
@@ -765,6 +740,7 @@ def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
     result["daap_lineage_status"] = attrs.daap_lineage_status
     result["parent_domain_qualified_name"] = attrs.parent_domain_qualified_name
     result["super_domain_qualified_name"] = attrs.super_domain_qualified_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -801,9 +777,6 @@ def _data_product_to_nested(data_product: DataProduct) -> DataProductNested:
         is_incomplete=data_product.is_incomplete,
         provenance_type=data_product.provenance_type,
         home_id=data_product.home_id,
-        depth=data_product.depth,
-        immediate_upstream=data_product.immediate_upstream,
-        immediate_downstream=data_product.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -835,6 +808,7 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -843,9 +817,6 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_data_product_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -896,8 +867,8 @@ DataProduct.DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = KeywordField(
 DataProduct.DATA_PRODUCT_SCORE_VALUE = NumericField(
     "dataProductScoreValue", "dataProductScoreValue"
 )
-DataProduct.DATA_PRODUCT_SCORE_UPDATED_AT = NumericField(
-    "dataProductScoreUpdatedAt", "dataProductScoreUpdatedAt"
+DataProduct.DATA_MESH_SCORE_UPDATED_AT = NumericField(
+    "dataMeshScoreUpdatedAt", "dataMeshScoreUpdatedAt"
 )
 DataProduct.DAAP_VISIBILITY_USERS = KeywordField(
     "daapVisibilityUsers", "daapVisibilityUsers"
@@ -922,12 +893,20 @@ DataProduct.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField(
     "superDomainQualifiedName",
     "superDomainQualifiedName.text",
 )
+DataProduct.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DataProduct.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataProduct.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataProduct.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DataProduct.APPLICATION = RelationField("application")
 DataProduct.APPLICATION_FIELD = RelationField("applicationField")
+DataProduct.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DataProduct.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DataProduct.DATA_DOMAIN = RelationField("dataDomain")
+DataProduct.DATA_MESH_DATASETS = RelationField("dataMeshDatasets")
 DataProduct.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DataProduct.OUTPUT_PORTS = RelationField("outputPorts")
 DataProduct.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")

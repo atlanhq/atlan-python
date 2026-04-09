@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -47,7 +48,6 @@ from .dbt_related import (
     RelatedDbtTest,
 )
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .iceberg_related import RelatedIcebergTable
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -58,6 +58,10 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 from .sql_related import (
     RelatedColumn,
     RelatedQuery,
@@ -102,6 +106,13 @@ class IcebergTable(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    SQL_HAS_AI_INSIGHTS: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     COLUMN_COUNT: ClassVar[Any] = None
     ROW_COUNT: ClassVar[Any] = None
     SIZE_BYTES: ClassVar[Any] = None
@@ -134,6 +145,8 @@ class IcebergTable(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -170,6 +183,11 @@ class IcebergTable(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "IcebergTable"
 
     iceberg_current_snapshot_id: Union[int, None, UnsetType] = UNSET
     """Current snapshot identifier for this Iceberg table."""
@@ -247,6 +265,27 @@ class IcebergTable(Asset):
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
+
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this table."""
@@ -343,6 +382,12 @@ class IcebergTable(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -448,7 +493,7 @@ class IcebergTable(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -464,68 +509,23 @@ class IcebergTable(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
+
     def __post_init__(self) -> None:
         self.type_name = "IcebergTable"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this IcebergTable instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"IcebergTable validation failed: {errors}")
-
-    def minimize(self) -> "IcebergTable":
-        """
-        Return a minimal copy of this IcebergTable with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new IcebergTable with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new IcebergTable instance with only the minimum required fields.
-        """
-        self.validate()
-        return IcebergTable(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedIcebergTable":
-        """
-        Create a :class:`RelatedIcebergTable` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedIcebergTable reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedIcebergTable(guid=self.guid)
-        return RelatedIcebergTable(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -659,6 +659,27 @@ class IcebergTableAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this table."""
 
@@ -758,6 +779,12 @@ class IcebergTableRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -863,7 +890,7 @@ class IcebergTableRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -878,6 +905,21 @@ class IcebergTableRelationshipAttributes(AssetRelationshipAttributes):
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
 
 
 class IcebergTableNested(AssetNested):
@@ -906,6 +948,8 @@ _ICEBERG_TABLE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -942,6 +986,9 @@ _ICEBERG_TABLE_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
+    "sql_insight_outgoing_joins",
+    "sql_insight_incoming_joins",
+    "sql_insight_business_questions",
 ]
 
 
@@ -977,6 +1024,17 @@ def _populate_iceberg_table_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.sql_has_ai_insights = obj.sql_has_ai_insights
+    attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
+    attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
+    attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.column_count = obj.column_count
     attrs.row_count = obj.row_count
     attrs.size_bytes = obj.size_bytes
@@ -1038,6 +1096,21 @@ def _extract_iceberg_table_attrs(attrs: IcebergTableAttributes) -> dict:
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
+    result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
     result["size_bytes"] = attrs.size_bytes
@@ -1101,9 +1174,6 @@ def _iceberg_table_to_nested(iceberg_table: IcebergTable) -> IcebergTableNested:
         is_incomplete=iceberg_table.is_incomplete,
         provenance_type=iceberg_table.provenance_type,
         home_id=iceberg_table.home_id,
-        depth=iceberg_table.depth,
-        immediate_upstream=iceberg_table.immediate_upstream,
-        immediate_downstream=iceberg_table.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1137,6 +1207,7 @@ def _iceberg_table_from_nested(nested: IcebergTableNested) -> IcebergTable:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1145,9 +1216,6 @@ def _iceberg_table_from_nested(nested: IcebergTableNested) -> IcebergTable:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_iceberg_table_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1228,6 +1296,26 @@ IcebergTable.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 IcebergTable.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+IcebergTable.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
+IcebergTable.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+IcebergTable.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+IcebergTable.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+IcebergTable.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+IcebergTable.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+IcebergTable.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 IcebergTable.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 IcebergTable.ROW_COUNT = NumericField("rowCount", "rowCount")
 IcebergTable.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
@@ -1282,6 +1370,10 @@ IcebergTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 IcebergTable.ANOMALO_CHECKS = RelationField("anomaloChecks")
 IcebergTable.APPLICATION = RelationField("application")
 IcebergTable.APPLICATION_FIELD = RelationField("applicationField")
+IcebergTable.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+IcebergTable.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 IcebergTable.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 IcebergTable.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 IcebergTable.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -1320,3 +1412,8 @@ IcebergTable.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
 IcebergTable.SODA_CHECKS = RelationField("sodaChecks")
 IcebergTable.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 IcebergTable.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+IcebergTable.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+IcebergTable.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+IcebergTable.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)
