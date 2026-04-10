@@ -26,6 +26,7 @@ class DQCondition(AtlanObject):
     reference_column: Optional[str] = Field(default=None, description="")
     target_table: Optional[str] = Field(default=None, description="")
     target_column: Optional[str] = Field(default=None, description="")
+    composite_columns: Optional[List[str]] = Field(default=None, description="")
 
     def __init__(
         self,
@@ -37,6 +38,7 @@ class DQCondition(AtlanObject):
         reference_column: Optional[str] = None,
         target_table: Optional[str] = None,
         target_column: Optional[str] = None,
+        composite_columns: Optional[List[str]] = None,
         **kwargs,
     ):
         super().__init__(
@@ -48,6 +50,7 @@ class DQCondition(AtlanObject):
             reference_column=reference_column,
             target_table=target_table,
             target_column=target_column,
+            composite_columns=composite_columns,
             **kwargs,
         )
 
@@ -93,6 +96,20 @@ class DQCondition(AtlanObject):
                 ["target_table", "target_column"],
                 [self.target_table, self.target_column],
             )
+        elif (
+            self.type
+            == DataQualityRuleTemplateConfigRuleConditions.COMPOSITE_KEY_DUPLICATE
+        ):
+            validate_required_fields(
+                ["composite_columns"], [self.composite_columns]
+            )
+            validate_type("composite_columns", list, self.composite_columns)
+            if self.composite_columns is not None and len(self.composite_columns) < 1:
+                raise ErrorCode.INVALID_PARAMETER_VALUE.exception_with_parameters(
+                    f"composite_columns={self.composite_columns}",
+                    "composite_columns",
+                    "at least one composite column",
+                )
         else:
             validate_required_fields(["value"], [self.value])
             if self.type in [
@@ -133,6 +150,13 @@ class DQCondition(AtlanObject):
                 "target_table": self.target_table,
                 "target_column": self.target_column,
             }
+        elif (
+            self.type
+            == DataQualityRuleTemplateConfigRuleConditions.COMPOSITE_KEY_DUPLICATE
+        ):
+            result["value"] = {
+                "composite_columns": self.composite_columns,
+            }
         else:
             result["value"] = {"value": self.value}
 
@@ -155,6 +179,7 @@ class DQRuleConditionsBuilder:
         reference_column: Optional[str] = None,
         target_table: Optional[str] = None,
         target_column: Optional[str] = None,
+        composite_columns: Optional[List[str]] = None,
     ) -> DQRuleConditionsBuilder:
         """
         Add a condition to the builder.
@@ -179,6 +204,7 @@ class DQRuleConditionsBuilder:
                 reference_column=reference_column,
                 target_table=target_table,
                 target_column=target_column,
+                composite_columns=composite_columns,
             )
         )
         return self

@@ -2476,6 +2476,7 @@ class DataQualityRuleTemplateType(str, Enum):
     RECON_SUM = "RECON_SUM"
     RECON_DUPLICATE_COUNT = "RECON_DUPLICATE_COUNT"
     RECON_UNIQUE_COUNT = "RECON_UNIQUE_COUNT"
+    COMPOSITE_KEY_DUPLICATE_COUNT = "COMPOSITE_KEY_DUPLICATE_COUNT"
 
 
 class DataQualityRuleTemplateConfigRuleConditions(str, Enum):
@@ -2504,6 +2505,9 @@ class DataQualityRuleTemplateConfigRuleConditions(str, Enum):
     SUM_RECON = "SUM_RECON"
     DUPLICATE_COUNT_RECON = "DUPLICATE_COUNT_RECON"
     UNIQUE_COUNT_RECON = "UNIQUE_COUNT_RECON"
+
+    # Composite key conditions
+    COMPOSITE_KEY_DUPLICATE = "COMPOSITE_KEY_DUPLICATE"
 
 
 # **************************************
