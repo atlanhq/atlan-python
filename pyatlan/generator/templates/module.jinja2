@@ -52,6 +52,13 @@ if TYPE_CHECKING:
     {% if asset_info.name == 'SQL' %}
     from pyatlan.model.assets.core.dbt_test import DbtTest
     {% endif %}
+    {% if asset_info.name == 'Schema' %}
+    from pyatlan.model.assets.core.snowflake_dynamic_table import SnowflakeDynamicTable
+    from pyatlan.model.assets.core.table import Table
+    {% endif %}
+    {% if asset_info.name == 'DataProduct' %}
+    from pyatlan.model.assets.core.starburst_dataset import StarburstDataset
+    {% endif %}
     {% if asset_info.name in asset_info._ASSETS_REQUIRE_ASYNC_CLIENT %}
     from pyatlan.client.aio.client import AsyncAtlanClient
     from pyatlan.model.aio import AsyncCustomMetadataProxy

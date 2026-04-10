@@ -19,7 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import AssetHistogram, ColumnValueFrequencyMap, Histogram
 
-from .dremio import Dremio
+from .core.dremio import Dremio
 
 
 class DremioColumn(Dremio):
@@ -183,6 +183,51 @@ class DremioColumn(Dremio):
     SQL_IS_SECURE: ClassVar[BooleanField] = BooleanField("sqlIsSecure", "sqlIsSecure")
     """
     Whether this asset is secure (true) or not (false).
+    """
+    SQL_HAS_AI_INSIGHTS: ClassVar[BooleanField] = BooleanField(
+        "sqlHasAiInsights", "sqlHasAiInsights"
+    )
+    """
+    Whether this asset has any AI insights data available.
+    """
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+    )
+    """
+    Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds.
+    """
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[NumericField] = (
+        NumericField(
+            "sqlAiInsightsPopularBusinessQuestionCount",
+            "sqlAiInsightsPopularBusinessQuestionCount",
+        )
+    )
+    """
+    Number of popular business questions associated with this asset.
+    """
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+    )
+    """
+    Number of popular join patterns associated with this asset.
+    """
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+    )
+    """
+    Number of popular filter patterns associated with this asset.
+    """
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+    )
+    """
+    Number of relationship insights associated with this asset.
+    """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
     """
     DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "dataType", "dataType", "dataType.text"
@@ -544,6 +589,39 @@ class DremioColumn(Dremio):
     """
     The type of measure/calculated column this is, eg: base, calculated, derived.
     """
+    COLUMN_AI_INSIGHTS_IS_MEASURE: ClassVar[BooleanField] = BooleanField(
+        "columnAiInsightsIsMeasure", "columnAiInsightsIsMeasure"
+    )
+    """
+    When true, this column is identified as a measure/calculated column by AI analysis of query patterns.
+    """
+    COLUMN_AI_INSIGHTS_MEASURE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "columnAiInsightsMeasureType", "columnAiInsightsMeasureType"
+    )
+    """
+    Type of measure/calculated column as classified by AI analysis, for example: base, calculated, derived.
+    """
+    COLUMN_AI_INSIGHTS_IS_DIMENSION: ClassVar[BooleanField] = BooleanField(
+        "columnAiInsightsIsDimension", "columnAiInsightsIsDimension"
+    )
+    """
+    When true, this column is identified as a dimension by AI analysis of query patterns.
+    """
+    COLUMN_AI_INSIGHTS_DIMENSION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "columnAiInsightsDimensionType", "columnAiInsightsDimensionType"
+    )
+    """
+    Type of dimension as classified by AI analysis, for example: time, categorical, geographic.
+    """
+    COLUMN_AI_INSIGHTS_FOREIGN_KEY_COLUMN_QUALIFIED_NAME: ClassVar[KeywordField] = (
+        KeywordField(
+            "columnAiInsightsForeignKeyColumnQualifiedName",
+            "columnAiInsightsForeignKeyColumnQualifiedName",
+        )
+    )
+    """
+    Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns.
+    """  # noqa: E501
 
     VIEW: ClassVar[RelationField] = RelationField("view")
     """
@@ -552,6 +630,10 @@ class DremioColumn(Dremio):
     COLUMN_DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField(
         "columnDbtModelColumns"
     )
+    """
+    TBC
+    """
+    SQL_INSIGHT_FILTERS: ClassVar[RelationField] = RelationField("sqlInsightFilters")
     """
     TBC
     """
@@ -663,6 +745,13 @@ class DremioColumn(Dremio):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
+        "sql_has_ai_insights",
+        "sql_ai_insights_last_analyzed_at",
+        "sql_ai_insights_popular_business_question_count",
+        "sql_ai_insights_popular_join_count",
+        "sql_ai_insights_popular_filter_count",
+        "sql_ai_insights_relationship_count",
+        "catalog_dataset_guid",
         "data_type",
         "sub_data_type",
         "column_compression",
@@ -731,8 +820,14 @@ class DremioColumn(Dremio):
         "nosql_collection_qualified_name",
         "column_is_measure",
         "column_measure_type",
+        "column_ai_insights_is_measure",
+        "column_ai_insights_measure_type",
+        "column_ai_insights_is_dimension",
+        "column_ai_insights_dimension_type",
+        "column_ai_insights_foreign_key_column_qualified_name",
         "view",
         "column_dbt_model_columns",
+        "sql_insight_filters",
         "mongo_d_b_collection",
         "cosmos_mongo_d_b_collection",
         "foreign_key_from",
@@ -1056,6 +1151,116 @@ class DremioColumn(Dremio):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_is_secure = sql_is_secure
+
+    @property
+    def sql_has_ai_insights(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_has_ai_insights
+
+    @sql_has_ai_insights.setter
+    def sql_has_ai_insights(self, sql_has_ai_insights: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_has_ai_insights = sql_has_ai_insights
+
+    @property
+    def sql_ai_insights_last_analyzed_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_last_analyzed_at
+        )
+
+    @sql_ai_insights_last_analyzed_at.setter
+    def sql_ai_insights_last_analyzed_at(
+        self, sql_ai_insights_last_analyzed_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_last_analyzed_at = (
+            sql_ai_insights_last_analyzed_at
+        )
+
+    @property
+    def sql_ai_insights_popular_business_question_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_business_question_count
+        )
+
+    @sql_ai_insights_popular_business_question_count.setter
+    def sql_ai_insights_popular_business_question_count(
+        self, sql_ai_insights_popular_business_question_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_business_question_count = (
+            sql_ai_insights_popular_business_question_count
+        )
+
+    @property
+    def sql_ai_insights_popular_join_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_join_count
+        )
+
+    @sql_ai_insights_popular_join_count.setter
+    def sql_ai_insights_popular_join_count(
+        self, sql_ai_insights_popular_join_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_join_count = (
+            sql_ai_insights_popular_join_count
+        )
+
+    @property
+    def sql_ai_insights_popular_filter_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_filter_count
+        )
+
+    @sql_ai_insights_popular_filter_count.setter
+    def sql_ai_insights_popular_filter_count(
+        self, sql_ai_insights_popular_filter_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_filter_count = (
+            sql_ai_insights_popular_filter_count
+        )
+
+    @property
+    def sql_ai_insights_relationship_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_relationship_count
+        )
+
+    @sql_ai_insights_relationship_count.setter
+    def sql_ai_insights_relationship_count(
+        self, sql_ai_insights_relationship_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_relationship_count = (
+            sql_ai_insights_relationship_count
+        )
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
 
     @property
     def data_type(self) -> Optional[str]:
@@ -1856,6 +2061,94 @@ class DremioColumn(Dremio):
         self.attributes.column_measure_type = column_measure_type
 
     @property
+    def column_ai_insights_is_measure(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_ai_insights_is_measure
+        )
+
+    @column_ai_insights_is_measure.setter
+    def column_ai_insights_is_measure(
+        self, column_ai_insights_is_measure: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_ai_insights_is_measure = column_ai_insights_is_measure
+
+    @property
+    def column_ai_insights_measure_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_ai_insights_measure_type
+        )
+
+    @column_ai_insights_measure_type.setter
+    def column_ai_insights_measure_type(
+        self, column_ai_insights_measure_type: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_ai_insights_measure_type = (
+            column_ai_insights_measure_type
+        )
+
+    @property
+    def column_ai_insights_is_dimension(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_ai_insights_is_dimension
+        )
+
+    @column_ai_insights_is_dimension.setter
+    def column_ai_insights_is_dimension(
+        self, column_ai_insights_is_dimension: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_ai_insights_is_dimension = (
+            column_ai_insights_is_dimension
+        )
+
+    @property
+    def column_ai_insights_dimension_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_ai_insights_dimension_type
+        )
+
+    @column_ai_insights_dimension_type.setter
+    def column_ai_insights_dimension_type(
+        self, column_ai_insights_dimension_type: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_ai_insights_dimension_type = (
+            column_ai_insights_dimension_type
+        )
+
+    @property
+    def column_ai_insights_foreign_key_column_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_ai_insights_foreign_key_column_qualified_name
+        )
+
+    @column_ai_insights_foreign_key_column_qualified_name.setter
+    def column_ai_insights_foreign_key_column_qualified_name(
+        self, column_ai_insights_foreign_key_column_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_ai_insights_foreign_key_column_qualified_name = (
+            column_ai_insights_foreign_key_column_qualified_name
+        )
+
+    @property
     def view(self) -> Optional[View]:
         return None if self.attributes is None else self.attributes.view
 
@@ -1880,6 +2173,18 @@ class DremioColumn(Dremio):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_dbt_model_columns = column_dbt_model_columns
+
+    @property
+    def sql_insight_filters(self) -> Optional[List[SqlInsightFilter]]:
+        return None if self.attributes is None else self.attributes.sql_insight_filters
+
+    @sql_insight_filters.setter
+    def sql_insight_filters(
+        self, sql_insight_filters: Optional[List[SqlInsightFilter]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_insight_filters = sql_insight_filters
 
     @property
     def mongo_d_b_collection(self) -> Optional[MongoDBCollection]:
@@ -2122,6 +2427,23 @@ class DremioColumn(Dremio):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
+        sql_has_ai_insights: Optional[bool] = Field(default=None, description="")
+        sql_ai_insights_last_analyzed_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_business_question_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_join_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_filter_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_relationship_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         data_type: Optional[str] = Field(default=None, description="")
         sub_data_type: Optional[str] = Field(default=None, description="")
         column_compression: Optional[str] = Field(default=None, description="")
@@ -2224,8 +2546,26 @@ class DremioColumn(Dremio):
         )
         column_is_measure: Optional[bool] = Field(default=None, description="")
         column_measure_type: Optional[str] = Field(default=None, description="")
+        column_ai_insights_is_measure: Optional[bool] = Field(
+            default=None, description=""
+        )
+        column_ai_insights_measure_type: Optional[str] = Field(
+            default=None, description=""
+        )
+        column_ai_insights_is_dimension: Optional[bool] = Field(
+            default=None, description=""
+        )
+        column_ai_insights_dimension_type: Optional[str] = Field(
+            default=None, description=""
+        )
+        column_ai_insights_foreign_key_column_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
         view: Optional[View] = Field(default=None, description="")  # relationship
         column_dbt_model_columns: Optional[List[DbtModelColumn]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_insight_filters: Optional[List[SqlInsightFilter]] = Field(
             default=None, description=""
         )  # relationship
         mongo_d_b_collection: Optional[MongoDBCollection] = Field(
@@ -2304,6 +2644,7 @@ from .core.metric import Metric  # noqa: E402, F401
 from .core.mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
 from .core.query import Query  # noqa: E402, F401
 from .core.snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
+from .core.sql_insight_filter import SqlInsightFilter  # noqa: E402, F401
 from .core.table import Table  # noqa: E402, F401
 from .core.table_partition import TablePartition  # noqa: E402, F401
 from .core.view import View  # noqa: E402, F401

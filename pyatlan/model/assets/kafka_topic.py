@@ -111,10 +111,48 @@ class KafkaTopic(Kafka):
     """
     Comma seperated Cleanup policy for this topic.
     """
+    KAFKA_TOPIC_IS_SCHEMA_MANAGED: ClassVar[BooleanField] = BooleanField(
+        "kafkaTopicIsSchemaManaged", "kafkaTopicIsSchemaManaged"
+    )
+    """
+    Whether this topic is fully managed by a schema registry (true) or not (false).
+    """
+    KAFKA_TOPIC_CONSUMER_COUNT: ClassVar[NumericField] = NumericField(
+        "kafkaTopicConsumerCount", "kafkaTopicConsumerCount"
+    )
+    """
+    Number of consumer groups consuming this topic.
+    """
+    KAFKA_TOPIC_RETENTION_BYTES: ClassVar[NumericField] = NumericField(
+        "kafkaTopicRetentionBytes", "kafkaTopicRetentionBytes"
+    )
+    """
+    Maximum size in bytes that a topic can grow to before discarding old messages; -1 means unlimited.
+    """
+    KAFKA_TOPIC_SCHEMA_REGISTRY_SUBJECT_NAME: ClassVar[KeywordField] = KeywordField(
+        "kafkaTopicSchemaRegistrySubjectName", "kafkaTopicSchemaRegistrySubjectName"
+    )
+    """
+    Name of the schema registry subject governing this topic, if any.
+    """
+    KAFKA_TOPIC_CLUSTER_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "kafkaTopicClusterQualifiedName", "kafkaTopicClusterQualifiedName"
+    )
+    """
+    Unique name of the Kafka cluster in which this topic exists.
+    """
 
+    KAFKA_FIELDS: ClassVar[RelationField] = RelationField("kafkaFields")
+    """
+    TBC
+    """
     KAFKA_CONSUMER_GROUPS: ClassVar[RelationField] = RelationField(
         "kafkaConsumerGroups"
     )
+    """
+    TBC
+    """
+    KAFKA_CLUSTER: ClassVar[RelationField] = RelationField("kafkaCluster")
     """
     TBC
     """
@@ -130,7 +168,14 @@ class KafkaTopic(Kafka):
         "kafka_topic_record_count",
         "kafka_topic_cleanup_policy",
         "kafka_topic_log_cleanup_policy",
+        "kafka_topic_is_schema_managed",
+        "kafka_topic_consumer_count",
+        "kafka_topic_retention_bytes",
+        "kafka_topic_schema_registry_subject_name",
+        "kafka_topic_cluster_qualified_name",
+        "kafka_fields",
         "kafka_consumer_groups",
+        "kafka_cluster",
     ]
 
     @property
@@ -284,6 +329,96 @@ class KafkaTopic(Kafka):
         self.attributes.kafka_topic_log_cleanup_policy = kafka_topic_log_cleanup_policy
 
     @property
+    def kafka_topic_is_schema_managed(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_is_schema_managed
+        )
+
+    @kafka_topic_is_schema_managed.setter
+    def kafka_topic_is_schema_managed(
+        self, kafka_topic_is_schema_managed: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_is_schema_managed = kafka_topic_is_schema_managed
+
+    @property
+    def kafka_topic_consumer_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_consumer_count
+        )
+
+    @kafka_topic_consumer_count.setter
+    def kafka_topic_consumer_count(self, kafka_topic_consumer_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_consumer_count = kafka_topic_consumer_count
+
+    @property
+    def kafka_topic_retention_bytes(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_retention_bytes
+        )
+
+    @kafka_topic_retention_bytes.setter
+    def kafka_topic_retention_bytes(self, kafka_topic_retention_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_retention_bytes = kafka_topic_retention_bytes
+
+    @property
+    def kafka_topic_schema_registry_subject_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_schema_registry_subject_name
+        )
+
+    @kafka_topic_schema_registry_subject_name.setter
+    def kafka_topic_schema_registry_subject_name(
+        self, kafka_topic_schema_registry_subject_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_schema_registry_subject_name = (
+            kafka_topic_schema_registry_subject_name
+        )
+
+    @property
+    def kafka_topic_cluster_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_cluster_qualified_name
+        )
+
+    @kafka_topic_cluster_qualified_name.setter
+    def kafka_topic_cluster_qualified_name(
+        self, kafka_topic_cluster_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_cluster_qualified_name = (
+            kafka_topic_cluster_qualified_name
+        )
+
+    @property
+    def kafka_fields(self) -> Optional[List[KafkaField]]:
+        return None if self.attributes is None else self.attributes.kafka_fields
+
+    @kafka_fields.setter
+    def kafka_fields(self, kafka_fields: Optional[List[KafkaField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_fields = kafka_fields
+
+    @property
     def kafka_consumer_groups(self) -> Optional[List[KafkaConsumerGroup]]:
         return (
             None if self.attributes is None else self.attributes.kafka_consumer_groups
@@ -296,6 +431,16 @@ class KafkaTopic(Kafka):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_consumer_groups = kafka_consumer_groups
+
+    @property
+    def kafka_cluster(self) -> Optional[KafkaCluster]:
+        return None if self.attributes is None else self.attributes.kafka_cluster
+
+    @kafka_cluster.setter
+    def kafka_cluster(self, kafka_cluster: Optional[KafkaCluster]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_cluster = kafka_cluster
 
     class Attributes(Kafka.Attributes):
         kafka_topic_is_internal: Optional[bool] = Field(default=None, description="")
@@ -320,7 +465,24 @@ class KafkaTopic(Kafka):
         kafka_topic_log_cleanup_policy: Optional[str] = Field(
             default=None, description=""
         )
+        kafka_topic_is_schema_managed: Optional[bool] = Field(
+            default=None, description=""
+        )
+        kafka_topic_consumer_count: Optional[int] = Field(default=None, description="")
+        kafka_topic_retention_bytes: Optional[int] = Field(default=None, description="")
+        kafka_topic_schema_registry_subject_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        kafka_topic_cluster_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        kafka_fields: Optional[List[KafkaField]] = Field(
+            default=None, description=""
+        )  # relationship
         kafka_consumer_groups: Optional[List[KafkaConsumerGroup]] = Field(
+            default=None, description=""
+        )  # relationship
+        kafka_cluster: Optional[KafkaCluster] = Field(
             default=None, description=""
         )  # relationship
 
@@ -351,6 +513,8 @@ class KafkaTopic(Kafka):
     )
 
 
+from .kafka_cluster import KafkaCluster  # noqa: E402, F401
 from .kafka_consumer_group import KafkaConsumerGroup  # noqa: E402, F401
+from .kafka_field import KafkaField  # noqa: E402, F401
 
 KafkaTopic.Attributes.update_forward_refs()

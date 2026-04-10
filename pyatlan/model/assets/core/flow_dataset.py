@@ -55,6 +55,12 @@ class FlowDataset(Catalog):
     """
     Query (e.g. SQL) that was run to produce this ephemeral piece of data.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     FLOW_STARTED_AT: ClassVar[NumericField] = NumericField(
         "flowStartedAt", "flowStartedAt"
     )
@@ -150,6 +156,7 @@ class FlowDataset(Catalog):
         "flow_type",
         "flow_expression",
         "flow_query",
+        "catalog_dataset_guid",
         "flow_started_at",
         "flow_finished_at",
         "flow_status",
@@ -208,6 +215,16 @@ class FlowDataset(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.flow_query = flow_query
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
 
     @property
     def flow_started_at(self) -> Optional[datetime]:
@@ -404,6 +421,7 @@ class FlowDataset(Catalog):
         flow_type: Optional[str] = Field(default=None, description="")
         flow_expression: Optional[str] = Field(default=None, description="")
         flow_query: Optional[str] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         flow_started_at: Optional[datetime] = Field(default=None, description="")
         flow_finished_at: Optional[datetime] = Field(default=None, description="")
         flow_status: Optional[str] = Field(default=None, description="")

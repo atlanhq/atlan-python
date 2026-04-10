@@ -4,11 +4,12 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.model.enums import AIModelVersionStage
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
 from .a_i import AI
 
@@ -29,14 +30,78 @@ class AIModelVersion(AI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    AI_MODEL_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "aiModelQualifiedName", "aiModelQualifiedName"
+    )
+    """
+    Unique name of the AI model to which this version belongs, used to navigate from a version back to its parent model.
+    """
+    AI_MODEL_VERSION_STAGE: ClassVar[KeywordField] = KeywordField(
+        "aiModelVersionStage", "aiModelVersionStage"
+    )
+    """
+    Lifecycle deployment stage of this AI model version, indicating its readiness for production use.
+    """
+    AI_MODEL_VERSION_METRICS: ClassVar[KeywordField] = KeywordField(
+        "aiModelVersionMetrics", "aiModelVersionMetrics"
+    )
+    """
+    Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall).
+    """  # noqa: E501
+
     AI_MODEL: ClassVar[RelationField] = RelationField("aiModel")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "ai_model_qualified_name",
+        "ai_model_version_stage",
+        "ai_model_version_metrics",
         "ai_model",
     ]
+
+    @property
+    def ai_model_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.ai_model_qualified_name
+        )
+
+    @ai_model_qualified_name.setter
+    def ai_model_qualified_name(self, ai_model_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ai_model_qualified_name = ai_model_qualified_name
+
+    @property
+    def ai_model_version_stage(self) -> Optional[AIModelVersionStage]:
+        return (
+            None if self.attributes is None else self.attributes.ai_model_version_stage
+        )
+
+    @ai_model_version_stage.setter
+    def ai_model_version_stage(
+        self, ai_model_version_stage: Optional[AIModelVersionStage]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ai_model_version_stage = ai_model_version_stage
+
+    @property
+    def ai_model_version_metrics(self) -> Optional[Dict[str, str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.ai_model_version_metrics
+        )
+
+    @ai_model_version_metrics.setter
+    def ai_model_version_metrics(
+        self, ai_model_version_metrics: Optional[Dict[str, str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ai_model_version_metrics = ai_model_version_metrics
 
     @property
     def ai_model(self) -> Optional[AIModel]:
@@ -49,6 +114,13 @@ class AIModelVersion(AI):
         self.attributes.ai_model = ai_model
 
     class Attributes(AI.Attributes):
+        ai_model_qualified_name: Optional[str] = Field(default=None, description="")
+        ai_model_version_stage: Optional[AIModelVersionStage] = Field(
+            default=None, description=""
+        )
+        ai_model_version_metrics: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
         ai_model: Optional[AIModel] = Field(
             default=None, description=""
         )  # relationship

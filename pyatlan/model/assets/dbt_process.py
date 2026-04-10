@@ -11,6 +11,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AIDatasetType
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -164,6 +165,12 @@ class DbtProcess(Dbt):
     """
     List of latest dbt job runs across all environments.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     CODE: ClassVar[TextField] = TextField("code", "code")
     """
     Code that ran within the process.
@@ -194,6 +201,12 @@ class DbtProcess(Dbt):
     """
     Dataset type for AI Model - dataset process.
     """
+    IS_PASS_THROUGH: ClassVar[BooleanField] = BooleanField(
+        "isPassThrough", "isPassThrough"
+    )
+    """
+    Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified.
+    """  # noqa: E501
 
     FLOW_ORCHESTRATED_BY: ClassVar[RelationField] = RelationField("flowOrchestratedBy")
     """
@@ -266,6 +279,7 @@ class DbtProcess(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
+        "catalog_dataset_guid",
         "inputs",
         "outputs",
         "code",
@@ -274,6 +288,7 @@ class DbtProcess(Dbt):
         "ast",
         "additional_etl_context",
         "ai_dataset_type",
+        "is_pass_through",
         "flow_orchestrated_by",
         "sql_procedures",
         "fabric_activities",
@@ -527,6 +542,16 @@ class DbtProcess(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def inputs(self) -> Optional[List[Catalog]]:
         return None if self.attributes is None else self.attributes.inputs
 
@@ -615,6 +640,16 @@ class DbtProcess(Dbt):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.ai_dataset_type = ai_dataset_type
+
+    @property
+    def is_pass_through(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_pass_through
+
+    @is_pass_through.setter
+    def is_pass_through(self, is_pass_through: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_pass_through = is_pass_through
 
     @property
     def flow_orchestrated_by(self) -> Optional[FlowControlOperation]:
@@ -766,6 +801,7 @@ class DbtProcess(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         inputs: Optional[List[Catalog]] = Field(default=None, description="")
         outputs: Optional[List[Catalog]] = Field(default=None, description="")
         code: Optional[str] = Field(default=None, description="")
@@ -776,6 +812,7 @@ class DbtProcess(Dbt):
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
         ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")
+        is_pass_through: Optional[bool] = Field(default=None, description="")
         flow_orchestrated_by: Optional[FlowControlOperation] = Field(
             default=None, description=""
         )  # relationship

@@ -80,6 +80,12 @@ class SchemaRegistrySubject(SchemaRegistry):
     List of asset qualified names that this subject is governing/validating.
     """
 
+    SCHEMA_REGISTRY_VERSIONS: ClassVar[RelationField] = RelationField(
+        "schemaRegistryVersions"
+    )
+    """
+    TBC
+    """
     ASSETS: ClassVar[RelationField] = RelationField("assets")
     """
     TBC
@@ -92,6 +98,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         "schema_registry_subject_latest_schema_version",
         "schema_registry_subject_latest_schema_definition",
         "schema_registry_subject_governing_asset_qualified_names",
+        "schema_registry_versions",
         "assets",
     ]
 
@@ -212,6 +219,22 @@ class SchemaRegistrySubject(SchemaRegistry):
         )
 
     @property
+    def schema_registry_versions(self) -> Optional[List[SchemaRegistryVersion]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.schema_registry_versions
+        )
+
+    @schema_registry_versions.setter
+    def schema_registry_versions(
+        self, schema_registry_versions: Optional[List[SchemaRegistryVersion]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_registry_versions = schema_registry_versions
+
+    @property
     def assets(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.assets
 
@@ -240,6 +263,9 @@ class SchemaRegistrySubject(SchemaRegistry):
         schema_registry_subject_governing_asset_qualified_names: Optional[Set[str]] = (
             Field(default=None, description="")
         )
+        schema_registry_versions: Optional[List[SchemaRegistryVersion]] = Field(
+            default=None, description=""
+        )  # relationship
         assets: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
@@ -255,3 +281,4 @@ class SchemaRegistrySubject(SchemaRegistry):
 
 
 from .asset import Asset  # noqa: E402, F401
+from .schema_registry_version import SchemaRegistryVersion  # noqa: E402, F401

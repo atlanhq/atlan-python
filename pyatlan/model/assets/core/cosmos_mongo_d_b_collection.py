@@ -54,6 +54,12 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Represents attributes for describing the key schema for the table and indexes.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     MONGO_DB_COLLECTION_SUBTYPE: ClassVar[KeywordTextField] = KeywordTextField(
         "mongoDBCollectionSubtype",
         "mongoDBCollectionSubtype",
@@ -376,8 +382,91 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     Whether this asset is secure (true) or not (false).
     """
+    SQL_HAS_AI_INSIGHTS: ClassVar[BooleanField] = BooleanField(
+        "sqlHasAiInsights", "sqlHasAiInsights"
+    )
+    """
+    Whether this asset has any AI insights data available.
+    """
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+    )
+    """
+    Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds.
+    """
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[NumericField] = (
+        NumericField(
+            "sqlAiInsightsPopularBusinessQuestionCount",
+            "sqlAiInsightsPopularBusinessQuestionCount",
+        )
+    )
+    """
+    Number of popular business questions associated with this asset.
+    """
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+    )
+    """
+    Number of popular join patterns associated with this asset.
+    """
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+    )
+    """
+    Number of popular filter patterns associated with this asset.
+    """
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+    )
+    """
+    Number of relationship insights associated with this asset.
+    """
 
     DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
+    """
+    TBC
+    """
+    SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
+    """
+    TBC
+    """
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[RelationField] = RelationField(
+        "sqlInsightIncomingJoins"
+    )
+    """
+    TBC
+    """
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+    PARTITIONS: ClassVar[RelationField] = RelationField("partitions")
+    """
+    TBC
+    """
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[RelationField] = RelationField(
+        "sqlInsightBusinessQuestions"
+    )
+    """
+    TBC
+    """
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
+    """
+    TBC
+    """
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[RelationField] = RelationField(
+        "sqlInsightOutgoingJoins"
+    )
+    """
+    TBC
+    """
+    MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
+    """
+    TBC
+    """
+    SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[RelationField] = RelationField(
+        "snowflakeSemanticLogicalTables"
+    )
     """
     TBC
     """
@@ -389,19 +478,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     TBC
     """
-    SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
-    """
-    TBC
-    """
     DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
-    """
-    TBC
-    """
-    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
-    """
-    TBC
-    """
-    PARTITIONS: ClassVar[RelationField] = RelationField("partitions")
     """
     TBC
     """
@@ -419,19 +496,11 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     """
     TBC
     """
-    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
-    """
-    TBC
-    """
     DBT_SEED_ASSETS: ClassVar[RelationField] = RelationField("dbtSeedAssets")
     """
     TBC
     """
     MONGO_DB_COLUMNS: ClassVar[RelationField] = RelationField("mongoDBColumns")
-    """
-    TBC
-    """
-    MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
     """
     TBC
     """
@@ -443,6 +512,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
     _convenience_properties: ClassVar[List[str]] = [
         "cosmos_mongo_d_b_database_qualified_name",
         "no_s_q_l_schema_definition",
+        "catalog_dataset_guid",
         "mongo_d_b_collection_subtype",
         "mongo_d_b_collection_is_capped",
         "mongo_d_b_collection_time_field",
@@ -500,20 +570,30 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
+        "sql_has_ai_insights",
+        "sql_ai_insights_last_analyzed_at",
+        "sql_ai_insights_popular_business_question_count",
+        "sql_ai_insights_popular_join_count",
+        "sql_ai_insights_popular_filter_count",
+        "sql_ai_insights_relationship_count",
         "dbt_sources",
-        "columns",
-        "facts",
         "sql_dbt_models",
-        "dbt_tests",
+        "sql_insight_incoming_joins",
         "atlan_schema",
         "partitions",
+        "sql_insight_business_questions",
+        "dbt_models",
+        "sql_insight_outgoing_joins",
+        "mongo_d_b_database",
+        "snowflake_semantic_logical_tables",
+        "columns",
+        "facts",
+        "dbt_tests",
         "cosmos_mongo_d_b_database",
         "queries",
         "sql_dbt_sources",
-        "dbt_models",
         "dbt_seed_assets",
         "mongo_d_b_columns",
-        "mongo_d_b_database",
         "dimensions",
     ]
 
@@ -548,6 +628,16 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
 
     @property
     def mongo_d_b_collection_subtype(self) -> Optional[str]:
@@ -1266,6 +1356,106 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
+    def sql_has_ai_insights(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_has_ai_insights
+
+    @sql_has_ai_insights.setter
+    def sql_has_ai_insights(self, sql_has_ai_insights: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_has_ai_insights = sql_has_ai_insights
+
+    @property
+    def sql_ai_insights_last_analyzed_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_last_analyzed_at
+        )
+
+    @sql_ai_insights_last_analyzed_at.setter
+    def sql_ai_insights_last_analyzed_at(
+        self, sql_ai_insights_last_analyzed_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_last_analyzed_at = (
+            sql_ai_insights_last_analyzed_at
+        )
+
+    @property
+    def sql_ai_insights_popular_business_question_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_business_question_count
+        )
+
+    @sql_ai_insights_popular_business_question_count.setter
+    def sql_ai_insights_popular_business_question_count(
+        self, sql_ai_insights_popular_business_question_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_business_question_count = (
+            sql_ai_insights_popular_business_question_count
+        )
+
+    @property
+    def sql_ai_insights_popular_join_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_join_count
+        )
+
+    @sql_ai_insights_popular_join_count.setter
+    def sql_ai_insights_popular_join_count(
+        self, sql_ai_insights_popular_join_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_join_count = (
+            sql_ai_insights_popular_join_count
+        )
+
+    @property
+    def sql_ai_insights_popular_filter_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_filter_count
+        )
+
+    @sql_ai_insights_popular_filter_count.setter
+    def sql_ai_insights_popular_filter_count(
+        self, sql_ai_insights_popular_filter_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_filter_count = (
+            sql_ai_insights_popular_filter_count
+        )
+
+    @property
+    def sql_ai_insights_relationship_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_relationship_count
+        )
+
+    @sql_ai_insights_relationship_count.setter
+    def sql_ai_insights_relationship_count(
+        self, sql_ai_insights_relationship_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_relationship_count = (
+            sql_ai_insights_relationship_count
+        )
+
+    @property
     def dbt_sources(self) -> Optional[List[DbtSource]]:
         return None if self.attributes is None else self.attributes.dbt_sources
 
@@ -1274,6 +1464,129 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_sources = dbt_sources
+
+    @property
+    def sql_dbt_models(self) -> Optional[List[DbtModel]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_models
+
+    @sql_dbt_models.setter
+    def sql_dbt_models(self, sql_dbt_models: Optional[List[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_models = sql_dbt_models
+
+    @property
+    def sql_insight_incoming_joins(self) -> Optional[List[SqlInsightJoin]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_insight_incoming_joins
+        )
+
+    @sql_insight_incoming_joins.setter
+    def sql_insight_incoming_joins(
+        self, sql_insight_incoming_joins: Optional[List[SqlInsightJoin]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_insight_incoming_joins = sql_insight_incoming_joins
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def partitions(self) -> Optional[List[TablePartition]]:
+        return None if self.attributes is None else self.attributes.partitions
+
+    @partitions.setter
+    def partitions(self, partitions: Optional[List[TablePartition]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partitions = partitions
+
+    @property
+    def sql_insight_business_questions(
+        self,
+    ) -> Optional[List[SqlInsightBusinessQuestion]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_insight_business_questions
+        )
+
+    @sql_insight_business_questions.setter
+    def sql_insight_business_questions(
+        self, sql_insight_business_questions: Optional[List[SqlInsightBusinessQuestion]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_insight_business_questions = sql_insight_business_questions
+
+    @property
+    def dbt_models(self) -> Optional[List[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
+
+    @property
+    def sql_insight_outgoing_joins(self) -> Optional[List[SqlInsightJoin]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_insight_outgoing_joins
+        )
+
+    @sql_insight_outgoing_joins.setter
+    def sql_insight_outgoing_joins(
+        self, sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_insight_outgoing_joins = sql_insight_outgoing_joins
+
+    @property
+    def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
+        return None if self.attributes is None else self.attributes.mongo_d_b_database
+
+    @mongo_d_b_database.setter
+    def mongo_d_b_database(self, mongo_d_b_database: Optional[MongoDBDatabase]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mongo_d_b_database = mongo_d_b_database
+
+    @property
+    def snowflake_semantic_logical_tables(
+        self,
+    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_semantic_logical_tables
+        )
+
+    @snowflake_semantic_logical_tables.setter
+    def snowflake_semantic_logical_tables(
+        self,
+        snowflake_semantic_logical_tables: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_semantic_logical_tables = (
+            snowflake_semantic_logical_tables
+        )
 
     @property
     def columns(self) -> Optional[List[Column]]:
@@ -1296,16 +1609,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.facts = facts
 
     @property
-    def sql_dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_models
-
-    @sql_dbt_models.setter
-    def sql_dbt_models(self, sql_dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_models = sql_dbt_models
-
-    @property
     def dbt_tests(self) -> Optional[List[DbtTest]]:
         return None if self.attributes is None else self.attributes.dbt_tests
 
@@ -1314,26 +1617,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    @property
-    def partitions(self) -> Optional[List[TablePartition]]:
-        return None if self.attributes is None else self.attributes.partitions
-
-    @partitions.setter
-    def partitions(self, partitions: Optional[List[TablePartition]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partitions = partitions
 
     @property
     def cosmos_mongo_d_b_database(self) -> Optional[CosmosMongoDBDatabase]:
@@ -1372,16 +1655,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.sql_dbt_sources = sql_dbt_sources
 
     @property
-    def dbt_models(self) -> Optional[List[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[List[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
-
-    @property
     def dbt_seed_assets(self) -> Optional[List[DbtSeed]]:
         return None if self.attributes is None else self.attributes.dbt_seed_assets
 
@@ -1402,16 +1675,6 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         self.attributes.mongo_d_b_columns = mongo_d_b_columns
 
     @property
-    def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
-        return None if self.attributes is None else self.attributes.mongo_d_b_database
-
-    @mongo_d_b_database.setter
-    def mongo_d_b_database(self, mongo_d_b_database: Optional[MongoDBDatabase]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_database = mongo_d_b_database
-
-    @property
     def dimensions(self) -> Optional[List[Table]]:
         return None if self.attributes is None else self.attributes.dimensions
 
@@ -1426,6 +1689,7 @@ class CosmosMongoDBCollection(CosmosMongoDB):
             default=None, description=""
         )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         mongo_d_b_collection_subtype: Optional[str] = Field(
             default=None, description=""
         )
@@ -1517,25 +1781,59 @@ class CosmosMongoDBCollection(CosmosMongoDB):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
+        sql_has_ai_insights: Optional[bool] = Field(default=None, description="")
+        sql_ai_insights_last_analyzed_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_business_question_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_join_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_filter_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_relationship_count: Optional[int] = Field(
+            default=None, description=""
+        )
         dbt_sources: Optional[List[DbtSource]] = Field(
-            default=None, description=""
-        )  # relationship
-        columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        facts: Optional[List[Table]] = Field(
             default=None, description=""
         )  # relationship
         sql_dbt_models: Optional[List[DbtModel]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_tests: Optional[List[DbtTest]] = Field(
+        sql_insight_incoming_joins: Optional[List[SqlInsightJoin]] = Field(
             default=None, description=""
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             default=None, description=""
         )  # relationship
         partitions: Optional[List[TablePartition]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_insight_business_questions: Optional[List[SqlInsightBusinessQuestion]] = (
+            Field(default=None, description="")
+        )  # relationship
+        dbt_models: Optional[List[DbtModel]] = Field(
+            default=None, description=""
+        )  # relationship
+        sql_insight_outgoing_joins: Optional[List[SqlInsightJoin]] = Field(
+            default=None, description=""
+        )  # relationship
+        mongo_d_b_database: Optional[MongoDBDatabase] = Field(
+            default=None, description=""
+        )  # relationship
+        snowflake_semantic_logical_tables: Optional[
+            List[SnowflakeSemanticLogicalTable]
+        ] = Field(default=None, description="")  # relationship
+        columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
+        facts: Optional[List[Table]] = Field(
+            default=None, description=""
+        )  # relationship
+        dbt_tests: Optional[List[DbtTest]] = Field(
             default=None, description=""
         )  # relationship
         cosmos_mongo_d_b_database: Optional[CosmosMongoDBDatabase] = Field(
@@ -1547,16 +1845,10 @@ class CosmosMongoDBCollection(CosmosMongoDB):
         sql_dbt_sources: Optional[List[DbtSource]] = Field(
             default=None, description=""
         )  # relationship
-        dbt_models: Optional[List[DbtModel]] = Field(
-            default=None, description=""
-        )  # relationship
         dbt_seed_assets: Optional[List[DbtSeed]] = Field(
             default=None, description=""
         )  # relationship
         mongo_d_b_columns: Optional[List[Column]] = Field(
-            default=None, description=""
-        )  # relationship
-        mongo_d_b_database: Optional[MongoDBDatabase] = Field(
             default=None, description=""
         )  # relationship
         dimensions: Optional[List[Table]] = Field(
@@ -1582,5 +1874,12 @@ from .dbt_test import DbtTest  # noqa: E402, F401
 from .mongo_d_b_database import MongoDBDatabase  # noqa: E402, F401
 from .query import Query  # noqa: E402, F401
 from .schema import Schema  # noqa: E402, F401
+from .snowflake_semantic_logical_table import (
+    SnowflakeSemanticLogicalTable,  # noqa: E402, F401
+)
+from .sql_insight_business_question import (
+    SqlInsightBusinessQuestion,  # noqa: E402, F401
+)
+from .sql_insight_join import SqlInsightJoin  # noqa: E402, F401
 from .table import Table  # noqa: E402, F401
 from .table_partition import TablePartition  # noqa: E402, F401

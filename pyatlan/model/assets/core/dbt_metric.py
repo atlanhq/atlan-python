@@ -182,6 +182,12 @@ class DbtMetric(Dbt):
     """
     List of latest dbt job runs across all environments.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
     """
     Type of the metric.
@@ -259,6 +265,7 @@ class DbtMetric(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
+        "catalog_dataset_guid",
         "metric_type",
         "metric_s_q_l",
         "metric_filters",
@@ -550,6 +557,16 @@ class DbtMetric(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def metric_type(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.metric_type
 
@@ -700,6 +717,7 @@ class DbtMetric(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         metric_type: Optional[str] = Field(default=None, description="")
         metric_s_q_l: Optional[str] = Field(default=None, description="")
         metric_filters: Optional[str] = Field(default=None, description="")

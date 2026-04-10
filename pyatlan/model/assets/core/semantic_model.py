@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
 
-from .core.semantic import Semantic
+from .semantic import Semantic
 
 
 class SemanticModel(Semantic):
@@ -104,5 +104,3 @@ class SemanticModel(Semantic):
 from .semantic_dimension import SemanticDimension  # noqa: E402, F401
 from .semantic_entity import SemanticEntity  # noqa: E402, F401
 from .semantic_measure import SemanticMeasure  # noqa: E402, F401
-
-SemanticModel.Attributes.update_forward_refs()

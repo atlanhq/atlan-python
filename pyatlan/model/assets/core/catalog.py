@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
 from .asset import Asset
 
@@ -28,6 +28,13 @@ class Catalog(Asset, type_name="Catalog"):
         if name in Catalog._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
+
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
 
     INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
     """
@@ -85,6 +92,7 @@ class Catalog(Asset, type_name="Catalog"):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "catalog_dataset_guid",
         "input_to_spark_jobs",
         "partial_child_fields",
         "input_to_airflow_tasks",
@@ -96,6 +104,16 @@ class Catalog(Asset, type_name="Catalog"):
         "partial_child_objects",
         "output_from_processes",
     ]
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
 
     @property
     def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
@@ -228,6 +246,7 @@ class Catalog(Asset, type_name="Catalog"):
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Asset.Attributes):
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         input_to_spark_jobs: Optional[List[SparkJob]] = Field(
             default=None, description=""
         )  # relationship

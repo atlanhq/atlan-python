@@ -1,9 +1,5 @@
 # Snowflake
 
-## Snowflake
-
-::: pyatlan.model.assets.snowflake.Snowflake
-
 ## SnowflakeAIModelContext
 
 ::: pyatlan.model.assets.core.snowflake_a_i_model_context.SnowflakeAIModelContext

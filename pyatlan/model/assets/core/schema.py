@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, overload
+from typing import TYPE_CHECKING, ClassVar, List, Optional, overload
 from warnings import warn
 
 from pydantic.v1 import Field, validator
@@ -14,6 +14,10 @@ from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, Relati
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .s_q_l import SQL
+
+if TYPE_CHECKING:
+    from pyatlan.model.assets.core.snowflake_dynamic_table import SnowflakeDynamicTable
+    from pyatlan.model.assets.core.table import Table
 
 
 class Schema(SQL):
@@ -174,6 +178,12 @@ class Schema(SQL):
     """
     TBC
     """
+    SNOWFLAKE_SEMANTIC_VIEWS: ClassVar[RelationField] = RelationField(
+        "snowflakeSemanticViews"
+    )
+    """
+    TBC
+    """
     SNOWFLAKE_AI_MODEL_CONTEXTS: ClassVar[RelationField] = RelationField(
         "snowflakeAIModelContexts"
     )
@@ -201,6 +211,7 @@ class Schema(SQL):
         "procedures",
         "views",
         "snowflake_dynamic_tables",
+        "snowflake_semantic_views",
         "snowflake_a_i_model_contexts",
     ]
 
@@ -415,6 +426,22 @@ class Schema(SQL):
         self.attributes.snowflake_dynamic_tables = snowflake_dynamic_tables
 
     @property
+    def snowflake_semantic_views(self) -> Optional[List[SnowflakeSemanticView]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_semantic_views
+        )
+
+    @snowflake_semantic_views.setter
+    def snowflake_semantic_views(
+        self, snowflake_semantic_views: Optional[List[SnowflakeSemanticView]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_semantic_views = snowflake_semantic_views
+
+    @property
     def snowflake_a_i_model_contexts(self) -> Optional[List[SnowflakeAIModelContext]]:
         return (
             None
@@ -482,6 +509,9 @@ class Schema(SQL):
         snowflake_dynamic_tables: Optional[List[SnowflakeDynamicTable]] = Field(
             default=None, description=""
         )  # relationship
+        snowflake_semantic_views: Optional[List[SnowflakeSemanticView]] = Field(
+            default=None, description=""
+        )  # relationship
         snowflake_a_i_model_contexts: Optional[List[SnowflakeAIModelContext]] = Field(
             default=None, description=""
         )  # relationship
@@ -543,10 +573,9 @@ from .function import Function  # noqa: E402, F401
 from .materialised_view import MaterialisedView  # noqa: E402, F401
 from .procedure import Procedure  # noqa: E402, F401
 from .snowflake_a_i_model_context import SnowflakeAIModelContext  # noqa: E402, F401
-from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
 from .snowflake_pipe import SnowflakePipe  # noqa: E402, F401
+from .snowflake_semantic_view import SnowflakeSemanticView  # noqa: E402, F401
 from .snowflake_stage import SnowflakeStage  # noqa: E402, F401
 from .snowflake_stream import SnowflakeStream  # noqa: E402, F401
 from .snowflake_tag import SnowflakeTag  # noqa: E402, F401
-from .table import Table  # noqa: E402, F401
 from .view import View  # noqa: E402, F401

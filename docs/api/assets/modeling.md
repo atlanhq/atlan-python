@@ -28,25 +28,9 @@
 
 ::: pyatlan.model.assets.core.model_version.ModelVersion
 
-## SemanticModel
-
-::: pyatlan.model.assets.semantic_model.SemanticModel
-
-## SemanticDimension
-
-::: pyatlan.model.assets.semantic_dimension.SemanticDimension
-
-## SemanticEntity
-
-::: pyatlan.model.assets.semantic_entity.SemanticEntity
-
 ## SemanticField
 
 ::: pyatlan.model.assets.semantic_field.SemanticField
-
-## SemanticMeasure
-
-::: pyatlan.model.assets.semantic_measure.SemanticMeasure
 
 ## Cube
 

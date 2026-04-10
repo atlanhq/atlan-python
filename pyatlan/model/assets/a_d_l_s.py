@@ -44,6 +44,12 @@ class ADLS(ObjectStore):
     """
     Name of the account for this ADLS asset.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "azureResourceId", "azureResourceId", "azureResourceId.text"
     )
@@ -76,6 +82,7 @@ class ADLS(ObjectStore):
     _convenience_properties: ClassVar[List[str]] = [
         "adls_account_qualified_name",
         "adls_account_name",
+        "catalog_dataset_guid",
         "azure_resource_id",
         "azure_location",
         "adls_account_secondary_location",
@@ -106,6 +113,16 @@ class ADLS(ObjectStore):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_account_name = adls_account_name
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
 
     @property
     def azure_resource_id(self) -> Optional[str]:
@@ -172,6 +189,7 @@ class ADLS(ObjectStore):
     class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(default=None, description="")
         adls_account_name: Optional[str] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         azure_resource_id: Optional[str] = Field(default=None, description="")
         azure_location: Optional[str] = Field(default=None, description="")
         adls_account_secondary_location: Optional[str] = Field(

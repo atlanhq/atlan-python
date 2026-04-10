@@ -60,6 +60,12 @@ class AtlanAppDeployment(AtlanApp):
     """
     Detailed error message explaining why the deployment failed. Should only be populated when status = FAILED.
     """
+    ATLAN_APP_DEPLOYMENT_NAME: ClassVar[KeywordField] = KeywordField(
+        "atlanAppDeploymentName", "atlanAppDeploymentName"
+    )
+    """
+    Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra).
+    """  # noqa: E501
 
     _convenience_properties: ClassVar[List[str]] = [
         "atlan_app_version_id",
@@ -67,6 +73,7 @@ class AtlanAppDeployment(AtlanApp):
         "atlan_app_status",
         "atlan_app_operation",
         "atlan_app_error_details",
+        "atlan_app_deployment_name",
     ]
 
     @property
@@ -127,6 +134,20 @@ class AtlanAppDeployment(AtlanApp):
             self.attributes = self.Attributes()
         self.attributes.atlan_app_error_details = atlan_app_error_details
 
+    @property
+    def atlan_app_deployment_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.atlan_app_deployment_name
+        )
+
+    @atlan_app_deployment_name.setter
+    def atlan_app_deployment_name(self, atlan_app_deployment_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_app_deployment_name = atlan_app_deployment_name
+
     class Attributes(AtlanApp.Attributes):
         atlan_app_version_id: Optional[int] = Field(default=None, description="")
         atlan_app_version_u_u_i_d: Optional[str] = Field(default=None, description="")
@@ -137,6 +158,7 @@ class AtlanAppDeployment(AtlanApp):
             default=None, description=""
         )
         atlan_app_error_details: Optional[str] = Field(default=None, description="")
+        atlan_app_deployment_name: Optional[str] = Field(default=None, description="")
 
     attributes: AtlanAppDeployment.Attributes = Field(
         default_factory=lambda: AtlanAppDeployment.Attributes(),

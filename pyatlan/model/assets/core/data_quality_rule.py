@@ -16,6 +16,7 @@ from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import (
     DataQualityDimension,
     DataQualityResult,
+    DataQualityRuleADStatus,
     DataQualityRuleAlertPriority,
     DataQualityRuleCustomSQLReturnType,
     DataQualityRuleStatus,
@@ -604,6 +605,18 @@ class DataQualityRule(DataQuality):
     """
     Whether row scope filtering is enabled for this data quality rule (true) or not (false).
     """
+    DQ_RULE_LATEST_RESULT_DETAILS: ClassVar[KeywordField] = KeywordField(
+        "dqRuleLatestResultDetails", "dqRuleLatestResultDetails"
+    )
+    """
+    JSON string with anomaly detection result details (forecast, upper_bound, lower_bound, is_anomaly) from Snowflake AD.
+    """  # noqa: E501
+    DQ_RULE_AD_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dqRuleADStatus", "dqRuleADStatus"
+    )
+    """
+    Anomaly detection lifecycle status for this rule.
+    """
 
     DQ_RULE_BASE_DATASET: ClassVar[RelationField] = RelationField("dqRuleBaseDataset")
     """
@@ -654,6 +667,8 @@ class DataQualityRule(DataQuality):
         "dq_rule_custom_s_q_l_return_type",
         "dq_rule_failed_rows_s_q_l",
         "dq_rule_row_scope_filtering_enabled",
+        "dq_rule_latest_result_details",
+        "dq_rule_a_d_status",
         "dq_rule_base_dataset",
         "dq_rule_reference_datasets",
         "dq_rule_template",
@@ -1019,6 +1034,32 @@ class DataQualityRule(DataQuality):
         )
 
     @property
+    def dq_rule_latest_result_details(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dq_rule_latest_result_details
+        )
+
+    @dq_rule_latest_result_details.setter
+    def dq_rule_latest_result_details(
+        self, dq_rule_latest_result_details: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_rule_latest_result_details = dq_rule_latest_result_details
+
+    @property
+    def dq_rule_a_d_status(self) -> Optional[DataQualityRuleADStatus]:
+        return None if self.attributes is None else self.attributes.dq_rule_a_d_status
+
+    @dq_rule_a_d_status.setter
+    def dq_rule_a_d_status(self, dq_rule_a_d_status: Optional[DataQualityRuleADStatus]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dq_rule_a_d_status = dq_rule_a_d_status
+
+    @property
     def dq_rule_base_dataset(self) -> Optional[Asset]:
         return None if self.attributes is None else self.attributes.dq_rule_base_dataset
 
@@ -1140,6 +1181,12 @@ class DataQualityRule(DataQuality):
         ] = Field(default=None, description="")
         dq_rule_failed_rows_s_q_l: Optional[str] = Field(default=None, description="")
         dq_rule_row_scope_filtering_enabled: Optional[bool] = Field(
+            default=None, description=""
+        )
+        dq_rule_latest_result_details: Optional[str] = Field(
+            default=None, description=""
+        )
+        dq_rule_a_d_status: Optional[DataQualityRuleADStatus] = Field(
             default=None, description=""
         )
         dq_rule_base_dataset: Optional[Asset] = Field(

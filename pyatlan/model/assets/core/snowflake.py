@@ -8,7 +8,7 @@ from typing import ClassVar, List
 
 from pydantic.v1 import Field, validator
 
-from .core.s_q_l import SQL
+from .s_q_l import SQL
 
 
 class Snowflake(SQL):
@@ -28,6 +28,3 @@ class Snowflake(SQL):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[List[str]] = []
-
-
-Snowflake.Attributes.update_forward_refs()

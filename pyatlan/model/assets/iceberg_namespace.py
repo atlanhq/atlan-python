@@ -158,6 +158,51 @@ class IcebergNamespace(Schema):
     """
     Whether this asset is secure (true) or not (false).
     """
+    SQL_HAS_AI_INSIGHTS: ClassVar[BooleanField] = BooleanField(
+        "sqlHasAiInsights", "sqlHasAiInsights"
+    )
+    """
+    Whether this asset has any AI insights data available.
+    """
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+    )
+    """
+    Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds.
+    """
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[NumericField] = (
+        NumericField(
+            "sqlAiInsightsPopularBusinessQuestionCount",
+            "sqlAiInsightsPopularBusinessQuestionCount",
+        )
+    )
+    """
+    Number of popular business questions associated with this asset.
+    """
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+    )
+    """
+    Number of popular join patterns associated with this asset.
+    """
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+    )
+    """
+    Number of popular filter patterns associated with this asset.
+    """
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+    )
+    """
+    Number of relationship insights associated with this asset.
+    """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     ICEBERG_PARENT_NAMESPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "icebergParentNamespaceQualifiedName", "icebergParentNamespaceQualifiedName"
     )
@@ -207,6 +252,13 @@ class IcebergNamespace(Schema):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
+        "sql_has_ai_insights",
+        "sql_ai_insights_last_analyzed_at",
+        "sql_ai_insights_popular_business_question_count",
+        "sql_ai_insights_popular_join_count",
+        "sql_ai_insights_popular_filter_count",
+        "sql_ai_insights_relationship_count",
+        "catalog_dataset_guid",
         "iceberg_parent_namespace_qualified_name",
         "iceberg_namespace_hierarchy",
         "iceberg_parent_namespace",
@@ -466,6 +518,116 @@ class IcebergNamespace(Schema):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
+    def sql_has_ai_insights(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_has_ai_insights
+
+    @sql_has_ai_insights.setter
+    def sql_has_ai_insights(self, sql_has_ai_insights: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_has_ai_insights = sql_has_ai_insights
+
+    @property
+    def sql_ai_insights_last_analyzed_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_last_analyzed_at
+        )
+
+    @sql_ai_insights_last_analyzed_at.setter
+    def sql_ai_insights_last_analyzed_at(
+        self, sql_ai_insights_last_analyzed_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_last_analyzed_at = (
+            sql_ai_insights_last_analyzed_at
+        )
+
+    @property
+    def sql_ai_insights_popular_business_question_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_business_question_count
+        )
+
+    @sql_ai_insights_popular_business_question_count.setter
+    def sql_ai_insights_popular_business_question_count(
+        self, sql_ai_insights_popular_business_question_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_business_question_count = (
+            sql_ai_insights_popular_business_question_count
+        )
+
+    @property
+    def sql_ai_insights_popular_join_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_join_count
+        )
+
+    @sql_ai_insights_popular_join_count.setter
+    def sql_ai_insights_popular_join_count(
+        self, sql_ai_insights_popular_join_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_join_count = (
+            sql_ai_insights_popular_join_count
+        )
+
+    @property
+    def sql_ai_insights_popular_filter_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_filter_count
+        )
+
+    @sql_ai_insights_popular_filter_count.setter
+    def sql_ai_insights_popular_filter_count(
+        self, sql_ai_insights_popular_filter_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_filter_count = (
+            sql_ai_insights_popular_filter_count
+        )
+
+    @property
+    def sql_ai_insights_relationship_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_relationship_count
+        )
+
+    @sql_ai_insights_relationship_count.setter
+    def sql_ai_insights_relationship_count(
+        self, sql_ai_insights_relationship_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_relationship_count = (
+            sql_ai_insights_relationship_count
+        )
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def iceberg_parent_namespace_qualified_name(self) -> Optional[str]:
         return (
             None
@@ -558,6 +720,23 @@ class IcebergNamespace(Schema):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
+        sql_has_ai_insights: Optional[bool] = Field(default=None, description="")
+        sql_ai_insights_last_analyzed_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_business_question_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_join_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_filter_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_relationship_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         iceberg_parent_namespace_qualified_name: Optional[str] = Field(
             default=None, description=""
         )

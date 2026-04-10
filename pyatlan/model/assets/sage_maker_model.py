@@ -4,11 +4,12 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import (
+    AIModelVersionStage,
     EthicalAIAccountabilityConfig,
     EthicalAIBiasMitigationConfig,
     EthicalAIEnvironmentalConsciousnessConfig,
@@ -130,6 +131,12 @@ class SageMakerModel(SageMaker):
     """
     Environmental consciousness configuration for ensuring the ethical use of an AI asset
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
         "awsArn", "awsArn", "awsArn.text"
     )
@@ -180,6 +187,24 @@ class SageMakerModel(SageMaker):
     """
     Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on.
     """
+    AI_MODEL_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "aiModelQualifiedName", "aiModelQualifiedName"
+    )
+    """
+    Unique name of the AI model to which this version belongs, used to navigate from a version back to its parent model.
+    """
+    AI_MODEL_VERSION_STAGE: ClassVar[KeywordField] = KeywordField(
+        "aiModelVersionStage", "aiModelVersionStage"
+    )
+    """
+    Lifecycle deployment stage of this AI model version, indicating its readiness for production use.
+    """
+    AI_MODEL_VERSION_METRICS: ClassVar[KeywordField] = KeywordField(
+        "aiModelVersionMetrics", "aiModelVersionMetrics"
+    )
+    """
+    Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall).
+    """  # noqa: E501
 
     SAGE_MAKER_MODEL_GROUP: ClassVar[RelationField] = RelationField(
         "sageMakerModelGroup"
@@ -213,6 +238,7 @@ class SageMakerModel(SageMaker):
         "ethical_a_i_transparency_config",
         "ethical_a_i_accountability_config",
         "ethical_a_i_environmental_consciousness_config",
+        "catalog_dataset_guid",
         "aws_arn",
         "aws_partition",
         "aws_service",
@@ -223,6 +249,9 @@ class SageMakerModel(SageMaker):
         "aws_owner_id",
         "aws_tags",
         "cloud_uniform_resource_name",
+        "ai_model_qualified_name",
+        "ai_model_version_stage",
+        "ai_model_version_metrics",
         "sage_maker_model_group",
         "sage_maker_model_deployments",
         "ai_model",
@@ -474,6 +503,16 @@ class SageMakerModel(SageMaker):
         )
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def aws_arn(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.aws_arn
 
@@ -578,6 +617,48 @@ class SageMakerModel(SageMaker):
         self.attributes.cloud_uniform_resource_name = cloud_uniform_resource_name
 
     @property
+    def ai_model_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.ai_model_qualified_name
+        )
+
+    @ai_model_qualified_name.setter
+    def ai_model_qualified_name(self, ai_model_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ai_model_qualified_name = ai_model_qualified_name
+
+    @property
+    def ai_model_version_stage(self) -> Optional[AIModelVersionStage]:
+        return (
+            None if self.attributes is None else self.attributes.ai_model_version_stage
+        )
+
+    @ai_model_version_stage.setter
+    def ai_model_version_stage(
+        self, ai_model_version_stage: Optional[AIModelVersionStage]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ai_model_version_stage = ai_model_version_stage
+
+    @property
+    def ai_model_version_metrics(self) -> Optional[Dict[str, str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.ai_model_version_metrics
+        )
+
+    @ai_model_version_metrics.setter
+    def ai_model_version_metrics(
+        self, ai_model_version_metrics: Optional[Dict[str, str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.ai_model_version_metrics = ai_model_version_metrics
+
+    @property
     def sage_maker_model_group(self) -> Optional[SageMakerModelGroup]:
         return (
             None if self.attributes is None else self.attributes.sage_maker_model_group
@@ -654,6 +735,7 @@ class SageMakerModel(SageMaker):
         ethical_a_i_environmental_consciousness_config: Optional[
             EthicalAIEnvironmentalConsciousnessConfig
         ] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         aws_arn: Optional[str] = Field(default=None, description="")
         aws_partition: Optional[str] = Field(default=None, description="")
         aws_service: Optional[str] = Field(default=None, description="")
@@ -664,6 +746,13 @@ class SageMakerModel(SageMaker):
         aws_owner_id: Optional[str] = Field(default=None, description="")
         aws_tags: Optional[List[AwsTag]] = Field(default=None, description="")
         cloud_uniform_resource_name: Optional[str] = Field(default=None, description="")
+        ai_model_qualified_name: Optional[str] = Field(default=None, description="")
+        ai_model_version_stage: Optional[AIModelVersionStage] = Field(
+            default=None, description=""
+        )
+        ai_model_version_metrics: Optional[Dict[str, str]] = Field(
+            default=None, description=""
+        )
         sage_maker_model_group: Optional[SageMakerModelGroup] = Field(
             default=None, description=""
         )  # relationship

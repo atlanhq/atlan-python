@@ -369,6 +369,12 @@ class Asset(Referenceable):
     """
     Name of the user who last updated the announcement.
     """
+    ASSET_ANNOUNCEMENT_EXPIRED_AT: ClassVar[NumericField] = NumericField(
+        "assetAnnouncementExpiredAt", "assetAnnouncementExpiredAt"
+    )
+    """
+    Time (epoch) at which the announcement expires, in milliseconds. When set, the announcement will no longer be displayed after this time.
+    """  # noqa: E501
     OWNER_USERS: ClassVar[KeywordField] = KeywordField("ownerUsers", "ownerUsers")
     """
     List of users who own this asset.
@@ -1339,6 +1345,18 @@ class Asset(Referenceable):
     """
     Name of the space that contains this asset.
     """
+    ASSET_IMMUTA_REQUEST_URL: ClassVar[KeywordField] = KeywordField(
+        "assetImmutaRequestUrl", "assetImmutaRequestUrl"
+    )
+    """
+    URL of the request form on Immuta relevant to the asset.
+    """
+    ASSET_IMMUTA_REQUEST_TYPE: ClassVar[KeywordField] = KeywordField(
+        "assetImmutaRequestType", "assetImmutaRequestType"
+    )
+    """
+    The type of request form on Immuta applicable for the asset.
+    """
     ASSET_GCP_DATAPLEX_METADATA_DETAILS: ClassVar[KeywordField] = KeywordField(
         "assetGCPDataplexMetadataDetails", "assetGCPDataplexMetadataDetails"
     )
@@ -1380,6 +1398,16 @@ class Asset(Referenceable):
     )
     """
     AWS SMUS Asset MetadataForm details
+    """
+    ASSET_AI_ALIAS: ClassVar[TextField] = TextField("assetAiAlias", "assetAiAlias")
+    """
+    List of AI-generated aliases for this asset, to aid in search and discovery.
+    """
+    ASSET_HAS_AI_README: ClassVar[BooleanField] = BooleanField(
+        "assetHasAiReadme", "assetHasAiReadme"
+    )
+    """
+    Whether this asset has an AI-generated readme.
     """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
@@ -1492,6 +1520,7 @@ class Asset(Referenceable):
         "announcement_type",
         "announcement_updated_at",
         "announcement_updated_by",
+        "asset_announcement_expired_at",
         "owner_users",
         "owner_groups",
         "admin_users",
@@ -1656,12 +1685,16 @@ class Asset(Referenceable):
         "asset_d_q_row_scope_filter_column_qualified_name",
         "asset_space_qualified_name",
         "asset_space_name",
+        "asset_immuta_request_url",
+        "asset_immuta_request_type",
         "asset_g_c_p_dataplex_metadata_details",
         "asset_g_c_p_dataplex_aspect_list",
         "asset_g_c_p_dataplex_aspect_field_list",
         "asset_smus_metadata_form_names",
         "asset_smus_metadata_form_key_value_details",
         "asset_smus_metadata_form_details",
+        "asset_ai_alias",
+        "asset_has_ai_readme",
         "schema_registry_subjects",
         "data_contract_latest_certified",
         "anomalo_checks",
@@ -1897,6 +1930,22 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.announcement_updated_by = announcement_updated_by
+
+    @property
+    def asset_announcement_expired_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_announcement_expired_at
+        )
+
+    @asset_announcement_expired_at.setter
+    def asset_announcement_expired_at(
+        self, asset_announcement_expired_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_announcement_expired_at = asset_announcement_expired_at
 
     @property
     def owner_users(self) -> Optional[Set[str]]:
@@ -4198,6 +4247,34 @@ class Asset(Referenceable):
         self.attributes.asset_space_name = asset_space_name
 
     @property
+    def asset_immuta_request_url(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_immuta_request_url
+        )
+
+    @asset_immuta_request_url.setter
+    def asset_immuta_request_url(self, asset_immuta_request_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_immuta_request_url = asset_immuta_request_url
+
+    @property
+    def asset_immuta_request_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_immuta_request_type
+        )
+
+    @asset_immuta_request_type.setter
+    def asset_immuta_request_type(self, asset_immuta_request_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_immuta_request_type = asset_immuta_request_type
+
+    @property
     def asset_g_c_p_dataplex_metadata_details(
         self,
     ) -> Optional[AssetGCPDataplexMetadata]:
@@ -4307,6 +4384,26 @@ class Asset(Referenceable):
         self.attributes.asset_smus_metadata_form_details = (
             asset_smus_metadata_form_details
         )
+
+    @property
+    def asset_ai_alias(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.asset_ai_alias
+
+    @asset_ai_alias.setter
+    def asset_ai_alias(self, asset_ai_alias: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_ai_alias = asset_ai_alias
+
+    @property
+    def asset_has_ai_readme(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.asset_has_ai_readme
+
+    @asset_has_ai_readme.setter
+    def asset_has_ai_readme(self, asset_has_ai_readme: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_has_ai_readme = asset_has_ai_readme
 
     @property
     def schema_registry_subjects(self) -> Optional[List[SchemaRegistrySubject]]:
@@ -4583,6 +4680,9 @@ class Asset(Referenceable):
             default=None, description=""
         )
         announcement_updated_by: Optional[str] = Field(default=None, description="")
+        asset_announcement_expired_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
         owner_users: Optional[Set[str]] = Field(default=None, description="")
         owner_groups: Optional[Set[str]] = Field(default=None, description="")
         admin_users: Optional[Set[str]] = Field(default=None, description="")
@@ -4911,6 +5011,8 @@ class Asset(Referenceable):
         )
         asset_space_qualified_name: Optional[str] = Field(default=None, description="")
         asset_space_name: Optional[str] = Field(default=None, description="")
+        asset_immuta_request_url: Optional[str] = Field(default=None, description="")
+        asset_immuta_request_type: Optional[str] = Field(default=None, description="")
         asset_g_c_p_dataplex_metadata_details: Optional[AssetGCPDataplexMetadata] = (
             Field(default=None, description="")
         )
@@ -4929,6 +5031,8 @@ class Asset(Referenceable):
         asset_smus_metadata_form_details: Optional[
             List[AssetSmusMetadataFormDetails]
         ] = Field(default=None, description="")
+        asset_ai_alias: Optional[Set[str]] = Field(default=None, description="")
+        asset_has_ai_readme: Optional[bool] = Field(default=None, description="")
         schema_registry_subjects: Optional[List[SchemaRegistrySubject]] = Field(
             default=None, description=""
         )  # relationship

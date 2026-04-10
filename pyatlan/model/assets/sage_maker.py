@@ -90,6 +90,12 @@ class SageMaker(AI):
     """
     Environmental consciousness configuration for ensuring the ethical use of an AI asset
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
         "awsArn", "awsArn", "awsArn.text"
     )
@@ -150,6 +156,7 @@ class SageMaker(AI):
         "ethical_a_i_transparency_config",
         "ethical_a_i_accountability_config",
         "ethical_a_i_environmental_consciousness_config",
+        "catalog_dataset_guid",
         "aws_arn",
         "aws_partition",
         "aws_service",
@@ -310,6 +317,16 @@ class SageMaker(AI):
         )
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def aws_arn(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.aws_arn
 
@@ -436,6 +453,7 @@ class SageMaker(AI):
         ethical_a_i_environmental_consciousness_config: Optional[
             EthicalAIEnvironmentalConsciousnessConfig
         ] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         aws_arn: Optional[str] = Field(default=None, description="")
         aws_partition: Optional[str] = Field(default=None, description="")
         aws_service: Optional[str] = Field(default=None, description="")
