@@ -150,6 +150,12 @@ class DbtTag(Dbt):
     """
     List of latest dbt job runs across all environments.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
     """
     Unique identifier of the tag in the source system.
@@ -193,6 +199,7 @@ class DbtTag(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
+        "catalog_dataset_guid",
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
@@ -412,6 +419,16 @@ class DbtTag(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def tag_id(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.tag_id
 
@@ -477,6 +494,7 @@ class DbtTag(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         tag_id: Optional[str] = Field(default=None, description="")
         tag_attributes: Optional[List[SourceTagAttribute]] = Field(
             default=None, description=""

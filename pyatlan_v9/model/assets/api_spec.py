@@ -40,6 +40,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -80,12 +81,15 @@ class APISpec(Asset):
     API_IS_AUTH_OPTIONAL: ClassVar[Any] = None
     API_IS_OBJECT_REFERENCE: ClassVar[Any] = None
     API_OBJECT_QUALIFIED_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     API_PATHS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -164,6 +168,9 @@ class APISpec(Asset):
     api_object_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     api_paths: Union[List[RelatedAPIPath], None, UnsetType] = UNSET
     """Paths that exist within this API specification."""
 
@@ -181,6 +188,12 @@ class APISpec(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -248,7 +261,7 @@ class APISpec(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -457,6 +470,9 @@ class APISpecAttributes(AssetAttributes):
     api_object_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the APIObject that is referred to by this asset. When apiIsObjectReference is true."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class APISpecRelationshipAttributes(AssetRelationshipAttributes):
     """APISpec-specific relationship attributes for nested API format."""
@@ -478,6 +494,12 @@ class APISpecRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -545,7 +567,7 @@ class APISpecRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -582,6 +604,8 @@ _API_SPEC_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -627,6 +651,7 @@ def _populate_api_spec_attrs(attrs: APISpecAttributes, obj: APISpec) -> None:
     attrs.api_is_auth_optional = obj.api_is_auth_optional
     attrs.api_is_object_reference = obj.api_is_object_reference
     attrs.api_object_qualified_name = obj.api_object_qualified_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_api_spec_attrs(attrs: APISpecAttributes) -> dict:
@@ -648,6 +673,7 @@ def _extract_api_spec_attrs(attrs: APISpecAttributes) -> dict:
     result["api_is_auth_optional"] = attrs.api_is_auth_optional
     result["api_is_object_reference"] = attrs.api_is_object_reference
     result["api_object_qualified_name"] = attrs.api_object_qualified_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -792,12 +818,15 @@ APISpec.API_IS_OBJECT_REFERENCE = BooleanField(
 APISpec.API_OBJECT_QUALIFIED_NAME = KeywordField(
     "apiObjectQualifiedName", "apiObjectQualifiedName"
 )
+APISpec.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 APISpec.API_PATHS = RelationField("apiPaths")
 APISpec.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 APISpec.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 APISpec.ANOMALO_CHECKS = RelationField("anomaloChecks")
 APISpec.APPLICATION = RelationField("application")
 APISpec.APPLICATION_FIELD = RelationField("applicationField")
+APISpec.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+APISpec.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 APISpec.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 APISpec.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 APISpec.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

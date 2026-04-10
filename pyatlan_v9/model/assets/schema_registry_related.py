@@ -21,6 +21,7 @@ from .referenceable_related import RelatedReferenceable
 __all__ = [
     "RelatedSchemaRegistry",
     "RelatedSchemaRegistrySubject",
+    "RelatedSchemaRegistryVersion",
 ]
 
 
@@ -80,3 +81,30 @@ class RelatedSchemaRegistrySubject(RelatedSchemaRegistry):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SchemaRegistrySubject"
+
+
+class RelatedSchemaRegistryVersion(RelatedSchemaRegistry):
+    """
+    Related entity reference for SchemaRegistryVersion assets.
+
+    Extends RelatedSchemaRegistry with SchemaRegistryVersion-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SchemaRegistryVersion" so it serializes correctly
+
+    schema_registry_version_number: Union[str, None, UnsetType] = UNSET
+    """Version number of this schema version."""
+
+    schema_registry_version_schema_definition: Union[str, None, UnsetType] = UNSET
+    """Full schema definition for this specific version."""
+
+    schema_registry_version_schema_type: Union[str, None, UnsetType] = UNSET
+    """Type of schema language used in this version."""
+
+    schema_registry_subject_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the schema registry subject to which this version belongs."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SchemaRegistryVersion"

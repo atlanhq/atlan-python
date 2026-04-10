@@ -168,6 +168,12 @@ class DataStudioAsset(DataStudio):
     """
     Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "data_studio_asset_type",
@@ -183,6 +189,7 @@ class DataStudioAsset(DataStudio):
         "google_labels",
         "google_tags",
         "cloud_uniform_resource_name",
+        "catalog_dataset_guid",
     ]
 
     @property
@@ -335,6 +342,16 @@ class DataStudioAsset(DataStudio):
             self.attributes = self.Attributes()
         self.attributes.cloud_uniform_resource_name = cloud_uniform_resource_name
 
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
             default=None, description=""
@@ -353,6 +370,7 @@ class DataStudioAsset(DataStudio):
         google_labels: Optional[List[GoogleLabel]] = Field(default=None, description="")
         google_tags: Optional[List[GoogleTag]] = Field(default=None, description="")
         cloud_uniform_resource_name: Optional[str] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
 
         @classmethod
         @init_guid

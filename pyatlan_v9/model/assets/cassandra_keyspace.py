@@ -43,6 +43,7 @@ from .cassandra_related import (
     RelatedCassandraTable,
     RelatedCassandraView,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -77,6 +78,7 @@ class CassandraKeyspace(Asset):
     CASSANDRA_TABLE_QUALIFIED_NAME: ClassVar[Any] = None
     CASSANDRA_VIEW_QUALIFIED_NAME: ClassVar[Any] = None
     NO_SQL_SCHEMA_DEFINITION: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -84,6 +86,8 @@ class CassandraKeyspace(Asset):
     APPLICATION_FIELD: ClassVar[Any] = None
     CASSANDRA_TABLES: ClassVar[Any] = None
     CASSANDRA_VIEWS: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -140,6 +144,9 @@ class CassandraKeyspace(Asset):
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -160,6 +167,12 @@ class CassandraKeyspace(Asset):
 
     cassandra_views: Union[List[RelatedCassandraView], None, UnsetType] = UNSET
     """Individual views contained in the keyspace."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -227,7 +240,7 @@ class CassandraKeyspace(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -390,6 +403,9 @@ class CassandraKeyspaceAttributes(AssetAttributes):
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     """CassandraKeyspace-specific relationship attributes for nested API format."""
@@ -414,6 +430,12 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
 
     cassandra_views: Union[List[RelatedCassandraView], None, UnsetType] = UNSET
     """Individual views contained in the keyspace."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -481,7 +503,7 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -521,6 +543,8 @@ _CASSANDRA_KEYSPACE_REL_FIELDS: List[str] = [
     "application_field",
     "cassandra_tables",
     "cassandra_views",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -562,6 +586,7 @@ def _populate_cassandra_keyspace_attrs(
     attrs.cassandra_table_qualified_name = obj.cassandra_table_qualified_name
     attrs.cassandra_view_qualified_name = obj.cassandra_view_qualified_name
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes) -> dict:
@@ -579,6 +604,7 @@ def _extract_cassandra_keyspace_attrs(attrs: CassandraKeyspaceAttributes) -> dic
     result["cassandra_table_qualified_name"] = attrs.cassandra_table_qualified_name
     result["cassandra_view_qualified_name"] = attrs.cassandra_view_qualified_name
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -728,6 +754,9 @@ CassandraKeyspace.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField(
 CassandraKeyspace.NO_SQL_SCHEMA_DEFINITION = KeywordField(
     "noSQLSchemaDefinition", "noSQLSchemaDefinition"
 )
+CassandraKeyspace.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 CassandraKeyspace.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CassandraKeyspace.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CassandraKeyspace.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -735,6 +764,10 @@ CassandraKeyspace.APPLICATION = RelationField("application")
 CassandraKeyspace.APPLICATION_FIELD = RelationField("applicationField")
 CassandraKeyspace.CASSANDRA_TABLES = RelationField("cassandraTables")
 CassandraKeyspace.CASSANDRA_VIEWS = RelationField("cassandraViews")
+CassandraKeyspace.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+CassandraKeyspace.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 CassandraKeyspace.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CassandraKeyspace.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CassandraKeyspace.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

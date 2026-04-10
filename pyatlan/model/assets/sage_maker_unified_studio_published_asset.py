@@ -103,6 +103,12 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
     """
     Unique identifier of the SageMaker Unified Studio project which owns the asset.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
 
     SMUS_SUBSCRIBED_ASSETS: ClassVar[RelationField] = RelationField(
         "smusSubscribedAssets"
@@ -128,6 +134,7 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
         "smus_domain_unit_id",
         "smus_project_id",
         "smus_owning_project_id",
+        "catalog_dataset_guid",
         "smus_subscribed_assets",
         "smus_project",
     ]
@@ -273,6 +280,16 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
         self.attributes.smus_owning_project_id = smus_owning_project_id
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def smus_subscribed_assets(
         self,
     ) -> Optional[List[SageMakerUnifiedStudioSubscribedAsset]]:
@@ -316,6 +333,7 @@ class SageMakerUnifiedStudioPublishedAsset(SageMakerUnifiedStudioAsset):
         smus_domain_unit_id: Optional[str] = Field(default=None, description="")
         smus_project_id: Optional[str] = Field(default=None, description="")
         smus_owning_project_id: Optional[str] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         smus_subscribed_assets: Optional[
             List[SageMakerUnifiedStudioSubscribedAsset]
         ] = Field(default=None, description="")  # relationship

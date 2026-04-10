@@ -40,6 +40,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -63,6 +64,10 @@ from .snowflake_related import (
 )
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -98,6 +103,16 @@ class SnowflakeAIModelVersion(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    SQL_HAS_AI_INSIGHTS: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
+    AI_MODEL_QUALIFIED_NAME: ClassVar[Any] = None
+    AI_MODEL_VERSION_STAGE: ClassVar[Any] = None
+    AI_MODEL_VERSION_METRICS: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_BIAS_MITIGATION_CONFIG: ClassVar[Any] = None
@@ -111,6 +126,8 @@ class SnowflakeAIModelVersion(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -142,6 +159,9 @@ class SnowflakeAIModelVersion(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
     snowflake_ai_model_version_name: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="snowflakeAIModelVersionName"
@@ -224,6 +244,36 @@ class SnowflakeAIModelVersion(Asset):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
+    ai_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the AI model to which this version belongs, used to navigate from a version back to its parent model."""
+
+    ai_model_version_stage: Union[str, None, UnsetType] = UNSET
+    """Lifecycle deployment stage of this AI model version, indicating its readiness for production use."""
+
+    ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
+
     ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIPrivacyConfig"
     )
@@ -276,6 +326,12 @@ class SnowflakeAIModelVersion(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -363,7 +419,7 @@ class SnowflakeAIModelVersion(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_ai_model_context: Union[
         RelatedSnowflakeAIModelContext, None, UnsetType
@@ -383,6 +439,21 @@ class SnowflakeAIModelVersion(Asset):
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
         self.type_name = "SnowflakeAIModelVersion"
@@ -609,6 +680,36 @@ class SnowflakeAIModelVersionAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
+    ai_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the AI model to which this version belongs, used to navigate from a version back to its parent model."""
+
+    ai_model_version_stage: Union[str, None, UnsetType] = UNSET
+    """Lifecycle deployment stage of this AI model version, indicating its readiness for production use."""
+
+    ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
+
     ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="ethicalAIPrivacyConfig"
     )
@@ -665,6 +766,12 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -752,7 +859,7 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_ai_model_context: Union[
         RelatedSnowflakeAIModelContext, None, UnsetType
@@ -772,6 +879,21 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
 
 
 class SnowflakeAIModelVersionNested(AssetNested):
@@ -801,6 +923,8 @@ _SNOWFLAKE_AI_MODEL_VERSION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -832,6 +956,9 @@ _SNOWFLAKE_AI_MODEL_VERSION_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
+    "sql_insight_outgoing_joins",
+    "sql_insight_incoming_joins",
+    "sql_insight_business_questions",
 ]
 
 
@@ -865,6 +992,20 @@ def _populate_snowflake_ai_model_version_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.sql_has_ai_insights = obj.sql_has_ai_insights
+    attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
+    attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
+    attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+    attrs.ai_model_qualified_name = obj.ai_model_qualified_name
+    attrs.ai_model_version_stage = obj.ai_model_version_stage
+    attrs.ai_model_version_metrics = obj.ai_model_version_metrics
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
     attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
@@ -914,6 +1055,24 @@ def _extract_snowflake_ai_model_version_attrs(
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
+    result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    result["ai_model_qualified_name"] = attrs.ai_model_qualified_name
+    result["ai_model_version_stage"] = attrs.ai_model_version_stage
+    result["ai_model_version_metrics"] = attrs.ai_model_version_metrics
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
     result["ethical_ai_bias_mitigation_config"] = (
@@ -1102,6 +1261,37 @@ SnowflakeAIModelVersion.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 SnowflakeAIModelVersion.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+SnowflakeAIModelVersion.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+SnowflakeAIModelVersion.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
+SnowflakeAIModelVersion.AI_MODEL_QUALIFIED_NAME = KeywordField(
+    "aiModelQualifiedName", "aiModelQualifiedName"
+)
+SnowflakeAIModelVersion.AI_MODEL_VERSION_STAGE = KeywordField(
+    "aiModelVersionStage", "aiModelVersionStage"
+)
+SnowflakeAIModelVersion.AI_MODEL_VERSION_METRICS = KeywordField(
+    "aiModelVersionMetrics", "aiModelVersionMetrics"
+)
 SnowflakeAIModelVersion.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
     "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
 )
@@ -1132,6 +1322,10 @@ SnowflakeAIModelVersion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 SnowflakeAIModelVersion.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SnowflakeAIModelVersion.APPLICATION = RelationField("application")
 SnowflakeAIModelVersion.APPLICATION_FIELD = RelationField("applicationField")
+SnowflakeAIModelVersion.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SnowflakeAIModelVersion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SnowflakeAIModelVersion.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
 )
@@ -1183,3 +1377,12 @@ SnowflakeAIModelVersion.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
 SnowflakeAIModelVersion.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakeAIModelVersion.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SnowflakeAIModelVersion.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+SnowflakeAIModelVersion.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+    "sqlInsightOutgoingJoins"
+)
+SnowflakeAIModelVersion.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+    "sqlInsightIncomingJoins"
+)
+SnowflakeAIModelVersion.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

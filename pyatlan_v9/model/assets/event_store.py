@@ -38,6 +38,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .catalog_related import RelatedEventStore
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -62,11 +63,14 @@ class EventStore(Asset):
     Base class for event store assets.
     """
 
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -91,6 +95,9 @@ class EventStore(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -105,6 +112,12 @@ class EventStore(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -172,7 +185,7 @@ class EventStore(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -301,7 +314,8 @@ class EventStore(Asset):
 class EventStoreAttributes(AssetAttributes):
     """EventStore-specific attributes for nested API format."""
 
-    pass
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
 
 class EventStoreRelationshipAttributes(AssetRelationshipAttributes):
@@ -321,6 +335,12 @@ class EventStoreRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -388,7 +408,7 @@ class EventStoreRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -424,6 +444,8 @@ _EVENT_STORE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -453,11 +475,14 @@ _EVENT_STORE_REL_FIELDS: List[str] = [
 def _populate_event_store_attrs(attrs: EventStoreAttributes, obj: EventStore) -> None:
     """Populate EventStore-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_event_store_attrs(attrs: EventStoreAttributes) -> dict:
     """Extract all EventStore attributes from the attrs struct into a flat dict."""
-    return _extract_asset_attrs(attrs)
+    result = _extract_asset_attrs(attrs)
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    return result
 
 
 # =============================================================================
@@ -558,13 +583,18 @@ def _event_store_from_nested_bytes(data: bytes, serde: Serde) -> EventStore:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
+EventStore.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 EventStore.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 EventStore.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 EventStore.ANOMALO_CHECKS = RelationField("anomaloChecks")
 EventStore.APPLICATION = RelationField("application")
 EventStore.APPLICATION_FIELD = RelationField("applicationField")
+EventStore.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+EventStore.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 EventStore.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 EventStore.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 EventStore.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

@@ -157,6 +157,12 @@ class DbtMeasure(Dbt):
     """
     List of latest dbt job runs across all environments.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     SEMANTIC_EXPRESSION: ClassVar[KeywordField] = KeywordField(
         "semanticExpression", "semanticExpression"
     )
@@ -166,6 +172,36 @@ class DbtMeasure(Dbt):
     SEMANTIC_TYPE: ClassVar[KeywordField] = KeywordField("semanticType", "semanticType")
     """
     Detailed type of the semantic field (e.g., type of measure, type of dimension, or type of entity).
+    """
+    SEMANTIC_SYNONYMS: ClassVar[KeywordField] = KeywordField(
+        "semanticSynonyms", "semanticSynonyms"
+    )
+    """
+    Alternative names or terms for the semantic field.
+    """
+    SEMANTIC_SAMPLE_VALUES: ClassVar[TextField] = TextField(
+        "semanticSampleValues", "semanticSampleValues"
+    )
+    """
+    Sample values for the semantic field.
+    """
+    SEMANTIC_ACCESS_MODIFIER: ClassVar[KeywordField] = KeywordField(
+        "semanticAccessModifier", "semanticAccessModifier"
+    )
+    """
+    Access level for the semantic field (e.g., public_access/private_access).
+    """
+    SEMANTIC_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "semanticDataType", "semanticDataType"
+    )
+    """
+    Data type of the semantic field.
+    """
+    SEMANTIC_LABELS: ClassVar[KeywordField] = KeywordField(
+        "semanticLabels", "semanticLabels"
+    )
+    """
+    Labels associated with the semantic field.
     """
 
     SEMANTIC_MODEL: ClassVar[RelationField] = RelationField("semanticModel")
@@ -194,8 +230,14 @@ class DbtMeasure(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
+        "catalog_dataset_guid",
         "semantic_expression",
         "semantic_type",
+        "semantic_synonyms",
+        "semantic_sample_values",
+        "semantic_access_modifier",
+        "semantic_data_type",
+        "semantic_labels",
         "semantic_model",
     ]
 
@@ -430,6 +472,16 @@ class DbtMeasure(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def semantic_expression(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.semantic_expression
 
@@ -448,6 +500,62 @@ class DbtMeasure(Dbt):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.semantic_type = semantic_type
+
+    @property
+    def semantic_synonyms(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.semantic_synonyms
+
+    @semantic_synonyms.setter
+    def semantic_synonyms(self, semantic_synonyms: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.semantic_synonyms = semantic_synonyms
+
+    @property
+    def semantic_sample_values(self) -> Optional[Set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.semantic_sample_values
+        )
+
+    @semantic_sample_values.setter
+    def semantic_sample_values(self, semantic_sample_values: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.semantic_sample_values = semantic_sample_values
+
+    @property
+    def semantic_access_modifier(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.semantic_access_modifier
+        )
+
+    @semantic_access_modifier.setter
+    def semantic_access_modifier(self, semantic_access_modifier: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.semantic_access_modifier = semantic_access_modifier
+
+    @property
+    def semantic_data_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.semantic_data_type
+
+    @semantic_data_type.setter
+    def semantic_data_type(self, semantic_data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.semantic_data_type = semantic_data_type
+
+    @property
+    def semantic_labels(self) -> Optional[Set[str]]:
+        return None if self.attributes is None else self.attributes.semantic_labels
+
+    @semantic_labels.setter
+    def semantic_labels(self, semantic_labels: Optional[Set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.semantic_labels = semantic_labels
 
     @property
     def semantic_model(self) -> Optional[SemanticModel]:
@@ -486,8 +594,14 @@ class DbtMeasure(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         semantic_expression: Optional[str] = Field(default=None, description="")
         semantic_type: Optional[str] = Field(default=None, description="")
+        semantic_synonyms: Optional[Set[str]] = Field(default=None, description="")
+        semantic_sample_values: Optional[Set[str]] = Field(default=None, description="")
+        semantic_access_modifier: Optional[str] = Field(default=None, description="")
+        semantic_data_type: Optional[str] = Field(default=None, description="")
+        semantic_labels: Optional[Set[str]] = Field(default=None, description="")
         semantic_model: Optional[SemanticModel] = Field(
             default=None, description=""
         )  # relationship
@@ -502,6 +616,6 @@ class DbtMeasure(Dbt):
     )
 
 
-from .semantic_model import SemanticModel  # noqa: E402, F401
+from .core.semantic_model import SemanticModel  # noqa: E402, F401
 
 DbtMeasure.Attributes.update_forward_refs()

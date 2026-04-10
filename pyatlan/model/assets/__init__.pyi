@@ -35,6 +35,7 @@ __all__ = [
     "FlowField",
     "DataMesh",
     "SQL",
+    "SqlInsight",
     "Matillion",
     "Model",
     "Spark",
@@ -57,6 +58,10 @@ __all__ = [
     "AdfActivity",
     "PowerBI",
     "Fabric",
+    "SemanticDimension",
+    "SemanticEntity",
+    "SemanticModel",
+    "SemanticMeasure",
     "CosmosMongoDB",
     "DocumentDB",
     "PartialField",
@@ -82,6 +87,8 @@ __all__ = [
     "Link",
     "DataDomain",
     "DataProduct",
+    "DataMeshDataset",
+    "Dremio",
     "Table",
     "Query",
     "Schema",
@@ -92,13 +99,17 @@ __all__ = [
     "TablePartition",
     "Column",
     "SnowflakeStage",
+    "Snowflake",
     "DatabricksUnityCatalogTag",
     "SnowflakeStream",
-    "Database",
     "CalculationView",
+    "Database",
     "Procedure",
     "Databricks",
     "SnowflakeTag",
+    "SqlInsightFilter",
+    "SqlInsightBusinessQuestion",
+    "SqlInsightJoin",
     "MatillionGroup",
     "MatillionJob",
     "MatillionProject",
@@ -111,6 +122,7 @@ __all__ = [
     "ModelDataModel",
     "SparkJob",
     "SchemaRegistrySubject",
+    "SchemaRegistryVersion",
     "AtlanAppWorkflow",
     "AtlanAppTool",
     "PowerBIReport",
@@ -138,6 +150,10 @@ __all__ = [
     "FabricDataflowEntityColumn",
     "FabricReport",
     "FabricSemanticModel",
+    "SnowflakeSemanticDimension",
+    "SnowflakeSemanticLogicalTable",
+    "SnowflakeSemanticView",
+    "SnowflakeSemanticFact",
     "CosmosMongoDBCollection",
     "CosmosMongoDBAccount",
     "CosmosMongoDBDatabase",
@@ -149,13 +165,16 @@ __all__ = [
     "AnomaloCheck",
     "MCIncident",
     "MCMonitor",
+    "SnowflakeSemanticMetric",
     "SodaCheck",
     "DatabricksAIModelVersion",
     "SnowflakeAIModelVersion",
     "SnowflakeAIModelContext",
     "DatabricksAIModelContext",
     "SnowflakeDynamicTable",
+    "StarburstDataset",
     "DatabricksMetricView",
+    "StarburstDatasetColumn",
     "BigqueryRoutine",
     "DatabricksVolume",
     "DatabricksVolumePath",
@@ -183,6 +202,7 @@ __all__ = [
     "EventStore",
     "NoSQL",
     "Insight",
+    "AssetGrouping",
     "ObjectStore",
     "Notebook",
     "SaaS",
@@ -222,11 +242,7 @@ __all__ = [
     "Cognos",
     "Superset",
     "Qlik",
-    "SemanticDimension",
-    "SemanticEntity",
-    "SemanticModel",
     "SemanticField",
-    "SemanticMeasure",
     "Kafka",
     "AzureServiceBus",
     "Cassandra",
@@ -237,6 +253,8 @@ __all__ = [
     "DbtMeasure",
     "DbtSemanticModel",
     "DbtEntity",
+    "AssetGroupingStrategy",
+    "AssetGroupingCollection",
     "S3",
     "ADLS",
     "GCS",
@@ -252,9 +270,8 @@ __all__ = [
     "CubeDimension",
     "CubeField",
     "CustomEntity",
-    "Dremio",
     "BigqueryTag",
-    "Snowflake",
+    "Starburst",
     "Iceberg",
     "APISpec",
     "APIQuery",
@@ -370,6 +387,8 @@ __all__ = [
     "QlikChart",
     "QlikDataset",
     "QlikSheet",
+    "KafkaCluster",
+    "KafkaField",
     "KafkaTopic",
     "KafkaConsumerGroup",
     "AzureServiceBusNamespace",
@@ -455,6 +474,9 @@ from .anaplan_page import AnaplanPage
 from .anaplan_system_dimension import AnaplanSystemDimension
 from .anaplan_view import AnaplanView
 from .anaplan_workspace import AnaplanWorkspace
+from .asset_grouping import AssetGrouping
+from .asset_grouping_collection import AssetGroupingCollection
+from .asset_grouping_strategy import AssetGroupingStrategy
 from .atlan_app_deployment import AtlanAppDeployment
 from .atlan_app_installed import AtlanAppInstalled
 from .auth_service import AuthService
@@ -541,6 +563,7 @@ from .core.cosmos_mongo_d_b_database import CosmosMongoDBDatabase
 from .core.data_contract import DataContract
 from .core.data_domain import DataDomain
 from .core.data_mesh import DataMesh
+from .core.data_mesh_dataset import DataMeshDataset
 from .core.data_product import DataProduct
 from .core.data_quality import DataQuality
 from .core.data_quality_rule import DataQualityRule
@@ -563,6 +586,7 @@ from .core.dbt_test import DbtTest
 from .core.document_d_b import DocumentDB
 from .core.document_d_b_collection import DocumentDBCollection
 from .core.document_d_b_database import DocumentDBDatabase
+from .core.dremio import Dremio
 from .core.dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .core.fabric import Fabric
 from .core.fabric_activity import FabricActivity
@@ -640,11 +664,22 @@ from .core.s_q_l import SQL
 from .core.schema import Schema
 from .core.schema_registry import SchemaRegistry
 from .core.schema_registry_subject import SchemaRegistrySubject
+from .core.schema_registry_version import SchemaRegistryVersion
 from .core.semantic import Semantic
+from .core.semantic_dimension import SemanticDimension
+from .core.semantic_entity import SemanticEntity
+from .core.semantic_measure import SemanticMeasure
+from .core.semantic_model import SemanticModel
+from .core.snowflake import Snowflake
 from .core.snowflake_a_i_model_context import SnowflakeAIModelContext
 from .core.snowflake_a_i_model_version import SnowflakeAIModelVersion
 from .core.snowflake_dynamic_table import SnowflakeDynamicTable
 from .core.snowflake_pipe import SnowflakePipe
+from .core.snowflake_semantic_dimension import SnowflakeSemanticDimension
+from .core.snowflake_semantic_fact import SnowflakeSemanticFact
+from .core.snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable
+from .core.snowflake_semantic_metric import SnowflakeSemanticMetric
+from .core.snowflake_semantic_view import SnowflakeSemanticView
 from .core.snowflake_stage import SnowflakeStage
 from .core.snowflake_stream import SnowflakeStream
 from .core.snowflake_tag import SnowflakeTag
@@ -652,8 +687,14 @@ from .core.soda import Soda
 from .core.soda_check import SodaCheck
 from .core.spark import Spark
 from .core.spark_job import SparkJob
+from .core.sql_insight import SqlInsight
+from .core.sql_insight_business_question import SqlInsightBusinessQuestion
+from .core.sql_insight_filter import SqlInsightFilter
+from .core.sql_insight_join import SqlInsightJoin
 from .core.stakeholder import Stakeholder
 from .core.stakeholder_title import StakeholderTitle
+from .core.starburst_dataset import StarburstDataset
+from .core.starburst_dataset_column import StarburstDatasetColumn
 from .core.table import Table
 from .core.table_partition import TablePartition
 from .core.tag import Tag
@@ -685,7 +726,6 @@ from .domo_card import DomoCard
 from .domo_dashboard import DomoDashboard
 from .domo_dataset import DomoDataset
 from .domo_dataset_column import DomoDatasetColumn
-from .dremio import Dremio
 from .dremio_column import DremioColumn
 from .dremio_folder import DremioFolder
 from .dremio_physical_dataset import DremioPhysicalDataset
@@ -714,7 +754,9 @@ from .incident import Incident
 from .infrastructure import Infrastructure
 from .insight import Insight
 from .kafka import Kafka
+from .kafka_cluster import KafkaCluster
 from .kafka_consumer_group import KafkaConsumerGroup
+from .kafka_field import KafkaField
 from .kafka_topic import KafkaTopic
 from .looker import Looker
 from .looker_dashboard import LookerDashboard
@@ -817,11 +859,7 @@ from .sap_erp_function_module import SapErpFunctionModule
 from .sap_erp_table import SapErpTable
 from .sap_erp_transaction_code import SapErpTransactionCode
 from .sap_erp_view import SapErpView
-from .semantic_dimension import SemanticDimension
-from .semantic_entity import SemanticEntity
 from .semantic_field import SemanticField
-from .semantic_measure import SemanticMeasure
-from .semantic_model import SemanticModel
 from .sigma import Sigma
 from .sigma_data_element import SigmaDataElement
 from .sigma_data_element_field import SigmaDataElementField
@@ -835,8 +873,8 @@ from .sisense_datamodel import SisenseDatamodel
 from .sisense_datamodel_table import SisenseDatamodelTable
 from .sisense_folder import SisenseFolder
 from .sisense_widget import SisenseWidget
-from .snowflake import Snowflake
 from .source_tag import SourceTag
+from .starburst import Starburst
 from .superset import Superset
 from .superset_chart import SupersetChart
 from .superset_dashboard import SupersetDashboard

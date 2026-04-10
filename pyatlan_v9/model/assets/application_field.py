@@ -40,6 +40,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -66,6 +67,7 @@ class ApplicationField(Asset):
 
     APPLICATION_PARENT_QUALIFIED_NAME: ClassVar[Any] = None
     APP_ID: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -73,6 +75,8 @@ class ApplicationField(Asset):
     APPLICATION_FIELD_OWNED_ASSETS: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     APPLICATION_PARENT: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -103,6 +107,9 @@ class ApplicationField(Asset):
     app_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the application asset from the source system."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -123,6 +130,12 @@ class ApplicationField(Asset):
 
     application_parent: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the ApplicationField."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -190,7 +203,7 @@ class ApplicationField(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -388,6 +401,9 @@ class ApplicationFieldAttributes(AssetAttributes):
     app_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the application asset from the source system."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class ApplicationFieldRelationshipAttributes(AssetRelationshipAttributes):
     """ApplicationField-specific relationship attributes for nested API format."""
@@ -412,6 +428,12 @@ class ApplicationFieldRelationshipAttributes(AssetRelationshipAttributes):
 
     application_parent: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the ApplicationField."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -479,7 +501,7 @@ class ApplicationFieldRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -519,6 +541,8 @@ _APPLICATION_FIELD_REL_FIELDS: List[str] = [
     "application_field_owned_assets",
     "application_field",
     "application_parent",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -552,6 +576,7 @@ def _populate_application_field_attrs(
     _populate_asset_attrs(attrs, obj)
     attrs.application_parent_qualified_name = obj.application_parent_qualified_name
     attrs.app_id = obj.app_id
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_application_field_attrs(attrs: ApplicationFieldAttributes) -> dict:
@@ -561,6 +586,7 @@ def _extract_application_field_attrs(attrs: ApplicationFieldAttributes) -> dict:
         attrs.application_parent_qualified_name
     )
     result["app_id"] = attrs.app_id
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -676,6 +702,9 @@ ApplicationField.APPLICATION_PARENT_QUALIFIED_NAME = KeywordField(
     "applicationParentQualifiedName", "applicationParentQualifiedName"
 )
 ApplicationField.APP_ID = KeywordField("appId", "appId")
+ApplicationField.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 ApplicationField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ApplicationField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ApplicationField.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -685,6 +714,10 @@ ApplicationField.APPLICATION_FIELD_OWNED_ASSETS = RelationField(
 )
 ApplicationField.APPLICATION_FIELD = RelationField("applicationField")
 ApplicationField.APPLICATION_PARENT = RelationField("applicationParent")
+ApplicationField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+ApplicationField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ApplicationField.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ApplicationField.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ApplicationField.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

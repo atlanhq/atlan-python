@@ -2599,6 +2599,13 @@ class AIModelStatus(str, Enum):
     INACTIVE = "INACTIVE"
 
 
+class AIModelVersionStage(str, Enum):
+    NONE = "NONE"
+    STAGING = "STAGING"
+    PRODUCTION = "PRODUCTION"
+    ARCHIVED = "ARCHIVED"
+
+
 class APIQueryParamTypeEnum(str, Enum):
     INPUT = "Input"
     OUTPUT = "Output"
@@ -2623,6 +2630,28 @@ class AssetDQRunStatus(str, Enum):
     SUCCESSFUL = "SUCCESSFUL"
     FAILURE = "FAILURE"
     IN_PROGRESS = "IN_PROGRESS"
+
+
+class AssetGroupingStrategySource(str, Enum):
+    SYSTEM = "SYSTEM"
+    USER = "USER"
+
+
+class AssetGroupingStrategyType(str, Enum):
+    DSL = "DSL"
+    SQL = "SQL"
+    AE_DAG = "AE_DAG"
+
+
+class AssetGroupingTrackedCategories(str, Enum):
+    DESCRIPTION = "description"
+    MEANINGS = "meanings"
+    CLASSIFICATIONS = "classifications"
+    README = "readme"
+    OWNERS = "owners"
+    CERTIFICATION = "certification"
+    DATA_QUALITY_RULES = "data-quality-rules"
+    SQL_INSIGHTS = "sql-insights"
 
 
 class AssetSmusMetadataFormStatus(str, Enum):
@@ -2738,6 +2767,12 @@ class ConnectionDQEnvironmentSetupStatus(str, Enum):
     FAILED = "FAILED"
 
 
+class DataMeshDatasetType(str, Enum):
+    RAW = "Raw"
+    REFINED = "Refined"
+    AGGREGATED = "Aggregated"
+
+
 class DataProductCriticality(str, Enum):
     LOW = "Low"
     MEDIUM = "Medium"
@@ -2783,6 +2818,12 @@ class DataQualityDimension(str, Enum):
 class DataQualityResult(str, Enum):
     PASS = "PASS"
     FAIL = "FAIL"
+
+
+class DataQualityRuleADStatus(str, Enum):
+    TRAINING = "TRAINING"
+    ACTIVE = "ACTIVE"
+    ERROR = "ERROR"
 
 
 class DataQualityRuleAlertPriority(str, Enum):
@@ -2970,6 +3011,14 @@ class IncidentSeverity(str, Enum):
     HIGH = "HIGH"
 
 
+class KafkaConsumerGroupState(str, Enum):
+    STABLE = "Stable"
+    EMPTY = "Empty"
+    PREPARING_REBALANCE = "PreparingRebalance"
+    COMPLETING_REBALANCE = "CompletingRebalance"
+    DEAD = "Dead"
+
+
 class KafkaTopicCleanupPolicy(str, Enum):
     COMPACT = "compact"
     DELETE = "delete"
@@ -3087,6 +3136,21 @@ class SourceCostUnitType(str, Enum):
     CREDITS = "Credits"
     BYTES = "bytes"
     SLOT_MS = "slot-ms"
+
+
+class SqlInsightJoinCardinality(str, Enum):
+    ONE_TO_ONE = "ONE_TO_ONE"
+    ONE_TO_MANY = "ONE_TO_MANY"
+    MANY_TO_ONE = "MANY_TO_ONE"
+    MANY_TO_MANY = "MANY_TO_MANY"
+
+
+class SqlInsightJoinType(str, Enum):
+    INNER = "INNER"
+    LEFT = "LEFT"
+    RIGHT = "RIGHT"
+    FULL = "FULL"
+    CROSS = "CROSS"
 
 
 class TableType(str, Enum):

@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -70,11 +71,14 @@ class PresetChart(Asset):
     PRESET_WORKSPACE_QUALIFIED_NAME: ClassVar[Any] = None
     PRESET_DASHBOARD_ID: ClassVar[Any] = None
     PRESET_DASHBOARD_QUALIFIED_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -118,6 +122,9 @@ class PresetChart(Asset):
     preset_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the dashboard in which this asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -132,6 +139,12 @@ class PresetChart(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -202,7 +215,7 @@ class PresetChart(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -400,6 +413,9 @@ class PresetChartAttributes(AssetAttributes):
     preset_dashboard_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the dashboard in which this asset exists."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class PresetChartRelationshipAttributes(AssetRelationshipAttributes):
     """PresetChart-specific relationship attributes for nested API format."""
@@ -418,6 +434,12 @@ class PresetChartRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -488,7 +510,7 @@ class PresetChartRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -524,6 +546,8 @@ _PRESET_CHART_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -562,6 +586,7 @@ def _populate_preset_chart_attrs(
     attrs.preset_workspace_qualified_name = obj.preset_workspace_qualified_name
     attrs.preset_dashboard_id = obj.preset_dashboard_id
     attrs.preset_dashboard_qualified_name = obj.preset_dashboard_qualified_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_preset_chart_attrs(attrs: PresetChartAttributes) -> dict:
@@ -575,6 +600,7 @@ def _extract_preset_chart_attrs(attrs: PresetChartAttributes) -> dict:
     result["preset_workspace_qualified_name"] = attrs.preset_workspace_qualified_name
     result["preset_dashboard_id"] = attrs.preset_dashboard_id
     result["preset_dashboard_qualified_name"] = attrs.preset_dashboard_qualified_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -701,11 +727,18 @@ PresetChart.PRESET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
     "presetDashboardQualifiedName",
     "presetDashboardQualifiedName.text",
 )
+PresetChart.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 PresetChart.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 PresetChart.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 PresetChart.ANOMALO_CHECKS = RelationField("anomaloChecks")
 PresetChart.APPLICATION = RelationField("application")
 PresetChart.APPLICATION_FIELD = RelationField("applicationField")
+PresetChart.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+PresetChart.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 PresetChart.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 PresetChart.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 PresetChart.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

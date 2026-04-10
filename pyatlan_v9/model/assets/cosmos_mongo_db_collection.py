@@ -43,6 +43,7 @@ from .cosmos_mongo_db_related import (
     RelatedCosmosMongoDBCollection,
     RelatedCosmosMongoDBDatabase,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import (
@@ -63,6 +64,10 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 from .sql_related import (
     RelatedColumn,
     RelatedQuery,
@@ -84,6 +89,7 @@ class CosmosMongoDBCollection(Asset):
 
     COSMOS_MONGO_DB_DATABASE_QUALIFIED_NAME: ClassVar[Any] = None
     NO_SQL_SCHEMA_DEFINITION: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     MONGO_DB_COLLECTION_SUBTYPE: ClassVar[Any] = None
     MONGO_DB_COLLECTION_IS_CAPPED: ClassVar[Any] = None
     MONGO_DB_COLLECTION_TIME_FIELD: ClassVar[Any] = None
@@ -141,6 +147,12 @@ class CosmosMongoDBCollection(Asset):
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
     SQL_IS_SECURE: ClassVar[Any] = None
+    SQL_HAS_AI_INSIGHTS: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -148,6 +160,8 @@ class CosmosMongoDBCollection(Asset):
     APPLICATION_FIELD: ClassVar[Any] = None
     COSMOS_MONGO_DB_DATABASE: ClassVar[Any] = None
     COLUMNS: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -185,6 +199,9 @@ class CosmosMongoDBCollection(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+    SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
+    SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
     cosmos_mongo_db_database_qualified_name: Union[str, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBDatabaseQualifiedName")
@@ -195,6 +212,9 @@ class CosmosMongoDBCollection(Asset):
         default=UNSET, name="noSQLSchemaDefinition"
     )
     """Represents attributes for describing the key schema for the table and indexes."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     mongo_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBCollectionSubtype"
@@ -393,6 +413,24 @@ class CosmosMongoDBCollection(Asset):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -415,6 +453,12 @@ class CosmosMongoDBCollection(Asset):
 
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this cosmos collection."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -527,7 +571,7 @@ class CosmosMongoDBCollection(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -542,6 +586,21 @@ class CosmosMongoDBCollection(Asset):
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
         self.type_name = "CosmosMongoDBCollection"
@@ -697,6 +756,9 @@ class CosmosMongoDBCollectionAttributes(AssetAttributes):
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     mongo_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="mongoDBCollectionSubtype"
     )
@@ -894,6 +956,24 @@ class CosmosMongoDBCollectionAttributes(AssetAttributes):
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
     """Whether this asset is secure (true) or not (false)."""
 
+    sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset has any AI insights data available."""
+
+    sql_ai_insights_last_analyzed_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds."""
+
+    sql_ai_insights_popular_business_question_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular business questions associated with this asset."""
+
+    sql_ai_insights_popular_join_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular join patterns associated with this asset."""
+
+    sql_ai_insights_popular_filter_count: Union[int, None, UnsetType] = UNSET
+    """Number of popular filter patterns associated with this asset."""
+
+    sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
+    """Number of relationship insights associated with this asset."""
+
 
 class CosmosMongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     """CosmosMongoDBCollection-specific relationship attributes for nested API format."""
@@ -920,6 +1000,12 @@ class CosmosMongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes)
 
     columns: Union[List[RelatedColumn], None, UnsetType] = UNSET
     """Columns that exist within this cosmos collection."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -1032,7 +1118,7 @@ class CosmosMongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes)
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     snowflake_semantic_logical_tables: Union[
         List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
@@ -1047,6 +1133,21 @@ class CosmosMongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes)
 
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
+
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the source dataset."""
+
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
+    """Join insights where this asset is the joined dataset."""
+
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
+    """Business question insights for this SQL asset."""
 
 
 class CosmosMongoDBCollectionNested(AssetNested):
@@ -1077,6 +1178,8 @@ _COSMOS_MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "application_field",
     "cosmos_mongo_db_database",
     "columns",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -1114,6 +1217,9 @@ _COSMOS_MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
+    "sql_insight_outgoing_joins",
+    "sql_insight_incoming_joins",
+    "sql_insight_business_questions",
 ]
 
 
@@ -1126,6 +1232,7 @@ def _populate_cosmos_mongo_db_collection_attrs(
         obj.cosmos_mongo_db_database_qualified_name
     )
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.mongo_db_collection_subtype = obj.mongo_db_collection_subtype
     attrs.mongo_db_collection_is_capped = obj.mongo_db_collection_is_capped
     attrs.mongo_db_collection_time_field = obj.mongo_db_collection_time_field
@@ -1195,6 +1302,16 @@ def _populate_cosmos_mongo_db_collection_attrs(
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
     attrs.sql_is_secure = obj.sql_is_secure
+    attrs.sql_has_ai_insights = obj.sql_has_ai_insights
+    attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
+    attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
+    attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
 
 
 def _extract_cosmos_mongo_db_collection_attrs(
@@ -1206,6 +1323,7 @@ def _extract_cosmos_mongo_db_collection_attrs(
         attrs.cosmos_mongo_db_database_qualified_name
     )
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["mongo_db_collection_subtype"] = attrs.mongo_db_collection_subtype
     result["mongo_db_collection_is_capped"] = attrs.mongo_db_collection_is_capped
     result["mongo_db_collection_time_field"] = attrs.mongo_db_collection_time_field
@@ -1279,6 +1397,20 @@ def _extract_cosmos_mongo_db_collection_attrs(
         attrs.sql_ai_model_context_qualified_name
     )
     result["sql_is_secure"] = attrs.sql_is_secure
+    result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
+    result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     return result
 
 
@@ -1409,6 +1541,9 @@ CosmosMongoDBCollection.COSMOS_MONGO_DB_DATABASE_QUALIFIED_NAME = KeywordTextFie
 )
 CosmosMongoDBCollection.NO_SQL_SCHEMA_DEFINITION = KeywordField(
     "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
+CosmosMongoDBCollection.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
 )
 CosmosMongoDBCollection.MONGO_DB_COLLECTION_SUBTYPE = KeywordTextField(
     "mongoDBCollectionSubtype",
@@ -1549,6 +1684,25 @@ CosmosMongoDBCollection.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
 CosmosMongoDBCollection.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
+CosmosMongoDBCollection.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+CosmosMongoDBCollection.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+CosmosMongoDBCollection.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+CosmosMongoDBCollection.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+CosmosMongoDBCollection.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+CosmosMongoDBCollection.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
 CosmosMongoDBCollection.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CosmosMongoDBCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
     "outputFromAirflowTasks"
@@ -1560,6 +1714,10 @@ CosmosMongoDBCollection.COSMOS_MONGO_DB_DATABASE = RelationField(
     "cosmosMongoDBDatabase"
 )
 CosmosMongoDBCollection.COLUMNS = RelationField("columns")
+CosmosMongoDBCollection.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+CosmosMongoDBCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 CosmosMongoDBCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
 )
@@ -1615,3 +1773,12 @@ CosmosMongoDBCollection.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
 CosmosMongoDBCollection.SODA_CHECKS = RelationField("sodaChecks")
 CosmosMongoDBCollection.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 CosmosMongoDBCollection.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+CosmosMongoDBCollection.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+    "sqlInsightOutgoingJoins"
+)
+CosmosMongoDBCollection.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+    "sqlInsightIncomingJoins"
+)
+CosmosMongoDBCollection.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

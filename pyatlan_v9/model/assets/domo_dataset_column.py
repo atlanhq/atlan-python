@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .domo_related import RelatedDomoDataset, RelatedDomoDatasetColumn
@@ -69,11 +70,14 @@ class DomoDatasetColumn(Asset):
     DOMO_DATASET_COLUMN_IS_CALCULATED: ClassVar[Any] = None
     DOMO_ID: ClassVar[Any] = None
     DOMO_OWNER_ID: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -117,6 +121,9 @@ class DomoDatasetColumn(Asset):
     domo_owner_id: Union[str, None, UnsetType] = UNSET
     """Id of the owner of the Domo dataset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -131,6 +138,12 @@ class DomoDatasetColumn(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -201,7 +214,7 @@ class DomoDatasetColumn(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -364,6 +377,9 @@ class DomoDatasetColumnAttributes(AssetAttributes):
     domo_owner_id: Union[str, None, UnsetType] = UNSET
     """Id of the owner of the Domo dataset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class DomoDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
     """DomoDatasetColumn-specific relationship attributes for nested API format."""
@@ -382,6 +398,12 @@ class DomoDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -452,7 +474,7 @@ class DomoDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -490,6 +512,8 @@ _DOMO_DATASET_COLUMN_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -528,6 +552,7 @@ def _populate_domo_dataset_column_attrs(
     attrs.domo_dataset_column_is_calculated = obj.domo_dataset_column_is_calculated
     attrs.domo_id = obj.domo_id
     attrs.domo_owner_id = obj.domo_owner_id
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_domo_dataset_column_attrs(attrs: DomoDatasetColumnAttributes) -> dict:
@@ -541,6 +566,7 @@ def _extract_domo_dataset_column_attrs(attrs: DomoDatasetColumnAttributes) -> di
     )
     result["domo_id"] = attrs.domo_id
     result["domo_owner_id"] = attrs.domo_owner_id
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -674,11 +700,18 @@ DomoDatasetColumn.DOMO_DATASET_COLUMN_IS_CALCULATED = BooleanField(
 )
 DomoDatasetColumn.DOMO_ID = KeywordField("domoId", "domoId")
 DomoDatasetColumn.DOMO_OWNER_ID = KeywordField("domoOwnerId", "domoOwnerId")
+DomoDatasetColumn.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DomoDatasetColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DomoDatasetColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DomoDatasetColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DomoDatasetColumn.APPLICATION = RelationField("application")
 DomoDatasetColumn.APPLICATION_FIELD = RelationField("applicationField")
+DomoDatasetColumn.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DomoDatasetColumn.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DomoDatasetColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DomoDatasetColumn.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DomoDatasetColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

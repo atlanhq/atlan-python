@@ -233,6 +233,7 @@ class AssetInfo:
         "Purpose",
         "DataQualityRule",
         "Process",
+        "Schema",
         "SQL",
     }
     _ASSETS_REQUIRE_ASYNC_CLIENT = {
@@ -342,6 +343,22 @@ class AssetInfo:
             # DbtTest bottom-imports DbtModelColumn, DbtModelColumn bottom-imports Column.
             if self.name == "SQL" and required_asset.name == "DbtTest":
                 continue
+
+            # To avoid circular import:
+            # Schema → SnowflakeDynamicTable → Table → SQL → ... → Schema
+            if self.name == "Schema" and required_asset.name == "SnowflakeDynamicTable":
+                continue
+
+            # To avoid circular import:
+            # Table → SQL → DbtModel → DbtMetric → Column → CalculationView → Schema → Table
+            if self.name == "Schema" and required_asset.name == "Table":
+                continue
+
+            # To avoid circular import:
+            # Asset → DataProduct → StarburstDataset → Table → SQL → ... → Schema → ... → Table
+            if self.name == "DataProduct" and required_asset.name == "StarburstDataset":
+                continue
+
             if not self.is_core_asset and required_asset.is_core_asset:
                 import_statement = f"from .core.{required_asset.module_name} import {required_asset.name} # noqa: E402, F401"
             else:

@@ -47,6 +47,7 @@ from .cosmos_mongo_d_b_database import CosmosMongoDBDatabase
 from .data_contract import DataContract
 from .data_domain import DataDomain
 from .data_mesh import DataMesh
+from .data_mesh_dataset import DataMeshDataset
 from .data_product import DataProduct
 from .data_quality import DataQuality
 from .data_quality_rule import DataQualityRule
@@ -69,6 +70,7 @@ from .dbt_test import DbtTest
 from .document_d_b import DocumentDB
 from .document_d_b_collection import DocumentDBCollection
 from .document_d_b_database import DocumentDBDatabase
+from .dremio import Dremio
 from .dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .fabric import Fabric
 from .fabric_activity import FabricActivity
@@ -145,11 +147,22 @@ from .s_q_l import SQL
 from .schema import Schema
 from .schema_registry import SchemaRegistry
 from .schema_registry_subject import SchemaRegistrySubject
+from .schema_registry_version import SchemaRegistryVersion
 from .semantic import Semantic
+from .semantic_dimension import SemanticDimension
+from .semantic_entity import SemanticEntity
+from .semantic_measure import SemanticMeasure
+from .semantic_model import SemanticModel
+from .snowflake import Snowflake
 from .snowflake_a_i_model_context import SnowflakeAIModelContext
 from .snowflake_a_i_model_version import SnowflakeAIModelVersion
 from .snowflake_dynamic_table import SnowflakeDynamicTable
 from .snowflake_pipe import SnowflakePipe
+from .snowflake_semantic_dimension import SnowflakeSemanticDimension
+from .snowflake_semantic_fact import SnowflakeSemanticFact
+from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable
+from .snowflake_semantic_metric import SnowflakeSemanticMetric
+from .snowflake_semantic_view import SnowflakeSemanticView
 from .snowflake_stage import SnowflakeStage
 from .snowflake_stream import SnowflakeStream
 from .snowflake_tag import SnowflakeTag
@@ -157,8 +170,14 @@ from .soda import Soda
 from .soda_check import SodaCheck
 from .spark import Spark
 from .spark_job import SparkJob
+from .sql_insight import SqlInsight
+from .sql_insight_business_question import SqlInsightBusinessQuestion
+from .sql_insight_filter import SqlInsightFilter
+from .sql_insight_join import SqlInsightJoin
 from .stakeholder import Stakeholder
 from .stakeholder_title import StakeholderTitle
+from .starburst_dataset import StarburstDataset
+from .starburst_dataset_column import StarburstDatasetColumn
 from .table import Table
 from .table_partition import TablePartition
 from .tag import Tag
@@ -203,6 +222,7 @@ Resource.Attributes.update_forward_refs(**localns)
 FlowField.Attributes.update_forward_refs(**localns)
 DataMesh.Attributes.update_forward_refs(**localns)
 SQL.Attributes.update_forward_refs(**localns)
+SqlInsight.Attributes.update_forward_refs(**localns)
 Matillion.Attributes.update_forward_refs(**localns)
 Model.Attributes.update_forward_refs(**localns)
 Spark.Attributes.update_forward_refs(**localns)
@@ -224,6 +244,10 @@ AdfLinkedservice.Attributes.update_forward_refs(**localns)
 AdfActivity.Attributes.update_forward_refs(**localns)
 PowerBI.Attributes.update_forward_refs(**localns)
 Fabric.Attributes.update_forward_refs(**localns)
+SemanticDimension.Attributes.update_forward_refs(**localns)
+SemanticEntity.Attributes.update_forward_refs(**localns)
+SemanticModel.Attributes.update_forward_refs(**localns)
+SemanticMeasure.Attributes.update_forward_refs(**localns)
 CosmosMongoDB.Attributes.update_forward_refs(**localns)
 DocumentDB.Attributes.update_forward_refs(**localns)
 PartialField.Attributes.update_forward_refs(**localns)
@@ -249,6 +273,8 @@ File.Attributes.update_forward_refs(**localns)
 Link.Attributes.update_forward_refs(**localns)
 DataDomain.Attributes.update_forward_refs(**localns)
 DataProduct.Attributes.update_forward_refs(**localns)
+DataMeshDataset.Attributes.update_forward_refs(**localns)
+Dremio.Attributes.update_forward_refs(**localns)
 Table.Attributes.update_forward_refs(**localns)
 Query.Attributes.update_forward_refs(**localns)
 Schema.Attributes.update_forward_refs(**localns)
@@ -259,13 +285,17 @@ Function.Attributes.update_forward_refs(**localns)
 TablePartition.Attributes.update_forward_refs(**localns)
 Column.Attributes.update_forward_refs(**localns)
 SnowflakeStage.Attributes.update_forward_refs(**localns)
+Snowflake.Attributes.update_forward_refs(**localns)
 DatabricksUnityCatalogTag.Attributes.update_forward_refs(**localns)
 SnowflakeStream.Attributes.update_forward_refs(**localns)
-Database.Attributes.update_forward_refs(**localns)
 CalculationView.Attributes.update_forward_refs(**localns)
+Database.Attributes.update_forward_refs(**localns)
 Procedure.Attributes.update_forward_refs(**localns)
 Databricks.Attributes.update_forward_refs(**localns)
 SnowflakeTag.Attributes.update_forward_refs(**localns)
+SqlInsightFilter.Attributes.update_forward_refs(**localns)
+SqlInsightBusinessQuestion.Attributes.update_forward_refs(**localns)
+SqlInsightJoin.Attributes.update_forward_refs(**localns)
 MatillionGroup.Attributes.update_forward_refs(**localns)
 MatillionJob.Attributes.update_forward_refs(**localns)
 MatillionProject.Attributes.update_forward_refs(**localns)
@@ -278,6 +308,7 @@ ModelAttributeAssociation.Attributes.update_forward_refs(**localns)
 ModelDataModel.Attributes.update_forward_refs(**localns)
 SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
+SchemaRegistryVersion.Attributes.update_forward_refs(**localns)
 PowerBIReport.Attributes.update_forward_refs(**localns)
 PowerBIDatasource.Attributes.update_forward_refs(**localns)
 PowerBIWorkspace.Attributes.update_forward_refs(**localns)
@@ -303,6 +334,10 @@ FabricSemanticModelTableColumn.Attributes.update_forward_refs(**localns)
 FabricDataflowEntityColumn.Attributes.update_forward_refs(**localns)
 FabricReport.Attributes.update_forward_refs(**localns)
 FabricSemanticModel.Attributes.update_forward_refs(**localns)
+SnowflakeSemanticDimension.Attributes.update_forward_refs(**localns)
+SnowflakeSemanticLogicalTable.Attributes.update_forward_refs(**localns)
+SnowflakeSemanticView.Attributes.update_forward_refs(**localns)
+SnowflakeSemanticFact.Attributes.update_forward_refs(**localns)
 CosmosMongoDBCollection.Attributes.update_forward_refs(**localns)
 CosmosMongoDBAccount.Attributes.update_forward_refs(**localns)
 CosmosMongoDBDatabase.Attributes.update_forward_refs(**localns)
@@ -314,13 +349,16 @@ MongoDBDatabase.Attributes.update_forward_refs(**localns)
 AnomaloCheck.Attributes.update_forward_refs(**localns)
 MCIncident.Attributes.update_forward_refs(**localns)
 MCMonitor.Attributes.update_forward_refs(**localns)
+SnowflakeSemanticMetric.Attributes.update_forward_refs(**localns)
 SodaCheck.Attributes.update_forward_refs(**localns)
 DatabricksAIModelVersion.Attributes.update_forward_refs(**localns)
 SnowflakeAIModelVersion.Attributes.update_forward_refs(**localns)
 SnowflakeAIModelContext.Attributes.update_forward_refs(**localns)
 DatabricksAIModelContext.Attributes.update_forward_refs(**localns)
 SnowflakeDynamicTable.Attributes.update_forward_refs(**localns)
+StarburstDataset.Attributes.update_forward_refs(**localns)
 DatabricksMetricView.Attributes.update_forward_refs(**localns)
+StarburstDatasetColumn.Attributes.update_forward_refs(**localns)
 BigqueryRoutine.Attributes.update_forward_refs(**localns)
 DatabricksVolume.Attributes.update_forward_refs(**localns)
 DatabricksVolumePath.Attributes.update_forward_refs(**localns)

@@ -146,6 +146,12 @@ class SageMakerUnifiedStudioSubscribedAsset(SageMakerUnifiedStudioAsset):
     """
     Unique identifier of the SageMaker Unified Studio project which owns the asset.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
 
     SMUS_PUBLISHED_ASSET: ClassVar[RelationField] = RelationField("smusPublishedAsset")
     """
@@ -176,6 +182,7 @@ class SageMakerUnifiedStudioSubscribedAsset(SageMakerUnifiedStudioAsset):
         "smus_domain_unit_id",
         "smus_project_id",
         "smus_owning_project_id",
+        "catalog_dataset_guid",
         "smus_published_asset",
         "smus_project",
     ]
@@ -447,6 +454,16 @@ class SageMakerUnifiedStudioSubscribedAsset(SageMakerUnifiedStudioAsset):
         self.attributes.smus_owning_project_id = smus_owning_project_id
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def smus_published_asset(self) -> Optional[SageMakerUnifiedStudioPublishedAsset]:
         return None if self.attributes is None else self.attributes.smus_published_asset
 
@@ -506,6 +523,7 @@ class SageMakerUnifiedStudioSubscribedAsset(SageMakerUnifiedStudioAsset):
         smus_domain_unit_id: Optional[str] = Field(default=None, description="")
         smus_project_id: Optional[str] = Field(default=None, description="")
         smus_owning_project_id: Optional[str] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         smus_published_asset: Optional[SageMakerUnifiedStudioPublishedAsset] = Field(
             default=None, description=""
         )  # relationship

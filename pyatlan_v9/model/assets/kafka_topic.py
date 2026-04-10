@@ -39,10 +39,16 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .kafka_related import RelatedKafkaConsumerGroup, RelatedKafkaTopic
+from .kafka_related import (
+    RelatedKafkaCluster,
+    RelatedKafkaConsumerGroup,
+    RelatedKafkaField,
+    RelatedKafkaTopic,
+)
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -74,11 +80,19 @@ class KafkaTopic(Asset):
     KAFKA_TOPIC_RECORD_COUNT: ClassVar[Any] = None
     KAFKA_TOPIC_CLEANUP_POLICY: ClassVar[Any] = None
     KAFKA_TOPIC_LOG_CLEANUP_POLICY: ClassVar[Any] = None
+    KAFKA_TOPIC_IS_SCHEMA_MANAGED: ClassVar[Any] = None
+    KAFKA_TOPIC_CONSUMER_COUNT: ClassVar[Any] = None
+    KAFKA_TOPIC_RETENTION_BYTES: ClassVar[Any] = None
+    KAFKA_TOPIC_SCHEMA_REGISTRY_SUBJECT_NAME: ClassVar[Any] = None
+    KAFKA_TOPIC_CLUSTER_QUALIFIED_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -88,6 +102,8 @@ class KafkaTopic(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     KAFKA_CONSUMER_GROUPS: ClassVar[Any] = None
+    KAFKA_CLUSTER: ClassVar[Any] = None
+    KAFKA_FIELDS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
@@ -134,6 +150,24 @@ class KafkaTopic(Asset):
     kafka_topic_log_cleanup_policy: Union[str, None, UnsetType] = UNSET
     """Comma seperated Cleanup policy for this topic."""
 
+    kafka_topic_is_schema_managed: Union[bool, None, UnsetType] = UNSET
+    """Whether this topic is fully managed by a schema registry (true) or not (false)."""
+
+    kafka_topic_consumer_count: Union[int, None, UnsetType] = UNSET
+    """Number of consumer groups consuming this topic."""
+
+    kafka_topic_retention_bytes: Union[int, None, UnsetType] = UNSET
+    """Maximum size in bytes that a topic can grow to before discarding old messages; -1 means unlimited."""
+
+    kafka_topic_schema_registry_subject_name: Union[str, None, UnsetType] = UNSET
+    """Name of the schema registry subject governing this topic, if any."""
+
+    kafka_topic_cluster_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Kafka cluster in which this topic exists."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -148,6 +182,12 @@ class KafkaTopic(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -181,6 +221,12 @@ class KafkaTopic(Asset):
         UNSET
     )
     """Consumer groups subscribed to this topic."""
+
+    kafka_cluster: Union[RelatedKafkaCluster, None, UnsetType] = UNSET
+    """Kafka cluster containing this topic."""
+
+    kafka_fields: Union[List[RelatedKafkaField], None, UnsetType] = UNSET
+    """Schema fields defined within this Kafka topic."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -220,7 +266,7 @@ class KafkaTopic(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -269,6 +315,11 @@ class KafkaTopic(Asset):
                 f"qualified_name '{self.qualified_name}' does not match expected "
                 f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
             )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.kafka_cluster is UNSET:
+                errors.append("kafka_cluster is required for creation")
         if errors:
             raise ValueError(f"KafkaTopic validation failed: {errors}")
 
@@ -416,6 +467,24 @@ class KafkaTopicAttributes(AssetAttributes):
     kafka_topic_log_cleanup_policy: Union[str, None, UnsetType] = UNSET
     """Comma seperated Cleanup policy for this topic."""
 
+    kafka_topic_is_schema_managed: Union[bool, None, UnsetType] = UNSET
+    """Whether this topic is fully managed by a schema registry (true) or not (false)."""
+
+    kafka_topic_consumer_count: Union[int, None, UnsetType] = UNSET
+    """Number of consumer groups consuming this topic."""
+
+    kafka_topic_retention_bytes: Union[int, None, UnsetType] = UNSET
+    """Maximum size in bytes that a topic can grow to before discarding old messages; -1 means unlimited."""
+
+    kafka_topic_schema_registry_subject_name: Union[str, None, UnsetType] = UNSET
+    """Name of the schema registry subject governing this topic, if any."""
+
+    kafka_topic_cluster_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Kafka cluster in which this topic exists."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class KafkaTopicRelationshipAttributes(AssetRelationshipAttributes):
     """KafkaTopic-specific relationship attributes for nested API format."""
@@ -434,6 +503,12 @@ class KafkaTopicRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -467,6 +542,12 @@ class KafkaTopicRelationshipAttributes(AssetRelationshipAttributes):
         UNSET
     )
     """Consumer groups subscribed to this topic."""
+
+    kafka_cluster: Union[RelatedKafkaCluster, None, UnsetType] = UNSET
+    """Kafka cluster containing this topic."""
+
+    kafka_fields: Union[List[RelatedKafkaField], None, UnsetType] = UNSET
+    """Schema fields defined within this Kafka topic."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
@@ -506,7 +587,7 @@ class KafkaTopicRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -542,6 +623,8 @@ _KAFKA_TOPIC_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -551,6 +634,8 @@ _KAFKA_TOPIC_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "meanings",
     "kafka_consumer_groups",
+    "kafka_cluster",
+    "kafka_fields",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
@@ -582,6 +667,14 @@ def _populate_kafka_topic_attrs(attrs: KafkaTopicAttributes, obj: KafkaTopic) ->
     attrs.kafka_topic_record_count = obj.kafka_topic_record_count
     attrs.kafka_topic_cleanup_policy = obj.kafka_topic_cleanup_policy
     attrs.kafka_topic_log_cleanup_policy = obj.kafka_topic_log_cleanup_policy
+    attrs.kafka_topic_is_schema_managed = obj.kafka_topic_is_schema_managed
+    attrs.kafka_topic_consumer_count = obj.kafka_topic_consumer_count
+    attrs.kafka_topic_retention_bytes = obj.kafka_topic_retention_bytes
+    attrs.kafka_topic_schema_registry_subject_name = (
+        obj.kafka_topic_schema_registry_subject_name
+    )
+    attrs.kafka_topic_cluster_qualified_name = obj.kafka_topic_cluster_qualified_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_kafka_topic_attrs(attrs: KafkaTopicAttributes) -> dict:
@@ -597,6 +690,16 @@ def _extract_kafka_topic_attrs(attrs: KafkaTopicAttributes) -> dict:
     result["kafka_topic_record_count"] = attrs.kafka_topic_record_count
     result["kafka_topic_cleanup_policy"] = attrs.kafka_topic_cleanup_policy
     result["kafka_topic_log_cleanup_policy"] = attrs.kafka_topic_log_cleanup_policy
+    result["kafka_topic_is_schema_managed"] = attrs.kafka_topic_is_schema_managed
+    result["kafka_topic_consumer_count"] = attrs.kafka_topic_consumer_count
+    result["kafka_topic_retention_bytes"] = attrs.kafka_topic_retention_bytes
+    result["kafka_topic_schema_registry_subject_name"] = (
+        attrs.kafka_topic_schema_registry_subject_name
+    )
+    result["kafka_topic_cluster_qualified_name"] = (
+        attrs.kafka_topic_cluster_qualified_name
+    )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -735,11 +838,31 @@ KafkaTopic.KAFKA_TOPIC_CLEANUP_POLICY = KeywordField(
 KafkaTopic.KAFKA_TOPIC_LOG_CLEANUP_POLICY = KeywordField(
     "kafkaTopicLogCleanupPolicy", "kafkaTopicLogCleanupPolicy"
 )
+KafkaTopic.KAFKA_TOPIC_IS_SCHEMA_MANAGED = BooleanField(
+    "kafkaTopicIsSchemaManaged", "kafkaTopicIsSchemaManaged"
+)
+KafkaTopic.KAFKA_TOPIC_CONSUMER_COUNT = NumericField(
+    "kafkaTopicConsumerCount", "kafkaTopicConsumerCount"
+)
+KafkaTopic.KAFKA_TOPIC_RETENTION_BYTES = NumericField(
+    "kafkaTopicRetentionBytes", "kafkaTopicRetentionBytes"
+)
+KafkaTopic.KAFKA_TOPIC_SCHEMA_REGISTRY_SUBJECT_NAME = KeywordField(
+    "kafkaTopicSchemaRegistrySubjectName", "kafkaTopicSchemaRegistrySubjectName"
+)
+KafkaTopic.KAFKA_TOPIC_CLUSTER_QUALIFIED_NAME = KeywordField(
+    "kafkaTopicClusterQualifiedName", "kafkaTopicClusterQualifiedName"
+)
+KafkaTopic.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 KafkaTopic.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 KafkaTopic.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 KafkaTopic.ANOMALO_CHECKS = RelationField("anomaloChecks")
 KafkaTopic.APPLICATION = RelationField("application")
 KafkaTopic.APPLICATION_FIELD = RelationField("applicationField")
+KafkaTopic.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+KafkaTopic.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 KafkaTopic.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 KafkaTopic.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 KafkaTopic.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -749,6 +872,8 @@ KafkaTopic.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 KafkaTopic.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 KafkaTopic.MEANINGS = RelationField("meanings")
 KafkaTopic.KAFKA_CONSUMER_GROUPS = RelationField("kafkaConsumerGroups")
+KafkaTopic.KAFKA_CLUSTER = RelationField("kafkaCluster")
+KafkaTopic.KAFKA_FIELDS = RelationField("kafkaFields")
 KafkaTopic.MC_MONITORS = RelationField("mcMonitors")
 KafkaTopic.MC_INCIDENTS = RelationField("mcIncidents")
 KafkaTopic.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")

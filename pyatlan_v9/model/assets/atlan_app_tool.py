@@ -43,6 +43,7 @@ from .atlan_app_related import (
     RelatedAtlanAppTool,
     RelatedAtlanAppWorkflow,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -75,6 +76,7 @@ class AtlanAppTool(Asset):
     ATLAN_APP_NAME: ClassVar[Any] = None
     ATLAN_APP_METADATA: ClassVar[Any] = None
     APP_ID: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -83,6 +85,8 @@ class AtlanAppTool(Asset):
     ATLAN_APP_TOOLS: ClassVar[Any] = None
     ATLAN_APP: ClassVar[Any] = None
     ATLAN_APP_WORKFLOWS: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -131,6 +135,9 @@ class AtlanAppTool(Asset):
     app_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the application asset from the source system."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -154,6 +161,12 @@ class AtlanAppTool(Asset):
 
     atlan_app_workflows: Union[List[RelatedAtlanAppWorkflow], None, UnsetType] = UNSET
     """Workflows that exist within this Atlan application."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -221,7 +234,7 @@ class AtlanAppTool(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -388,6 +401,9 @@ class AtlanAppToolAttributes(AssetAttributes):
     app_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the application asset from the source system."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class AtlanAppToolRelationshipAttributes(AssetRelationshipAttributes):
     """AtlanAppTool-specific relationship attributes for nested API format."""
@@ -415,6 +431,12 @@ class AtlanAppToolRelationshipAttributes(AssetRelationshipAttributes):
 
     atlan_app_workflows: Union[List[RelatedAtlanAppWorkflow], None, UnsetType] = UNSET
     """Workflows that exist within this Atlan application."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -482,7 +504,7 @@ class AtlanAppToolRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -523,6 +545,8 @@ _ATLAN_APP_TOOL_REL_FIELDS: List[str] = [
     "atlan_app_tools",
     "atlan_app",
     "atlan_app_workflows",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -562,6 +586,7 @@ def _populate_atlan_app_tool_attrs(
     attrs.atlan_app_name = obj.atlan_app_name
     attrs.atlan_app_metadata = obj.atlan_app_metadata
     attrs.app_id = obj.app_id
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_atlan_app_tool_attrs(attrs: AtlanAppToolAttributes) -> dict:
@@ -575,6 +600,7 @@ def _extract_atlan_app_tool_attrs(attrs: AtlanAppToolAttributes) -> dict:
     result["atlan_app_name"] = attrs.atlan_app_name
     result["atlan_app_metadata"] = attrs.atlan_app_metadata
     result["app_id"] = attrs.app_id
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -704,6 +730,9 @@ AtlanAppTool.ATLAN_APP_QUALIFIED_NAME = KeywordField(
 AtlanAppTool.ATLAN_APP_NAME = KeywordField("atlanAppName", "atlanAppName")
 AtlanAppTool.ATLAN_APP_METADATA = TextField("atlanAppMetadata", "atlanAppMetadata")
 AtlanAppTool.APP_ID = KeywordField("appId", "appId")
+AtlanAppTool.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 AtlanAppTool.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AtlanAppTool.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AtlanAppTool.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -712,6 +741,10 @@ AtlanAppTool.APPLICATION_FIELD = RelationField("applicationField")
 AtlanAppTool.ATLAN_APP_TOOLS = RelationField("atlanAppTools")
 AtlanAppTool.ATLAN_APP = RelationField("atlanApp")
 AtlanAppTool.ATLAN_APP_WORKFLOWS = RelationField("atlanAppWorkflows")
+AtlanAppTool.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+AtlanAppTool.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 AtlanAppTool.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AtlanAppTool.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AtlanAppTool.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

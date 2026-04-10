@@ -21,6 +21,7 @@ from .referenceable_related import RelatedReferenceable
 
 __all__ = [
     "RelatedDataMesh",
+    "RelatedDataMeshDataset",
     "RelatedStakeholderTitle",
     "RelatedDataDomain",
     "RelatedDataProduct",
@@ -47,6 +48,24 @@ class RelatedDataMesh(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataMesh"
+
+
+class RelatedDataMeshDataset(RelatedDataMesh):
+    """
+    Related entity reference for DataMeshDataset assets.
+
+    Extends RelatedDataMesh with DataMeshDataset-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "DataMeshDataset" so it serializes correctly
+
+    data_mesh_dataset_type: Union[str, None, UnsetType] = UNSET
+    """Type classification of this dataset (Raw, Refined, or Aggregated)."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "DataMeshDataset"
 
 
 class RelatedStakeholderTitle(RelatedDataMesh):

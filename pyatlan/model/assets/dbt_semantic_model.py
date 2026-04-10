@@ -151,6 +151,12 @@ class DbtSemanticModel(Dbt):
     """
     List of latest dbt job runs across all environments.
     """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
 
     SEMANTIC_ENTITIES: ClassVar[RelationField] = RelationField("semanticEntities")
     """
@@ -185,6 +191,7 @@ class DbtSemanticModel(Dbt):
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
         "dbt_job_runs",
+        "catalog_dataset_guid",
         "semantic_entities",
         "semantic_measures",
         "semantic_dimensions",
@@ -403,6 +410,16 @@ class DbtSemanticModel(Dbt):
         self.attributes.dbt_job_runs = dbt_job_runs
 
     @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def semantic_entities(self) -> Optional[List[SemanticEntity]]:
         return None if self.attributes is None else self.attributes.semantic_entities
 
@@ -458,6 +475,7 @@ class DbtSemanticModel(Dbt):
             default=None, description=""
         )
         dbt_job_runs: Optional[List[DbtJobRun]] = Field(default=None, description="")
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         semantic_entities: Optional[List[SemanticEntity]] = Field(
             default=None, description=""
         )  # relationship
@@ -478,8 +496,8 @@ class DbtSemanticModel(Dbt):
     )
 
 
-from .semantic_dimension import SemanticDimension  # noqa: E402, F401
-from .semantic_entity import SemanticEntity  # noqa: E402, F401
-from .semantic_measure import SemanticMeasure  # noqa: E402, F401
+from .core.semantic_dimension import SemanticDimension  # noqa: E402, F401
+from .core.semantic_entity import SemanticEntity  # noqa: E402, F401
+from .core.semantic_measure import SemanticMeasure  # noqa: E402, F401
 
 DbtSemanticModel.Attributes.update_forward_refs()

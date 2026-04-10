@@ -307,6 +307,51 @@ class DynamoDBTable(Table):
     """
     Whether this asset is secure (true) or not (false).
     """
+    SQL_HAS_AI_INSIGHTS: ClassVar[BooleanField] = BooleanField(
+        "sqlHasAiInsights", "sqlHasAiInsights"
+    )
+    """
+    Whether this asset has any AI insights data available.
+    """
+    SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+    )
+    """
+    Time (epoch) at which this asset was last analyzed for AI insights, in milliseconds.
+    """
+    SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[NumericField] = (
+        NumericField(
+            "sqlAiInsightsPopularBusinessQuestionCount",
+            "sqlAiInsightsPopularBusinessQuestionCount",
+        )
+    )
+    """
+    Number of popular business questions associated with this asset.
+    """
+    SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+    )
+    """
+    Number of popular join patterns associated with this asset.
+    """
+    SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+    )
+    """
+    Number of popular filter patterns associated with this asset.
+    """
+    SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[NumericField] = NumericField(
+        "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+    )
+    """
+    Number of relationship insights associated with this asset.
+    """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
     DYNAMO_DB_STATUS: ClassVar[KeywordField] = KeywordField(
         "dynamoDBStatus", "dynamoDBStatus"
     )
@@ -344,14 +389,14 @@ class DynamoDBTable(Table):
     Represents attributes for describing the key schema for the table and indexes.
     """
 
-    DYNAMO_DB_LOCAL_SECONDARY_INDEXES: ClassVar[RelationField] = RelationField(
-        "dynamoDBLocalSecondaryIndexes"
+    DYNAMO_DB_GLOBAL_SECONDARY_INDEXES: ClassVar[RelationField] = RelationField(
+        "dynamoDBGlobalSecondaryIndexes"
     )
     """
     TBC
     """
-    DYNAMO_DB_GLOBAL_SECONDARY_INDEXES: ClassVar[RelationField] = RelationField(
-        "dynamoDBGlobalSecondaryIndexes"
+    DYNAMO_DB_LOCAL_SECONDARY_INDEXES: ClassVar[RelationField] = RelationField(
+        "dynamoDBLocalSecondaryIndexes"
     )
     """
     TBC
@@ -409,14 +454,21 @@ class DynamoDBTable(Table):
         "last_profiled_at",
         "sql_a_i_model_context_qualified_name",
         "sql_is_secure",
+        "sql_has_ai_insights",
+        "sql_ai_insights_last_analyzed_at",
+        "sql_ai_insights_popular_business_question_count",
+        "sql_ai_insights_popular_join_count",
+        "sql_ai_insights_popular_filter_count",
+        "sql_ai_insights_relationship_count",
+        "catalog_dataset_guid",
         "dynamo_d_b_status",
         "dynamo_d_b_partition_key",
         "dynamo_d_b_sort_key",
         "dynamo_d_b_read_capacity_units",
         "dynamo_d_b_write_capacity_units",
         "no_s_q_l_schema_definition",
-        "dynamo_d_b_local_secondary_indexes",
         "dynamo_d_b_global_secondary_indexes",
+        "dynamo_d_b_local_secondary_indexes",
         "dynamo_d_b_columns",
     ]
 
@@ -957,6 +1009,116 @@ class DynamoDBTable(Table):
         self.attributes.sql_is_secure = sql_is_secure
 
     @property
+    def sql_has_ai_insights(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.sql_has_ai_insights
+
+    @sql_has_ai_insights.setter
+    def sql_has_ai_insights(self, sql_has_ai_insights: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_has_ai_insights = sql_has_ai_insights
+
+    @property
+    def sql_ai_insights_last_analyzed_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_last_analyzed_at
+        )
+
+    @sql_ai_insights_last_analyzed_at.setter
+    def sql_ai_insights_last_analyzed_at(
+        self, sql_ai_insights_last_analyzed_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_last_analyzed_at = (
+            sql_ai_insights_last_analyzed_at
+        )
+
+    @property
+    def sql_ai_insights_popular_business_question_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_business_question_count
+        )
+
+    @sql_ai_insights_popular_business_question_count.setter
+    def sql_ai_insights_popular_business_question_count(
+        self, sql_ai_insights_popular_business_question_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_business_question_count = (
+            sql_ai_insights_popular_business_question_count
+        )
+
+    @property
+    def sql_ai_insights_popular_join_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_join_count
+        )
+
+    @sql_ai_insights_popular_join_count.setter
+    def sql_ai_insights_popular_join_count(
+        self, sql_ai_insights_popular_join_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_join_count = (
+            sql_ai_insights_popular_join_count
+        )
+
+    @property
+    def sql_ai_insights_popular_filter_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_popular_filter_count
+        )
+
+    @sql_ai_insights_popular_filter_count.setter
+    def sql_ai_insights_popular_filter_count(
+        self, sql_ai_insights_popular_filter_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_popular_filter_count = (
+            sql_ai_insights_popular_filter_count
+        )
+
+    @property
+    def sql_ai_insights_relationship_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sql_ai_insights_relationship_count
+        )
+
+    @sql_ai_insights_relationship_count.setter
+    def sql_ai_insights_relationship_count(
+        self, sql_ai_insights_relationship_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_ai_insights_relationship_count = (
+            sql_ai_insights_relationship_count
+        )
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
     def dynamo_d_b_status(self) -> Optional[DynamoDBStatus]:
         return None if self.attributes is None else self.attributes.dynamo_d_b_status
 
@@ -1039,27 +1201,6 @@ class DynamoDBTable(Table):
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
 
     @property
-    def dynamo_d_b_local_secondary_indexes(
-        self,
-    ) -> Optional[List[DynamoDBLocalSecondaryIndex]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dynamo_d_b_local_secondary_indexes
-        )
-
-    @dynamo_d_b_local_secondary_indexes.setter
-    def dynamo_d_b_local_secondary_indexes(
-        self,
-        dynamo_d_b_local_secondary_indexes: Optional[List[DynamoDBLocalSecondaryIndex]],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dynamo_d_b_local_secondary_indexes = (
-            dynamo_d_b_local_secondary_indexes
-        )
-
-    @property
     def dynamo_d_b_global_secondary_indexes(
         self,
     ) -> Optional[List[DynamoDBGlobalSecondaryIndex]]:
@@ -1080,6 +1221,27 @@ class DynamoDBTable(Table):
             self.attributes = self.Attributes()
         self.attributes.dynamo_d_b_global_secondary_indexes = (
             dynamo_d_b_global_secondary_indexes
+        )
+
+    @property
+    def dynamo_d_b_local_secondary_indexes(
+        self,
+    ) -> Optional[List[DynamoDBLocalSecondaryIndex]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dynamo_d_b_local_secondary_indexes
+        )
+
+    @dynamo_d_b_local_secondary_indexes.setter
+    def dynamo_d_b_local_secondary_indexes(
+        self,
+        dynamo_d_b_local_secondary_indexes: Optional[List[DynamoDBLocalSecondaryIndex]],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dynamo_d_b_local_secondary_indexes = (
+            dynamo_d_b_local_secondary_indexes
         )
 
     @property
@@ -1150,6 +1312,23 @@ class DynamoDBTable(Table):
             default=None, description=""
         )
         sql_is_secure: Optional[bool] = Field(default=None, description="")
+        sql_has_ai_insights: Optional[bool] = Field(default=None, description="")
+        sql_ai_insights_last_analyzed_at: Optional[datetime] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_business_question_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_join_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_popular_filter_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        sql_ai_insights_relationship_count: Optional[int] = Field(
+            default=None, description=""
+        )
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         dynamo_d_b_status: Optional[DynamoDBStatus] = Field(
             default=None, description=""
         )
@@ -1162,11 +1341,11 @@ class DynamoDBTable(Table):
             default=None, description=""
         )
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        dynamo_d_b_local_secondary_indexes: Optional[
-            List[DynamoDBLocalSecondaryIndex]
-        ] = Field(default=None, description="")  # relationship
         dynamo_d_b_global_secondary_indexes: Optional[
             List[DynamoDBGlobalSecondaryIndex]
+        ] = Field(default=None, description="")  # relationship
+        dynamo_d_b_local_secondary_indexes: Optional[
+            List[DynamoDBLocalSecondaryIndex]
         ] = Field(default=None, description="")  # relationship
         dynamo_d_b_columns: Optional[List[DynamoDBAttribute]] = Field(
             default=None, description=""

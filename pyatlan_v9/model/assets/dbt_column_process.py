@@ -40,6 +40,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .catalog_related import RelatedCatalog
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import RelatedDbtColumnProcess
@@ -91,6 +92,7 @@ class DbtColumnProcess(Asset):
     DBT_CONNECTION_CONTEXT: ClassVar[Any] = None
     DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[Any] = None
     DBT_JOB_RUNS: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     CODE: ClassVar[Any] = None
     SQL: ClassVar[Any] = None
     PARENT_CONNECTION_PROCESS_QUALIFIED_NAME: ClassVar[Any] = None
@@ -104,6 +106,8 @@ class DbtColumnProcess(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -200,6 +204,9 @@ class DbtColumnProcess(Asset):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     code: Union[str, None, UnsetType] = UNSET
     """Code that ran within the process."""
 
@@ -238,6 +245,12 @@ class DbtColumnProcess(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -340,7 +353,7 @@ class DbtColumnProcess(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -534,6 +547,9 @@ class DbtColumnProcessAttributes(AssetAttributes):
     dbt_job_runs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """List of latest dbt job runs across all environments."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     code: Union[str, None, UnsetType] = UNSET
     """Code that ran within the process."""
 
@@ -576,6 +592,12 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -678,7 +700,7 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -721,6 +743,8 @@ _DBT_COLUMN_PROCESS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -784,6 +808,7 @@ def _populate_dbt_column_process_attrs(
     attrs.dbt_connection_context = obj.dbt_connection_context
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.code = obj.code
     attrs.sql = obj.sql
     attrs.parent_connection_process_qualified_name = (
@@ -817,6 +842,7 @@ def _extract_dbt_column_process_attrs(attrs: DbtColumnProcessAttributes) -> dict
     result["dbt_connection_context"] = attrs.dbt_connection_context
     result["dbt_semantic_layer_proxy_url"] = attrs.dbt_semantic_layer_proxy_url
     result["dbt_job_runs"] = attrs.dbt_job_runs
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["code"] = attrs.code
     result["sql"] = attrs.sql
     result["parent_connection_process_qualified_name"] = (
@@ -976,6 +1002,9 @@ DbtColumnProcess.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
     "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
 )
 DbtColumnProcess.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
+DbtColumnProcess.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DbtColumnProcess.CODE = KeywordField("code", "code")
 DbtColumnProcess.SQL = KeywordField("sql", "sql")
 DbtColumnProcess.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField(
@@ -993,6 +1022,10 @@ DbtColumnProcess.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTas
 DbtColumnProcess.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DbtColumnProcess.APPLICATION = RelationField("application")
 DbtColumnProcess.APPLICATION_FIELD = RelationField("applicationField")
+DbtColumnProcess.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DbtColumnProcess.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DbtColumnProcess.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DbtColumnProcess.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DbtColumnProcess.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

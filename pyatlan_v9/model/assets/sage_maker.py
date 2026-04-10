@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -71,6 +72,7 @@ class SageMaker(Asset):
     ETHICAL_AI_TRANSPARENCY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_ACCOUNTABILITY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     AWS_ARN: ClassVar[Any] = None
     AWS_PARTITION: ClassVar[Any] = None
     AWS_SERVICE: ClassVar[Any] = None
@@ -86,6 +88,8 @@ class SageMaker(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -148,6 +152,9 @@ class SageMaker(Asset):
     )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     aws_arn: Union[str, None, UnsetType] = UNSET
     """DEPRECATED: This legacy attribute must be unique across all AWS asset instances. This can create non-obvious edge cases for creating / updating assets, and we therefore recommended NOT using it. See and use cloudResourceName instead."""
 
@@ -192,6 +199,12 @@ class SageMaker(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -259,7 +272,7 @@ class SageMaker(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -426,6 +439,9 @@ class SageMakerAttributes(AssetAttributes):
     )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     aws_arn: Union[str, None, UnsetType] = UNSET
     """DEPRECATED: This legacy attribute must be unique across all AWS asset instances. This can create non-obvious edge cases for creating / updating assets, and we therefore recommended NOT using it. See and use cloudResourceName instead."""
 
@@ -474,6 +490,12 @@ class SageMakerRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -541,7 +563,7 @@ class SageMakerRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -577,6 +599,8 @@ _SAGE_MAKER_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -618,6 +642,7 @@ def _populate_sage_maker_attrs(attrs: SageMakerAttributes, obj: SageMaker) -> No
     attrs.ethical_ai_environmental_consciousness_config = (
         obj.ethical_ai_environmental_consciousness_config
     )
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.aws_arn = obj.aws_arn
     attrs.aws_partition = obj.aws_partition
     attrs.aws_service = obj.aws_service
@@ -647,6 +672,7 @@ def _extract_sage_maker_attrs(attrs: SageMakerAttributes) -> dict:
     result["ethical_ai_environmental_consciousness_config"] = (
         attrs.ethical_ai_environmental_consciousness_config
     )
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["aws_arn"] = attrs.aws_arn
     result["aws_partition"] = attrs.aws_partition
     result["aws_service"] = attrs.aws_service
@@ -787,6 +813,9 @@ SageMaker.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
     "ethicalAIEnvironmentalConsciousnessConfig",
     "ethicalAIEnvironmentalConsciousnessConfig",
 )
+SageMaker.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SageMaker.AWS_ARN = KeywordTextField("awsArn", "awsArn", "awsArn.text")
 SageMaker.AWS_PARTITION = KeywordField("awsPartition", "awsPartition")
 SageMaker.AWS_SERVICE = KeywordField("awsService", "awsService")
@@ -806,6 +835,8 @@ SageMaker.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SageMaker.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SageMaker.APPLICATION = RelationField("application")
 SageMaker.APPLICATION_FIELD = RelationField("applicationField")
+SageMaker.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SageMaker.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 SageMaker.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SageMaker.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SageMaker.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

@@ -47,11 +47,18 @@ class AtlanAppInstalled(AtlanApp):
     """
     Configuration settings used by the atlan application.
     """
+    ATLAN_APP_DEPLOYMENT_NAME: ClassVar[KeywordField] = KeywordField(
+        "atlanAppDeploymentName", "atlanAppDeploymentName"
+    )
+    """
+    Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra).
+    """  # noqa: E501
 
     _convenience_properties: ClassVar[List[str]] = [
         "atlan_app_current_version_id",
         "atlan_app_current_version_u_u_i_d",
         "atlan_app_deployment_config",
+        "atlan_app_deployment_name",
     ]
 
     @property
@@ -100,6 +107,20 @@ class AtlanAppInstalled(AtlanApp):
             self.attributes = self.Attributes()
         self.attributes.atlan_app_deployment_config = atlan_app_deployment_config
 
+    @property
+    def atlan_app_deployment_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.atlan_app_deployment_name
+        )
+
+    @atlan_app_deployment_name.setter
+    def atlan_app_deployment_name(self, atlan_app_deployment_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_app_deployment_name = atlan_app_deployment_name
+
     class Attributes(AtlanApp.Attributes):
         atlan_app_current_version_id: Optional[int] = Field(
             default=None, description=""
@@ -108,6 +129,7 @@ class AtlanAppInstalled(AtlanApp):
             default=None, description=""
         )
         atlan_app_deployment_config: Optional[str] = Field(default=None, description="")
+        atlan_app_deployment_name: Optional[str] = Field(default=None, description="")
 
     attributes: AtlanAppInstalled.Attributes = Field(
         default_factory=lambda: AtlanAppInstalled.Attributes(),

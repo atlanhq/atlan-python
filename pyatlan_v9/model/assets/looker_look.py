@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -82,11 +83,14 @@ class LookerLook(Asset):
     LOOKER_SOURCE_QUERY_ID: ClassVar[Any] = None
     MODEL_NAME: ClassVar[Any] = None
     LOOKER_SLUG: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -150,6 +154,9 @@ class LookerLook(Asset):
     looker_slug: Union[str, None, UnsetType] = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -164,6 +171,12 @@ class LookerLook(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -249,7 +262,7 @@ class LookerLook(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -425,6 +438,9 @@ class LookerLookAttributes(AssetAttributes):
     looker_slug: Union[str, None, UnsetType] = UNSET
     """An alpha-numeric slug for the underlying Looker asset that can be used to uniquely identify it"""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class LookerLookRelationshipAttributes(AssetRelationshipAttributes):
     """LookerLook-specific relationship attributes for nested API format."""
@@ -443,6 +459,12 @@ class LookerLookRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -528,7 +550,7 @@ class LookerLookRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -564,6 +586,8 @@ _LOOKER_LOOK_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -610,6 +634,7 @@ def _populate_looker_look_attrs(attrs: LookerLookAttributes, obj: LookerLook) ->
     attrs.looker_source_query_id = obj.looker_source_query_id
     attrs.model_name = obj.model_name
     attrs.looker_slug = obj.looker_slug
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_looker_look_attrs(attrs: LookerLookAttributes) -> dict:
@@ -626,6 +651,7 @@ def _extract_looker_look_attrs(attrs: LookerLookAttributes) -> dict:
     result["looker_source_query_id"] = attrs.looker_source_query_id
     result["model_name"] = attrs.model_name
     result["looker_slug"] = attrs.looker_slug
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -754,11 +780,16 @@ LookerLook.LOOKER_SOURCE_QUERY_ID = KeywordField(
 )
 LookerLook.MODEL_NAME = KeywordField("modelName", "modelName")
 LookerLook.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
+LookerLook.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 LookerLook.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 LookerLook.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 LookerLook.ANOMALO_CHECKS = RelationField("anomaloChecks")
 LookerLook.APPLICATION = RelationField("application")
 LookerLook.APPLICATION_FIELD = RelationField("applicationField")
+LookerLook.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+LookerLook.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 LookerLook.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 LookerLook.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 LookerLook.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

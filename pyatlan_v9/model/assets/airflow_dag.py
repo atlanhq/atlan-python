@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -72,12 +73,15 @@ class AirflowDag(Asset):
     AIRFLOW_RUN_START_TIME: ClassVar[Any] = None
     AIRFLOW_RUN_END_TIME: ClassVar[Any] = None
     AIRFLOW_RUN_OPEN_LINEAGE_STATE: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -133,6 +137,9 @@ class AirflowDag(Asset):
     airflow_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """State of the run in OpenLineage."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks that exist within this DAG."""
 
@@ -150,6 +157,12 @@ class AirflowDag(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -217,7 +230,7 @@ class AirflowDag(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -409,6 +422,9 @@ class AirflowDagAttributes(AssetAttributes):
     airflow_run_open_lineage_state: Union[str, None, UnsetType] = UNSET
     """State of the run in OpenLineage."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     """AirflowDag-specific relationship attributes for nested API format."""
@@ -430,6 +446,12 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -497,7 +519,7 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -537,6 +559,8 @@ _AIRFLOW_DAG_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -577,6 +601,7 @@ def _populate_airflow_dag_attrs(attrs: AirflowDagAttributes, obj: AirflowDag) ->
     attrs.airflow_run_start_time = obj.airflow_run_start_time
     attrs.airflow_run_end_time = obj.airflow_run_end_time
     attrs.airflow_run_open_lineage_state = obj.airflow_run_open_lineage_state
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_airflow_dag_attrs(attrs: AirflowDagAttributes) -> dict:
@@ -592,6 +617,7 @@ def _extract_airflow_dag_attrs(attrs: AirflowDagAttributes) -> dict:
     result["airflow_run_start_time"] = attrs.airflow_run_start_time
     result["airflow_run_end_time"] = attrs.airflow_run_end_time
     result["airflow_run_open_lineage_state"] = attrs.airflow_run_open_lineage_state
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -719,12 +745,17 @@ AirflowDag.AIRFLOW_RUN_END_TIME = NumericField("airflowRunEndTime", "airflowRunE
 AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_STATE = KeywordField(
     "airflowRunOpenLineageState", "airflowRunOpenLineageState"
 )
+AirflowDag.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 AirflowDag.AIRFLOW_TASKS = RelationField("airflowTasks")
 AirflowDag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AirflowDag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AirflowDag.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AirflowDag.APPLICATION = RelationField("application")
 AirflowDag.APPLICATION_FIELD = RelationField("applicationField")
+AirflowDag.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+AirflowDag.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 AirflowDag.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AirflowDag.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AirflowDag.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

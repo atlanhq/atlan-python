@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -63,6 +64,7 @@ class SemanticMeasure(Asset):
     Base class for semantic measures across different sources.
     """
 
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     SEMANTIC_EXPRESSION: ClassVar[Any] = None
     SEMANTIC_TYPE: ClassVar[Any] = None
     SEMANTIC_SYNONYMS: ClassVar[Any] = None
@@ -75,6 +77,8 @@ class SemanticMeasure(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -99,6 +103,9 @@ class SemanticMeasure(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
@@ -135,6 +142,12 @@ class SemanticMeasure(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -202,7 +215,7 @@ class SemanticMeasure(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
     """Semantic model in which this measure exists."""
@@ -348,6 +361,9 @@ class SemanticMeasure(Asset):
 class SemanticMeasureAttributes(AssetAttributes):
     """SemanticMeasure-specific attributes for nested API format."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     semantic_expression: Union[str, None, UnsetType] = UNSET
     """Column name or SQL expression for the semantic field."""
 
@@ -387,6 +403,12 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -454,7 +476,7 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
     """Semantic model in which this measure exists."""
@@ -495,6 +517,8 @@ _SEMANTIC_MEASURE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -527,6 +551,7 @@ def _populate_semantic_measure_attrs(
 ) -> None:
     """Populate SemanticMeasure-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.semantic_expression = obj.semantic_expression
     attrs.semantic_type = obj.semantic_type
     attrs.semantic_synonyms = obj.semantic_synonyms
@@ -539,6 +564,7 @@ def _populate_semantic_measure_attrs(
 def _extract_semantic_measure_attrs(attrs: SemanticMeasureAttributes) -> dict:
     """Extract all SemanticMeasure attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["semantic_expression"] = attrs.semantic_expression
     result["semantic_type"] = attrs.semantic_type
     result["semantic_synonyms"] = attrs.semantic_synonyms
@@ -661,6 +687,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
+SemanticMeasure.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SemanticMeasure.SEMANTIC_EXPRESSION = KeywordField(
     "semanticExpression", "semanticExpression"
 )
@@ -681,6 +710,10 @@ SemanticMeasure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTask
 SemanticMeasure.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SemanticMeasure.APPLICATION = RelationField("application")
 SemanticMeasure.APPLICATION_FIELD = RelationField("applicationField")
+SemanticMeasure.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SemanticMeasure.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SemanticMeasure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SemanticMeasure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SemanticMeasure.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

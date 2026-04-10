@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .data_studio_related import RelatedDataStudioAsset
@@ -67,6 +68,7 @@ class DataStudioAsset(Asset):
     DATA_STUDIO_ASSET_TITLE: ClassVar[Any] = None
     DATA_STUDIO_ASSET_OWNER: ClassVar[Any] = None
     IS_TRASHED_DATA_STUDIO_ASSET: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     GOOGLE_SERVICE: ClassVar[Any] = None
     GOOGLE_PROJECT_NAME: ClassVar[Any] = None
     GOOGLE_PROJECT_ID: ClassVar[Any] = None
@@ -81,6 +83,8 @@ class DataStudioAsset(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -116,6 +120,9 @@ class DataStudioAsset(Asset):
 
     is_trashed_data_studio_asset: Union[bool, None, UnsetType] = UNSET
     """Whether the Google Data Studio asset has been trashed (true) or not (false)."""
+
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
 
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
@@ -158,6 +165,12 @@ class DataStudioAsset(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -225,7 +238,7 @@ class DataStudioAsset(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -408,6 +421,9 @@ class DataStudioAssetAttributes(AssetAttributes):
     is_trashed_data_studio_asset: Union[bool, None, UnsetType] = UNSET
     """Whether the Google Data Studio asset has been trashed (true) or not (false)."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     google_service: Union[str, None, UnsetType] = UNSET
     """Service in Google in which the asset exists."""
 
@@ -453,6 +469,12 @@ class DataStudioAssetRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -520,7 +542,7 @@ class DataStudioAssetRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -558,6 +580,8 @@ _DATA_STUDIO_ASSET_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -593,6 +617,7 @@ def _populate_data_studio_asset_attrs(
     attrs.data_studio_asset_title = obj.data_studio_asset_title
     attrs.data_studio_asset_owner = obj.data_studio_asset_owner
     attrs.is_trashed_data_studio_asset = obj.is_trashed_data_studio_asset
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.google_service = obj.google_service
     attrs.google_project_name = obj.google_project_name
     attrs.google_project_id = obj.google_project_id
@@ -611,6 +636,7 @@ def _extract_data_studio_asset_attrs(attrs: DataStudioAssetAttributes) -> dict:
     result["data_studio_asset_title"] = attrs.data_studio_asset_title
     result["data_studio_asset_owner"] = attrs.data_studio_asset_owner
     result["is_trashed_data_studio_asset"] = attrs.is_trashed_data_studio_asset
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["google_service"] = attrs.google_service
     result["google_project_name"] = attrs.google_project_name
     result["google_project_id"] = attrs.google_project_id
@@ -749,6 +775,9 @@ DataStudioAsset.DATA_STUDIO_ASSET_OWNER = KeywordField(
 DataStudioAsset.IS_TRASHED_DATA_STUDIO_ASSET = BooleanField(
     "isTrashedDataStudioAsset", "isTrashedDataStudioAsset"
 )
+DataStudioAsset.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DataStudioAsset.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
 DataStudioAsset.GOOGLE_PROJECT_NAME = KeywordTextField(
     "googleProjectName", "googleProjectName", "googleProjectName.text"
@@ -773,6 +802,10 @@ DataStudioAsset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTask
 DataStudioAsset.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DataStudioAsset.APPLICATION = RelationField("application")
 DataStudioAsset.APPLICATION_FIELD = RelationField("applicationField")
+DataStudioAsset.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DataStudioAsset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DataStudioAsset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DataStudioAsset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DataStudioAsset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")

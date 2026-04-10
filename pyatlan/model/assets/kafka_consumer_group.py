@@ -8,7 +8,7 @@ from typing import ClassVar, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AtlanConnectorType, KafkaConsumerGroupState
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.model.structs import KafkaTopicConsumption
 from pyatlan.utils import init_guid, validate_required_fields
@@ -77,6 +77,18 @@ class KafkaConsumerGroup(Kafka):
     """
     Unique names of the topics consumed by this consumer group.
     """
+    KAFKA_CONSUMER_GROUP_STATE: ClassVar[KeywordField] = KeywordField(
+        "kafkaConsumerGroupState", "kafkaConsumerGroupState"
+    )
+    """
+    State of this consumer group.
+    """
+    KAFKA_CONSUMER_GROUP_ASSIGNED_PARTITIONS: ClassVar[KeywordField] = KeywordField(
+        "kafkaConsumerGroupAssignedPartitions", "kafkaConsumerGroupAssignedPartitions"
+    )
+    """
+    List of topic-partition pairs assigned to this consumer group.
+    """
 
     KAFKA_TOPICS: ClassVar[RelationField] = RelationField("kafkaTopics")
     """
@@ -88,6 +100,8 @@ class KafkaConsumerGroup(Kafka):
         "kafka_consumer_group_member_count",
         "kafka_topic_names",
         "kafka_topic_qualified_names",
+        "kafka_consumer_group_state",
+        "kafka_consumer_group_assigned_partitions",
         "kafka_topics",
     ]
 
@@ -159,6 +173,40 @@ class KafkaConsumerGroup(Kafka):
         self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
 
     @property
+    def kafka_consumer_group_state(self) -> Optional[KafkaConsumerGroupState]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_consumer_group_state
+        )
+
+    @kafka_consumer_group_state.setter
+    def kafka_consumer_group_state(
+        self, kafka_consumer_group_state: Optional[KafkaConsumerGroupState]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_group_state = kafka_consumer_group_state
+
+    @property
+    def kafka_consumer_group_assigned_partitions(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_consumer_group_assigned_partitions
+        )
+
+    @kafka_consumer_group_assigned_partitions.setter
+    def kafka_consumer_group_assigned_partitions(
+        self, kafka_consumer_group_assigned_partitions: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_group_assigned_partitions = (
+            kafka_consumer_group_assigned_partitions
+        )
+
+    @property
     def kafka_topics(self) -> Optional[List[KafkaTopic]]:
         return None if self.attributes is None else self.attributes.kafka_topics
 
@@ -177,6 +225,12 @@ class KafkaConsumerGroup(Kafka):
         )
         kafka_topic_names: Optional[Set[str]] = Field(default=None, description="")
         kafka_topic_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        kafka_consumer_group_state: Optional[KafkaConsumerGroupState] = Field(
+            default=None, description=""
+        )
+        kafka_consumer_group_assigned_partitions: Optional[Set[str]] = Field(
             default=None, description=""
         )
         kafka_topics: Optional[List[KafkaTopic]] = Field(

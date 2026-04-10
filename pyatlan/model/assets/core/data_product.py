@@ -34,6 +34,7 @@ from .data_mesh import DataMesh
 
 if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
+    from pyatlan.model.assets.core.starburst_dataset import StarburstDataset
 
 
 class DataProduct(DataMesh):
@@ -256,7 +257,15 @@ class DataProduct(DataMesh):
     Status of this data product lineage.
     """
 
+    DATA_MESH_DATASETS: ClassVar[RelationField] = RelationField("dataMeshDatasets")
+    """
+    TBC
+    """
     OUTPUT_PORTS: ClassVar[RelationField] = RelationField("outputPorts")
+    """
+    TBC
+    """
+    STARBURST_DATASETS: ClassVar[RelationField] = RelationField("starburstDatasets")
     """
     TBC
     """
@@ -287,7 +296,9 @@ class DataProduct(DataMesh):
         "daap_output_port_guids",
         "daap_input_port_guids",
         "daap_lineage_status",
+        "data_mesh_datasets",
         "output_ports",
+        "starburst_datasets",
         "data_domain",
         "input_ports",
     ]
@@ -511,6 +522,16 @@ class DataProduct(DataMesh):
         self.attributes.daap_lineage_status = daap_lineage_status
 
     @property
+    def data_mesh_datasets(self) -> Optional[List[DataMeshDataset]]:
+        return None if self.attributes is None else self.attributes.data_mesh_datasets
+
+    @data_mesh_datasets.setter
+    def data_mesh_datasets(self, data_mesh_datasets: Optional[List[DataMeshDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_mesh_datasets = data_mesh_datasets
+
+    @property
     def output_ports(self) -> Optional[List[Asset]]:
         return None if self.attributes is None else self.attributes.output_ports
 
@@ -519,6 +540,16 @@ class DataProduct(DataMesh):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.output_ports = output_ports
+
+    @property
+    def starburst_datasets(self) -> Optional[List[StarburstDataset]]:
+        return None if self.attributes is None else self.attributes.starburst_datasets
+
+    @starburst_datasets.setter
+    def starburst_datasets(self, starburst_datasets: Optional[List[StarburstDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.starburst_datasets = starburst_datasets
 
     @property
     def data_domain(self) -> Optional[DataDomain]:
@@ -578,7 +609,13 @@ class DataProduct(DataMesh):
         daap_lineage_status: Optional[DataProductLineageStatus] = Field(
             default=None, description=""
         )
+        data_mesh_datasets: Optional[List[DataMeshDataset]] = Field(
+            default=None, description=""
+        )  # relationship
         output_ports: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
+        starburst_datasets: Optional[List[StarburstDataset]] = Field(
             default=None, description=""
         )  # relationship
         data_domain: Optional[DataDomain] = Field(
@@ -631,3 +668,4 @@ class DataProduct(DataMesh):
 
 from .asset import Asset  # noqa: E402, F401
 from .data_domain import DataDomain  # noqa: E402, F401
+from .data_mesh_dataset import DataMeshDataset  # noqa: E402, F401

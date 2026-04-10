@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -75,11 +76,14 @@ class SageMakerUnifiedStudioAssetSchema(Asset):
     SMUS_DOMAIN_UNIT_ID: ClassVar[Any] = None
     SMUS_PROJECT_ID: ClassVar[Any] = None
     SMUS_OWNING_PROJECT_ID: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -132,6 +136,9 @@ class SageMakerUnifiedStudioAssetSchema(Asset):
     smus_owning_project_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio project which owns the asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -146,6 +153,12 @@ class SageMakerUnifiedStudioAssetSchema(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -216,7 +229,7 @@ class SageMakerUnifiedStudioAssetSchema(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -394,6 +407,9 @@ class SageMakerUnifiedStudioAssetSchemaAttributes(AssetAttributes):
     smus_owning_project_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the SageMaker Unified Studio project which owns the asset."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class SageMakerUnifiedStudioAssetSchemaRelationshipAttributes(
     AssetRelationshipAttributes
@@ -414,6 +430,12 @@ class SageMakerUnifiedStudioAssetSchemaRelationshipAttributes(
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -484,7 +506,7 @@ class SageMakerUnifiedStudioAssetSchemaRelationshipAttributes(
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -522,6 +544,8 @@ _SAGE_MAKER_UNIFIED_STUDIO_ASSET_SCHEMA_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -564,6 +588,7 @@ def _populate_sage_maker_unified_studio_asset_schema_attrs(
     attrs.smus_domain_unit_id = obj.smus_domain_unit_id
     attrs.smus_project_id = obj.smus_project_id
     attrs.smus_owning_project_id = obj.smus_owning_project_id
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_sage_maker_unified_studio_asset_schema_attrs(
@@ -580,6 +605,7 @@ def _extract_sage_maker_unified_studio_asset_schema_attrs(
     result["smus_domain_unit_id"] = attrs.smus_domain_unit_id
     result["smus_project_id"] = attrs.smus_project_id
     result["smus_owning_project_id"] = attrs.smus_owning_project_id
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -729,6 +755,9 @@ SageMakerUnifiedStudioAssetSchema.SMUS_PROJECT_ID = KeywordField(
 SageMakerUnifiedStudioAssetSchema.SMUS_OWNING_PROJECT_ID = KeywordField(
     "smusOwningProjectId", "smusOwningProjectId"
 )
+SageMakerUnifiedStudioAssetSchema.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SageMakerUnifiedStudioAssetSchema.INPUT_TO_AIRFLOW_TASKS = RelationField(
     "inputToAirflowTasks"
 )
@@ -738,6 +767,12 @@ SageMakerUnifiedStudioAssetSchema.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 SageMakerUnifiedStudioAssetSchema.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SageMakerUnifiedStudioAssetSchema.APPLICATION = RelationField("application")
 SageMakerUnifiedStudioAssetSchema.APPLICATION_FIELD = RelationField("applicationField")
+SageMakerUnifiedStudioAssetSchema.DATA_CONTRACT_LATEST = RelationField(
+    "dataContractLatest"
+)
+SageMakerUnifiedStudioAssetSchema.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SageMakerUnifiedStudioAssetSchema.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
 )

@@ -20,8 +20,10 @@ from .referenceable_related import RelatedReferenceable
 
 __all__ = [
     "RelatedKafka",
+    "RelatedKafkaCluster",
     "RelatedKafkaTopic",
     "RelatedKafkaConsumerGroup",
+    "RelatedKafkaField",
     "RelatedAzureEventHub",
     "RelatedAzureEventHubConsumerGroup",
 ]
@@ -40,6 +42,45 @@ class RelatedKafka(RelatedEventStore):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Kafka"
+
+
+class RelatedKafkaCluster(RelatedKafka):
+    """
+    Related entity reference for KafkaCluster assets.
+
+    Extends RelatedKafka with KafkaCluster-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "KafkaCluster" so it serializes correctly
+
+    kafka_topic_count: Union[int, None, UnsetType] = UNSET
+    """Number of topics in this cluster."""
+
+    kafka_partition_count: Union[int, None, UnsetType] = UNSET
+    """Total number of partitions across all topics in this cluster."""
+
+    kafka_broker_count: Union[int, None, UnsetType] = UNSET
+    """Total number of brokers in this cluster."""
+
+    kafka_bootstrap_servers: Union[List[str], None, UnsetType] = UNSET
+    """Bootstrap server addresses for this cluster."""
+
+    kafka_cluster_type: Union[str, None, UnsetType] = UNSET
+    """Distribution type of this Kafka cluster, for example: Apache, Confluent, MSK, Aiven, Redpanda."""
+
+    kafka_schema_registry_url: Union[str, None, UnsetType] = UNSET
+    """URL of the schema registry associated with this cluster."""
+
+    kafka_authentication_type: Union[str, None, UnsetType] = UNSET
+    """Authentication type used to connect to this Kafka cluster, for example: SASL_PLAIN, SASL_SCRAM, TLS, IAM."""
+
+    kafka_environment: Union[str, None, UnsetType] = UNSET
+    """Environment classification of this Kafka cluster, for example: DEV, STAGING, PROD."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "KafkaCluster"
 
 
 class RelatedKafkaTopic(RelatedKafka):
@@ -82,6 +123,21 @@ class RelatedKafkaTopic(RelatedKafka):
     kafka_topic_log_cleanup_policy: Union[str, None, UnsetType] = UNSET
     """Comma seperated Cleanup policy for this topic."""
 
+    kafka_topic_is_schema_managed: Union[bool, None, UnsetType] = UNSET
+    """Whether this topic is fully managed by a schema registry (true) or not (false)."""
+
+    kafka_topic_consumer_count: Union[int, None, UnsetType] = UNSET
+    """Number of consumer groups consuming this topic."""
+
+    kafka_topic_retention_bytes: Union[int, None, UnsetType] = UNSET
+    """Maximum size in bytes that a topic can grow to before discarding old messages; -1 means unlimited."""
+
+    kafka_topic_schema_registry_subject_name: Union[str, None, UnsetType] = UNSET
+    """Name of the schema registry subject governing this topic, if any."""
+
+    kafka_topic_cluster_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Kafka cluster in which this topic exists."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "KafkaTopic"
@@ -111,9 +167,51 @@ class RelatedKafkaConsumerGroup(RelatedKafka):
     kafka_topic_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Unique names of the topics consumed by this consumer group."""
 
+    kafka_consumer_group_state: Union[str, None, UnsetType] = UNSET
+    """State of this consumer group."""
+
+    kafka_consumer_group_assigned_partitions: Union[List[str], None, UnsetType] = UNSET
+    """List of topic-partition pairs assigned to this consumer group."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "KafkaConsumerGroup"
+
+
+class RelatedKafkaField(RelatedKafka):
+    """
+    Related entity reference for KafkaField assets.
+
+    Extends RelatedKafka with KafkaField-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "KafkaField" so it serializes correctly
+
+    kafka_field_data_type: Union[str, None, UnsetType] = UNSET
+    """Data type of this field as defined in the schema, for example: string, int, record."""
+
+    kafka_field_is_optional: Union[bool, None, UnsetType] = UNSET
+    """Whether this field is optional (true) or required (false) in the schema."""
+
+    kafka_field_default_value: Union[str, None, UnsetType] = UNSET
+    """Default value for this field if one is defined in the schema."""
+
+    kafka_field_version_introduced: Union[str, None, UnsetType] = UNSET
+    """Schema version in which this field was first introduced."""
+
+    kafka_field_order: Union[int, None, UnsetType] = UNSET
+    """Position (0-based) of this field in the schema definition."""
+
+    kafka_topic_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Kafka topic in which this field exists."""
+
+    kafka_field_schema_type: Union[str, None, UnsetType] = UNSET
+    """Type of schema from which this field is derived, for example: key or value."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "KafkaField"
 
 
 class RelatedAzureEventHub(RelatedKafka):
@@ -127,7 +225,7 @@ class RelatedAzureEventHub(RelatedKafka):
     # __post_init__ sets it to "AzureEventHub" so it serializes correctly
 
     azure_event_hub_status: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Operational status of the Azure Event Hub at the source."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

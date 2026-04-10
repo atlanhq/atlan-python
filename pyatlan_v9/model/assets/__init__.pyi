@@ -8,6 +8,16 @@ __all__ = [
     "TermAssignment",
     "RelatedEntity",
     "SaveSemantic",
+    "AccessControl",
+    "AuthPolicy",
+    "AuthService",
+    "Persona",
+    "Purpose",
+    "RelatedAccessControl",
+    "RelatedAuthPolicy",
+    "RelatedAuthService",
+    "RelatedPersona",
+    "RelatedPurpose",
     "ADF",
     "AdfActivity",
     "AdfDataflow",
@@ -126,6 +136,9 @@ __all__ = [
     "RelatedBigqueryRoutine",
     "RelatedBigqueryTag",
     "BusinessPolicy",
+    "BusinessPolicyException",
+    "BusinessPolicyIncident",
+    "BusinessPolicyLog",
     "RelatedBusinessPolicy",
     "RelatedBusinessPolicyException",
     "RelatedBusinessPolicyIncident",
@@ -224,11 +237,15 @@ __all__ = [
     "CustomEntity",
     "RelatedCustom",
     "RelatedCustomEntity",
+    "DataContract",
+    "RelatedDataContract",
     "DataDomain",
     "DataMesh",
+    "DataMeshDataset",
     "DataProduct",
     "RelatedDataDomain",
     "RelatedDataMesh",
+    "RelatedDataMeshDataset",
     "RelatedDataProduct",
     "RelatedStakeholder",
     "RelatedStakeholderTitle",
@@ -411,12 +428,16 @@ __all__ = [
     "RelatedIcebergNamespace",
     "RelatedIcebergTable",
     "Kafka",
+    "KafkaCluster",
     "KafkaConsumerGroup",
+    "KafkaField",
     "KafkaTopic",
     "RelatedAzureEventHub",
     "RelatedAzureEventHubConsumerGroup",
     "RelatedKafka",
+    "RelatedKafkaCluster",
     "RelatedKafkaConsumerGroup",
+    "RelatedKafkaField",
     "RelatedKafkaTopic",
     "Looker",
     "LookerDashboard",
@@ -713,8 +734,10 @@ __all__ = [
     "SapErpView",
     "RelatedSchemaRegistry",
     "RelatedSchemaRegistrySubject",
+    "RelatedSchemaRegistryVersion",
     "SchemaRegistry",
     "SchemaRegistrySubject",
+    "SchemaRegistryVersion",
     "RelatedSemantic",
     "RelatedSemanticDimension",
     "RelatedSemanticEntity",
@@ -806,12 +829,28 @@ __all__ = [
     "Table",
     "TablePartition",
     "View",
+    "RelatedSqlInsight",
+    "RelatedSqlInsightBusinessQuestion",
+    "RelatedSqlInsightFilter",
+    "RelatedSqlInsightJoin",
+    "SqlInsight",
+    "SqlInsightBusinessQuestion",
+    "SqlInsightFilter",
+    "SqlInsightJoin",
     "RelatedStarburst",
     "RelatedStarburstDataset",
     "RelatedStarburstDatasetColumn",
     "Starburst",
     "StarburstDataset",
     "StarburstDatasetColumn",
+    "RelatedSuperset",
+    "RelatedSupersetChart",
+    "RelatedSupersetDashboard",
+    "RelatedSupersetDataset",
+    "Superset",
+    "SupersetChart",
+    "SupersetDashboard",
+    "SupersetDataset",
     "RelatedTableau",
     "RelatedTableauCalculatedField",
     "RelatedTableauDashboard",
@@ -867,6 +906,11 @@ __all__ = [
 ]
 
 from .access_control import AccessControl as AccessControl
+from .access_control_related import RelatedAccessControl as RelatedAccessControl
+from .access_control_related import RelatedAuthPolicy as RelatedAuthPolicy
+from .access_control_related import RelatedAuthService as RelatedAuthService
+from .access_control_related import RelatedPersona as RelatedPersona
+from .access_control_related import RelatedPurpose as RelatedPurpose
 from .adf import ADF as ADF
 from .adf_activity import AdfActivity as AdfActivity
 from .adf_dataflow import AdfDataflow as AdfDataflow
@@ -981,6 +1025,7 @@ from .atlas_glossary import AtlasGlossary as AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory as AtlasGlossaryCategory
 from .atlas_glossary_term import AtlasGlossaryTerm as AtlasGlossaryTerm
 from .auth_policy import AuthPolicy as AuthPolicy
+from .auth_service import AuthService as AuthService
 from .aws import AWS as AWS
 from .azure import Azure as Azure
 from .azure_event_consumer_group import (
@@ -1011,6 +1056,11 @@ from .bigquery_related import RelatedBigqueryRoutine as RelatedBigqueryRoutine
 from .bigquery_related import RelatedBigqueryTag as RelatedBigqueryTag
 from .bigquery_routine import BigqueryRoutine as BigqueryRoutine
 from .business_policy import BusinessPolicy as BusinessPolicy
+from .business_policy_exception import (
+    BusinessPolicyException as BusinessPolicyException,
+)
+from .business_policy_incident import BusinessPolicyIncident as BusinessPolicyIncident
+from .business_policy_log import BusinessPolicyLog as BusinessPolicyLog
 from .business_policy_related import RelatedBusinessPolicy as RelatedBusinessPolicy
 from .business_policy_related import (
     RelatedBusinessPolicyException as RelatedBusinessPolicyException,
@@ -1120,10 +1170,13 @@ from .custom_entity import CustomEntity as CustomEntity
 from .custom_related import RelatedCustom as RelatedCustom
 from .custom_related import RelatedCustomEntity as RelatedCustomEntity
 from .data_contract import DataContract as DataContract
+from .data_contract_related import RelatedDataContract as RelatedDataContract
 from .data_domain import DataDomain as DataDomain
 from .data_mesh import DataMesh as DataMesh
+from .data_mesh_dataset import DataMeshDataset as DataMeshDataset
 from .data_mesh_related import RelatedDataDomain as RelatedDataDomain
 from .data_mesh_related import RelatedDataMesh as RelatedDataMesh
+from .data_mesh_related import RelatedDataMeshDataset as RelatedDataMeshDataset
 from .data_mesh_related import RelatedDataProduct as RelatedDataProduct
 from .data_mesh_related import RelatedStakeholder as RelatedStakeholder
 from .data_mesh_related import RelatedStakeholderTitle as RelatedStakeholderTitle
@@ -1362,13 +1415,17 @@ from .incident import Incident as Incident
 from .infrastructure import Infrastructure as Infrastructure
 from .insight import Insight as Insight
 from .kafka import Kafka as Kafka
+from .kafka_cluster import KafkaCluster as KafkaCluster
 from .kafka_consumer_group import KafkaConsumerGroup as KafkaConsumerGroup
+from .kafka_field import KafkaField as KafkaField
 from .kafka_related import RelatedAzureEventHub as RelatedAzureEventHub
 from .kafka_related import (
     RelatedAzureEventHubConsumerGroup as RelatedAzureEventHubConsumerGroup,
 )
 from .kafka_related import RelatedKafka as RelatedKafka
+from .kafka_related import RelatedKafkaCluster as RelatedKafkaCluster
 from .kafka_related import RelatedKafkaConsumerGroup as RelatedKafkaConsumerGroup
+from .kafka_related import RelatedKafkaField as RelatedKafkaField
 from .kafka_related import RelatedKafkaTopic as RelatedKafkaTopic
 from .kafka_topic import KafkaTopic as KafkaTopic
 from .link import Link as Link
@@ -1731,7 +1788,11 @@ from .schema_registry_related import RelatedSchemaRegistry as RelatedSchemaRegis
 from .schema_registry_related import (
     RelatedSchemaRegistrySubject as RelatedSchemaRegistrySubject,
 )
+from .schema_registry_related import (
+    RelatedSchemaRegistryVersion as RelatedSchemaRegistryVersion,
+)
 from .schema_registry_subject import SchemaRegistrySubject as SchemaRegistrySubject
+from .schema_registry_version import SchemaRegistryVersion as SchemaRegistryVersion
 from .semantic import Semantic as Semantic
 from .semantic_dimension import SemanticDimension as SemanticDimension
 from .semantic_entity import SemanticEntity as SemanticEntity
@@ -1830,6 +1891,18 @@ from .spark_job import SparkJob as SparkJob
 from .spark_related import RelatedSpark as RelatedSpark
 from .spark_related import RelatedSparkJob as RelatedSparkJob
 from .sql import SQL as SQL
+from .sql_insight import SqlInsight as SqlInsight
+from .sql_insight_business_question import (
+    SqlInsightBusinessQuestion as SqlInsightBusinessQuestion,
+)
+from .sql_insight_filter import SqlInsightFilter as SqlInsightFilter
+from .sql_insight_join import SqlInsightJoin as SqlInsightJoin
+from .sql_insight_related import RelatedSqlInsight as RelatedSqlInsight
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion as RelatedSqlInsightBusinessQuestion,
+)
+from .sql_insight_related import RelatedSqlInsightFilter as RelatedSqlInsightFilter
+from .sql_insight_related import RelatedSqlInsightJoin as RelatedSqlInsightJoin
 from .sql_related import RelatedCalculationView as RelatedCalculationView
 from .sql_related import RelatedColumn as RelatedColumn
 from .sql_related import RelatedDatabase as RelatedDatabase

@@ -42,6 +42,7 @@ from .cosmos_mongo_db_related import (
     RelatedCosmosMongoDBAccount,
     RelatedCosmosMongoDBDatabase,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -83,12 +84,15 @@ class CosmosMongoDBAccount(Asset):
     COSMOS_MONGO_DB_ACCOUNT_READ_LOCATIONS: ClassVar[Any] = None
     COSMOS_MONGO_DB_ACCOUNT_WRITE_LOCATIONS: ClassVar[Any] = None
     NO_SQL_SCHEMA_DEFINITION: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     COSMOS_MONGO_DB_DATABASES: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -204,6 +208,9 @@ class CosmosMongoDBAccount(Asset):
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -223,6 +230,12 @@ class CosmosMongoDBAccount(Asset):
         List[RelatedCosmosMongoDBDatabase], None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
     """Databases that exist within this account."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -290,7 +303,7 @@ class CosmosMongoDBAccount(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -512,6 +525,9 @@ class CosmosMongoDBAccountAttributes(AssetAttributes):
     )
     """Represents attributes for describing the key schema for the table and indexes."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
     """CosmosMongoDBAccount-specific relationship attributes for nested API format."""
@@ -535,6 +551,12 @@ class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
         List[RelatedCosmosMongoDBDatabase], None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
     """Databases that exist within this account."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -602,7 +624,7 @@ class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -641,6 +663,8 @@ _COSMOS_MONGO_DB_ACCOUNT_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "cosmos_mongo_db_databases",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -713,6 +737,7 @@ def _populate_cosmos_mongo_db_account_attrs(
         obj.cosmos_mongo_db_account_write_locations
     )
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_cosmos_mongo_db_account_attrs(
@@ -765,6 +790,7 @@ def _extract_cosmos_mongo_db_account_attrs(
         attrs.cosmos_mongo_db_account_write_locations
     )
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -946,12 +972,19 @@ CosmosMongoDBAccount.COSMOS_MONGO_DB_ACCOUNT_WRITE_LOCATIONS = KeywordField(
 CosmosMongoDBAccount.NO_SQL_SCHEMA_DEFINITION = KeywordField(
     "noSQLSchemaDefinition", "noSQLSchemaDefinition"
 )
+CosmosMongoDBAccount.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 CosmosMongoDBAccount.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CosmosMongoDBAccount.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CosmosMongoDBAccount.ANOMALO_CHECKS = RelationField("anomaloChecks")
 CosmosMongoDBAccount.APPLICATION = RelationField("application")
 CosmosMongoDBAccount.APPLICATION_FIELD = RelationField("applicationField")
 CosmosMongoDBAccount.COSMOS_MONGO_DB_DATABASES = RelationField("cosmosMongoDBDatabases")
+CosmosMongoDBAccount.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+CosmosMongoDBAccount.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 CosmosMongoDBAccount.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CosmosMongoDBAccount.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CosmosMongoDBAccount.MODEL_IMPLEMENTED_ENTITIES = RelationField(

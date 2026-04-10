@@ -12,10 +12,6 @@
 
 ::: pyatlan.model.assets.dataverse_entity.DataverseEntity
 
-## Dremio
-
-::: pyatlan.model.assets.dremio.Dremio
-
 ## DremioVirtualDataset
 
 ::: pyatlan.model.assets.dremio_virtual_dataset.DremioVirtualDataset

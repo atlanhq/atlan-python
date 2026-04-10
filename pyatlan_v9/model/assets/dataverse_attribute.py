@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dataverse_related import RelatedDataverseAttribute, RelatedDataverseEntity
@@ -72,11 +73,14 @@ class DataverseAttribute(Asset):
     DATAVERSE_IS_CUSTOM: ClassVar[Any] = None
     DATAVERSE_IS_CUSTOMIZABLE: ClassVar[Any] = None
     DATAVERSE_IS_AUDIT_ENABLED: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -126,6 +130,9 @@ class DataverseAttribute(Asset):
     dataverse_is_audit_enabled: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseEntity has auditing enabled."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -140,6 +147,12 @@ class DataverseAttribute(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -210,7 +223,7 @@ class DataverseAttribute(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -431,6 +444,9 @@ class DataverseAttributeAttributes(AssetAttributes):
     dataverse_is_audit_enabled: Union[bool, None, UnsetType] = UNSET
     """Indicator if DataverseEntity has auditing enabled."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class DataverseAttributeRelationshipAttributes(AssetRelationshipAttributes):
     """DataverseAttribute-specific relationship attributes for nested API format."""
@@ -449,6 +465,12 @@ class DataverseAttributeRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -519,7 +541,7 @@ class DataverseAttributeRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -557,6 +579,8 @@ _DATAVERSE_ATTRIBUTE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -597,6 +621,7 @@ def _populate_dataverse_attribute_attrs(
     attrs.dataverse_is_custom = obj.dataverse_is_custom
     attrs.dataverse_is_customizable = obj.dataverse_is_customizable
     attrs.dataverse_is_audit_enabled = obj.dataverse_is_audit_enabled
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_dataverse_attribute_attrs(attrs: DataverseAttributeAttributes) -> dict:
@@ -614,6 +639,7 @@ def _extract_dataverse_attribute_attrs(attrs: DataverseAttributeAttributes) -> d
     result["dataverse_is_custom"] = attrs.dataverse_is_custom
     result["dataverse_is_customizable"] = attrs.dataverse_is_customizable
     result["dataverse_is_audit_enabled"] = attrs.dataverse_is_audit_enabled
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -757,11 +783,18 @@ DataverseAttribute.DATAVERSE_IS_CUSTOMIZABLE = BooleanField(
 DataverseAttribute.DATAVERSE_IS_AUDIT_ENABLED = BooleanField(
     "dataverseIsAuditEnabled", "dataverseIsAuditEnabled"
 )
+DataverseAttribute.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DataverseAttribute.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataverseAttribute.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataverseAttribute.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DataverseAttribute.APPLICATION = RelationField("application")
 DataverseAttribute.APPLICATION_FIELD = RelationField("applicationField")
+DataverseAttribute.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+DataverseAttribute.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DataverseAttribute.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DataverseAttribute.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DataverseAttribute.MODEL_IMPLEMENTED_ENTITIES = RelationField(
