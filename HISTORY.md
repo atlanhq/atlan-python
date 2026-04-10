@@ -1,3 +1,13 @@
+## 9.4.0 (April 10, 2026)
+
+### Experimental: `pyatlan_v9`
+
+- **`BusinessPolicyException`, `BusinessPolicyIncident`, `BusinessPolicyLog` standalone classes**: Added full standalone flat asset classes for these three business policy types. Previously only `Related*` reference types existed, so users couldn't create, search, or deprecate these asset types via `pyatlan_v9`. Includes updated `__init__` exports and 12 unit tests covering imports, `type_name`, attributes, and init exports.
+
+### QOL Improvements
+
+- Generated latest typedef models.
+
 ## 9.3.2 (March 25, 2026)
 
 ### Bug Fixes
