@@ -36,7 +36,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cloud_related import RelatedCloud
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -79,6 +78,8 @@ class Cloud(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Cloud"
 
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
@@ -151,66 +152,6 @@ class Cloud(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Cloud"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Cloud instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Cloud validation failed: {errors}")
-
-    def minimize(self) -> "Cloud":
-        """
-        Return a minimal copy of this Cloud with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Cloud with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Cloud instance with only the minimum required fields.
-        """
-        self.validate()
-        return Cloud(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCloud":
-        """
-        Create a :class:`RelatedCloud` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedCloud reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedCloud(guid=self.guid)
-        return RelatedCloud(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -429,9 +370,6 @@ def _cloud_to_nested(cloud: Cloud) -> CloudNested:
         is_incomplete=cloud.is_incomplete,
         provenance_type=cloud.provenance_type,
         home_id=cloud.home_id,
-        depth=cloud.depth,
-        immediate_upstream=cloud.immediate_upstream,
-        immediate_downstream=cloud.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -461,6 +399,7 @@ def _cloud_from_nested(nested: CloudNested) -> Cloud:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -469,9 +408,6 @@ def _cloud_from_nested(nested: CloudNested) -> Cloud:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_cloud_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
