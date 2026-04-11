@@ -18,8 +18,6 @@ from typing import Any, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from .related_entity import SaveSemantic
-
 
 class AtlasClassification(
     msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
@@ -175,18 +173,3 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
 
     home_id: Union[str, UnsetType] = UNSET
     """Home identifier for distributed Atlas systems."""
-
-    # Lineage-specific fields (only populated in lineage API responses)
-    depth: Union[int, None, UnsetType] = UNSET
-    """Depth of this asset within lineage. Only available in assets retrieved via lineage."""
-
-    immediate_upstream: Union[List[Any], None, UnsetType] = UNSET
-    """Assets immediately upstream of this asset within lineage."""
-
-    immediate_downstream: Union[List[Any], None, UnsetType] = UNSET
-    """Assets immediately downstream of this asset within lineage."""
-
-    # Internal SDK fields (not sent to API)
-    semantic: Union[SaveSemantic, None, UnsetType] = UNSET
-    """Save semantic for relationship operations (REPLACE, APPEND, REMOVE).
-    Not serialized to JSON - used internally by ref_by_guid/ref_by_qualified_name."""
