@@ -46,7 +46,7 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .qlik_related import RelatedQlikApp, RelatedQlikDataset, RelatedQlikSpace
+from .qlik_related import RelatedQlikApp, RelatedQlikDataset
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
@@ -64,7 +64,7 @@ class QlikSpace(Asset):
     Instance of a Qlik space in Atlan.
     """
 
-    QLIK_SPACE_TYPE: ClassVar[Any] = None
+    QLIK_TYPE: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -107,7 +107,9 @@ class QlikSpace(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    qlik_space_type: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "QlikSpace"
+
+    qlik_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -245,66 +247,6 @@ class QlikSpace(Asset):
         self.type_name = "QlikSpace"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this QlikSpace instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"QlikSpace validation failed: {errors}")
-
-    def minimize(self) -> "QlikSpace":
-        """
-        Return a minimal copy of this QlikSpace with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new QlikSpace with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new QlikSpace instance with only the minimum required fields.
-        """
-        self.validate()
-        return QlikSpace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQlikSpace":
-        """
-        Create a :class:`RelatedQlikSpace` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedQlikSpace reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedQlikSpace(guid=self.guid)
-        return RelatedQlikSpace(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -359,7 +301,7 @@ class QlikSpace(Asset):
 class QlikSpaceAttributes(AssetAttributes):
     """QlikSpace-specific attributes for nested API format."""
 
-    qlik_space_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -555,7 +497,7 @@ _QLIK_SPACE_REL_FIELDS: List[str] = [
 def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> None:
     """Populate QlikSpace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.qlik_space_type = obj.qlik_space_type
+    attrs.qlik_type = obj.qlik_type
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -570,7 +512,7 @@ def _populate_qlik_space_attrs(attrs: QlikSpaceAttributes, obj: QlikSpace) -> No
 def _extract_qlik_space_attrs(attrs: QlikSpaceAttributes) -> dict:
     """Extract all QlikSpace attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["qlik_space_type"] = attrs.qlik_space_type
+    result["qlik_type"] = attrs.qlik_type
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -616,9 +558,6 @@ def _qlik_space_to_nested(qlik_space: QlikSpace) -> QlikSpaceNested:
         is_incomplete=qlik_space.is_incomplete,
         provenance_type=qlik_space.provenance_type,
         home_id=qlik_space.home_id,
-        depth=qlik_space.depth,
-        immediate_upstream=qlik_space.immediate_upstream,
-        immediate_downstream=qlik_space.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -650,6 +589,7 @@ def _qlik_space_from_nested(nested: QlikSpaceNested) -> QlikSpace:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -658,9 +598,6 @@ def _qlik_space_from_nested(nested: QlikSpaceNested) -> QlikSpace:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_space_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -688,7 +625,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QlikSpace.QLIK_SPACE_TYPE = KeywordField("qlikSpaceType", "qlikSpaceType")
+QlikSpace.QLIK_TYPE = KeywordField("qlikType", "qlikType")
 QlikSpace.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSpace.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSpace.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")
