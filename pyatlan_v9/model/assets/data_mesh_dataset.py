@@ -39,7 +39,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .data_contract_related import RelatedDataContract
-from .data_mesh_related import RelatedDataMeshDataset, RelatedDataProduct
+from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -98,6 +98,8 @@ class DataMeshDataset(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DataMeshDataset"
 
     data_mesh_dataset_type: Union[str, None, UnsetType] = UNSET
     """Type classification of this dataset (Raw, Refined, or Aggregated)."""
@@ -222,67 +224,6 @@ class DataMeshDataset(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^default/dataset/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DataMeshDataset instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if errors:
-            raise ValueError(f"DataMeshDataset validation failed: {errors}")
-
-    def minimize(self) -> "DataMeshDataset":
-        """
-        Return a minimal copy of this DataMeshDataset with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DataMeshDataset with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DataMeshDataset instance with only the minimum required fields.
-        """
-        self.validate()
-        return DataMeshDataset(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataMeshDataset":
-        """
-        Create a :class:`RelatedDataMeshDataset` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDataMeshDataset reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDataMeshDataset(guid=self.guid)
-        return RelatedDataMeshDataset(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -572,9 +513,6 @@ def _data_mesh_dataset_to_nested(
         is_incomplete=data_mesh_dataset.is_incomplete,
         provenance_type=data_mesh_dataset.provenance_type,
         home_id=data_mesh_dataset.home_id,
-        depth=data_mesh_dataset.depth,
-        immediate_upstream=data_mesh_dataset.immediate_upstream,
-        immediate_downstream=data_mesh_dataset.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -608,6 +546,7 @@ def _data_mesh_dataset_from_nested(nested: DataMeshDatasetNested) -> DataMeshDat
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -616,9 +555,6 @@ def _data_mesh_dataset_from_nested(nested: DataMeshDatasetNested) -> DataMeshDat
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_data_mesh_dataset_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
