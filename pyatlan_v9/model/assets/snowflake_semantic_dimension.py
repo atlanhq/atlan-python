@@ -57,10 +57,7 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .semantic_related import RelatedSemanticModel
-from .snowflake_related import (
-    RelatedSnowflakeSemanticDimension,
-    RelatedSnowflakeSemanticLogicalTable,
-)
+from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_insight_related import (
@@ -157,6 +154,8 @@ class SnowflakeSemanticDimension(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SnowflakeSemanticDimension"
 
     snowflake_semantic_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the semantic view in which this dimension exists."""
@@ -424,90 +423,6 @@ class SnowflakeSemanticDimension(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SnowflakeSemanticDimension instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.snowflake_semantic_logical_table is UNSET:
-                errors.append(
-                    "snowflake_semantic_logical_table is required for creation"
-                )
-            if self.snowflake_semantic_view_name is UNSET:
-                errors.append("snowflake_semantic_view_name is required for creation")
-            if self.snowflake_semantic_view_qualified_name is UNSET:
-                errors.append(
-                    "snowflake_semantic_view_qualified_name is required for creation"
-                )
-            if self.schema_name is UNSET:
-                errors.append("schema_name is required for creation")
-            if self.schema_qualified_name is UNSET:
-                errors.append("schema_qualified_name is required for creation")
-            if self.database_name is UNSET:
-                errors.append("database_name is required for creation")
-            if self.database_qualified_name is UNSET:
-                errors.append("database_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SnowflakeSemanticDimension validation failed: {errors}")
-
-    def minimize(self) -> "SnowflakeSemanticDimension":
-        """
-        Return a minimal copy of this SnowflakeSemanticDimension with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SnowflakeSemanticDimension with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SnowflakeSemanticDimension instance with only the minimum required fields.
-        """
-        self.validate()
-        return SnowflakeSemanticDimension(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedSnowflakeSemanticDimension":
-        """
-        Create a :class:`RelatedSnowflakeSemanticDimension` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSnowflakeSemanticDimension reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSnowflakeSemanticDimension(guid=self.guid)
-        return RelatedSnowflakeSemanticDimension(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1039,9 +954,6 @@ def _snowflake_semantic_dimension_to_nested(
         is_incomplete=snowflake_semantic_dimension.is_incomplete,
         provenance_type=snowflake_semantic_dimension.provenance_type,
         home_id=snowflake_semantic_dimension.home_id,
-        depth=snowflake_semantic_dimension.depth,
-        immediate_upstream=snowflake_semantic_dimension.immediate_upstream,
-        immediate_downstream=snowflake_semantic_dimension.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1077,6 +989,7 @@ def _snowflake_semantic_dimension_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1085,9 +998,6 @@ def _snowflake_semantic_dimension_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_semantic_dimension_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
