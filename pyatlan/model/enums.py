@@ -2912,6 +2912,7 @@ class FileType(str, Enum):
     YXDB = "yxdb"
     XLSM = "xlsm"
     HYPER = "hyper"
+    MD = "md"
 
 
 class FivetranConnectorStatus(str, Enum):
