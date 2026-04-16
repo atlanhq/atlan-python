@@ -47,7 +47,6 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .salesforce_related import RelatedSalesforce
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -96,6 +95,8 @@ class Salesforce(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Salesforce"
 
     organization_qualified_name: Union[str, None, UnsetType] = UNSET
     """Fully-qualified name of the organization in Salesforce."""
@@ -206,66 +207,6 @@ class Salesforce(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Salesforce"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Salesforce instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Salesforce validation failed: {errors}")
-
-    def minimize(self) -> "Salesforce":
-        """
-        Return a minimal copy of this Salesforce with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Salesforce with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Salesforce instance with only the minimum required fields.
-        """
-        self.validate()
-        return Salesforce(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSalesforce":
-        """
-        Create a :class:`RelatedSalesforce` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSalesforce reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSalesforce(guid=self.guid)
-        return RelatedSalesforce(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -536,9 +477,6 @@ def _salesforce_to_nested(salesforce: Salesforce) -> SalesforceNested:
         is_incomplete=salesforce.is_incomplete,
         provenance_type=salesforce.provenance_type,
         home_id=salesforce.home_id,
-        depth=salesforce.depth,
-        immediate_upstream=salesforce.immediate_upstream,
-        immediate_downstream=salesforce.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -570,6 +508,7 @@ def _salesforce_from_nested(nested: SalesforceNested) -> Salesforce:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -578,9 +517,6 @@ def _salesforce_from_nested(nested: SalesforceNested) -> Salesforce:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_salesforce_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

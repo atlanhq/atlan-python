@@ -776,7 +776,7 @@ class RelatedIncident(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Incident" so it serializes correctly
 
-    incident_severity: Union[str, None, UnsetType] = UNSET
+    asset_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 
     def __post_init__(self) -> None:
