@@ -1,3 +1,9 @@
+## 8.5.4 (April 16, 2026)
+
+### QOL Improvements
+
+- Added `md` file type to enums.
+
 ## 8.5.3 (February 17, 2026)
 
 ### QOL Improvements
