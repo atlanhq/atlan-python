@@ -28,7 +28,7 @@ from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
-from .api_related import RelatedAPIField, RelatedAPIObject
+from .api_related import RelatedAPIField
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
     _ASSET_REL_FIELDS,
@@ -42,6 +42,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -89,6 +90,7 @@ class APIObject(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -105,6 +107,8 @@ class APIObject(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "APIObject"
 
     api_field_count: Union[int, None, UnsetType] = UNSET
     """Count of the APIField of this object."""
@@ -185,6 +189,11 @@ class APIObject(Asset):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -239,66 +248,6 @@ class APIObject(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "APIObject"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this APIObject instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"APIObject validation failed: {errors}")
-
-    def minimize(self) -> "APIObject":
-        """
-        Return a minimal copy of this APIObject with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new APIObject with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new APIObject instance with only the minimum required fields.
-        """
-        self.validate()
-        return APIObject(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAPIObject":
-        """
-        Create a :class:`RelatedAPIObject` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedAPIObject reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedAPIObject(guid=self.guid)
-        return RelatedAPIObject(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -471,6 +420,11 @@ class APIObjectRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -558,6 +512,7 @@ _API_OBJECT_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -641,9 +596,6 @@ def _api_object_to_nested(api_object: APIObject) -> APIObjectNested:
         is_incomplete=api_object.is_incomplete,
         provenance_type=api_object.provenance_type,
         home_id=api_object.home_id,
-        depth=api_object.depth,
-        immediate_upstream=api_object.immediate_upstream,
-        immediate_downstream=api_object.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -675,6 +627,7 @@ def _api_object_from_nested(nested: APIObjectNested) -> APIObject:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -683,9 +636,6 @@ def _api_object_from_nested(nested: APIObjectNested) -> APIObject:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_api_object_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -747,6 +697,9 @@ APIObject.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribut
 APIObject.METRICS = RelationField("metrics")
 APIObject.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 APIObject.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+APIObject.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 APIObject.MEANINGS = RelationField("meanings")
 APIObject.MC_MONITORS = RelationField("mcMonitors")
 APIObject.MC_INCIDENTS = RelationField("mcIncidents")

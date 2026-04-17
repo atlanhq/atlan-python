@@ -27,10 +27,10 @@ from pyatlan_v9.model.serde import Serde, get_serde
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
-from .asset_related import RelatedDataSet
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable import (
@@ -196,6 +196,11 @@ class DataSet(Referenceable):
     ASSET_SODA_CHECK_STATUSES: ClassVar[Any] = None
     ASSET_SODA_SOURCE_URL: ClassVar[Any] = None
     ASSET_ICON: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_SCORE_VALUE: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_ENTITIES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_LATEST_SCORES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_AVG_SCORES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_MIN_SCORES: ClassVar[Any] = None
     ASSET_EXTERNAL_DQ_METADATA_DETAILS: ClassVar[Any] = None
     IS_PARTIAL: ClassVar[Any] = None
     IS_AI_GENERATED: ClassVar[Any] = None
@@ -260,6 +265,7 @@ class DataSet(Referenceable):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -270,6 +276,8 @@ class DataSet(Referenceable):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DataSet"
 
     name: Union[str, None, UnsetType] = UNSET
     """Name of this asset. Fallback for display purposes, if displayName is empty."""
@@ -714,6 +722,31 @@ class DataSet(Referenceable):
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
+    asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQScoreValue"
+    )
+    """Single asset-level DQ score (0–100). Populated natively by tools that provide one."""
+
+    asset_external_dq_test_entities: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQTestEntities"
+    )
+    """Ordered list of DQ test/scan names on this asset. Positionally aligned with the score metrics."""
+
+    asset_external_dq_test_latest_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestLatestScores")
+    )
+    """List of scores of the most recent run for each DQ test."""
+
+    asset_external_dq_test_avg_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestAvgScores")
+    )
+    """List of mean scores across all runs for each DQ test."""
+
+    asset_external_dq_test_min_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestMinScores")
+    )
+    """List of minimum (floor) score across all runs for each DQ test."""
+
     asset_external_dq_metadata_details: Union[
         Dict[str, Dict[str, Any]], None, UnsetType
     ] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
@@ -982,6 +1015,11 @@ class DataSet(Referenceable):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1018,66 +1056,6 @@ class DataSet(Referenceable):
 
     def __post_init__(self) -> None:
         self.type_name = "DataSet"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DataSet instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DataSet validation failed: {errors}")
-
-    def minimize(self) -> "DataSet":
-        """
-        Return a minimal copy of this DataSet with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DataSet with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DataSet instance with only the minimum required fields.
-        """
-        self.validate()
-        return DataSet(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataSet":
-        """
-        Create a :class:`RelatedDataSet` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDataSet reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDataSet(guid=self.guid)
-        return RelatedDataSet(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1577,6 +1555,31 @@ class DataSetAttributes(ReferenceableAttributes):
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
+    asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQScoreValue"
+    )
+    """Single asset-level DQ score (0–100). Populated natively by tools that provide one."""
+
+    asset_external_dq_test_entities: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQTestEntities"
+    )
+    """Ordered list of DQ test/scan names on this asset. Positionally aligned with the score metrics."""
+
+    asset_external_dq_test_latest_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestLatestScores")
+    )
+    """List of scores of the most recent run for each DQ test."""
+
+    asset_external_dq_test_avg_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestAvgScores")
+    )
+    """List of mean scores across all runs for each DQ test."""
+
+    asset_external_dq_test_min_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestMinScores")
+    )
+    """List of minimum (floor) score across all runs for each DQ test."""
+
     asset_external_dq_metadata_details: Union[
         Dict[str, Dict[str, Any]], None, UnsetType
     ] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
@@ -1849,6 +1852,11 @@ class DataSetRelationshipAttributes(ReferenceableRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1913,6 +1921,7 @@ _DATA_SET_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -2106,6 +2115,13 @@ def _populate_data_set_attrs(attrs: DataSetAttributes, obj: DataSet) -> None:
     attrs.asset_soda_check_statuses = obj.asset_soda_check_statuses
     attrs.asset_soda_source_url = obj.asset_soda_source_url
     attrs.asset_icon = obj.asset_icon
+    attrs.asset_external_dq_score_value = obj.asset_external_dq_score_value
+    attrs.asset_external_dq_test_entities = obj.asset_external_dq_test_entities
+    attrs.asset_external_dq_test_latest_scores = (
+        obj.asset_external_dq_test_latest_scores
+    )
+    attrs.asset_external_dq_test_avg_scores = obj.asset_external_dq_test_avg_scores
+    attrs.asset_external_dq_test_min_scores = obj.asset_external_dq_test_min_scores
     attrs.asset_external_dq_metadata_details = obj.asset_external_dq_metadata_details
     attrs.is_partial = obj.is_partial
     attrs.is_ai_generated = obj.is_ai_generated
@@ -2380,6 +2396,17 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["asset_soda_check_statuses"] = attrs.asset_soda_check_statuses
     result["asset_soda_source_url"] = attrs.asset_soda_source_url
     result["asset_icon"] = attrs.asset_icon
+    result["asset_external_dq_score_value"] = attrs.asset_external_dq_score_value
+    result["asset_external_dq_test_entities"] = attrs.asset_external_dq_test_entities
+    result["asset_external_dq_test_latest_scores"] = (
+        attrs.asset_external_dq_test_latest_scores
+    )
+    result["asset_external_dq_test_avg_scores"] = (
+        attrs.asset_external_dq_test_avg_scores
+    )
+    result["asset_external_dq_test_min_scores"] = (
+        attrs.asset_external_dq_test_min_scores
+    )
     result["asset_external_dq_metadata_details"] = (
         attrs.asset_external_dq_metadata_details
     )
@@ -2494,9 +2521,6 @@ def _data_set_to_nested(data_set: DataSet) -> DataSetNested:
         is_incomplete=data_set.is_incomplete,
         provenance_type=data_set.provenance_type,
         home_id=data_set.home_id,
-        depth=data_set.depth,
-        immediate_upstream=data_set.immediate_upstream,
-        immediate_downstream=data_set.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -2526,6 +2550,7 @@ def _data_set_from_nested(nested: DataSetNested) -> DataSet:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -2534,9 +2559,6 @@ def _data_set_from_nested(nested: DataSetNested) -> DataSet:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_data_set_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -2894,6 +2916,21 @@ DataSet.ASSET_SODA_CHECK_STATUSES = KeywordField(
 )
 DataSet.ASSET_SODA_SOURCE_URL = KeywordField("assetSodaSourceURL", "assetSodaSourceURL")
 DataSet.ASSET_ICON = KeywordField("assetIcon", "assetIcon")
+DataSet.ASSET_EXTERNAL_DQ_SCORE_VALUE = NumericField(
+    "assetExternalDQScoreValue", "assetExternalDQScoreValue"
+)
+DataSet.ASSET_EXTERNAL_DQ_TEST_ENTITIES = KeywordField(
+    "assetExternalDQTestEntities", "assetExternalDQTestEntities"
+)
+DataSet.ASSET_EXTERNAL_DQ_TEST_LATEST_SCORES = NumericField(
+    "assetExternalDQTestLatestScores", "assetExternalDQTestLatestScores"
+)
+DataSet.ASSET_EXTERNAL_DQ_TEST_AVG_SCORES = NumericField(
+    "assetExternalDQTestAvgScores", "assetExternalDQTestAvgScores"
+)
+DataSet.ASSET_EXTERNAL_DQ_TEST_MIN_SCORES = NumericField(
+    "assetExternalDQTestMinScores", "assetExternalDQTestMinScores"
+)
 DataSet.ASSET_EXTERNAL_DQ_METADATA_DETAILS = KeywordField(
     "assetExternalDQMetadataDetails", "assetExternalDQMetadataDetails"
 )
@@ -3043,6 +3080,9 @@ DataSet.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DataSet.METRICS = RelationField("metrics")
 DataSet.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DataSet.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+DataSet.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DataSet.MEANINGS = RelationField("meanings")
 DataSet.MC_MONITORS = RelationField("mcMonitors")
 DataSet.MC_INCIDENTS = RelationField("mcIncidents")
