@@ -19,6 +19,7 @@ from .adf_dataflow import AdfDataflow
 from .adf_dataset import AdfDataset
 from .adf_linkedservice import AdfLinkedservice
 from .adf_pipeline import AdfPipeline
+from .agentic import Agentic
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
@@ -28,6 +29,7 @@ from .app import App
 from .app_workflow_run import AppWorkflowRun
 from .application import Application
 from .application_field import ApplicationField
+from .artifact import Artifact
 from .asset import Asset
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
@@ -40,6 +42,9 @@ from .calculation_view import CalculationView
 from .catalog import Catalog
 from .column import Column
 from .column_process import ColumnProcess
+from .context import Context
+from .context_artifact import ContextArtifact
+from .context_repository import ContextRepository
 from .cosmos_mongo_d_b import CosmosMongoDB
 from .cosmos_mongo_d_b_account import CosmosMongoDBAccount
 from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection
@@ -153,6 +158,8 @@ from .semantic_dimension import SemanticDimension
 from .semantic_entity import SemanticEntity
 from .semantic_measure import SemanticMeasure
 from .semantic_model import SemanticModel
+from .skill import Skill
+from .skill_artifact import SkillArtifact
 from .snowflake import Snowflake
 from .snowflake_a_i_model_context import SnowflakeAIModelContext
 from .snowflake_a_i_model_version import SnowflakeAIModelVersion
@@ -362,3 +369,10 @@ StarburstDatasetColumn.Attributes.update_forward_refs(**localns)
 BigqueryRoutine.Attributes.update_forward_refs(**localns)
 DatabricksVolume.Attributes.update_forward_refs(**localns)
 DatabricksVolumePath.Attributes.update_forward_refs(**localns)
+Agentic.Attributes.update_forward_refs(**localns)
+Artifact.Attributes.update_forward_refs(**localns)
+Skill.Attributes.update_forward_refs(**localns)
+SkillArtifact.Attributes.update_forward_refs(**localns)
+Context.Attributes.update_forward_refs(**localns)
+ContextRepository.Attributes.update_forward_refs(**localns)
+ContextArtifact.Attributes.update_forward_refs(**localns)

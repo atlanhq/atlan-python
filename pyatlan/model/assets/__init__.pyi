@@ -449,6 +449,13 @@ __all__ = [
     "AzureEventHubConsumerGroup",
     "DynamoDBLocalSecondaryIndex",
     "DynamoDBGlobalSecondaryIndex",
+    "Agentic",
+    "Artifact",
+    "Skill",
+    "SkillArtifact",
+    "Context",
+    "ContextRepository",
+    "ContextArtifact",
     "IndistinctAsset",
 ]
 
@@ -532,6 +539,7 @@ from .core.adf_dataflow import AdfDataflow
 from .core.adf_dataset import AdfDataset
 from .core.adf_linkedservice import AdfLinkedservice
 from .core.adf_pipeline import AdfPipeline
+from .core.agentic import Agentic
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
@@ -541,6 +549,7 @@ from .core.app import App
 from .core.app_workflow_run import AppWorkflowRun
 from .core.application import Application
 from .core.application_field import ApplicationField
+from .core.artifact import Artifact
 from .core.asset import Asset
 from .core.atlan_app import AtlanApp
 from .core.atlan_app_tool import AtlanAppTool
@@ -556,6 +565,9 @@ from .core.calculation_view import CalculationView
 from .core.catalog import Catalog
 from .core.column import Column
 from .core.column_process import ColumnProcess
+from .core.context import Context
+from .core.context_artifact import ContextArtifact
+from .core.context_repository import ContextRepository
 from .core.cosmos_mongo_d_b import CosmosMongoDB
 from .core.cosmos_mongo_d_b_account import CosmosMongoDBAccount
 from .core.cosmos_mongo_d_b_collection import CosmosMongoDBCollection
@@ -670,6 +682,8 @@ from .core.semantic_dimension import SemanticDimension
 from .core.semantic_entity import SemanticEntity
 from .core.semantic_measure import SemanticMeasure
 from .core.semantic_model import SemanticModel
+from .core.skill import Skill
+from .core.skill_artifact import SkillArtifact
 from .core.snowflake import Snowflake
 from .core.snowflake_a_i_model_context import SnowflakeAIModelContext
 from .core.snowflake_a_i_model_version import SnowflakeAIModelVersion

@@ -2767,6 +2767,13 @@ class ConnectionDQEnvironmentSetupStatus(str, Enum):
     FAILED = "FAILED"
 
 
+class ContextLifecycleStatus(str, Enum):
+    DRAFT = "DRAFT"
+    ACTIVE = "ACTIVE"
+    DEPRECATED = "DEPRECATED"
+    ARCHIVED = "ARCHIVED"
+
+
 class DataMeshDatasetType(str, Enum):
     RAW = "Raw"
     REFINED = "Refined"
@@ -2971,6 +2978,8 @@ class FileType(str, Enum):
     YXDB = "yxdb"
     XLSM = "xlsm"
     HYPER = "hyper"
+    YAML = "yaml"
+    SQL = "sql"
     MD = "md"
 
 
