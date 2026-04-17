@@ -51,7 +51,8 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .dynamo_db_related import RelatedDynamoDBAttribute, RelatedDynamoDBTable
+from .dynamo_db_related import RelatedDynamoDBTable
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
@@ -130,6 +131,7 @@ class DynamoDBAttribute(Asset):
     PARENT_COLUMN_NAME: ClassVar[Any] = None
     COLUMN_DISTINCT_VALUES_COUNT: ClassVar[Any] = None
     COLUMN_DISTINCT_VALUES_COUNT_LONG: ClassVar[Any] = None
+    COLUMN_DISTINCT_VALUES_PERCENTAGE: ClassVar[Any] = None
     COLUMN_HISTOGRAM: ClassVar[Any] = None
     COLUMN_MAX: ClassVar[Any] = None
     COLUMN_MIN: ClassVar[Any] = None
@@ -226,6 +228,7 @@ class DynamoDBAttribute(Asset):
     COLUMN_DBT_MODEL_COLUMNS: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
     DYNAMO_DB_TABLE: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MONGO_DB_COLLECTION: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -259,6 +262,8 @@ class DynamoDBAttribute(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_FILTERS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DynamoDBAttribute"
 
     dynamo_db_status: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="dynamoDBStatus"
@@ -382,6 +387,9 @@ class DynamoDBAttribute(Asset):
 
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
+
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
 
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
@@ -689,6 +697,11 @@ class DynamoDBAttribute(Asset):
     )
     """DynamoDB table in which this attribute exists."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -812,78 +825,6 @@ class DynamoDBAttribute(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DynamoDBAttribute instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.table is UNSET:
-                errors.append("table is required for creation")
-            if self.table_name is UNSET:
-                errors.append("table_name is required for creation")
-            if self.table_qualified_name is UNSET:
-                errors.append("table_qualified_name is required for creation")
-            if self.order is UNSET:
-                errors.append("order is required for creation")
-        if errors:
-            raise ValueError(f"DynamoDBAttribute validation failed: {errors}")
-
-    def minimize(self) -> "DynamoDBAttribute":
-        """
-        Return a minimal copy of this DynamoDBAttribute with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DynamoDBAttribute with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DynamoDBAttribute instance with only the minimum required fields.
-        """
-        self.validate()
-        return DynamoDBAttribute(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDynamoDBAttribute":
-        """
-        Create a :class:`RelatedDynamoDBAttribute` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDynamoDBAttribute reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDynamoDBAttribute(guid=self.guid)
-        return RelatedDynamoDBAttribute(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1064,6 +1005,9 @@ class DynamoDBAttributeAttributes(AssetAttributes):
 
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
+
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
 
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
@@ -1375,6 +1319,11 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     )
     """DynamoDB table in which this attribute exists."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1541,6 +1490,7 @@ _DYNAMO_DB_ATTRIBUTE_REL_FIELDS: List[str] = [
     "column_dbt_model_columns",
     "dbt_seed_assets",
     "dynamo_db_table",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mongo_db_collection",
     "mc_monitors",
@@ -1619,6 +1569,7 @@ def _populate_dynamo_db_attribute_attrs(
     attrs.parent_column_name = obj.parent_column_name
     attrs.column_distinct_values_count = obj.column_distinct_values_count
     attrs.column_distinct_values_count_long = obj.column_distinct_values_count_long
+    attrs.column_distinct_values_percentage = obj.column_distinct_values_percentage
     attrs.column_histogram = obj.column_histogram
     attrs.column_max = obj.column_max
     attrs.column_min = obj.column_min
@@ -1735,6 +1686,9 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
     result["column_distinct_values_count"] = attrs.column_distinct_values_count
     result["column_distinct_values_count_long"] = (
         attrs.column_distinct_values_count_long
+    )
+    result["column_distinct_values_percentage"] = (
+        attrs.column_distinct_values_percentage
     )
     result["column_histogram"] = attrs.column_histogram
     result["column_max"] = attrs.column_max
@@ -1859,9 +1813,6 @@ def _dynamo_db_attribute_to_nested(
         is_incomplete=dynamo_db_attribute.is_incomplete,
         provenance_type=dynamo_db_attribute.provenance_type,
         home_id=dynamo_db_attribute.home_id,
-        depth=dynamo_db_attribute.depth,
-        immediate_upstream=dynamo_db_attribute.immediate_upstream,
-        immediate_downstream=dynamo_db_attribute.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1897,6 +1848,7 @@ def _dynamo_db_attribute_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1905,9 +1857,6 @@ def _dynamo_db_attribute_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dynamo_db_attribute_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -2006,6 +1955,9 @@ DynamoDBAttribute.COLUMN_DISTINCT_VALUES_COUNT = NumericField(
 )
 DynamoDBAttribute.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField(
     "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
+)
+DynamoDBAttribute.COLUMN_DISTINCT_VALUES_PERCENTAGE = NumericField(
+    "columnDistinctValuesPercentage", "columnDistinctValuesPercentage"
 )
 DynamoDBAttribute.COLUMN_HISTOGRAM = KeywordField("columnHistogram", "columnHistogram")
 DynamoDBAttribute.COLUMN_MAX = NumericField("columnMax", "columnMax")
@@ -2193,6 +2145,9 @@ DynamoDBAttribute.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
 DynamoDBAttribute.COLUMN_DBT_MODEL_COLUMNS = RelationField("columnDbtModelColumns")
 DynamoDBAttribute.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 DynamoDBAttribute.DYNAMO_DB_TABLE = RelationField("dynamoDBTable")
+DynamoDBAttribute.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DynamoDBAttribute.MEANINGS = RelationField("meanings")
 DynamoDBAttribute.MONGO_DB_COLLECTION = RelationField("mongoDBCollection")
 DynamoDBAttribute.MC_MONITORS = RelationField("mcMonitors")
