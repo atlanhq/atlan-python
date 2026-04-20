@@ -41,7 +41,8 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtSource, RelatedDbtTest
+from .dbt_related import RelatedDbtTest
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -104,6 +105,7 @@ class DbtSource(Asset):
     DBT_TESTS: ClassVar[Any] = None
     SQL_ASSET: ClassVar[Any] = None
     SQL_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -120,6 +122,8 @@ class DbtSource(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DbtSource"
 
     dbt_state: Union[str, None, UnsetType] = UNSET
     """State of the dbt source."""
@@ -242,6 +246,11 @@ class DbtSource(Asset):
     sql_assets: Union[List[RelatedSQL], None, UnsetType] = UNSET
     """Assets related to this source."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -302,72 +311,6 @@ class DbtSource(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DbtSource instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.sql_assets is UNSET:
-                errors.append("sql_assets is required for creation")
-        if errors:
-            raise ValueError(f"DbtSource validation failed: {errors}")
-
-    def minimize(self) -> "DbtSource":
-        """
-        Return a minimal copy of this DbtSource with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DbtSource with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DbtSource instance with only the minimum required fields.
-        """
-        self.validate()
-        return DbtSource(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbtSource":
-        """
-        Create a :class:`RelatedDbtSource` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDbtSource reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDbtSource(guid=self.guid)
-        return RelatedDbtSource(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -549,6 +492,11 @@ class DbtSourceRelationshipAttributes(AssetRelationshipAttributes):
     sql_assets: Union[List[RelatedSQL], None, UnsetType] = UNSET
     """Assets related to this source."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -638,6 +586,7 @@ _DBT_SOURCE_REL_FIELDS: List[str] = [
     "dbt_tests",
     "sql_asset",
     "sql_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -745,9 +694,6 @@ def _dbt_source_to_nested(dbt_source: DbtSource) -> DbtSourceNested:
         is_incomplete=dbt_source.is_incomplete,
         provenance_type=dbt_source.provenance_type,
         home_id=dbt_source.home_id,
-        depth=dbt_source.depth,
-        immediate_upstream=dbt_source.immediate_upstream,
-        immediate_downstream=dbt_source.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -779,6 +725,7 @@ def _dbt_source_from_nested(nested: DbtSourceNested) -> DbtSource:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -787,9 +734,6 @@ def _dbt_source_from_nested(nested: DbtSourceNested) -> DbtSource:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dbt_source_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -871,6 +815,9 @@ DbtSource.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 DbtSource.DBT_TESTS = RelationField("dbtTests")
 DbtSource.SQL_ASSET = RelationField("sqlAsset")
 DbtSource.SQL_ASSETS = RelationField("sqlAssets")
+DbtSource.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DbtSource.MEANINGS = RelationField("meanings")
 DbtSource.MC_MONITORS = RelationField("mcMonitors")
 DbtSource.MC_INCIDENTS = RelationField("mcIncidents")

@@ -41,6 +41,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -49,11 +50,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .sigma_related import (
-    RelatedSigmaDataElement,
-    RelatedSigmaDataElementField,
-    RelatedSigmaPage,
-)
+from .sigma_related import RelatedSigmaDataElementField, RelatedSigmaPage
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -92,6 +89,7 @@ class SigmaDataElement(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -110,6 +108,8 @@ class SigmaDataElement(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SigmaDataElement"
 
     sigma_data_element_query: Union[str, None, UnsetType] = UNSET
     """"""
@@ -187,6 +187,11 @@ class SigmaDataElement(Asset):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -257,80 +262,6 @@ class SigmaDataElement(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SigmaDataElement instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.sigma_page is UNSET:
-                errors.append("sigma_page is required for creation")
-            if self.sigma_page_name is UNSET:
-                errors.append("sigma_page_name is required for creation")
-            if self.sigma_page_qualified_name is UNSET:
-                errors.append("sigma_page_qualified_name is required for creation")
-            if self.sigma_workbook_name is UNSET:
-                errors.append("sigma_workbook_name is required for creation")
-            if self.sigma_workbook_qualified_name is UNSET:
-                errors.append("sigma_workbook_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SigmaDataElement validation failed: {errors}")
-
-    def minimize(self) -> "SigmaDataElement":
-        """
-        Return a minimal copy of this SigmaDataElement with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SigmaDataElement with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SigmaDataElement instance with only the minimum required fields.
-        """
-        self.validate()
-        return SigmaDataElement(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSigmaDataElement":
-        """
-        Create a :class:`RelatedSigmaDataElement` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSigmaDataElement reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSigmaDataElement(guid=self.guid)
-        return RelatedSigmaDataElement(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -469,6 +400,11 @@ class SigmaDataElementRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -565,6 +501,7 @@ _SIGMA_DATA_ELEMENT_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -658,9 +595,6 @@ def _sigma_data_element_to_nested(
         is_incomplete=sigma_data_element.is_incomplete,
         provenance_type=sigma_data_element.provenance_type,
         home_id=sigma_data_element.home_id,
-        depth=sigma_data_element.depth,
-        immediate_upstream=sigma_data_element.immediate_upstream,
-        immediate_downstream=sigma_data_element.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -694,6 +628,7 @@ def _sigma_data_element_from_nested(nested: SigmaDataElementNested) -> SigmaData
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -702,9 +637,6 @@ def _sigma_data_element_from_nested(nested: SigmaDataElementNested) -> SigmaData
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sigma_data_element_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -786,6 +718,9 @@ SigmaDataElement.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
 SigmaDataElement.METRICS = RelationField("metrics")
 SigmaDataElement.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SigmaDataElement.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SigmaDataElement.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SigmaDataElement.MEANINGS = RelationField("meanings")
 SigmaDataElement.MC_MONITORS = RelationField("mcMonitors")
 SigmaDataElement.MC_INCIDENTS = RelationField("mcIncidents")

@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -47,6 +47,9 @@ class RelatedTableau(RelatedBI):
 
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
+    tableau_source_read_counts: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Read/view counts on this asset bucketed by time window, as reported by Tableau's Content Exploration API."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

@@ -73,6 +73,9 @@ class RelatedConnection(RelatedAsset):
     policy_strategy_for_sample_preview: Union[str, None, UnsetType] = UNSET
     """Policy strategy is a configuration that determines whether the Atlan policy will be applied to the results of insight queries and whether the query will be rewritten. policyStrategyForSamplePreview config is applicable for sample preview call from assets screen"""
 
+    connection_reverse_sync_strategy: Union[str, None, UnsetType] = UNSET
+    """Strategy configuration for reverse-sync operations on this connection, stored as a stringified JSON array. Each element specifies a source entity type and whether reverse-sync is enabled for it, e.g. [{"source_entity": "Aspects", "enabled": true}]."""
+
     query_username_strategy: Union[str, None, UnsetType] = UNSET
     """Username strategy to use for this connection for queries."""
 
