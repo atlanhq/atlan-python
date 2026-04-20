@@ -262,7 +262,7 @@ class DremioColumn(Dremio):
     Order (position) in which this column appears in the table (starting at 1).
     """
     NESTED_COLUMN_ORDER: ClassVar[KeywordField] = KeywordField(
-        "nestedColumnOrder", "nestedColumnOrder"
+        "nestedColumnOrder", "nestedColumnOrder.order"
     )
     """
     Order (position) in which this column appears in the nested Column (nest level starts at 1).
@@ -374,6 +374,12 @@ class DremioColumn(Dremio):
     )
     """
     Number of rows that contain distinct values.
+    """
+    COLUMN_DISTINCT_VALUES_PERCENTAGE: ClassVar[NumericField] = NumericField(
+        "columnDistinctValuesPercentage", "columnDistinctValuesPercentage"
+    )
+    """
+    Percentage of rows in a column that contain distinct values.
     """
     COLUMN_HISTOGRAM: ClassVar[KeywordField] = KeywordField(
         "columnHistogram", "columnHistogram"
@@ -782,6 +788,7 @@ class DremioColumn(Dremio):
         "parent_column_name",
         "column_distinct_values_count",
         "column_distinct_values_count_long",
+        "column_distinct_values_percentage",
         "column_histogram",
         "column_max",
         "column_min",
@@ -1580,6 +1587,24 @@ class DremioColumn(Dremio):
             self.attributes = self.Attributes()
         self.attributes.column_distinct_values_count_long = (
             column_distinct_values_count_long
+        )
+
+    @property
+    def column_distinct_values_percentage(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_distinct_values_percentage
+        )
+
+    @column_distinct_values_percentage.setter
+    def column_distinct_values_percentage(
+        self, column_distinct_values_percentage: Optional[float]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_distinct_values_percentage = (
+            column_distinct_values_percentage
         )
 
     @property
@@ -2480,6 +2505,9 @@ class DremioColumn(Dremio):
             default=None, description=""
         )
         column_distinct_values_count_long: Optional[int] = Field(
+            default=None, description=""
+        )
+        column_distinct_values_percentage: Optional[float] = Field(
             default=None, description=""
         )
         column_histogram: Optional[Histogram] = Field(default=None, description="")

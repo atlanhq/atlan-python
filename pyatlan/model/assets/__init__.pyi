@@ -3,7 +3,6 @@
 __all__ = [
     "Referenceable",
     "Asset",
-    "Agentic",
     "Process",
     "AtlasGlossaryCategory",
     "AccessControl",
@@ -15,10 +14,6 @@ __all__ = [
     "AtlasGlossary",
     "AtlasGlossaryTerm",
     "Cloud",
-    "Context",
-    "Skill",
-    "SkillArtifact",
-    "Artifact",
     "FlowDatasetOperation",
     "BIProcess",
     "ColumnProcess",
@@ -26,6 +21,7 @@ __all__ = [
     "App",
     "Airflow",
     "ADF",
+    "Agentic",
     "BI",
     "Semantic",
     "FlowDataset",
@@ -52,8 +48,6 @@ __all__ = [
     "FlowFieldOperation",
     "FlowControlOperation",
     "Google",
-    "ContextRepository",
-    "ContextArtifact",
     "Stakeholder",
     "ApplicationField",
     "Application",
@@ -65,6 +59,9 @@ __all__ = [
     "AdfPipeline",
     "AdfLinkedservice",
     "AdfActivity",
+    "Context",
+    "Skill",
+    "Artifact",
     "DataStudio",
     "PowerBI",
     "Fabric",
@@ -137,6 +134,9 @@ __all__ = [
     "GCPDataplex",
     "AtlanAppWorkflow",
     "AtlanAppTool",
+    "ContextRepository",
+    "ContextArtifact",
+    "SkillArtifact",
     "PowerBIReport",
     "PowerBIDatasource",
     "PowerBIWorkspace",
@@ -227,7 +227,6 @@ __all__ = [
     "MultiDimensionalDataset",
     "Custom",
     "API",
-    "ContextStudio",
     "Collection",
     "FlowFolder",
     "FlowProject",
@@ -295,12 +294,6 @@ __all__ = [
     "APIPath",
     "APIField",
     "SourceTag",
-    "ContextInstruction",
-    "ContextRelationship",
-    "ContextMetric",
-    "ContextFilter",
-    "ContextDimension",
-    "ContextProduct",
     "DataStudioAsset",
     "AtlanAppDeployment",
     "AtlanAppInstalled",
@@ -536,13 +529,6 @@ from .cognos_report import CognosReport
 from .collection import Collection
 from .connection import Connection
 from .connection_process import ConnectionProcess
-from .context_dimension import ContextDimension
-from .context_filter import ContextFilter
-from .context_instruction import ContextInstruction
-from .context_metric import ContextMetric
-from .context_product import ContextProduct
-from .context_relationship import ContextRelationship
-from .context_studio import ContextStudio
 from .core.a_d_f import ADF
 from .core.a_i import AI
 from .core.a_i_application import AIApplication

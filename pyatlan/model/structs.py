@@ -200,6 +200,23 @@ class ResponseValue(AtlanObject):
     )
 
 
+class AssetV1ExternalDQTestScoreDimension(AtlanObject):
+    """Description"""
+
+    asset_v1_external_d_q_test_score_dimension_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_score_dimension_description: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_score_dimension_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_score_dimension_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
 class FormField(AtlanObject):
     """Description"""
 
@@ -210,6 +227,15 @@ class FormField(AtlanObject):
         default=None, description=""
     )
     form_field_options: Optional[Dict[str, str]] = Field(default=None, description="")
+
+
+class KafkaTopicConsumption(AtlanObject):
+    """Description"""
+
+    topic_name: Optional[str] = Field(default=None, description="")
+    topic_partition: Optional[str] = Field(default=None, description="")
+    topic_lag: Optional[int] = Field(default=None, description="")
+    topic_current_offset: Optional[int] = Field(default=None, description="")
 
 
 class AssetExternalDQTestStatsByCategory(AtlanObject):
@@ -235,15 +261,6 @@ class DatabricksAIModelVersionMetric(AtlanObject):
     databricks_a_i_model_version_metric_step: Optional[int] = Field(
         default=None, description=""
     )
-
-
-class KafkaTopicConsumption(AtlanObject):
-    """Description"""
-
-    topic_name: Optional[str] = Field(default=None, description="")
-    topic_partition: Optional[str] = Field(default=None, description="")
-    topic_lag: Optional[int] = Field(default=None, description="")
-    topic_current_offset: Optional[int] = Field(default=None, description="")
 
 
 class AssetExternalDQTestsByStatus(AtlanObject):
@@ -284,6 +301,7 @@ class AssetGCPDataplexMetadata(AtlanObject):
     asset_g_c_p_dataplex_last_sync_run_at: Optional[datetime] = Field(
         default=None, description=""
     )
+    asset_g_c_p_dataplex_entry_name: Optional[str] = Field(default=None, description="")
     asset_g_c_p_dataplex_aspect_details: Optional[
         Dict[str, AssetGCPDataplexAspectMetadata]
     ] = Field(default=None, description="")
@@ -366,19 +384,6 @@ class PopularityInsights(AtlanObject):
     record_warehouse: Optional[str] = Field(default=None, description="")
 
 
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
-
-
 class AssetExternalDQMetadata(AtlanObject):
     """Description"""
 
@@ -386,6 +391,9 @@ class AssetExternalDQMetadata(AtlanObject):
     asset_external_d_q_source_logo: Optional[str] = Field(default=None, description="")
     asset_external_d_q_source_url: Optional[str] = Field(default=None, description="")
     asset_external_d_q_last_sync_run_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_entity_type_name: Optional[str] = Field(
         default=None, description=""
     )
     asset_external_d_q_test_entity_name: Optional[str] = Field(
@@ -398,6 +406,15 @@ class AssetExternalDQMetadata(AtlanObject):
         default=None, description=""
     )
     asset_external_d_q_test_last_run_failure_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_last_run_total_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_last_run_success_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_last_run_failure_rules_count: Optional[int] = Field(
         default=None, description=""
     )
     asset_external_d_q_overall_score_value: Optional[str] = Field(
@@ -417,6 +434,19 @@ class AssetExternalDQMetadata(AtlanObject):
     )
 
 
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
+
+
 class Action(AtlanObject):
     """Description"""
 
@@ -429,6 +459,7 @@ class Action(AtlanObject):
 class AssetExternalDQTestRunHistory(AtlanObject):
     """Description"""
 
+    asset_external_d_q_test_run_id: Optional[str] = Field(default=None, description="")
     asset_external_d_q_test_run_started_at: Optional[datetime] = Field(
         default=None, description=""
     )
@@ -438,7 +469,28 @@ class AssetExternalDQTestRunHistory(AtlanObject):
     asset_external_d_q_test_run_status: Optional[str] = Field(
         default=None, description=""
     )
+    asset_external_d_q_test_run_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_total_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_passed_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_failed_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
     asset_external_d_q_test_metric_info: Optional[AssetExternalDQTestMetric] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_score_dimensions: Optional[
+        List[AssetExternalDQTestScoreDimension]
+    ] = Field(default=None, description="")
+    asset_external_d_q_test_rules: Optional[List[AssetExternalDQTestRule]] = Field(
         default=None, description=""
     )
 
@@ -504,6 +556,13 @@ class AwsTag(AtlanObject):
     aws_tag_value: str = Field(description="")
 
 
+class GoogleTag(AtlanObject):
+    """Description"""
+
+    google_tag_key: str = Field(description="")
+    google_tag_value: str = Field(description="")
+
+
 class AssetExternalDQTestDetails(AtlanObject):
     """Description"""
 
@@ -523,11 +582,21 @@ class AssetExternalDQTestDetails(AtlanObject):
     )
 
 
-class GoogleTag(AtlanObject):
+class AssetV2ExternalDQTestScoreDimension(AtlanObject):
     """Description"""
 
-    google_tag_key: str = Field(description="")
-    google_tag_value: str = Field(description="")
+    asset_v2_external_d_q_test_score_dimension_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_score_dimension_description: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_score_dimension_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_score_dimension_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
 
 
 class BusinessPolicyRule(AtlanObject):
@@ -564,6 +633,32 @@ class AssetExternalDQTestRule(AtlanObject):
         default=None, description=""
     )
     asset_external_d_q_test_rule_dimension: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
+class AssetV1ExternalDQTestRule(AtlanObject):
+    """Description"""
+
+    asset_v1_external_d_q_test_rule_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_evaluation_status: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_evaluated_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_impact: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_column: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_dimension: Optional[str] = Field(
         default=None, description=""
     )
 
@@ -612,6 +707,32 @@ class SQLProcedureReturn(AtlanObject):
     )
     sql_return_numeric_precision: Optional[int] = Field(default=None, description="")
     sql_return_numeric_precision_radix: Optional[int] = Field(
+        default=None, description=""
+    )
+
+
+class AssetV2ExternalDQTestRule(AtlanObject):
+    """Description"""
+
+    asset_v2_external_d_q_test_rule_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_evaluation_status: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_evaluated_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_impact: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_column_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_dimension: Optional[str] = Field(
         default=None, description=""
     )
 
@@ -923,13 +1044,15 @@ AssetGCPDataplexAspectMetadata.update_forward_refs()
 
 ResponseValue.update_forward_refs()
 
+AssetV1ExternalDQTestScoreDimension.update_forward_refs()
+
 FormField.update_forward_refs()
+
+KafkaTopicConsumption.update_forward_refs()
 
 AssetExternalDQTestStatsByCategory.update_forward_refs()
 
 DatabricksAIModelVersionMetric.update_forward_refs()
-
-KafkaTopicConsumption.update_forward_refs()
 
 AssetExternalDQTestsByStatus.update_forward_refs()
 
@@ -953,9 +1076,9 @@ MCRuleComparison.update_forward_refs()
 
 PopularityInsights.update_forward_refs()
 
-MCRuleSchedule.update_forward_refs()
-
 AssetExternalDQMetadata.update_forward_refs()
+
+MCRuleSchedule.update_forward_refs()
 
 Action.update_forward_refs()
 
@@ -975,19 +1098,25 @@ AssetExternalDQTestStats.update_forward_refs()
 
 AwsTag.update_forward_refs()
 
+GoogleTag.update_forward_refs()
+
 AssetExternalDQTestDetails.update_forward_refs()
 
-GoogleTag.update_forward_refs()
+AssetV2ExternalDQTestScoreDimension.update_forward_refs()
 
 BusinessPolicyRule.update_forward_refs()
 
 AssetExternalDQTestRule.update_forward_refs()
+
+AssetV1ExternalDQTestRule.update_forward_refs()
 
 DbtInputContext.update_forward_refs()
 
 AssetSmusMetadataFormDetails.update_forward_refs()
 
 SQLProcedureReturn.update_forward_refs()
+
+AssetV2ExternalDQTestRule.update_forward_refs()
 
 SourceTagAttachment.update_forward_refs()
 

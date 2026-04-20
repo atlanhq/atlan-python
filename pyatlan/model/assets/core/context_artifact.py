@@ -4,12 +4,12 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Dict, List, Optional, Set
+from typing import ClassVar, Dict, List, Optional
 
 from nanoid import generate as generate_nanoid  # type: ignore
 from pydantic.v1 import Field, validator
 
-from pyatlan.model.enums import ContextArtifactKind, FileType
+from pyatlan.model.enums import FileType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -58,18 +58,6 @@ class ContextArtifact(Context):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CONTEXT_ARTIFACT_KIND: ClassVar[KeywordField] = KeywordField(
-        "contextArtifactKind", "contextArtifactKind"
-    )
-    """
-    The role this artifact plays in the context repository (e.g., YAML semantic model, SQL DDL, skill definition).
-    """
-    CONTEXT_ARTIFACT_STORAGE_PATH: ClassVar[KeywordField] = KeywordField(
-        "contextArtifactStoragePath", "contextArtifactStoragePath"
-    )
-    """
-    Object store path where the artifact content is persisted.
-    """
     CONTEXT_REPOSITORY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
         "contextRepositoryQualifiedName", "contextRepositoryQualifiedName"
     )
@@ -81,6 +69,12 @@ class ContextArtifact(Context):
     )
     """
     Unique identifier of the dataset this asset belongs to.
+    """
+    ARTIFACT_VERSION: ClassVar[KeywordField] = KeywordField(
+        "artifactVersion", "artifactVersion"
+    )
+    """
+    Version identifier for this artifact.
     """
     FILE_TYPE: ClassVar[KeywordField] = KeywordField("fileType", "fileType")
     """
@@ -108,24 +102,8 @@ class ContextArtifact(Context):
     """
     Metadata of the resource.
     """
-    ARTIFACT_VERSION: ClassVar[KeywordField] = KeywordField(
-        "artifactVersion", "artifactVersion"
-    )
-    """
-    Version identifier for this artifact.
-    """
-    CONTEXT_REPOSITORY_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
-        "contextRepositoryQualifiedNames", "contextRepositoryQualifiedNames"
-    )
-    """
-    Qualified names of the context repositories to which this asset belongs.
-    """
 
     FILE_ASSETS: ClassVar[RelationField] = RelationField("fileAssets")
-    """
-    TBC
-    """
-    SKILL_SOURCE: ClassVar[RelationField] = RelationField("skillSource")
     """
     TBC
     """
@@ -135,52 +113,18 @@ class ContextArtifact(Context):
     """
 
     _convenience_properties: ClassVar[List[str]] = [
-        "context_artifact_kind",
-        "context_artifact_storage_path",
         "context_repository_qualified_name",
         "catalog_dataset_guid",
+        "artifact_version",
         "file_type",
         "file_path",
         "link",
         "is_global",
         "reference",
         "resource_metadata",
-        "artifact_version",
-        "context_repository_qualified_names",
         "file_assets",
-        "skill_source",
         "context_repository",
     ]
-
-    @property
-    def context_artifact_kind(self) -> Optional[ContextArtifactKind]:
-        return (
-            None if self.attributes is None else self.attributes.context_artifact_kind
-        )
-
-    @context_artifact_kind.setter
-    def context_artifact_kind(
-        self, context_artifact_kind: Optional[ContextArtifactKind]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.context_artifact_kind = context_artifact_kind
-
-    @property
-    def context_artifact_storage_path(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.context_artifact_storage_path
-        )
-
-    @context_artifact_storage_path.setter
-    def context_artifact_storage_path(
-        self, context_artifact_storage_path: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.context_artifact_storage_path = context_artifact_storage_path
 
     @property
     def context_repository_qualified_name(self) -> Optional[str]:
@@ -209,6 +153,16 @@ class ContextArtifact(Context):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
+    def artifact_version(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.artifact_version
+
+    @artifact_version.setter
+    def artifact_version(self, artifact_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.artifact_version = artifact_version
 
     @property
     def file_type(self) -> Optional[FileType]:
@@ -271,34 +225,6 @@ class ContextArtifact(Context):
         self.attributes.resource_metadata = resource_metadata
 
     @property
-    def artifact_version(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.artifact_version
-
-    @artifact_version.setter
-    def artifact_version(self, artifact_version: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.artifact_version = artifact_version
-
-    @property
-    def context_repository_qualified_names(self) -> Optional[Set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.context_repository_qualified_names
-        )
-
-    @context_repository_qualified_names.setter
-    def context_repository_qualified_names(
-        self, context_repository_qualified_names: Optional[Set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.context_repository_qualified_names = (
-            context_repository_qualified_names
-        )
-
-    @property
     def file_assets(self) -> Optional[Asset]:
         return None if self.attributes is None else self.attributes.file_assets
 
@@ -307,16 +233,6 @@ class ContextArtifact(Context):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.file_assets = file_assets
-
-    @property
-    def skill_source(self) -> Optional[Skill]:
-        return None if self.attributes is None else self.attributes.skill_source
-
-    @skill_source.setter
-    def skill_source(self, skill_source: Optional[Skill]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.skill_source = skill_source
 
     @property
     def context_repository(self) -> Optional[ContextRepository]:
@@ -329,16 +245,11 @@ class ContextArtifact(Context):
         self.attributes.context_repository = context_repository
 
     class Attributes(Context.Attributes):
-        context_artifact_kind: Optional[ContextArtifactKind] = Field(
-            default=None, description=""
-        )
-        context_artifact_storage_path: Optional[str] = Field(
-            default=None, description=""
-        )
         context_repository_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
         catalog_dataset_guid: Optional[str] = Field(default=None, description="")
+        artifact_version: Optional[str] = Field(default=None, description="")
         file_type: Optional[FileType] = Field(default=None, description="")
         file_path: Optional[str] = Field(default=None, description="")
         link: Optional[str] = Field(default=None, description="")
@@ -347,14 +258,7 @@ class ContextArtifact(Context):
         resource_metadata: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
-        artifact_version: Optional[str] = Field(default=None, description="")
-        context_repository_qualified_names: Optional[Set[str]] = Field(
-            default=None, description=""
-        )
         file_assets: Optional[Asset] = Field(
-            default=None, description=""
-        )  # relationship
-        skill_source: Optional[Skill] = Field(
             default=None, description=""
         )  # relationship
         context_repository: Optional[ContextRepository] = Field(
@@ -399,4 +303,3 @@ class ContextArtifact(Context):
 
 from .asset import Asset  # noqa: E402, F401
 from .context_repository import ContextRepository  # noqa: E402, F401
-from .skill import Skill  # noqa: E402, F401

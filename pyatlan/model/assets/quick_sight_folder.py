@@ -78,7 +78,7 @@ class QuickSightFolder(QuickSight):
         "quickSightFolderType", "quickSightFolderType"
     )
     """
-    Type of this folder, for example: SHARED.
+    Type of this folder, for example: SHARED or RESTRICTED.
     """
     QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[KeywordField] = KeywordField(
         "quickSightFolderHierarchy", "quickSightFolderHierarchy"

@@ -66,6 +66,12 @@ class GCPDataplexAspectType(GCPDataplex):
     """
     TBC
     """
+    GCP_DATAPLEX_ASPECT_TYPE_ASPECT_TYPES: ClassVar[RelationField] = RelationField(
+        "gcpDataplexAspectTypeAspectTypes"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[List[str]] = [
         "gcp_dataplex_aspect_type_resource_name",
@@ -74,6 +80,7 @@ class GCPDataplexAspectType(GCPDataplex):
         "gcp_dataplex_aspect_type_metadata_template",
         "gcp_dataplex_aspect_type_labels",
         "gcp_dataplex_aspect_type_entries",
+        "gcp_dataplex_aspect_type_aspect_types",
     ]
 
     @property
@@ -184,6 +191,24 @@ class GCPDataplexAspectType(GCPDataplex):
             gcp_dataplex_aspect_type_entries
         )
 
+    @property
+    def gcp_dataplex_aspect_type_aspect_types(self) -> Optional[List[Asset]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcp_dataplex_aspect_type_aspect_types
+        )
+
+    @gcp_dataplex_aspect_type_aspect_types.setter
+    def gcp_dataplex_aspect_type_aspect_types(
+        self, gcp_dataplex_aspect_type_aspect_types: Optional[List[Asset]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcp_dataplex_aspect_type_aspect_types = (
+            gcp_dataplex_aspect_type_aspect_types
+        )
+
     class Attributes(GCPDataplex.Attributes):
         gcp_dataplex_aspect_type_resource_name: Optional[str] = Field(
             default=None, description=""
@@ -201,6 +226,9 @@ class GCPDataplexAspectType(GCPDataplex):
             default=None, description=""
         )
         gcp_dataplex_aspect_type_entries: Optional[List[Asset]] = Field(
+            default=None, description=""
+        )  # relationship
+        gcp_dataplex_aspect_type_aspect_types: Optional[List[Asset]] = Field(
             default=None, description=""
         )  # relationship
 

@@ -2767,28 +2767,6 @@ class ConnectionDQEnvironmentSetupStatus(str, Enum):
     FAILED = "FAILED"
 
 
-class ContextArtifactKind(str, Enum):
-    YAML = "YAML"
-    SQL = "SQL"
-    SKILL = "SKILL"
-    JSON = "JSON"
-
-
-class ContextCardinality(str, Enum):
-    ONE_TO_ONE = "ONE_TO_ONE"
-    ONE_TO_MANY = "ONE_TO_MANY"
-    MANY_TO_ONE = "MANY_TO_ONE"
-    MANY_TO_MANY = "MANY_TO_MANY"
-
-
-class ContextJoinType(str, Enum):
-    INNER = "INNER"
-    LEFT = "LEFT"
-    RIGHT = "RIGHT"
-    FULL = "FULL"
-    CROSS = "CROSS"
-
-
 class ContextLifecycleStatus(str, Enum):
     DRAFT = "DRAFT"
     ACTIVE = "ACTIVE"
@@ -3132,6 +3110,7 @@ class QuickSightDatasetImportMode(str, Enum):
 
 class QuickSightFolderType(str, Enum):
     SHARED = "SHARED"
+    RESTRICTED = "RESTRICTED"
 
 
 class S3ObjectLockMode(str, Enum):
