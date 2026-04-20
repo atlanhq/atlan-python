@@ -1394,6 +1394,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_REVERSE_SYNC_STRATEGY" class="md-nav__link">
+    <span class="md-ellipsis">
+      CONNECTION_REVERSE_SYNC_STRATEGY
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_SSO_CREDENTIAL_GUID" class="md-nav__link">
     <span class="md-ellipsis">
       CONNECTION_SSO_CREDENTIAL_GUID
@@ -3440,6 +3449,15 @@
   <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_IS_DQ_ENABLED" class="md-nav__link">
     <span class="md-ellipsis">
       CONNECTION_IS_DQ_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.model.assets.connection.Connection.CONNECTION_REVERSE_SYNC_STRATEGY" class="md-nav__link">
+    <span class="md-ellipsis">
+      CONNECTION_REVERSE_SYNC_STRATEGY
     </span>
   </a>
   
@@ -5628,6 +5646,28 @@
     <div class="doc doc-contents ">
 
         <p>Whether data quality is enabled for this connection (true) or not (false).</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pyatlan.model.assets.connection.Connection.CONNECTION_REVERSE_SYNC_STRATEGY" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">CONNECTION_REVERSE_SYNC_STRATEGY</span><span class="p">:</span> <span class="n">KeywordField</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s1">&#39;connectionReverseSyncStrategy&#39;</span><span class="p">,</span> <span class="s1">&#39;connectionReverseSyncStrategy&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+  </span>
+
+<a href="#pyatlan.model.assets.connection.Connection.CONNECTION_REVERSE_SYNC_STRATEGY" class="headerlink" title="Permanent link">&para;</a></h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Strategy configuration for reverse-sync operations on this connection, stored as a stringified JSON array. Each element specifies a source entity type and whether reverse-sync is enabled for it, e.g. [{"source_entity": "Aspects", "enabled": true}].</p>
 
     </div>
 
