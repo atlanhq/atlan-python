@@ -1,0 +1,8 @@
+        @classmethod
+        @init_guid
+        def creator(cls, *, name: str) -> ContextRepository.Attributes:
+            validate_required_fields(["name"], [name])
+            return ContextRepository.Attributes(
+                name=name,
+                qualified_name=f"default/context/{generate_nanoid()}",
+            )

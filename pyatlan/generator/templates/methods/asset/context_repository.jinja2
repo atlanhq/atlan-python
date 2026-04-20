@@ -1,0 +1,8 @@
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, name: str) -> ContextRepository:
+        validate_required_fields(["name"], [name])
+        return ContextRepository(
+            attributes=ContextRepository.Attributes.creator(name=name)
+        )

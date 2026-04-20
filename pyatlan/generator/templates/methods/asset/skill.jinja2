@@ -1,0 +1,6 @@
+
+    @classmethod
+    @init_guid
+    def creator(cls, *, name: str) -> Skill:
+        validate_required_fields(["name"], [name])
+        return Skill(attributes=Skill.Attributes.creator(name=name))
