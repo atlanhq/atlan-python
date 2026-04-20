@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 
-from .core.dremio import Dremio
+from .dremio import Dremio
 
 
 class DremioSource(Dremio):
@@ -244,5 +244,3 @@ class DremioSource(Dremio):
 
 from .dremio_folder import DremioFolder  # noqa: E402, F401
 from .dremio_physical_dataset import DremioPhysicalDataset  # noqa: E402, F401
-
-DremioSource.Attributes.update_forward_refs()

@@ -19,7 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .g_c_s import GCS
+from .core.g_c_s import GCS
 
 
 class GCSBucket(GCS):

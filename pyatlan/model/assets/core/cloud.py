@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import KeywordField
 
-from .core.asset import Asset
+from .asset import Asset
 
 
 class Cloud(Asset, type_name="Cloud"):
@@ -65,6 +65,3 @@ class Cloud(Asset, type_name="Cloud"):
             "so are described in the sub-types of this schema."
         ),
     )
-
-
-Cloud.Attributes.update_forward_refs()

@@ -19,7 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import AssetHistogram, ColumnValueFrequencyMap, Histogram
 
-from .core.dremio import Dremio
+from .dremio import Dremio
 
 
 class DremioColumn(Dremio):
@@ -2631,22 +2631,18 @@ class DremioColumn(Dremio):
     )
 
 
-from .core.calculation_view import CalculationView  # noqa: E402, F401
-from .core.column import Column  # noqa: E402, F401
-from .core.cosmos_mongo_d_b_collection import (
-    CosmosMongoDBCollection,  # noqa: E402, F401
-)
-from .core.data_quality_rule import DataQualityRule  # noqa: E402, F401
-from .core.dbt_metric import DbtMetric  # noqa: E402, F401
-from .core.dbt_model_column import DbtModelColumn  # noqa: E402, F401
-from .core.materialised_view import MaterialisedView  # noqa: E402, F401
-from .core.metric import Metric  # noqa: E402, F401
-from .core.mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
-from .core.query import Query  # noqa: E402, F401
-from .core.snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
-from .core.sql_insight_filter import SqlInsightFilter  # noqa: E402, F401
-from .core.table import Table  # noqa: E402, F401
-from .core.table_partition import TablePartition  # noqa: E402, F401
-from .core.view import View  # noqa: E402, F401
-
-DremioColumn.Attributes.update_forward_refs()
+from .calculation_view import CalculationView  # noqa: E402, F401
+from .column import Column  # noqa: E402, F401
+from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa: E402, F401
+from .data_quality_rule import DataQualityRule  # noqa: E402, F401
+from .dbt_metric import DbtMetric  # noqa: E402, F401
+from .dbt_model_column import DbtModelColumn  # noqa: E402, F401
+from .materialised_view import MaterialisedView  # noqa: E402, F401
+from .metric import Metric  # noqa: E402, F401
+from .mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
+from .query import Query  # noqa: E402, F401
+from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
+from .sql_insight_filter import SqlInsightFilter  # noqa: E402, F401
+from .table import Table  # noqa: E402, F401
+from .table_partition import TablePartition  # noqa: E402, F401
+from .view import View  # noqa: E402, F401

@@ -9,6 +9,7 @@ from typing import ClassVar, Dict, List, Optional, Set
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import TableType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -18,22 +19,22 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 
-from .core.dremio import Dremio
+from .dremio import Dremio
 
 
-class DremioVirtualDataset(Dremio):
+class DremioPhysicalDataset(Dremio):
     """Description"""
 
-    type_name: str = Field(default="DremioVirtualDataset", allow_mutation=False)
+    type_name: str = Field(default="DremioPhysicalDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DremioVirtualDataset":
-            raise ValueError("must be DremioVirtualDataset")
+        if v != "DremioPhysicalDataset":
+            raise ValueError("must be DremioPhysicalDataset")
         return v
 
     def __setattr__(self, name, value):
-        if name in DremioVirtualDataset._convenience_properties:
+        if name in DremioPhysicalDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -230,49 +231,151 @@ class DremioVirtualDataset(Dremio):
     """
     COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
     """
-    Number of columns in this view.
+    Number of columns in this table.
     """
     ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
     """
-    Number of rows in this view.
+    Number of rows in this table.
     """
     SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
     """
-    Size of this view, in bytes.
+    Size of this table, in bytes.
+    """
+    TABLE_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "tableObjectCount", "tableObjectCount"
+    )
+    """
+    Number of objects in this table.
+    """
+    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
+    """
+    Alias for this table.
+    """
+    IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
+    """
+    Whether this table is temporary (true) or not (false).
     """
     IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
         "isQueryPreview", "isQueryPreview"
     )
     """
-    Whether preview queries are allowed on this view (true) or not (false).
+    Whether preview queries are allowed for this table (true) or not (false).
     """
     QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
         "queryPreviewConfig", "queryPreviewConfig"
     )
     """
-    Configuration for preview queries on this view.
+    Configuration for preview queries.
     """
-    ALIAS: ClassVar[TextField] = TextField("alias", "alias")
+    EXTERNAL_LOCATION: ClassVar[TextField] = TextField(
+        "externalLocation", "externalLocation"
+    )
     """
-    Alias for this view.
+    External location of this table, for example: an S3 object location.
     """
-    IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
+    EXTERNAL_LOCATION_REGION: ClassVar[TextField] = TextField(
+        "externalLocationRegion", "externalLocationRegion"
+    )
     """
-    Whether this view is temporary (true) or not (false).
+    Region of the external location of this table, for example: S3 region.
     """
-    DEFINITION: ClassVar[TextField] = TextField("definition", "definition")
+    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
+        "externalLocationFormat", "externalLocationFormat"
+    )
     """
-    SQL definition of this view.
+    Format of the external location of this table, for example: JSON, CSV, PARQUET, etc.
+    """
+    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
+        "isPartitioned", "isPartitioned"
+    )
+    """
+    Whether this table is partitioned (true) or not (false).
+    """
+    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "partitionStrategy", "partitionStrategy"
+    )
+    """
+    Partition strategy for this table.
+    """
+    PARTITION_COUNT: ClassVar[NumericField] = NumericField(
+        "partitionCount", "partitionCount"
+    )
+    """
+    Number of partitions in this table.
+    """
+    TABLE_DEFINITION: ClassVar[TextField] = TextField(
+        "tableDefinition", "tableDefinition"
+    )
+    """
+    Definition of the table.
+    """
+    PARTITION_LIST: ClassVar[TextField] = TextField("partitionList", "partitionList")
+    """
+    List of partitions in this table.
+    """
+    IS_SHARDED: ClassVar[BooleanField] = BooleanField("isSharded", "isSharded")
+    """
+    Whether this table is a sharded table (true) or not (false).
+    """
+    TABLE_TYPE: ClassVar[KeywordField] = KeywordField("tableType", "tableType")
+    """
+    Type of the table.
+    """
+    ICEBERG_CATALOG_NAME: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogName", "icebergCatalogName"
+    )
+    """
+    Iceberg table catalog name (can be any user defined name)
+    """
+    ICEBERG_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "icebergTableType", "icebergTableType"
+    )
+    """
+    Iceberg table type (managed vs unmanaged)
+    """
+    ICEBERG_CATALOG_SOURCE: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogSource", "icebergCatalogSource"
+    )
+    """
+    Iceberg table catalog type (glue, polaris, snowflake)
+    """
+    ICEBERG_CATALOG_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogTableName", "icebergCatalogTableName"
+    )
+    """
+    Catalog table name (actual table name on the catalog side).
+    """
+    TABLE_IMPALA_PARAMETERS: ClassVar[KeywordField] = KeywordField(
+        "tableImpalaParameters", "tableImpalaParameters"
+    )
+    """
+    Extra attributes for Impala
+    """
+    ICEBERG_CATALOG_TABLE_NAMESPACE: ClassVar[KeywordField] = KeywordField(
+        "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
+    )
+    """
+    Catalog table namespace (actual database name on the catalog side).
+    """
+    TABLE_EXTERNAL_VOLUME_NAME: ClassVar[KeywordField] = KeywordField(
+        "tableExternalVolumeName", "tableExternalVolumeName"
+    )
+    """
+    External volume name for the table.
+    """
+    ICEBERG_TABLE_BASE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "icebergTableBaseLocation", "icebergTableBaseLocation"
+    )
+    """
+    Iceberg table base location inside the external volume.
+    """
+    TABLE_RETENTION_TIME: ClassVar[NumericField] = NumericField(
+        "tableRetentionTime", "tableRetentionTime"
+    )
+    """
+    Data retention time in days.
     """
 
-    DREMIO_SPACE: ClassVar[RelationField] = RelationField("dremioSpace")
-    """
-    TBC
-    """
-    COLUMNS: ClassVar[RelationField] = RelationField("columns")
-    """
-    TBC
-    """
     ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
     """
     TBC
@@ -281,7 +384,27 @@ class DremioVirtualDataset(Dremio):
     """
     TBC
     """
+    PARTITIONS: ClassVar[RelationField] = RelationField("partitions")
+    """
+    TBC
+    """
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    FACTS: ClassVar[RelationField] = RelationField("facts")
+    """
+    TBC
+    """
+    DREMIO_SOURCE: ClassVar[RelationField] = RelationField("dremioSource")
+    """
+    TBC
+    """
     QUERIES: ClassVar[RelationField] = RelationField("queries")
+    """
+    TBC
+    """
+    DIMENSIONS: ClassVar[RelationField] = RelationField("dimensions")
     """
     TBC
     """
@@ -323,16 +446,38 @@ class DremioVirtualDataset(Dremio):
         "column_count",
         "row_count",
         "size_bytes",
-        "is_query_preview",
-        "query_preview_config",
+        "table_object_count",
         "alias",
         "is_temporary",
-        "definition",
-        "dremio_space",
-        "columns",
+        "is_query_preview",
+        "query_preview_config",
+        "external_location",
+        "external_location_region",
+        "external_location_format",
+        "is_partitioned",
+        "partition_strategy",
+        "partition_count",
+        "table_definition",
+        "partition_list",
+        "is_sharded",
+        "table_type",
+        "iceberg_catalog_name",
+        "iceberg_table_type",
+        "iceberg_catalog_source",
+        "iceberg_catalog_table_name",
+        "table_impala_parameters",
+        "iceberg_catalog_table_namespace",
+        "table_external_volume_name",
+        "iceberg_table_base_location",
+        "table_retention_time",
         "atlan_schema",
         "dremio_folder",
+        "partitions",
+        "columns",
+        "facts",
+        "dremio_source",
         "queries",
+        "dimensions",
     ]
 
     @property
@@ -780,24 +925,14 @@ class DremioVirtualDataset(Dremio):
         self.attributes.size_bytes = size_bytes
 
     @property
-    def is_query_preview(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_query_preview
+    def table_object_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.table_object_count
 
-    @is_query_preview.setter
-    def is_query_preview(self, is_query_preview: Optional[bool]):
+    @table_object_count.setter
+    def table_object_count(self, table_object_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.is_query_preview = is_query_preview
-
-    @property
-    def query_preview_config(self) -> Optional[Dict[str, str]]:
-        return None if self.attributes is None else self.attributes.query_preview_config
-
-    @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[Dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_preview_config = query_preview_config
+        self.attributes.table_object_count = table_object_count
 
     @property
     def alias(self) -> Optional[str]:
@@ -820,34 +955,248 @@ class DremioVirtualDataset(Dremio):
         self.attributes.is_temporary = is_temporary
 
     @property
-    def definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.definition
+    def is_query_preview(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_query_preview
 
-    @definition.setter
-    def definition(self, definition: Optional[str]):
+    @is_query_preview.setter
+    def is_query_preview(self, is_query_preview: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.definition = definition
+        self.attributes.is_query_preview = is_query_preview
 
     @property
-    def dremio_space(self) -> Optional[DremioSpace]:
-        return None if self.attributes is None else self.attributes.dremio_space
+    def query_preview_config(self) -> Optional[Dict[str, str]]:
+        return None if self.attributes is None else self.attributes.query_preview_config
 
-    @dremio_space.setter
-    def dremio_space(self, dremio_space: Optional[DremioSpace]):
+    @query_preview_config.setter
+    def query_preview_config(self, query_preview_config: Optional[Dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dremio_space = dremio_space
+        self.attributes.query_preview_config = query_preview_config
 
     @property
-    def columns(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.columns
+    def external_location(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.external_location
 
-    @columns.setter
-    def columns(self, columns: Optional[List[Column]]):
+    @external_location.setter
+    def external_location(self, external_location: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.columns = columns
+        self.attributes.external_location = external_location
+
+    @property
+    def external_location_region(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_region
+        )
+
+    @external_location_region.setter
+    def external_location_region(self, external_location_region: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location_region = external_location_region
+
+    @property
+    def external_location_format(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_format
+        )
+
+    @external_location_format.setter
+    def external_location_format(self, external_location_format: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location_format = external_location_format
+
+    @property
+    def is_partitioned(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_partitioned
+
+    @is_partitioned.setter
+    def is_partitioned(self, is_partitioned: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_partitioned = is_partitioned
+
+    @property
+    def partition_strategy(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.partition_strategy
+
+    @partition_strategy.setter
+    def partition_strategy(self, partition_strategy: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_strategy = partition_strategy
+
+    @property
+    def partition_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.partition_count
+
+    @partition_count.setter
+    def partition_count(self, partition_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_count = partition_count
+
+    @property
+    def table_definition(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.table_definition
+
+    @table_definition.setter
+    def table_definition(self, table_definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_definition = table_definition
+
+    @property
+    def partition_list(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.partition_list
+
+    @partition_list.setter
+    def partition_list(self, partition_list: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_list = partition_list
+
+    @property
+    def is_sharded(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_sharded
+
+    @is_sharded.setter
+    def is_sharded(self, is_sharded: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_sharded = is_sharded
+
+    @property
+    def table_type(self) -> Optional[TableType]:
+        return None if self.attributes is None else self.attributes.table_type
+
+    @table_type.setter
+    def table_type(self, table_type: Optional[TableType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_type = table_type
+
+    @property
+    def iceberg_catalog_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.iceberg_catalog_name
+
+    @iceberg_catalog_name.setter
+    def iceberg_catalog_name(self, iceberg_catalog_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_name = iceberg_catalog_name
+
+    @property
+    def iceberg_table_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.iceberg_table_type
+
+    @iceberg_table_type.setter
+    def iceberg_table_type(self, iceberg_table_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_table_type = iceberg_table_type
+
+    @property
+    def iceberg_catalog_source(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.iceberg_catalog_source
+        )
+
+    @iceberg_catalog_source.setter
+    def iceberg_catalog_source(self, iceberg_catalog_source: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_source = iceberg_catalog_source
+
+    @property
+    def iceberg_catalog_table_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_catalog_table_name
+        )
+
+    @iceberg_catalog_table_name.setter
+    def iceberg_catalog_table_name(self, iceberg_catalog_table_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_table_name = iceberg_catalog_table_name
+
+    @property
+    def table_impala_parameters(self) -> Optional[Dict[str, str]]:
+        return (
+            None if self.attributes is None else self.attributes.table_impala_parameters
+        )
+
+    @table_impala_parameters.setter
+    def table_impala_parameters(
+        self, table_impala_parameters: Optional[Dict[str, str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_impala_parameters = table_impala_parameters
+
+    @property
+    def iceberg_catalog_table_namespace(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_catalog_table_namespace
+        )
+
+    @iceberg_catalog_table_namespace.setter
+    def iceberg_catalog_table_namespace(
+        self, iceberg_catalog_table_namespace: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_catalog_table_namespace = (
+            iceberg_catalog_table_namespace
+        )
+
+    @property
+    def table_external_volume_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.table_external_volume_name
+        )
+
+    @table_external_volume_name.setter
+    def table_external_volume_name(self, table_external_volume_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_external_volume_name = table_external_volume_name
+
+    @property
+    def iceberg_table_base_location(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.iceberg_table_base_location
+        )
+
+    @iceberg_table_base_location.setter
+    def iceberg_table_base_location(self, iceberg_table_base_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.iceberg_table_base_location = iceberg_table_base_location
+
+    @property
+    def table_retention_time(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.table_retention_time
+
+    @table_retention_time.setter
+    def table_retention_time(self, table_retention_time: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_retention_time = table_retention_time
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
@@ -870,6 +1219,46 @@ class DremioVirtualDataset(Dremio):
         self.attributes.dremio_folder = dremio_folder
 
     @property
+    def partitions(self) -> Optional[List[TablePartition]]:
+        return None if self.attributes is None else self.attributes.partitions
+
+    @partitions.setter
+    def partitions(self, partitions: Optional[List[TablePartition]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partitions = partitions
+
+    @property
+    def columns(self) -> Optional[List[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[List[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def facts(self) -> Optional[List[Table]]:
+        return None if self.attributes is None else self.attributes.facts
+
+    @facts.setter
+    def facts(self, facts: Optional[List[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.facts = facts
+
+    @property
+    def dremio_source(self) -> Optional[DremioSource]:
+        return None if self.attributes is None else self.attributes.dremio_source
+
+    @dremio_source.setter
+    def dremio_source(self, dremio_source: Optional[DremioSource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dremio_source = dremio_source
+
+    @property
     def queries(self) -> Optional[List[Query]]:
         return None if self.attributes is None else self.attributes.queries
 
@@ -878,6 +1267,16 @@ class DremioVirtualDataset(Dremio):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.queries = queries
+
+    @property
+    def dimensions(self) -> Optional[List[Table]]:
+        return None if self.attributes is None else self.attributes.dimensions
+
+    @dimensions.setter
+    def dimensions(self, dimensions: Optional[List[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dimensions = dimensions
 
     class Attributes(Dremio.Attributes):
         dremio_id: Optional[str] = Field(default=None, description="")
@@ -936,31 +1335,63 @@ class DremioVirtualDataset(Dremio):
         column_count: Optional[int] = Field(default=None, description="")
         row_count: Optional[int] = Field(default=None, description="")
         size_bytes: Optional[int] = Field(default=None, description="")
+        table_object_count: Optional[int] = Field(default=None, description="")
+        alias: Optional[str] = Field(default=None, description="")
+        is_temporary: Optional[bool] = Field(default=None, description="")
         is_query_preview: Optional[bool] = Field(default=None, description="")
         query_preview_config: Optional[Dict[str, str]] = Field(
             default=None, description=""
         )
-        alias: Optional[str] = Field(default=None, description="")
-        is_temporary: Optional[bool] = Field(default=None, description="")
-        definition: Optional[str] = Field(default=None, description="")
-        dremio_space: Optional[DremioSpace] = Field(
+        external_location: Optional[str] = Field(default=None, description="")
+        external_location_region: Optional[str] = Field(default=None, description="")
+        external_location_format: Optional[str] = Field(default=None, description="")
+        is_partitioned: Optional[bool] = Field(default=None, description="")
+        partition_strategy: Optional[str] = Field(default=None, description="")
+        partition_count: Optional[int] = Field(default=None, description="")
+        table_definition: Optional[str] = Field(default=None, description="")
+        partition_list: Optional[str] = Field(default=None, description="")
+        is_sharded: Optional[bool] = Field(default=None, description="")
+        table_type: Optional[TableType] = Field(default=None, description="")
+        iceberg_catalog_name: Optional[str] = Field(default=None, description="")
+        iceberg_table_type: Optional[str] = Field(default=None, description="")
+        iceberg_catalog_source: Optional[str] = Field(default=None, description="")
+        iceberg_catalog_table_name: Optional[str] = Field(default=None, description="")
+        table_impala_parameters: Optional[Dict[str, str]] = Field(
             default=None, description=""
-        )  # relationship
-        columns: Optional[List[Column]] = Field(
+        )
+        iceberg_catalog_table_namespace: Optional[str] = Field(
             default=None, description=""
-        )  # relationship
+        )
+        table_external_volume_name: Optional[str] = Field(default=None, description="")
+        iceberg_table_base_location: Optional[str] = Field(default=None, description="")
+        table_retention_time: Optional[int] = Field(default=None, description="")
         atlan_schema: Optional[Schema] = Field(
             default=None, description=""
         )  # relationship
         dremio_folder: Optional[DremioFolder] = Field(
             default=None, description=""
         )  # relationship
+        partitions: Optional[List[TablePartition]] = Field(
+            default=None, description=""
+        )  # relationship
+        columns: Optional[List[Column]] = Field(
+            default=None, description=""
+        )  # relationship
+        facts: Optional[List[Table]] = Field(
+            default=None, description=""
+        )  # relationship
+        dremio_source: Optional[DremioSource] = Field(
+            default=None, description=""
+        )  # relationship
         queries: Optional[List[Query]] = Field(
             default=None, description=""
         )  # relationship
+        dimensions: Optional[List[Table]] = Field(
+            default=None, description=""
+        )  # relationship
 
-    attributes: DremioVirtualDataset.Attributes = Field(
-        default_factory=lambda: DremioVirtualDataset.Attributes(),
+    attributes: DremioPhysicalDataset.Attributes = Field(
+        default_factory=lambda: DremioPhysicalDataset.Attributes(),
         description=(
             "Map of attributes in the instance and their values. "
             "The specific keys of this map will vary by type, "
@@ -969,10 +1400,10 @@ class DremioVirtualDataset(Dremio):
     )
 
 
-from .core.column import Column  # noqa: E402, F401
-from .core.query import Query  # noqa: E402, F401
-from .core.schema import Schema  # noqa: E402, F401
+from .column import Column  # noqa: E402, F401
 from .dremio_folder import DremioFolder  # noqa: E402, F401
-from .dremio_space import DremioSpace  # noqa: E402, F401
-
-DremioVirtualDataset.Attributes.update_forward_refs()
+from .dremio_source import DremioSource  # noqa: E402, F401
+from .query import Query  # noqa: E402, F401
+from .schema import Schema  # noqa: E402, F401
+from .table import Table  # noqa: E402, F401
+from .table_partition import TablePartition  # noqa: E402, F401

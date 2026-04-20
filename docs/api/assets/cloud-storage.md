@@ -32,10 +32,6 @@
 
 ::: pyatlan.model.assets.a_d_l_s_object.ADLSObject
 
-## GCS
-
-::: pyatlan.model.assets.g_c_s.GCS
-
 ## GCSBucket
 
 ::: pyatlan.model.assets.g_c_s_bucket.GCSBucket
@@ -52,14 +48,6 @@
 
 ::: pyatlan.model.assets.a_w_s.AWS
 
-## Google
-
-::: pyatlan.model.assets.google.Google
-
 ## Azure
 
 ::: pyatlan.model.assets.azure.Azure
-
-## Cloud
-
-::: pyatlan.model.assets.cloud.Cloud

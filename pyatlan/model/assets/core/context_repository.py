@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, Set
 
 from nanoid import generate as generate_nanoid  # type: ignore
 from pydantic.v1 import Field, validator
@@ -60,9 +60,35 @@ class ContextRepository(Context):
     )
     """
     Qualified name of the connection used as the execution engine for deploying and running queries against this repository.
+    """  # noqa: E501
+    CONTEXT_REPOSITORY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "contextRepositoryQualifiedName", "contextRepositoryQualifiedName"
+    )
+    """
+    Qualified name of the context repository to which this asset belongs.
+    """
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
+    SKILL_VERSION: ClassVar[KeywordField] = KeywordField("skillVersion", "skillVersion")
+    """
+    Version identifier for this skill.
+    """
+    CONTEXT_REPOSITORY_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "contextRepositoryQualifiedNames", "contextRepositoryQualifiedNames"
+    )
+    """
+    Qualified names of the context repositories to which this asset belongs.
     """
 
     CONTEXT_ARTIFACTS: ClassVar[RelationField] = RelationField("contextArtifacts")
+    """
+    TBC
+    """
+    SKILL_ARTIFACTS: ClassVar[RelationField] = RelationField("skillArtifacts")
     """
     TBC
     """
@@ -71,7 +97,12 @@ class ContextRepository(Context):
         "context_repository_lifecycle_status",
         "context_repository_agent_instructions",
         "context_repository_target_connection_qualified_name",
+        "context_repository_qualified_name",
+        "catalog_dataset_guid",
+        "skill_version",
+        "context_repository_qualified_names",
         "context_artifacts",
+        "skill_artifacts",
     ]
 
     @property
@@ -84,8 +115,7 @@ class ContextRepository(Context):
 
     @context_repository_lifecycle_status.setter
     def context_repository_lifecycle_status(
-        self,
-        context_repository_lifecycle_status: Optional[ContextLifecycleStatus],
+        self, context_repository_lifecycle_status: Optional[ContextLifecycleStatus]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -130,6 +160,62 @@ class ContextRepository(Context):
         )
 
     @property
+    def context_repository_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.context_repository_qualified_name
+        )
+
+    @context_repository_qualified_name.setter
+    def context_repository_qualified_name(
+        self, context_repository_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.context_repository_qualified_name = (
+            context_repository_qualified_name
+        )
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
+    def skill_version(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.skill_version
+
+    @skill_version.setter
+    def skill_version(self, skill_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.skill_version = skill_version
+
+    @property
+    def context_repository_qualified_names(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.context_repository_qualified_names
+        )
+
+    @context_repository_qualified_names.setter
+    def context_repository_qualified_names(
+        self, context_repository_qualified_names: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.context_repository_qualified_names = (
+            context_repository_qualified_names
+        )
+
+    @property
     def context_artifacts(self) -> Optional[List[ContextArtifact]]:
         return None if self.attributes is None else self.attributes.context_artifacts
 
@@ -138,6 +224,16 @@ class ContextRepository(Context):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.context_artifacts = context_artifacts
+
+    @property
+    def skill_artifacts(self) -> Optional[List[SkillArtifact]]:
+        return None if self.attributes is None else self.attributes.skill_artifacts
+
+    @skill_artifacts.setter
+    def skill_artifacts(self, skill_artifacts: Optional[List[SkillArtifact]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.skill_artifacts = skill_artifacts
 
     class Attributes(Context.Attributes):
         context_repository_lifecycle_status: Optional[ContextLifecycleStatus] = Field(
@@ -149,7 +245,18 @@ class ContextRepository(Context):
         context_repository_target_connection_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
+        context_repository_qualified_name: Optional[str] = Field(
+            default=None, description=""
+        )
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
+        skill_version: Optional[str] = Field(default=None, description="")
+        context_repository_qualified_names: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
         context_artifacts: Optional[List[ContextArtifact]] = Field(
+            default=None, description=""
+        )  # relationship
+        skill_artifacts: Optional[List[SkillArtifact]] = Field(
             default=None, description=""
         )  # relationship
 
@@ -173,3 +280,4 @@ class ContextRepository(Context):
 
 
 from .context_artifact import ContextArtifact  # noqa: E402, F401
+from .skill_artifact import SkillArtifact  # noqa: E402, F401

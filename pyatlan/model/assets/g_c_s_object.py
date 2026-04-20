@@ -20,7 +20,7 @@ from pyatlan.model.fields.atlan_fields import (
 from pyatlan.model.utils import construct_object_key
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .g_c_s import GCS
+from .core.g_c_s import GCS
 
 
 class GCSObject(GCS):

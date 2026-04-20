@@ -11,7 +11,6 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import AIDatasetType
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -68,12 +67,6 @@ class FlowDatasetOperation(Process):
     """
     Dataset type for AI Model - dataset process.
     """
-    IS_PASS_THROUGH: ClassVar[BooleanField] = BooleanField(
-        "isPassThrough", "isPassThrough"
-    )
-    """
-    Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified.
-    """  # noqa: E501
     FLOW_STARTED_AT: ClassVar[NumericField] = NumericField(
         "flowStartedAt", "flowStartedAt"
     )
@@ -165,7 +158,6 @@ class FlowDatasetOperation(Process):
         "ast",
         "additional_etl_context",
         "ai_dataset_type",
-        "is_pass_through",
         "flow_started_at",
         "flow_finished_at",
         "flow_status",
@@ -272,16 +264,6 @@ class FlowDatasetOperation(Process):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.ai_dataset_type = ai_dataset_type
-
-    @property
-    def is_pass_through(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_pass_through
-
-    @is_pass_through.setter
-    def is_pass_through(self, is_pass_through: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_pass_through = is_pass_through
 
     @property
     def flow_started_at(self) -> Optional[datetime]:
@@ -464,7 +446,6 @@ class FlowDatasetOperation(Process):
         ast: Optional[str] = Field(default=None, description="")
         additional_etl_context: Optional[str] = Field(default=None, description="")
         ai_dataset_type: Optional[AIDatasetType] = Field(default=None, description="")
-        is_pass_through: Optional[bool] = Field(default=None, description="")
         flow_started_at: Optional[datetime] = Field(default=None, description="")
         flow_finished_at: Optional[datetime] = Field(default=None, description="")
         flow_status: Optional[str] = Field(default=None, description="")

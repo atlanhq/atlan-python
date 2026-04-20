@@ -4,14 +4,16 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, List
+from typing import ClassVar, List, Optional
 
 from pydantic.v1 import Field, validator
 
-from .catalog import Catalog
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+
+from .asset import Asset
 
 
-class Agentic(Catalog):
+class Agentic(Asset, type_name="Agentic"):
     """Description"""
 
     type_name: str = Field(default="Agentic", allow_mutation=False)
@@ -27,4 +29,269 @@ class Agentic(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convenience_properties: ClassVar[List[str]] = []
+    CATALOG_DATASET_GUID: ClassVar[KeywordField] = KeywordField(
+        "catalogDatasetGuid", "catalogDatasetGuid"
+    )
+    """
+    Unique identifier of the dataset this asset belongs to.
+    """
+
+    INPUT_TO_SPARK_JOBS: ClassVar[RelationField] = RelationField("inputToSparkJobs")
+    """
+    TBC
+    """
+    PARTIAL_CHILD_FIELDS: ClassVar[RelationField] = RelationField("partialChildFields")
+    """
+    TBC
+    """
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "inputToAirflowTasks"
+    )
+    """
+    TBC
+    """
+    INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    MODEL_IMPLEMENTED_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "modelImplementedAttributes"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "outputFromAirflowTasks"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_SPARK_JOBS: ClassVar[RelationField] = RelationField(
+        "outputFromSparkJobs"
+    )
+    """
+    TBC
+    """
+    MODEL_IMPLEMENTED_ENTITIES: ClassVar[RelationField] = RelationField(
+        "modelImplementedEntities"
+    )
+    """
+    TBC
+    """
+    PARTIAL_CHILD_OBJECTS: ClassVar[RelationField] = RelationField(
+        "partialChildObjects"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
+        "outputFromProcesses"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[List[str]] = [
+        "catalog_dataset_guid",
+        "input_to_spark_jobs",
+        "partial_child_fields",
+        "input_to_airflow_tasks",
+        "input_to_processes",
+        "model_implemented_attributes",
+        "output_from_airflow_tasks",
+        "output_from_spark_jobs",
+        "model_implemented_entities",
+        "partial_child_objects",
+        "output_from_processes",
+    ]
+
+    @property
+    def catalog_dataset_guid(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.catalog_dataset_guid
+
+    @catalog_dataset_guid.setter
+    def catalog_dataset_guid(self, catalog_dataset_guid: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.catalog_dataset_guid = catalog_dataset_guid
+
+    @property
+    def input_to_spark_jobs(self) -> Optional[List[SparkJob]]:
+        return None if self.attributes is None else self.attributes.input_to_spark_jobs
+
+    @input_to_spark_jobs.setter
+    def input_to_spark_jobs(self, input_to_spark_jobs: Optional[List[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_spark_jobs = input_to_spark_jobs
+
+    @property
+    def partial_child_fields(self) -> Optional[List[PartialField]]:
+        return None if self.attributes is None else self.attributes.partial_child_fields
+
+    @partial_child_fields.setter
+    def partial_child_fields(self, partial_child_fields: Optional[List[PartialField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_child_fields = partial_child_fields
+
+    @property
+    def input_to_airflow_tasks(self) -> Optional[List[AirflowTask]]:
+        return (
+            None if self.attributes is None else self.attributes.input_to_airflow_tasks
+        )
+
+    @input_to_airflow_tasks.setter
+    def input_to_airflow_tasks(
+        self, input_to_airflow_tasks: Optional[List[AirflowTask]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
+
+    @property
+    def input_to_processes(self) -> Optional[List[Process]]:
+        return None if self.attributes is None else self.attributes.input_to_processes
+
+    @input_to_processes.setter
+    def input_to_processes(self, input_to_processes: Optional[List[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def model_implemented_attributes(self) -> Optional[List[ModelAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_implemented_attributes
+        )
+
+    @model_implemented_attributes.setter
+    def model_implemented_attributes(
+        self, model_implemented_attributes: Optional[List[ModelAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_implemented_attributes = model_implemented_attributes
+
+    @property
+    def output_from_airflow_tasks(self) -> Optional[List[AirflowTask]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.output_from_airflow_tasks
+        )
+
+    @output_from_airflow_tasks.setter
+    def output_from_airflow_tasks(
+        self, output_from_airflow_tasks: Optional[List[AirflowTask]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
+
+    @property
+    def output_from_spark_jobs(self) -> Optional[List[SparkJob]]:
+        return (
+            None if self.attributes is None else self.attributes.output_from_spark_jobs
+        )
+
+    @output_from_spark_jobs.setter
+    def output_from_spark_jobs(self, output_from_spark_jobs: Optional[List[SparkJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_spark_jobs = output_from_spark_jobs
+
+    @property
+    def model_implemented_entities(self) -> Optional[List[ModelEntity]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.model_implemented_entities
+        )
+
+    @model_implemented_entities.setter
+    def model_implemented_entities(
+        self, model_implemented_entities: Optional[List[ModelEntity]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model_implemented_entities = model_implemented_entities
+
+    @property
+    def partial_child_objects(self) -> Optional[List[PartialObject]]:
+        return (
+            None if self.attributes is None else self.attributes.partial_child_objects
+        )
+
+    @partial_child_objects.setter
+    def partial_child_objects(
+        self, partial_child_objects: Optional[List[PartialObject]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partial_child_objects = partial_child_objects
+
+    @property
+    def output_from_processes(self) -> Optional[List[Process]]:
+        return (
+            None if self.attributes is None else self.attributes.output_from_processes
+        )
+
+    @output_from_processes.setter
+    def output_from_processes(self, output_from_processes: Optional[List[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_processes = output_from_processes
+
+    class Attributes(Asset.Attributes):
+        catalog_dataset_guid: Optional[str] = Field(default=None, description="")
+        input_to_spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
+        partial_child_fields: Optional[List[PartialField]] = Field(
+            default=None, description=""
+        )  # relationship
+        input_to_airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
+        input_to_processes: Optional[List[Process]] = Field(
+            default=None, description=""
+        )  # relationship
+        model_implemented_attributes: Optional[List[ModelAttribute]] = Field(
+            default=None, description=""
+        )  # relationship
+        output_from_airflow_tasks: Optional[List[AirflowTask]] = Field(
+            default=None, description=""
+        )  # relationship
+        output_from_spark_jobs: Optional[List[SparkJob]] = Field(
+            default=None, description=""
+        )  # relationship
+        model_implemented_entities: Optional[List[ModelEntity]] = Field(
+            default=None, description=""
+        )  # relationship
+        partial_child_objects: Optional[List[PartialObject]] = Field(
+            default=None, description=""
+        )  # relationship
+        output_from_processes: Optional[List[Process]] = Field(
+            default=None, description=""
+        )  # relationship
+
+    attributes: Agentic.Attributes = Field(
+        default_factory=lambda: Agentic.Attributes(),
+        description=(
+            "Map of attributes in the instance and their values. "
+            "The specific keys of this map will vary by type, "
+            "so are described in the sub-types of this schema."
+        ),
+    )
+
+
+from .airflow_task import AirflowTask  # noqa: E402, F401
+from .model_attribute import ModelAttribute  # noqa: E402, F401
+from .model_entity import ModelEntity  # noqa: E402, F401
+from .partial_field import PartialField  # noqa: E402, F401
+from .partial_object import PartialObject  # noqa: E402, F401
+from .process import Process  # noqa: E402, F401
+from .spark_job import SparkJob  # noqa: E402, F401

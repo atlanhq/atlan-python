@@ -10,7 +10,7 @@ from pydantic.v1 import Field, validator
 
 from pyatlan.model.fields.atlan_fields import RelationField
 
-from .core.dremio import Dremio
+from .dremio import Dremio
 
 
 class DremioSpace(Dremio):
@@ -89,5 +89,3 @@ class DremioSpace(Dremio):
 
 from .dremio_folder import DremioFolder  # noqa: E402, F401
 from .dremio_virtual_dataset import DremioVirtualDataset  # noqa: E402, F401
-
-DremioSpace.Attributes.update_forward_refs()

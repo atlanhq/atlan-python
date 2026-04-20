@@ -11,7 +11,7 @@ from pydantic.v1 import Field, validator
 from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 from pyatlan.model.structs import AzureTag
 
-from .cloud import Cloud
+from .core.cloud import Cloud
 
 
 class Azure(Cloud):

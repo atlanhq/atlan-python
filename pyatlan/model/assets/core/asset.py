@@ -1436,6 +1436,12 @@ class Asset(Referenceable):
     """
     TBC
     """
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[RelationField] = RelationField(
+        "gcpDataplexAspectTypeMetadataEntities"
+    )
+    """
+    TBC
+    """
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
         "outputPortDataProducts"
     )
@@ -1700,6 +1706,7 @@ class Asset(Referenceable):
         "anomalo_checks",
         "dq_base_dataset_rules",
         "user_def_relationship_to",
+        "gcp_dataplex_aspect_type_metadata_entities",
         "output_port_data_products",
         "user_def_relationship_from",
         "readme",
@@ -4478,6 +4485,29 @@ class Asset(Referenceable):
         self.attributes.user_def_relationship_to = user_def_relationship_to
 
     @property
+    def gcp_dataplex_aspect_type_metadata_entities(
+        self,
+    ) -> Optional[List[GCPDataplexAspectType]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcp_dataplex_aspect_type_metadata_entities
+        )
+
+    @gcp_dataplex_aspect_type_metadata_entities.setter
+    def gcp_dataplex_aspect_type_metadata_entities(
+        self,
+        gcp_dataplex_aspect_type_metadata_entities: Optional[
+            List[GCPDataplexAspectType]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcp_dataplex_aspect_type_metadata_entities = (
+            gcp_dataplex_aspect_type_metadata_entities
+        )
+
+    @property
     def output_port_data_products(self) -> Optional[List[DataProduct]]:
         return (
             None
@@ -5048,6 +5078,9 @@ class Asset(Referenceable):
         user_def_relationship_to: Optional[List[Referenceable]] = Field(
             default=None, description=""
         )  # relationship
+        gcp_dataplex_aspect_type_metadata_entities: Optional[
+            List[GCPDataplexAspectType]
+        ] = Field(default=None, description="")  # relationship
         output_port_data_products: Optional[List[DataProduct]] = Field(
             default=None, description=""
         )  # relationship
@@ -5129,6 +5162,7 @@ from .data_contract import DataContract  # noqa: E402, F401
 from .data_product import DataProduct  # noqa: E402, F401
 from .data_quality_rule import DataQualityRule  # noqa: E402, F401
 from .file import File  # noqa: E402, F401
+from .g_c_p_dataplex_aspect_type import GCPDataplexAspectType  # noqa: E402, F401
 from .link import Link  # noqa: E402, F401
 from .m_c_incident import MCIncident  # noqa: E402, F401
 from .m_c_monitor import MCMonitor  # noqa: E402, F401
