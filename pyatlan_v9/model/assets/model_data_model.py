@@ -40,10 +40,10 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import (
     RelatedModelAttribute,
-    RelatedModelDataModel,
     RelatedModelEntity,
     RelatedModelVersion,
 )
@@ -99,6 +99,7 @@ class ModelDataModel(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -115,6 +116,8 @@ class ModelDataModel(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ModelDataModel"
 
     model_version_count: Union[int, None, UnsetType] = UNSET
     """Number of versions of the data model."""
@@ -216,6 +219,11 @@ class ModelDataModel(Asset):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -270,66 +278,6 @@ class ModelDataModel(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ModelDataModel"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this ModelDataModel instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"ModelDataModel validation failed: {errors}")
-
-    def minimize(self) -> "ModelDataModel":
-        """
-        Return a minimal copy of this ModelDataModel with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new ModelDataModel with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new ModelDataModel instance with only the minimum required fields.
-        """
-        self.validate()
-        return ModelDataModel(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedModelDataModel":
-        """
-        Create a :class:`RelatedModelDataModel` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedModelDataModel reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedModelDataModel(guid=self.guid)
-        return RelatedModelDataModel(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -490,6 +438,11 @@ class ModelDataModelRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -579,6 +532,7 @@ _MODEL_DATA_MODEL_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -686,9 +640,6 @@ def _model_data_model_to_nested(
         is_incomplete=model_data_model.is_incomplete,
         provenance_type=model_data_model.provenance_type,
         home_id=model_data_model.home_id,
-        depth=model_data_model.depth,
-        immediate_upstream=model_data_model.immediate_upstream,
-        immediate_downstream=model_data_model.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -722,6 +673,7 @@ def _model_data_model_from_nested(nested: ModelDataModelNested) -> ModelDataMode
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -730,9 +682,6 @@ def _model_data_model_from_nested(nested: ModelDataModelNested) -> ModelDataMode
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_model_data_model_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -824,6 +773,9 @@ ModelDataModel.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
 ModelDataModel.METRICS = RelationField("metrics")
 ModelDataModel.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ModelDataModel.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+ModelDataModel.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 ModelDataModel.MEANINGS = RelationField("meanings")
 ModelDataModel.MC_MONITORS = RelationField("mcMonitors")
 ModelDataModel.MC_INCIDENTS = RelationField("mcIncidents")
