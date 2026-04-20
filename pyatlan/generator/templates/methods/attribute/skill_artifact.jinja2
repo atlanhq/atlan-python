@@ -1,0 +1,19 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls, *, name: str, skill_qualified_name: str, file_type: FileType
+        ) -> SkillArtifact.Attributes:
+            validate_required_fields(
+                ["name", "skill_qualified_name", "file_type"],
+                [name, skill_qualified_name, file_type],
+            )
+            return SkillArtifact.Attributes(
+                name=name,
+                qualified_name=(
+                    f"{skill_qualified_name}/artifact/{file_type.value}"
+                    f"/{generate_nanoid()}"
+                ),
+                file_type=file_type,
+                skill_source=Skill.ref_by_qualified_name(skill_qualified_name),
+            )

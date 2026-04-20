@@ -348,10 +348,6 @@
 
 ::: pyatlan.model.assets.sisense_widget.SisenseWidget
 
-## DataStudio
-
-::: pyatlan.model.assets.data_studio.DataStudio
-
 ## DataStudioAsset
 
 ::: pyatlan.model.assets.data_studio_asset.DataStudioAsset

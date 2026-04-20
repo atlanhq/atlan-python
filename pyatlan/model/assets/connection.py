@@ -234,6 +234,12 @@ class Connection(Asset, type_name="Connection"):
     """
     Policy strategy is a configuration that determines whether the Atlan policy will be applied to the results of insight queries and whether the query will be rewritten. policyStrategyForSamplePreview config is applicable for sample preview call from assets screen
     """  # noqa: E501
+    CONNECTION_REVERSE_SYNC_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "connectionReverseSyncStrategy", "connectionReverseSyncStrategy"
+    )
+    """
+    Strategy configuration for reverse-sync operations on this connection, stored as a stringified JSON array. Each element specifies a source entity type and whether reverse-sync is enabled for it, e.g. [{"source_entity": "Aspects", "enabled": true}].
+    """  # noqa: E501
     QUERY_USERNAME_STRATEGY: ClassVar[KeywordField] = KeywordField(
         "queryUsernameStrategy", "queryUsernameStrategy"
     )
@@ -397,6 +403,7 @@ class Connection(Asset, type_name="Connection"):
         "preview_credential_strategy",
         "policy_strategy",
         "policy_strategy_for_sample_preview",
+        "connection_reverse_sync_strategy",
         "query_username_strategy",
         "row_limit",
         "query_timeout",
@@ -572,6 +579,24 @@ class Connection(Asset, type_name="Connection"):
             self.attributes = self.Attributes()
         self.attributes.policy_strategy_for_sample_preview = (
             policy_strategy_for_sample_preview
+        )
+
+    @property
+    def connection_reverse_sync_strategy(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.connection_reverse_sync_strategy
+        )
+
+    @connection_reverse_sync_strategy.setter
+    def connection_reverse_sync_strategy(
+        self, connection_reverse_sync_strategy: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.connection_reverse_sync_strategy = (
+            connection_reverse_sync_strategy
         )
 
     @property
@@ -963,6 +988,9 @@ class Connection(Asset, type_name="Connection"):
         preview_credential_strategy: Optional[str] = Field(default=None, description="")
         policy_strategy: Optional[str] = Field(default=None, description="")
         policy_strategy_for_sample_preview: Optional[str] = Field(
+            default=None, description=""
+        )
+        connection_reverse_sync_strategy: Optional[str] = Field(
             default=None, description=""
         )
         query_username_strategy: Optional[QueryUsernameStrategy] = Field(

@@ -16,7 +16,6 @@ __all__ = [
     "AtlasGlossaryPreferredTerm",
     "AtlasGlossaryTermCategorization",
     "CustomRelatedFromEntitiesCustomRelatedToEntities",
-    "SnowflakeSemanticLogicalTableJoinsSnowflakeSemanticLogicalTableJoins",
 ]
 
 from .atlas_glossary_antonym import AtlasGlossaryAntonym
@@ -37,7 +36,4 @@ from .custom_related_from_entities_custom_related_to_entities import (
 )
 from .indistinct_relationship import IndistinctRelationship
 from .relationship_attributes import RelationshipAttributes
-from .snowflake_semantic_logical_table_joins_snowflake_semantic_logical_table_joins import (
-    SnowflakeSemanticLogicalTableJoinsSnowflakeSemanticLogicalTableJoins,
-)
 from .user_def_relationship import UserDefRelationship

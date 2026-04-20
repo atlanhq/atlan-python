@@ -1,0 +1,9 @@
+
+        @classmethod
+        @init_guid
+        def creator(cls, *, name: str) -> Skill.Attributes:
+            validate_required_fields(["name"], [name])
+            return Skill.Attributes(
+                name=name,
+                qualified_name=f"default/skill/{generate_nanoid()}",
+            )

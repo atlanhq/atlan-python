@@ -21,7 +21,7 @@ from pyatlan.model.fields.atlan_fields import (
 from pyatlan.model.structs import GoogleLabel, GoogleTag
 from pyatlan.utils import init_guid, validate_required_fields
 
-from .data_studio import DataStudio
+from .core.data_studio import DataStudio
 
 
 class DataStudioAsset(DataStudio):

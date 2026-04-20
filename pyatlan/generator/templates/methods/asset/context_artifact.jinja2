@@ -1,0 +1,21 @@
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        name: str,
+        context_repository_qualified_name: str,
+        file_type: FileType,
+    ) -> ContextArtifact:
+        validate_required_fields(
+            ["name", "context_repository_qualified_name", "file_type"],
+            [name, context_repository_qualified_name, file_type],
+        )
+        return ContextArtifact(
+            attributes=ContextArtifact.Attributes.creator(
+                name=name,
+                context_repository_qualified_name=context_repository_qualified_name,
+                file_type=file_type,
+            )
+        )

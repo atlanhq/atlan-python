@@ -269,6 +269,18 @@ class AssetInfo:
         "FabricDataflowEntityColumn",
         "FabricReport",
         "FabricSemanticModel",
+        "Agentic",
+        "Artifact",
+        "Skill",
+        "SkillArtifact",
+        "Context",
+        "ContextRepository",
+        "ContextArtifact",
+        "Dremio",
+        "Cloud",
+        "Google",
+        "GCPDataplex",
+        "GCPDataplexAspectType",
     }
     _IGNORE_ASSETS = {}  # type: ignore[var-annotated]
 

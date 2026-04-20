@@ -412,11 +412,11 @@ class MongoDBCollection(Table):
     Represents attributes for describing the key schema for the table and indexes.
     """
 
-    MONGO_DB_COLUMNS: ClassVar[RelationField] = RelationField("mongoDBColumns")
+    MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
     """
     TBC
     """
-    MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
+    MONGO_DB_COLUMNS: ClassVar[RelationField] = RelationField("mongoDBColumns")
     """
     TBC
     """
@@ -487,8 +487,8 @@ class MongoDBCollection(Table):
         "sql_ai_insights_relationship_count",
         "catalog_dataset_guid",
         "no_s_q_l_schema_definition",
-        "mongo_d_b_columns",
         "mongo_d_b_database",
+        "mongo_d_b_columns",
     ]
 
     @property
@@ -1332,16 +1332,6 @@ class MongoDBCollection(Table):
         self.attributes.no_s_q_l_schema_definition = no_s_q_l_schema_definition
 
     @property
-    def mongo_d_b_columns(self) -> Optional[List[Column]]:
-        return None if self.attributes is None else self.attributes.mongo_d_b_columns
-
-    @mongo_d_b_columns.setter
-    def mongo_d_b_columns(self, mongo_d_b_columns: Optional[List[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_columns = mongo_d_b_columns
-
-    @property
     def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
         return None if self.attributes is None else self.attributes.mongo_d_b_database
 
@@ -1350,6 +1340,16 @@ class MongoDBCollection(Table):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mongo_d_b_database = mongo_d_b_database
+
+    @property
+    def mongo_d_b_columns(self) -> Optional[List[Column]]:
+        return None if self.attributes is None else self.attributes.mongo_d_b_columns
+
+    @mongo_d_b_columns.setter
+    def mongo_d_b_columns(self, mongo_d_b_columns: Optional[List[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mongo_d_b_columns = mongo_d_b_columns
 
     class Attributes(Table.Attributes):
         mongo_d_b_collection_subtype: Optional[str] = Field(
@@ -1461,10 +1461,10 @@ class MongoDBCollection(Table):
         )
         catalog_dataset_guid: Optional[str] = Field(default=None, description="")
         no_s_q_l_schema_definition: Optional[str] = Field(default=None, description="")
-        mongo_d_b_columns: Optional[List[Column]] = Field(
+        mongo_d_b_database: Optional[MongoDBDatabase] = Field(
             default=None, description=""
         )  # relationship
-        mongo_d_b_database: Optional[MongoDBDatabase] = Field(
+        mongo_d_b_columns: Optional[List[Column]] = Field(
             default=None, description=""
         )  # relationship
 

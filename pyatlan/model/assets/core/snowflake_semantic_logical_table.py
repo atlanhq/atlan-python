@@ -291,12 +291,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
     """
     TBC
     """
-    SNOWFLAKE_SEMANTIC_LOGICAL_TABLE_JOINS: ClassVar[RelationField] = RelationField(
-        "snowflakeSemanticLogicalTableJoins"
-    )
-    """
-    TBC
-    """
     SNOWFLAKE_SEMANTIC_DIMENSIONS: ClassVar[RelationField] = RelationField(
         "snowflakeSemanticDimensions"
     )
@@ -385,7 +379,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         "sql_insight_incoming_joins",
         "dbt_tests",
         "snowflake_base_table",
-        "snowflake_semantic_logical_table_joins",
         "snowflake_semantic_dimensions",
         "snowflake_semantic_facts",
         "sql_insight_business_questions",
@@ -968,29 +961,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         self.attributes.snowflake_base_table = snowflake_base_table
 
     @property
-    def snowflake_semantic_logical_table_joins(
-        self,
-    ) -> Optional[List[SnowflakeSemanticLogicalTable]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_semantic_logical_table_joins
-        )
-
-    @snowflake_semantic_logical_table_joins.setter
-    def snowflake_semantic_logical_table_joins(
-        self,
-        snowflake_semantic_logical_table_joins: Optional[
-            List[SnowflakeSemanticLogicalTable]
-        ],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_semantic_logical_table_joins = (
-            snowflake_semantic_logical_table_joins
-        )
-
-    @property
     def snowflake_semantic_dimensions(
         self,
     ) -> Optional[List[SnowflakeSemanticDimension]]:
@@ -1185,9 +1155,6 @@ class SnowflakeSemanticLogicalTable(SemanticEntity):
         snowflake_base_table: Optional[SQL] = Field(
             default=None, description=""
         )  # relationship
-        snowflake_semantic_logical_table_joins: Optional[
-            List[SnowflakeSemanticLogicalTable]
-        ] = Field(default=None, description="")  # relationship
         snowflake_semantic_dimensions: Optional[List[SnowflakeSemanticDimension]] = (
             Field(default=None, description="")
         )  # relationship

@@ -4,10 +4,25 @@
 # This script runs both create_typedefs_file.py and class_generator.py
 # It intelligently skips creating typedefs if they already exist and are current
 
-# Usage: ./generator [typedefs_file_path]
+# Usage: ./generator [--override] [typedefs_file_path]
 # If typedefs_file_path is not provided, defaults to /tmp/typedefs.json
+# --override: force re-download of typedefs even if cached file is current
 
 echo "🚀 Starting Atlan Python SDK code generation..."
+
+# Parse flags
+FORCE_OVERRIDE=false
+TYPE_DEF_FILE_ARG=""
+for arg in "$@"; do
+    case "$arg" in
+        --override)
+            FORCE_OVERRIDE=true
+            ;;
+        *)
+            TYPE_DEF_FILE_ARG="$arg"
+            ;;
+    esac
+done
 
 # Check if ATLAN_BASE_URL and ATLAN_API_KEY are set
 if [ -z "$ATLAN_BASE_URL" ] || [ -z "$ATLAN_API_KEY" ]; then
@@ -19,8 +34,8 @@ if [ -z "$ATLAN_BASE_URL" ] || [ -z "$ATLAN_API_KEY" ]; then
 fi
 
 # Get the typedefs file path from command line argument or use default
-if [ -n "$1" ]; then
-    TYPE_DEF_FILE="$1"
+if [ -n "$TYPE_DEF_FILE_ARG" ]; then
+    TYPE_DEF_FILE="$TYPE_DEF_FILE_ARG"
     echo "📁 Using custom typedefs file: $TYPE_DEF_FILE"
 else
     TMPDIR=${TMPDIR:-/tmp}
@@ -30,7 +45,9 @@ fi
 
 # Check if typedefs file exists and is current (created today)
 SHOULD_CREATE_TYPEDEFS=true
-if [ -f "$TYPE_DEF_FILE" ]; then
+if [ "$FORCE_OVERRIDE" = true ]; then
+    echo "🔄 --override flag set, forcing typedefs re-download"
+elif [ -f "$TYPE_DEF_FILE" ]; then
     # Check if file was created today
     if [ "$(date -r "$TYPE_DEF_FILE" +%Y-%m-%d)" = "$(date +%Y-%m-%d)" ]; then
         echo "✅ Typedefs file already exists and is current: $TYPE_DEF_FILE"

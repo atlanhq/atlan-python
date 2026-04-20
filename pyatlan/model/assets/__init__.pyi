@@ -13,6 +13,7 @@ __all__ = [
     "Flow",
     "AtlasGlossary",
     "AtlasGlossaryTerm",
+    "Cloud",
     "FlowDatasetOperation",
     "BIProcess",
     "ColumnProcess",
@@ -20,6 +21,7 @@ __all__ = [
     "App",
     "Airflow",
     "ADF",
+    "Agentic",
     "BI",
     "Semantic",
     "FlowDataset",
@@ -45,6 +47,7 @@ __all__ = [
     "FlowReusableUnit",
     "FlowFieldOperation",
     "FlowControlOperation",
+    "Google",
     "Stakeholder",
     "ApplicationField",
     "Application",
@@ -56,6 +59,10 @@ __all__ = [
     "AdfPipeline",
     "AdfLinkedservice",
     "AdfActivity",
+    "Context",
+    "Skill",
+    "Artifact",
+    "DataStudio",
     "PowerBI",
     "Fabric",
     "SemanticDimension",
@@ -73,6 +80,7 @@ __all__ = [
     "DbtMetric",
     "DbtSource",
     "FivetranConnector",
+    "GCS",
     "Anomalo",
     "MonteCarlo",
     "DataQualityRuleTemplate",
@@ -123,8 +131,12 @@ __all__ = [
     "SparkJob",
     "SchemaRegistrySubject",
     "SchemaRegistryVersion",
+    "GCPDataplex",
     "AtlanAppWorkflow",
     "AtlanAppTool",
+    "ContextRepository",
+    "ContextArtifact",
+    "SkillArtifact",
     "PowerBIReport",
     "PowerBIDatasource",
     "PowerBIWorkspace",
@@ -171,6 +183,12 @@ __all__ = [
     "SnowflakeAIModelVersion",
     "SnowflakeAIModelContext",
     "DatabricksAIModelContext",
+    "DremioVirtualDataset",
+    "DremioColumn",
+    "DremioSpace",
+    "DremioPhysicalDataset",
+    "DremioFolder",
+    "DremioSource",
     "SnowflakeDynamicTable",
     "StarburstDataset",
     "DatabricksMetricView",
@@ -178,6 +196,7 @@ __all__ = [
     "BigqueryRoutine",
     "DatabricksVolume",
     "DatabricksVolumePath",
+    "GCPDataplexAspectType",
     "Task",
     "Form",
     "DataSet",
@@ -194,7 +213,6 @@ __all__ = [
     "WorkflowRun",
     "Response",
     "ConnectionProcess",
-    "Cloud",
     "Incident",
     "DbtProcess",
     "Purpose",
@@ -212,7 +230,6 @@ __all__ = [
     "Collection",
     "FlowFolder",
     "FlowProject",
-    "Google",
     "Azure",
     "AWS",
     "BusinessPolicyIncident",
@@ -234,7 +251,6 @@ __all__ = [
     "Domo",
     "Redash",
     "Sisense",
-    "DataStudio",
     "Metabase",
     "QuickSight",
     "Thoughtspot",
@@ -257,7 +273,6 @@ __all__ = [
     "AssetGroupingCollection",
     "S3",
     "ADLS",
-    "GCS",
     "DatabricksNotebook",
     "SageMakerUnifiedStudio",
     "Dataverse",
@@ -432,12 +447,6 @@ __all__ = [
     "SageMakerFeature",
     "SageMakerFeatureGroup",
     "SageMakerModelDeployment",
-    "DremioVirtualDataset",
-    "DremioColumn",
-    "DremioSpace",
-    "DremioPhysicalDataset",
-    "DremioFolder",
-    "DremioSource",
     "IcebergTable",
     "IcebergNamespace",
     "IcebergColumn",
@@ -499,7 +508,6 @@ from .cassandra_index import CassandraIndex
 from .cassandra_keyspace import CassandraKeyspace
 from .cassandra_table import CassandraTable
 from .cassandra_view import CassandraView
-from .cloud import Cloud
 from .cognite import Cognite
 from .cognite3_d_model import Cognite3DModel
 from .cognite_asset import CogniteAsset
@@ -532,6 +540,7 @@ from .core.adf_dataflow import AdfDataflow
 from .core.adf_dataset import AdfDataset
 from .core.adf_linkedservice import AdfLinkedservice
 from .core.adf_pipeline import AdfPipeline
+from .core.agentic import Agentic
 from .core.airflow import Airflow
 from .core.airflow_dag import AirflowDag
 from .core.airflow_task import AirflowTask
@@ -541,6 +550,7 @@ from .core.app import App
 from .core.app_workflow_run import AppWorkflowRun
 from .core.application import Application
 from .core.application_field import ApplicationField
+from .core.artifact import Artifact
 from .core.asset import Asset
 from .core.atlan_app import AtlanApp
 from .core.atlan_app_tool import AtlanAppTool
@@ -554,8 +564,12 @@ from .core.b_i_process import BIProcess
 from .core.bigquery_routine import BigqueryRoutine
 from .core.calculation_view import CalculationView
 from .core.catalog import Catalog
+from .core.cloud import Cloud
 from .core.column import Column
 from .core.column_process import ColumnProcess
+from .core.context import Context
+from .core.context_artifact import ContextArtifact
+from .core.context_repository import ContextRepository
 from .core.cosmos_mongo_d_b import CosmosMongoDB
 from .core.cosmos_mongo_d_b_account import CosmosMongoDBAccount
 from .core.cosmos_mongo_d_b_collection import CosmosMongoDBCollection
@@ -568,6 +582,7 @@ from .core.data_product import DataProduct
 from .core.data_quality import DataQuality
 from .core.data_quality_rule import DataQualityRule
 from .core.data_quality_rule_template import DataQualityRuleTemplate
+from .core.data_studio import DataStudio
 from .core.database import Database
 from .core.databricks import Databricks
 from .core.databricks_a_i_model_context import DatabricksAIModelContext
@@ -587,6 +602,12 @@ from .core.document_d_b import DocumentDB
 from .core.document_d_b_collection import DocumentDBCollection
 from .core.document_d_b_database import DocumentDBDatabase
 from .core.dremio import Dremio
+from .core.dremio_column import DremioColumn
+from .core.dremio_folder import DremioFolder
+from .core.dremio_physical_dataset import DremioPhysicalDataset
+from .core.dremio_source import DremioSource
+from .core.dremio_space import DremioSpace
+from .core.dremio_virtual_dataset import DremioVirtualDataset
 from .core.dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .core.fabric import Fabric
 from .core.fabric_activity import FabricActivity
@@ -613,6 +634,10 @@ from .core.flow_field_operation import FlowFieldOperation
 from .core.flow_reusable_unit import FlowReusableUnit
 from .core.folder import Folder
 from .core.function import Function
+from .core.g_c_p_dataplex import GCPDataplex
+from .core.g_c_p_dataplex_aspect_type import GCPDataplexAspectType
+from .core.g_c_s import GCS
+from .core.google import Google
 from .core.indistinct_asset import IndistinctAsset
 from .core.link import Link
 from .core.m_c_incident import MCIncident
@@ -670,6 +695,8 @@ from .core.semantic_dimension import SemanticDimension
 from .core.semantic_entity import SemanticEntity
 from .core.semantic_measure import SemanticMeasure
 from .core.semantic_model import SemanticModel
+from .core.skill import Skill
+from .core.skill_artifact import SkillArtifact
 from .core.snowflake import Snowflake
 from .core.snowflake_a_i_model_context import SnowflakeAIModelContext
 from .core.snowflake_a_i_model_version import SnowflakeAIModelVersion
@@ -706,7 +733,6 @@ from .cube_hierarchy import CubeHierarchy
 from .custom import Custom
 from .custom_entity import CustomEntity
 from .data_set import DataSet
-from .data_studio import DataStudio
 from .data_studio_asset import DataStudioAsset
 from .databricks_external_location import DatabricksExternalLocation
 from .databricks_external_location_path import DatabricksExternalLocationPath
@@ -726,12 +752,6 @@ from .domo_card import DomoCard
 from .domo_dashboard import DomoDashboard
 from .domo_dataset import DomoDataset
 from .domo_dataset_column import DomoDatasetColumn
-from .dremio_column import DremioColumn
-from .dremio_folder import DremioFolder
-from .dremio_physical_dataset import DremioPhysicalDataset
-from .dremio_source import DremioSource
-from .dremio_space import DremioSpace
-from .dremio_virtual_dataset import DremioVirtualDataset
 from .dynamo_d_b import DynamoDB
 from .dynamo_d_b_attribute import DynamoDBAttribute
 from .dynamo_d_b_global_secondary_index import DynamoDBGlobalSecondaryIndex
@@ -741,10 +761,8 @@ from .event_store import EventStore
 from .flow_folder import FlowFolder
 from .flow_project import FlowProject
 from .form import Form
-from .g_c_s import GCS
 from .g_c_s_bucket import GCSBucket
 from .g_c_s_object import GCSObject
-from .google import Google
 from .iceberg import Iceberg
 from .iceberg_catalog import IcebergCatalog
 from .iceberg_column import IcebergColumn

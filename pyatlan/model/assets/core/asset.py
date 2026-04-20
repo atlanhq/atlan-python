@@ -1086,6 +1086,36 @@ class Asset(Referenceable):
     """
     Name of the icon to use for this asset. (Only applies to glossaries, currently.)
     """
+    ASSET_EXTERNAL_DQ_SCORE_VALUE: ClassVar[NumericField] = NumericField(
+        "assetExternalDQScoreValue", "assetExternalDQScoreValue"
+    )
+    """
+    Single asset-level DQ score (0–100). Populated natively by tools that provide one.
+    """
+    ASSET_EXTERNAL_DQ_TEST_LIST: ClassVar[KeywordField] = KeywordField(
+        "assetExternalDQTestList", "assetExternalDQTestList"
+    )
+    """
+    Ordered list of DQ test/scan names on this asset. Positionally aligned with the score metrics.
+    """
+    ASSET_EXTERNAL_DQ_TEST_LATEST_SCORES_LIST: ClassVar[NumericField] = NumericField(
+        "assetExternalDQTestLatestScoresList", "assetExternalDQTestLatestScoresList"
+    )
+    """
+    List of scores of the most recent run for each DQ test.
+    """
+    ASSET_EXTERNAL_DQ_TEST_AVG_SCORES_LIST: ClassVar[NumericField] = NumericField(
+        "assetExternalDQTestAvgScoresList", "assetExternalDQTestAvgScoresList"
+    )
+    """
+    List of mean scores across all runs for each DQ test.
+    """
+    ASSET_EXTERNAL_DQ_TEST_MIN_SCORES_LIST: ClassVar[NumericField] = NumericField(
+        "assetExternalDQTestMinScoresList", "assetExternalDQTestMinScoresList"
+    )
+    """
+    List of minimum (floor) score across all runs for each DQ test.
+    """
     ASSET_EXTERNAL_DQ_METADATA_DETAILS: ClassVar[KeywordField] = KeywordField(
         "assetExternalDQMetadataDetails", "assetExternalDQMetadataDetails"
     )
@@ -1436,6 +1466,12 @@ class Asset(Referenceable):
     """
     TBC
     """
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[RelationField] = RelationField(
+        "gcpDataplexAspectTypeMetadataEntities"
+    )
+    """
+    TBC
+    """
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[RelationField] = RelationField(
         "outputPortDataProducts"
     )
@@ -1463,6 +1499,12 @@ class Asset(Referenceable):
     TBC
     """
     DATA_CONTRACT_LATEST: ClassVar[RelationField] = RelationField("dataContractLatest")
+    """
+    TBC
+    """
+    GCP_DATAPLEX_ASPECT_TYPE_ASSIGNED_ASSETS: ClassVar[RelationField] = RelationField(
+        "gcpDataplexAspectTypeAssignedAssets"
+    )
     """
     TBC
     """
@@ -1641,6 +1683,11 @@ class Asset(Referenceable):
         "asset_soda_check_statuses",
         "asset_soda_source_url",
         "asset_icon",
+        "asset_external_d_q_score_value",
+        "asset_external_d_q_test_list",
+        "asset_external_d_q_test_latest_scores_list",
+        "asset_external_d_q_test_avg_scores_list",
+        "asset_external_d_q_test_min_scores_list",
         "asset_external_d_q_metadata_details",
         "is_partial",
         "is_a_i_generated",
@@ -1700,6 +1747,7 @@ class Asset(Referenceable):
         "anomalo_checks",
         "dq_base_dataset_rules",
         "user_def_relationship_to",
+        "gcp_dataplex_aspect_type_metadata_entities",
         "output_port_data_products",
         "user_def_relationship_from",
         "readme",
@@ -1707,6 +1755,7 @@ class Asset(Referenceable):
         "application_field",
         "data_contract_latest",
         "assigned_terms",
+        "gcp_dataplex_aspect_type_assigned_assets",
         "mc_monitors",
         "application",
         "files",
@@ -3595,6 +3644,92 @@ class Asset(Referenceable):
         self.attributes.asset_icon = asset_icon
 
     @property
+    def asset_external_d_q_score_value(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_score_value
+        )
+
+    @asset_external_d_q_score_value.setter
+    def asset_external_d_q_score_value(
+        self, asset_external_d_q_score_value: Optional[float]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_score_value = asset_external_d_q_score_value
+
+    @property
+    def asset_external_d_q_test_list(self) -> Optional[Set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_test_list
+        )
+
+    @asset_external_d_q_test_list.setter
+    def asset_external_d_q_test_list(
+        self, asset_external_d_q_test_list: Optional[Set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_test_list = asset_external_d_q_test_list
+
+    @property
+    def asset_external_d_q_test_latest_scores_list(self) -> Optional[Set[float]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_test_latest_scores_list
+        )
+
+    @asset_external_d_q_test_latest_scores_list.setter
+    def asset_external_d_q_test_latest_scores_list(
+        self, asset_external_d_q_test_latest_scores_list: Optional[Set[float]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_test_latest_scores_list = (
+            asset_external_d_q_test_latest_scores_list
+        )
+
+    @property
+    def asset_external_d_q_test_avg_scores_list(self) -> Optional[Set[float]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_test_avg_scores_list
+        )
+
+    @asset_external_d_q_test_avg_scores_list.setter
+    def asset_external_d_q_test_avg_scores_list(
+        self, asset_external_d_q_test_avg_scores_list: Optional[Set[float]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_test_avg_scores_list = (
+            asset_external_d_q_test_avg_scores_list
+        )
+
+    @property
+    def asset_external_d_q_test_min_scores_list(self) -> Optional[Set[float]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_external_d_q_test_min_scores_list
+        )
+
+    @asset_external_d_q_test_min_scores_list.setter
+    def asset_external_d_q_test_min_scores_list(
+        self, asset_external_d_q_test_min_scores_list: Optional[Set[float]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_external_d_q_test_min_scores_list = (
+            asset_external_d_q_test_min_scores_list
+        )
+
+    @property
     def asset_external_d_q_metadata_details(
         self,
     ) -> Optional[Dict[str, AssetExternalDQMetadata]]:
@@ -4478,6 +4613,29 @@ class Asset(Referenceable):
         self.attributes.user_def_relationship_to = user_def_relationship_to
 
     @property
+    def gcp_dataplex_aspect_type_metadata_entities(
+        self,
+    ) -> Optional[List[GCPDataplexAspectType]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcp_dataplex_aspect_type_metadata_entities
+        )
+
+    @gcp_dataplex_aspect_type_metadata_entities.setter
+    def gcp_dataplex_aspect_type_metadata_entities(
+        self,
+        gcp_dataplex_aspect_type_metadata_entities: Optional[
+            List[GCPDataplexAspectType]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcp_dataplex_aspect_type_metadata_entities = (
+            gcp_dataplex_aspect_type_metadata_entities
+        )
+
+    @property
     def output_port_data_products(self) -> Optional[List[DataProduct]]:
         return (
             None
@@ -4564,6 +4722,27 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.meanings = assigned_terms
+
+    @property
+    def gcp_dataplex_aspect_type_assigned_assets(
+        self,
+    ) -> Optional[List[GCPDataplexAspectType]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcp_dataplex_aspect_type_assigned_assets
+        )
+
+    @gcp_dataplex_aspect_type_assigned_assets.setter
+    def gcp_dataplex_aspect_type_assigned_assets(
+        self,
+        gcp_dataplex_aspect_type_assigned_assets: Optional[List[GCPDataplexAspectType]],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcp_dataplex_aspect_type_assigned_assets = (
+            gcp_dataplex_aspect_type_assigned_assets
+        )
 
     @property
     def mc_monitors(self) -> Optional[List[MCMonitor]]:
@@ -4915,6 +5094,21 @@ class Asset(Referenceable):
         asset_soda_check_statuses: Optional[str] = Field(default=None, description="")
         asset_soda_source_url: Optional[str] = Field(default=None, description="")
         asset_icon: Optional[str] = Field(default=None, description="")
+        asset_external_d_q_score_value: Optional[float] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_test_list: Optional[Set[str]] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_test_latest_scores_list: Optional[Set[float]] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_test_avg_scores_list: Optional[Set[float]] = Field(
+            default=None, description=""
+        )
+        asset_external_d_q_test_min_scores_list: Optional[Set[float]] = Field(
+            default=None, description=""
+        )
         asset_external_d_q_metadata_details: Optional[
             Dict[str, AssetExternalDQMetadata]
         ] = Field(default=None, description="")
@@ -5048,6 +5242,9 @@ class Asset(Referenceable):
         user_def_relationship_to: Optional[List[Referenceable]] = Field(
             default=None, description=""
         )  # relationship
+        gcp_dataplex_aspect_type_metadata_entities: Optional[
+            List[GCPDataplexAspectType]
+        ] = Field(default=None, description="")  # relationship
         output_port_data_products: Optional[List[DataProduct]] = Field(
             default=None, description=""
         )  # relationship
@@ -5067,6 +5264,9 @@ class Asset(Referenceable):
         meanings: Optional[List[AtlasGlossaryTerm]] = Field(
             default=None, description=""
         )  # relationship
+        gcp_dataplex_aspect_type_assigned_assets: Optional[
+            List[GCPDataplexAspectType]
+        ] = Field(default=None, description="")  # relationship
         mc_monitors: Optional[List[MCMonitor]] = Field(
             default=None, description=""
         )  # relationship
@@ -5129,6 +5329,7 @@ from .data_contract import DataContract  # noqa: E402, F401
 from .data_product import DataProduct  # noqa: E402, F401
 from .data_quality_rule import DataQualityRule  # noqa: E402, F401
 from .file import File  # noqa: E402, F401
+from .g_c_p_dataplex_aspect_type import GCPDataplexAspectType  # noqa: E402, F401
 from .link import Link  # noqa: E402, F401
 from .m_c_incident import MCIncident  # noqa: E402, F401
 from .m_c_monitor import MCMonitor  # noqa: E402, F401

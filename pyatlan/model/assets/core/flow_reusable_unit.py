@@ -42,11 +42,11 @@ class FlowReusableUnit(Flow):
     Count of the number of control flow operations that execute this reusable unit.
     """
 
-    FLOW_DATA_FLOWS: ClassVar[RelationField] = RelationField("flowDataFlows")
+    FLOW_ABSTRACTS: ClassVar[RelationField] = RelationField("flowAbstracts")
     """
     TBC
     """
-    FLOW_ABSTRACTS: ClassVar[RelationField] = RelationField("flowAbstracts")
+    FLOW_DATA_FLOWS: ClassVar[RelationField] = RelationField("flowDataFlows")
     """
     TBC
     """
@@ -58,8 +58,8 @@ class FlowReusableUnit(Flow):
     _convenience_properties: ClassVar[List[str]] = [
         "flow_dataset_count",
         "flow_control_operation_count",
-        "flow_data_flows",
         "flow_abstracts",
+        "flow_data_flows",
         "flow_datasets",
     ]
 
@@ -88,16 +88,6 @@ class FlowReusableUnit(Flow):
         self.attributes.flow_control_operation_count = flow_control_operation_count
 
     @property
-    def flow_data_flows(self) -> Optional[List[FlowDatasetOperation]]:
-        return None if self.attributes is None else self.attributes.flow_data_flows
-
-    @flow_data_flows.setter
-    def flow_data_flows(self, flow_data_flows: Optional[List[FlowDatasetOperation]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.flow_data_flows = flow_data_flows
-
-    @property
     def flow_abstracts(self) -> Optional[List[FlowDataset]]:
         return None if self.attributes is None else self.attributes.flow_abstracts
 
@@ -106,6 +96,16 @@ class FlowReusableUnit(Flow):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.flow_abstracts = flow_abstracts
+
+    @property
+    def flow_data_flows(self) -> Optional[List[FlowDatasetOperation]]:
+        return None if self.attributes is None else self.attributes.flow_data_flows
+
+    @flow_data_flows.setter
+    def flow_data_flows(self, flow_data_flows: Optional[List[FlowDatasetOperation]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flow_data_flows = flow_data_flows
 
     @property
     def flow_datasets(self) -> Optional[List[FlowDataset]]:
@@ -122,10 +122,10 @@ class FlowReusableUnit(Flow):
         flow_control_operation_count: Optional[int] = Field(
             default=None, description=""
         )
-        flow_data_flows: Optional[List[FlowDatasetOperation]] = Field(
+        flow_abstracts: Optional[List[FlowDataset]] = Field(
             default=None, description=""
         )  # relationship
-        flow_abstracts: Optional[List[FlowDataset]] = Field(
+        flow_data_flows: Optional[List[FlowDatasetOperation]] = Field(
             default=None, description=""
         )  # relationship
         flow_datasets: Optional[List[FlowDataset]] = Field(

@@ -19,7 +19,7 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import AssetHistogram, ColumnValueFrequencyMap, Histogram
 
-from .core.dremio import Dremio
+from .dremio import Dremio
 
 
 class DremioColumn(Dremio):
@@ -262,7 +262,7 @@ class DremioColumn(Dremio):
     Order (position) in which this column appears in the table (starting at 1).
     """
     NESTED_COLUMN_ORDER: ClassVar[KeywordField] = KeywordField(
-        "nestedColumnOrder", "nestedColumnOrder"
+        "nestedColumnOrder", "nestedColumnOrder.order"
     )
     """
     Order (position) in which this column appears in the nested Column (nest level starts at 1).
@@ -374,6 +374,12 @@ class DremioColumn(Dremio):
     )
     """
     Number of rows that contain distinct values.
+    """
+    COLUMN_DISTINCT_VALUES_PERCENTAGE: ClassVar[NumericField] = NumericField(
+        "columnDistinctValuesPercentage", "columnDistinctValuesPercentage"
+    )
+    """
+    Percentage of rows in a column that contain distinct values.
     """
     COLUMN_HISTOGRAM: ClassVar[KeywordField] = KeywordField(
         "columnHistogram", "columnHistogram"
@@ -782,6 +788,7 @@ class DremioColumn(Dremio):
         "parent_column_name",
         "column_distinct_values_count",
         "column_distinct_values_count_long",
+        "column_distinct_values_percentage",
         "column_histogram",
         "column_max",
         "column_min",
@@ -1580,6 +1587,24 @@ class DremioColumn(Dremio):
             self.attributes = self.Attributes()
         self.attributes.column_distinct_values_count_long = (
             column_distinct_values_count_long
+        )
+
+    @property
+    def column_distinct_values_percentage(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_distinct_values_percentage
+        )
+
+    @column_distinct_values_percentage.setter
+    def column_distinct_values_percentage(
+        self, column_distinct_values_percentage: Optional[float]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_distinct_values_percentage = (
+            column_distinct_values_percentage
         )
 
     @property
@@ -2482,6 +2507,9 @@ class DremioColumn(Dremio):
         column_distinct_values_count_long: Optional[int] = Field(
             default=None, description=""
         )
+        column_distinct_values_percentage: Optional[float] = Field(
+            default=None, description=""
+        )
         column_histogram: Optional[Histogram] = Field(default=None, description="")
         column_max: Optional[float] = Field(default=None, description="")
         column_min: Optional[float] = Field(default=None, description="")
@@ -2631,22 +2659,18 @@ class DremioColumn(Dremio):
     )
 
 
-from .core.calculation_view import CalculationView  # noqa: E402, F401
-from .core.column import Column  # noqa: E402, F401
-from .core.cosmos_mongo_d_b_collection import (
-    CosmosMongoDBCollection,  # noqa: E402, F401
-)
-from .core.data_quality_rule import DataQualityRule  # noqa: E402, F401
-from .core.dbt_metric import DbtMetric  # noqa: E402, F401
-from .core.dbt_model_column import DbtModelColumn  # noqa: E402, F401
-from .core.materialised_view import MaterialisedView  # noqa: E402, F401
-from .core.metric import Metric  # noqa: E402, F401
-from .core.mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
-from .core.query import Query  # noqa: E402, F401
-from .core.snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
-from .core.sql_insight_filter import SqlInsightFilter  # noqa: E402, F401
-from .core.table import Table  # noqa: E402, F401
-from .core.table_partition import TablePartition  # noqa: E402, F401
-from .core.view import View  # noqa: E402, F401
-
-DremioColumn.Attributes.update_forward_refs()
+from .calculation_view import CalculationView  # noqa: E402, F401
+from .column import Column  # noqa: E402, F401
+from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection  # noqa: E402, F401
+from .data_quality_rule import DataQualityRule  # noqa: E402, F401
+from .dbt_metric import DbtMetric  # noqa: E402, F401
+from .dbt_model_column import DbtModelColumn  # noqa: E402, F401
+from .materialised_view import MaterialisedView  # noqa: E402, F401
+from .metric import Metric  # noqa: E402, F401
+from .mongo_d_b_collection import MongoDBCollection  # noqa: E402, F401
+from .query import Query  # noqa: E402, F401
+from .snowflake_dynamic_table import SnowflakeDynamicTable  # noqa: E402, F401
+from .sql_insight_filter import SqlInsightFilter  # noqa: E402, F401
+from .table import Table  # noqa: E402, F401
+from .table_partition import TablePartition  # noqa: E402, F401
+from .view import View  # noqa: E402, F401

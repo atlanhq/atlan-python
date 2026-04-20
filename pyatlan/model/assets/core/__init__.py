@@ -19,6 +19,7 @@ from .adf_dataflow import AdfDataflow
 from .adf_dataset import AdfDataset
 from .adf_linkedservice import AdfLinkedservice
 from .adf_pipeline import AdfPipeline
+from .agentic import Agentic
 from .airflow import Airflow
 from .airflow_dag import AirflowDag
 from .airflow_task import AirflowTask
@@ -28,6 +29,7 @@ from .app import App
 from .app_workflow_run import AppWorkflowRun
 from .application import Application
 from .application_field import ApplicationField
+from .artifact import Artifact
 from .asset import Asset
 from .atlas_glossary import AtlasGlossary
 from .atlas_glossary_category import AtlasGlossaryCategory
@@ -38,8 +40,12 @@ from .b_i_process import BIProcess
 from .bigquery_routine import BigqueryRoutine
 from .calculation_view import CalculationView
 from .catalog import Catalog
+from .cloud import Cloud
 from .column import Column
 from .column_process import ColumnProcess
+from .context import Context
+from .context_artifact import ContextArtifact
+from .context_repository import ContextRepository
 from .cosmos_mongo_d_b import CosmosMongoDB
 from .cosmos_mongo_d_b_account import CosmosMongoDBAccount
 from .cosmos_mongo_d_b_collection import CosmosMongoDBCollection
@@ -52,6 +58,7 @@ from .data_product import DataProduct
 from .data_quality import DataQuality
 from .data_quality_rule import DataQualityRule
 from .data_quality_rule_template import DataQualityRuleTemplate
+from .data_studio import DataStudio
 from .database import Database
 from .databricks import Databricks
 from .databricks_a_i_model_context import DatabricksAIModelContext
@@ -71,6 +78,12 @@ from .document_d_b import DocumentDB
 from .document_d_b_collection import DocumentDBCollection
 from .document_d_b_database import DocumentDBDatabase
 from .dremio import Dremio
+from .dremio_column import DremioColumn
+from .dremio_folder import DremioFolder
+from .dremio_physical_dataset import DremioPhysicalDataset
+from .dremio_source import DremioSource
+from .dremio_space import DremioSpace
+from .dremio_virtual_dataset import DremioVirtualDataset
 from .dynamo_d_b_secondary_index import DynamoDBSecondaryIndex
 from .fabric import Fabric
 from .fabric_activity import FabricActivity
@@ -97,6 +110,10 @@ from .flow_field_operation import FlowFieldOperation
 from .flow_reusable_unit import FlowReusableUnit
 from .folder import Folder
 from .function import Function
+from .g_c_p_dataplex import GCPDataplex
+from .g_c_p_dataplex_aspect_type import GCPDataplexAspectType
+from .g_c_s import GCS
+from .google import Google
 from .indistinct_asset import IndistinctAsset  # noqa: F401
 from .link import Link
 from .m_c_incident import MCIncident
@@ -153,6 +170,8 @@ from .semantic_dimension import SemanticDimension
 from .semantic_entity import SemanticEntity
 from .semantic_measure import SemanticMeasure
 from .semantic_model import SemanticModel
+from .skill import Skill
+from .skill_artifact import SkillArtifact
 from .snowflake import Snowflake
 from .snowflake_a_i_model_context import SnowflakeAIModelContext
 from .snowflake_a_i_model_version import SnowflakeAIModelVersion
@@ -200,6 +219,7 @@ Namespace.Attributes.update_forward_refs(**localns)
 Flow.Attributes.update_forward_refs(**localns)
 AtlasGlossary.Attributes.update_forward_refs(**localns)
 AtlasGlossaryTerm.Attributes.update_forward_refs(**localns)
+Cloud.Attributes.update_forward_refs(**localns)
 FlowDatasetOperation.Attributes.update_forward_refs(**localns)
 BIProcess.Attributes.update_forward_refs(**localns)
 ColumnProcess.Attributes.update_forward_refs(**localns)
@@ -207,6 +227,7 @@ Persona.Attributes.update_forward_refs(**localns)
 App.Attributes.update_forward_refs(**localns)
 Airflow.Attributes.update_forward_refs(**localns)
 ADF.Attributes.update_forward_refs(**localns)
+Agentic.Attributes.update_forward_refs(**localns)
 BI.Attributes.update_forward_refs(**localns)
 Semantic.Attributes.update_forward_refs(**localns)
 FlowDataset.Attributes.update_forward_refs(**localns)
@@ -232,6 +253,7 @@ Folder.Attributes.update_forward_refs(**localns)
 FlowReusableUnit.Attributes.update_forward_refs(**localns)
 FlowFieldOperation.Attributes.update_forward_refs(**localns)
 FlowControlOperation.Attributes.update_forward_refs(**localns)
+Google.Attributes.update_forward_refs(**localns)
 Stakeholder.Attributes.update_forward_refs(**localns)
 ApplicationField.Attributes.update_forward_refs(**localns)
 Application.Attributes.update_forward_refs(**localns)
@@ -242,6 +264,10 @@ AdfDataset.Attributes.update_forward_refs(**localns)
 AdfPipeline.Attributes.update_forward_refs(**localns)
 AdfLinkedservice.Attributes.update_forward_refs(**localns)
 AdfActivity.Attributes.update_forward_refs(**localns)
+Context.Attributes.update_forward_refs(**localns)
+Skill.Attributes.update_forward_refs(**localns)
+Artifact.Attributes.update_forward_refs(**localns)
+DataStudio.Attributes.update_forward_refs(**localns)
 PowerBI.Attributes.update_forward_refs(**localns)
 Fabric.Attributes.update_forward_refs(**localns)
 SemanticDimension.Attributes.update_forward_refs(**localns)
@@ -259,6 +285,7 @@ DbtSeed.Attributes.update_forward_refs(**localns)
 DbtMetric.Attributes.update_forward_refs(**localns)
 DbtSource.Attributes.update_forward_refs(**localns)
 FivetranConnector.Attributes.update_forward_refs(**localns)
+GCS.Attributes.update_forward_refs(**localns)
 Anomalo.Attributes.update_forward_refs(**localns)
 MonteCarlo.Attributes.update_forward_refs(**localns)
 DataQualityRuleTemplate.Attributes.update_forward_refs(**localns)
@@ -309,6 +336,10 @@ ModelDataModel.Attributes.update_forward_refs(**localns)
 SparkJob.Attributes.update_forward_refs(**localns)
 SchemaRegistrySubject.Attributes.update_forward_refs(**localns)
 SchemaRegistryVersion.Attributes.update_forward_refs(**localns)
+GCPDataplex.Attributes.update_forward_refs(**localns)
+ContextRepository.Attributes.update_forward_refs(**localns)
+ContextArtifact.Attributes.update_forward_refs(**localns)
+SkillArtifact.Attributes.update_forward_refs(**localns)
 PowerBIReport.Attributes.update_forward_refs(**localns)
 PowerBIDatasource.Attributes.update_forward_refs(**localns)
 PowerBIWorkspace.Attributes.update_forward_refs(**localns)
@@ -355,6 +386,12 @@ DatabricksAIModelVersion.Attributes.update_forward_refs(**localns)
 SnowflakeAIModelVersion.Attributes.update_forward_refs(**localns)
 SnowflakeAIModelContext.Attributes.update_forward_refs(**localns)
 DatabricksAIModelContext.Attributes.update_forward_refs(**localns)
+DremioVirtualDataset.Attributes.update_forward_refs(**localns)
+DremioColumn.Attributes.update_forward_refs(**localns)
+DremioSpace.Attributes.update_forward_refs(**localns)
+DremioPhysicalDataset.Attributes.update_forward_refs(**localns)
+DremioFolder.Attributes.update_forward_refs(**localns)
+DremioSource.Attributes.update_forward_refs(**localns)
 SnowflakeDynamicTable.Attributes.update_forward_refs(**localns)
 StarburstDataset.Attributes.update_forward_refs(**localns)
 DatabricksMetricView.Attributes.update_forward_refs(**localns)
@@ -362,3 +399,4 @@ StarburstDatasetColumn.Attributes.update_forward_refs(**localns)
 BigqueryRoutine.Attributes.update_forward_refs(**localns)
 DatabricksVolume.Attributes.update_forward_refs(**localns)
 DatabricksVolumePath.Attributes.update_forward_refs(**localns)
+GCPDataplexAspectType.Attributes.update_forward_refs(**localns)

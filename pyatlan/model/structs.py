@@ -50,57 +50,6 @@ class AtlanObject(BaseModel):
         return values
 
 
-class AssetExternalDQMetadata(AtlanObject):
-    """Description"""
-
-    asset_external_d_q_system_name: Optional[str] = Field(default=None, description="")
-    asset_external_d_q_source_logo: Optional[str] = Field(default=None, description="")
-    asset_external_d_q_source_url: Optional[str] = Field(default=None, description="")
-    asset_external_d_q_last_sync_run_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_entity_name: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_total_count: Optional[int] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_last_run_success_count: Optional[int] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_last_run_failure_count: Optional[int] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_overall_score_value: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_overall_score_type: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_score_dimensions: Optional[
-        List[AssetExternalDQScoreBreakdownByDimension]
-    ] = Field(default=None, description="")
-    asset_external_d_q_tests: Optional[List[AssetExternalDQTestDetails]] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_stats: Optional[AssetExternalDQTestStats] = Field(
-        default=None, description=""
-    )
-
-
-class MCRuleSchedule(AtlanObject):
-    """Description"""
-
-    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
-    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_start_time: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
-
-
 class DbtJobRun(AtlanObject):
     """Description"""
 
@@ -124,13 +73,11 @@ class AwsCloudWatchMetric(AtlanObject):
     aws_cloud_watch_metric_scope: str = Field(description="")
 
 
-class Action(AtlanObject):
+class Histogram(AtlanObject):
     """Description"""
 
-    task_action_fulfillment_url: Optional[str] = Field(default=None, description="")
-    task_action_fulfillment_method: Optional[str] = Field(default=None, description="")
-    task_action_fulfillment_payload: Optional[str] = Field(default=None, description="")
-    task_action_display_text: Optional[str] = Field(default=None, description="")
+    boundaries: Set[float] = Field(description="")
+    frequencies: Set[float] = Field(description="")
 
 
 class AtlanAppErrorHandling(AtlanObject):
@@ -149,59 +96,6 @@ class AtlanAppErrorHandling(AtlanObject):
         default=None, description=""
     )
     atlan_app_error_handling_non_retryable_error_types: Optional[Set[str]] = Field(
-        default=None, description=""
-    )
-
-
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: Set[float] = Field(description="")
-    frequencies: Set[float] = Field(description="")
-
-
-class AssetExternalDQTestRunHistory(AtlanObject):
-    """Description"""
-
-    asset_external_d_q_test_run_started_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_run_ended_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_run_status: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_metric_info: Optional[AssetExternalDQTestMetric] = Field(
-        default=None, description=""
-    )
-
-
-class ColumnValueFrequencyMap(AtlanObject):
-    """Description"""
-
-    column_value: Optional[str] = Field(default=None, description="")
-    column_value_frequency: Optional[int] = Field(default=None, description="")
-
-
-class IcebergPartition(AtlanObject):
-    """Description"""
-
-    iceberg_field_name: Optional[str] = Field(default=None, description="")
-    iceberg_transform: Optional[str] = Field(default=None, description="")
-    iceberg_source_id: Optional[int] = Field(default=None, description="")
-
-
-class AssetExternalDQTestMetric(AtlanObject):
-    """Description"""
-
-    asset_external_d_q_test_metric_observed_value: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_metric_upper_bound: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_test_metric_lower_bound: Optional[str] = Field(
         default=None, description=""
     )
 
@@ -238,6 +132,398 @@ class BadgeCondition(AtlanObject):
     badge_condition_colorhex: Optional[str] = Field(default=None, description="")
 
 
+class AssetExternalDQTestScoreDimension(AtlanObject):
+    """Description"""
+
+    asset_external_d_q_test_score_dimension_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_score_dimension_description: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_score_dimension_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_score_dimension_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
+class AssetGCPDataplexAspectMetadata(AtlanObject):
+    """Description"""
+
+    asset_g_c_p_dataplex_aspect_full_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_g_c_p_dataplex_aspect_display_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_g_c_p_dataplex_aspect_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_g_c_p_dataplex_aspect_type_labels: Optional[Dict[str, str]] = Field(
+        default=None, description=""
+    )
+    asset_g_c_p_dataplex_aspect_created_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_g_c_p_dataplex_aspect_updated_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_g_c_p_dataplex_aspect_fields: Optional[Dict[str, str]] = Field(
+        default=None, description=""
+    )
+
+
+class ResponseValue(AtlanObject):
+    """Description"""
+
+    response_field_id: Optional[str] = Field(default=None, description="")
+    response_value_string: Optional[str] = Field(default=None, description="")
+    response_value_int: Optional[int] = Field(default=None, description="")
+    response_value_boolean: Optional[bool] = Field(default=None, description="")
+    response_value_json: Optional[str] = Field(default=None, description="")
+    response_value_long: Optional[int] = Field(default=None, description="")
+    response_value_date: Optional[datetime] = Field(default=None, description="")
+    response_value_arr_string: Optional[Set[str]] = Field(default=None, description="")
+    response_value_arr_int: Optional[Set[int]] = Field(default=None, description="")
+    response_value_arr_boolean: Optional[Set[bool]] = Field(
+        default=None, description=""
+    )
+    response_value_arr_json: Optional[Set[str]] = Field(default=None, description="")
+    response_value_arr_long: Optional[Set[int]] = Field(default=None, description="")
+    response_value_arr_date: Optional[Set[datetime]] = Field(
+        default=None, description=""
+    )
+    response_value_options: Optional[Dict[str, str]] = Field(
+        default=None, description=""
+    )
+
+
+class AssetV1ExternalDQTestScoreDimension(AtlanObject):
+    """Description"""
+
+    asset_v1_external_d_q_test_score_dimension_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_score_dimension_description: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_score_dimension_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_score_dimension_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
+class FormField(AtlanObject):
+    """Description"""
+
+    form_field_id: Optional[str] = Field(default=None, description="")
+    form_field_name: Optional[str] = Field(default=None, description="")
+    form_field_type: Optional[FormFieldType] = Field(default=None, description="")
+    form_field_dimension: Optional[FormFieldDimension] = Field(
+        default=None, description=""
+    )
+    form_field_options: Optional[Dict[str, str]] = Field(default=None, description="")
+
+
+class KafkaTopicConsumption(AtlanObject):
+    """Description"""
+
+    topic_name: Optional[str] = Field(default=None, description="")
+    topic_partition: Optional[str] = Field(default=None, description="")
+    topic_lag: Optional[int] = Field(default=None, description="")
+    topic_current_offset: Optional[int] = Field(default=None, description="")
+
+
+class AssetExternalDQTestStatsByCategory(AtlanObject):
+    """Description"""
+
+    asset_external_d_q_tests_by_status: Optional[
+        Dict[str, AssetExternalDQTestsByStatus]
+    ] = Field(default=None, description="")
+
+
+class DatabricksAIModelVersionMetric(AtlanObject):
+    """Description"""
+
+    databricks_a_i_model_version_metric_key: Optional[str] = Field(
+        default=None, description=""
+    )
+    databricks_a_i_model_version_metric_value: Optional[float] = Field(
+        default=None, description=""
+    )
+    databricks_a_i_model_version_metric_timestamp: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    databricks_a_i_model_version_metric_step: Optional[int] = Field(
+        default=None, description=""
+    )
+
+
+class AssetExternalDQTestsByStatus(AtlanObject):
+    """Description"""
+
+    asset_external_d_q_test_count_for_status: Optional[int] = Field(
+        default=None, description=""
+    )
+
+
+class AzureTag(AtlanObject):
+    """Description"""
+
+    azure_tag_key: str = Field(description="")
+    azure_tag_value: str = Field(description="")
+
+
+class AssetExternalDQScoreBreakdownByDimension(AtlanObject):
+    """Description"""
+
+    asset_external_d_q_score_dimension_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_score_dimension_description: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_score_dimension_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_score_dimension_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
+class AssetGCPDataplexMetadata(AtlanObject):
+    """Description"""
+
+    asset_g_c_p_dataplex_last_sync_run_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_g_c_p_dataplex_entry_name: Optional[str] = Field(default=None, description="")
+    asset_g_c_p_dataplex_aspect_details: Optional[
+        Dict[str, AssetGCPDataplexAspectMetadata]
+    ] = Field(default=None, description="")
+
+
+class DataQualityRuleConfigArguments(AtlanObject):
+    """Description"""
+
+    dq_rule_threshold_object: Optional[DataQualityRuleThresholdObject] = Field(
+        default=None, description=""
+    )
+    dq_rule_config_arguments_raw: Optional[str] = Field(default=None, description="")
+    dq_rule_config_rule_conditions: Optional[str] = Field(default=None, description="")
+
+
+class SQLProcedureArgument(AtlanObject):
+    """Description"""
+
+    sql_argument_name: Optional[str] = Field(default=None, description="")
+    sql_argument_type: Optional[str] = Field(default=None, description="")
+
+
+class DbtMetricFilter(AtlanObject):
+    """Description"""
+
+    dbt_metric_filter_column_qualified_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
+    dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
+    dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
+
+
+class AssetHistogram(AtlanObject):
+    """Description"""
+
+    asset_histogram_boundaries: Optional[Set[float]] = Field(
+        default=None, description=""
+    )
+    asset_histogram_frequencies: Optional[Set[float]] = Field(
+        default=None, description=""
+    )
+
+
+class AuthPolicyValiditySchedule(AtlanObject):
+    """Description"""
+
+    policy_validity_schedule_start_time: str = Field(description="")
+    policy_validity_schedule_end_time: str = Field(description="")
+    policy_validity_schedule_timezone: str = Field(description="")
+
+
+class MCRuleComparison(AtlanObject):
+    """Description"""
+
+    mc_rule_comparison_type: Optional[str] = Field(default=None, description="")
+    mc_rule_comparison_field: Optional[str] = Field(default=None, description="")
+    mc_rule_comparison_metric: Optional[str] = Field(default=None, description="")
+    mc_rule_comparison_operator: Optional[str] = Field(default=None, description="")
+    mc_rule_comparison_threshold: Optional[float] = Field(default=None, description="")
+    mc_rule_comparison_is_threshold_relative: Optional[bool] = Field(
+        default=None, description=""
+    )
+
+
+class PopularityInsights(AtlanObject):
+    """Description"""
+
+    record_user: Optional[str] = Field(default=None, description="")
+    record_query: Optional[str] = Field(default=None, description="")
+    record_query_duration: Optional[int] = Field(default=None, description="")
+    record_query_count: Optional[int] = Field(default=None, description="")
+    record_total_user_count: Optional[int] = Field(default=None, description="")
+    record_compute_cost: Optional[float] = Field(default=None, description="")
+    record_max_compute_cost: Optional[float] = Field(default=None, description="")
+    record_compute_cost_unit: Optional[SourceCostUnitType] = Field(
+        default=None, description=""
+    )
+    record_last_timestamp: Optional[datetime] = Field(default=None, description="")
+    record_warehouse: Optional[str] = Field(default=None, description="")
+
+
+class AssetExternalDQMetadata(AtlanObject):
+    """Description"""
+
+    asset_external_d_q_system_name: Optional[str] = Field(default=None, description="")
+    asset_external_d_q_source_logo: Optional[str] = Field(default=None, description="")
+    asset_external_d_q_source_url: Optional[str] = Field(default=None, description="")
+    asset_external_d_q_last_sync_run_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_entity_type_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_entity_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_total_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_last_run_success_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_last_run_failure_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_last_run_total_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_last_run_success_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_last_run_failure_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_overall_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_overall_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_score_dimensions: Optional[
+        List[AssetExternalDQScoreBreakdownByDimension]
+    ] = Field(default=None, description="")
+    asset_external_d_q_tests: Optional[List[AssetExternalDQTestDetails]] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_stats: Optional[AssetExternalDQTestStats] = Field(
+        default=None, description=""
+    )
+
+
+class MCRuleSchedule(AtlanObject):
+    """Description"""
+
+    mc_rule_schedule_type: Optional[str] = Field(default=None, description="")
+    mc_rule_schedule_interval_in_minutes: Optional[int] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_start_time: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    mc_rule_schedule_crontab: Optional[str] = Field(default=None, description="")
+
+
+class Action(AtlanObject):
+    """Description"""
+
+    task_action_fulfillment_url: Optional[str] = Field(default=None, description="")
+    task_action_fulfillment_method: Optional[str] = Field(default=None, description="")
+    task_action_fulfillment_payload: Optional[str] = Field(default=None, description="")
+    task_action_display_text: Optional[str] = Field(default=None, description="")
+
+
+class AssetExternalDQTestRunHistory(AtlanObject):
+    """Description"""
+
+    asset_external_d_q_test_run_id: Optional[str] = Field(default=None, description="")
+    asset_external_d_q_test_run_started_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_run_ended_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_run_status: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_run_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_total_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_passed_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_failed_rules_count: Optional[int] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_metric_info: Optional[AssetExternalDQTestMetric] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_score_dimensions: Optional[
+        List[AssetExternalDQTestScoreDimension]
+    ] = Field(default=None, description="")
+    asset_external_d_q_test_rules: Optional[List[AssetExternalDQTestRule]] = Field(
+        default=None, description=""
+    )
+
+
+class ColumnValueFrequencyMap(AtlanObject):
+    """Description"""
+
+    column_value: Optional[str] = Field(default=None, description="")
+    column_value_frequency: Optional[int] = Field(default=None, description="")
+
+
+class IcebergPartition(AtlanObject):
+    """Description"""
+
+    iceberg_field_name: Optional[str] = Field(default=None, description="")
+    iceberg_transform: Optional[str] = Field(default=None, description="")
+    iceberg_source_id: Optional[int] = Field(default=None, description="")
+
+
+class AssetExternalDQTestMetric(AtlanObject):
+    """Description"""
+
+    asset_external_d_q_test_metric_observed_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_metric_upper_bound: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_metric_lower_bound: Optional[str] = Field(
+        default=None, description=""
+    )
+
+
 class SourceTagAttachmentValue(AtlanObject):
     """Description"""
 
@@ -270,30 +556,11 @@ class AwsTag(AtlanObject):
     aws_tag_value: str = Field(description="")
 
 
-class AssetGCPDataplexAspectMetadata(AtlanObject):
+class GoogleTag(AtlanObject):
     """Description"""
 
-    asset_g_c_p_dataplex_aspect_full_name: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_g_c_p_dataplex_aspect_display_name: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_g_c_p_dataplex_aspect_type: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_g_c_p_dataplex_aspect_type_labels: Optional[Dict[str, str]] = Field(
-        default=None, description=""
-    )
-    asset_g_c_p_dataplex_aspect_created_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_g_c_p_dataplex_aspect_updated_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_g_c_p_dataplex_aspect_fields: Optional[Dict[str, str]] = Field(
-        default=None, description=""
-    )
+    google_tag_key: str = Field(description="")
+    google_tag_value: str = Field(description="")
 
 
 class AssetExternalDQTestDetails(AtlanObject):
@@ -315,11 +582,21 @@ class AssetExternalDQTestDetails(AtlanObject):
     )
 
 
-class GoogleTag(AtlanObject):
+class AssetV2ExternalDQTestScoreDimension(AtlanObject):
     """Description"""
 
-    google_tag_key: str = Field(description="")
-    google_tag_value: str = Field(description="")
+    asset_v2_external_d_q_test_score_dimension_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_score_dimension_description: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_score_dimension_score_value: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_score_dimension_score_type: Optional[str] = Field(
+        default=None, description=""
+    )
 
 
 class BusinessPolicyRule(AtlanObject):
@@ -334,41 +611,56 @@ class BusinessPolicyRule(AtlanObject):
     bpr_query: Optional[str] = Field(default=None, description="")
 
 
-class ResponseValue(AtlanObject):
+class AssetExternalDQTestRule(AtlanObject):
     """Description"""
 
-    response_field_id: Optional[str] = Field(default=None, description="")
-    response_value_string: Optional[str] = Field(default=None, description="")
-    response_value_int: Optional[int] = Field(default=None, description="")
-    response_value_boolean: Optional[bool] = Field(default=None, description="")
-    response_value_json: Optional[str] = Field(default=None, description="")
-    response_value_long: Optional[int] = Field(default=None, description="")
-    response_value_date: Optional[datetime] = Field(default=None, description="")
-    response_value_arr_string: Optional[Set[str]] = Field(default=None, description="")
-    response_value_arr_int: Optional[Set[int]] = Field(default=None, description="")
-    response_value_arr_boolean: Optional[Set[bool]] = Field(
+    asset_external_d_q_test_rule_name: Optional[str] = Field(
         default=None, description=""
     )
-    response_value_arr_json: Optional[Set[str]] = Field(default=None, description="")
-    response_value_arr_long: Optional[Set[int]] = Field(default=None, description="")
-    response_value_arr_date: Optional[Set[datetime]] = Field(
+    asset_external_d_q_test_rule_evaluation_status: Optional[str] = Field(
         default=None, description=""
     )
-    response_value_options: Optional[Dict[str, str]] = Field(
+    asset_external_d_q_test_rule_evaluated_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_rule_impact: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_rule_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_rule_column_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_external_d_q_test_rule_dimension: Optional[str] = Field(
         default=None, description=""
     )
 
 
-class FormField(AtlanObject):
+class AssetV1ExternalDQTestRule(AtlanObject):
     """Description"""
 
-    form_field_id: Optional[str] = Field(default=None, description="")
-    form_field_name: Optional[str] = Field(default=None, description="")
-    form_field_type: Optional[FormFieldType] = Field(default=None, description="")
-    form_field_dimension: Optional[FormFieldDimension] = Field(
+    asset_v1_external_d_q_test_rule_name: Optional[str] = Field(
         default=None, description=""
     )
-    form_field_options: Optional[Dict[str, str]] = Field(default=None, description="")
+    asset_v1_external_d_q_test_rule_evaluation_status: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_evaluated_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_impact: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_column: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v1_external_d_q_test_rule_dimension: Optional[str] = Field(
+        default=None, description=""
+    )
 
 
 class DbtInputContext(AtlanObject):
@@ -403,40 +695,6 @@ class AssetSmusMetadataFormDetails(AtlanObject):
     )
 
 
-class KafkaTopicConsumption(AtlanObject):
-    """Description"""
-
-    topic_name: Optional[str] = Field(default=None, description="")
-    topic_partition: Optional[str] = Field(default=None, description="")
-    topic_lag: Optional[int] = Field(default=None, description="")
-    topic_current_offset: Optional[int] = Field(default=None, description="")
-
-
-class DatabricksAIModelVersionMetric(AtlanObject):
-    """Description"""
-
-    databricks_a_i_model_version_metric_key: Optional[str] = Field(
-        default=None, description=""
-    )
-    databricks_a_i_model_version_metric_value: Optional[float] = Field(
-        default=None, description=""
-    )
-    databricks_a_i_model_version_metric_timestamp: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    databricks_a_i_model_version_metric_step: Optional[int] = Field(
-        default=None, description=""
-    )
-
-
-class AssetExternalDQTestStatsByCategory(AtlanObject):
-    """Description"""
-
-    asset_external_d_q_tests_by_status: Optional[
-        Dict[str, AssetExternalDQTestsByStatus]
-    ] = Field(default=None, description="")
-
-
 class SQLProcedureReturn(AtlanObject):
     """Description"""
 
@@ -453,10 +711,28 @@ class SQLProcedureReturn(AtlanObject):
     )
 
 
-class AssetExternalDQTestsByStatus(AtlanObject):
+class AssetV2ExternalDQTestRule(AtlanObject):
     """Description"""
 
-    asset_external_d_q_test_count_for_status: Optional[int] = Field(
+    asset_v2_external_d_q_test_rule_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_evaluation_status: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_evaluated_at: Optional[datetime] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_impact: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_type: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_column_name: Optional[str] = Field(
+        default=None, description=""
+    )
+    asset_v2_external_d_q_test_rule_dimension: Optional[str] = Field(
         default=None, description=""
     )
 
@@ -646,85 +922,11 @@ class SourceTagAttachment(AtlanObject):
         )
 
 
-class AzureTag(AtlanObject):
-    """Description"""
-
-    azure_tag_key: str = Field(description="")
-    azure_tag_value: str = Field(description="")
-
-
-class AssetExternalDQScoreBreakdownByDimension(AtlanObject):
-    """Description"""
-
-    asset_external_d_q_score_dimension_name: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_score_dimension_description: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_score_dimension_score_value: Optional[str] = Field(
-        default=None, description=""
-    )
-    asset_external_d_q_score_dimension_score_type: Optional[str] = Field(
-        default=None, description=""
-    )
-
-
 class AuthPolicyCondition(AtlanObject):
     """Description"""
 
     policy_condition_type: str = Field(description="")
     policy_condition_values: Set[str] = Field(description="")
-
-
-class SQLProcedureArgument(AtlanObject):
-    """Description"""
-
-    sql_argument_name: Optional[str] = Field(default=None, description="")
-    sql_argument_type: Optional[str] = Field(default=None, description="")
-
-
-class DataQualityRuleConfigArguments(AtlanObject):
-    """Description"""
-
-    dq_rule_threshold_object: Optional[DataQualityRuleThresholdObject] = Field(
-        default=None, description=""
-    )
-    dq_rule_config_arguments_raw: Optional[str] = Field(default=None, description="")
-    dq_rule_config_rule_conditions: Optional[str] = Field(default=None, description="")
-
-
-class AssetGCPDataplexMetadata(AtlanObject):
-    """Description"""
-
-    asset_g_c_p_dataplex_last_sync_run_at: Optional[datetime] = Field(
-        default=None, description=""
-    )
-    asset_g_c_p_dataplex_aspect_details: Optional[
-        Dict[str, AssetGCPDataplexAspectMetadata]
-    ] = Field(default=None, description="")
-
-
-class DbtMetricFilter(AtlanObject):
-    """Description"""
-
-    dbt_metric_filter_column_qualified_name: Optional[str] = Field(
-        default=None, description=""
-    )
-    dbt_metric_filter_field: Optional[str] = Field(default=None, description="")
-    dbt_metric_filter_operator: Optional[str] = Field(default=None, description="")
-    dbt_metric_filter_value: Optional[str] = Field(default=None, description="")
-
-
-class AssetHistogram(AtlanObject):
-    """Description"""
-
-    asset_histogram_boundaries: Optional[Set[float]] = Field(
-        default=None, description=""
-    )
-    asset_histogram_frequencies: Optional[Set[float]] = Field(
-        default=None, description=""
-    )
 
 
 class DataQualityRuleTemplateConfig(AtlanObject):
@@ -786,27 +988,6 @@ class AppWorkflowRunStep(AtlanObject):
     )
 
 
-class AuthPolicyValiditySchedule(AtlanObject):
-    """Description"""
-
-    policy_validity_schedule_start_time: str = Field(description="")
-    policy_validity_schedule_end_time: str = Field(description="")
-    policy_validity_schedule_timezone: str = Field(description="")
-
-
-class MCRuleComparison(AtlanObject):
-    """Description"""
-
-    mc_rule_comparison_type: Optional[str] = Field(default=None, description="")
-    mc_rule_comparison_field: Optional[str] = Field(default=None, description="")
-    mc_rule_comparison_metric: Optional[str] = Field(default=None, description="")
-    mc_rule_comparison_operator: Optional[str] = Field(default=None, description="")
-    mc_rule_comparison_threshold: Optional[float] = Field(default=None, description="")
-    mc_rule_comparison_is_threshold_relative: Optional[bool] = Field(
-        default=None, description=""
-    )
-
-
 class SqlInsightJoinColumnPair(AtlanObject):
     """Description"""
 
@@ -837,23 +1018,6 @@ class DataQualityRuleThresholdObject(AtlanObject):
     )
 
 
-class PopularityInsights(AtlanObject):
-    """Description"""
-
-    record_user: Optional[str] = Field(default=None, description="")
-    record_query: Optional[str] = Field(default=None, description="")
-    record_query_duration: Optional[int] = Field(default=None, description="")
-    record_query_count: Optional[int] = Field(default=None, description="")
-    record_total_user_count: Optional[int] = Field(default=None, description="")
-    record_compute_cost: Optional[float] = Field(default=None, description="")
-    record_max_compute_cost: Optional[float] = Field(default=None, description="")
-    record_compute_cost_unit: Optional[SourceCostUnitType] = Field(
-        default=None, description=""
-    )
-    record_last_timestamp: Optional[datetime] = Field(default=None, description="")
-    record_warehouse: Optional[str] = Field(default=None, description="")
-
-
 class SourceTagAttribute(AtlanObject):
     """Description"""
 
@@ -864,19 +1028,59 @@ class SourceTagAttribute(AtlanObject):
     )
 
 
-AssetExternalDQMetadata.update_forward_refs()
-
-MCRuleSchedule.update_forward_refs()
-
 DbtJobRun.update_forward_refs()
 
 AwsCloudWatchMetric.update_forward_refs()
 
-Action.update_forward_refs()
+Histogram.update_forward_refs()
 
 AtlanAppErrorHandling.update_forward_refs()
 
-Histogram.update_forward_refs()
+BadgeCondition.update_forward_refs()
+
+AssetExternalDQTestScoreDimension.update_forward_refs()
+
+AssetGCPDataplexAspectMetadata.update_forward_refs()
+
+ResponseValue.update_forward_refs()
+
+AssetV1ExternalDQTestScoreDimension.update_forward_refs()
+
+FormField.update_forward_refs()
+
+KafkaTopicConsumption.update_forward_refs()
+
+AssetExternalDQTestStatsByCategory.update_forward_refs()
+
+DatabricksAIModelVersionMetric.update_forward_refs()
+
+AssetExternalDQTestsByStatus.update_forward_refs()
+
+AzureTag.update_forward_refs()
+
+AssetExternalDQScoreBreakdownByDimension.update_forward_refs()
+
+AssetGCPDataplexMetadata.update_forward_refs()
+
+DataQualityRuleConfigArguments.update_forward_refs()
+
+SQLProcedureArgument.update_forward_refs()
+
+DbtMetricFilter.update_forward_refs()
+
+AssetHistogram.update_forward_refs()
+
+AuthPolicyValiditySchedule.update_forward_refs()
+
+MCRuleComparison.update_forward_refs()
+
+PopularityInsights.update_forward_refs()
+
+AssetExternalDQMetadata.update_forward_refs()
+
+MCRuleSchedule.update_forward_refs()
+
+Action.update_forward_refs()
 
 AssetExternalDQTestRunHistory.update_forward_refs()
 
@@ -886,8 +1090,6 @@ IcebergPartition.update_forward_refs()
 
 AssetExternalDQTestMetric.update_forward_refs()
 
-BadgeCondition.update_forward_refs()
-
 SourceTagAttachmentValue.update_forward_refs()
 
 StarredDetails.update_forward_refs()
@@ -896,64 +1098,38 @@ AssetExternalDQTestStats.update_forward_refs()
 
 AwsTag.update_forward_refs()
 
-AssetGCPDataplexAspectMetadata.update_forward_refs()
+GoogleTag.update_forward_refs()
 
 AssetExternalDQTestDetails.update_forward_refs()
 
-GoogleTag.update_forward_refs()
+AssetV2ExternalDQTestScoreDimension.update_forward_refs()
 
 BusinessPolicyRule.update_forward_refs()
 
-ResponseValue.update_forward_refs()
+AssetExternalDQTestRule.update_forward_refs()
 
-FormField.update_forward_refs()
+AssetV1ExternalDQTestRule.update_forward_refs()
 
 DbtInputContext.update_forward_refs()
 
 AssetSmusMetadataFormDetails.update_forward_refs()
 
-KafkaTopicConsumption.update_forward_refs()
-
-DatabricksAIModelVersionMetric.update_forward_refs()
-
-AssetExternalDQTestStatsByCategory.update_forward_refs()
-
 SQLProcedureReturn.update_forward_refs()
 
-AssetExternalDQTestsByStatus.update_forward_refs()
+AssetV2ExternalDQTestRule.update_forward_refs()
 
 SourceTagAttachment.update_forward_refs()
 
-AzureTag.update_forward_refs()
-
-AssetExternalDQScoreBreakdownByDimension.update_forward_refs()
-
 AuthPolicyCondition.update_forward_refs()
-
-SQLProcedureArgument.update_forward_refs()
-
-DataQualityRuleConfigArguments.update_forward_refs()
-
-AssetGCPDataplexMetadata.update_forward_refs()
-
-DbtMetricFilter.update_forward_refs()
-
-AssetHistogram.update_forward_refs()
 
 DataQualityRuleTemplateConfig.update_forward_refs()
 
 AppWorkflowRunStep.update_forward_refs()
-
-AuthPolicyValiditySchedule.update_forward_refs()
-
-MCRuleComparison.update_forward_refs()
 
 SqlInsightJoinColumnPair.update_forward_refs()
 
 GoogleLabel.update_forward_refs()
 
 DataQualityRuleThresholdObject.update_forward_refs()
-
-PopularityInsights.update_forward_refs()
 
 SourceTagAttribute.update_forward_refs()
