@@ -277,6 +277,10 @@ class AssetInfo:
         "ContextRepository",
         "ContextArtifact",
         "Dremio",
+        "Cloud",
+        "Google",
+        "GCPDataplex",
+        "GCPDataplexAspectType",
     }
     _IGNORE_ASSETS = {}  # type: ignore[var-annotated]
 
