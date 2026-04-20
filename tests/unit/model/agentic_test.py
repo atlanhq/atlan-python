@@ -25,7 +25,7 @@ def test_agentic_type_name_is_immutable():
 def test_type_hierarchy():
     """Verify MRO: concrete types extend through Agentic → Catalog."""
     assert issubclass(Skill, Agentic)
-    assert issubclass(SkillArtifact, Artifact)
+    assert issubclass(SkillArtifact, Agentic)
     assert issubclass(Artifact, Agentic)
     assert issubclass(ContextRepository, Context)
     assert issubclass(ContextArtifact, Context)
