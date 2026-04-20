@@ -208,8 +208,14 @@ Generate asset models from your Atlan instance:
 # Generate models automatically
 uv run ./generator
 
+# Force re-download typedefs (bypass cache)
+uv run ./generator --override
+
 # Use custom typedefs file
 uv run ./generator ./my-typedefs.json
+
+# Both flags can be combined
+uv run ./generator --override ./my-typedefs.json
 ```
 
 This will:
