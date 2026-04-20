@@ -792,7 +792,7 @@ class AtlanClient(BaseSettings):
         request_obj=None,
         exclude_unset: bool = True,
         text_response=False,
-        extra_headers=None,
+        extra_headers: Optional[Dict[str, str]] = None,
     ):
         path = self._create_path(api)
         params = self._create_params(api, query_params, request_obj, exclude_unset)

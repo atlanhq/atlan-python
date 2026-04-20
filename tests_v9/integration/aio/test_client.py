@@ -10,6 +10,7 @@ from httpx import Headers
 from pyatlan import __version__ as VERSION
 from pyatlan.client.common.audit import LOGGER as AUDIT_LOGGER
 from pyatlan.client.common.search_log import LOGGER as SEARCH_LOG_LOGGER
+from pyatlan.model.enums import DataContractStatus
 from pyatlan.pkg.utils import get_client_async
 from pyatlan.utils import get_python_version
 from pyatlan_v9.client.aio.atlan import DEFAULT_RETRY, AsyncAtlanClient
@@ -22,15 +23,19 @@ from pyatlan_v9.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    Connection,
     Database,
+    DataContract,
     Schema,
     Table,
 )
 from pyatlan_v9.model.audit import AuditSearchRequest
+from pyatlan_v9.model.contract import DataContractSpec
 from pyatlan_v9.model.core import Announcement
 from pyatlan_v9.model.enums import (
     AnnouncementType,
     AtlanConnectorType,
+    EntityStatus,
     SortOrder,
     UTMTags,
 )
@@ -1693,3 +1698,208 @@ async def test_process_assets_when_assets_found(client: AsyncAtlanClient):
 
     processed_count = await client.asset.process_assets(search=search, func=doit)
     assert processed_count == expected_count
+
+
+# ---------------------------------------------------------------------------
+# Async contract tests — v9 client.contracts
+# ---------------------------------------------------------------------------
+
+
+@pytest_asyncio.fixture(scope="module")
+async def async_spec_contract_v9(
+    client: AsyncAtlanClient,
+    table: Table,
+    connection: Connection,
+):
+    """Contract created via v9 DataContractSpec using the async client."""
+    assert table and table.qualified_name and table.type_name
+
+    spec = DataContractSpec(
+        status=DataContractStatus.DRAFT,
+        type=table.type_name,
+        dataset=table.name or table.qualified_name.split("/")[-1],
+        data_source=connection.name,
+        description="Automated testing of the Python SDK - v9 async spec-based.",
+    )
+    contract = DataContract.creator(
+        asset_qualified_name=table.qualified_name,
+        contract_spec=spec,
+    )
+    response = await client.asset.save(contract)
+    created = response.assets_created(asset_type=DataContract)
+    updated = response.assets_updated(asset_type=DataContract)
+    result = (created or updated)[0]
+    yield result
+    await delete_asset_async(client, guid=result.guid, asset_type=DataContract)
+
+
+@pytest.mark.order(before="test_v9_async_contract_from_spec")
+async def test_v9_async_generate_initial_spec(client: AsyncAtlanClient, table: Table):
+    """Async v9: client.contracts.generate_initial_spec() returns parseable YAML."""
+    assert table and table.qualified_name
+
+    yaml_spec = await client.contracts.generate_initial_spec(table)
+
+    assert yaml_spec, "Expected a non-empty YAML string from generate_initial_spec"
+    spec = DataContractSpec.from_yaml(yaml_spec)
+    assert spec.kind == "DataContract"
+    assert spec.type
+    assert spec.dataset
+
+
+async def test_v9_async_contract_from_spec(
+    client: AsyncAtlanClient, table: Table, async_spec_contract_v9: DataContract
+):
+    """Async v9: DataContract from DataContractSpec has correct asset linkage."""
+    assert async_spec_contract_v9 and async_spec_contract_v9.guid
+    assert async_spec_contract_v9.qualified_name
+    assert table.qualified_name
+    assert async_spec_contract_v9.qualified_name.startswith(table.qualified_name)
+    assert "/contract" in async_spec_contract_v9.qualified_name
+
+    fetched = await client.asset.get_by_guid(
+        async_spec_contract_v9.guid, asset_type=DataContract, ignore_relationships=False
+    )
+    assert fetched
+    assert fetched.data_contract_asset_guid == table.guid
+    assert fetched.data_contract_spec or fetched.data_contract_json
+    assert fetched.data_contract_version and fetched.data_contract_version >= 1
+
+    # hasContract / dataContractLatest / dataContractLatestCertified
+    table_state = await client.asset.get_by_guid(
+        table.guid, asset_type=Table, ignore_relationships=False
+    )
+    assert table_state.has_contract is True
+    assert table_state.data_contract_latest is not None
+    assert table_state.data_contract_latest.guid == async_spec_contract_v9.guid
+    assert table_state.data_contract_latest_certified is None
+
+
+@pytest_asyncio.fixture(scope="module")
+async def async_multi_version_contract_v9(
+    client: AsyncAtlanClient,
+    table: Table,
+    connection: Connection,
+):
+    """V1 DRAFT → V1 VERIFIED → V2 DRAFT lifecycle for v9 async."""
+    import asyncio
+
+    assert table and table.qualified_name and table.type_name
+    asset_qn = table.qualified_name
+    dataset_name = table.name or asset_qn.split("/")[-1]
+
+    table_with_rels = await client.asset.get_by_guid(
+        table.guid, asset_type=Table, ignore_relationships=False
+    )
+    if table_with_rels.data_contract_latest:
+        try:
+            await client.contracts.delete(table_with_rels.data_contract_latest.guid)
+            await asyncio.sleep(2)
+        except Exception:
+            pass
+
+    async def _save_spec(status_str: str, description: str) -> DataContract:
+        spec = DataContractSpec(
+            status=status_str,
+            type=table.type_name,
+            dataset=dataset_name,
+            data_source=connection.name,
+            description=description,
+        )
+        contract = DataContract.creator(
+            asset_qualified_name=asset_qn,
+            contract_spec=spec,
+        )
+        response = await client.asset.save(contract)
+        created = response.assets_created(asset_type=DataContract)
+        updated = response.assets_updated(asset_type=DataContract)
+        return (created or updated)[0]
+
+    v1 = await _save_spec("draft", "E2E test - DRAFT v1")
+    await asyncio.sleep(3)
+    await _save_spec("VERIFIED", "E2E test - VERIFIED v1")
+    await asyncio.sleep(2)
+    v2 = await _save_spec("draft", "E2E test - DRAFT v2")
+
+    yield {"v1_guid": v1.guid, "v2_guid": v2.guid}
+
+    try:
+        await client.contracts.delete(v2.guid)
+    except Exception:
+        pass
+
+
+@pytest.mark.order(before="test_v9_async_delete_all_contract_versions")
+@pytest.mark.xfail(
+    strict=False,
+    reason=(
+        "delete_latest_version triggers an Atlas NPE on dq-dev: "
+        "getRelationshipEdgeLabel() is null for contract version-chain attributes "
+        "not yet deployed in this environment. Remove xfail once backend is updated."
+    ),
+)
+async def test_v9_async_delete_latest_version_restores_previous(
+    client: AsyncAtlanClient, table: Table, async_multi_version_contract_v9: dict
+):
+    """Async v9: deleting latest DRAFT restores VERIFIED v1 as dataContractLatest."""
+    v2_guid = async_multi_version_contract_v9["v2_guid"]
+    assert v2_guid
+
+    response = await client.contracts.delete_latest_version(v2_guid)
+
+    assert response
+    deleted = response.assets_deleted(asset_type=DataContract)
+    assert deleted and len(deleted) == 1
+    assert deleted[0].guid == v2_guid
+    assert deleted[0].status == EntityStatus.DELETED
+
+    table_after = await client.asset.get_by_guid(
+        table.guid, asset_type=Table, ignore_relationships=False
+    )
+    assert table_after.has_contract is True
+    assert table_after.data_contract_latest is not None
+    assert table_after.data_contract_latest.guid != v2_guid
+    assert table_after.data_contract_latest_certified is not None
+    assert table_after.data_contract_latest_certified.guid != v2_guid
+
+
+@pytest.mark.order(before="test_v9_async_contract_from_spec")
+async def test_v9_async_delete_all_contract_versions(
+    client: AsyncAtlanClient, table: Table, connection: Connection
+):
+    """Async v9: client.contracts.delete() purges all versions and clears asset attrs."""
+    assert table and table.qualified_name and table.type_name
+    dataset_name = table.name or table.qualified_name.split("/")[-1]
+
+    spec = DataContractSpec(
+        status=DataContractStatus.DRAFT,
+        type=table.type_name,
+        dataset=dataset_name,
+        data_source=connection.name,
+        description="Automated testing - v9 async delete-all scenario.",
+    )
+    contract = DataContract.creator(
+        asset_qualified_name=table.qualified_name,
+        contract_spec=spec,
+    )
+    response = await client.asset.save(contract)
+    created = response.assets_created(asset_type=DataContract)
+    updated = response.assets_updated(asset_type=DataContract)
+    saved = (created or updated)[0]
+    assert saved and saved.guid
+
+    del_response = await client.contracts.delete(saved.guid)
+
+    assert del_response
+    deleted = del_response.assets_deleted(asset_type=DataContract)
+    assert deleted and len(deleted) >= 1
+    assert saved.guid in {a.guid for a in deleted}
+    for asset in deleted:
+        assert asset.status == EntityStatus.DELETED
+
+    table_after = await client.asset.get_by_guid(
+        table.guid, asset_type=Table, ignore_relationships=False
+    )
+    assert not table_after.has_contract
+    assert table_after.data_contract_latest is None
+    assert table_after.data_contract_latest_certified is None

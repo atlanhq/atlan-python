@@ -16,7 +16,7 @@ import os
 from contextlib import _AsyncGeneratorContextManager
 from http import HTTPStatus
 from types import SimpleNamespace
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 import httpx
 from httpx_retries.retry import Retry
@@ -501,7 +501,7 @@ class AsyncAtlanClient(AtlanClient):
         request_obj=None,
         exclude_unset: bool = True,
         text_response=False,
-        extra_headers=None,
+        extra_headers: Optional[Dict[str, str]] = None,
     ):
         """
         Async version of _call_api - mirrors sync client structure.

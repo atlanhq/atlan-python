@@ -5,13 +5,15 @@ from typing import Optional
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller, ContractInit
-from pyatlan.client.constants import CONTRACT_INIT_API, DELETE_ENTITIES_BY_GUIDS
+from pyatlan.client.constants import (
+    CONTRACT_DELETE_SCOPE_HEADER,
+    CONTRACT_INIT_API,
+    DELETE_ENTITIES_BY_GUIDS,
+)
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 from pyatlan.model.enums import AtlanDeleteType
 from pyatlan.model.response import AssetMutationResponse
-
-CONTRACT_DELETE_SCOPE_HEADER = "x-atlan-contract-delete-scope"
 
 
 class ContractClient:

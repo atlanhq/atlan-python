@@ -3,7 +3,11 @@
 from typing import Optional
 
 from pyatlan.client.common import ApiCaller
-from pyatlan.client.constants import CONTRACT_INIT_API, DELETE_ENTITIES_BY_GUIDS
+from pyatlan.client.constants import (
+    CONTRACT_DELETE_SCOPE_HEADER,
+    CONTRACT_INIT_API,
+    DELETE_ENTITIES_BY_GUIDS,
+)
 from pyatlan.errors import ErrorCode
 from pyatlan_v9.client.asset import _parse_mutation_response
 from pyatlan_v9.model.assets import Asset
@@ -11,8 +15,6 @@ from pyatlan_v9.model.contract import InitRequest
 from pyatlan_v9.model.enums import AtlanDeleteType
 from pyatlan_v9.model.response import AssetMutationResponse
 from pyatlan_v9.validate import validate_arguments
-
-CONTRACT_DELETE_SCOPE_HEADER = "x-atlan-contract-delete-scope"
 
 
 class V9ContractClient:

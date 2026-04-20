@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from contextlib import _AsyncGeneratorContextManager, _GeneratorContextManager
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, Dict, Optional, Protocol, runtime_checkable
 
 from httpx_retries import Retry
 
@@ -26,7 +26,7 @@ class ApiCaller(Protocol):
         request_obj=None,
         exclude_unset: bool = True,
         text_response: bool = False,
-        extra_headers=None,
+        extra_headers: Optional[Dict[str, str]] = None,
     ):
         pass
 
@@ -57,7 +57,7 @@ class AsyncApiCaller(Protocol):
         request_obj=None,
         exclude_unset: bool = True,
         text_response: bool = False,
-        extra_headers=None,
+        extra_headers: Optional[Dict[str, str]] = None,
     ) -> Any:
         pass
 

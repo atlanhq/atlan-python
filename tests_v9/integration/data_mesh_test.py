@@ -5,6 +5,7 @@ from typing import Generator
 import pytest
 from msgspec import UNSET
 
+from pyatlan.model.enums import DataContractStatus
 from pyatlan_v9.client.asset import IndexSearchResults
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model.assets import (
@@ -16,6 +17,7 @@ from pyatlan_v9.model.assets import (
     DataProduct,
     Table,
 )
+from pyatlan_v9.model.contract import DataContractSpec
 from pyatlan_v9.model.core import Announcement
 from pyatlan_v9.model.data_mesh import DataProductsAssetsDSL
 from pyatlan_v9.model.enums import (
@@ -575,3 +577,214 @@ def test_delete_domain(client: AtlanClient, domain: DataDomain):
     assert deleted[0].qualified_name == domain.qualified_name
     assert deleted[0].delete_handler == "PURGE"
     assert deleted[0].status == EntityStatus.DELETED
+
+
+# ---------------------------------------------------------------------------
+# DataContractSpec-based contract creation + client.contracts helpers (v9)
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def spec_contract_v9(
+    client: AtlanClient,
+    table: Table,
+    connection: Connection,
+) -> Generator[DataContract, None, None]:
+    """Contract created via v9 DataContractSpec model (not raw JSON)."""
+    assert table and table.qualified_name and table.type_name
+
+    spec = DataContractSpec(
+        status=DataContractStatus.DRAFT,
+        type=table.type_name,
+        dataset=table.name or table.qualified_name.split("/")[-1],
+        data_source=connection.name,
+        description="Automated testing of the Python SDK - v9 spec-based.",
+    )
+    contract = DataContract.creator(
+        asset_qualified_name=table.qualified_name,
+        contract_spec=spec,
+    )
+    response = client.asset.save(contract)
+    created = response.assets_created(asset_type=DataContract)
+    updated = response.assets_updated(asset_type=DataContract)
+    result = (created or updated)[0]
+    yield result
+    delete_asset(client, guid=result.guid, asset_type=DataContract)
+
+
+@pytest.mark.order(before="test_v9_contract_from_spec")
+def test_v9_generate_initial_spec(client: AtlanClient, table: Table):
+    """client.contracts.generate_initial_spec() returns a parseable YAML string."""
+    assert table and table.qualified_name
+
+    yaml_spec = client.contracts.generate_initial_spec(table)
+
+    assert yaml_spec, "Expected a non-empty YAML string from generate_initial_spec"
+    spec = DataContractSpec.from_yaml(yaml_spec)
+    assert spec.kind == "DataContract"
+    assert spec.type
+    assert spec.dataset
+
+
+def test_v9_contract_from_spec(
+    client: AtlanClient, table: Table, spec_contract_v9: DataContract
+):
+    """DataContract created from v9 DataContractSpec has the right asset linkage."""
+    assert spec_contract_v9
+    assert spec_contract_v9.guid
+    assert spec_contract_v9.qualified_name
+    assert table.qualified_name
+    assert spec_contract_v9.qualified_name.startswith(table.qualified_name)
+    assert "/contract" in spec_contract_v9.qualified_name
+
+    fetched = client.asset.get_by_guid(
+        spec_contract_v9.guid, asset_type=DataContract, ignore_relationships=False
+    )
+    assert fetched
+    assert fetched.data_contract_asset_guid == table.guid
+    assert fetched.data_contract_spec or fetched.data_contract_json
+    assert fetched.data_contract_version and fetched.data_contract_version >= 1
+
+    # Verify hasContract / dataContractLatest / dataContractLatestCertified
+    table_state = client.asset.get_by_guid(
+        table.guid, asset_type=Table, ignore_relationships=False
+    )
+    assert table_state.has_contract is True
+    assert table_state.data_contract_latest is not None
+    assert table_state.data_contract_latest.guid == spec_contract_v9.guid
+    assert table_state.data_contract_latest_certified is None  # DRAFT is not certified
+
+
+@pytest.fixture(scope="module")
+def multi_version_contract_v9(
+    client: AtlanClient,
+    table: Table,
+    connection: Connection,
+) -> Generator[dict, None, None]:
+    """V1 DRAFT → V1 VERIFIED → V2 DRAFT lifecycle fixture for v9."""
+    import time
+
+    assert table and table.qualified_name and table.type_name
+    asset_qn = table.qualified_name
+    dataset_name = table.name or asset_qn.split("/")[-1]
+
+    table_with_rels = client.asset.get_by_guid(
+        table.guid, asset_type=Table, ignore_relationships=False
+    )
+    if table_with_rels.data_contract_latest:
+        try:
+            client.contracts.delete(table_with_rels.data_contract_latest.guid)
+            time.sleep(2)
+        except Exception:
+            pass
+
+    def _save_spec(status_str: str, description: str) -> DataContract:
+        spec = DataContractSpec(
+            status=status_str,
+            type=table.type_name,
+            dataset=dataset_name,
+            data_source=connection.name,
+            description=description,
+        )
+        contract = DataContract.creator(
+            asset_qualified_name=asset_qn,
+            contract_spec=spec,
+        )
+        response = client.asset.save(contract)
+        created = response.assets_created(asset_type=DataContract)
+        updated = response.assets_updated(asset_type=DataContract)
+        return (created or updated)[0]
+
+    v1 = _save_spec("draft", "E2E test - DRAFT v1")
+    time.sleep(3)
+    _save_spec("VERIFIED", "E2E test - VERIFIED v1")
+    time.sleep(2)
+    v2 = _save_spec("draft", "E2E test - DRAFT v2")
+
+    yield {"v1_guid": v1.guid, "v2_guid": v2.guid, "asset_qn": asset_qn}
+
+    try:
+        client.contracts.delete(v2.guid)
+    except Exception:
+        pass
+
+
+@pytest.mark.order(before="test_v9_delete_all_contract_versions")
+@pytest.mark.xfail(
+    strict=False,
+    reason=(
+        "delete_latest_version triggers an Atlas NPE on dq-dev: "
+        "getRelationshipEdgeLabel() is null for contract version-chain attributes "
+        "not yet deployed in this environment. Remove xfail once backend is updated."
+    ),
+)
+def test_v9_delete_latest_version_restores_previous(
+    client: AtlanClient, table: Table, multi_version_contract_v9: dict
+):
+    """Deleting latest DRAFT restores VERIFIED v1 as dataContractLatest."""
+    v2_guid = multi_version_contract_v9["v2_guid"]
+    assert v2_guid
+
+    response = client.contracts.delete_latest_version(v2_guid)
+
+    assert response
+    deleted = response.assets_deleted(asset_type=DataContract)
+    assert deleted and len(deleted) == 1
+    assert deleted[0].guid == v2_guid
+    assert deleted[0].status == EntityStatus.DELETED
+
+    table_after = client.asset.get_by_guid(
+        table.guid, asset_type=Table, ignore_relationships=False
+    )
+    assert table_after.has_contract is True
+    assert table_after.data_contract_latest is not None
+    assert table_after.data_contract_latest.guid != v2_guid
+    assert table_after.data_contract_latest_certified is not None
+    assert table_after.data_contract_latest_certified.guid != v2_guid
+
+
+@pytest.mark.order(
+    before="test_v9_contract_from_spec",
+    after="test_v9_delete_latest_version_restores_previous",
+)
+def test_v9_delete_all_contract_versions(
+    client: AtlanClient, table: Table, connection: Connection
+):
+    """client.contracts.delete() purges all versions and clears asset contract attrs."""
+    assert table and table.qualified_name and table.type_name
+    dataset_name = table.name or table.qualified_name.split("/")[-1]
+
+    spec = DataContractSpec(
+        status=DataContractStatus.DRAFT,
+        type=table.type_name,
+        dataset=dataset_name,
+        data_source=connection.name,
+        description="Automated testing - v9 delete-all scenario.",
+    )
+    contract = DataContract.creator(
+        asset_qualified_name=table.qualified_name,
+        contract_spec=spec,
+    )
+    response = client.asset.save(contract)
+    created = response.assets_created(asset_type=DataContract)
+    updated = response.assets_updated(asset_type=DataContract)
+    saved = (created or updated)[0]
+    assert saved and saved.guid
+
+    del_response = client.contracts.delete(saved.guid)
+
+    assert del_response
+    deleted = del_response.assets_deleted(asset_type=DataContract)
+    assert deleted and len(deleted) >= 1
+    guids_deleted = {a.guid for a in deleted}
+    assert saved.guid in guids_deleted
+    for asset in deleted:
+        assert asset.status == EntityStatus.DELETED
+
+    # hasContract / dataContractLatest / dataContractLatestCertified all cleared
+    table_after = client.asset.get_by_guid(
+        table.guid, asset_type=Table, ignore_relationships=False
+    )
+    assert not table_after.has_contract
+    assert table_after.data_contract_latest is None
+    assert table_after.data_contract_latest_certified is None
