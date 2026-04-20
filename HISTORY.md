@@ -1,3 +1,17 @@
+## 9.4.1 (April 20, 2026)
+
+### New Features
+
+- **Agentic type hierarchy**: Added Python SDK support for the new Agentic hierarchy (`Agentic`, `Artifact`, `Skill`, `SkillArtifact`, `Context`, `ContextRepository`, `ContextArtifact`) with NanoID-based qualifiedName patterns and auto-populated parent refs on creators. Includes `ContextLifecycleStatus` enum and `FileType.YAML`/`FileType.SQL` additions.
+- **`FileType.MD` enum value**: Added `md` file type to the `FileType` enum.
+
+### QOL Improvements
+
+- **Generator `--override` flag**: Added `--override` flag to the generator script to force re-download of typedefs, bypassing the daily cache check.
+- **Generator template coverage**: Added Jinja2 asset, attribute, and import templates for all Agentic types so the code generator can reproduce creator methods.
+- **`_CORE_ASSETS` updates**: Added Agentic types, Dremio, Cloud, Google, and GCPDataplex to the core assets list to stabilize code generation layout.
+- **Regenerated models from latest typedefs.**
+
 ## 9.4.0 (April 10, 2026)
 
 ### Experimental: `pyatlan_v9`
