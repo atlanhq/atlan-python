@@ -26,6 +26,7 @@ class ApiCaller(Protocol):
         request_obj=None,
         exclude_unset: bool = True,
         text_response: bool = False,
+        extra_headers=None,
     ):
         pass
 
@@ -56,6 +57,7 @@ class AsyncApiCaller(Protocol):
         request_obj=None,
         exclude_unset: bool = True,
         text_response: bool = False,
+        extra_headers=None,
     ) -> Any:
         pass
 

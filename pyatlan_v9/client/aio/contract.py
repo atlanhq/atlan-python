@@ -5,11 +5,16 @@ from __future__ import annotations
 from typing import Optional
 
 from pyatlan.client.common import AsyncApiCaller
-from pyatlan.client.constants import CONTRACT_INIT_API
+from pyatlan.client.constants import CONTRACT_INIT_API, DELETE_ENTITIES_BY_GUIDS
 from pyatlan.errors import ErrorCode
+from pyatlan_v9.client.asset import _parse_mutation_response
 from pyatlan_v9.model.assets import Asset
 from pyatlan_v9.model.contract import InitRequest
+from pyatlan_v9.model.enums import AtlanDeleteType
+from pyatlan_v9.model.response import AssetMutationResponse
 from pyatlan_v9.validate import validate_arguments
+
+CONTRACT_DELETE_SCOPE_HEADER = "x-atlan-contract-delete-scope"
 
 
 class V9AsyncContractClient:
@@ -48,3 +53,47 @@ class V9AsyncContractClient:
             CONTRACT_INIT_API, request_obj=request_obj
         )
         return response.get("contract")
+
+    @validate_arguments
+    async def delete(self, guid: str) -> AssetMutationResponse:
+        """
+        Hard-delete (purge) a data contract and all its versions (async version).
+        This deletes every version of the contract associated with the same asset
+        and cleans up the asset's contract attributes (hasContract, dataContractLatest,
+        dataContractLatestCertified).
+
+        :param guid: unique identifier (GUID) of any version of the contract to delete
+        :returns: details of the deleted contract version(s)
+        :raises AtlanError: on any API communication issue
+
+        .. warning::
+            This is an irreversible operation. All versions of the contract will be permanently removed.
+        """
+        query_params = {"deleteType": AtlanDeleteType.PURGE.value, "guid": [guid]}
+        raw_json = await self._client._call_api(
+            DELETE_ENTITIES_BY_GUIDS, query_params=query_params
+        )
+        return _parse_mutation_response(raw_json)
+
+    @validate_arguments
+    async def delete_latest_version(self, guid: str) -> AssetMutationResponse:
+        """
+        Hard-delete (purge) only the latest version of a data contract (async version).
+        The previous version (if any) becomes the new latest, and the asset's
+        contract pointers are updated accordingly.
+
+        :param guid: unique identifier (GUID) of the latest contract version to delete
+        :returns: details of the deleted contract version
+        :raises AtlanError: on any API communication issue
+        :raises ApiError: if the specified GUID is not the latest version
+
+        .. warning::
+            This is an irreversible operation. Only the latest version will be removed.
+        """
+        query_params = {"deleteType": AtlanDeleteType.PURGE.value, "guid": [guid]}
+        raw_json = await self._client._call_api(
+            DELETE_ENTITIES_BY_GUIDS,
+            query_params=query_params,
+            extra_headers={CONTRACT_DELETE_SCOPE_HEADER: "single"},
+        )
+        return _parse_mutation_response(raw_json)

@@ -792,9 +792,12 @@ class AtlanClient(BaseSettings):
         request_obj=None,
         exclude_unset: bool = True,
         text_response=False,
+        extra_headers=None,
     ):
         path = self._create_path(api)
         params = self._create_params(api, query_params, request_obj, exclude_unset)
+        if extra_headers:
+            params["headers"].update(extra_headers)
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return self._call_api_internal(api, path, params, text_response=text_response)

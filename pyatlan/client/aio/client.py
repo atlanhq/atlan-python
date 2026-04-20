@@ -501,6 +501,7 @@ class AsyncAtlanClient(AtlanClient):
         request_obj=None,
         exclude_unset: bool = True,
         text_response=False,
+        extra_headers=None,
     ):
         """
         Async version of _call_api - mirrors sync client structure.
@@ -509,6 +510,8 @@ class AsyncAtlanClient(AtlanClient):
         params = await self._create_params(
             api, query_params, request_obj, exclude_unset
         )
+        if extra_headers:
+            params["headers"].update(extra_headers)
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return await self._call_api_internal(

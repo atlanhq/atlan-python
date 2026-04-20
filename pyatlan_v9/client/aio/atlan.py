@@ -418,9 +418,12 @@ class AsyncAtlanClient(msgspec.Struct, kw_only=True):
         query_params=None,
         request_obj=None,
         text_response=False,
+        extra_headers=None,
     ):
         path = self._create_path(api)
         params = await self._create_params(api, query_params, request_obj)
+        if extra_headers:
+            params["headers"].update(extra_headers)
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return await self._call_api_internal(
