@@ -1,8 +1,7 @@
 import pytest
 
-from pyatlan.model.assets import Skill, SkillArtifact
+from pyatlan.model.assets import SkillArtifact
 from pyatlan.model.enums import FileType
-
 
 SKILL_ARTIFACT_NAME = "my-test-artifact"
 SKILL_QUALIFIED_NAME = "default/skill/abc123"

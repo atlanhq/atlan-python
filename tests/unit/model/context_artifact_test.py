@@ -1,8 +1,7 @@
 import pytest
 
-from pyatlan.model.assets import ContextArtifact, ContextRepository
+from pyatlan.model.assets import ContextArtifact
 from pyatlan.model.enums import FileType
-
 
 CONTEXT_ARTIFACT_NAME = "my-test-context-artifact"
 CONTEXT_REPO_QUALIFIED_NAME = "default/context/abc123"
@@ -51,12 +50,8 @@ def test_creator():
     assert sut.type_name == "ContextArtifact"
     assert sut.file_type == FileType.TXT
     assert sut.qualified_name
-    assert sut.qualified_name.startswith(
-        f"{CONTEXT_REPO_QUALIFIED_NAME}/artifact/txt/"
-    )
-    assert (
-        sut.context_repository_qualified_name == CONTEXT_REPO_QUALIFIED_NAME
-    )
+    assert sut.qualified_name.startswith(f"{CONTEXT_REPO_QUALIFIED_NAME}/artifact/txt/")
+    assert sut.context_repository_qualified_name == CONTEXT_REPO_QUALIFIED_NAME
 
 
 def test_creator_with_yaml_file_type():
@@ -100,9 +95,7 @@ def test_creator_populates_context_repository_ref():
     )
 
     assert sut.context_repository is not None
-    assert (
-        sut.context_repository.qualified_name == CONTEXT_REPO_QUALIFIED_NAME
-    )
+    assert sut.context_repository.qualified_name == CONTEXT_REPO_QUALIFIED_NAME
 
 
 def test_creator_generates_unique_qualified_names():

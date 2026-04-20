@@ -3,7 +3,6 @@ import pytest
 from pyatlan.model.assets import ContextRepository
 from pyatlan.model.enums import ContextLifecycleStatus
 
-
 CONTEXT_REPO_NAME = "my-test-context-repo"
 
 
@@ -13,9 +12,7 @@ CONTEXT_REPO_NAME = "my-test-context-repo"
         (None, "name is required"),
     ],
 )
-def test_creator_with_missing_parameters_raise_value_error(
-    name: str, message: str
-):
+def test_creator_with_missing_parameters_raise_value_error(name: str, message: str):
     with pytest.raises(ValueError, match=message):
         ContextRepository.creator(name=name)
 

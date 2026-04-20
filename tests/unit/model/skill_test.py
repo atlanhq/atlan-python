@@ -1,8 +1,6 @@
 import pytest
 
 from pyatlan.model.assets import Skill
-from pyatlan.model.enums import FileType
-
 
 SKILL_NAME = "my-test-skill"
 
@@ -13,9 +11,7 @@ SKILL_NAME = "my-test-skill"
         (None, "name is required"),
     ],
 )
-def test_creator_with_missing_parameters_raise_value_error(
-    name: str, message: str
-):
+def test_creator_with_missing_parameters_raise_value_error(name: str, message: str):
     with pytest.raises(ValueError, match=message):
         Skill.creator(name=name)
 

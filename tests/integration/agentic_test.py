@@ -9,12 +9,7 @@ from pyatlan.model.assets import (
     Skill,
     SkillArtifact,
 )
-from pyatlan.model.enums import (
-    CertificateStatus,
-    ContextLifecycleStatus,
-    EntityStatus,
-    FileType,
-)
+from pyatlan.model.enums import CertificateStatus, EntityStatus, FileType
 from tests.integration.client import TestId, delete_asset
 
 MODULE_NAME = TestId.make_unique("AGENTIC")
@@ -134,9 +129,7 @@ def test_update_skill_certificate(client: AtlanClient, skill: Skill):
 # ── Context tests ───────────────────────────────────────────────────────────
 
 
-def test_context_repository(
-    client: AtlanClient, context_repository: ContextRepository
-):
+def test_context_repository(client: AtlanClient, context_repository: ContextRepository):
     assert context_repository
     assert context_repository.guid
     assert context_repository.qualified_name
