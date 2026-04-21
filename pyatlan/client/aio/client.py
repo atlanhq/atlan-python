@@ -16,7 +16,7 @@ import os
 from contextlib import _AsyncGeneratorContextManager
 from http import HTTPStatus
 from types import SimpleNamespace
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
 import httpx
 from httpx_retries.retry import Retry
@@ -501,6 +501,7 @@ class AsyncAtlanClient(AtlanClient):
         request_obj=None,
         exclude_unset: bool = True,
         text_response=False,
+        extra_headers: Optional[Dict[str, str]] = None,
     ):
         """
         Async version of _call_api - mirrors sync client structure.
@@ -509,6 +510,8 @@ class AsyncAtlanClient(AtlanClient):
         params = await self._create_params(
             api, query_params, request_obj, exclude_unset
         )
+        if extra_headers:
+            params["headers"].update(extra_headers)
         if LOGGER.isEnabledFor(logging.DEBUG):
             self._api_logger(api, path)
         return await self._call_api_internal(

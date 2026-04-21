@@ -704,3 +704,5 @@ OPEN_LINEAGE_SEND_EVENT_API = API(
     HTTPStatus.ACCEPTED,
     endpoint=EndPoint.CHRONOS,
 )
+
+CONTRACT_DELETE_SCOPE_HEADER = "x-atlan-contract-delete-scope"
