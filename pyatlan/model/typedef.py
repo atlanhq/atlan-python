@@ -551,6 +551,10 @@ class AttributeDef(AtlanObject):
             default=False,
             description="Whether this attribute supports rich text formatting (True) or not (False). ",
         )
+        show_as_featured: Optional[bool] = Field(
+            default=None,
+            description="Whether this attribute is shown as featured in the asset profile (True) or not (False).",
+        )
 
         def __setattr__(self, name, value):
             super().__setattr__(name, value)

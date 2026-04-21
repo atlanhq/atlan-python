@@ -553,6 +553,9 @@ class AttributeDef(msgspec.Struct, kw_only=True, rename="camel", omit_defaults=T
         is_rich_text: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
         """Whether this attribute supports rich text formatting."""
 
+        show_as_featured: Union[bool, None, msgspec.UnsetType] = msgspec.UNSET
+        """Whether this attribute is shown as featured in the asset profile."""
+
         def __post_init__(self) -> None:
             if self.custom_metadata_version is msgspec.UNSET:
                 self.custom_metadata_version = "v2"

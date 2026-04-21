@@ -340,6 +340,30 @@ def test_cm_raci(
     assert not one.options.multi_value_select
 
 
+@pytest.mark.order(after="test_cm_raci")
+def test_show_as_featured_survives_update(
+    client: AtlanClient, cm_raci: CustomMetadataDef
+):
+    existing = client.custom_metadata_cache.get_custom_metadata_def(name=CM_RACI)
+    assert existing.attribute_defs
+    attr = existing.attribute_defs[0]
+    assert attr.options
+    attr.options.show_as_featured = True
+    assert existing.options
+    existing.options.is_locked = True
+    response = client.typedef.updater(existing)
+    assert response
+    assert len(response.custom_metadata_defs) == 1
+    updated = response.custom_metadata_defs[0]
+    assert updated.attribute_defs
+    updated_attr = updated.attribute_defs[0]
+    assert updated_attr.options
+    assert updated_attr.options.show_as_featured is True
+    assert updated.options
+    updated.options.is_locked = False
+    client.typedef.updater(updated)
+
+
 @pytest.fixture(scope="module")
 def cm_enum(
     client: AtlanClient,
