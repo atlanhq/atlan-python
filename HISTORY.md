@@ -1,3 +1,18 @@
+## 9.5.0 (April 21, 2026)
+
+### New Features
+
+- **Data contract delete methods**: Added `client.contracts.delete(guid)` to hard-delete all versions of a data contract and `client.contracts.delete_latest_version(guid)` to delete only the latest version and promote the previous one. Includes `extra_headers` support on `_call_api()` for per-request custom headers. Implemented across all 4 client variants (sync/async × v1/v9).
+
+### Bug Fixes
+
+- **`showAsFeatured` silent data loss on typedef update**: `AttributeDef.Options` was missing the `show_as_featured` field, causing Pydantic to silently discard it on parse. Any SDK operation that fetched and re-submitted a Custom Metadata typedef with `showAsFeatured` set was clearing that setting in the backend. Added `show_as_featured: Optional[bool]` so the field now round-trips correctly.
+
+### Experimental: `pyatlan_v9`
+
+- **Data contract delete methods**: Same `delete` and `delete_latest_version` methods added to the v9 async/sync clients.
+- **`show_as_featured` field**: Added to v9 `AttributeDef.Options` as well.
+
 ## 9.4.1 (April 20, 2026)
 
 ### New Features
