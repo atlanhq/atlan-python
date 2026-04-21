@@ -152,6 +152,54 @@ def test_ol_client_send(
     mock_api_caller.reset_mock()
 
 
+def test_ol_generic_openlineage_enum_value():
+    assert AtlanConnectorType.GENERIC_OPENLINEAGE.value == "generic-openlineage"
+
+
+def test_ol_client_send_generic_openlineage_routes_to_endpoint(mock_api_caller):
+    mock_api_caller._call_api.return_value = "Event received"
+    OpenLineageClient(client=mock_api_caller).send(
+        request=OpenLineageEvent(),
+        connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE,
+    )
+
+    assert mock_api_caller._call_api.call_count == 1
+    api_arg = mock_api_caller._call_api.call_args.kwargs["api"]
+    assert api_arg.path == "generic-openlineage/api/v1/lineage"
+    mock_api_caller.reset_mock()
+
+
+def test_ol_event_emit_accepts_connector_type(mock_api_caller):
+    mock_api_caller._call_api.return_value = "Event received"
+    client = AtlanClient()
+    with patch.object(
+        client.open_lineage, "send", return_value=None
+    ) as mock_send:
+        OpenLineageEvent().emit(
+            client=client,
+            connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE,
+        )
+        mock_send.assert_called_once()
+        assert (
+            mock_send.call_args.kwargs["connector_type"]
+            == AtlanConnectorType.GENERIC_OPENLINEAGE
+        )
+
+
+def test_ol_event_emit_defaults_to_spark(mock_api_caller):
+    mock_api_caller._call_api.return_value = "Event received"
+    client = AtlanClient()
+    with patch.object(
+        client.open_lineage, "send", return_value=None
+    ) as mock_send:
+        OpenLineageEvent().emit(client=client)
+        mock_send.assert_called_once()
+        assert (
+            mock_send.call_args.kwargs["connector_type"]
+            == AtlanConnectorType.SPARK
+        )
+
+
 def test_ol_client_send_when_ol_not_configured(client, mock_session):
     expected_error = (
         "ATLAN-PYTHON-400-064 Requested OpenLineage "

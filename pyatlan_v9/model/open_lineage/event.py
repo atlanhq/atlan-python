@@ -118,26 +118,36 @@ class OpenLineageEvent(OpenLineageBaseEvent):
             event_time=datetime.now(tz=utc).isoformat(),
         )
 
-    def emit(self, client: AtlanClient) -> None:
+    def emit(
+        self,
+        client: AtlanClient,
+        connector_type: AtlanConnectorType = AtlanConnectorType.SPARK,
+    ) -> None:
         """
         Send the OpenLineage event to Atlan to be processed.
 
         :param client: connectivity to an Atlan tenant
+        :param connector_type: connector type for the OpenLineage event
         :raises AtlanError: on any API communication issues
         """
         return client.open_lineage.send(
-            request=self, connector_type=AtlanConnectorType.SPARK
+            request=self, connector_type=connector_type
         )
 
-    async def emit_async(self, client: "AsyncAtlanClient") -> None:
+    async def emit_async(
+        self,
+        client: "AsyncAtlanClient",
+        connector_type: AtlanConnectorType = AtlanConnectorType.SPARK,
+    ) -> None:
         """
         Asynchronously send the OpenLineage event to Atlan to be processed.
 
         :param client: async connectivity to an Atlan tenant
+        :param connector_type: connector type for the OpenLineage event
         :raises AtlanError: on any API communication issues
         """
         return await client.open_lineage.send(
-            request=self, connector_type=AtlanConnectorType.SPARK
+            request=self, connector_type=connector_type
         )
 
     @classmethod
