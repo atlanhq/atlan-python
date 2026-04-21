@@ -2,7 +2,7 @@
 
 ### New Features
 
-- **Data contract delete methods**: Added `client.contracts.delete(guid)` to hard-delete all versions of a data contract and `client.contracts.delete_latest_version(guid)` to delete only the latest version and promote the previous one. Includes `extra_headers` support on `_call_api()` for per-request custom headers. Implemented across all 4 client variants (sync/async × v1/v9).
+- **Data contract delete methods**: Added `client.contracts.delete(guid)` to hard-delete all versions of a data contract and `client.contracts.delete_latest_version(guid)` to delete only the latest version and promote the previous one. Includes `extra_headers` support on `_call_api()` for per-request custom headers. Implemented across all 4 client variants (sync/async × v1/v9). See [docs](https://developer.atlan.com/snippets/datacontract/manage-via-sdks/).
 
 ### Bug Fixes
 
