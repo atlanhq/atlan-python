@@ -4,7 +4,6 @@ import pytest
 
 from pyatlan.model.enums import AtlanIcon
 
-
 # Mapping of deprecated enum names to their string values
 DEPRECATED_ICONS = {
     "ACTIVITY": "PhActivity",
@@ -54,15 +53,11 @@ class TestDeprecatedIconsExist:
 class TestReplacementIconsExist:
     """Each deprecated icon has a valid replacement in the enum."""
 
-    @pytest.mark.parametrize(
-        "deprecated,replacement", REPLACEMENT_MAP.items()
-    )
+    @pytest.mark.parametrize("deprecated,replacement", REPLACEMENT_MAP.items())
     def test_replacement_exists(self, deprecated, replacement):
         assert replacement in AtlanIcon.__members__
 
-    @pytest.mark.parametrize(
-        "deprecated,replacement", REPLACEMENT_MAP.items()
-    )
+    @pytest.mark.parametrize("deprecated,replacement", REPLACEMENT_MAP.items())
     def test_deprecated_and_replacement_are_different_values(
         self, deprecated, replacement
     ):

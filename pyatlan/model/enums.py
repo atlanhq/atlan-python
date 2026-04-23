@@ -1077,7 +1077,9 @@ class AtlanIcon(str, Enum):
     FOLDER_PLUS = "PhFolderPlus"
     FOLDER_SIMPLE = "PhFolderSimple"
     FOLDER_SIMPLE_DASHED = "PhFolderSimpleDashed"
-    FOLDER_SIMPLE_DOTTED = "PhFolderSimpleDotted"  # Deprecated: use FOLDER_SIMPLE_DASHED
+    FOLDER_SIMPLE_DOTTED = (
+        "PhFolderSimpleDotted"  # Deprecated: use FOLDER_SIMPLE_DASHED
+    )
     FOLDER_SIMPLE_LOCK = "PhFolderSimpleLock"
     FOLDER_SIMPLE_MINUS = "PhFolderSimpleMinus"
     FOLDER_SIMPLE_PLUS = "PhFolderSimplePlus"
