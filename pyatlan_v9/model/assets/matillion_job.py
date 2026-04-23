@@ -41,12 +41,9 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .matillion_related import (
-    RelatedMatillionComponent,
-    RelatedMatillionJob,
-    RelatedMatillionProject,
-)
+from .matillion_related import RelatedMatillionComponent, RelatedMatillionProject
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -90,6 +87,7 @@ class MatillionJob(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MATILLION_PROJECT: ClassVar[Any] = None
     MATILLION_COMPONENTS: ClassVar[Any] = None
@@ -108,6 +106,8 @@ class MatillionJob(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MatillionJob"
 
     matillion_job_type: Union[str, None, UnsetType] = UNSET
     """Type of the job, for example: orchestration or transformation."""
@@ -179,6 +179,11 @@ class MatillionJob(Asset):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -249,78 +254,6 @@ class MatillionJob(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this MatillionJob instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.matillion_project is UNSET:
-                errors.append("matillion_project is required for creation")
-            if self.matillion_project_name is UNSET:
-                errors.append("matillion_project_name is required for creation")
-            if self.matillion_project_qualified_name is UNSET:
-                errors.append(
-                    "matillion_project_qualified_name is required for creation"
-                )
-        if errors:
-            raise ValueError(f"MatillionJob validation failed: {errors}")
-
-    def minimize(self) -> "MatillionJob":
-        """
-        Return a minimal copy of this MatillionJob with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new MatillionJob with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new MatillionJob instance with only the minimum required fields.
-        """
-        self.validate()
-        return MatillionJob(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMatillionJob":
-        """
-        Create a :class:`RelatedMatillionJob` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedMatillionJob reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedMatillionJob(guid=self.guid)
-        return RelatedMatillionJob(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -451,6 +384,11 @@ class MatillionJobRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -547,6 +485,7 @@ _MATILLION_JOB_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "matillion_project",
     "matillion_components",
@@ -630,9 +569,6 @@ def _matillion_job_to_nested(matillion_job: MatillionJob) -> MatillionJobNested:
         is_incomplete=matillion_job.is_incomplete,
         provenance_type=matillion_job.provenance_type,
         home_id=matillion_job.home_id,
-        depth=matillion_job.depth,
-        immediate_upstream=matillion_job.immediate_upstream,
-        immediate_downstream=matillion_job.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -666,6 +602,7 @@ def _matillion_job_from_nested(nested: MatillionJobNested) -> MatillionJob:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -674,9 +611,6 @@ def _matillion_job_from_nested(nested: MatillionJobNested) -> MatillionJob:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_matillion_job_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -742,6 +676,9 @@ MatillionJob.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttri
 MatillionJob.METRICS = RelationField("metrics")
 MatillionJob.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MatillionJob.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+MatillionJob.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 MatillionJob.MEANINGS = RelationField("meanings")
 MatillionJob.MATILLION_PROJECT = RelationField("matillionProject")
 MatillionJob.MATILLION_COMPONENTS = RelationField("matillionComponents")
