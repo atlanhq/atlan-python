@@ -214,7 +214,14 @@ class AtlanClient(BaseSettings):
         # Pass self reference to transport for duplicate checking during retries
         self._session = httpx.Client(
             transport=PyatlanSyncTransport(
-                retry=self.retry, client=self, **transport_kwargs
+                retry=self.retry,
+                client=self,
+                limits=httpx.Limits(
+                    max_connections=50,
+                    max_keepalive_connections=10,
+                    keepalive_expiry=30.0,
+                ),
+                **transport_kwargs,
             ),
             headers={
                 "x-atlan-agent": "sdk",
@@ -554,7 +561,10 @@ class AtlanClient(BaseSettings):
         try:
             params["headers"]["X-Atlan-Request-Id"] = request_id_var.get()
             timeout = httpx.Timeout(
-                None, connect=self.connect_timeout, read=self.read_timeout
+                None,
+                connect=self.connect_timeout,
+                read=self.read_timeout,
+                pool=30.0,
             )
             if binary_data:
                 response = self._session.request(
@@ -2014,7 +2024,14 @@ class AtlanClient(BaseSettings):
             transport_kwargs["verify"] = self.verify
 
         new_transport = PyatlanSyncTransport(
-            retry=max_retries, client=self, **transport_kwargs
+            retry=max_retries,
+            client=self,
+            limits=httpx.Limits(
+                max_connections=50,
+                max_keepalive_connections=10,
+                keepalive_expiry=30.0,
+            ),
+            **transport_kwargs,
         )
         self._session._transport = new_transport
 
