@@ -47,7 +47,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .dynamo_db_related import RelatedDynamoDBSecondaryIndex
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -82,7 +82,7 @@ class DynamoDBSecondaryIndex(Asset):
     Represents a DynamoDB secondary index asset in Atlan.
     """
 
-    DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE: ClassVar[Any] = None
+    DYNAMO_DB_PROJECTION_TYPE: ClassVar[Any] = None
     DYNAMO_DB_STATUS: ClassVar[Any] = None
     DYNAMO_DB_PARTITION_KEY: ClassVar[Any] = None
     DYNAMO_DB_SORT_KEY: ClassVar[Any] = None
@@ -161,6 +161,7 @@ class DynamoDBSecondaryIndex(Asset):
     DBT_SOURCES: ClassVar[Any] = None
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -188,8 +189,10 @@ class DynamoDBSecondaryIndex(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
+    type_name: Union[str, UnsetType] = "DynamoDBSecondaryIndex"
+
+    dynamo_db_projection_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBProjectionType"
     )
     """Specifies attributes that are projected from the DynamoDB table into the index."""
 
@@ -447,6 +450,11 @@ class DynamoDBSecondaryIndex(Asset):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -541,68 +549,6 @@ class DynamoDBSecondaryIndex(Asset):
         self.type_name = "DynamoDBSecondaryIndex"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DynamoDBSecondaryIndex instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DynamoDBSecondaryIndex validation failed: {errors}")
-
-    def minimize(self) -> "DynamoDBSecondaryIndex":
-        """
-        Return a minimal copy of this DynamoDBSecondaryIndex with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DynamoDBSecondaryIndex with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DynamoDBSecondaryIndex instance with only the minimum required fields.
-        """
-        self.validate()
-        return DynamoDBSecondaryIndex(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedDynamoDBSecondaryIndex":
-        """
-        Create a :class:`RelatedDynamoDBSecondaryIndex` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDynamoDBSecondaryIndex reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDynamoDBSecondaryIndex(guid=self.guid)
-        return RelatedDynamoDBSecondaryIndex(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -659,8 +605,8 @@ class DynamoDBSecondaryIndex(Asset):
 class DynamoDBSecondaryIndexAttributes(AssetAttributes):
     """DynamoDBSecondaryIndex-specific attributes for nested API format."""
 
-    dynamo_db_secondary_index_projection_type: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="dynamoDBSecondaryIndexProjectionType")
+    dynamo_db_projection_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBProjectionType"
     )
     """Specifies attributes that are projected from the DynamoDB table into the index."""
 
@@ -922,6 +868,11 @@ class DynamoDBSecondaryIndexRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1054,6 +1005,7 @@ _DYNAMO_DB_SECONDARY_INDEX_REL_FIELDS: List[str] = [
     "dbt_sources",
     "sql_dbt_sources",
     "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1088,9 +1040,7 @@ def _populate_dynamo_db_secondary_index_attrs(
 ) -> None:
     """Populate DynamoDBSecondaryIndex-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.dynamo_db_secondary_index_projection_type = (
-        obj.dynamo_db_secondary_index_projection_type
-    )
+    attrs.dynamo_db_projection_type = obj.dynamo_db_projection_type
     attrs.dynamo_db_status = obj.dynamo_db_status
     attrs.dynamo_db_partition_key = obj.dynamo_db_partition_key
     attrs.dynamo_db_sort_key = obj.dynamo_db_sort_key
@@ -1160,9 +1110,7 @@ def _extract_dynamo_db_secondary_index_attrs(
 ) -> dict:
     """Extract all DynamoDBSecondaryIndex attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dynamo_db_secondary_index_projection_type"] = (
-        attrs.dynamo_db_secondary_index_projection_type
-    )
+    result["dynamo_db_projection_type"] = attrs.dynamo_db_projection_type
     result["dynamo_db_status"] = attrs.dynamo_db_status
     result["dynamo_db_partition_key"] = attrs.dynamo_db_partition_key
     result["dynamo_db_sort_key"] = attrs.dynamo_db_sort_key
@@ -1271,9 +1219,6 @@ def _dynamo_db_secondary_index_to_nested(
         is_incomplete=dynamo_db_secondary_index.is_incomplete,
         provenance_type=dynamo_db_secondary_index.provenance_type,
         home_id=dynamo_db_secondary_index.home_id,
-        depth=dynamo_db_secondary_index.depth,
-        immediate_upstream=dynamo_db_secondary_index.immediate_upstream,
-        immediate_downstream=dynamo_db_secondary_index.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1309,6 +1254,7 @@ def _dynamo_db_secondary_index_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1317,9 +1263,6 @@ def _dynamo_db_secondary_index_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dynamo_db_secondary_index_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1351,8 +1294,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DynamoDBSecondaryIndex.DYNAMO_DB_SECONDARY_INDEX_PROJECTION_TYPE = KeywordField(
-    "dynamoDBSecondaryIndexProjectionType", "dynamoDBSecondaryIndexProjectionType"
+DynamoDBSecondaryIndex.DYNAMO_DB_PROJECTION_TYPE = KeywordField(
+    "dynamoDBProjectionType", "dynamoDBProjectionType"
 )
 DynamoDBSecondaryIndex.DYNAMO_DB_STATUS = KeywordField(
     "dynamoDBStatus", "dynamoDBStatus"
@@ -1527,6 +1470,9 @@ DynamoDBSecondaryIndex.DBT_TESTS = RelationField("dbtTests")
 DynamoDBSecondaryIndex.DBT_SOURCES = RelationField("dbtSources")
 DynamoDBSecondaryIndex.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DynamoDBSecondaryIndex.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+DynamoDBSecondaryIndex.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DynamoDBSecondaryIndex.MEANINGS = RelationField("meanings")
 DynamoDBSecondaryIndex.MC_MONITORS = RelationField("mcMonitors")
 DynamoDBSecondaryIndex.MC_INCIDENTS = RelationField("mcIncidents")

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -40,6 +40,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -50,7 +51,7 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .tableau_related import RelatedTableauProject, RelatedTableauSite
+from .tableau_related import RelatedTableauProject
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -64,6 +65,7 @@ class TableauSite(Asset):
     """
 
     TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES: ClassVar[Any] = None
+    TABLEAU_SOURCE_READ_COUNTS: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -79,6 +81,7 @@ class TableauSite(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -97,8 +100,13 @@ class TableauSite(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     PROJECTS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "TableauSite"
+
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
+
+    tableau_source_read_counts: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Read/view counts on this asset bucketed by time window, as reported by Tableau's Content Exploration API."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -148,6 +156,11 @@ class TableauSite(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -208,66 +221,6 @@ class TableauSite(Asset):
         self.type_name = "TableauSite"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this TableauSite instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"TableauSite validation failed: {errors}")
-
-    def minimize(self) -> "TableauSite":
-        """
-        Return a minimal copy of this TableauSite with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new TableauSite with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new TableauSite instance with only the minimum required fields.
-        """
-        self.validate()
-        return TableauSite(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedTableauSite":
-        """
-        Create a :class:`RelatedTableauSite` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedTableauSite reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedTableauSite(guid=self.guid)
-        return RelatedTableauSite(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -325,6 +278,9 @@ class TableauSiteAttributes(AssetAttributes):
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
 
+    tableau_source_read_counts: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Read/view counts on this asset bucketed by time window, as reported by Tableau's Content Exploration API."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -377,6 +333,11 @@ class TableauSiteRelationshipAttributes(AssetRelationshipAttributes):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -467,6 +428,7 @@ _TABLEAU_SITE_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -495,6 +457,7 @@ def _populate_tableau_site_attrs(
     attrs.tableau_project_hierarchy_qualified_names = (
         obj.tableau_project_hierarchy_qualified_names
     )
+    attrs.tableau_source_read_counts = obj.tableau_source_read_counts
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -504,6 +467,7 @@ def _extract_tableau_site_attrs(attrs: TableauSiteAttributes) -> dict:
     result["tableau_project_hierarchy_qualified_names"] = (
         attrs.tableau_project_hierarchy_qualified_names
     )
+    result["tableau_source_read_counts"] = attrs.tableau_source_read_counts
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -541,9 +505,6 @@ def _tableau_site_to_nested(tableau_site: TableauSite) -> TableauSiteNested:
         is_incomplete=tableau_site.is_incomplete,
         provenance_type=tableau_site.provenance_type,
         home_id=tableau_site.home_id,
-        depth=tableau_site.depth,
-        immediate_upstream=tableau_site.immediate_upstream,
-        immediate_downstream=tableau_site.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -575,6 +536,7 @@ def _tableau_site_from_nested(nested: TableauSiteNested) -> TableauSite:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -583,9 +545,6 @@ def _tableau_site_from_nested(nested: TableauSiteNested) -> TableauSite:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_tableau_site_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -611,6 +570,9 @@ from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noq
 TableauSite.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
     "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
 )
+TableauSite.TABLEAU_SOURCE_READ_COUNTS = KeywordField(
+    "tableauSourceReadCounts", "tableauSourceReadCounts"
+)
 TableauSite.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -630,6 +592,9 @@ TableauSite.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttrib
 TableauSite.METRICS = RelationField("metrics")
 TableauSite.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 TableauSite.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+TableauSite.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 TableauSite.MEANINGS = RelationField("meanings")
 TableauSite.MC_MONITORS = RelationField("mcMonitors")
 TableauSite.MC_INCIDENTS = RelationField("mcIncidents")
