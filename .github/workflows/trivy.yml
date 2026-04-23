@@ -45,7 +45,7 @@ jobs:
         with:
           image-ref: pyatlan-trivy:latest
           scanners: 'vuln'
-          version: 'v0.69.0'
+          version: 'v0.70.0'
           ignore-unfixed: true
           format: 'table'
           output: 'trivy-image.txt'
@@ -71,7 +71,7 @@ jobs:
         with:
           image-ref: pyatlan-trivy:latest
           scanners: 'vuln'
-          version: 'v0.69.0'
+          version: 'v0.70.0'
           ignore-unfixed: true
           format: 'sarif'
           output: 'trivy-image.sarif'
@@ -87,7 +87,7 @@ jobs:
           scan-type: fs
           scan-ref: uv.lock
           scanners: 'vuln'
-          version: 'v0.69.0'
+          version: 'v0.70.0'
           ignore-unfixed: true
           format: 'table'
           output: 'trivy-deps.txt'
@@ -113,7 +113,7 @@ jobs:
           scan-type: fs
           scan-ref: uv.lock
           scanners: 'vuln'
-          version: 'v0.69.0'
+          version: 'v0.70.0'
           ignore-unfixed: true
           format: 'sarif'
           output: 'trivy-deps.sarif'
@@ -167,7 +167,7 @@ jobs:
         with:
           image-ref: pyatlan-trivy:latest
           scanners: 'vuln'
-          version: 'v0.69.0'
+          version: 'v0.70.0'
           ignore-unfixed: true
           format: 'table'
           severity: 'CRITICAL,HIGH'
@@ -182,7 +182,7 @@ jobs:
           scan-type: fs
           scan-ref: uv.lock
           scanners: 'vuln'
-          version: 'v0.69.0'
+          version: 'v0.70.0'
           ignore-unfixed: true
           format: 'table'
           severity: 'CRITICAL,HIGH'

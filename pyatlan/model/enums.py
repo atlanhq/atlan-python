@@ -413,6 +413,7 @@ class AtlanDeleteType(str, Enum):
 
 class AtlanIcon(str, Enum):
     ACORN = "PhAcorn"
+    ACTIVITY = "PhActivity"  # Deprecated: use PULSE
     ADDRESS_BOOK = "PhAddressBook"
     ADDRESS_BOOK_TABS = "PhAddressBookTabs"
     AIRPLANE = "PhAirplane"
@@ -791,6 +792,10 @@ class AtlanIcon(str, Enum):
     CIRCLE_HALF = "PhCircleHalf"
     CIRCLE_HALF_TILT = "PhCircleHalfTilt"
     CIRCLE_NOTCH = "PhCircleNotch"
+    CIRCLE_WAVY = "PhCircleWavy"  # Deprecated: use SEAL
+    CIRCLE_WAVY_CHECK = "PhCircleWavyCheck"  # Deprecated: use SEAL_CHECK
+    CIRCLE_WAVY_QUESTION = "PhCircleWavyQuestion"  # Deprecated: use SEAL_QUESTION
+    CIRCLE_WAVY_WARNING = "PhCircleWavyWarning"  # Deprecated: use SEAL_WARNING
     CIRCUITRY = "PhCircuitry"
     CITY = "PhCity"
     CLIPBOARD = "PhClipboard"
@@ -996,6 +1001,7 @@ class AtlanIcon(str, Enum):
     FILE_CSV = "PhFileCsv"
     FILE_C_SHARP = "PhFileCSharp"
     FILE_DASHED = "PhFileDashed"
+    FILE_DOTTED = "PhFileDotted"  # Deprecated: use FILE_DASHED
     FILE_DOC = "PhFileDoc"
     FILE_HTML = "PhFileHtml"
     FILE_IMAGE = "PhFileImage"
@@ -1005,6 +1011,7 @@ class AtlanIcon(str, Enum):
     FILE_JSX = "PhFileJsx"
     FILE_LOCK = "PhFileLock"
     FILE_MAGNIFYING_GLASS = "PhFileMagnifyingGlass"
+    FILE_SEARCH = "PhFileSearch"  # Deprecated: use FILE_MAGNIFYING_GLASS
     FILE_MD = "PhFileMd"
     FILE_MINUS = "PhFileMinus"
     FILE_PDF = "PhFilePdf"
@@ -1059,6 +1066,7 @@ class AtlanIcon(str, Enum):
     FOLDER = "PhFolder"
     FOLDERS = "PhFolders"
     FOLDER_DASHED = "PhFolderDashed"
+    FOLDER_DOTTED = "PhFolderDotted"  # Deprecated: use FOLDER_DASHED
     FOLDER_LOCK = "PhFolderLock"
     FOLDER_MINUS = "PhFolderMinus"
     FOLDER_NOTCH = "PhFolderNotch"
@@ -1069,6 +1077,9 @@ class AtlanIcon(str, Enum):
     FOLDER_PLUS = "PhFolderPlus"
     FOLDER_SIMPLE = "PhFolderSimple"
     FOLDER_SIMPLE_DASHED = "PhFolderSimpleDashed"
+    FOLDER_SIMPLE_DOTTED = (
+        "PhFolderSimpleDotted"  # Deprecated: use FOLDER_SIMPLE_DASHED
+    )
     FOLDER_SIMPLE_LOCK = "PhFolderSimpleLock"
     FOLDER_SIMPLE_MINUS = "PhFolderSimpleMinus"
     FOLDER_SIMPLE_PLUS = "PhFolderSimplePlus"
@@ -1462,6 +1473,7 @@ class AtlanIcon(str, Enum):
     PEN_NIB_STRAIGHT = "PhPenNibStraight"
     PEPPER = "PhPepper"
     PERCENT = "PhPercent"
+    PEDESTRIAN = "PhPedestrian"  # Deprecated: use PERSON
     PERSON = "PhPerson"
     PERSON_ARMS_SPREAD = "PhPersonArmsSpread"
     PERSON_SIMPLE = "PhPersonSimple"
@@ -1770,6 +1782,7 @@ class AtlanIcon(str, Enum):
     TEXT_ALIGN_RIGHT = "PhTextAlignRight"
     TEXT_A_UNDERLINE = "PhTextAUnderline"
     TEXT_B = "PhTextB"
+    TEXT_BOLDER = "PhTextBolder"  # Deprecated: use TEXT_B
     TEXT_COLUMNS = "PhTextColumns"
     TEXT_H = "PhTextH"
     TEXT_H_FIVE = "PhTextHFive"
