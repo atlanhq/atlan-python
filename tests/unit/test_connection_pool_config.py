@@ -15,6 +15,7 @@ These tests verify the two SDK-side fixes:
    before nginx's keepalive_timeout=75s FIN, preventing CLOSE_WAIT accumulation.
 """
 
+import contextvars
 from unittest.mock import Mock, patch
 
 import httpx
@@ -183,3 +184,62 @@ def test_max_retries_restores_original_transport_on_exit(client):
     with client.max_retries():
         pass
     assert client._session._transport is original
+
+
+# ---------------------------------------------------------------------------
+# reset_http_session
+# ---------------------------------------------------------------------------
+
+
+class TestResetHttpSession:
+    def test_creates_new_session(self, client):
+        """reset_http_session() replaces _session with a brand-new httpx.Client."""
+        old_session = client._session
+        client.reset_http_session()
+        assert client._session is not old_session
+
+    def test_new_session_has_correct_limits(self, client):
+        """New session must use the same pool limits as the initial session."""
+        client.reset_http_session()
+        assert _get_httpcore_pool(client)._max_connections == 50
+        assert _get_httpcore_pool(client)._keepalive_expiry == 30.0
+        assert _get_httpcore_pool(client)._max_keepalive_connections == 10
+
+    def test_closes_old_session(self, client):
+        """reset_http_session() calls close() on the old session before replacing it."""
+        mock_close = Mock()
+        client._session.close = mock_close
+        client.reset_http_session()
+        mock_close.assert_called_once()
+
+    def test_resets_401_retry_flag(self, client):
+        """_401_has_retried ContextVar must be reset to False after session rebuild."""
+        def _run():
+            client._401_has_retried.set(True)
+            client.reset_http_session()
+            return client._401_has_retried.get()
+
+        result = contextvars.copy_context().run(_run)
+        assert result is False
+
+    def test_preserves_proxy_kwargs(self, client):
+        """proxy and verify attrs are forwarded to the new PyatlanSyncTransport."""
+        client.proxy = "http://proxy.example.com:8080"
+        client.verify = "/path/to/cert.pem"
+
+        captured: dict = {}
+        original_init = PyatlanSyncTransport.__init__
+
+        def capturing_init(self_t, retry=None, client=None, **kwargs):  # noqa: ARG001
+            captured.update(kwargs)
+            original_init(self_t, retry=retry, client=client, **kwargs)
+
+        # Patch httpx.HTTPTransport so it doesn't try to load the fake cert file
+        # from disk — we only need to verify the kwargs are forwarded correctly.
+        with patch.object(PyatlanSyncTransport, "__init__", capturing_init), patch(
+            "httpx.HTTPTransport", Mock(return_value=Mock())
+        ):
+            client.reset_http_session()
+
+        assert captured.get("proxy") == "http://proxy.example.com:8080"
+        assert captured.get("verify") == "/path/to/cert.pem"

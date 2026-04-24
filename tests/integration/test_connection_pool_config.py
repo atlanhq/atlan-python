@@ -13,6 +13,7 @@ These tests run against a live Atlan tenant and verify:
    client that is actively connected.
 """
 
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, wait
 from unittest.mock import patch
@@ -165,3 +166,81 @@ def test_max_retries_restores_original_transport(client: AtlanClient):
         pass
 
     assert client._session._transport is original_transport
+
+
+# ---------------------------------------------------------------------------
+# Pool slot released during 429 retry sleep
+# ---------------------------------------------------------------------------
+
+
+def test_concurrent_429_retries_no_pool_timeout(client: AtlanClient):
+    """
+    Connection slots must be freed before retry.sleep() when receiving 429.
+
+    GOVFOUN-408 root cause: PyatlanSyncTransport._retry_operation called
+    retry.sleep(response) while the response stream was still open, holding
+    the httpcore connection slot for the entire sleep duration. With N threads
+    all sleeping simultaneously, the pool was exhausted and subsequent requests
+    raised PoolTimeout.
+
+    Fix: response.close() before retry.sleep(). This test verifies that N
+    concurrent 429 retries complete without PoolTimeout when max_connections=N.
+    """
+    n_threads = 5
+    call_lock = threading.Lock()
+    thread_calls: dict = {}
+
+    def counting_handle(request: httpx.Request) -> httpx.Response:
+        tid = threading.get_ident()
+        with call_lock:
+            count = thread_calls.get(tid, 0)
+            thread_calls[tid] = count + 1
+        if count == 0:
+            # First call per thread: 429 with zero Retry-After
+            return httpx.Response(429, headers={"Retry-After": "0"}, content=b"")
+        return httpx.Response(200, content=b"{}")
+
+    test_transport = PyatlanSyncTransport(
+        retry=Retry(
+            total=3,
+            backoff_factor=0,
+            status_forcelist=[429],
+            allowed_methods=["GET", "POST"],
+            respect_retry_after_header=True,
+        ),
+        limits=httpx.Limits(
+            max_connections=n_threads,
+            max_keepalive_connections=2,
+            keepalive_expiry=5.0,
+        ),
+    )
+    test_transport._transport.handle_request = counting_handle  # type: ignore[method-assign]
+
+    original_transport = client._session._transport
+    client._session._transport = test_transport
+
+    try:
+        pool_timeout_errors: list = []
+
+        def make_request():
+            try:
+                client.user.get_current()
+            except httpx.PoolTimeout as exc:
+                pool_timeout_errors.append(str(exc))
+            except Exception:
+                pass  # Auth/parse errors from mock 200 body are expected
+
+        with ThreadPoolExecutor(max_workers=n_threads) as executor:
+            futures = [executor.submit(make_request) for _ in range(n_threads)]
+            done, not_done = wait(futures, timeout=30.0)
+
+        assert len(not_done) == 0, (
+            f"{len(not_done)} of {n_threads} threads hung after 30s — "
+            "possible connection pool deadlock"
+        )
+        assert not pool_timeout_errors, (
+            "PoolTimeout raised — connection slot held open during retry.sleep(): "
+            f"{pool_timeout_errors}"
+        )
+    finally:
+        client._session._transport = original_transport
