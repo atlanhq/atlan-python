@@ -121,6 +121,17 @@ DEFAULT_RETRY = Retry(
 
 VERSION = read_text("pyatlan", "version.txt").strip()
 
+# Connection pool configuration (GOVFOUN-408).
+# keepalive_expiry=30s < nginx keepalive_timeout=75s → client retires idle
+# connections before nginx sends FIN, preventing CLOSE_WAIT accumulation.
+# pool timeout=30s → threads raise PoolTimeout instead of blocking forever.
+_DEFAULT_POOL_LIMITS = httpx.Limits(
+    max_connections=50,
+    max_keepalive_connections=10,
+    keepalive_expiry=30.0,
+)
+_DEFAULT_POOL_TIMEOUT_SECONDS = 30.0
+
 
 def log_response(response, *args, **kwargs):
     LOGGER.debug("HTTP Status: %s", response.status_code)
@@ -216,11 +227,7 @@ class AtlanClient(BaseSettings):
             transport=PyatlanSyncTransport(
                 retry=self.retry,
                 client=self,
-                limits=httpx.Limits(
-                    max_connections=50,
-                    max_keepalive_connections=10,
-                    keepalive_expiry=30.0,
-                ),
+                limits=_DEFAULT_POOL_LIMITS,
                 **transport_kwargs,
             ),
             headers={
@@ -293,8 +300,8 @@ class AtlanClient(BaseSettings):
         """Close and rebuild the HTTP session to recover from a degraded connection pool."""
         try:
             self._session.close()
-        except Exception:
-            pass
+        except Exception as e:
+            LOGGER.debug("Failed to close old HTTP session: %s", e)
         transport_kwargs = {}
         if self.proxy is not None:
             transport_kwargs["proxy"] = self.proxy
@@ -304,11 +311,7 @@ class AtlanClient(BaseSettings):
             transport=PyatlanSyncTransport(
                 retry=self.retry,
                 client=self,
-                limits=httpx.Limits(
-                    max_connections=50,
-                    max_keepalive_connections=10,
-                    keepalive_expiry=30.0,
-                ),
+                limits=_DEFAULT_POOL_LIMITS,
                 **transport_kwargs,
             ),
             headers={
@@ -322,7 +325,7 @@ class AtlanClient(BaseSettings):
             event_hooks={"response": [log_response]},
         )
         self._401_has_retried.set(False)
-        LOGGER.warning("HTTP session reset: new connection pool created")
+        LOGGER.info("HTTP session reset: new connection pool created")
 
     @property
     def admin(self) -> AdminClient:
@@ -599,7 +602,7 @@ class AtlanClient(BaseSettings):
                 None,
                 connect=self.connect_timeout,
                 read=self.read_timeout,
-                pool=30.0,
+                pool=_DEFAULT_POOL_TIMEOUT_SECONDS,
             )
             if binary_data:
                 response = self._session.request(
@@ -2061,11 +2064,7 @@ class AtlanClient(BaseSettings):
         new_transport = PyatlanSyncTransport(
             retry=max_retries,
             client=self,
-            limits=httpx.Limits(
-                max_connections=50,
-                max_keepalive_connections=10,
-                keepalive_expiry=30.0,
-            ),
+            limits=_DEFAULT_POOL_LIMITS,
             **transport_kwargs,
         )
         self._session._transport = new_transport
