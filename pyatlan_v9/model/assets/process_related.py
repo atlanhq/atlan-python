@@ -54,6 +54,9 @@ class RelatedProcess(RelatedAsset):
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
 
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Process"
