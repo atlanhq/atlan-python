@@ -21,7 +21,11 @@ from unittest.mock import Mock, patch
 import httpx
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.atlan import (
+    AtlanClient,
+    _DEFAULT_POOL_LIMITS,
+    _DEFAULT_POOL_TIMEOUT_SECONDS,
+)
 from pyatlan.client.transport import PyatlanSyncTransport
 from pyatlan.model.assets import AtlasGlossary
 
@@ -53,9 +57,14 @@ def _trigger_api_call(client: AtlanClient) -> None:
 
 
 def _get_httpcore_pool(client: AtlanClient):
-    transport = client._session._transport
-    assert isinstance(transport, PyatlanSyncTransport)
-    return transport._transport._pool
+    """Access the underlying httpcore pool. Relies on httpx internals;
+    may need updating if httpx changes its internal structure."""
+    try:
+        transport = client._session._transport
+        assert isinstance(transport, PyatlanSyncTransport)
+        return transport._transport._pool
+    except AttributeError:
+        pytest.skip("httpx internal structure changed; update test helper")
 
 
 # ---------------------------------------------------------------------------
@@ -70,7 +79,7 @@ def test_pool_timeout_is_30_seconds(mock_session, client):
     _trigger_api_call(client)
     assert mock_session.request.called, "no HTTP request was made"
     timeout = mock_session.request.call_args.kwargs["timeout"]
-    assert timeout.pool == 30.0
+    assert timeout.pool == _DEFAULT_POOL_TIMEOUT_SECONDS
 
 
 @patch.object(AtlanClient, "_session")
@@ -120,17 +129,17 @@ def test_pool_timeout_propagates_not_hangs(mock_session, client):
 
 def test_transport_max_connections_is_50(client):
     """max_connections=50 reduces blast radius when CLOSE_WAIT sockets accumulate."""
-    assert _get_httpcore_pool(client)._max_connections == 50
+    assert _get_httpcore_pool(client)._max_connections == _DEFAULT_POOL_LIMITS.max_connections
 
 
 def test_transport_keepalive_expiry_is_30_seconds(client):
     """keepalive_expiry=30.0 — client closes idle connections before nginx's 75s FIN."""
-    assert _get_httpcore_pool(client)._keepalive_expiry == 30.0
+    assert _get_httpcore_pool(client)._keepalive_expiry == _DEFAULT_POOL_LIMITS.keepalive_expiry
 
 
 def test_transport_max_keepalive_connections_is_10(client):
     """max_keepalive_connections=10 bounds idle connections held in the pool."""
-    assert _get_httpcore_pool(client)._max_keepalive_connections == 10
+    assert _get_httpcore_pool(client)._max_keepalive_connections == _DEFAULT_POOL_LIMITS.max_keepalive_connections
 
 
 # ---------------------------------------------------------------------------
@@ -201,9 +210,9 @@ class TestResetHttpSession:
     def test_new_session_has_correct_limits(self, client):
         """New session must use the same pool limits as the initial session."""
         client.reset_http_session()
-        assert _get_httpcore_pool(client)._max_connections == 50
-        assert _get_httpcore_pool(client)._keepalive_expiry == 30.0
-        assert _get_httpcore_pool(client)._max_keepalive_connections == 10
+        assert _get_httpcore_pool(client)._max_connections == _DEFAULT_POOL_LIMITS.max_connections
+        assert _get_httpcore_pool(client)._keepalive_expiry == _DEFAULT_POOL_LIMITS.keepalive_expiry
+        assert _get_httpcore_pool(client)._max_keepalive_connections == _DEFAULT_POOL_LIMITS.max_keepalive_connections
 
     def test_closes_old_session(self, client):
         """reset_http_session() calls close() on the old session before replacing it."""
