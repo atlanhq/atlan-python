@@ -2,7 +2,7 @@
 # Copyright 2025 Atlan Pte. Ltd.
 """Unit tests for pyatlan.client.transport and pyatlan.client.common.transport."""
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
 import pytest
@@ -513,6 +513,73 @@ class TestPyatlanSyncTransportRetry:
         assert resp.status_code == 200
         assert resp.json()["guidAssignments"][TEMP_GUID] == EXISTING_GUID
 
+    def test_response_closed_before_retry_sleep(self):
+        """response.close() must precede retry.sleep() — GOVFOUN-408 root cause fix.
+
+        Open response holds a httpcore connection slot during sleep, causing
+        PoolTimeout cascade when all slots are occupied by sleeping retry threads.
+        """
+        transport = PyatlanSyncTransport(
+            retry=Retry(
+                total=3,
+                backoff_factor=0,
+                allowed_methods=["POST"],
+                status_forcelist=[429],
+            ),
+            trust_env=False,
+        )
+        call_order: list = []
+
+        resp_429 = httpx.Response(429, headers={"Retry-After": "0"}, content=b"")
+        original_close = resp_429.close
+
+        def patched_close():
+            call_order.append("close")
+            original_close()
+
+        resp_429.close = patched_close
+        responses = iter([resp_429, httpx.Response(200)])
+        transport._transport.handle_request = lambda req: next(responses)
+        req = httpx.Request("POST", "https://example.com")
+
+        with patch.object(
+            Retry, "sleep", side_effect=lambda *a, **kw: call_order.append("sleep")
+        ):
+            transport.handle_request(req)
+
+        assert "close" in call_order, "response.close() was never called"
+        assert "sleep" in call_order, "retry.sleep() was never called"
+        assert call_order.index("close") < call_order.index("sleep"), (
+            "response.close() must precede retry.sleep() "
+            "to release the httpcore connection slot before the sleep"
+        )
+
+    def test_no_close_on_exception_retry(self):
+        """isinstance guard prevents calling .close() on an httpx.HTTPError.
+
+        When a network exception causes a retry, the loop variable holds an
+        httpx.HTTPError (no .close()). Without the isinstance check this would
+        raise AttributeError and hide the original exception.
+        """
+        transport = self._make_transport()
+        call_count = 0
+
+        def side_effect(req):
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                raise httpx.ReadTimeout("timeout", request=req)
+            return httpx.Response(200)
+
+        transport._transport.handle_request = side_effect
+        req = httpx.Request("POST", "https://example.com")
+
+        with patch.object(Retry, "sleep"):
+            resp = transport.handle_request(req)
+
+        assert resp.status_code == 200
+        assert call_count == 2
+
 
 # ---------------------------------------------------------------------------
 # PyatlanAsyncTransport retry + duplicate prevention
@@ -590,3 +657,57 @@ class TestPyatlanAsyncTransportRetry:
         inner_mock.assert_not_called()
         assert resp.status_code == 200
         assert resp.json()["guidAssignments"][TEMP_GUID] == EXISTING_GUID
+
+    @pytest.mark.asyncio
+    async def test_response_closed_before_retry_sleep(self):
+        """await response.aclose() must precede await retry.asleep() — async mirror of sync fix.
+
+        Same GOVFOUN-408 root cause: open response holds the httpcore connection
+        slot during the retry sleep, causing PoolTimeout in async contexts.
+        """
+        from pyatlan.client.transport import PyatlanAsyncTransport
+
+        transport = PyatlanAsyncTransport(
+            retry=Retry(
+                total=3,
+                backoff_factor=0,
+                allowed_methods=["POST"],
+                status_forcelist=[429],
+            ),
+            trust_env=False,
+        )
+        call_order: list = []
+
+        resp_429 = httpx.Response(429, headers={"Retry-After": "0"}, content=b"")
+        original_aclose = resp_429.aclose
+
+        async def patched_aclose():
+            call_order.append("aclose")
+            await original_aclose()
+
+        resp_429.aclose = patched_aclose
+
+        call_count = 0
+        responses = [resp_429, httpx.Response(200)]
+
+        async def handle_request(req):
+            nonlocal call_count
+            result = responses[call_count]
+            call_count += 1
+            return result
+
+        transport._transport.handle_async_request = handle_request
+        req = httpx.Request("POST", "https://example.com")
+
+        async def recording_asleep(*args, **kwargs):
+            call_order.append("asleep")
+
+        with patch.object(Retry, "asleep", recording_asleep):
+            await transport.handle_async_request(req)
+
+        assert "aclose" in call_order, "response.aclose() was never called"
+        assert "asleep" in call_order, "retry.asleep() was never called"
+        assert call_order.index("aclose") < call_order.index("asleep"), (
+            "response.aclose() must precede retry.asleep() "
+            "to release the httpcore connection slot before the sleep"
+        )
