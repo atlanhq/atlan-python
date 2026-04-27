@@ -43,10 +43,10 @@ from .catalog_related import RelatedCatalog
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtColumnProcess
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
 from .flow_related import RelatedFlowControlOperation
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .matillion_related import RelatedMatillionComponent
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -99,6 +99,7 @@ class DbtColumnProcess(Asset):
     AST: ClassVar[Any] = None
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
+    IS_PASS_THROUGH: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -118,6 +119,7 @@ class DbtColumnProcess(Asset):
     FABRIC_ACTIVITIES: ClassVar[Any] = None
     FIVETRAN_CONNECTOR: ClassVar[Any] = None
     FLOW_ORCHESTRATED_BY: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -143,6 +145,8 @@ class DbtColumnProcess(Asset):
     SPARK_JOBS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DbtColumnProcess"
 
     dbt_column_process_job_status: Union[str, None, UnsetType] = UNSET
     """Status of the dbt column process job."""
@@ -225,6 +229,9 @@ class DbtColumnProcess(Asset):
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
 
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
 
@@ -285,6 +292,11 @@ class DbtColumnProcess(Asset):
 
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -369,66 +381,6 @@ class DbtColumnProcess(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DbtColumnProcess"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DbtColumnProcess instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"DbtColumnProcess validation failed: {errors}")
-
-    def minimize(self) -> "DbtColumnProcess":
-        """
-        Return a minimal copy of this DbtColumnProcess with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DbtColumnProcess with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DbtColumnProcess instance with only the minimum required fields.
-        """
-        self.validate()
-        return DbtColumnProcess(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDbtColumnProcess":
-        """
-        Create a :class:`RelatedDbtColumnProcess` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDbtColumnProcess reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDbtColumnProcess(guid=self.guid)
-        return RelatedDbtColumnProcess(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -568,6 +520,9 @@ class DbtColumnProcessAttributes(AssetAttributes):
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
 
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
 
 class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
     """DbtColumnProcess-specific relationship attributes for nested API format."""
@@ -632,6 +587,11 @@ class DbtColumnProcessRelationshipAttributes(AssetRelationshipAttributes):
 
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -755,6 +715,7 @@ _DBT_COLUMN_PROCESS_REL_FIELDS: List[str] = [
     "fabric_activities",
     "fivetran_connector",
     "flow_orchestrated_by",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "matillion_component",
     "mc_monitors",
@@ -817,6 +778,7 @@ def _populate_dbt_column_process_attrs(
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
+    attrs.is_pass_through = obj.is_pass_through
 
 
 def _extract_dbt_column_process_attrs(attrs: DbtColumnProcessAttributes) -> dict:
@@ -851,6 +813,7 @@ def _extract_dbt_column_process_attrs(attrs: DbtColumnProcessAttributes) -> dict
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
+    result["is_pass_through"] = attrs.is_pass_through
     return result
 
 
@@ -891,9 +854,6 @@ def _dbt_column_process_to_nested(
         is_incomplete=dbt_column_process.is_incomplete,
         provenance_type=dbt_column_process.provenance_type,
         home_id=dbt_column_process.home_id,
-        depth=dbt_column_process.depth,
-        immediate_upstream=dbt_column_process.immediate_upstream,
-        immediate_downstream=dbt_column_process.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -927,6 +887,7 @@ def _dbt_column_process_from_nested(nested: DbtColumnProcessNested) -> DbtColumn
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -935,9 +896,6 @@ def _dbt_column_process_from_nested(nested: DbtColumnProcessNested) -> DbtColumn
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dbt_column_process_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -963,6 +921,7 @@ def _dbt_column_process_from_nested_bytes(
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
     KeywordField,
     NumericField,
     RelationField,
@@ -1015,6 +974,7 @@ DbtColumnProcess.ADDITIONAL_ETL_CONTEXT = KeywordField(
     "additionalEtlContext", "additionalEtlContext"
 )
 DbtColumnProcess.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
+DbtColumnProcess.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
 DbtColumnProcess.ADF_ACTIVITY = RelationField("adfActivity")
 DbtColumnProcess.AIRFLOW_TASKS = RelationField("airflowTasks")
 DbtColumnProcess.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -1038,6 +998,9 @@ DbtColumnProcess.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetR
 DbtColumnProcess.FABRIC_ACTIVITIES = RelationField("fabricActivities")
 DbtColumnProcess.FIVETRAN_CONNECTOR = RelationField("fivetranConnector")
 DbtColumnProcess.FLOW_ORCHESTRATED_BY = RelationField("flowOrchestratedBy")
+DbtColumnProcess.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DbtColumnProcess.MEANINGS = RelationField("meanings")
 DbtColumnProcess.MATILLION_COMPONENT = RelationField("matillionComponent")
 DbtColumnProcess.MC_MONITORS = RelationField("mcMonitors")
