@@ -55,6 +55,7 @@ from .dremio_related import (
     RelatedDremioSpace,
     RelatedDremioVirtualDataset,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -142,6 +143,7 @@ class DremioFolder(Asset):
     DREMIO_PARENT_FOLDER: ClassVar[Any] = None
     DREMIO_PHYSICAL_DATASETS: ClassVar[Any] = None
     DREMIO_VIRTUAL_DATASETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -162,6 +164,8 @@ class DremioFolder(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "DremioFolder"
 
     dremio_parent_asset_type: Union[str, None, UnsetType] = UNSET
     """Type of top level asset that contains this folder."""
@@ -355,6 +359,11 @@ class DremioFolder(Asset):
     ] = UNSET
     """Virtual datasets (views) contained within the Dremio Folder."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -435,76 +444,6 @@ class DremioFolder(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DremioFolder instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.dremio_source is UNSET:
-                errors.append("dremio_source is required for creation")
-            if self.dremio_source_name is UNSET:
-                errors.append("dremio_source_name is required for creation")
-            if self.dremio_source_qualified_name is UNSET:
-                errors.append("dremio_source_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"DremioFolder validation failed: {errors}")
-
-    def minimize(self) -> "DremioFolder":
-        """
-        Return a minimal copy of this DremioFolder with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DremioFolder with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DremioFolder instance with only the minimum required fields.
-        """
-        self.validate()
-        return DremioFolder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDremioFolder":
-        """
-        Create a :class:`RelatedDremioFolder` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDremioFolder reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDremioFolder(guid=self.guid)
-        return RelatedDremioFolder(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -757,6 +696,11 @@ class DremioFolderRelationshipAttributes(AssetRelationshipAttributes):
     ] = UNSET
     """Virtual datasets (views) contained within the Dremio Folder."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -877,6 +821,7 @@ _DREMIO_FOLDER_REL_FIELDS: List[str] = [
     "dremio_parent_folder",
     "dremio_physical_datasets",
     "dremio_virtual_datasets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1030,9 +975,6 @@ def _dremio_folder_to_nested(dremio_folder: DremioFolder) -> DremioFolderNested:
         is_incomplete=dremio_folder.is_incomplete,
         provenance_type=dremio_folder.provenance_type,
         home_id=dremio_folder.home_id,
-        depth=dremio_folder.depth,
-        immediate_upstream=dremio_folder.immediate_upstream,
-        immediate_downstream=dremio_folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1066,6 +1008,7 @@ def _dremio_folder_from_nested(nested: DremioFolderNested) -> DremioFolder:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1074,9 +1017,6 @@ def _dremio_folder_from_nested(nested: DremioFolderNested) -> DremioFolder:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_dremio_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1205,6 +1145,9 @@ DremioFolder.DREMIO_SUB_FOLDERS = RelationField("dremioSubFolders")
 DremioFolder.DREMIO_PARENT_FOLDER = RelationField("dremioParentFolder")
 DremioFolder.DREMIO_PHYSICAL_DATASETS = RelationField("dremioPhysicalDatasets")
 DremioFolder.DREMIO_VIRTUAL_DATASETS = RelationField("dremioVirtualDatasets")
+DremioFolder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DremioFolder.MEANINGS = RelationField("meanings")
 DremioFolder.MC_MONITORS = RelationField("mcMonitors")
 DremioFolder.MC_INCIDENTS = RelationField("mcIncidents")
