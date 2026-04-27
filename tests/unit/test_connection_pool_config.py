@@ -22,9 +22,9 @@ import httpx
 import pytest
 
 from pyatlan.client.atlan import (
-    AtlanClient,
     _DEFAULT_POOL_LIMITS,
     _DEFAULT_POOL_TIMEOUT_SECONDS,
+    AtlanClient,
 )
 from pyatlan.client.transport import PyatlanSyncTransport
 from pyatlan.model.assets import AtlasGlossary
@@ -129,17 +129,26 @@ def test_pool_timeout_propagates_not_hangs(mock_session, client):
 
 def test_transport_max_connections_is_50(client):
     """max_connections=50 reduces blast radius when CLOSE_WAIT sockets accumulate."""
-    assert _get_httpcore_pool(client)._max_connections == _DEFAULT_POOL_LIMITS.max_connections
+    assert (
+        _get_httpcore_pool(client)._max_connections
+        == _DEFAULT_POOL_LIMITS.max_connections
+    )
 
 
 def test_transport_keepalive_expiry_is_30_seconds(client):
     """keepalive_expiry=30.0 — client closes idle connections before nginx's 75s FIN."""
-    assert _get_httpcore_pool(client)._keepalive_expiry == _DEFAULT_POOL_LIMITS.keepalive_expiry
+    assert (
+        _get_httpcore_pool(client)._keepalive_expiry
+        == _DEFAULT_POOL_LIMITS.keepalive_expiry
+    )
 
 
 def test_transport_max_keepalive_connections_is_10(client):
     """max_keepalive_connections=10 bounds idle connections held in the pool."""
-    assert _get_httpcore_pool(client)._max_keepalive_connections == _DEFAULT_POOL_LIMITS.max_keepalive_connections
+    assert (
+        _get_httpcore_pool(client)._max_keepalive_connections
+        == _DEFAULT_POOL_LIMITS.max_keepalive_connections
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -161,7 +170,9 @@ def _capture_transport_limits(client: AtlanClient) -> httpx.Limits:
         with client.max_retries():
             pass
 
-    assert "limits" in captured, "max_retries did not pass limits to PyatlanSyncTransport"
+    assert "limits" in captured, (
+        "max_retries did not pass limits to PyatlanSyncTransport"
+    )
     return captured["limits"]
 
 
@@ -210,9 +221,18 @@ class TestResetHttpSession:
     def test_new_session_has_correct_limits(self, client):
         """New session must use the same pool limits as the initial session."""
         client.reset_http_session()
-        assert _get_httpcore_pool(client)._max_connections == _DEFAULT_POOL_LIMITS.max_connections
-        assert _get_httpcore_pool(client)._keepalive_expiry == _DEFAULT_POOL_LIMITS.keepalive_expiry
-        assert _get_httpcore_pool(client)._max_keepalive_connections == _DEFAULT_POOL_LIMITS.max_keepalive_connections
+        assert (
+            _get_httpcore_pool(client)._max_connections
+            == _DEFAULT_POOL_LIMITS.max_connections
+        )
+        assert (
+            _get_httpcore_pool(client)._keepalive_expiry
+            == _DEFAULT_POOL_LIMITS.keepalive_expiry
+        )
+        assert (
+            _get_httpcore_pool(client)._max_keepalive_connections
+            == _DEFAULT_POOL_LIMITS.max_keepalive_connections
+        )
 
     def test_closes_old_session(self, client):
         """reset_http_session() calls close() on the old session before replacing it."""
@@ -223,6 +243,7 @@ class TestResetHttpSession:
 
     def test_resets_401_retry_flag(self, client):
         """_401_has_retried ContextVar must be reset to False after session rebuild."""
+
         def _run():
             client._401_has_retried.set(True)
             client.reset_http_session()
@@ -245,8 +266,9 @@ class TestResetHttpSession:
 
         # Patch httpx.HTTPTransport so it doesn't try to load the fake cert file
         # from disk — we only need to verify the kwargs are forwarded correctly.
-        with patch.object(PyatlanSyncTransport, "__init__", capturing_init), patch(
-            "httpx.HTTPTransport", Mock(return_value=Mock())
+        with (
+            patch.object(PyatlanSyncTransport, "__init__", capturing_init),
+            patch("httpx.HTTPTransport", Mock(return_value=Mock())),
         ):
             client.reset_http_session()
 
