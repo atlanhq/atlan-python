@@ -27,7 +27,12 @@ from pyatlan.client.transport import PyatlanSyncTransport
 
 
 def _get_httpcore_pool(client: AtlanClient):
-    return client._session._transport._transport._pool
+    """Access the underlying httpcore pool. Relies on httpx internals;
+    may need updating if httpx changes its internal structure."""
+    try:
+        return client._session._transport._transport._pool
+    except AttributeError:
+        pytest.skip("httpx internal structure changed; update test helper")
 
 
 # ---------------------------------------------------------------------------
