@@ -1,3 +1,18 @@
+## 9.6.0 (April 27, 2026)
+
+### New Features
+
+- **Deprecated Phosphor icon enum values**: Added 11 deprecated Phosphor icon names (`PhActivity`, `PhCircleWavy*`, `PhFileDotted`, `PhFileSearch`, `PhFolderDotted`, `PhFolderSimpleDotted`, `PhPedestrian`, `PhTextBolder`) to `AtlanIcon` so the SDK can deserialize tag definitions that reference old icon names without failing.
+
+### Bug Fixes
+
+- **httpcore connection pool deadlock fix**: Fixed a production deadlock where concurrent `replace_custom_metadata` calls could hang indefinitely. Root cause: httpcore's connection pool filled with CLOSE_WAIT zombie sockets (nginx closed idle connections at 75s, httpcore didn't detect this) and `pool=None` timeout meant threads waited forever. Fix adds `pool=30.0` timeout, `keepalive_expiry=30.0` (< nginx 75s), and `response.close()` before retry sleep to release connection slots. Includes `reset_http_session()` for recovering degraded pools in long-running workflows.
+
+### QOL Improvements
+
+- **Connection pool config extracted to constants**: `_DEFAULT_POOL_LIMITS` and `_DEFAULT_POOL_TIMEOUT_SECONDS` defined once at module level instead of repeated 4 times across init, reset, max_retries, and timeout.
+- **Trivy CI fix**: Bumped Trivy from v0.69.0 (broken download) to v0.70.0.
+
 ## 9.5.0 (April 21, 2026)
 
 ### New Features
