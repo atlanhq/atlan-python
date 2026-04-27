@@ -106,11 +106,6 @@ class PyatlanSyncTransport(httpx.BaseTransport):
                 logger.debug(
                     "_retry_operation retrying response=%s retry=%s", response, retry
                 )
-                # Close the response stream before sleeping so httpcore releases
-                # the connection back to the pool. Headers are already buffered
-                # in memory, so retry.sleep() can still read Retry-After.
-                if isinstance(response, httpx.Response):
-                    response.close()
                 retry = retry.increment()
                 retry.sleep(response)
 
@@ -231,11 +226,6 @@ class PyatlanAsyncTransport(httpx.AsyncBaseTransport):
                     response,
                     retry,
                 )
-                # Close the response stream before sleeping so httpcore releases
-                # the connection back to the pool. Headers are already buffered
-                # in memory, so retry.asleep() can still read Retry-After.
-                if isinstance(response, httpx.Response):
-                    await response.aclose()
                 retry = retry.increment()
                 await retry.asleep(response)
 
