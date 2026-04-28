@@ -55,7 +55,7 @@ dev = [
     "types-Authlib~=1.6.7.20260208",
     "jaraco-context~=6.1.0",
     "filelock~=3.25.0; python_version >= '3.10'",
-    "virtualenv~=21.1.0",
+    "virtualenv>=21.1,<21.4",
     "urllib3~=2.6.3; python_version >= '3.10'",
     "pytest~=8.4.2",
     "pytest-vcr~=1.0.2",
