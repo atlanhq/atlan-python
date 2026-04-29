@@ -19,7 +19,9 @@ def connection(client: AtlanClient):
     admin_role_guid = client.role_cache.get_id_for_name("$admin")
     assert admin_role_guid
     response = client.open_lineage.create_connection(
-        name=MODULE_NAME, admin_roles=[admin_role_guid]
+        name=MODULE_NAME,
+        connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE,
+        admin_roles=[admin_role_guid],
     )
     result = response.assets_created(asset_type=Connection)[0]
     yield client.asset.get_by_guid(
@@ -64,12 +66,12 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
         od,
         job.create_output(namespace=namespace, asset_name="AN.OTHER.VIEW"),
     ]
-    start.emit(client=client)
+    start.emit(client=client, connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE)
 
     complete = OpenLineageEvent.creator(
         run=run, event_type=OpenLineageEventType.COMPLETE
     )
-    complete.emit(client=client)
+    complete.emit(client=client, connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE)
 
     assert job
     assert start.event_type == OpenLineageEventType.START
@@ -125,55 +127,4 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
         == f"{connection.qualified_name}/dag_123/process"
     )
     delete_asset(client, asset_type=Process, guid=process.get("guid"))
-    delete_asset(client, asset_type=SparkJob, guid=job_asset.detail.guid)
-
-
-def test_open_lineage_generic_connector_type(
-    connection: Connection, client: AtlanClient
-):
-    """Test emit() with GENERIC_OPENLINEAGE connector type."""
-    namespace = "snowflake://abc123.snowflakecomputing.com"
-    producer = "https://your.orchestrator/unique/id/456"
-    job = OpenLineageJob.creator(
-        connection_name=MODULE_NAME, job_name="generic_ol_job", producer=producer
-    )
-    run = OpenLineageRun.creator(job=job)
-    start = OpenLineageEvent.creator(run=run, event_type=OpenLineageEventType.START)
-    start.inputs = [
-        job.create_input(namespace=namespace, asset_name="SRC.DB.TABLE"),
-    ]
-    start.outputs = [
-        job.create_output(namespace=namespace, asset_name="DST.DB.TABLE"),
-    ]
-
-    # Emit with GENERIC_OPENLINEAGE connector type
-    start.emit(client=client, connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE)
-
-    complete = OpenLineageEvent.creator(
-        run=run, event_type=OpenLineageEventType.COMPLETE
-    )
-    complete.emit(client=client, connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE)
-
-    assert start.event_type == OpenLineageEventType.START
-    assert complete.event_type == OpenLineageEventType.COMPLETE
-
-    time.sleep(30)
-
-    job_qualified_name = f"{connection.qualified_name}/{job.name}"
-    results = client.audit.search(
-        AuditSearchRequest.by_qualified_name(
-            type_name=SparkJob.__name__,
-            qualified_name=job_qualified_name,
-        )
-    )
-    assert results and results.current_page() and len(results.current_page()) > 0
-    job_asset = results.current_page()[0]
-    assert job_asset and job_asset.detail and isinstance(job_asset.detail, Asset)
-    assert job_asset.detail.name == job.name
-
-    # Cleanup
-    if job_asset.detail.relationship_attributes:
-        process = job_asset.detail.relationship_attributes.get("process")
-        if process:
-            delete_asset(client, asset_type=Process, guid=process.get("guid"))
     delete_asset(client, asset_type=SparkJob, guid=job_asset.detail.guid)
