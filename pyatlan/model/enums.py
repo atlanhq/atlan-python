@@ -140,6 +140,7 @@ class AtlanConnectionCategory(str, Enum):
     CUSTOM = "custom"
     AI = "ai"
     ERP = "erp"
+    DATA_PROCESSING = "data-processing"
 
 
 class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
@@ -272,6 +273,10 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     SYNAPSE = ("synapse", AtlanConnectionCategory.WAREHOUSE)
     AIRFLOW = ("airflow", AtlanConnectionCategory.ELT)
     OPENLINEAGE = ("openlineage", AtlanConnectionCategory.ELT)
+    GENERIC_OPENLINEAGE = (
+        "generic-openlineage",
+        AtlanConnectionCategory.DATA_PROCESSING,
+    )
     DATAFLOW = ("dataflow", AtlanConnectionCategory.ELT)
     QLIKSENSE = ("qlik-sense", AtlanConnectionCategory.BI)
     KAFKA = ("kafka", AtlanConnectionCategory.EVENT_BUS)

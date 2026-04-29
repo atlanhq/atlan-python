@@ -5,7 +5,7 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Connection, Process, SparkJob
 from pyatlan.model.audit import AuditSearchRequest
-from pyatlan.model.enums import OpenLineageEventType
+from pyatlan.model.enums import AtlanConnectorType, OpenLineageEventType
 from pyatlan.model.open_lineage.event import OpenLineageEvent
 from pyatlan.model.open_lineage.job import OpenLineageJob
 from pyatlan.model.open_lineage.run import OpenLineageRun
@@ -19,7 +19,9 @@ def connection(client: AtlanClient):
     admin_role_guid = client.role_cache.get_id_for_name("$admin")
     assert admin_role_guid
     response = client.open_lineage.create_connection(
-        name=MODULE_NAME, admin_roles=[admin_role_guid]
+        name=MODULE_NAME,
+        connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE,
+        admin_roles=[admin_role_guid],
     )
     result = response.assets_created(asset_type=Connection)[0]
     yield client.asset.get_by_guid(
@@ -64,12 +66,12 @@ def test_open_lineage_integration(connection: Connection, client: AtlanClient):
         od,
         job.create_output(namespace=namespace, asset_name="AN.OTHER.VIEW"),
     ]
-    start.emit(client=client)
+    start.emit(client=client, connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE)
 
     complete = OpenLineageEvent.creator(
         run=run, event_type=OpenLineageEventType.COMPLETE
     )
-    complete.emit(client=client)
+    complete.emit(client=client, connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE)
 
     assert job
     assert start.event_type == OpenLineageEventType.START
