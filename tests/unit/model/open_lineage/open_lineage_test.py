@@ -172,9 +172,7 @@ def test_ol_client_send_generic_openlineage_routes_to_endpoint(mock_api_caller):
 def test_ol_event_emit_accepts_connector_type(mock_api_caller):
     mock_api_caller._call_api.return_value = "Event received"
     client = AtlanClient()
-    with patch.object(
-        client.open_lineage, "send", return_value=None
-    ) as mock_send:
+    with patch.object(client.open_lineage, "send", return_value=None) as mock_send:
         OpenLineageEvent().emit(
             client=client,
             connector_type=AtlanConnectorType.GENERIC_OPENLINEAGE,
@@ -189,15 +187,10 @@ def test_ol_event_emit_accepts_connector_type(mock_api_caller):
 def test_ol_event_emit_defaults_to_spark(mock_api_caller):
     mock_api_caller._call_api.return_value = "Event received"
     client = AtlanClient()
-    with patch.object(
-        client.open_lineage, "send", return_value=None
-    ) as mock_send:
+    with patch.object(client.open_lineage, "send", return_value=None) as mock_send:
         OpenLineageEvent().emit(client=client)
         mock_send.assert_called_once()
-        assert (
-            mock_send.call_args.kwargs["connector_type"]
-            == AtlanConnectorType.SPARK
-        )
+        assert mock_send.call_args.kwargs["connector_type"] == AtlanConnectorType.SPARK
 
 
 def test_ol_client_send_when_ol_not_configured(client, mock_session):

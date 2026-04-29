@@ -120,9 +120,7 @@ class OpenLineageEvent(OpenLineageBaseEvent):
         :param connector_type: connector type for the OpenLineage event
         :raises AtlanError: on any API communication issues
         """
-        return client.open_lineage.send(
-            request=self, connector_type=connector_type
-        )
+        return client.open_lineage.send(request=self, connector_type=connector_type)
 
     async def emit_async(
         self,
