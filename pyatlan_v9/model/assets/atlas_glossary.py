@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import uuid
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -35,21 +42,17 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
+from .gtc_related import RelatedAtlasGlossaryCategory, RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid
-
-from .gtc_related import RelatedAtlasGlossaryCategory, RelatedAtlasGlossaryTerm
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AtlasGlossary(Asset):
@@ -134,10 +137,14 @@ class AtlasGlossary(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -158,7 +165,9 @@ class AtlasGlossary(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -170,7 +179,9 @@ class AtlasGlossary(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -178,8 +189,6 @@ class AtlasGlossary(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AtlasGlossary"
-
-
 
     @classmethod
     @init_guid
@@ -200,7 +209,6 @@ class AtlasGlossary(Asset):
             raise ValueError("name is required")
 
         # Generate a unique qualified name using a simple ID generator
-        import uuid
 
         qualified_name = str(uuid.uuid4().hex[:16])
 
@@ -270,6 +278,7 @@ class AtlasGlossary(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AtlasGlossaryAttributes(AssetAttributes):
     """AtlasGlossary-specific attributes for nested API format."""
 
@@ -290,6 +299,7 @@ class AtlasGlossaryAttributes(AssetAttributes):
 
     glossary_type: Union[str, None, UnsetType] = UNSET
     """"""
+
 
 class AtlasGlossaryRelationshipAttributes(AssetRelationshipAttributes):
     """AtlasGlossary-specific relationship attributes for nested API format."""
@@ -321,10 +331,14 @@ class AtlasGlossaryRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -345,7 +359,9 @@ class AtlasGlossaryRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -357,19 +373,29 @@ class AtlasGlossaryRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+
 class AtlasGlossaryNested(AssetNested):
     """AtlasGlossary in nested API format for high-performance serialization."""
 
     attributes: Union[AtlasGlossaryAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AtlasGlossaryRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AtlasGlossaryRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[AtlasGlossaryRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[AtlasGlossaryRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        AtlasGlossaryRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AtlasGlossaryRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -402,7 +428,10 @@ _ATLAS_GLOSSARY_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-def _populate_atlas_glossary_attrs(attrs: AtlasGlossaryAttributes, obj: AtlasGlossary) -> None:
+
+def _populate_atlas_glossary_attrs(
+    attrs: AtlasGlossaryAttributes, obj: AtlasGlossary
+) -> None:
     """Populate AtlasGlossary-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.short_description = obj.short_description
@@ -411,6 +440,7 @@ def _populate_atlas_glossary_attrs(attrs: AtlasGlossaryAttributes, obj: AtlasGlo
     attrs.usage = obj.usage
     attrs.additional_attributes = obj.additional_attributes
     attrs.glossary_type = obj.glossary_type
+
 
 def _extract_atlas_glossary_attrs(attrs: AtlasGlossaryAttributes) -> dict:
     """Extract all AtlasGlossary attributes from the attrs struct into a flat dict."""
@@ -422,6 +452,7 @@ def _extract_atlas_glossary_attrs(attrs: AtlasGlossaryAttributes) -> dict:
     result["additional_attributes"] = attrs.additional_attributes
     result["glossary_type"] = attrs.glossary_type
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -462,25 +493,22 @@ def _atlas_glossary_to_nested(atlas_glossary: AtlasGlossary) -> AtlasGlossaryNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _atlas_glossary_from_nested(nested: AtlasGlossaryNested) -> AtlasGlossary:
     """Convert nested format to flat AtlasGlossary."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AtlasGlossaryAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AtlasGlossaryAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ATLAS_GLOSSARY_REL_FIELDS,
-        AtlasGlossaryRelationshipAttributes
+        AtlasGlossaryRelationshipAttributes,
     )
-    # `meanings` appears in both the entity-level top-level fields (nested.meanings,
-    # which holds TermAssignment objects) and in the relationship attributes
-    # (_ATLAS_GLOSSARY_REL_FIELDS, which holds RelatedAtlasGlossaryTerm objects).
-    # Since AtlasGlossary.meanings is typed as List[RelatedAtlasGlossaryTerm]
-    # (the relationship version), we must not pass nested.meanings separately when
-    # merged_rels already contains a 'meanings' key — that would cause a duplicate
-    # keyword argument error. Drop nested.meanings from the explicit kwargs and let
-    # merged_rels provide the relationship meanings.
     return AtlasGlossary(
         guid=nested.guid,
         type_name=nested.type_name,
@@ -501,11 +529,14 @@ def _atlas_glossary_from_nested(nested: AtlasGlossaryNested) -> AtlasGlossary:
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
         **_extract_atlas_glossary_attrs(attrs),
-        # Merged relationship attributes (includes `meanings` as RelatedAtlasGlossaryTerm)
+        # Merged relationship attributes
         **merged_rels,
     )
 
-def _atlas_glossary_to_nested_bytes(atlas_glossary: AtlasGlossary, serde: Serde) -> bytes:
+
+def _atlas_glossary_to_nested_bytes(
+    atlas_glossary: AtlasGlossary, serde: Serde
+) -> bytes:
     """Convert flat AtlasGlossary to nested JSON bytes."""
     return serde.encode(_atlas_glossary_to_nested(atlas_glossary))
 
@@ -515,31 +546,35 @@ def _atlas_glossary_from_nested_bytes(data: bytes, serde: Serde) -> AtlasGlossar
     nested = serde.decode(data, AtlasGlossaryNested)
     return _atlas_glossary_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
 AtlasGlossary.SHORT_DESCRIPTION = KeywordField("shortDescription", "shortDescription")
 AtlasGlossary.LONG_DESCRIPTION = KeywordField("longDescription", "longDescription")
 AtlasGlossary.LANGUAGE = KeywordField("language", "language")
 AtlasGlossary.USAGE = KeywordField("usage", "usage")
-AtlasGlossary.ADDITIONAL_ATTRIBUTES = KeywordField("additionalAttributes", "additionalAttributes")
+AtlasGlossary.ADDITIONAL_ATTRIBUTES = KeywordField(
+    "additionalAttributes", "additionalAttributes"
+)
 AtlasGlossary.GLOSSARY_TYPE = KeywordField("glossaryType", "glossaryType")
 AtlasGlossary.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AtlasGlossary.APPLICATION = RelationField("application")
 AtlasGlossary.APPLICATION_FIELD = RelationField("applicationField")
 AtlasGlossary.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AtlasGlossary.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+AtlasGlossary.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 AtlasGlossary.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AtlasGlossary.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AtlasGlossary.METRICS = RelationField("metrics")
 AtlasGlossary.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AtlasGlossary.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AtlasGlossary.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+AtlasGlossary.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 AtlasGlossary.MEANINGS = RelationField("meanings")
 AtlasGlossary.TERMS = RelationField("terms")
 AtlasGlossary.CATEGORIES = RelationField("categories")

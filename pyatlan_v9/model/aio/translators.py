@@ -60,7 +60,7 @@ class AsyncAtlanTagTranslator(AsyncBaseTranslator):
                 tag_names = []
                 for tag_id in raw_json[key]:
                     name = await self.client.atlan_tag_cache.get_name_for_id(tag_id)
-                    tag_names.append(AtlanTagName(name or DELETED_))
+                    tag_names.append(name or DELETED_)
                 raw_json[key] = tag_names
 
         for key in self._CLASSIFICATION_KEYS:

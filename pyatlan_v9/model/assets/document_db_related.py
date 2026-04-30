@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -40,6 +40,7 @@ class RelatedDocumentDB(RelatedNoSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DocumentDB"
 
+
 class RelatedDocumentDBCollection(RelatedDocumentDB):
     """
     Related entity reference for DocumentDBCollection assets.
@@ -50,45 +51,70 @@ class RelatedDocumentDBCollection(RelatedDocumentDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DocumentDBCollection" so it serializes correctly
 
-    document_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionSubtype")
+    document_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBCollectionSubtype"
+    )
     """Subtype of a DocumentDBCollection, for example: Capped, Time Series, etc."""
 
-    document_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionIsCapped")
+    document_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBCollectionIsCapped"
+    )
     """Whether the collection is capped (true) or not (false)."""
 
-    document_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTimeField")
+    document_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBCollectionTimeField"
+    )
     """Name of the field containing the date in each time series document."""
 
-    document_db_collection_time_granularity: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTimeGranularity")
+    document_db_collection_time_granularity: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="documentDBCollectionTimeGranularity")
+    )
     """Closest match to the time span between consecutive incoming measurements."""
 
-    document_db_collection_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionExpireAfterSeconds")
+    document_db_collection_expire_after_seconds: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="documentDBCollectionExpireAfterSeconds")
+    )
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    document_db_collection_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionMaximumDocumentCount")
+    document_db_collection_maximum_document_count: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="documentDBCollectionMaximumDocumentCount")
+    )
     """Maximum number of documents allowed in a capped collection."""
 
-    document_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionMaxSize")
+    document_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBCollectionMaxSize"
+    )
     """Maximum size allowed in a capped collection."""
 
-    document_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionNumOrphanDocs")
+    document_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBCollectionNumOrphanDocs"
+    )
     """Number of orphaned documents in the collection."""
 
-    document_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionNumIndexes")
+    document_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBCollectionNumIndexes"
+    )
     """Number of indexes in the collection."""
 
-    document_db_collection_total_index_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTotalIndexSize")
+    document_db_collection_total_index_size: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="documentDBCollectionTotalIndexSize")
+    )
     """Total size of all indexes."""
 
-    document_db_collection_average_object_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionAverageObjectSize")
+    document_db_collection_average_object_size: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="documentDBCollectionAverageObjectSize")
+    )
     """Average size of an object in the collection."""
 
-    document_db_collection_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionSchemaDefinition")
+    document_db_collection_schema_definition: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="documentDBCollectionSchemaDefinition")
+    )
     """Definition of the schema applicable for the collection."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DocumentDBCollection"
+
 
 class RelatedDocumentDBDatabase(RelatedDocumentDB):
     """
@@ -100,7 +126,9 @@ class RelatedDocumentDBDatabase(RelatedDocumentDB):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "DocumentDBDatabase" so it serializes correctly
 
-    document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBDatabaseCollectionCount")
+    document_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="documentDBDatabaseCollectionCount"
+    )
     """Number of collections in the database."""
 
     def __post_init__(self) -> None:

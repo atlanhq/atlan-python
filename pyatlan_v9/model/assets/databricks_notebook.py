@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,7 +41,12 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -47,14 +59,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DatabricksNotebook(Asset):
@@ -187,7 +200,9 @@ class DatabricksNotebook(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -244,7 +259,9 @@ class DatabricksNotebook(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -253,7 +270,9 @@ class DatabricksNotebook(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -268,13 +287,17 @@ class DatabricksNotebook(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -301,7 +324,9 @@ class DatabricksNotebook(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -313,10 +338,14 @@ class DatabricksNotebook(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -328,19 +357,23 @@ class DatabricksNotebook(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
         self.type_name = "DatabricksNotebook"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -371,7 +404,9 @@ class DatabricksNotebook(Asset):
         return _databricks_notebook_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DatabricksNotebook:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DatabricksNotebook:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -392,6 +427,7 @@ class DatabricksNotebook(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DatabricksNotebookAttributes(AssetAttributes):
     """DatabricksNotebook-specific attributes for nested API format."""
@@ -450,7 +486,9 @@ class DatabricksNotebookAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -476,6 +514,7 @@ class DatabricksNotebookAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class DatabricksNotebookRelationshipAttributes(AssetRelationshipAttributes):
     """DatabricksNotebook-specific relationship attributes for nested API format."""
@@ -510,7 +549,9 @@ class DatabricksNotebookRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -519,7 +560,9 @@ class DatabricksNotebookRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -534,13 +577,17 @@ class DatabricksNotebookRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -567,7 +614,9 @@ class DatabricksNotebookRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -579,10 +628,14 @@ class DatabricksNotebookRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -594,22 +647,36 @@ class DatabricksNotebookRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class DatabricksNotebookNested(AssetNested):
     """DatabricksNotebook in nested API format for high-performance serialization."""
 
     attributes: Union[DatabricksNotebookAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DatabricksNotebookRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DatabricksNotebookRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DatabricksNotebookRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        DatabricksNotebookRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        DatabricksNotebookRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DatabricksNotebookRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -660,7 +727,10 @@ _DATABRICKS_NOTEBOOK_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_databricks_notebook_attrs(attrs: DatabricksNotebookAttributes, obj: DatabricksNotebook) -> None:
+
+def _populate_databricks_notebook_attrs(
+    attrs: DatabricksNotebookAttributes, obj: DatabricksNotebook
+) -> None:
     """Populate DatabricksNotebook-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.databricks_path = obj.databricks_path
@@ -685,11 +755,16 @@ def _populate_databricks_notebook_attrs(attrs: DatabricksNotebookAttributes, obj
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_databricks_notebook_attrs(attrs: DatabricksNotebookAttributes) -> dict:
     """Extract all DatabricksNotebook attributes from the attrs struct into a flat dict."""
@@ -712,29 +787,44 @@ def _extract_databricks_notebook_attrs(attrs: DatabricksNotebookAttributes) -> d
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _databricks_notebook_to_nested(databricks_notebook: DatabricksNotebook) -> DatabricksNotebookNested:
+def _databricks_notebook_to_nested(
+    databricks_notebook: DatabricksNotebook,
+) -> DatabricksNotebookNested:
     """Convert flat DatabricksNotebook to nested format."""
     attrs = DatabricksNotebookAttributes()
     _populate_databricks_notebook_attrs(attrs, databricks_notebook)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_notebook, _DATABRICKS_NOTEBOOK_REL_FIELDS, DatabricksNotebookRelationshipAttributes
+        databricks_notebook,
+        _DATABRICKS_NOTEBOOK_REL_FIELDS,
+        DatabricksNotebookRelationshipAttributes,
     )
     return DatabricksNotebookNested(
         guid=databricks_notebook.guid,
@@ -762,16 +852,23 @@ def _databricks_notebook_to_nested(databricks_notebook: DatabricksNotebook) -> D
         remove_relationship_attributes=remove_rels,
     )
 
-def _databricks_notebook_from_nested(nested: DatabricksNotebookNested) -> DatabricksNotebook:
+
+def _databricks_notebook_from_nested(
+    nested: DatabricksNotebookNested,
+) -> DatabricksNotebook:
     """Convert nested format to flat DatabricksNotebook."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksNotebookAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DatabricksNotebookAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_NOTEBOOK_REL_FIELDS,
-        DatabricksNotebookRelationshipAttributes
+        DatabricksNotebookRelationshipAttributes,
     )
     return DatabricksNotebook(
         guid=nested.guid,
@@ -784,7 +881,6 @@ def _databricks_notebook_from_nested(nested: DatabricksNotebookNested) -> Databr
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -798,15 +894,21 @@ def _databricks_notebook_from_nested(nested: DatabricksNotebookNested) -> Databr
         **merged_rels,
     )
 
-def _databricks_notebook_to_nested_bytes(databricks_notebook: DatabricksNotebook, serde: Serde) -> bytes:
+
+def _databricks_notebook_to_nested_bytes(
+    databricks_notebook: DatabricksNotebook, serde: Serde
+) -> bytes:
     """Convert flat DatabricksNotebook to nested JSON bytes."""
     return serde.encode(_databricks_notebook_to_nested(databricks_notebook))
 
 
-def _databricks_notebook_from_nested_bytes(data: bytes, serde: Serde) -> DatabricksNotebook:
+def _databricks_notebook_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DatabricksNotebook:
     """Convert nested JSON bytes to flat DatabricksNotebook."""
     nested = serde.decode(data, DatabricksNotebookNested)
     return _databricks_notebook_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -819,43 +921,82 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 DatabricksNotebook.DATABRICKS_PATH = KeywordField("databricksPath", "databricksPath")
-DatabricksNotebook.DATABRICKS_WORKSPACE_ID = KeywordField("databricksWorkspaceId", "databricksWorkspaceId")
+DatabricksNotebook.DATABRICKS_WORKSPACE_ID = KeywordField(
+    "databricksWorkspaceId", "databricksWorkspaceId"
+)
 DatabricksNotebook.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksNotebook.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DatabricksNotebook.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksNotebook.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DatabricksNotebook.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DatabricksNotebook.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksNotebook.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DatabricksNotebook.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DatabricksNotebook.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksNotebook.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DatabricksNotebook.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DatabricksNotebook.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksNotebook.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DatabricksNotebook.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DatabricksNotebook.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksNotebook.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DatabricksNotebook.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DatabricksNotebook.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DatabricksNotebook.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DatabricksNotebook.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DatabricksNotebook.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DatabricksNotebook.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DatabricksNotebook.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DatabricksNotebook.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DatabricksNotebook.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DatabricksNotebook.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DatabricksNotebook.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-DatabricksNotebook.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-DatabricksNotebook.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-DatabricksNotebook.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-DatabricksNotebook.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-DatabricksNotebook.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-DatabricksNotebook.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+DatabricksNotebook.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+DatabricksNotebook.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+DatabricksNotebook.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+DatabricksNotebook.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+DatabricksNotebook.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+DatabricksNotebook.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+DatabricksNotebook.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DatabricksNotebook.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DatabricksNotebook.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DatabricksNotebook.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DatabricksNotebook.APPLICATION = RelationField("application")
 DatabricksNotebook.APPLICATION_FIELD = RelationField("applicationField")
 DatabricksNotebook.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DatabricksNotebook.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+DatabricksNotebook.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DatabricksNotebook.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DatabricksNotebook.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DatabricksNotebook.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DatabricksNotebook.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DatabricksNotebook.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DatabricksNotebook.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DatabricksNotebook.METRICS = RelationField("metrics")
 DatabricksNotebook.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DatabricksNotebook.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
@@ -865,7 +1006,9 @@ DatabricksNotebook.DBT_TESTS = RelationField("dbtTests")
 DatabricksNotebook.DBT_SOURCES = RelationField("dbtSources")
 DatabricksNotebook.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DatabricksNotebook.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-DatabricksNotebook.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+DatabricksNotebook.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DatabricksNotebook.MEANINGS = RelationField("meanings")
 DatabricksNotebook.MC_MONITORS = RelationField("mcMonitors")
 DatabricksNotebook.MC_INCIDENTS = RelationField("mcIncidents")
@@ -879,10 +1022,14 @@ DatabricksNotebook.FILES = RelationField("files")
 DatabricksNotebook.LINKS = RelationField("links")
 DatabricksNotebook.README = RelationField("readme")
 DatabricksNotebook.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DatabricksNotebook.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+DatabricksNotebook.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DatabricksNotebook.SODA_CHECKS = RelationField("sodaChecks")
 DatabricksNotebook.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DatabricksNotebook.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
 DatabricksNotebook.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
 DatabricksNotebook.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-DatabricksNotebook.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+DatabricksNotebook.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

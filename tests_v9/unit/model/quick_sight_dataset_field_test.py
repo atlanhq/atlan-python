@@ -76,7 +76,7 @@ def test_overload_creator():
         name=QUICK_SIGHT_NAME,
         quick_sight_dataset_qualified_name=QUICK_SIGHT_QUALIFIED_NAME,
         quick_sight_id=QUICK_SIGHT_ID_DATASET_FEILD,
-        quick_sight_dataset_field_type=QuickSightDatasetFieldType.STRING,
+        quick_sight_type=QuickSightDatasetFieldType.STRING,
         connection_qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME,
     )
 
@@ -86,7 +86,7 @@ def test_overload_creator():
     assert sut.qualified_name == QUICK_SIGHT_DATASET_FIELD_QUALIFIED_NAME
     assert sut.connector_name == QUICK_SIGHT_CONNECTOR_TYPE
     assert sut.connection_qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
-    assert sut.quick_sight_dataset_field_type == QuickSightDatasetFieldType.STRING
+    assert sut.quick_sight_type == QuickSightDatasetFieldType.STRING
 
 
 @pytest.mark.parametrize(

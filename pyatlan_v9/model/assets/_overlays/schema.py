@@ -91,3 +91,12 @@
     def create_for_modification(cls, **kwargs) -> "Schema":
         """Backward compatibility alias for updater()."""
         return cls.updater(**kwargs)
+
+    @property
+    def schema_external_location(self):
+        """Backward-compat alias for sql_external_location (v9 renamed field)."""
+        return self.sql_external_location
+
+    @schema_external_location.setter
+    def schema_external_location(self, value):
+        self.sql_external_location = value

@@ -8,7 +8,7 @@
         name: str,
         connection_qualified_name: str,
         quick_sight_id: str,
-        quick_sight_folder_type: Union[str, None] = None,
+        quick_sight_type: Union[str, None] = None,
     ) -> "QuickSightFolder":
         validate_required_fields(
             ["name", "connection_qualified_name", "quick_sight_id"],
@@ -23,9 +23,7 @@
             qualified_name=qualified_name,
             connection_qualified_name=connection_qualified_name,
             connector_name=connector_name,
-            quick_sight_folder_type=quick_sight_folder_type
-            if quick_sight_folder_type is not None
-            else UNSET,
+            quick_sight_type=quick_sight_type if quick_sight_type is not None else UNSET,
         )
 
     @classmethod

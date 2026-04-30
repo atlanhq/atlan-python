@@ -14,10 +14,18 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -35,6 +43,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
+from .gcs_related import RelatedGCSObject
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,16 +54,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .gcs_related import RelatedGCSObject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class GCSBucket(Asset):
@@ -219,7 +223,9 @@ class GCSBucket(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -228,10 +234,14 @@ class GCSBucket(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     gcs_objects: Union[List[RelatedGCSObject], None, UnsetType] = UNSET
@@ -261,7 +271,9 @@ class GCSBucket(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -273,7 +285,9 @@ class GCSBucket(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -287,8 +301,6 @@ class GCSBucket(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "GCSBucket"
-
-
 
     @classmethod
     @init_guid
@@ -396,6 +408,7 @@ class GCSBucket(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class GCSBucketAttributes(AssetAttributes):
     """GCSBucket-specific attributes for nested API format."""
 
@@ -468,6 +481,7 @@ class GCSBucketAttributes(AssetAttributes):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
+
 class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
     """GCSBucket-specific relationship attributes for nested API format."""
 
@@ -501,7 +515,9 @@ class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -510,10 +526,14 @@ class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     gcs_objects: Union[List[RelatedGCSObject], None, UnsetType] = UNSET
@@ -543,7 +563,9 @@ class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -555,7 +577,9 @@ class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -567,13 +591,19 @@ class GCSBucketRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class GCSBucketNested(AssetNested):
     """GCSBucket in nested API format for high-performance serialization."""
 
     attributes: Union[GCSBucketAttributes, UnsetType] = UNSET
     relationship_attributes: Union[GCSBucketRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[GCSBucketRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[GCSBucketRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        GCSBucketRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        GCSBucketRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -615,6 +645,7 @@ _GCS_BUCKET_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_gcs_bucket_attrs(attrs: GCSBucketAttributes, obj: GCSBucket) -> None:
     """Populate GCSBucket-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -642,6 +673,7 @@ def _populate_gcs_bucket_attrs(attrs: GCSBucketAttributes, obj: GCSBucket) -> No
     attrs.google_tags = obj.google_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
 
+
 def _extract_gcs_bucket_attrs(attrs: GCSBucketAttributes) -> dict:
     """Extract all GCSBucket attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -649,7 +681,9 @@ def _extract_gcs_bucket_attrs(attrs: GCSBucketAttributes) -> dict:
     result["gcs_bucket_versioning_enabled"] = attrs.gcs_bucket_versioning_enabled
     result["gcs_bucket_retention_locked"] = attrs.gcs_bucket_retention_locked
     result["gcs_bucket_retention_period"] = attrs.gcs_bucket_retention_period
-    result["gcs_bucket_retention_effective_time"] = attrs.gcs_bucket_retention_effective_time
+    result["gcs_bucket_retention_effective_time"] = (
+        attrs.gcs_bucket_retention_effective_time
+    )
     result["gcs_bucket_lifecycle_rules"] = attrs.gcs_bucket_lifecycle_rules
     result["gcs_bucket_retention_policy"] = attrs.gcs_bucket_retention_policy
     result["gcs_storage_class"] = attrs.gcs_storage_class
@@ -669,6 +703,7 @@ def _extract_gcs_bucket_attrs(attrs: GCSBucketAttributes) -> dict:
     result["google_tags"] = attrs.google_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -709,16 +744,19 @@ def _gcs_bucket_to_nested(gcs_bucket: GCSBucket) -> GCSBucketNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _gcs_bucket_from_nested(nested: GCSBucketNested) -> GCSBucket:
     """Convert nested format to flat GCSBucket."""
-    attrs = nested.attributes if nested.attributes is not UNSET else GCSBucketAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else GCSBucketAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _GCS_BUCKET_REL_FIELDS,
-        GCSBucketRelationshipAttributes
+        GCSBucketRelationshipAttributes,
     )
     return GCSBucket(
         guid=nested.guid,
@@ -731,7 +769,6 @@ def _gcs_bucket_from_nested(nested: GCSBucketNested) -> GCSBucket:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -745,6 +782,7 @@ def _gcs_bucket_from_nested(nested: GCSBucketNested) -> GCSBucket:
         **merged_rels,
     )
 
+
 def _gcs_bucket_to_nested_bytes(gcs_bucket: GCSBucket, serde: Serde) -> bytes:
     """Convert flat GCSBucket to nested JSON bytes."""
     return serde.encode(_gcs_bucket_to_nested(gcs_bucket))
@@ -754,6 +792,7 @@ def _gcs_bucket_from_nested_bytes(data: bytes, serde: Serde) -> GCSBucket:
     """Convert nested JSON bytes to flat GCSBucket."""
     nested = serde.decode(data, GCSBucketNested)
     return _gcs_bucket_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -767,28 +806,54 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 GCSBucket.GCS_OBJECT_COUNT = NumericField("gcsObjectCount", "gcsObjectCount")
-GCSBucket.GCS_BUCKET_VERSIONING_ENABLED = BooleanField("gcsBucketVersioningEnabled", "gcsBucketVersioningEnabled")
-GCSBucket.GCS_BUCKET_RETENTION_LOCKED = BooleanField("gcsBucketRetentionLocked", "gcsBucketRetentionLocked")
-GCSBucket.GCS_BUCKET_RETENTION_PERIOD = NumericField("gcsBucketRetentionPeriod", "gcsBucketRetentionPeriod")
-GCSBucket.GCS_BUCKET_RETENTION_EFFECTIVE_TIME = NumericField("gcsBucketRetentionEffectiveTime", "gcsBucketRetentionEffectiveTime")
-GCSBucket.GCS_BUCKET_LIFECYCLE_RULES = KeywordField("gcsBucketLifecycleRules", "gcsBucketLifecycleRules")
-GCSBucket.GCS_BUCKET_RETENTION_POLICY = KeywordField("gcsBucketRetentionPolicy", "gcsBucketRetentionPolicy")
+GCSBucket.GCS_BUCKET_VERSIONING_ENABLED = BooleanField(
+    "gcsBucketVersioningEnabled", "gcsBucketVersioningEnabled"
+)
+GCSBucket.GCS_BUCKET_RETENTION_LOCKED = BooleanField(
+    "gcsBucketRetentionLocked", "gcsBucketRetentionLocked"
+)
+GCSBucket.GCS_BUCKET_RETENTION_PERIOD = NumericField(
+    "gcsBucketRetentionPeriod", "gcsBucketRetentionPeriod"
+)
+GCSBucket.GCS_BUCKET_RETENTION_EFFECTIVE_TIME = NumericField(
+    "gcsBucketRetentionEffectiveTime", "gcsBucketRetentionEffectiveTime"
+)
+GCSBucket.GCS_BUCKET_LIFECYCLE_RULES = KeywordField(
+    "gcsBucketLifecycleRules", "gcsBucketLifecycleRules"
+)
+GCSBucket.GCS_BUCKET_RETENTION_POLICY = KeywordField(
+    "gcsBucketRetentionPolicy", "gcsBucketRetentionPolicy"
+)
 GCSBucket.GCS_STORAGE_CLASS = KeywordField("gcsStorageClass", "gcsStorageClass")
 GCSBucket.GCS_ENCRYPTION_TYPE = KeywordField("gcsEncryptionType", "gcsEncryptionType")
 GCSBucket.GCS_ETAG = KeywordField("gcsETag", "gcsETag")
 GCSBucket.GCS_REQUESTER_PAYS = BooleanField("gcsRequesterPays", "gcsRequesterPays")
 GCSBucket.GCS_ACCESS_CONTROL = KeywordField("gcsAccessControl", "gcsAccessControl")
-GCSBucket.GCS_META_GENERATION_ID = NumericField("gcsMetaGenerationId", "gcsMetaGenerationId")
-GCSBucket.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+GCSBucket.GCS_META_GENERATION_ID = NumericField(
+    "gcsMetaGenerationId", "gcsMetaGenerationId"
+)
+GCSBucket.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 GCSBucket.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
-GCSBucket.GOOGLE_PROJECT_NAME = KeywordTextField("googleProjectName", "googleProjectName", "googleProjectName.text")
-GCSBucket.GOOGLE_PROJECT_ID = KeywordTextField("googleProjectId", "googleProjectId", "googleProjectId.text")
-GCSBucket.GOOGLE_PROJECT_NUMBER = NumericField("googleProjectNumber", "googleProjectNumber")
+GCSBucket.GOOGLE_PROJECT_NAME = KeywordTextField(
+    "googleProjectName", "googleProjectName", "googleProjectName.text"
+)
+GCSBucket.GOOGLE_PROJECT_ID = KeywordTextField(
+    "googleProjectId", "googleProjectId", "googleProjectId.text"
+)
+GCSBucket.GOOGLE_PROJECT_NUMBER = NumericField(
+    "googleProjectNumber", "googleProjectNumber"
+)
 GCSBucket.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
-GCSBucket.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
+GCSBucket.GOOGLE_LOCATION_TYPE = KeywordField(
+    "googleLocationType", "googleLocationType"
+)
 GCSBucket.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
 GCSBucket.GOOGLE_TAGS = KeywordField("googleTags", "googleTags")
-GCSBucket.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+GCSBucket.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 GCSBucket.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 GCSBucket.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 GCSBucket.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -803,7 +868,9 @@ GCSBucket.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribut
 GCSBucket.METRICS = RelationField("metrics")
 GCSBucket.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 GCSBucket.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-GCSBucket.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+GCSBucket.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 GCSBucket.GCS_OBJECTS = RelationField("gcsObjects")
 GCSBucket.MEANINGS = RelationField("meanings")
 GCSBucket.MC_MONITORS = RelationField("mcMonitors")

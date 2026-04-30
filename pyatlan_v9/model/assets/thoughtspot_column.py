@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -46,15 +52,16 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .thoughtspot_related import RelatedThoughtspotTable, RelatedThoughtspotView, RelatedThoughtspotWorksheet
+from .thoughtspot_related import (
+    RelatedThoughtspotTable,
+    RelatedThoughtspotView,
+    RelatedThoughtspotWorksheet,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ThoughtspotColumn(Asset):
@@ -169,7 +176,9 @@ class ThoughtspotColumn(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -178,10 +187,14 @@ class ThoughtspotColumn(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -208,7 +221,9 @@ class ThoughtspotColumn(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -220,7 +235,9 @@ class ThoughtspotColumn(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -248,10 +265,7 @@ class ThoughtspotColumn(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -282,7 +296,9 @@ class ThoughtspotColumn(Asset):
         return _thoughtspot_column_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> ThoughtspotColumn:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> ThoughtspotColumn:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -303,6 +319,7 @@ class ThoughtspotColumn(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class ThoughtspotColumnAttributes(AssetAttributes):
     """ThoughtspotColumn-specific attributes for nested API format."""
@@ -337,6 +354,7 @@ class ThoughtspotColumnAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class ThoughtspotColumnRelationshipAttributes(AssetRelationshipAttributes):
     """ThoughtspotColumn-specific relationship attributes for nested API format."""
 
@@ -370,7 +388,9 @@ class ThoughtspotColumnRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -379,10 +399,14 @@ class ThoughtspotColumnRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -409,7 +433,9 @@ class ThoughtspotColumnRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -421,7 +447,9 @@ class ThoughtspotColumnRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -442,13 +470,21 @@ class ThoughtspotColumnRelationshipAttributes(AssetRelationshipAttributes):
     thoughtspot_worksheet: Union[RelatedThoughtspotWorksheet, None, UnsetType] = UNSET
     """Worksheet in which this column exists."""
 
+
 class ThoughtspotColumnNested(AssetNested):
     """ThoughtspotColumn in nested API format for high-performance serialization."""
 
     attributes: Union[ThoughtspotColumnAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ThoughtspotColumnRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ThoughtspotColumnRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ThoughtspotColumnRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        ThoughtspotColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        ThoughtspotColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ThoughtspotColumnRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -492,12 +528,17 @@ _THOUGHTSPOT_COLUMN_REL_FIELDS: List[str] = [
     "thoughtspot_worksheet",
 ]
 
-def _populate_thoughtspot_column_attrs(attrs: ThoughtspotColumnAttributes, obj: ThoughtspotColumn) -> None:
+
+def _populate_thoughtspot_column_attrs(
+    attrs: ThoughtspotColumnAttributes, obj: ThoughtspotColumn
+) -> None:
     """Populate ThoughtspotColumn-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.thoughtspot_table_qualified_name = obj.thoughtspot_table_qualified_name
     attrs.thoughtspot_view_qualified_name = obj.thoughtspot_view_qualified_name
-    attrs.thoughtspot_worksheet_qualified_name = obj.thoughtspot_worksheet_qualified_name
+    attrs.thoughtspot_worksheet_qualified_name = (
+        obj.thoughtspot_worksheet_qualified_name
+    )
     attrs.thoughtspot_data_type = obj.thoughtspot_data_type
     attrs.thoughtspot_type = obj.thoughtspot_type
     attrs.thoughtspot_chart_type = obj.thoughtspot_chart_type
@@ -506,12 +547,15 @@ def _populate_thoughtspot_column_attrs(attrs: ThoughtspotColumnAttributes, obj: 
     attrs.thoughtspot_column_count = obj.thoughtspot_column_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_thoughtspot_column_attrs(attrs: ThoughtspotColumnAttributes) -> dict:
     """Extract all ThoughtspotColumn attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["thoughtspot_table_qualified_name"] = attrs.thoughtspot_table_qualified_name
     result["thoughtspot_view_qualified_name"] = attrs.thoughtspot_view_qualified_name
-    result["thoughtspot_worksheet_qualified_name"] = attrs.thoughtspot_worksheet_qualified_name
+    result["thoughtspot_worksheet_qualified_name"] = (
+        attrs.thoughtspot_worksheet_qualified_name
+    )
     result["thoughtspot_data_type"] = attrs.thoughtspot_data_type
     result["thoughtspot_type"] = attrs.thoughtspot_type
     result["thoughtspot_chart_type"] = attrs.thoughtspot_chart_type
@@ -521,18 +565,23 @@ def _extract_thoughtspot_column_attrs(attrs: ThoughtspotColumnAttributes) -> dic
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _thoughtspot_column_to_nested(thoughtspot_column: ThoughtspotColumn) -> ThoughtspotColumnNested:
+def _thoughtspot_column_to_nested(
+    thoughtspot_column: ThoughtspotColumn,
+) -> ThoughtspotColumnNested:
     """Convert flat ThoughtspotColumn to nested format."""
     attrs = ThoughtspotColumnAttributes()
     _populate_thoughtspot_column_attrs(attrs, thoughtspot_column)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        thoughtspot_column, _THOUGHTSPOT_COLUMN_REL_FIELDS, ThoughtspotColumnRelationshipAttributes
+        thoughtspot_column,
+        _THOUGHTSPOT_COLUMN_REL_FIELDS,
+        ThoughtspotColumnRelationshipAttributes,
     )
     return ThoughtspotColumnNested(
         guid=thoughtspot_column.guid,
@@ -560,16 +609,23 @@ def _thoughtspot_column_to_nested(thoughtspot_column: ThoughtspotColumn) -> Thou
         remove_relationship_attributes=remove_rels,
     )
 
-def _thoughtspot_column_from_nested(nested: ThoughtspotColumnNested) -> ThoughtspotColumn:
+
+def _thoughtspot_column_from_nested(
+    nested: ThoughtspotColumnNested,
+) -> ThoughtspotColumn:
     """Convert nested format to flat ThoughtspotColumn."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ThoughtspotColumnAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ThoughtspotColumnAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _THOUGHTSPOT_COLUMN_REL_FIELDS,
-        ThoughtspotColumnRelationshipAttributes
+        ThoughtspotColumnRelationshipAttributes,
     )
     return ThoughtspotColumn(
         guid=nested.guid,
@@ -582,7 +638,6 @@ def _thoughtspot_column_from_nested(nested: ThoughtspotColumnNested) -> Thoughts
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -596,15 +651,21 @@ def _thoughtspot_column_from_nested(nested: ThoughtspotColumnNested) -> Thoughts
         **merged_rels,
     )
 
-def _thoughtspot_column_to_nested_bytes(thoughtspot_column: ThoughtspotColumn, serde: Serde) -> bytes:
+
+def _thoughtspot_column_to_nested_bytes(
+    thoughtspot_column: ThoughtspotColumn, serde: Serde
+) -> bytes:
     """Convert flat ThoughtspotColumn to nested JSON bytes."""
     return serde.encode(_thoughtspot_column_to_nested(thoughtspot_column))
 
 
-def _thoughtspot_column_from_nested_bytes(data: bytes, serde: Serde) -> ThoughtspotColumn:
+def _thoughtspot_column_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> ThoughtspotColumn:
     """Convert nested JSON bytes to flat ThoughtspotColumn."""
     nested = serde.decode(data, ThoughtspotColumnNested)
     return _thoughtspot_column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -616,31 +677,61 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ThoughtspotColumn.THOUGHTSPOT_TABLE_QUALIFIED_NAME = KeywordTextField("thoughtspotTableQualifiedName", "thoughtspotTableQualifiedName", "thoughtspotTableQualifiedName.text")
-ThoughtspotColumn.THOUGHTSPOT_VIEW_QUALIFIED_NAME = KeywordTextField("thoughtspotViewQualifiedName", "thoughtspotViewQualifiedName", "thoughtspotViewQualifiedName.text")
-ThoughtspotColumn.THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME = KeywordTextField("thoughtspotWorksheetQualifiedName", "thoughtspotWorksheetQualifiedName", "thoughtspotWorksheetQualifiedName.text")
-ThoughtspotColumn.THOUGHTSPOT_DATA_TYPE = KeywordField("thoughtspotDataType", "thoughtspotDataType")
+ThoughtspotColumn.THOUGHTSPOT_TABLE_QUALIFIED_NAME = KeywordTextField(
+    "thoughtspotTableQualifiedName",
+    "thoughtspotTableQualifiedName",
+    "thoughtspotTableQualifiedName.text",
+)
+ThoughtspotColumn.THOUGHTSPOT_VIEW_QUALIFIED_NAME = KeywordTextField(
+    "thoughtspotViewQualifiedName",
+    "thoughtspotViewQualifiedName",
+    "thoughtspotViewQualifiedName.text",
+)
+ThoughtspotColumn.THOUGHTSPOT_WORKSHEET_QUALIFIED_NAME = KeywordTextField(
+    "thoughtspotWorksheetQualifiedName",
+    "thoughtspotWorksheetQualifiedName",
+    "thoughtspotWorksheetQualifiedName.text",
+)
+ThoughtspotColumn.THOUGHTSPOT_DATA_TYPE = KeywordField(
+    "thoughtspotDataType", "thoughtspotDataType"
+)
 ThoughtspotColumn.THOUGHTSPOT_TYPE = KeywordField("thoughtspotType", "thoughtspotType")
-ThoughtspotColumn.THOUGHTSPOT_CHART_TYPE = KeywordField("thoughtspotChartType", "thoughtspotChartType")
-ThoughtspotColumn.THOUGHTSPOT_QUESTION_TEXT = KeywordField("thoughtspotQuestionText", "thoughtspotQuestionText")
-ThoughtspotColumn.THOUGHTSPOT_JOIN_COUNT = NumericField("thoughtspotJoinCount", "thoughtspotJoinCount")
-ThoughtspotColumn.THOUGHTSPOT_COLUMN_COUNT = NumericField("thoughtspotColumnCount", "thoughtspotColumnCount")
-ThoughtspotColumn.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+ThoughtspotColumn.THOUGHTSPOT_CHART_TYPE = KeywordField(
+    "thoughtspotChartType", "thoughtspotChartType"
+)
+ThoughtspotColumn.THOUGHTSPOT_QUESTION_TEXT = KeywordField(
+    "thoughtspotQuestionText", "thoughtspotQuestionText"
+)
+ThoughtspotColumn.THOUGHTSPOT_JOIN_COUNT = NumericField(
+    "thoughtspotJoinCount", "thoughtspotJoinCount"
+)
+ThoughtspotColumn.THOUGHTSPOT_COLUMN_COUNT = NumericField(
+    "thoughtspotColumnCount", "thoughtspotColumnCount"
+)
+ThoughtspotColumn.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 ThoughtspotColumn.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ThoughtspotColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ThoughtspotColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ThoughtspotColumn.APPLICATION = RelationField("application")
 ThoughtspotColumn.APPLICATION_FIELD = RelationField("applicationField")
 ThoughtspotColumn.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-ThoughtspotColumn.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+ThoughtspotColumn.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ThoughtspotColumn.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ThoughtspotColumn.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ThoughtspotColumn.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-ThoughtspotColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+ThoughtspotColumn.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 ThoughtspotColumn.METRICS = RelationField("metrics")
 ThoughtspotColumn.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ThoughtspotColumn.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-ThoughtspotColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+ThoughtspotColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 ThoughtspotColumn.MEANINGS = RelationField("meanings")
 ThoughtspotColumn.MC_MONITORS = RelationField("mcMonitors")
 ThoughtspotColumn.MC_INCIDENTS = RelationField("mcIncidents")

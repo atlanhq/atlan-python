@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -54,6 +53,7 @@ class RelatedQuickSight(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSight"
 
+
 class RelatedQuickSightDashboardVisual(RelatedQuickSight):
     """
     Related entity reference for QuickSightDashboardVisual assets.
@@ -70,6 +70,7 @@ class RelatedQuickSightDashboardVisual(RelatedQuickSight):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightDashboardVisual"
+
 
 class RelatedQuickSightDataset(RelatedQuickSight):
     """
@@ -91,6 +92,7 @@ class RelatedQuickSightDataset(RelatedQuickSight):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightDataset"
 
+
 class RelatedQuickSightDatasetField(RelatedQuickSight):
     """
     Related entity reference for QuickSightDatasetField assets.
@@ -110,6 +112,7 @@ class RelatedQuickSightDatasetField(RelatedQuickSight):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightDatasetField"
+
 
 class RelatedQuickSightFolder(RelatedQuickSight):
     """
@@ -131,6 +134,7 @@ class RelatedQuickSightFolder(RelatedQuickSight):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightFolder"
 
+
 class RelatedQuickSightAnalysis(RelatedQuickSight):
     """
     Related entity reference for QuickSightAnalysis assets.
@@ -147,7 +151,9 @@ class RelatedQuickSightAnalysis(RelatedQuickSight):
     quick_sight_analysis_calculated_fields: Union[List[str], None, UnsetType] = UNSET
     """List of field names calculated by this analysis."""
 
-    quick_sight_analysis_parameter_declarations: Union[List[str], None, UnsetType] = UNSET
+    quick_sight_analysis_parameter_declarations: Union[List[str], None, UnsetType] = (
+        UNSET
+    )
     """List of parameters used for this analysis."""
 
     quick_sight_analysis_filter_groups: Union[List[str], None, UnsetType] = UNSET
@@ -156,6 +162,7 @@ class RelatedQuickSightAnalysis(RelatedQuickSight):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightAnalysis"
+
 
 class RelatedQuickSightAnalysisVisual(RelatedQuickSight):
     """
@@ -173,6 +180,7 @@ class RelatedQuickSightAnalysisVisual(RelatedQuickSight):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "QuickSightAnalysisVisual"
+
 
 class RelatedQuickSightDashboard(RelatedQuickSight):
     """

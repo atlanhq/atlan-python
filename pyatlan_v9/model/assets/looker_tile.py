@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -37,6 +44,12 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .looker_related import (
+    RelatedLookerDashboard,
+    RelatedLookerField,
+    RelatedLookerLook,
+    RelatedLookerQuery,
+)
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -46,15 +59,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .looker_related import RelatedLookerDashboard, RelatedLookerField, RelatedLookerLook, RelatedLookerQuery
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class LookerTile(Asset):
@@ -122,10 +131,14 @@ class LookerTile(Asset):
     query_id: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="queryID")
     """(Deprecated) Please use lookerQueryID instead."""
 
-    looker_query_id: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="lookerQueryID")
+    looker_query_id: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="lookerQueryID"
+    )
     """Identifier of the query for the Look, from Looker."""
 
-    result_maker_id: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="resultMakerID")
+    result_maker_id: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="resultMakerID"
+    )
     """Identifier of the ResultMarkerLookup entry, from Looker."""
 
     subtitle_text: Union[str, None, UnsetType] = UNSET
@@ -170,7 +183,9 @@ class LookerTile(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -179,10 +194,14 @@ class LookerTile(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -221,7 +240,9 @@ class LookerTile(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -233,7 +254,9 @@ class LookerTile(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -255,7 +278,6 @@ class LookerTile(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -308,6 +330,7 @@ class LookerTile(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LookerTileAttributes(AssetAttributes):
     """LookerTile-specific attributes for nested API format."""
 
@@ -323,10 +346,14 @@ class LookerTileAttributes(AssetAttributes):
     query_id: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="queryID")
     """(Deprecated) Please use lookerQueryID instead."""
 
-    looker_query_id: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="lookerQueryID")
+    looker_query_id: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="lookerQueryID"
+    )
     """Identifier of the query for the Look, from Looker."""
 
-    result_maker_id: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="resultMakerID")
+    result_maker_id: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="resultMakerID"
+    )
     """Identifier of the ResultMarkerLookup entry, from Looker."""
 
     subtitle_text: Union[str, None, UnsetType] = UNSET
@@ -340,6 +367,7 @@ class LookerTileAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class LookerTileRelationshipAttributes(AssetRelationshipAttributes):
     """LookerTile-specific relationship attributes for nested API format."""
@@ -374,7 +402,9 @@ class LookerTileRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -383,10 +413,14 @@ class LookerTileRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -425,7 +459,9 @@ class LookerTileRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -437,7 +473,9 @@ class LookerTileRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -449,13 +487,19 @@ class LookerTileRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class LookerTileNested(AssetNested):
     """LookerTile in nested API format for high-performance serialization."""
 
     attributes: Union[LookerTileAttributes, UnsetType] = UNSET
     relationship_attributes: Union[LookerTileRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[LookerTileRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[LookerTileRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        LookerTileRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        LookerTileRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -500,6 +544,7 @@ _LOOKER_TILE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_looker_tile_attrs(attrs: LookerTileAttributes, obj: LookerTile) -> None:
     """Populate LookerTile-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -513,6 +558,7 @@ def _populate_looker_tile_attrs(attrs: LookerTileAttributes, obj: LookerTile) ->
     attrs.look_id = obj.look_id
     attrs.looker_slug = obj.looker_slug
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_looker_tile_attrs(attrs: LookerTileAttributes) -> dict:
     """Extract all LookerTile attributes from the attrs struct into a flat dict."""
@@ -528,6 +574,7 @@ def _extract_looker_tile_attrs(attrs: LookerTileAttributes) -> dict:
     result["looker_slug"] = attrs.looker_slug
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -568,16 +615,19 @@ def _looker_tile_to_nested(looker_tile: LookerTile) -> LookerTileNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _looker_tile_from_nested(nested: LookerTileNested) -> LookerTile:
     """Convert nested format to flat LookerTile."""
-    attrs = nested.attributes if nested.attributes is not UNSET else LookerTileAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else LookerTileAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_TILE_REL_FIELDS,
-        LookerTileRelationshipAttributes
+        LookerTileRelationshipAttributes,
     )
     return LookerTile(
         guid=nested.guid,
@@ -590,7 +640,6 @@ def _looker_tile_from_nested(nested: LookerTileNested) -> LookerTile:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -604,6 +653,7 @@ def _looker_tile_from_nested(nested: LookerTileNested) -> LookerTile:
         **merged_rels,
     )
 
+
 def _looker_tile_to_nested_bytes(looker_tile: LookerTile, serde: Serde) -> bytes:
     """Convert flat LookerTile to nested JSON bytes."""
     return serde.encode(_looker_tile_to_nested(looker_tile))
@@ -613,6 +663,7 @@ def _looker_tile_from_nested_bytes(data: bytes, serde: Serde) -> LookerTile:
     """Convert nested JSON bytes to flat LookerTile."""
     nested = serde.decode(data, LookerTileNested)
     return _looker_tile_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -632,7 +683,9 @@ LookerTile.RESULT_MAKER_ID = NumericField("resultMakerID", "resultMakerID")
 LookerTile.SUBTITLE_TEXT = KeywordField("subtitleText", "subtitleText")
 LookerTile.LOOK_ID = NumericField("lookId", "lookId")
 LookerTile.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
-LookerTile.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+LookerTile.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 LookerTile.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 LookerTile.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 LookerTile.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -647,7 +700,9 @@ LookerTile.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribu
 LookerTile.METRICS = RelationField("metrics")
 LookerTile.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 LookerTile.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-LookerTile.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+LookerTile.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 LookerTile.MEANINGS = RelationField("meanings")
 LookerTile.DASHBOARD = RelationField("dashboard")
 LookerTile.LOOK = RelationField("look")

@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,21 +48,17 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
+from .quick_sight_related import RelatedQuickSightDatasetField, RelatedQuickSightFolder
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .quick_sight_related import RelatedQuickSightDatasetField, RelatedQuickSightFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class QuickSightDataset(Asset):
@@ -63,8 +66,8 @@ class QuickSightDataset(Asset):
     Instance of a QuickSight dataset in Atlan. These are an internal data model built to be used by analysis. In a dataset, data can be pulled from different sources, joined, filtered, and columns translated to more business-friendly names when preparing the data for visualizing in the analysis layer.
     """
 
-    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[Any] = None
-    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[Any] = None
+    QUICK_SIGHT_IMPORT_MODE: ClassVar[Any] = None
+    QUICK_SIGHT_COLUMN_COUNT: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
@@ -105,10 +108,10 @@ class QuickSightDataset(Asset):
 
     type_name: Union[str, UnsetType] = "QuickSightDataset"
 
-    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
-    quick_sight_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    quick_sight_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this dataset."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -153,7 +156,9 @@ class QuickSightDataset(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -162,10 +167,14 @@ class QuickSightDataset(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -189,16 +198,22 @@ class QuickSightDataset(Asset):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    quick_sight_dataset_folders: Union[List[RelatedQuickSightFolder], None, UnsetType] = UNSET
+    quick_sight_dataset_folders: Union[
+        List[RelatedQuickSightFolder], None, UnsetType
+    ] = UNSET
     """"""
 
-    quick_sight_dataset_fields: Union[List[RelatedQuickSightDatasetField], None, UnsetType] = UNSET
+    quick_sight_dataset_fields: Union[
+        List[RelatedQuickSightDatasetField], None, UnsetType
+    ] = UNSET
     """Fields that exist within this dataset."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -210,7 +225,9 @@ class QuickSightDataset(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -229,10 +246,7 @@ class QuickSightDataset(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     @classmethod
     @init_guid
@@ -242,7 +256,7 @@ class QuickSightDataset(Asset):
         name: str,
         connection_qualified_name: str,
         quick_sight_id: str,
-        quick_sight_dataset_import_mode: Union[str, None] = None,
+        quick_sight_import_mode: Union[str, None] = None,
         quick_sight_dataset_folders: Union[list[str], None] = None,
     ) -> "QuickSightDataset":
         """Create a new QuickSightDataset asset."""
@@ -266,8 +280,8 @@ class QuickSightDataset(Asset):
             qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
             connection_qualified_name=connection_qualified_name,
             connector_name=connector_name,
-            quick_sight_dataset_import_mode=quick_sight_dataset_import_mode
-            if quick_sight_dataset_import_mode is not None
+            quick_sight_import_mode=quick_sight_import_mode
+            if quick_sight_import_mode is not None
             else UNSET,
             quick_sight_dataset_folders=folder_refs,
         )
@@ -313,7 +327,9 @@ class QuickSightDataset(Asset):
         return _quick_sight_dataset_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> QuickSightDataset:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> QuickSightDataset:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -335,13 +351,14 @@ class QuickSightDataset(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class QuickSightDatasetAttributes(AssetAttributes):
     """QuickSightDataset-specific attributes for nested API format."""
 
-    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
-    quick_sight_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    quick_sight_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this dataset."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -355,6 +372,7 @@ class QuickSightDatasetAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """QuickSightDataset-specific relationship attributes for nested API format."""
@@ -389,7 +407,9 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -398,10 +418,14 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -425,16 +449,22 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    quick_sight_dataset_folders: Union[List[RelatedQuickSightFolder], None, UnsetType] = UNSET
+    quick_sight_dataset_folders: Union[
+        List[RelatedQuickSightFolder], None, UnsetType
+    ] = UNSET
     """"""
 
-    quick_sight_dataset_fields: Union[List[RelatedQuickSightDatasetField], None, UnsetType] = UNSET
+    quick_sight_dataset_fields: Union[
+        List[RelatedQuickSightDatasetField], None, UnsetType
+    ] = UNSET
     """Fields that exist within this dataset."""
 
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -446,7 +476,9 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -458,13 +490,21 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class QuickSightDatasetNested(AssetNested):
     """QuickSightDataset in nested API format for high-performance serialization."""
 
     attributes: Union[QuickSightDatasetAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[QuickSightDatasetRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[QuickSightDatasetRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[QuickSightDatasetRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        QuickSightDatasetRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        QuickSightDatasetRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        QuickSightDatasetRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -507,39 +547,48 @@ _QUICK_SIGHT_DATASET_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_quick_sight_dataset_attrs(attrs: QuickSightDatasetAttributes, obj: QuickSightDataset) -> None:
+
+def _populate_quick_sight_dataset_attrs(
+    attrs: QuickSightDatasetAttributes, obj: QuickSightDataset
+) -> None:
     """Populate QuickSightDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_dataset_import_mode = obj.quick_sight_dataset_import_mode
-    attrs.quick_sight_dataset_column_count = obj.quick_sight_dataset_column_count
+    attrs.quick_sight_import_mode = obj.quick_sight_import_mode
+    attrs.quick_sight_column_count = obj.quick_sight_column_count
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_quick_sight_dataset_attrs(attrs: QuickSightDatasetAttributes) -> dict:
     """Extract all QuickSightDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_dataset_import_mode"] = attrs.quick_sight_dataset_import_mode
-    result["quick_sight_dataset_column_count"] = attrs.quick_sight_dataset_column_count
+    result["quick_sight_import_mode"] = attrs.quick_sight_import_mode
+    result["quick_sight_column_count"] = attrs.quick_sight_column_count
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _quick_sight_dataset_to_nested(quick_sight_dataset: QuickSightDataset) -> QuickSightDatasetNested:
+def _quick_sight_dataset_to_nested(
+    quick_sight_dataset: QuickSightDataset,
+) -> QuickSightDatasetNested:
     """Convert flat QuickSightDataset to nested format."""
     attrs = QuickSightDatasetAttributes()
     _populate_quick_sight_dataset_attrs(attrs, quick_sight_dataset)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        quick_sight_dataset, _QUICK_SIGHT_DATASET_REL_FIELDS, QuickSightDatasetRelationshipAttributes
+        quick_sight_dataset,
+        _QUICK_SIGHT_DATASET_REL_FIELDS,
+        QuickSightDatasetRelationshipAttributes,
     )
     return QuickSightDatasetNested(
         guid=quick_sight_dataset.guid,
@@ -567,16 +616,23 @@ def _quick_sight_dataset_to_nested(quick_sight_dataset: QuickSightDataset) -> Qu
         remove_relationship_attributes=remove_rels,
     )
 
-def _quick_sight_dataset_from_nested(nested: QuickSightDatasetNested) -> QuickSightDataset:
+
+def _quick_sight_dataset_from_nested(
+    nested: QuickSightDatasetNested,
+) -> QuickSightDataset:
     """Convert nested format to flat QuickSightDataset."""
-    attrs = nested.attributes if nested.attributes is not UNSET else QuickSightDatasetAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else QuickSightDatasetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QUICK_SIGHT_DATASET_REL_FIELDS,
-        QuickSightDatasetRelationshipAttributes
+        QuickSightDatasetRelationshipAttributes,
     )
     return QuickSightDataset(
         guid=nested.guid,
@@ -589,7 +645,6 @@ def _quick_sight_dataset_from_nested(nested: QuickSightDatasetNested) -> QuickSi
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -603,15 +658,21 @@ def _quick_sight_dataset_from_nested(nested: QuickSightDatasetNested) -> QuickSi
         **merged_rels,
     )
 
-def _quick_sight_dataset_to_nested_bytes(quick_sight_dataset: QuickSightDataset, serde: Serde) -> bytes:
+
+def _quick_sight_dataset_to_nested_bytes(
+    quick_sight_dataset: QuickSightDataset, serde: Serde
+) -> bytes:
     """Convert flat QuickSightDataset to nested JSON bytes."""
     return serde.encode(_quick_sight_dataset_to_nested(quick_sight_dataset))
 
 
-def _quick_sight_dataset_from_nested_bytes(data: bytes, serde: Serde) -> QuickSightDataset:
+def _quick_sight_dataset_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> QuickSightDataset:
     """Convert nested JSON bytes to flat QuickSightDataset."""
     nested = serde.decode(data, QuickSightDatasetNested)
     return _quick_sight_dataset_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -623,27 +684,43 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightDataset.QUICK_SIGHT_DATASET_IMPORT_MODE = KeywordField("quickSightDatasetImportMode", "quickSightDatasetImportMode")
-QuickSightDataset.QUICK_SIGHT_DATASET_COLUMN_COUNT = NumericField("quickSightDatasetColumnCount", "quickSightDatasetColumnCount")
+QuickSightDataset.QUICK_SIGHT_IMPORT_MODE = KeywordField(
+    "quickSightImportMode", "quickSightImportMode"
+)
+QuickSightDataset.QUICK_SIGHT_COLUMN_COUNT = NumericField(
+    "quickSightColumnCount", "quickSightColumnCount"
+)
 QuickSightDataset.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
-QuickSightDataset.QUICK_SIGHT_SHEET_ID = KeywordField("quickSightSheetId", "quickSightSheetId")
-QuickSightDataset.QUICK_SIGHT_SHEET_NAME = KeywordTextField("quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text")
-QuickSightDataset.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+QuickSightDataset.QUICK_SIGHT_SHEET_ID = KeywordField(
+    "quickSightSheetId", "quickSightSheetId"
+)
+QuickSightDataset.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
+    "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
+)
+QuickSightDataset.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 QuickSightDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 QuickSightDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 QuickSightDataset.ANOMALO_CHECKS = RelationField("anomaloChecks")
 QuickSightDataset.APPLICATION = RelationField("application")
 QuickSightDataset.APPLICATION_FIELD = RelationField("applicationField")
 QuickSightDataset.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-QuickSightDataset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+QuickSightDataset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 QuickSightDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 QuickSightDataset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 QuickSightDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-QuickSightDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+QuickSightDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 QuickSightDataset.METRICS = RelationField("metrics")
 QuickSightDataset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 QuickSightDataset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-QuickSightDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+QuickSightDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 QuickSightDataset.MEANINGS = RelationField("meanings")
 QuickSightDataset.MC_MONITORS = RelationField("mcMonitors")
 QuickSightDataset.MC_INCIDENTS = RelationField("mcIncidents")
@@ -651,7 +728,9 @@ QuickSightDataset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
 QuickSightDataset.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 QuickSightDataset.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 QuickSightDataset.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-QuickSightDataset.QUICK_SIGHT_DATASET_FOLDERS = RelationField("quickSightDatasetFolders")
+QuickSightDataset.QUICK_SIGHT_DATASET_FOLDERS = RelationField(
+    "quickSightDatasetFolders"
+)
 QuickSightDataset.QUICK_SIGHT_DATASET_FIELDS = RelationField("quickSightDatasetFields")
 QuickSightDataset.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
 QuickSightDataset.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")

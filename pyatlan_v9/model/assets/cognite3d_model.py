@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .cognite_related import RelatedCogniteAsset
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -46,15 +53,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .cognite_related import RelatedCogniteAsset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Cognite3DModel(Asset):
@@ -134,7 +137,9 @@ class Cognite3DModel(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -143,10 +148,14 @@ class Cognite3DModel(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -173,7 +182,9 @@ class Cognite3DModel(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -185,7 +196,9 @@ class Cognite3DModel(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -204,10 +217,7 @@ class Cognite3DModel(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -260,11 +270,13 @@ class Cognite3DModel(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class Cognite3DModelAttributes(AssetAttributes):
     """Cognite3DModel-specific attributes for nested API format."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class Cognite3DModelRelationshipAttributes(AssetRelationshipAttributes):
     """Cognite3DModel-specific relationship attributes for nested API format."""
@@ -302,7 +314,9 @@ class Cognite3DModelRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -311,10 +325,14 @@ class Cognite3DModelRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -341,7 +359,9 @@ class Cognite3DModelRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -353,7 +373,9 @@ class Cognite3DModelRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -365,13 +387,21 @@ class Cognite3DModelRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class Cognite3DModelNested(AssetNested):
     """Cognite3DModel in nested API format for high-performance serialization."""
 
     attributes: Union[Cognite3DModelAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[Cognite3DModelRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[Cognite3DModelRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[Cognite3DModelRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[Cognite3DModelRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        Cognite3DModelRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        Cognite3DModelRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -413,16 +443,21 @@ _COGNITE3D_MODEL_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognite3d_model_attrs(attrs: Cognite3DModelAttributes, obj: Cognite3DModel) -> None:
+
+def _populate_cognite3d_model_attrs(
+    attrs: Cognite3DModelAttributes, obj: Cognite3DModel
+) -> None:
     """Populate Cognite3DModel-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_cognite3d_model_attrs(attrs: Cognite3DModelAttributes) -> dict:
     """Extract all Cognite3DModel attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -435,7 +470,9 @@ def _cognite3d_model_to_nested(cognite3d_model: Cognite3DModel) -> Cognite3DMode
     _populate_cognite3d_model_attrs(attrs, cognite3d_model)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cognite3d_model, _COGNITE3D_MODEL_REL_FIELDS, Cognite3DModelRelationshipAttributes
+        cognite3d_model,
+        _COGNITE3D_MODEL_REL_FIELDS,
+        Cognite3DModelRelationshipAttributes,
     )
     return Cognite3DModelNested(
         guid=cognite3d_model.guid,
@@ -463,16 +500,21 @@ def _cognite3d_model_to_nested(cognite3d_model: Cognite3DModel) -> Cognite3DMode
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognite3d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DModel:
     """Convert nested format to flat Cognite3DModel."""
-    attrs = nested.attributes if nested.attributes is not UNSET else Cognite3DModelAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else Cognite3DModelAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNITE3D_MODEL_REL_FIELDS,
-        Cognite3DModelRelationshipAttributes
+        Cognite3DModelRelationshipAttributes,
     )
     return Cognite3DModel(
         guid=nested.guid,
@@ -485,7 +527,6 @@ def _cognite3d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DModel
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -499,7 +540,10 @@ def _cognite3d_model_from_nested(nested: Cognite3DModelNested) -> Cognite3DModel
         **merged_rels,
     )
 
-def _cognite3d_model_to_nested_bytes(cognite3d_model: Cognite3DModel, serde: Serde) -> bytes:
+
+def _cognite3d_model_to_nested_bytes(
+    cognite3d_model: Cognite3DModel, serde: Serde
+) -> bytes:
     """Convert flat Cognite3DModel to nested JSON bytes."""
     return serde.encode(_cognite3d_model_to_nested(cognite3d_model))
 
@@ -509,15 +553,15 @@ def _cognite3d_model_from_nested_bytes(data: bytes, serde: Serde) -> Cognite3DMo
     nested = serde.decode(data, Cognite3DModelNested)
     return _cognite3d_model_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
-Cognite3DModel.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+Cognite3DModel.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 Cognite3DModel.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Cognite3DModel.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Cognite3DModel.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -525,15 +569,21 @@ Cognite3DModel.APPLICATION = RelationField("application")
 Cognite3DModel.APPLICATION_FIELD = RelationField("applicationField")
 Cognite3DModel.COGNITE_ASSET = RelationField("cogniteAsset")
 Cognite3DModel.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-Cognite3DModel.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+Cognite3DModel.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 Cognite3DModel.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 Cognite3DModel.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Cognite3DModel.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-Cognite3DModel.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+Cognite3DModel.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 Cognite3DModel.METRICS = RelationField("metrics")
 Cognite3DModel.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Cognite3DModel.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Cognite3DModel.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Cognite3DModel.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Cognite3DModel.MEANINGS = RelationField("meanings")
 Cognite3DModel.MC_MONITORS = RelationField("mcMonitors")
 Cognite3DModel.MC_INCIDENTS = RelationField("mcIncidents")

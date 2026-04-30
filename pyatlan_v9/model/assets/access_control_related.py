@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -75,6 +74,7 @@ class RelatedAccessControl(RelatedAsset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AccessControl"
 
+
 class RelatedPersona(RelatedAccessControl):
     """
     Related entity reference for Persona assets.
@@ -98,6 +98,7 @@ class RelatedPersona(RelatedAccessControl):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Persona"
 
+
 class RelatedPurpose(RelatedAccessControl):
     """
     Related entity reference for Purpose assets.
@@ -114,6 +115,7 @@ class RelatedPurpose(RelatedAccessControl):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Purpose"
+
 
 class RelatedAuthPolicy(RelatedAsset):
     """
@@ -182,6 +184,7 @@ class RelatedAuthPolicy(RelatedAsset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AuthPolicy"
+
 
 class RelatedAuthService(RelatedAsset):
     """

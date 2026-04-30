@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,18 +49,15 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .salesforce_related import RelatedSalesforceObject
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .salesforce_related import RelatedSalesforceObject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SalesforceField(Asset):
@@ -204,7 +207,9 @@ class SalesforceField(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -213,10 +218,14 @@ class SalesforceField(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -243,7 +252,9 @@ class SalesforceField(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -261,7 +272,9 @@ class SalesforceField(Asset):
     lookup_objects: Union[List[RelatedSalesforceObject], None, UnsetType] = UNSET
     """"""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -283,7 +296,6 @@ class SalesforceField(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -314,7 +326,9 @@ class SalesforceField(Asset):
         return _salesforce_field_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SalesforceField:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SalesforceField:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -335,6 +349,7 @@ class SalesforceField(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class SalesforceFieldAttributes(AssetAttributes):
     """SalesforceField-specific attributes for nested API format."""
@@ -396,6 +411,7 @@ class SalesforceFieldAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class SalesforceFieldRelationshipAttributes(AssetRelationshipAttributes):
     """SalesforceField-specific relationship attributes for nested API format."""
 
@@ -429,7 +445,9 @@ class SalesforceFieldRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -438,10 +456,14 @@ class SalesforceFieldRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -468,7 +490,9 @@ class SalesforceFieldRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -486,7 +510,9 @@ class SalesforceFieldRelationshipAttributes(AssetRelationshipAttributes):
     lookup_objects: Union[List[RelatedSalesforceObject], None, UnsetType] = UNSET
     """"""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -498,13 +524,21 @@ class SalesforceFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SalesforceFieldNested(AssetNested):
     """SalesforceField in nested API format for high-performance serialization."""
 
     attributes: Union[SalesforceFieldAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SalesforceFieldRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SalesforceFieldRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SalesforceFieldRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[SalesforceFieldRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        SalesforceFieldRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SalesforceFieldRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -547,7 +581,10 @@ _SALESFORCE_FIELD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_salesforce_field_attrs(attrs: SalesforceFieldAttributes, obj: SalesforceField) -> None:
+
+def _populate_salesforce_field_attrs(
+    attrs: SalesforceFieldAttributes, obj: SalesforceField
+) -> None:
     """Populate SalesforceField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.data_type = obj.data_type
@@ -569,6 +606,7 @@ def _populate_salesforce_field_attrs(attrs: SalesforceFieldAttributes, obj: Sale
     attrs.organization_qualified_name = obj.organization_qualified_name
     attrs.api_name = obj.api_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_salesforce_field_attrs(attrs: SalesforceFieldAttributes) -> dict:
     """Extract all SalesforceField attributes from the attrs struct into a flat dict."""
@@ -594,18 +632,23 @@ def _extract_salesforce_field_attrs(attrs: SalesforceFieldAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _salesforce_field_to_nested(salesforce_field: SalesforceField) -> SalesforceFieldNested:
+def _salesforce_field_to_nested(
+    salesforce_field: SalesforceField,
+) -> SalesforceFieldNested:
     """Convert flat SalesforceField to nested format."""
     attrs = SalesforceFieldAttributes()
     _populate_salesforce_field_attrs(attrs, salesforce_field)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        salesforce_field, _SALESFORCE_FIELD_REL_FIELDS, SalesforceFieldRelationshipAttributes
+        salesforce_field,
+        _SALESFORCE_FIELD_REL_FIELDS,
+        SalesforceFieldRelationshipAttributes,
     )
     return SalesforceFieldNested(
         guid=salesforce_field.guid,
@@ -633,16 +676,21 @@ def _salesforce_field_to_nested(salesforce_field: SalesforceField) -> Salesforce
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _salesforce_field_from_nested(nested: SalesforceFieldNested) -> SalesforceField:
     """Convert nested format to flat SalesforceField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SalesforceFieldAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SalesforceFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SALESFORCE_FIELD_REL_FIELDS,
-        SalesforceFieldRelationshipAttributes
+        SalesforceFieldRelationshipAttributes,
     )
     return SalesforceField(
         guid=nested.guid,
@@ -655,7 +703,6 @@ def _salesforce_field_from_nested(nested: SalesforceFieldNested) -> SalesforceFi
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -669,7 +716,10 @@ def _salesforce_field_from_nested(nested: SalesforceFieldNested) -> SalesforceFi
         **merged_rels,
     )
 
-def _salesforce_field_to_nested_bytes(salesforce_field: SalesforceField, serde: Serde) -> bytes:
+
+def _salesforce_field_to_nested_bytes(
+    salesforce_field: SalesforceField, serde: Serde
+) -> bytes:
     """Convert flat SalesforceField to nested JSON bytes."""
     return serde.encode(_salesforce_field_to_nested(salesforce_field))
 
@@ -678,6 +728,7 @@ def _salesforce_field_from_nested_bytes(data: bytes, serde: Serde) -> Salesforce
     """Convert nested JSON bytes to flat SalesforceField."""
     nested = serde.decode(data, SalesforceFieldNested)
     return _salesforce_field_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -691,7 +742,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SalesforceField.DATA_TYPE = KeywordTextField("dataType", "dataType", "dataType.text")
-SalesforceField.OBJECT_QUALIFIED_NAME = KeywordField("objectQualifiedName", "objectQualifiedName")
+SalesforceField.OBJECT_QUALIFIED_NAME = KeywordField(
+    "objectQualifiedName", "objectQualifiedName"
+)
 SalesforceField.ORDER = NumericField("order", "order")
 SalesforceField.INLINE_HELP_TEXT = KeywordField("inlineHelpText", "inlineHelpText")
 SalesforceField.IS_CALCULATED = BooleanField("isCalculated", "isCalculated")
@@ -704,26 +757,40 @@ SalesforceField.PRECISION = NumericField("precision", "precision")
 SalesforceField.NUMERIC_SCALE = NumericField("numericScale", "numericScale")
 SalesforceField.IS_UNIQUE = BooleanField("isUnique", "isUnique")
 SalesforceField.PICKLIST_VALUES = KeywordField("picklistValues", "picklistValues")
-SalesforceField.IS_POLYMORPHIC_FOREIGN_KEY = BooleanField("isPolymorphicForeignKey", "isPolymorphicForeignKey")
-SalesforceField.DEFAULT_VALUE_FORMULA = KeywordField("defaultValueFormula", "defaultValueFormula")
-SalesforceField.ORGANIZATION_QUALIFIED_NAME = KeywordField("organizationQualifiedName", "organizationQualifiedName")
+SalesforceField.IS_POLYMORPHIC_FOREIGN_KEY = BooleanField(
+    "isPolymorphicForeignKey", "isPolymorphicForeignKey"
+)
+SalesforceField.DEFAULT_VALUE_FORMULA = KeywordField(
+    "defaultValueFormula", "defaultValueFormula"
+)
+SalesforceField.ORGANIZATION_QUALIFIED_NAME = KeywordField(
+    "organizationQualifiedName", "organizationQualifiedName"
+)
 SalesforceField.API_NAME = KeywordField("apiName", "apiName")
-SalesforceField.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SalesforceField.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SalesforceField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SalesforceField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SalesforceField.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SalesforceField.APPLICATION = RelationField("application")
 SalesforceField.APPLICATION_FIELD = RelationField("applicationField")
 SalesforceField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SalesforceField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SalesforceField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SalesforceField.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SalesforceField.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SalesforceField.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SalesforceField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SalesforceField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SalesforceField.METRICS = RelationField("metrics")
 SalesforceField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SalesforceField.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SalesforceField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SalesforceField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SalesforceField.MEANINGS = RelationField("meanings")
 SalesforceField.MC_MONITORS = RelationField("mcMonitors")
 SalesforceField.MC_INCIDENTS = RelationField("mcIncidents")

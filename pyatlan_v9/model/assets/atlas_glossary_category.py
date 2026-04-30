@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import uuid
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -35,22 +42,21 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
-from .gtc_related import RelatedAtlasGlossary
+from .gtc_related import (
+    RelatedAtlasGlossary,
+    RelatedAtlasGlossaryCategory,
+    RelatedAtlasGlossaryTerm,
+)
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .gtc_related import RelatedAtlasGlossary, RelatedAtlasGlossaryCategory, RelatedAtlasGlossaryTerm
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AtlasGlossaryCategory(Asset):
@@ -129,10 +135,14 @@ class AtlasGlossaryCategory(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -144,7 +154,9 @@ class AtlasGlossaryCategory(Asset):
     anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
     """Glossary in which this category is contained."""
 
-    children_categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
+    children_categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = (
+        UNSET
+    )
     """Child categories organized within this category."""
 
     parent_category: Union[RelatedAtlasGlossaryCategory, None, UnsetType] = UNSET
@@ -159,7 +171,9 @@ class AtlasGlossaryCategory(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -171,7 +185,9 @@ class AtlasGlossaryCategory(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -179,8 +195,6 @@ class AtlasGlossaryCategory(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AtlasGlossaryCategory"
-
-
 
     @classmethod
     def can_be_archived(cls) -> bool:
@@ -233,8 +247,6 @@ class AtlasGlossaryCategory(Asset):
             raise ValueError(
                 f"Only one of the following parameters are allowed: {', '.join(param_names)}"
             )
-
-        import uuid
 
         qualified_name = f"{name}@{uuid.uuid4()}"
 
@@ -379,7 +391,9 @@ class AtlasGlossaryCategory(Asset):
         return _atlas_glossary_category_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AtlasGlossaryCategory:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> AtlasGlossaryCategory:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -401,6 +415,7 @@ class AtlasGlossaryCategory(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AtlasGlossaryCategoryAttributes(AssetAttributes):
     """AtlasGlossaryCategory-specific attributes for nested API format."""
 
@@ -415,6 +430,10 @@ class AtlasGlossaryCategoryAttributes(AssetAttributes):
 
     category_type: Union[str, None, UnsetType] = UNSET
     """"""
+
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    """Glossary in which this category is contained."""
+
 
 class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
     """AtlasGlossaryCategory-specific relationship attributes for nested API format."""
@@ -446,10 +465,14 @@ class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -458,10 +481,9 @@ class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
     terms: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Terms organized within this category."""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this category is contained."""
-
-    children_categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
+    children_categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = (
+        UNSET
+    )
     """Child categories organized within this category."""
 
     parent_category: Union[RelatedAtlasGlossaryCategory, None, UnsetType] = UNSET
@@ -476,7 +498,9 @@ class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -488,19 +512,29 @@ class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+
 class AtlasGlossaryCategoryNested(AssetNested):
     """AtlasGlossaryCategory in nested API format for high-performance serialization."""
 
     attributes: Union[AtlasGlossaryCategoryAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AtlasGlossaryCategoryRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AtlasGlossaryCategoryRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[AtlasGlossaryCategoryRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        AtlasGlossaryCategoryRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        AtlasGlossaryCategoryRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AtlasGlossaryCategoryRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -521,7 +555,6 @@ _ATLAS_GLOSSARY_CATEGORY_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "terms",
-    "anchor",
     "children_categories",
     "parent_category",
     "mc_monitors",
@@ -535,35 +568,48 @@ _ATLAS_GLOSSARY_CATEGORY_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-def _populate_atlas_glossary_category_attrs(attrs: AtlasGlossaryCategoryAttributes, obj: AtlasGlossaryCategory) -> None:
+
+def _populate_atlas_glossary_category_attrs(
+    attrs: AtlasGlossaryCategoryAttributes, obj: AtlasGlossaryCategory
+) -> None:
     """Populate AtlasGlossaryCategory-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.short_description = obj.short_description
     attrs.long_description = obj.long_description
     attrs.additional_attributes = obj.additional_attributes
     attrs.category_type = obj.category_type
+    attrs.anchor = obj.anchor
 
-def _extract_atlas_glossary_category_attrs(attrs: AtlasGlossaryCategoryAttributes) -> dict:
+
+def _extract_atlas_glossary_category_attrs(
+    attrs: AtlasGlossaryCategoryAttributes,
+) -> dict:
     """Extract all AtlasGlossaryCategory attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["short_description"] = attrs.short_description
     result["long_description"] = attrs.long_description
     result["additional_attributes"] = attrs.additional_attributes
     result["category_type"] = attrs.category_type
+    result["anchor"] = attrs.anchor
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _atlas_glossary_category_to_nested(atlas_glossary_category: AtlasGlossaryCategory) -> AtlasGlossaryCategoryNested:
+def _atlas_glossary_category_to_nested(
+    atlas_glossary_category: AtlasGlossaryCategory,
+) -> AtlasGlossaryCategoryNested:
     """Convert flat AtlasGlossaryCategory to nested format."""
     attrs = AtlasGlossaryCategoryAttributes()
     _populate_atlas_glossary_category_attrs(attrs, atlas_glossary_category)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        atlas_glossary_category, _ATLAS_GLOSSARY_CATEGORY_REL_FIELDS, AtlasGlossaryCategoryRelationshipAttributes
+        atlas_glossary_category,
+        _ATLAS_GLOSSARY_CATEGORY_REL_FIELDS,
+        AtlasGlossaryCategoryRelationshipAttributes,
     )
     return AtlasGlossaryCategoryNested(
         guid=atlas_glossary_category.guid,
@@ -591,16 +637,23 @@ def _atlas_glossary_category_to_nested(atlas_glossary_category: AtlasGlossaryCat
         remove_relationship_attributes=remove_rels,
     )
 
-def _atlas_glossary_category_from_nested(nested: AtlasGlossaryCategoryNested) -> AtlasGlossaryCategory:
+
+def _atlas_glossary_category_from_nested(
+    nested: AtlasGlossaryCategoryNested,
+) -> AtlasGlossaryCategory:
     """Convert nested format to flat AtlasGlossaryCategory."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AtlasGlossaryCategoryAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else AtlasGlossaryCategoryAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ATLAS_GLOSSARY_CATEGORY_REL_FIELDS,
-        AtlasGlossaryCategoryRelationshipAttributes
+        AtlasGlossaryCategoryRelationshipAttributes,
     )
     return AtlasGlossaryCategory(
         guid=nested.guid,
@@ -613,7 +666,6 @@ def _atlas_glossary_category_from_nested(nested: AtlasGlossaryCategoryNested) ->
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -627,48 +679,67 @@ def _atlas_glossary_category_from_nested(nested: AtlasGlossaryCategoryNested) ->
         **merged_rels,
     )
 
-def _atlas_glossary_category_to_nested_bytes(atlas_glossary_category: AtlasGlossaryCategory, serde: Serde) -> bytes:
+
+def _atlas_glossary_category_to_nested_bytes(
+    atlas_glossary_category: AtlasGlossaryCategory, serde: Serde
+) -> bytes:
     """Convert flat AtlasGlossaryCategory to nested JSON bytes."""
     return serde.encode(_atlas_glossary_category_to_nested(atlas_glossary_category))
 
 
-def _atlas_glossary_category_from_nested_bytes(data: bytes, serde: Serde) -> AtlasGlossaryCategory:
+def _atlas_glossary_category_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> AtlasGlossaryCategory:
     """Convert nested JSON bytes to flat AtlasGlossaryCategory."""
     nested = serde.decode(data, AtlasGlossaryCategoryNested)
     return _atlas_glossary_category_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
-AtlasGlossaryCategory.SHORT_DESCRIPTION = KeywordField("shortDescription", "shortDescription")
-AtlasGlossaryCategory.LONG_DESCRIPTION = KeywordField("longDescription", "longDescription")
-AtlasGlossaryCategory.ADDITIONAL_ATTRIBUTES = KeywordField("additionalAttributes", "additionalAttributes")
+AtlasGlossaryCategory.SHORT_DESCRIPTION = KeywordField(
+    "shortDescription", "shortDescription"
+)
+AtlasGlossaryCategory.LONG_DESCRIPTION = KeywordField(
+    "longDescription", "longDescription"
+)
+AtlasGlossaryCategory.ADDITIONAL_ATTRIBUTES = KeywordField(
+    "additionalAttributes", "additionalAttributes"
+)
 AtlasGlossaryCategory.CATEGORY_TYPE = KeywordField("categoryType", "categoryType")
 AtlasGlossaryCategory.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AtlasGlossaryCategory.APPLICATION = RelationField("application")
 AtlasGlossaryCategory.APPLICATION_FIELD = RelationField("applicationField")
 AtlasGlossaryCategory.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AtlasGlossaryCategory.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-AtlasGlossaryCategory.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+AtlasGlossaryCategory.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+AtlasGlossaryCategory.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 AtlasGlossaryCategory.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AtlasGlossaryCategory.METRICS = RelationField("metrics")
 AtlasGlossaryCategory.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-AtlasGlossaryCategory.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AtlasGlossaryCategory.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+AtlasGlossaryCategory.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+AtlasGlossaryCategory.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 AtlasGlossaryCategory.MEANINGS = RelationField("meanings")
 AtlasGlossaryCategory.TERMS = RelationField("terms")
-AtlasGlossaryCategory.ANCHOR = RelationField("anchor")
+AtlasGlossaryCategory.ANCHOR = KeywordField("anchor", "anchor")
 AtlasGlossaryCategory.CHILDREN_CATEGORIES = RelationField("childrenCategories")
 AtlasGlossaryCategory.PARENT_CATEGORY = RelationField("parentCategory")
 AtlasGlossaryCategory.MC_MONITORS = RelationField("mcMonitors")
 AtlasGlossaryCategory.MC_INCIDENTS = RelationField("mcIncidents")
 AtlasGlossaryCategory.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-AtlasGlossaryCategory.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+AtlasGlossaryCategory.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 AtlasGlossaryCategory.FILES = RelationField("files")
 AtlasGlossaryCategory.LINKS = RelationField("links")
 AtlasGlossaryCategory.README = RelationField("readme")

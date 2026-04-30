@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -47,27 +47,40 @@ class RelatedPowerBI(RelatedBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "PowerBI" so it serializes correctly
 
-    power_bi_is_hidden: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIIsHidden")
+    power_bi_is_hidden: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIIsHidden"
+    )
     """Whether this asset is hidden in Power BI (true) or not (false)."""
 
-    power_bi_table_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBITableQualifiedName")
+    power_bi_table_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBITableQualifiedName"
+    )
     """Unique name of the Power BI table in which this asset exists."""
 
-    power_bi_format_string: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIFormatString")
+    power_bi_format_string: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIFormatString"
+    )
     """Format of this asset, as specified in the FORMAT_STRING of the MDX cell property."""
 
-    power_bi_endorsement: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsement")
+    power_bi_endorsement: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsement"
+    )
     """Endorsement status of this asset, in Power BI."""
 
-    power_bi_endorsed_by: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsedBy")
+    power_bi_endorsed_by: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsedBy"
+    )
     """User who endorsed this asset in Power BI."""
 
-    power_bi_endorsed_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsedAt")
+    power_bi_endorsed_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsedAt"
+    )
     """Time at which this asset was endorsed in Power BI."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBI"
+
 
 class RelatedPowerBIApp(RelatedPowerBI):
     """
@@ -79,18 +92,25 @@ class RelatedPowerBIApp(RelatedPowerBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "PowerBIApp" so it serializes correctly
 
-    power_bi_app_id: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIAppId")
+    power_bi_app_id: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIAppId"
+    )
     """Unique ID of the PowerBI App in the PowerBI Assets Ecosystem."""
 
-    power_bi_app_users: Union[List[Dict[str, str]], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIAppUsers")
+    power_bi_app_users: Union[List[Dict[str, str]], None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIAppUsers"
+    )
     """List of users and their permission access for a PowerBI App."""
 
-    power_bi_app_groups: Union[List[Dict[str, str]], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIAppGroups")
+    power_bi_app_groups: Union[List[Dict[str, str]], None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIAppGroups"
+    )
     """List of groups and their permission access for a PowerBI App."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIApp"
+
 
 class RelatedPowerBIDataset(RelatedPowerBI):
     """
@@ -112,6 +132,7 @@ class RelatedPowerBIDataset(RelatedPowerBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIDataset"
 
+
 class RelatedPowerBIDatasource(RelatedPowerBI):
     """
     Related entity reference for PowerBIDatasource assets.
@@ -129,6 +150,7 @@ class RelatedPowerBIDatasource(RelatedPowerBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIDatasource"
 
+
 class RelatedPowerBIMeasure(RelatedPowerBI):
     """
     Related entity reference for PowerBIMeasure assets.
@@ -145,15 +167,20 @@ class RelatedPowerBIMeasure(RelatedPowerBI):
     dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the dataset in which this measure exists."""
 
-    power_bi_measure_expression: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIMeasureExpression")
+    power_bi_measure_expression: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIMeasureExpression"
+    )
     """DAX expression for this measure."""
 
-    power_bi_is_external_measure: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIIsExternalMeasure")
+    power_bi_is_external_measure: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIIsExternalMeasure"
+    )
     """Whether this measure is external (true) or internal (false)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIMeasure"
+
 
 class RelatedPowerBIPage(RelatedPowerBI):
     """
@@ -174,6 +201,7 @@ class RelatedPowerBIPage(RelatedPowerBI):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIPage"
+
 
 class RelatedPowerBIReport(RelatedPowerBI):
     """
@@ -201,6 +229,7 @@ class RelatedPowerBIReport(RelatedPowerBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIReport"
 
+
 class RelatedPowerBITable(RelatedPowerBI):
     """
     Related entity reference for PowerBITable assets.
@@ -220,18 +249,25 @@ class RelatedPowerBITable(RelatedPowerBI):
     dataflow_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """List of qualified names of associated Power BI Dataflows."""
 
-    power_bi_table_source_expressions: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="powerBITableSourceExpressions")
+    power_bi_table_source_expressions: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBITableSourceExpressions")
+    )
     """Power Query M expressions for the table."""
 
-    power_bi_table_column_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="powerBITableColumnCount")
+    power_bi_table_column_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBITableColumnCount"
+    )
     """Number of columns in this table."""
 
-    power_bi_table_measure_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="powerBITableMeasureCount")
+    power_bi_table_measure_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBITableMeasureCount"
+    )
     """Number of measures in this table."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBITable"
+
 
 class RelatedPowerBITile(RelatedPowerBI):
     """
@@ -253,6 +289,7 @@ class RelatedPowerBITile(RelatedPowerBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBITile"
 
+
 class RelatedPowerBIColumn(RelatedPowerBI):
     """
     Related entity reference for PowerBIColumn assets.
@@ -269,21 +306,30 @@ class RelatedPowerBIColumn(RelatedPowerBI):
     dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the dataset in which this column exists."""
 
-    power_bi_column_data_category: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIColumnDataCategory")
+    power_bi_column_data_category: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIColumnDataCategory"
+    )
     """Data category that describes the data in this column."""
 
-    power_bi_column_data_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIColumnDataType")
+    power_bi_column_data_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIColumnDataType"
+    )
     """Data type of this column."""
 
-    power_bi_sort_by_column: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBISortByColumn")
+    power_bi_sort_by_column: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBISortByColumn"
+    )
     """Name of a column in the same table to use to order this column."""
 
-    power_bi_column_summarize_by: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIColumnSummarizeBy")
+    power_bi_column_summarize_by: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIColumnSummarizeBy"
+    )
     """Aggregate function to use for summarizing this column."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIColumn"
+
 
 class RelatedPowerBIDashboard(RelatedPowerBI):
     """
@@ -307,6 +353,7 @@ class RelatedPowerBIDashboard(RelatedPowerBI):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIDashboard"
+
 
 class RelatedPowerBIWorkspace(RelatedPowerBI):
     """
@@ -337,6 +384,7 @@ class RelatedPowerBIWorkspace(RelatedPowerBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIWorkspace"
 
+
 class RelatedPowerBIDataflow(RelatedPowerBI):
     """
     Related entity reference for PowerBIDataflow assets.
@@ -353,18 +401,25 @@ class RelatedPowerBIDataflow(RelatedPowerBI):
     web_url: Union[str, None, UnsetType] = UNSET
     """Deprecated. See 'sourceUrl' instead."""
 
-    power_bi_dataflow_refresh_schedule_frequency: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleFrequency")
+    power_bi_dataflow_refresh_schedule_frequency: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleFrequency")
+    )
     """Refresh Schedule frequency for a PowerBI Dataflow."""
 
-    power_bi_dataflow_refresh_schedule_times: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimes")
+    power_bi_dataflow_refresh_schedule_times: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimes")
+    )
     """Time for the refresh schedule set for a PowerBI Dataflow."""
 
-    power_bi_dataflow_refresh_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimeZone")
+    power_bi_dataflow_refresh_schedule_time_zone: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimeZone")
+    )
     """Time zone for the refresh schedule set for a PowerBI Dataflow."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "PowerBIDataflow"
+
 
 class RelatedPowerBIDataflowEntityColumn(RelatedPowerBI):
     """
@@ -376,16 +431,24 @@ class RelatedPowerBIDataflowEntityColumn(RelatedPowerBI):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "PowerBIDataflowEntityColumn" so it serializes correctly
 
-    power_bi_dataflow_entity_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowEntityName")
+    power_bi_dataflow_entity_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIDataflowEntityName"
+    )
     """Unique name of the dataflow entity in which this dataflow entity column exists."""
 
-    power_bi_workspace_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIWorkspaceQualifiedName")
+    power_bi_workspace_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIWorkspaceQualifiedName"
+    )
     """Unique name of the workspace in which this dataflow entity column exists."""
 
-    power_bi_dataflow_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowQualifiedName")
+    power_bi_dataflow_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIDataflowQualifiedName"
+    )
     """Unique name of the dataflow in which this dataflow entity column exists."""
 
-    power_bi_dataflow_entity_column_data_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowEntityColumnDataType")
+    power_bi_dataflow_entity_column_data_type: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowEntityColumnDataType")
+    )
     """Data type of this dataflow entity column."""
 
     def __post_init__(self) -> None:

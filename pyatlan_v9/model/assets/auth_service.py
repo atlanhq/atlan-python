@@ -14,11 +14,18 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .access_control_related import RelatedAuthPolicy
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -40,15 +47,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .access_control_related import RelatedAuthPolicy
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class AuthService(Asset):
@@ -135,10 +138,14 @@ class AuthService(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -153,7 +160,9 @@ class AuthService(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -165,7 +174,9 @@ class AuthService(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -173,8 +184,6 @@ class AuthService(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AuthService"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -227,6 +236,7 @@ class AuthService(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AuthServiceAttributes(AssetAttributes):
     """AuthService-specific attributes for nested API format."""
 
@@ -247,6 +257,7 @@ class AuthServiceAttributes(AssetAttributes):
 
     tag_service: Union[str, None, UnsetType] = UNSET
     """TBC"""
+
 
 class AuthServiceRelationshipAttributes(AssetRelationshipAttributes):
     """AuthService-specific relationship attributes for nested API format."""
@@ -281,10 +292,14 @@ class AuthServiceRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -299,7 +314,9 @@ class AuthServiceRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -311,19 +328,27 @@ class AuthServiceRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class AuthServiceNested(AssetNested):
     """AuthService in nested API format for high-performance serialization."""
 
     attributes: Union[AuthServiceAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AuthServiceRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AuthServiceRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[AuthServiceRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        AuthServiceRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        AuthServiceRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -355,7 +380,10 @@ _AUTH_SERVICE_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-def _populate_auth_service_attrs(attrs: AuthServiceAttributes, obj: AuthService) -> None:
+
+def _populate_auth_service_attrs(
+    attrs: AuthServiceAttributes, obj: AuthService
+) -> None:
     """Populate AuthService-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.abac_service = obj.abac_service
@@ -364,6 +392,7 @@ def _populate_auth_service_attrs(attrs: AuthServiceAttributes, obj: AuthService)
     attrs.auth_service_policy_last_sync = obj.auth_service_policy_last_sync
     attrs.auth_service_type = obj.auth_service_type
     attrs.tag_service = obj.tag_service
+
 
 def _extract_auth_service_attrs(attrs: AuthServiceAttributes) -> dict:
     """Extract all AuthService attributes from the attrs struct into a flat dict."""
@@ -375,6 +404,7 @@ def _extract_auth_service_attrs(attrs: AuthServiceAttributes) -> dict:
     result["auth_service_type"] = attrs.auth_service_type
     result["tag_service"] = attrs.tag_service
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -415,16 +445,19 @@ def _auth_service_to_nested(auth_service: AuthService) -> AuthServiceNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _auth_service_from_nested(nested: AuthServiceNested) -> AuthService:
     """Convert nested format to flat AuthService."""
-    attrs = nested.attributes if nested.attributes is not UNSET else AuthServiceAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else AuthServiceAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AUTH_SERVICE_REL_FIELDS,
-        AuthServiceRelationshipAttributes
+        AuthServiceRelationshipAttributes,
     )
     return AuthService(
         guid=nested.guid,
@@ -437,7 +470,6 @@ def _auth_service_from_nested(nested: AuthServiceNested) -> AuthService:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -451,6 +483,7 @@ def _auth_service_from_nested(nested: AuthServiceNested) -> AuthService:
         **merged_rels,
     )
 
+
 def _auth_service_to_nested_bytes(auth_service: AuthService, serde: Serde) -> bytes:
     """Convert flat AuthService to nested JSON bytes."""
     return serde.encode(_auth_service_to_nested(auth_service))
@@ -460,6 +493,7 @@ def _auth_service_from_nested_bytes(data: bytes, serde: Serde) -> AuthService:
     """Convert nested JSON bytes to flat AuthService."""
     nested = serde.decode(data, AuthServiceNested)
     return _auth_service_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -473,8 +507,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 AuthService.ABAC_SERVICE = KeywordField("abacService", "abacService")
 AuthService.AUTH_SERVICE_CONFIG = KeywordField("authServiceConfig", "authServiceConfig")
-AuthService.AUTH_SERVICE_IS_ENABLED = BooleanField("authServiceIsEnabled", "authServiceIsEnabled")
-AuthService.AUTH_SERVICE_POLICY_LAST_SYNC = NumericField("authServicePolicyLastSync", "authServicePolicyLastSync")
+AuthService.AUTH_SERVICE_IS_ENABLED = BooleanField(
+    "authServiceIsEnabled", "authServiceIsEnabled"
+)
+AuthService.AUTH_SERVICE_POLICY_LAST_SYNC = NumericField(
+    "authServicePolicyLastSync", "authServicePolicyLastSync"
+)
 AuthService.AUTH_SERVICE_TYPE = KeywordField("authServiceType", "authServiceType")
 AuthService.TAG_SERVICE = KeywordField("tagService", "tagService")
 AuthService.POLICIES = RelationField("policies")
@@ -482,13 +520,17 @@ AuthService.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AuthService.APPLICATION = RelationField("application")
 AuthService.APPLICATION_FIELD = RelationField("applicationField")
 AuthService.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AuthService.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+AuthService.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 AuthService.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AuthService.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AuthService.METRICS = RelationField("metrics")
 AuthService.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AuthService.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AuthService.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+AuthService.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 AuthService.MEANINGS = RelationField("meanings")
 AuthService.MC_MONITORS = RelationField("mcMonitors")
 AuthService.MC_INCIDENTS = RelationField("mcIncidents")

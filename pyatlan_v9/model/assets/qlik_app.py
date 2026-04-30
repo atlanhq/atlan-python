@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,20 +48,17 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
+from .qlik_related import RelatedQlikSheet, RelatedQlikSpace
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .qlik_related import RelatedQlikSheet, RelatedQlikSpace
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class QlikApp(Asset):
@@ -184,7 +188,9 @@ class QlikApp(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -193,10 +199,14 @@ class QlikApp(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -229,7 +239,9 @@ class QlikApp(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -241,7 +253,9 @@ class QlikApp(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -260,10 +274,7 @@ class QlikApp(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -316,6 +327,7 @@ class QlikApp(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class QlikAppAttributes(AssetAttributes):
     """QlikApp-specific attributes for nested API format."""
 
@@ -361,6 +373,7 @@ class QlikAppAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class QlikAppRelationshipAttributes(AssetRelationshipAttributes):
     """QlikApp-specific relationship attributes for nested API format."""
 
@@ -394,7 +407,9 @@ class QlikAppRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -403,10 +418,14 @@ class QlikAppRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -439,7 +458,9 @@ class QlikAppRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -451,7 +472,9 @@ class QlikAppRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -463,13 +486,19 @@ class QlikAppRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class QlikAppNested(AssetNested):
     """QlikApp in nested API format for high-performance serialization."""
 
     attributes: Union[QlikAppAttributes, UnsetType] = UNSET
     relationship_attributes: Union[QlikAppRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[QlikAppRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[QlikAppRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[QlikAppRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[QlikAppRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -512,6 +541,7 @@ _QLIK_APP_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_qlik_app_attrs(attrs: QlikAppAttributes, obj: QlikApp) -> None:
     """Populate QlikApp-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -529,6 +559,7 @@ def _populate_qlik_app_attrs(attrs: QlikAppAttributes, obj: QlikApp) -> None:
     attrs.qlik_owner_id = obj.qlik_owner_id
     attrs.qlik_is_published = obj.qlik_is_published
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_qlik_app_attrs(attrs: QlikAppAttributes) -> dict:
     """Extract all QlikApp attributes from the attrs struct into a flat dict."""
@@ -548,6 +579,7 @@ def _extract_qlik_app_attrs(attrs: QlikAppAttributes) -> dict:
     result["qlik_is_published"] = attrs.qlik_is_published
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -588,6 +620,7 @@ def _qlik_app_to_nested(qlik_app: QlikApp) -> QlikAppNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _qlik_app_from_nested(nested: QlikAppNested) -> QlikApp:
     """Convert nested format to flat QlikApp."""
     attrs = nested.attributes if nested.attributes is not UNSET else QlikAppAttributes()
@@ -597,7 +630,7 @@ def _qlik_app_from_nested(nested: QlikAppNested) -> QlikApp:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QLIK_APP_REL_FIELDS,
-        QlikAppRelationshipAttributes
+        QlikAppRelationshipAttributes,
     )
     return QlikApp(
         guid=nested.guid,
@@ -610,7 +643,6 @@ def _qlik_app_from_nested(nested: QlikAppNested) -> QlikApp:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -624,6 +656,7 @@ def _qlik_app_from_nested(nested: QlikAppNested) -> QlikApp:
         **merged_rels,
     )
 
+
 def _qlik_app_to_nested_bytes(qlik_app: QlikApp, serde: Serde) -> bytes:
     """Convert flat QlikApp to nested JSON bytes."""
     return serde.encode(_qlik_app_to_nested(qlik_app))
@@ -633,6 +666,7 @@ def _qlik_app_from_nested_bytes(data: bytes, serde: Serde) -> QlikApp:
     """Convert nested JSON bytes to flat QlikApp."""
     nested = serde.decode(data, QlikAppNested)
     return _qlik_app_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -645,17 +679,27 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QlikApp.QLIK_HAS_SECTION_ACCESS = BooleanField("qlikHasSectionAccess", "qlikHasSectionAccess")
+QlikApp.QLIK_HAS_SECTION_ACCESS = BooleanField(
+    "qlikHasSectionAccess", "qlikHasSectionAccess"
+)
 QlikApp.QLIK_ORIGIN_APP_ID = KeywordField("qlikOriginAppId", "qlikOriginAppId")
 QlikApp.QLIK_IS_ENCRYPTED = BooleanField("qlikIsEncrypted", "qlikIsEncrypted")
-QlikApp.QLIK_IS_DIRECT_QUERY_MODE = BooleanField("qlikIsDirectQueryMode", "qlikIsDirectQueryMode")
-QlikApp.QLIK_APP_STATIC_BYTE_SIZE = NumericField("qlikAppStaticByteSize", "qlikAppStaticByteSize")
+QlikApp.QLIK_IS_DIRECT_QUERY_MODE = BooleanField(
+    "qlikIsDirectQueryMode", "qlikIsDirectQueryMode"
+)
+QlikApp.QLIK_APP_STATIC_BYTE_SIZE = NumericField(
+    "qlikAppStaticByteSize", "qlikAppStaticByteSize"
+)
 QlikApp.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikApp.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikApp.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")
-QlikApp.QLIK_SPACE_QUALIFIED_NAME = KeywordTextField("qlikSpaceQualifiedName", "qlikSpaceQualifiedName", "qlikSpaceQualifiedName.text")
+QlikApp.QLIK_SPACE_QUALIFIED_NAME = KeywordTextField(
+    "qlikSpaceQualifiedName", "qlikSpaceQualifiedName", "qlikSpaceQualifiedName.text"
+)
 QlikApp.QLIK_APP_ID = KeywordField("qlikAppId", "qlikAppId")
-QlikApp.QLIK_APP_QUALIFIED_NAME = KeywordTextField("qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text")
+QlikApp.QLIK_APP_QUALIFIED_NAME = KeywordTextField(
+    "qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text"
+)
 QlikApp.QLIK_OWNER_ID = KeywordField("qlikOwnerId", "qlikOwnerId")
 QlikApp.QLIK_IS_PUBLISHED = BooleanField("qlikIsPublished", "qlikIsPublished")
 QlikApp.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
@@ -673,7 +717,9 @@ QlikApp.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes
 QlikApp.METRICS = RelationField("metrics")
 QlikApp.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 QlikApp.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-QlikApp.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+QlikApp.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 QlikApp.MEANINGS = RelationField("meanings")
 QlikApp.MC_MONITORS = RelationField("mcMonitors")
 QlikApp.MC_INCIDENTS = RelationField("mcIncidents")

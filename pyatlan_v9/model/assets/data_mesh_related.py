@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -49,6 +49,7 @@ class RelatedDataMesh(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataMesh"
 
+
 class RelatedDataMeshDataset(RelatedDataMesh):
     """
     Related entity reference for DataMeshDataset assets.
@@ -66,6 +67,7 @@ class RelatedDataMeshDataset(RelatedDataMesh):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataMeshDataset"
 
+
 class RelatedStakeholderTitle(RelatedDataMesh):
     """
     Related entity reference for StakeholderTitle assets.
@@ -80,6 +82,7 @@ class RelatedStakeholderTitle(RelatedDataMesh):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "StakeholderTitle"
 
+
 class RelatedDataDomain(RelatedDataMesh):
     """
     Related entity reference for DataDomain assets.
@@ -93,6 +96,7 @@ class RelatedDataDomain(RelatedDataMesh):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataDomain"
+
 
 class RelatedDataProduct(RelatedDataMesh):
     """
@@ -128,7 +132,9 @@ class RelatedDataProduct(RelatedDataMesh):
     daap_visibility: Union[str, None, UnsetType] = UNSET
     """Visibility of a data product."""
 
-    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dataProductAssetsDSL")
+    data_product_assets_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dataProductAssetsDSL"
+    )
     """Search DSL used to define which assets are part of this data product."""
 
     data_product_assets_playbook_filter: Union[str, None, UnsetType] = UNSET
@@ -158,6 +164,7 @@ class RelatedDataProduct(RelatedDataMesh):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataProduct"
+
 
 class RelatedStakeholder(RelatedDataMesh):
     """

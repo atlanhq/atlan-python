@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,20 +47,17 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
+from .redash_related import RelatedRedashQuery
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .redash_related import RelatedRedashQuery
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class RedashVisualization(Asset):
@@ -147,7 +150,9 @@ class RedashVisualization(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -156,10 +161,14 @@ class RedashVisualization(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -189,7 +198,9 @@ class RedashVisualization(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -201,7 +212,9 @@ class RedashVisualization(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -220,10 +233,7 @@ class RedashVisualization(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -254,7 +264,9 @@ class RedashVisualization(Asset):
         return _redash_visualization_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> RedashVisualization:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> RedashVisualization:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -276,6 +288,7 @@ class RedashVisualization(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class RedashVisualizationAttributes(AssetAttributes):
     """RedashVisualization-specific attributes for nested API format."""
 
@@ -293,6 +306,7 @@ class RedashVisualizationAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     """RedashVisualization-specific relationship attributes for nested API format."""
@@ -327,7 +341,9 @@ class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -336,10 +352,14 @@ class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -369,7 +389,9 @@ class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -381,7 +403,9 @@ class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -393,13 +417,21 @@ class RedashVisualizationRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class RedashVisualizationNested(AssetNested):
     """RedashVisualization in nested API format for high-performance serialization."""
 
     attributes: Union[RedashVisualizationAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[RedashVisualizationRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[RedashVisualizationRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[RedashVisualizationRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        RedashVisualizationRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        RedashVisualizationRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        RedashVisualizationRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -441,7 +473,10 @@ _REDASH_VISUALIZATION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_redash_visualization_attrs(attrs: RedashVisualizationAttributes, obj: RedashVisualization) -> None:
+
+def _populate_redash_visualization_attrs(
+    attrs: RedashVisualizationAttributes, obj: RedashVisualization
+) -> None:
     """Populate RedashVisualization-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.redash_visualization_type = obj.redash_visualization_type
@@ -449,6 +484,7 @@ def _populate_redash_visualization_attrs(attrs: RedashVisualizationAttributes, o
     attrs.redash_query_qualified_name = obj.redash_query_qualified_name
     attrs.redash_is_published = obj.redash_is_published
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_redash_visualization_attrs(attrs: RedashVisualizationAttributes) -> dict:
     """Extract all RedashVisualization attributes from the attrs struct into a flat dict."""
@@ -460,18 +496,23 @@ def _extract_redash_visualization_attrs(attrs: RedashVisualizationAttributes) ->
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _redash_visualization_to_nested(redash_visualization: RedashVisualization) -> RedashVisualizationNested:
+def _redash_visualization_to_nested(
+    redash_visualization: RedashVisualization,
+) -> RedashVisualizationNested:
     """Convert flat RedashVisualization to nested format."""
     attrs = RedashVisualizationAttributes()
     _populate_redash_visualization_attrs(attrs, redash_visualization)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        redash_visualization, _REDASH_VISUALIZATION_REL_FIELDS, RedashVisualizationRelationshipAttributes
+        redash_visualization,
+        _REDASH_VISUALIZATION_REL_FIELDS,
+        RedashVisualizationRelationshipAttributes,
     )
     return RedashVisualizationNested(
         guid=redash_visualization.guid,
@@ -499,16 +540,23 @@ def _redash_visualization_to_nested(redash_visualization: RedashVisualization) -
         remove_relationship_attributes=remove_rels,
     )
 
-def _redash_visualization_from_nested(nested: RedashVisualizationNested) -> RedashVisualization:
+
+def _redash_visualization_from_nested(
+    nested: RedashVisualizationNested,
+) -> RedashVisualization:
     """Convert nested format to flat RedashVisualization."""
-    attrs = nested.attributes if nested.attributes is not UNSET else RedashVisualizationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else RedashVisualizationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _REDASH_VISUALIZATION_REL_FIELDS,
-        RedashVisualizationRelationshipAttributes
+        RedashVisualizationRelationshipAttributes,
     )
     return RedashVisualization(
         guid=nested.guid,
@@ -521,7 +569,6 @@ def _redash_visualization_from_nested(nested: RedashVisualizationNested) -> Reda
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -535,15 +582,21 @@ def _redash_visualization_from_nested(nested: RedashVisualizationNested) -> Reda
         **merged_rels,
     )
 
-def _redash_visualization_to_nested_bytes(redash_visualization: RedashVisualization, serde: Serde) -> bytes:
+
+def _redash_visualization_to_nested_bytes(
+    redash_visualization: RedashVisualization, serde: Serde
+) -> bytes:
     """Convert flat RedashVisualization to nested JSON bytes."""
     return serde.encode(_redash_visualization_to_nested(redash_visualization))
 
 
-def _redash_visualization_from_nested_bytes(data: bytes, serde: Serde) -> RedashVisualization:
+def _redash_visualization_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> RedashVisualization:
     """Convert nested JSON bytes to flat RedashVisualization."""
     nested = serde.decode(data, RedashVisualizationNested)
     return _redash_visualization_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -555,26 +608,48 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-RedashVisualization.REDASH_VISUALIZATION_TYPE = KeywordField("redashVisualizationType", "redashVisualizationType")
-RedashVisualization.REDASH_QUERY_NAME = KeywordTextField("redashQueryName", "redashQueryName", "redashQueryName.text")
-RedashVisualization.REDASH_QUERY_QUALIFIED_NAME = KeywordTextField("redashQueryQualifiedName", "redashQueryQualifiedName", "redashQueryQualifiedName.text")
-RedashVisualization.REDASH_IS_PUBLISHED = BooleanField("redashIsPublished", "redashIsPublished")
-RedashVisualization.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+RedashVisualization.REDASH_VISUALIZATION_TYPE = KeywordField(
+    "redashVisualizationType", "redashVisualizationType"
+)
+RedashVisualization.REDASH_QUERY_NAME = KeywordTextField(
+    "redashQueryName", "redashQueryName", "redashQueryName.text"
+)
+RedashVisualization.REDASH_QUERY_QUALIFIED_NAME = KeywordTextField(
+    "redashQueryQualifiedName",
+    "redashQueryQualifiedName",
+    "redashQueryQualifiedName.text",
+)
+RedashVisualization.REDASH_IS_PUBLISHED = BooleanField(
+    "redashIsPublished", "redashIsPublished"
+)
+RedashVisualization.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 RedashVisualization.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 RedashVisualization.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 RedashVisualization.ANOMALO_CHECKS = RelationField("anomaloChecks")
 RedashVisualization.APPLICATION = RelationField("application")
 RedashVisualization.APPLICATION_FIELD = RelationField("applicationField")
 RedashVisualization.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-RedashVisualization.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+RedashVisualization.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 RedashVisualization.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 RedashVisualization.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-RedashVisualization.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-RedashVisualization.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+RedashVisualization.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+RedashVisualization.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 RedashVisualization.METRICS = RelationField("metrics")
 RedashVisualization.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-RedashVisualization.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-RedashVisualization.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+RedashVisualization.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+RedashVisualization.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 RedashVisualization.MEANINGS = RelationField("meanings")
 RedashVisualization.MC_MONITORS = RelationField("mcMonitors")
 RedashVisualization.MC_INCIDENTS = RelationField("mcIncidents")
@@ -584,7 +659,9 @@ RedashVisualization.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 RedashVisualization.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 RedashVisualization.REDASH_QUERY = RelationField("redashQuery")
 RedashVisualization.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-RedashVisualization.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+RedashVisualization.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 RedashVisualization.FILES = RelationField("files")
 RedashVisualization.LINKS = RelationField("links")
 RedashVisualization.README = RelationField("readme")

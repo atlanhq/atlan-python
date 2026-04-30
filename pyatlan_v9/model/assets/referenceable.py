@@ -368,7 +368,6 @@ def _referenceable_from_nested(nested: ReferenceableNested) -> Referenceable:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -399,23 +398,51 @@ def _referenceable_from_nested_bytes(data: bytes, serde: Serde) -> Referenceable
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
 
-Referenceable.TYPE_NAME = InternalKeywordTextField("typeName", "__typeName.keyword", "__typeName", "__typeName")
-Referenceable.GUID = InternalKeywordField("guid", "__guid", "__guid")
-Referenceable.CREATED_BY = InternalKeywordField("createdBy", "__createdBy", "__createdBy")
-Referenceable.UPDATED_BY = InternalKeywordField("updatedBy", "__modifiedBy", "__modifiedBy")
-Referenceable.STATUS = InternalKeywordField("status", "__state", "__state")
-Referenceable.ATLAN_TAGS = InternalKeywordTextField("classificationNames", "__traitNames", "__classificationsText", "__classificationNames")
-Referenceable.PROPAGATED_ATLAN_TAGS = InternalKeywordTextField("classificationNames", "__propagatedTraitNames", "__classificationsText", "__propagatedClassificationNames")
-Referenceable.ASSIGNED_TERMS = InternalKeywordTextField("meanings", "__meanings", "__meaningsText", "__meanings")
-Referenceable.SUPER_TYPE_NAMES = InternalKeywordTextField("typeName", "__superTypeNames.keyword", "__superTypeNames", "__superTypeNames")
-Referenceable.CREATE_TIME = InternalNumericField("createTime", "__timestamp", "__timestamp")
-Referenceable.UPDATE_TIME = InternalNumericField("updateTime", "__modificationTimestamp", "__modificationTimestamp")
 Referenceable.QUALIFIED_NAME = KeywordTextField(
     "qualifiedName", "qualifiedName", "qualifiedName.text"
 )
-Referenceable.CUSTOM_ATTRIBUTES = TextField("customAttributes", "customAttributes")
 Referenceable.REPLICATED_FROM = KeywordField("replicatedFrom", "replicatedFrom")
 Referenceable.REPLICATED_TO = KeywordField("replicatedTo", "replicatedTo")
 Referenceable.MEANINGS = RelationField("meanings")
 Referenceable.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
 Referenceable.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+# ---------------------------------------------------------------------------
+# Referenceable internal field descriptors (entity-level, not in typedef)
+# ---------------------------------------------------------------------------
+
+Referenceable.STATUS = InternalKeywordField("status", "__state", "__state")
+Referenceable.GUID = InternalKeywordField("guid", "__guid", "__guid")
+Referenceable.TYPE_NAME = InternalKeywordTextField(
+    "typeName", "__typeName.keyword", "__typeName", "__typeName"
+)
+Referenceable.CREATED_BY = InternalKeywordField(
+    "createdBy", "__createdBy", "__createdBy"
+)
+Referenceable.UPDATED_BY = InternalKeywordField(
+    "updatedBy", "__modifiedBy", "__modifiedBy"
+)
+Referenceable.ATLAN_TAGS = InternalKeywordTextField(
+    "classificationNames",
+    "__traitNames",
+    "__classificationsText",
+    "__classificationNames",
+)
+Referenceable.PROPAGATED_ATLAN_TAGS = InternalKeywordTextField(
+    "classificationNames",
+    "__propagatedTraitNames",
+    "__classificationsText",
+    "__propagatedClassificationNames",
+)
+Referenceable.ASSIGNED_TERMS = InternalKeywordTextField(
+    "meanings", "__meanings", "__meaningsText", "__meanings"
+)
+Referenceable.SUPER_TYPE_NAMES = InternalKeywordTextField(
+    "typeName", "__superTypeNames.keyword", "__superTypeNames", "__superTypeNames"
+)
+Referenceable.CREATE_TIME = InternalNumericField(
+    "createTime", "__timestamp", "__timestamp"
+)
+Referenceable.UPDATE_TIME = InternalNumericField(
+    "updateTime", "__modificationTimestamp", "__modificationTimestamp"
+)
+Referenceable.CUSTOM_ATTRIBUTES = TextField("customAttributes", "customAttributes")

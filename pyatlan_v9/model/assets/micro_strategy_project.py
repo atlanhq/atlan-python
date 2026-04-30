@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -36,6 +42,16 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .micro_strategy_related import (
+    RelatedMicroStrategyAttribute,
+    RelatedMicroStrategyCube,
+    RelatedMicroStrategyDocument,
+    RelatedMicroStrategyDossier,
+    RelatedMicroStrategyFact,
+    RelatedMicroStrategyMetric,
+    RelatedMicroStrategyReport,
+    RelatedMicroStrategyVisualization,
+)
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -45,15 +61,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .micro_strategy_related import RelatedMicroStrategyAttribute, RelatedMicroStrategyCube, RelatedMicroStrategyDocument, RelatedMicroStrategyDossier, RelatedMicroStrategyFact, RelatedMicroStrategyMetric, RelatedMicroStrategyReport, RelatedMicroStrategyVisualization
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class MicroStrategyProject(Asset):
@@ -177,7 +189,9 @@ class MicroStrategyProject(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -186,34 +200,50 @@ class MicroStrategyProject(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    micro_strategy_metrics: Union[List[RelatedMicroStrategyMetric], None, UnsetType] = UNSET
+    micro_strategy_metrics: Union[List[RelatedMicroStrategyMetric], None, UnsetType] = (
+        UNSET
+    )
     """Metrics that exist within this project."""
 
-    micro_strategy_reports: Union[List[RelatedMicroStrategyReport], None, UnsetType] = UNSET
+    micro_strategy_reports: Union[List[RelatedMicroStrategyReport], None, UnsetType] = (
+        UNSET
+    )
     """Reports that exist within this project."""
 
-    micro_strategy_visualizations: Union[List[RelatedMicroStrategyVisualization], None, UnsetType] = UNSET
+    micro_strategy_visualizations: Union[
+        List[RelatedMicroStrategyVisualization], None, UnsetType
+    ] = UNSET
     """Visualizations that exist within this project."""
 
-    micro_strategy_attributes: Union[List[RelatedMicroStrategyAttribute], None, UnsetType] = UNSET
+    micro_strategy_attributes: Union[
+        List[RelatedMicroStrategyAttribute], None, UnsetType
+    ] = UNSET
     """Attributes that exist within this project."""
 
     micro_strategy_cubes: Union[List[RelatedMicroStrategyCube], None, UnsetType] = UNSET
     """Cubes that exist within this project."""
 
-    micro_strategy_documents: Union[List[RelatedMicroStrategyDocument], None, UnsetType] = UNSET
+    micro_strategy_documents: Union[
+        List[RelatedMicroStrategyDocument], None, UnsetType
+    ] = UNSET
     """Documents that exist within this project."""
 
-    micro_strategy_dossiers: Union[List[RelatedMicroStrategyDossier], None, UnsetType] = UNSET
+    micro_strategy_dossiers: Union[
+        List[RelatedMicroStrategyDossier], None, UnsetType
+    ] = UNSET
     """Dossiers that exist within this project."""
 
     micro_strategy_facts: Union[List[RelatedMicroStrategyFact], None, UnsetType] = UNSET
@@ -240,7 +270,9 @@ class MicroStrategyProject(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -252,7 +284,9 @@ class MicroStrategyProject(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -266,8 +300,6 @@ class MicroStrategyProject(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "MicroStrategyProject"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -298,7 +330,9 @@ class MicroStrategyProject(Asset):
         return _micro_strategy_project_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MicroStrategyProject:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> MicroStrategyProject:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -319,6 +353,7 @@ class MicroStrategyProject(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class MicroStrategyProjectAttributes(AssetAttributes):
     """MicroStrategyProject-specific attributes for nested API format."""
@@ -356,6 +391,7 @@ class MicroStrategyProjectAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
     """MicroStrategyProject-specific relationship attributes for nested API format."""
 
@@ -389,7 +425,9 @@ class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -398,34 +436,50 @@ class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    micro_strategy_metrics: Union[List[RelatedMicroStrategyMetric], None, UnsetType] = UNSET
+    micro_strategy_metrics: Union[List[RelatedMicroStrategyMetric], None, UnsetType] = (
+        UNSET
+    )
     """Metrics that exist within this project."""
 
-    micro_strategy_reports: Union[List[RelatedMicroStrategyReport], None, UnsetType] = UNSET
+    micro_strategy_reports: Union[List[RelatedMicroStrategyReport], None, UnsetType] = (
+        UNSET
+    )
     """Reports that exist within this project."""
 
-    micro_strategy_visualizations: Union[List[RelatedMicroStrategyVisualization], None, UnsetType] = UNSET
+    micro_strategy_visualizations: Union[
+        List[RelatedMicroStrategyVisualization], None, UnsetType
+    ] = UNSET
     """Visualizations that exist within this project."""
 
-    micro_strategy_attributes: Union[List[RelatedMicroStrategyAttribute], None, UnsetType] = UNSET
+    micro_strategy_attributes: Union[
+        List[RelatedMicroStrategyAttribute], None, UnsetType
+    ] = UNSET
     """Attributes that exist within this project."""
 
     micro_strategy_cubes: Union[List[RelatedMicroStrategyCube], None, UnsetType] = UNSET
     """Cubes that exist within this project."""
 
-    micro_strategy_documents: Union[List[RelatedMicroStrategyDocument], None, UnsetType] = UNSET
+    micro_strategy_documents: Union[
+        List[RelatedMicroStrategyDocument], None, UnsetType
+    ] = UNSET
     """Documents that exist within this project."""
 
-    micro_strategy_dossiers: Union[List[RelatedMicroStrategyDossier], None, UnsetType] = UNSET
+    micro_strategy_dossiers: Union[
+        List[RelatedMicroStrategyDossier], None, UnsetType
+    ] = UNSET
     """Dossiers that exist within this project."""
 
     micro_strategy_facts: Union[List[RelatedMicroStrategyFact], None, UnsetType] = UNSET
@@ -452,7 +506,9 @@ class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -464,7 +520,9 @@ class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -476,13 +534,21 @@ class MicroStrategyProjectRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class MicroStrategyProjectNested(AssetNested):
     """MicroStrategyProject in nested API format for high-performance serialization."""
 
     attributes: Union[MicroStrategyProjectAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[MicroStrategyProjectRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[MicroStrategyProjectRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[MicroStrategyProjectRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        MicroStrategyProjectRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        MicroStrategyProjectRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        MicroStrategyProjectRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -531,14 +597,21 @@ _MICRO_STRATEGY_PROJECT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_micro_strategy_project_attrs(attrs: MicroStrategyProjectAttributes, obj: MicroStrategyProject) -> None:
+
+def _populate_micro_strategy_project_attrs(
+    attrs: MicroStrategyProjectAttributes, obj: MicroStrategyProject
+) -> None:
     """Populate MicroStrategyProject-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.micro_strategy_project_qualified_name = obj.micro_strategy_project_qualified_name
+    attrs.micro_strategy_project_qualified_name = (
+        obj.micro_strategy_project_qualified_name
+    )
     attrs.micro_strategy_project_name = obj.micro_strategy_project_name
     attrs.micro_strategy_cube_qualified_names = obj.micro_strategy_cube_qualified_names
     attrs.micro_strategy_cube_names = obj.micro_strategy_cube_names
-    attrs.micro_strategy_report_qualified_names = obj.micro_strategy_report_qualified_names
+    attrs.micro_strategy_report_qualified_names = (
+        obj.micro_strategy_report_qualified_names
+    )
     attrs.micro_strategy_report_names = obj.micro_strategy_report_names
     attrs.micro_strategy_is_certified = obj.micro_strategy_is_certified
     attrs.micro_strategy_certified_by = obj.micro_strategy_certified_by
@@ -546,14 +619,23 @@ def _populate_micro_strategy_project_attrs(attrs: MicroStrategyProjectAttributes
     attrs.micro_strategy_location = obj.micro_strategy_location
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-def _extract_micro_strategy_project_attrs(attrs: MicroStrategyProjectAttributes) -> dict:
+
+def _extract_micro_strategy_project_attrs(
+    attrs: MicroStrategyProjectAttributes,
+) -> dict:
     """Extract all MicroStrategyProject attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["micro_strategy_project_qualified_name"] = attrs.micro_strategy_project_qualified_name
+    result["micro_strategy_project_qualified_name"] = (
+        attrs.micro_strategy_project_qualified_name
+    )
     result["micro_strategy_project_name"] = attrs.micro_strategy_project_name
-    result["micro_strategy_cube_qualified_names"] = attrs.micro_strategy_cube_qualified_names
+    result["micro_strategy_cube_qualified_names"] = (
+        attrs.micro_strategy_cube_qualified_names
+    )
     result["micro_strategy_cube_names"] = attrs.micro_strategy_cube_names
-    result["micro_strategy_report_qualified_names"] = attrs.micro_strategy_report_qualified_names
+    result["micro_strategy_report_qualified_names"] = (
+        attrs.micro_strategy_report_qualified_names
+    )
     result["micro_strategy_report_names"] = attrs.micro_strategy_report_names
     result["micro_strategy_is_certified"] = attrs.micro_strategy_is_certified
     result["micro_strategy_certified_by"] = attrs.micro_strategy_certified_by
@@ -562,18 +644,23 @@ def _extract_micro_strategy_project_attrs(attrs: MicroStrategyProjectAttributes)
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _micro_strategy_project_to_nested(micro_strategy_project: MicroStrategyProject) -> MicroStrategyProjectNested:
+def _micro_strategy_project_to_nested(
+    micro_strategy_project: MicroStrategyProject,
+) -> MicroStrategyProjectNested:
     """Convert flat MicroStrategyProject to nested format."""
     attrs = MicroStrategyProjectAttributes()
     _populate_micro_strategy_project_attrs(attrs, micro_strategy_project)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        micro_strategy_project, _MICRO_STRATEGY_PROJECT_REL_FIELDS, MicroStrategyProjectRelationshipAttributes
+        micro_strategy_project,
+        _MICRO_STRATEGY_PROJECT_REL_FIELDS,
+        MicroStrategyProjectRelationshipAttributes,
     )
     return MicroStrategyProjectNested(
         guid=micro_strategy_project.guid,
@@ -601,16 +688,23 @@ def _micro_strategy_project_to_nested(micro_strategy_project: MicroStrategyProje
         remove_relationship_attributes=remove_rels,
     )
 
-def _micro_strategy_project_from_nested(nested: MicroStrategyProjectNested) -> MicroStrategyProject:
+
+def _micro_strategy_project_from_nested(
+    nested: MicroStrategyProjectNested,
+) -> MicroStrategyProject:
     """Convert nested format to flat MicroStrategyProject."""
-    attrs = nested.attributes if nested.attributes is not UNSET else MicroStrategyProjectAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else MicroStrategyProjectAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MICRO_STRATEGY_PROJECT_REL_FIELDS,
-        MicroStrategyProjectRelationshipAttributes
+        MicroStrategyProjectRelationshipAttributes,
     )
     return MicroStrategyProject(
         guid=nested.guid,
@@ -623,7 +717,6 @@ def _micro_strategy_project_from_nested(nested: MicroStrategyProjectNested) -> M
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -637,15 +730,21 @@ def _micro_strategy_project_from_nested(nested: MicroStrategyProjectNested) -> M
         **merged_rels,
     )
 
-def _micro_strategy_project_to_nested_bytes(micro_strategy_project: MicroStrategyProject, serde: Serde) -> bytes:
+
+def _micro_strategy_project_to_nested_bytes(
+    micro_strategy_project: MicroStrategyProject, serde: Serde
+) -> bytes:
     """Convert flat MicroStrategyProject to nested JSON bytes."""
     return serde.encode(_micro_strategy_project_to_nested(micro_strategy_project))
 
 
-def _micro_strategy_project_from_nested_bytes(data: bytes, serde: Serde) -> MicroStrategyProject:
+def _micro_strategy_project_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> MicroStrategyProject:
     """Convert nested JSON bytes to flat MicroStrategyProject."""
     nested = serde.decode(data, MicroStrategyProjectNested)
     return _micro_strategy_project_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -658,37 +757,81 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MicroStrategyProject.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField("microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName", "microStrategyProjectQualifiedName.text")
-MicroStrategyProject.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField("microStrategyProjectName", "microStrategyProjectName", "microStrategyProjectName.text")
-MicroStrategyProject.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField("microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames", "microStrategyCubeQualifiedNames.text")
-MicroStrategyProject.MICRO_STRATEGY_CUBE_NAMES = KeywordField("microStrategyCubeNames", "microStrategyCubeNames")
-MicroStrategyProject.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField("microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames", "microStrategyReportQualifiedNames.text")
-MicroStrategyProject.MICRO_STRATEGY_REPORT_NAMES = KeywordField("microStrategyReportNames", "microStrategyReportNames")
-MicroStrategyProject.MICRO_STRATEGY_IS_CERTIFIED = BooleanField("microStrategyIsCertified", "microStrategyIsCertified")
-MicroStrategyProject.MICRO_STRATEGY_CERTIFIED_BY = KeywordField("microStrategyCertifiedBy", "microStrategyCertifiedBy")
-MicroStrategyProject.MICRO_STRATEGY_CERTIFIED_AT = NumericField("microStrategyCertifiedAt", "microStrategyCertifiedAt")
-MicroStrategyProject.MICRO_STRATEGY_LOCATION = KeywordField("microStrategyLocation", "microStrategyLocation")
-MicroStrategyProject.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+MicroStrategyProject.MICRO_STRATEGY_PROJECT_QUALIFIED_NAME = KeywordTextField(
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName",
+    "microStrategyProjectQualifiedName.text",
+)
+MicroStrategyProject.MICRO_STRATEGY_PROJECT_NAME = KeywordTextField(
+    "microStrategyProjectName",
+    "microStrategyProjectName",
+    "microStrategyProjectName.text",
+)
+MicroStrategyProject.MICRO_STRATEGY_CUBE_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames",
+    "microStrategyCubeQualifiedNames.text",
+)
+MicroStrategyProject.MICRO_STRATEGY_CUBE_NAMES = KeywordField(
+    "microStrategyCubeNames", "microStrategyCubeNames"
+)
+MicroStrategyProject.MICRO_STRATEGY_REPORT_QUALIFIED_NAMES = KeywordTextField(
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames",
+    "microStrategyReportQualifiedNames.text",
+)
+MicroStrategyProject.MICRO_STRATEGY_REPORT_NAMES = KeywordField(
+    "microStrategyReportNames", "microStrategyReportNames"
+)
+MicroStrategyProject.MICRO_STRATEGY_IS_CERTIFIED = BooleanField(
+    "microStrategyIsCertified", "microStrategyIsCertified"
+)
+MicroStrategyProject.MICRO_STRATEGY_CERTIFIED_BY = KeywordField(
+    "microStrategyCertifiedBy", "microStrategyCertifiedBy"
+)
+MicroStrategyProject.MICRO_STRATEGY_CERTIFIED_AT = NumericField(
+    "microStrategyCertifiedAt", "microStrategyCertifiedAt"
+)
+MicroStrategyProject.MICRO_STRATEGY_LOCATION = KeywordField(
+    "microStrategyLocation", "microStrategyLocation"
+)
+MicroStrategyProject.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 MicroStrategyProject.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MicroStrategyProject.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MicroStrategyProject.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MicroStrategyProject.APPLICATION = RelationField("application")
 MicroStrategyProject.APPLICATION_FIELD = RelationField("applicationField")
 MicroStrategyProject.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-MicroStrategyProject.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+MicroStrategyProject.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 MicroStrategyProject.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MicroStrategyProject.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-MicroStrategyProject.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MicroStrategyProject.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+MicroStrategyProject.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+MicroStrategyProject.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 MicroStrategyProject.METRICS = RelationField("metrics")
 MicroStrategyProject.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-MicroStrategyProject.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-MicroStrategyProject.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+MicroStrategyProject.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+MicroStrategyProject.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 MicroStrategyProject.MEANINGS = RelationField("meanings")
 MicroStrategyProject.MICRO_STRATEGY_METRICS = RelationField("microStrategyMetrics")
 MicroStrategyProject.MICRO_STRATEGY_REPORTS = RelationField("microStrategyReports")
-MicroStrategyProject.MICRO_STRATEGY_VISUALIZATIONS = RelationField("microStrategyVisualizations")
-MicroStrategyProject.MICRO_STRATEGY_ATTRIBUTES = RelationField("microStrategyAttributes")
+MicroStrategyProject.MICRO_STRATEGY_VISUALIZATIONS = RelationField(
+    "microStrategyVisualizations"
+)
+MicroStrategyProject.MICRO_STRATEGY_ATTRIBUTES = RelationField(
+    "microStrategyAttributes"
+)
 MicroStrategyProject.MICRO_STRATEGY_CUBES = RelationField("microStrategyCubes")
 MicroStrategyProject.MICRO_STRATEGY_DOCUMENTS = RelationField("microStrategyDocuments")
 MicroStrategyProject.MICRO_STRATEGY_DOSSIERS = RelationField("microStrategyDossiers")
@@ -700,7 +843,9 @@ MicroStrategyProject.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 MicroStrategyProject.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 MicroStrategyProject.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 MicroStrategyProject.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-MicroStrategyProject.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+MicroStrategyProject.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 MicroStrategyProject.FILES = RelationField("files")
 MicroStrategyProject.LINKS = RelationField("links")
 MicroStrategyProject.README = RelationField("readme")

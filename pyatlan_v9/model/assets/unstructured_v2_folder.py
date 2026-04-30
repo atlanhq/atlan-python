@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -46,15 +52,16 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .unstructured_v2_related import RelatedUnstructuredV2Container, RelatedUnstructuredV2Folder, RelatedUnstructuredV2Object
+from .unstructured_v2_related import (
+    RelatedUnstructuredV2Container,
+    RelatedUnstructuredV2Folder,
+    RelatedUnstructuredV2Object,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class UnstructuredV2Folder(Asset):
@@ -122,7 +129,9 @@ class UnstructuredV2Folder(Asset):
     unstructuredv2_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the immediate parent folder in which this asset exists."""
 
-    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = (
+        UNSET
+    )
     """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -158,7 +167,9 @@ class UnstructuredV2Folder(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -167,10 +178,14 @@ class UnstructuredV2Folder(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -197,7 +212,9 @@ class UnstructuredV2Folder(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -209,7 +226,9 @@ class UnstructuredV2Folder(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -221,16 +240,24 @@ class UnstructuredV2Folder(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    unstructuredv2_container: Union[RelatedUnstructuredV2Container, None, UnsetType] = UNSET
+    unstructuredv2_container: Union[RelatedUnstructuredV2Container, None, UnsetType] = (
+        UNSET
+    )
     """Data container in which the folder exists."""
 
-    unstructuredv2_child_folders: Union[List[RelatedUnstructuredV2Folder], None, UnsetType] = UNSET
+    unstructuredv2_child_folders: Union[
+        List[RelatedUnstructuredV2Folder], None, UnsetType
+    ] = UNSET
     """Immediate child folders nested within this folder."""
 
-    unstructuredv2_parent_folder: Union[RelatedUnstructuredV2Folder, None, UnsetType] = UNSET
+    unstructuredv2_parent_folder: Union[
+        RelatedUnstructuredV2Folder, None, UnsetType
+    ] = UNSET
     """Immediate parent folder containing this child folder."""
 
-    unstructuredv2_objects: Union[List[RelatedUnstructuredV2Object], None, UnsetType] = UNSET
+    unstructuredv2_objects: Union[
+        List[RelatedUnstructuredV2Object], None, UnsetType
+    ] = UNSET
     """Objects contained directly within this folder."""
 
     def __post_init__(self) -> None:
@@ -240,10 +267,7 @@ class UnstructuredV2Folder(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -274,7 +298,9 @@ class UnstructuredV2Folder(Asset):
         return _unstructured_v2_folder_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> UnstructuredV2Folder:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> UnstructuredV2Folder:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -296,6 +322,7 @@ class UnstructuredV2Folder(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class UnstructuredV2FolderAttributes(AssetAttributes):
     """UnstructuredV2Folder-specific attributes for nested API format."""
 
@@ -314,11 +341,14 @@ class UnstructuredV2FolderAttributes(AssetAttributes):
     unstructuredv2_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the immediate parent folder in which this asset exists."""
 
-    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = (
+        UNSET
+    )
     """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class UnstructuredV2FolderRelationshipAttributes(AssetRelationshipAttributes):
     """UnstructuredV2Folder-specific relationship attributes for nested API format."""
@@ -353,7 +383,9 @@ class UnstructuredV2FolderRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -362,10 +394,14 @@ class UnstructuredV2FolderRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -392,7 +428,9 @@ class UnstructuredV2FolderRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -404,7 +442,9 @@ class UnstructuredV2FolderRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -416,25 +456,41 @@ class UnstructuredV2FolderRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    unstructuredv2_container: Union[RelatedUnstructuredV2Container, None, UnsetType] = UNSET
+    unstructuredv2_container: Union[RelatedUnstructuredV2Container, None, UnsetType] = (
+        UNSET
+    )
     """Data container in which the folder exists."""
 
-    unstructuredv2_child_folders: Union[List[RelatedUnstructuredV2Folder], None, UnsetType] = UNSET
+    unstructuredv2_child_folders: Union[
+        List[RelatedUnstructuredV2Folder], None, UnsetType
+    ] = UNSET
     """Immediate child folders nested within this folder."""
 
-    unstructuredv2_parent_folder: Union[RelatedUnstructuredV2Folder, None, UnsetType] = UNSET
+    unstructuredv2_parent_folder: Union[
+        RelatedUnstructuredV2Folder, None, UnsetType
+    ] = UNSET
     """Immediate parent folder containing this child folder."""
 
-    unstructuredv2_objects: Union[List[RelatedUnstructuredV2Object], None, UnsetType] = UNSET
+    unstructuredv2_objects: Union[
+        List[RelatedUnstructuredV2Object], None, UnsetType
+    ] = UNSET
     """Objects contained directly within this folder."""
+
 
 class UnstructuredV2FolderNested(AssetNested):
     """UnstructuredV2Folder in nested API format for high-performance serialization."""
 
     attributes: Union[UnstructuredV2FolderAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[UnstructuredV2FolderRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[UnstructuredV2FolderRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[UnstructuredV2FolderRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        UnstructuredV2FolderRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        UnstructuredV2FolderRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        UnstructuredV2FolderRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -479,41 +535,60 @@ _UNSTRUCTURED_V2_FOLDER_REL_FIELDS: List[str] = [
     "unstructuredv2_objects",
 ]
 
-def _populate_unstructured_v2_folder_attrs(attrs: UnstructuredV2FolderAttributes, obj: UnstructuredV2Folder) -> None:
+
+def _populate_unstructured_v2_folder_attrs(
+    attrs: UnstructuredV2FolderAttributes, obj: UnstructuredV2Folder
+) -> None:
     """Populate UnstructuredV2Folder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.unstructuredv2_container_name = obj.unstructuredv2_container_name
-    attrs.unstructuredv2_container_qualified_name = obj.unstructuredv2_container_qualified_name
+    attrs.unstructuredv2_container_qualified_name = (
+        obj.unstructuredv2_container_qualified_name
+    )
     attrs.unstructuredv2_folder_count = obj.unstructuredv2_folder_count
     attrs.unstructuredv2_object_count = obj.unstructuredv2_object_count
-    attrs.unstructuredv2_parent_folder_qualified_name = obj.unstructuredv2_parent_folder_qualified_name
+    attrs.unstructuredv2_parent_folder_qualified_name = (
+        obj.unstructuredv2_parent_folder_qualified_name
+    )
     attrs.unstructuredv2_folder_hierarchy = obj.unstructuredv2_folder_hierarchy
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-def _extract_unstructured_v2_folder_attrs(attrs: UnstructuredV2FolderAttributes) -> dict:
+
+def _extract_unstructured_v2_folder_attrs(
+    attrs: UnstructuredV2FolderAttributes,
+) -> dict:
     """Extract all UnstructuredV2Folder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["unstructuredv2_container_name"] = attrs.unstructuredv2_container_name
-    result["unstructuredv2_container_qualified_name"] = attrs.unstructuredv2_container_qualified_name
+    result["unstructuredv2_container_qualified_name"] = (
+        attrs.unstructuredv2_container_qualified_name
+    )
     result["unstructuredv2_folder_count"] = attrs.unstructuredv2_folder_count
     result["unstructuredv2_object_count"] = attrs.unstructuredv2_object_count
-    result["unstructuredv2_parent_folder_qualified_name"] = attrs.unstructuredv2_parent_folder_qualified_name
+    result["unstructuredv2_parent_folder_qualified_name"] = (
+        attrs.unstructuredv2_parent_folder_qualified_name
+    )
     result["unstructuredv2_folder_hierarchy"] = attrs.unstructuredv2_folder_hierarchy
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _unstructured_v2_folder_to_nested(unstructured_v2_folder: UnstructuredV2Folder) -> UnstructuredV2FolderNested:
+def _unstructured_v2_folder_to_nested(
+    unstructured_v2_folder: UnstructuredV2Folder,
+) -> UnstructuredV2FolderNested:
     """Convert flat UnstructuredV2Folder to nested format."""
     attrs = UnstructuredV2FolderAttributes()
     _populate_unstructured_v2_folder_attrs(attrs, unstructured_v2_folder)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        unstructured_v2_folder, _UNSTRUCTURED_V2_FOLDER_REL_FIELDS, UnstructuredV2FolderRelationshipAttributes
+        unstructured_v2_folder,
+        _UNSTRUCTURED_V2_FOLDER_REL_FIELDS,
+        UnstructuredV2FolderRelationshipAttributes,
     )
     return UnstructuredV2FolderNested(
         guid=unstructured_v2_folder.guid,
@@ -541,16 +616,23 @@ def _unstructured_v2_folder_to_nested(unstructured_v2_folder: UnstructuredV2Fold
         remove_relationship_attributes=remove_rels,
     )
 
-def _unstructured_v2_folder_from_nested(nested: UnstructuredV2FolderNested) -> UnstructuredV2Folder:
+
+def _unstructured_v2_folder_from_nested(
+    nested: UnstructuredV2FolderNested,
+) -> UnstructuredV2Folder:
     """Convert nested format to flat UnstructuredV2Folder."""
-    attrs = nested.attributes if nested.attributes is not UNSET else UnstructuredV2FolderAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else UnstructuredV2FolderAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _UNSTRUCTURED_V2_FOLDER_REL_FIELDS,
-        UnstructuredV2FolderRelationshipAttributes
+        UnstructuredV2FolderRelationshipAttributes,
     )
     return UnstructuredV2Folder(
         guid=nested.guid,
@@ -563,7 +645,6 @@ def _unstructured_v2_folder_from_nested(nested: UnstructuredV2FolderNested) -> U
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -577,15 +658,21 @@ def _unstructured_v2_folder_from_nested(nested: UnstructuredV2FolderNested) -> U
         **merged_rels,
     )
 
-def _unstructured_v2_folder_to_nested_bytes(unstructured_v2_folder: UnstructuredV2Folder, serde: Serde) -> bytes:
+
+def _unstructured_v2_folder_to_nested_bytes(
+    unstructured_v2_folder: UnstructuredV2Folder, serde: Serde
+) -> bytes:
     """Convert flat UnstructuredV2Folder to nested JSON bytes."""
     return serde.encode(_unstructured_v2_folder_to_nested(unstructured_v2_folder))
 
 
-def _unstructured_v2_folder_from_nested_bytes(data: bytes, serde: Serde) -> UnstructuredV2Folder:
+def _unstructured_v2_folder_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> UnstructuredV2Folder:
     """Convert nested JSON bytes to flat UnstructuredV2Folder."""
     nested = serde.decode(data, UnstructuredV2FolderNested)
     return _unstructured_v2_folder_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -596,28 +683,52 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-UnstructuredV2Folder.UNSTRUCTUREDV2_CONTAINER_NAME = KeywordField("unstructuredv2ContainerName", "unstructuredv2ContainerName")
-UnstructuredV2Folder.UNSTRUCTUREDV2_CONTAINER_QUALIFIED_NAME = KeywordField("unstructuredv2ContainerQualifiedName", "unstructuredv2ContainerQualifiedName")
-UnstructuredV2Folder.UNSTRUCTUREDV2_FOLDER_COUNT = NumericField("unstructuredv2FolderCount", "unstructuredv2FolderCount")
-UnstructuredV2Folder.UNSTRUCTUREDV2_OBJECT_COUNT = NumericField("unstructuredv2ObjectCount", "unstructuredv2ObjectCount")
-UnstructuredV2Folder.UNSTRUCTUREDV2_PARENT_FOLDER_QUALIFIED_NAME = KeywordField("unstructuredv2ParentFolderQualifiedName", "unstructuredv2ParentFolderQualifiedName")
-UnstructuredV2Folder.UNSTRUCTUREDV2_FOLDER_HIERARCHY = KeywordField("unstructuredv2FolderHierarchy", "unstructuredv2FolderHierarchy")
-UnstructuredV2Folder.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+UnstructuredV2Folder.UNSTRUCTUREDV2_CONTAINER_NAME = KeywordField(
+    "unstructuredv2ContainerName", "unstructuredv2ContainerName"
+)
+UnstructuredV2Folder.UNSTRUCTUREDV2_CONTAINER_QUALIFIED_NAME = KeywordField(
+    "unstructuredv2ContainerQualifiedName", "unstructuredv2ContainerQualifiedName"
+)
+UnstructuredV2Folder.UNSTRUCTUREDV2_FOLDER_COUNT = NumericField(
+    "unstructuredv2FolderCount", "unstructuredv2FolderCount"
+)
+UnstructuredV2Folder.UNSTRUCTUREDV2_OBJECT_COUNT = NumericField(
+    "unstructuredv2ObjectCount", "unstructuredv2ObjectCount"
+)
+UnstructuredV2Folder.UNSTRUCTUREDV2_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
+    "unstructuredv2ParentFolderQualifiedName", "unstructuredv2ParentFolderQualifiedName"
+)
+UnstructuredV2Folder.UNSTRUCTUREDV2_FOLDER_HIERARCHY = KeywordField(
+    "unstructuredv2FolderHierarchy", "unstructuredv2FolderHierarchy"
+)
+UnstructuredV2Folder.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 UnstructuredV2Folder.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 UnstructuredV2Folder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 UnstructuredV2Folder.ANOMALO_CHECKS = RelationField("anomaloChecks")
 UnstructuredV2Folder.APPLICATION = RelationField("application")
 UnstructuredV2Folder.APPLICATION_FIELD = RelationField("applicationField")
 UnstructuredV2Folder.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-UnstructuredV2Folder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+UnstructuredV2Folder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 UnstructuredV2Folder.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 UnstructuredV2Folder.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-UnstructuredV2Folder.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-UnstructuredV2Folder.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+UnstructuredV2Folder.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+UnstructuredV2Folder.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 UnstructuredV2Folder.METRICS = RelationField("metrics")
 UnstructuredV2Folder.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-UnstructuredV2Folder.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-UnstructuredV2Folder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+UnstructuredV2Folder.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+UnstructuredV2Folder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 UnstructuredV2Folder.MEANINGS = RelationField("meanings")
 UnstructuredV2Folder.MC_MONITORS = RelationField("mcMonitors")
 UnstructuredV2Folder.MC_INCIDENTS = RelationField("mcIncidents")
@@ -626,7 +737,9 @@ UnstructuredV2Folder.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 UnstructuredV2Folder.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 UnstructuredV2Folder.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 UnstructuredV2Folder.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-UnstructuredV2Folder.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+UnstructuredV2Folder.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 UnstructuredV2Folder.FILES = RelationField("files")
 UnstructuredV2Folder.LINKS = RelationField("links")
 UnstructuredV2Folder.README = RelationField("readme")
@@ -635,6 +748,10 @@ UnstructuredV2Folder.SODA_CHECKS = RelationField("sodaChecks")
 UnstructuredV2Folder.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 UnstructuredV2Folder.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
 UnstructuredV2Folder.UNSTRUCTUREDV2_CONTAINER = RelationField("unstructuredv2Container")
-UnstructuredV2Folder.UNSTRUCTUREDV2_CHILD_FOLDERS = RelationField("unstructuredv2ChildFolders")
-UnstructuredV2Folder.UNSTRUCTUREDV2_PARENT_FOLDER = RelationField("unstructuredv2ParentFolder")
+UnstructuredV2Folder.UNSTRUCTUREDV2_CHILD_FOLDERS = RelationField(
+    "unstructuredv2ChildFolders"
+)
+UnstructuredV2Folder.UNSTRUCTUREDV2_PARENT_FOLDER = RelationField(
+    "unstructuredv2ParentFolder"
+)
 UnstructuredV2Folder.UNSTRUCTUREDV2_OBJECTS = RelationField("unstructuredv2Objects")

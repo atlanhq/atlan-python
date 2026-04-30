@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,6 +44,12 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .model_related import (
+    RelatedModelAttribute,
+    RelatedModelEntity,
+    RelatedModelEntityAssociation,
+    RelatedModelVersion,
+)
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
@@ -46,15 +58,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .model_related import RelatedModelAttribute, RelatedModelEntity, RelatedModelEntityAssociation, RelatedModelVersion
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ModelEntity(Asset):
@@ -211,34 +219,50 @@ class ModelEntity(Asset):
     model_versions: Union[List[RelatedModelVersion], None, UnsetType] = UNSET
     """Data model version(s) in which this entity exists."""
 
-    model_entity_mapped_to_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    model_entity_mapped_to_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Entities to which this entity is mapped."""
 
-    model_entity_mapped_from_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    model_entity_mapped_from_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Entities from which this entity is mapped."""
 
-    model_entity_implemented_by_assets: Union[List[RelatedCatalog], None, UnsetType] = UNSET
+    model_entity_implemented_by_assets: Union[List[RelatedCatalog], None, UnsetType] = (
+        UNSET
+    )
     """Assets that implement this entity."""
 
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_entity_specialization_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    model_entity_specialization_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Specialized entities derived from the general entity."""
 
-    model_entity_generalization_entity: Union[RelatedModelEntity, None, UnsetType] = UNSET
+    model_entity_generalization_entity: Union[RelatedModelEntity, None, UnsetType] = (
+        UNSET
+    )
     """General entity, representing shared characteristics of specialized entities."""
 
-    model_entity_related_from_entities: Union[List[RelatedModelEntityAssociation], None, UnsetType] = UNSET
+    model_entity_related_from_entities: Union[
+        List[RelatedModelEntityAssociation], None, UnsetType
+    ] = UNSET
     """Association from which this entity is related."""
 
-    model_entity_related_to_entities: Union[List[RelatedModelEntityAssociation], None, UnsetType] = UNSET
+    model_entity_related_to_entities: Union[
+        List[RelatedModelEntityAssociation], None, UnsetType
+    ] = UNSET
     """Association to which this entity is related."""
 
     model_entity_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Individual attributes that make up the entity."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -247,10 +271,14 @@ class ModelEntity(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -277,7 +305,9 @@ class ModelEntity(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -289,7 +319,9 @@ class ModelEntity(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -308,10 +340,7 @@ class ModelEntity(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -363,6 +392,7 @@ class ModelEntity(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class ModelEntityAttributes(AssetAttributes):
     """ModelEntity-specific attributes for nested API format."""
@@ -424,6 +454,7 @@ class ModelEntityAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     """ModelEntity-specific relationship attributes for nested API format."""
 
@@ -457,34 +488,50 @@ class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     model_versions: Union[List[RelatedModelVersion], None, UnsetType] = UNSET
     """Data model version(s) in which this entity exists."""
 
-    model_entity_mapped_to_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    model_entity_mapped_to_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Entities to which this entity is mapped."""
 
-    model_entity_mapped_from_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    model_entity_mapped_from_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Entities from which this entity is mapped."""
 
-    model_entity_implemented_by_assets: Union[List[RelatedCatalog], None, UnsetType] = UNSET
+    model_entity_implemented_by_assets: Union[List[RelatedCatalog], None, UnsetType] = (
+        UNSET
+    )
     """Assets that implement this entity."""
 
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_entity_specialization_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
+    model_entity_specialization_entities: Union[
+        List[RelatedModelEntity], None, UnsetType
+    ] = UNSET
     """Specialized entities derived from the general entity."""
 
-    model_entity_generalization_entity: Union[RelatedModelEntity, None, UnsetType] = UNSET
+    model_entity_generalization_entity: Union[RelatedModelEntity, None, UnsetType] = (
+        UNSET
+    )
     """General entity, representing shared characteristics of specialized entities."""
 
-    model_entity_related_from_entities: Union[List[RelatedModelEntityAssociation], None, UnsetType] = UNSET
+    model_entity_related_from_entities: Union[
+        List[RelatedModelEntityAssociation], None, UnsetType
+    ] = UNSET
     """Association from which this entity is related."""
 
-    model_entity_related_to_entities: Union[List[RelatedModelEntityAssociation], None, UnsetType] = UNSET
+    model_entity_related_to_entities: Union[
+        List[RelatedModelEntityAssociation], None, UnsetType
+    ] = UNSET
     """Association to which this entity is related."""
 
     model_entity_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Individual attributes that make up the entity."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -493,10 +540,14 @@ class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -523,7 +574,9 @@ class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -535,7 +588,9 @@ class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -547,13 +602,19 @@ class ModelEntityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class ModelEntityNested(AssetNested):
     """ModelEntity in nested API format for high-performance serialization."""
 
     attributes: Union[ModelEntityAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ModelEntityRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ModelEntityRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ModelEntityRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        ModelEntityRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ModelEntityRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -603,19 +664,26 @@ _MODEL_ENTITY_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_model_entity_attrs(attrs: ModelEntityAttributes, obj: ModelEntity) -> None:
+
+def _populate_model_entity_attrs(
+    attrs: ModelEntityAttributes, obj: ModelEntity
+) -> None:
     """Populate ModelEntity-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.model_entity_attribute_count = obj.model_entity_attribute_count
     attrs.model_entity_subject_area = obj.model_entity_subject_area
     attrs.model_entity_generalization_name = obj.model_entity_generalization_name
-    attrs.model_entity_generalization_qualified_name = obj.model_entity_generalization_qualified_name
+    attrs.model_entity_generalization_qualified_name = (
+        obj.model_entity_generalization_qualified_name
+    )
     attrs.model_name = obj.model_name
     attrs.model_qualified_name = obj.model_qualified_name
     attrs.model_domain = obj.model_domain
     attrs.model_namespace = obj.model_namespace
     attrs.model_version_name = obj.model_version_name
-    attrs.model_version_agnostic_qualified_name = obj.model_version_agnostic_qualified_name
+    attrs.model_version_agnostic_qualified_name = (
+        obj.model_version_agnostic_qualified_name
+    )
     attrs.model_version_qualified_name = obj.model_version_qualified_name
     attrs.model_entity_name = obj.model_entity_name
     attrs.model_entity_qualified_name = obj.model_entity_qualified_name
@@ -626,19 +694,24 @@ def _populate_model_entity_attrs(attrs: ModelEntityAttributes, obj: ModelEntity)
     attrs.model_expired_at_business_date = obj.model_expired_at_business_date
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_model_entity_attrs(attrs: ModelEntityAttributes) -> dict:
     """Extract all ModelEntity attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["model_entity_attribute_count"] = attrs.model_entity_attribute_count
     result["model_entity_subject_area"] = attrs.model_entity_subject_area
     result["model_entity_generalization_name"] = attrs.model_entity_generalization_name
-    result["model_entity_generalization_qualified_name"] = attrs.model_entity_generalization_qualified_name
+    result["model_entity_generalization_qualified_name"] = (
+        attrs.model_entity_generalization_qualified_name
+    )
     result["model_name"] = attrs.model_name
     result["model_qualified_name"] = attrs.model_qualified_name
     result["model_domain"] = attrs.model_domain
     result["model_namespace"] = attrs.model_namespace
     result["model_version_name"] = attrs.model_version_name
-    result["model_version_agnostic_qualified_name"] = attrs.model_version_agnostic_qualified_name
+    result["model_version_agnostic_qualified_name"] = (
+        attrs.model_version_agnostic_qualified_name
+    )
     result["model_version_qualified_name"] = attrs.model_version_qualified_name
     result["model_entity_name"] = attrs.model_entity_name
     result["model_entity_qualified_name"] = attrs.model_entity_qualified_name
@@ -649,6 +722,7 @@ def _extract_model_entity_attrs(attrs: ModelEntityAttributes) -> dict:
     result["model_expired_at_business_date"] = attrs.model_expired_at_business_date
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -689,16 +763,19 @@ def _model_entity_to_nested(model_entity: ModelEntity) -> ModelEntityNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _model_entity_from_nested(nested: ModelEntityNested) -> ModelEntity:
     """Convert nested format to flat ModelEntity."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ModelEntityAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ModelEntityAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MODEL_ENTITY_REL_FIELDS,
-        ModelEntityRelationshipAttributes
+        ModelEntityRelationshipAttributes,
     )
     return ModelEntity(
         guid=nested.guid,
@@ -711,7 +788,6 @@ def _model_entity_from_nested(nested: ModelEntityNested) -> ModelEntity:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -725,6 +801,7 @@ def _model_entity_from_nested(nested: ModelEntityNested) -> ModelEntity:
         **merged_rels,
     )
 
+
 def _model_entity_to_nested_bytes(model_entity: ModelEntity, serde: Serde) -> bytes:
     """Convert flat ModelEntity to nested JSON bytes."""
     return serde.encode(_model_entity_to_nested(model_entity))
@@ -734,6 +811,7 @@ def _model_entity_from_nested_bytes(data: bytes, serde: Serde) -> ModelEntity:
     """Convert nested JSON bytes to flat ModelEntity."""
     nested = serde.decode(data, ModelEntityNested)
     return _model_entity_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -745,49 +823,99 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ModelEntity.MODEL_ENTITY_ATTRIBUTE_COUNT = NumericField("modelEntityAttributeCount", "modelEntityAttributeCount")
-ModelEntity.MODEL_ENTITY_SUBJECT_AREA = KeywordField("modelEntitySubjectArea", "modelEntitySubjectArea")
-ModelEntity.MODEL_ENTITY_GENERALIZATION_NAME = KeywordTextField("modelEntityGeneralizationName", "modelEntityGeneralizationName", "modelEntityGeneralizationName.text")
-ModelEntity.MODEL_ENTITY_GENERALIZATION_QUALIFIED_NAME = KeywordField("modelEntityGeneralizationQualifiedName", "modelEntityGeneralizationQualifiedName")
+ModelEntity.MODEL_ENTITY_ATTRIBUTE_COUNT = NumericField(
+    "modelEntityAttributeCount", "modelEntityAttributeCount"
+)
+ModelEntity.MODEL_ENTITY_SUBJECT_AREA = KeywordField(
+    "modelEntitySubjectArea", "modelEntitySubjectArea"
+)
+ModelEntity.MODEL_ENTITY_GENERALIZATION_NAME = KeywordTextField(
+    "modelEntityGeneralizationName",
+    "modelEntityGeneralizationName",
+    "modelEntityGeneralizationName.text",
+)
+ModelEntity.MODEL_ENTITY_GENERALIZATION_QUALIFIED_NAME = KeywordField(
+    "modelEntityGeneralizationQualifiedName", "modelEntityGeneralizationQualifiedName"
+)
 ModelEntity.MODEL_NAME = KeywordField("modelName", "modelName")
-ModelEntity.MODEL_QUALIFIED_NAME = KeywordField("modelQualifiedName", "modelQualifiedName")
-ModelEntity.MODEL_DOMAIN = KeywordTextField("modelDomain", "modelDomain", "modelDomain.text")
-ModelEntity.MODEL_NAMESPACE = KeywordTextField("modelNamespace", "modelNamespace", "modelNamespace.text")
-ModelEntity.MODEL_VERSION_NAME = KeywordTextField("modelVersionName", "modelVersionName", "modelVersionName.text")
-ModelEntity.MODEL_VERSION_AGNOSTIC_QUALIFIED_NAME = KeywordField("modelVersionAgnosticQualifiedName", "modelVersionAgnosticQualifiedName")
-ModelEntity.MODEL_VERSION_QUALIFIED_NAME = KeywordField("modelVersionQualifiedName", "modelVersionQualifiedName")
-ModelEntity.MODEL_ENTITY_NAME = KeywordTextField("modelEntityName", "modelEntityName", "modelEntityName.text")
-ModelEntity.MODEL_ENTITY_QUALIFIED_NAME = KeywordField("modelEntityQualifiedName", "modelEntityQualifiedName")
+ModelEntity.MODEL_QUALIFIED_NAME = KeywordField(
+    "modelQualifiedName", "modelQualifiedName"
+)
+ModelEntity.MODEL_DOMAIN = KeywordTextField(
+    "modelDomain", "modelDomain", "modelDomain.text"
+)
+ModelEntity.MODEL_NAMESPACE = KeywordTextField(
+    "modelNamespace", "modelNamespace", "modelNamespace.text"
+)
+ModelEntity.MODEL_VERSION_NAME = KeywordTextField(
+    "modelVersionName", "modelVersionName", "modelVersionName.text"
+)
+ModelEntity.MODEL_VERSION_AGNOSTIC_QUALIFIED_NAME = KeywordField(
+    "modelVersionAgnosticQualifiedName", "modelVersionAgnosticQualifiedName"
+)
+ModelEntity.MODEL_VERSION_QUALIFIED_NAME = KeywordField(
+    "modelVersionQualifiedName", "modelVersionQualifiedName"
+)
+ModelEntity.MODEL_ENTITY_NAME = KeywordTextField(
+    "modelEntityName", "modelEntityName", "modelEntityName.text"
+)
+ModelEntity.MODEL_ENTITY_QUALIFIED_NAME = KeywordField(
+    "modelEntityQualifiedName", "modelEntityQualifiedName"
+)
 ModelEntity.MODEL_TYPE = KeywordField("modelType", "modelType")
 ModelEntity.MODEL_SYSTEM_DATE = NumericField("modelSystemDate", "modelSystemDate")
 ModelEntity.MODEL_BUSINESS_DATE = NumericField("modelBusinessDate", "modelBusinessDate")
-ModelEntity.MODEL_EXPIRED_AT_SYSTEM_DATE = NumericField("modelExpiredAtSystemDate", "modelExpiredAtSystemDate")
-ModelEntity.MODEL_EXPIRED_AT_BUSINESS_DATE = NumericField("modelExpiredAtBusinessDate", "modelExpiredAtBusinessDate")
-ModelEntity.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+ModelEntity.MODEL_EXPIRED_AT_SYSTEM_DATE = NumericField(
+    "modelExpiredAtSystemDate", "modelExpiredAtSystemDate"
+)
+ModelEntity.MODEL_EXPIRED_AT_BUSINESS_DATE = NumericField(
+    "modelExpiredAtBusinessDate", "modelExpiredAtBusinessDate"
+)
+ModelEntity.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 ModelEntity.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModelEntity.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModelEntity.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ModelEntity.APPLICATION = RelationField("application")
 ModelEntity.APPLICATION_FIELD = RelationField("applicationField")
 ModelEntity.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-ModelEntity.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+ModelEntity.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ModelEntity.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ModelEntity.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ModelEntity.MODEL_VERSIONS = RelationField("modelVersions")
-ModelEntity.MODEL_ENTITY_MAPPED_TO_ENTITIES = RelationField("modelEntityMappedToEntities")
-ModelEntity.MODEL_ENTITY_MAPPED_FROM_ENTITIES = RelationField("modelEntityMappedFromEntities")
-ModelEntity.MODEL_ENTITY_IMPLEMENTED_BY_ASSETS = RelationField("modelEntityImplementedByAssets")
+ModelEntity.MODEL_ENTITY_MAPPED_TO_ENTITIES = RelationField(
+    "modelEntityMappedToEntities"
+)
+ModelEntity.MODEL_ENTITY_MAPPED_FROM_ENTITIES = RelationField(
+    "modelEntityMappedFromEntities"
+)
+ModelEntity.MODEL_ENTITY_IMPLEMENTED_BY_ASSETS = RelationField(
+    "modelEntityImplementedByAssets"
+)
 ModelEntity.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-ModelEntity.MODEL_ENTITY_SPECIALIZATION_ENTITIES = RelationField("modelEntitySpecializationEntities")
-ModelEntity.MODEL_ENTITY_GENERALIZATION_ENTITY = RelationField("modelEntityGeneralizationEntity")
-ModelEntity.MODEL_ENTITY_RELATED_FROM_ENTITIES = RelationField("modelEntityRelatedFromEntities")
-ModelEntity.MODEL_ENTITY_RELATED_TO_ENTITIES = RelationField("modelEntityRelatedToEntities")
+ModelEntity.MODEL_ENTITY_SPECIALIZATION_ENTITIES = RelationField(
+    "modelEntitySpecializationEntities"
+)
+ModelEntity.MODEL_ENTITY_GENERALIZATION_ENTITY = RelationField(
+    "modelEntityGeneralizationEntity"
+)
+ModelEntity.MODEL_ENTITY_RELATED_FROM_ENTITIES = RelationField(
+    "modelEntityRelatedFromEntities"
+)
+ModelEntity.MODEL_ENTITY_RELATED_TO_ENTITIES = RelationField(
+    "modelEntityRelatedToEntities"
+)
 ModelEntity.MODEL_ENTITY_ATTRIBUTES = RelationField("modelEntityAttributes")
 ModelEntity.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 ModelEntity.METRICS = RelationField("metrics")
 ModelEntity.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ModelEntity.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-ModelEntity.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+ModelEntity.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 ModelEntity.MEANINGS = RelationField("meanings")
 ModelEntity.MC_MONITORS = RelationField("mcMonitors")
 ModelEntity.MC_INCIDENTS = RelationField("mcIncidents")

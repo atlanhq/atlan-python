@@ -8,6 +8,9 @@ AtlanApp module exports.
 This module provides convenient imports for all AtlanApp types and their Related variants.
 """
 
+from .atlan_app import AtlanApp
+from .atlan_app_deployment import AtlanAppDeployment
+from .atlan_app_installed import AtlanAppInstalled
 from .atlan_app_related import (
     RelatedAtlanApp,
     RelatedAtlanAppDeployment,
@@ -15,9 +18,6 @@ from .atlan_app_related import (
     RelatedAtlanAppTool,
     RelatedAtlanAppWorkflow,
 )
-from .atlan_app import AtlanApp
-from .atlan_app_deployment import AtlanAppDeployment
-from .atlan_app_installed import AtlanAppInstalled
 from .atlan_app_tool import AtlanAppTool
 from .atlan_app_workflow import AtlanAppWorkflow
 

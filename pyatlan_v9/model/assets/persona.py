@@ -14,11 +14,28 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Set, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan.model.enums import (
+    AuthPolicyCategory,
+    AuthPolicyResourceCategory,
+    AuthPolicyType,
+    DataAction,
+    PersonaDomainAction,
+    PersonaGlossaryAction,
+    PersonaMetadataAction,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .access_control_related import RelatedAuthPolicy
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -40,17 +57,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan.model.enums import AuthPolicyCategory, AuthPolicyResourceCategory, AuthPolicyType, DataAction, PersonaDomainAction, PersonaGlossaryAction, PersonaMetadataAction
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .access_control_related import RelatedAuthPolicy
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Persona(Asset):
@@ -169,10 +180,14 @@ class Persona(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -187,7 +202,9 @@ class Persona(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -199,7 +216,9 @@ class Persona(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -207,8 +226,6 @@ class Persona(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Persona"
-
-
 
     @classmethod
     @init_guid
@@ -420,6 +437,7 @@ class Persona(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class PersonaAttributes(AssetAttributes):
     """Persona-specific attributes for nested API format."""
 
@@ -465,6 +483,7 @@ class PersonaAttributes(AssetAttributes):
     is_access_control_enabled: Union[bool, None, UnsetType] = UNSET
     """TBC"""
 
+
 class PersonaRelationshipAttributes(AssetRelationshipAttributes):
     """Persona-specific relationship attributes for nested API format."""
 
@@ -498,10 +517,14 @@ class PersonaRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -516,7 +539,9 @@ class PersonaRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -528,19 +553,27 @@ class PersonaRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class PersonaNested(AssetNested):
     """Persona in nested API format for high-performance serialization."""
 
     attributes: Union[PersonaAttributes, UnsetType] = UNSET
     relationship_attributes: Union[PersonaRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[PersonaRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[PersonaRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[PersonaRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[PersonaRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -572,6 +605,7 @@ _PERSONA_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
+
 def _populate_persona_attrs(attrs: PersonaAttributes, obj: Persona) -> None:
     """Populate Persona-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -589,6 +623,7 @@ def _populate_persona_attrs(attrs: PersonaAttributes, obj: Persona) -> None:
     attrs.deny_sidebar_tabs = obj.deny_sidebar_tabs
     attrs.display_preferences = obj.display_preferences
     attrs.is_access_control_enabled = obj.is_access_control_enabled
+
 
 def _extract_persona_attrs(attrs: PersonaAttributes) -> dict:
     """Extract all Persona attributes from the attrs struct into a flat dict."""
@@ -608,6 +643,7 @@ def _extract_persona_attrs(attrs: PersonaAttributes) -> dict:
     result["display_preferences"] = attrs.display_preferences
     result["is_access_control_enabled"] = attrs.is_access_control_enabled
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -648,6 +684,7 @@ def _persona_to_nested(persona: Persona) -> PersonaNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _persona_from_nested(nested: PersonaNested) -> Persona:
     """Convert nested format to flat Persona."""
     attrs = nested.attributes if nested.attributes is not UNSET else PersonaAttributes()
@@ -657,7 +694,7 @@ def _persona_from_nested(nested: PersonaNested) -> Persona:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PERSONA_REL_FIELDS,
-        PersonaRelationshipAttributes
+        PersonaRelationshipAttributes,
     )
     return Persona(
         guid=nested.guid,
@@ -670,7 +707,6 @@ def _persona_from_nested(nested: PersonaNested) -> Persona:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -684,6 +720,7 @@ def _persona_from_nested(nested: PersonaNested) -> Persona:
         **merged_rels,
     )
 
+
 def _persona_to_nested_bytes(persona: Persona, serde: Serde) -> bytes:
     """Convert flat Persona to nested JSON bytes."""
     return serde.encode(_persona_to_nested(persona))
@@ -693,6 +730,7 @@ def _persona_from_nested_bytes(data: bytes, serde: Serde) -> Persona:
     """Convert nested JSON bytes to flat Persona."""
     nested = serde.decode(data, PersonaNested)
     return _persona_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -709,14 +747,22 @@ Persona.ROLE_ID = KeywordField("roleId", "roleId")
 Persona.CHANNEL_LINK = KeywordField("channelLink", "channelLink")
 Persona.DEFAULT_NAVIGATION = KeywordField("defaultNavigation", "defaultNavigation")
 Persona.DENY_ASSET_FILTERS = KeywordField("denyAssetFilters", "denyAssetFilters")
-Persona.DENY_ASSET_METADATA_TYPES = KeywordField("denyAssetMetadataTypes", "denyAssetMetadataTypes")
+Persona.DENY_ASSET_METADATA_TYPES = KeywordField(
+    "denyAssetMetadataTypes", "denyAssetMetadataTypes"
+)
 Persona.DENY_ASSET_TABS = KeywordField("denyAssetTabs", "denyAssetTabs")
 Persona.DENY_ASSET_TYPES = KeywordField("denyAssetTypes", "denyAssetTypes")
-Persona.DENY_CUSTOM_METADATA_GUIDS = KeywordField("denyCustomMetadataGuids", "denyCustomMetadataGuids")
-Persona.DENY_NAVIGATION_PAGES = KeywordField("denyNavigationPages", "denyNavigationPages")
+Persona.DENY_CUSTOM_METADATA_GUIDS = KeywordField(
+    "denyCustomMetadataGuids", "denyCustomMetadataGuids"
+)
+Persona.DENY_NAVIGATION_PAGES = KeywordField(
+    "denyNavigationPages", "denyNavigationPages"
+)
 Persona.DENY_SIDEBAR_TABS = KeywordField("denySidebarTabs", "denySidebarTabs")
 Persona.DISPLAY_PREFERENCES = KeywordField("displayPreferences", "displayPreferences")
-Persona.IS_ACCESS_CONTROL_ENABLED = BooleanField("isAccessControlEnabled", "isAccessControlEnabled")
+Persona.IS_ACCESS_CONTROL_ENABLED = BooleanField(
+    "isAccessControlEnabled", "isAccessControlEnabled"
+)
 Persona.POLICIES = RelationField("policies")
 Persona.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Persona.APPLICATION = RelationField("application")
@@ -728,7 +774,9 @@ Persona.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Persona.METRICS = RelationField("metrics")
 Persona.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Persona.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Persona.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Persona.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Persona.MEANINGS = RelationField("meanings")
 Persona.MC_MONITORS = RelationField("mcMonitors")
 Persona.MC_INCIDENTS = RelationField("mcIncidents")

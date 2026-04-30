@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -43,6 +43,7 @@ class RelatedDataQuality(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataQuality"
+
 
 class RelatedDataQualityRule(RelatedDataQuality):
     """
@@ -111,13 +112,19 @@ class RelatedDataQualityRule(RelatedDataQuality):
     dq_rule_config_arguments: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Json string of the rule config that contains the rule definitions."""
 
-    dq_rule_custom_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleCustomSQL")
+    dq_rule_custom_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleCustomSQL"
+    )
     """SQL code for custom SQL rules."""
 
-    dq_rule_custom_sql_return_type: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleCustomSQLReturnType")
+    dq_rule_custom_sql_return_type: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleCustomSQLReturnType"
+    )
     """Type of result returned by the custom SQL (number of rows or numeric value)."""
 
-    dq_rule_failed_rows_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleFailedRowsSQL")
+    dq_rule_failed_rows_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleFailedRowsSQL"
+    )
     """SQL query used to retrieve failed rows."""
 
     dq_rule_row_scope_filtering_enabled: Union[bool, None, UnsetType] = UNSET
@@ -126,12 +133,15 @@ class RelatedDataQualityRule(RelatedDataQuality):
     dq_rule_latest_result_details: Union[str, None, UnsetType] = UNSET
     """JSON string with anomaly detection result details (forecast, upper_bound, lower_bound, is_anomaly) from Snowflake AD."""
 
-    dq_rule_ad_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dqRuleADStatus")
+    dq_rule_ad_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dqRuleADStatus"
+    )
     """Anomaly detection lifecycle status for this rule."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataQualityRule"
+
 
 class RelatedDataQualityRuleTemplate(RelatedDataQuality):
     """
@@ -156,6 +166,7 @@ class RelatedDataQualityRuleTemplate(RelatedDataQuality):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataQualityRuleTemplate"
 
+
 class RelatedMetric(RelatedDataQuality):
     """
     Related entity reference for Metric assets.
@@ -169,7 +180,9 @@ class RelatedMetric(RelatedDataQuality):
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
-    metric_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="metricSQL")
+    metric_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="metricSQL"
+    )
     """SQL query used to compute the metric."""
 
     metric_filters: Union[str, None, UnsetType] = UNSET

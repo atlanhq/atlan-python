@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -40,13 +46,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Azure(Asset):
@@ -125,10 +129,14 @@ class Azure(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -143,7 +151,9 @@ class Azure(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -155,7 +165,9 @@ class Azure(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -163,8 +175,6 @@ class Azure(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Azure"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -217,6 +227,7 @@ class Azure(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class AzureAttributes(AssetAttributes):
     """Azure-specific attributes for nested API format."""
 
@@ -234,6 +245,7 @@ class AzureAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
+
 
 class AzureRelationshipAttributes(AssetRelationshipAttributes):
     """Azure-specific relationship attributes for nested API format."""
@@ -265,10 +277,14 @@ class AzureRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -283,7 +299,9 @@ class AzureRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -295,19 +313,27 @@ class AzureRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class AzureNested(AssetNested):
     """Azure in nested API format for high-performance serialization."""
 
     attributes: Union[AzureAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AzureRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[AzureRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[AzureRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[AzureRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[AzureRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -338,6 +364,7 @@ _AZURE_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
+
 def _populate_azure_attrs(attrs: AzureAttributes, obj: Azure) -> None:
     """Populate Azure-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -346,6 +373,7 @@ def _populate_azure_attrs(attrs: AzureAttributes, obj: Azure) -> None:
     attrs.adls_account_secondary_location = obj.adls_account_secondary_location
     attrs.azure_tags = obj.azure_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_azure_attrs(attrs: AzureAttributes) -> dict:
     """Extract all Azure attributes from the attrs struct into a flat dict."""
@@ -356,6 +384,7 @@ def _extract_azure_attrs(attrs: AzureAttributes) -> dict:
     result["azure_tags"] = attrs.azure_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -396,6 +425,7 @@ def _azure_to_nested(azure: Azure) -> AzureNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _azure_from_nested(nested: AzureNested) -> Azure:
     """Convert nested format to flat Azure."""
     attrs = nested.attributes if nested.attributes is not UNSET else AzureAttributes()
@@ -405,7 +435,7 @@ def _azure_from_nested(nested: AzureNested) -> Azure:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AZURE_REL_FIELDS,
-        AzureRelationshipAttributes
+        AzureRelationshipAttributes,
     )
     return Azure(
         guid=nested.guid,
@@ -418,7 +448,6 @@ def _azure_from_nested(nested: AzureNested) -> Azure:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -432,6 +461,7 @@ def _azure_from_nested(nested: AzureNested) -> Azure:
         **merged_rels,
     )
 
+
 def _azure_to_nested_bytes(azure: Azure, serde: Serde) -> bytes:
     """Convert flat Azure to nested JSON bytes."""
     return serde.encode(_azure_to_nested(azure))
@@ -442,6 +472,7 @@ def _azure_from_nested_bytes(data: bytes, serde: Serde) -> Azure:
     nested = serde.decode(data, AzureNested)
     return _azure_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -451,11 +482,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Azure.AZURE_RESOURCE_ID = KeywordTextField("azureResourceId", "azureResourceId", "azureResourceId.text")
+Azure.AZURE_RESOURCE_ID = KeywordTextField(
+    "azureResourceId", "azureResourceId", "azureResourceId.text"
+)
 Azure.AZURE_LOCATION = KeywordField("azureLocation", "azureLocation")
-Azure.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField("adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation")
+Azure.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField(
+    "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+)
 Azure.AZURE_TAGS = KeywordField("azureTags", "azureTags")
-Azure.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+Azure.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 Azure.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Azure.APPLICATION = RelationField("application")
 Azure.APPLICATION_FIELD = RelationField("applicationField")
@@ -466,7 +503,9 @@ Azure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Azure.METRICS = RelationField("metrics")
 Azure.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Azure.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Azure.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Azure.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Azure.MEANINGS = RelationField("meanings")
 Azure.MC_MONITORS = RelationField("mcMonitors")
 Azure.MC_INCIDENTS = RelationField("mcIncidents")

@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,6 +40,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .domo_related import RelatedDomoCard, RelatedDomoDatasetColumn
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -45,15 +52,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .domo_related import RelatedDomoCard, RelatedDomoDatasetColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DomoDataset(Asset):
@@ -159,7 +162,9 @@ class DomoDataset(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -168,7 +173,9 @@ class DomoDataset(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     domo_cards: Union[List[RelatedDomoCard], None, UnsetType] = UNSET
@@ -177,7 +184,9 @@ class DomoDataset(Asset):
     domo_dataset_columns: Union[List[RelatedDomoDatasetColumn], None, UnsetType] = UNSET
     """Domo Dataset Columns that are contained by this Domo Dataset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -204,7 +213,9 @@ class DomoDataset(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -216,7 +227,9 @@ class DomoDataset(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -230,8 +243,6 @@ class DomoDataset(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DomoDataset"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -284,6 +295,7 @@ class DomoDataset(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DomoDatasetAttributes(AssetAttributes):
     """DomoDataset-specific attributes for nested API format."""
 
@@ -310,6 +322,7 @@ class DomoDatasetAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """DomoDataset-specific relationship attributes for nested API format."""
@@ -344,7 +357,9 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -353,7 +368,9 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     domo_cards: Union[List[RelatedDomoCard], None, UnsetType] = UNSET
@@ -362,7 +379,9 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     domo_dataset_columns: Union[List[RelatedDomoDatasetColumn], None, UnsetType] = UNSET
     """Domo Dataset Columns that are contained by this Domo Dataset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -389,7 +408,9 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -401,7 +422,9 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -413,13 +436,19 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class DomoDatasetNested(AssetNested):
     """DomoDataset in nested API format for high-performance serialization."""
 
     attributes: Union[DomoDatasetAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DomoDatasetRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DomoDatasetRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DomoDatasetRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        DomoDatasetRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DomoDatasetRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -462,7 +491,10 @@ _DOMO_DATASET_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_domo_dataset_attrs(attrs: DomoDatasetAttributes, obj: DomoDataset) -> None:
+
+def _populate_domo_dataset_attrs(
+    attrs: DomoDatasetAttributes, obj: DomoDataset
+) -> None:
     """Populate DomoDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.domo_dataset_row_count = obj.domo_dataset_row_count
@@ -473,6 +505,7 @@ def _populate_domo_dataset_attrs(attrs: DomoDatasetAttributes, obj: DomoDataset)
     attrs.domo_id = obj.domo_id
     attrs.domo_owner_id = obj.domo_owner_id
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_domo_dataset_attrs(attrs: DomoDatasetAttributes) -> dict:
     """Extract all DomoDataset attributes from the attrs struct into a flat dict."""
@@ -486,6 +519,7 @@ def _extract_domo_dataset_attrs(attrs: DomoDatasetAttributes) -> dict:
     result["domo_owner_id"] = attrs.domo_owner_id
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -526,16 +560,19 @@ def _domo_dataset_to_nested(domo_dataset: DomoDataset) -> DomoDatasetNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _domo_dataset_from_nested(nested: DomoDatasetNested) -> DomoDataset:
     """Convert nested format to flat DomoDataset."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DomoDatasetAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DomoDatasetAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DOMO_DATASET_REL_FIELDS,
-        DomoDatasetRelationshipAttributes
+        DomoDatasetRelationshipAttributes,
     )
     return DomoDataset(
         guid=nested.guid,
@@ -548,7 +585,6 @@ def _domo_dataset_from_nested(nested: DomoDatasetNested) -> DomoDataset:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -562,6 +598,7 @@ def _domo_dataset_from_nested(nested: DomoDatasetNested) -> DomoDataset:
         **merged_rels,
     )
 
+
 def _domo_dataset_to_nested_bytes(domo_dataset: DomoDataset, serde: Serde) -> bytes:
     """Convert flat DomoDataset to nested JSON bytes."""
     return serde.encode(_domo_dataset_to_nested(domo_dataset))
@@ -571,6 +608,7 @@ def _domo_dataset_from_nested_bytes(data: bytes, serde: Serde) -> DomoDataset:
     """Convert nested JSON bytes to flat DomoDataset."""
     nested = serde.decode(data, DomoDatasetNested)
     return _domo_dataset_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -582,21 +620,35 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DomoDataset.DOMO_DATASET_ROW_COUNT = NumericField("domoDatasetRowCount", "domoDatasetRowCount")
-DomoDataset.DOMO_DATASET_COLUMN_COUNT = NumericField("domoDatasetColumnCount", "domoDatasetColumnCount")
-DomoDataset.DOMO_DATASET_TYPE = KeywordTextField("domoDatasetType", "domoDatasetType", "domoDatasetType.text")
-DomoDataset.DOMO_DATASET_CARD_COUNT = NumericField("domoDatasetCardCount", "domoDatasetCardCount")
-DomoDataset.DOMO_DATASET_LAST_RUN = KeywordField("domoDatasetLastRun", "domoDatasetLastRun")
+DomoDataset.DOMO_DATASET_ROW_COUNT = NumericField(
+    "domoDatasetRowCount", "domoDatasetRowCount"
+)
+DomoDataset.DOMO_DATASET_COLUMN_COUNT = NumericField(
+    "domoDatasetColumnCount", "domoDatasetColumnCount"
+)
+DomoDataset.DOMO_DATASET_TYPE = KeywordTextField(
+    "domoDatasetType", "domoDatasetType", "domoDatasetType.text"
+)
+DomoDataset.DOMO_DATASET_CARD_COUNT = NumericField(
+    "domoDatasetCardCount", "domoDatasetCardCount"
+)
+DomoDataset.DOMO_DATASET_LAST_RUN = KeywordField(
+    "domoDatasetLastRun", "domoDatasetLastRun"
+)
 DomoDataset.DOMO_ID = KeywordField("domoId", "domoId")
 DomoDataset.DOMO_OWNER_ID = KeywordField("domoOwnerId", "domoOwnerId")
-DomoDataset.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+DomoDataset.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DomoDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DomoDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DomoDataset.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DomoDataset.APPLICATION = RelationField("application")
 DomoDataset.APPLICATION_FIELD = RelationField("applicationField")
 DomoDataset.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DomoDataset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+DomoDataset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DomoDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DomoDataset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DomoDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -606,7 +658,9 @@ DomoDataset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DomoDataset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 DomoDataset.DOMO_CARDS = RelationField("domoCards")
 DomoDataset.DOMO_DATASET_COLUMNS = RelationField("domoDatasetColumns")
-DomoDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+DomoDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DomoDataset.MEANINGS = RelationField("meanings")
 DomoDataset.MC_MONITORS = RelationField("mcMonitors")
 DomoDataset.MC_INCIDENTS = RelationField("mcIncidents")

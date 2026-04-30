@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -40,13 +46,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Flow(Asset):
@@ -161,10 +165,14 @@ class Flow(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -179,7 +187,9 @@ class Flow(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -191,7 +201,9 @@ class Flow(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -199,8 +211,6 @@ class Flow(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Flow"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -253,6 +263,7 @@ class Flow(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FlowAttributes(AssetAttributes):
     """Flow-specific attributes for nested API format."""
 
@@ -298,6 +309,7 @@ class FlowAttributes(AssetAttributes):
     flow_input_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Input parameters for the flow run."""
 
+
 class FlowRelationshipAttributes(AssetRelationshipAttributes):
     """Flow-specific relationship attributes for nested API format."""
 
@@ -328,10 +340,14 @@ class FlowRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -346,7 +362,9 @@ class FlowRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -358,11 +376,14 @@ class FlowRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
+
 
 class FlowNested(AssetNested):
     """Flow in nested API format for high-performance serialization."""
@@ -371,6 +392,7 @@ class FlowNested(AssetNested):
     relationship_attributes: Union[FlowRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[FlowRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[FlowRelationshipAttributes, UnsetType] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -401,6 +423,7 @@ _FLOW_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
+
 def _populate_flow_attrs(attrs: FlowAttributes, obj: Flow) -> None:
     """Populate Flow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -419,6 +442,7 @@ def _populate_flow_attrs(attrs: FlowAttributes, obj: Flow) -> None:
     attrs.flow_error_message = obj.flow_error_message
     attrs.flow_input_parameters = obj.flow_input_parameters
 
+
 def _extract_flow_attrs(attrs: FlowAttributes) -> dict:
     """Extract all Flow attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -431,12 +455,15 @@ def _extract_flow_attrs(attrs: FlowAttributes) -> dict:
     result["flow_folder_name"] = attrs.flow_folder_name
     result["flow_folder_qualified_name"] = attrs.flow_folder_qualified_name
     result["flow_reusable_unit_name"] = attrs.flow_reusable_unit_name
-    result["flow_reusable_unit_qualified_name"] = attrs.flow_reusable_unit_qualified_name
+    result["flow_reusable_unit_qualified_name"] = (
+        attrs.flow_reusable_unit_qualified_name
+    )
     result["flow_id"] = attrs.flow_id
     result["flow_run_id"] = attrs.flow_run_id
     result["flow_error_message"] = attrs.flow_error_message
     result["flow_input_parameters"] = attrs.flow_input_parameters
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -477,6 +504,7 @@ def _flow_to_nested(flow: Flow) -> FlowNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _flow_from_nested(nested: FlowNested) -> Flow:
     """Convert nested format to flat Flow."""
     attrs = nested.attributes if nested.attributes is not UNSET else FlowAttributes()
@@ -486,7 +514,7 @@ def _flow_from_nested(nested: FlowNested) -> Flow:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FLOW_REL_FIELDS,
-        FlowRelationshipAttributes
+        FlowRelationshipAttributes,
     )
     return Flow(
         guid=nested.guid,
@@ -499,7 +527,6 @@ def _flow_from_nested(nested: FlowNested) -> Flow:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -513,6 +540,7 @@ def _flow_from_nested(nested: FlowNested) -> Flow:
         **merged_rels,
     )
 
+
 def _flow_to_nested_bytes(flow: Flow, serde: Serde) -> bytes:
     """Convert flat Flow to nested JSON bytes."""
     return serde.encode(_flow_to_nested(flow))
@@ -522,6 +550,7 @@ def _flow_from_nested_bytes(data: bytes, serde: Serde) -> Flow:
     """Convert nested JSON bytes to flat Flow."""
     nested = serde.decode(data, FlowNested)
     return _flow_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -537,12 +566,24 @@ Flow.FLOW_STARTED_AT = NumericField("flowStartedAt", "flowStartedAt")
 Flow.FLOW_FINISHED_AT = NumericField("flowFinishedAt", "flowFinishedAt")
 Flow.FLOW_STATUS = KeywordField("flowStatus", "flowStatus")
 Flow.FLOW_SCHEDULE = KeywordField("flowSchedule", "flowSchedule")
-Flow.FLOW_PROJECT_NAME = KeywordTextField("flowProjectName", "flowProjectName", "flowProjectName.text")
-Flow.FLOW_PROJECT_QUALIFIED_NAME = KeywordField("flowProjectQualifiedName", "flowProjectQualifiedName")
-Flow.FLOW_FOLDER_NAME = KeywordTextField("flowFolderName", "flowFolderName", "flowFolderName.text")
-Flow.FLOW_FOLDER_QUALIFIED_NAME = KeywordField("flowFolderQualifiedName", "flowFolderQualifiedName")
-Flow.FLOW_REUSABLE_UNIT_NAME = KeywordTextField("flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text")
-Flow.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField("flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName")
+Flow.FLOW_PROJECT_NAME = KeywordTextField(
+    "flowProjectName", "flowProjectName", "flowProjectName.text"
+)
+Flow.FLOW_PROJECT_QUALIFIED_NAME = KeywordField(
+    "flowProjectQualifiedName", "flowProjectQualifiedName"
+)
+Flow.FLOW_FOLDER_NAME = KeywordTextField(
+    "flowFolderName", "flowFolderName", "flowFolderName.text"
+)
+Flow.FLOW_FOLDER_QUALIFIED_NAME = KeywordField(
+    "flowFolderQualifiedName", "flowFolderQualifiedName"
+)
+Flow.FLOW_REUSABLE_UNIT_NAME = KeywordTextField(
+    "flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text"
+)
+Flow.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField(
+    "flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName"
+)
 Flow.FLOW_ID = KeywordField("flowId", "flowId")
 Flow.FLOW_RUN_ID = KeywordField("flowRunId", "flowRunId")
 Flow.FLOW_ERROR_MESSAGE = KeywordField("flowErrorMessage", "flowErrorMessage")
@@ -557,7 +598,9 @@ Flow.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Flow.METRICS = RelationField("metrics")
 Flow.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Flow.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Flow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Flow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Flow.MEANINGS = RelationField("meanings")
 Flow.MC_MONITORS = RelationField("mcMonitors")
 Flow.MC_INCIDENTS = RelationField("mcIncidents")

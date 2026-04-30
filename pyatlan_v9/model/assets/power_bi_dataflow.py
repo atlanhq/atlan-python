@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -40,21 +47,25 @@ from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
+from .power_bi_related import (
+    RelatedPowerBIDataflow,
+    RelatedPowerBIDataflowEntityColumn,
+    RelatedPowerBIDataset,
+    RelatedPowerBIDatasource,
+    RelatedPowerBITable,
+    RelatedPowerBIWorkspace,
+)
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .power_bi_related import RelatedPowerBIDataflow, RelatedPowerBIDataflowEntityColumn, RelatedPowerBIDataset, RelatedPowerBIDatasource, RelatedPowerBITable, RelatedPowerBIWorkspace
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class PowerBIDataflow(Asset):
@@ -122,31 +133,49 @@ class PowerBIDataflow(Asset):
     web_url: Union[str, None, UnsetType] = UNSET
     """Deprecated. See 'sourceUrl' instead."""
 
-    power_bi_dataflow_refresh_schedule_frequency: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleFrequency")
+    power_bi_dataflow_refresh_schedule_frequency: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleFrequency")
+    )
     """Refresh Schedule frequency for a PowerBI Dataflow."""
 
-    power_bi_dataflow_refresh_schedule_times: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimes")
+    power_bi_dataflow_refresh_schedule_times: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimes")
+    )
     """Time for the refresh schedule set for a PowerBI Dataflow."""
 
-    power_bi_dataflow_refresh_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimeZone")
+    power_bi_dataflow_refresh_schedule_time_zone: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimeZone")
+    )
     """Time zone for the refresh schedule set for a PowerBI Dataflow."""
 
-    power_bi_is_hidden: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIIsHidden")
+    power_bi_is_hidden: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIIsHidden"
+    )
     """Whether this asset is hidden in Power BI (true) or not (false)."""
 
-    power_bi_table_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBITableQualifiedName")
+    power_bi_table_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBITableQualifiedName"
+    )
     """Unique name of the Power BI table in which this asset exists."""
 
-    power_bi_format_string: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIFormatString")
+    power_bi_format_string: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIFormatString"
+    )
     """Format of this asset, as specified in the FORMAT_STRING of the MDX cell property."""
 
-    power_bi_endorsement: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsement")
+    power_bi_endorsement: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsement"
+    )
     """Endorsement status of this asset, in Power BI."""
 
-    power_bi_endorsed_by: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsedBy")
+    power_bi_endorsed_by: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsedBy"
+    )
     """User who endorsed this asset in Power BI."""
 
-    power_bi_endorsed_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsedAt")
+    power_bi_endorsed_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsedAt"
+    )
     """Time at which this asset was endorsed in Power BI."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -182,7 +211,9 @@ class PowerBIDataflow(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -191,10 +222,14 @@ class PowerBIDataflow(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -218,22 +253,32 @@ class PowerBIDataflow(Asset):
     workspace: Union[RelatedPowerBIWorkspace, None, UnsetType] = UNSET
     """Workspace in which this dataflow exists."""
 
-    power_bi_dataflow_children: Union[List[RelatedPowerBIDataflow], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowChildren")
+    power_bi_dataflow_children: Union[List[RelatedPowerBIDataflow], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowChildren")
+    )
     """Child Dataflows to this PowerBI Dataflow."""
 
-    power_bi_dataflow_parents: Union[List[RelatedPowerBIDataflow], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowParents")
+    power_bi_dataflow_parents: Union[List[RelatedPowerBIDataflow], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowParents")
+    )
     """Parent Dataflows to this PowerBI Dataflow."""
 
     tables: Union[List[RelatedPowerBITable], None, UnsetType] = UNSET
     """PowerBI Tables that are associated with this Dataflow."""
 
-    power_bi_processes: Union[List[RelatedProcess], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIProcesses")
+    power_bi_processes: Union[List[RelatedProcess], None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIProcesses"
+    )
     """Lineage process that associates this PowerBI Dataflow."""
 
-    power_bi_datasources: Union[List[RelatedPowerBIDatasource], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDatasources")
+    power_bi_datasources: Union[List[RelatedPowerBIDatasource], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDatasources")
+    )
     """PowerBI Datasources that are associated with this Dataflow."""
 
-    power_bi_dataflow_entity_columns: Union[List[RelatedPowerBIDataflowEntityColumn], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowEntityColumns")
+    power_bi_dataflow_entity_columns: Union[
+        List[RelatedPowerBIDataflowEntityColumn], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="powerBIDataflowEntityColumns")
     """PowerBI Dataflow Entity Columns that exist within this Dataflow."""
 
     input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
@@ -245,7 +290,9 @@ class PowerBIDataflow(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -257,7 +304,9 @@ class PowerBIDataflow(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -276,10 +325,7 @@ class PowerBIDataflow(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -310,7 +356,9 @@ class PowerBIDataflow(Asset):
         return _power_bi_dataflow_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> PowerBIDataflow:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> PowerBIDataflow:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -332,6 +380,7 @@ class PowerBIDataflow(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class PowerBIDataflowAttributes(AssetAttributes):
     """PowerBIDataflow-specific attributes for nested API format."""
 
@@ -341,35 +390,54 @@ class PowerBIDataflowAttributes(AssetAttributes):
     web_url: Union[str, None, UnsetType] = UNSET
     """Deprecated. See 'sourceUrl' instead."""
 
-    power_bi_dataflow_refresh_schedule_frequency: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleFrequency")
+    power_bi_dataflow_refresh_schedule_frequency: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleFrequency")
+    )
     """Refresh Schedule frequency for a PowerBI Dataflow."""
 
-    power_bi_dataflow_refresh_schedule_times: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimes")
+    power_bi_dataflow_refresh_schedule_times: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimes")
+    )
     """Time for the refresh schedule set for a PowerBI Dataflow."""
 
-    power_bi_dataflow_refresh_schedule_time_zone: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimeZone")
+    power_bi_dataflow_refresh_schedule_time_zone: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowRefreshScheduleTimeZone")
+    )
     """Time zone for the refresh schedule set for a PowerBI Dataflow."""
 
-    power_bi_is_hidden: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIIsHidden")
+    power_bi_is_hidden: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIIsHidden"
+    )
     """Whether this asset is hidden in Power BI (true) or not (false)."""
 
-    power_bi_table_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBITableQualifiedName")
+    power_bi_table_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBITableQualifiedName"
+    )
     """Unique name of the Power BI table in which this asset exists."""
 
-    power_bi_format_string: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIFormatString")
+    power_bi_format_string: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIFormatString"
+    )
     """Format of this asset, as specified in the FORMAT_STRING of the MDX cell property."""
 
-    power_bi_endorsement: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsement")
+    power_bi_endorsement: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsement"
+    )
     """Endorsement status of this asset, in Power BI."""
 
-    power_bi_endorsed_by: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsedBy")
+    power_bi_endorsed_by: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsedBy"
+    )
     """User who endorsed this asset in Power BI."""
 
-    power_bi_endorsed_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIEndorsedAt")
+    power_bi_endorsed_at: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIEndorsedAt"
+    )
     """Time at which this asset was endorsed in Power BI."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class PowerBIDataflowRelationshipAttributes(AssetRelationshipAttributes):
     """PowerBIDataflow-specific relationship attributes for nested API format."""
@@ -404,7 +472,9 @@ class PowerBIDataflowRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -413,10 +483,14 @@ class PowerBIDataflowRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -440,22 +514,32 @@ class PowerBIDataflowRelationshipAttributes(AssetRelationshipAttributes):
     workspace: Union[RelatedPowerBIWorkspace, None, UnsetType] = UNSET
     """Workspace in which this dataflow exists."""
 
-    power_bi_dataflow_children: Union[List[RelatedPowerBIDataflow], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowChildren")
+    power_bi_dataflow_children: Union[List[RelatedPowerBIDataflow], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowChildren")
+    )
     """Child Dataflows to this PowerBI Dataflow."""
 
-    power_bi_dataflow_parents: Union[List[RelatedPowerBIDataflow], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowParents")
+    power_bi_dataflow_parents: Union[List[RelatedPowerBIDataflow], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDataflowParents")
+    )
     """Parent Dataflows to this PowerBI Dataflow."""
 
     tables: Union[List[RelatedPowerBITable], None, UnsetType] = UNSET
     """PowerBI Tables that are associated with this Dataflow."""
 
-    power_bi_processes: Union[List[RelatedProcess], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIProcesses")
+    power_bi_processes: Union[List[RelatedProcess], None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIProcesses"
+    )
     """Lineage process that associates this PowerBI Dataflow."""
 
-    power_bi_datasources: Union[List[RelatedPowerBIDatasource], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDatasources")
+    power_bi_datasources: Union[List[RelatedPowerBIDatasource], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="powerBIDatasources")
+    )
     """PowerBI Datasources that are associated with this Dataflow."""
 
-    power_bi_dataflow_entity_columns: Union[List[RelatedPowerBIDataflowEntityColumn], None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflowEntityColumns")
+    power_bi_dataflow_entity_columns: Union[
+        List[RelatedPowerBIDataflowEntityColumn], None, UnsetType
+    ] = msgspec.field(default=UNSET, name="powerBIDataflowEntityColumns")
     """PowerBI Dataflow Entity Columns that exist within this Dataflow."""
 
     input_to_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
@@ -467,7 +551,9 @@ class PowerBIDataflowRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -479,7 +565,9 @@ class PowerBIDataflowRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -491,13 +579,21 @@ class PowerBIDataflowRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class PowerBIDataflowNested(AssetNested):
     """PowerBIDataflow in nested API format for high-performance serialization."""
 
     attributes: Union[PowerBIDataflowAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[PowerBIDataflowRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[PowerBIDataflowRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[PowerBIDataflowRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[PowerBIDataflowRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        PowerBIDataflowRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        PowerBIDataflowRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -546,14 +642,23 @@ _POWER_BI_DATAFLOW_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_power_bi_dataflow_attrs(attrs: PowerBIDataflowAttributes, obj: PowerBIDataflow) -> None:
+
+def _populate_power_bi_dataflow_attrs(
+    attrs: PowerBIDataflowAttributes, obj: PowerBIDataflow
+) -> None:
     """Populate PowerBIDataflow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.workspace_qualified_name = obj.workspace_qualified_name
     attrs.web_url = obj.web_url
-    attrs.power_bi_dataflow_refresh_schedule_frequency = obj.power_bi_dataflow_refresh_schedule_frequency
-    attrs.power_bi_dataflow_refresh_schedule_times = obj.power_bi_dataflow_refresh_schedule_times
-    attrs.power_bi_dataflow_refresh_schedule_time_zone = obj.power_bi_dataflow_refresh_schedule_time_zone
+    attrs.power_bi_dataflow_refresh_schedule_frequency = (
+        obj.power_bi_dataflow_refresh_schedule_frequency
+    )
+    attrs.power_bi_dataflow_refresh_schedule_times = (
+        obj.power_bi_dataflow_refresh_schedule_times
+    )
+    attrs.power_bi_dataflow_refresh_schedule_time_zone = (
+        obj.power_bi_dataflow_refresh_schedule_time_zone
+    )
     attrs.power_bi_is_hidden = obj.power_bi_is_hidden
     attrs.power_bi_table_qualified_name = obj.power_bi_table_qualified_name
     attrs.power_bi_format_string = obj.power_bi_format_string
@@ -562,14 +667,21 @@ def _populate_power_bi_dataflow_attrs(attrs: PowerBIDataflowAttributes, obj: Pow
     attrs.power_bi_endorsed_at = obj.power_bi_endorsed_at
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_power_bi_dataflow_attrs(attrs: PowerBIDataflowAttributes) -> dict:
     """Extract all PowerBIDataflow attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["workspace_qualified_name"] = attrs.workspace_qualified_name
     result["web_url"] = attrs.web_url
-    result["power_bi_dataflow_refresh_schedule_frequency"] = attrs.power_bi_dataflow_refresh_schedule_frequency
-    result["power_bi_dataflow_refresh_schedule_times"] = attrs.power_bi_dataflow_refresh_schedule_times
-    result["power_bi_dataflow_refresh_schedule_time_zone"] = attrs.power_bi_dataflow_refresh_schedule_time_zone
+    result["power_bi_dataflow_refresh_schedule_frequency"] = (
+        attrs.power_bi_dataflow_refresh_schedule_frequency
+    )
+    result["power_bi_dataflow_refresh_schedule_times"] = (
+        attrs.power_bi_dataflow_refresh_schedule_times
+    )
+    result["power_bi_dataflow_refresh_schedule_time_zone"] = (
+        attrs.power_bi_dataflow_refresh_schedule_time_zone
+    )
     result["power_bi_is_hidden"] = attrs.power_bi_is_hidden
     result["power_bi_table_qualified_name"] = attrs.power_bi_table_qualified_name
     result["power_bi_format_string"] = attrs.power_bi_format_string
@@ -579,18 +691,23 @@ def _extract_power_bi_dataflow_attrs(attrs: PowerBIDataflowAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _power_bi_dataflow_to_nested(power_bi_dataflow: PowerBIDataflow) -> PowerBIDataflowNested:
+def _power_bi_dataflow_to_nested(
+    power_bi_dataflow: PowerBIDataflow,
+) -> PowerBIDataflowNested:
     """Convert flat PowerBIDataflow to nested format."""
     attrs = PowerBIDataflowAttributes()
     _populate_power_bi_dataflow_attrs(attrs, power_bi_dataflow)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        power_bi_dataflow, _POWER_BI_DATAFLOW_REL_FIELDS, PowerBIDataflowRelationshipAttributes
+        power_bi_dataflow,
+        _POWER_BI_DATAFLOW_REL_FIELDS,
+        PowerBIDataflowRelationshipAttributes,
     )
     return PowerBIDataflowNested(
         guid=power_bi_dataflow.guid,
@@ -618,16 +735,21 @@ def _power_bi_dataflow_to_nested(power_bi_dataflow: PowerBIDataflow) -> PowerBID
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _power_bi_dataflow_from_nested(nested: PowerBIDataflowNested) -> PowerBIDataflow:
     """Convert nested format to flat PowerBIDataflow."""
-    attrs = nested.attributes if nested.attributes is not UNSET else PowerBIDataflowAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else PowerBIDataflowAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _POWER_BI_DATAFLOW_REL_FIELDS,
-        PowerBIDataflowRelationshipAttributes
+        PowerBIDataflowRelationshipAttributes,
     )
     return PowerBIDataflow(
         guid=nested.guid,
@@ -640,7 +762,6 @@ def _power_bi_dataflow_from_nested(nested: PowerBIDataflowNested) -> PowerBIData
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -654,7 +775,10 @@ def _power_bi_dataflow_from_nested(nested: PowerBIDataflowNested) -> PowerBIData
         **merged_rels,
     )
 
-def _power_bi_dataflow_to_nested_bytes(power_bi_dataflow: PowerBIDataflow, serde: Serde) -> bytes:
+
+def _power_bi_dataflow_to_nested_bytes(
+    power_bi_dataflow: PowerBIDataflow, serde: Serde
+) -> bytes:
     """Convert flat PowerBIDataflow to nested JSON bytes."""
     return serde.encode(_power_bi_dataflow_to_nested(power_bi_dataflow))
 
@@ -663,6 +787,7 @@ def _power_bi_dataflow_from_nested_bytes(data: bytes, serde: Serde) -> PowerBIDa
     """Convert nested JSON bytes to flat PowerBIDataflow."""
     nested = serde.decode(data, PowerBIDataflowNested)
     return _power_bi_dataflow_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -675,33 +800,61 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-PowerBIDataflow.WORKSPACE_QUALIFIED_NAME = KeywordField("workspaceQualifiedName", "workspaceQualifiedName")
+PowerBIDataflow.WORKSPACE_QUALIFIED_NAME = KeywordField(
+    "workspaceQualifiedName", "workspaceQualifiedName"
+)
 PowerBIDataflow.WEB_URL = KeywordField("webUrl", "webUrl")
-PowerBIDataflow.POWER_BI_DATAFLOW_REFRESH_SCHEDULE_FREQUENCY = KeywordField("powerBIDataflowRefreshScheduleFrequency", "powerBIDataflowRefreshScheduleFrequency")
-PowerBIDataflow.POWER_BI_DATAFLOW_REFRESH_SCHEDULE_TIMES = KeywordField("powerBIDataflowRefreshScheduleTimes", "powerBIDataflowRefreshScheduleTimes")
-PowerBIDataflow.POWER_BI_DATAFLOW_REFRESH_SCHEDULE_TIME_ZONE = KeywordField("powerBIDataflowRefreshScheduleTimeZone", "powerBIDataflowRefreshScheduleTimeZone")
+PowerBIDataflow.POWER_BI_DATAFLOW_REFRESH_SCHEDULE_FREQUENCY = KeywordField(
+    "powerBIDataflowRefreshScheduleFrequency", "powerBIDataflowRefreshScheduleFrequency"
+)
+PowerBIDataflow.POWER_BI_DATAFLOW_REFRESH_SCHEDULE_TIMES = KeywordField(
+    "powerBIDataflowRefreshScheduleTimes", "powerBIDataflowRefreshScheduleTimes"
+)
+PowerBIDataflow.POWER_BI_DATAFLOW_REFRESH_SCHEDULE_TIME_ZONE = KeywordField(
+    "powerBIDataflowRefreshScheduleTimeZone", "powerBIDataflowRefreshScheduleTimeZone"
+)
 PowerBIDataflow.POWER_BI_IS_HIDDEN = BooleanField("powerBIIsHidden", "powerBIIsHidden")
-PowerBIDataflow.POWER_BI_TABLE_QUALIFIED_NAME = KeywordTextField("powerBITableQualifiedName", "powerBITableQualifiedName", "powerBITableQualifiedName.text")
-PowerBIDataflow.POWER_BI_FORMAT_STRING = KeywordField("powerBIFormatString", "powerBIFormatString")
-PowerBIDataflow.POWER_BI_ENDORSEMENT = KeywordField("powerBIEndorsement", "powerBIEndorsement")
-PowerBIDataflow.POWER_BI_ENDORSED_BY = KeywordField("powerBIEndorsedBy", "powerBIEndorsedBy")
-PowerBIDataflow.POWER_BI_ENDORSED_AT = NumericField("powerBIEndorsedAt", "powerBIEndorsedAt")
-PowerBIDataflow.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+PowerBIDataflow.POWER_BI_TABLE_QUALIFIED_NAME = KeywordTextField(
+    "powerBITableQualifiedName",
+    "powerBITableQualifiedName",
+    "powerBITableQualifiedName.text",
+)
+PowerBIDataflow.POWER_BI_FORMAT_STRING = KeywordField(
+    "powerBIFormatString", "powerBIFormatString"
+)
+PowerBIDataflow.POWER_BI_ENDORSEMENT = KeywordField(
+    "powerBIEndorsement", "powerBIEndorsement"
+)
+PowerBIDataflow.POWER_BI_ENDORSED_BY = KeywordField(
+    "powerBIEndorsedBy", "powerBIEndorsedBy"
+)
+PowerBIDataflow.POWER_BI_ENDORSED_AT = NumericField(
+    "powerBIEndorsedAt", "powerBIEndorsedAt"
+)
+PowerBIDataflow.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 PowerBIDataflow.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 PowerBIDataflow.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 PowerBIDataflow.ANOMALO_CHECKS = RelationField("anomaloChecks")
 PowerBIDataflow.APPLICATION = RelationField("application")
 PowerBIDataflow.APPLICATION_FIELD = RelationField("applicationField")
 PowerBIDataflow.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-PowerBIDataflow.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+PowerBIDataflow.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 PowerBIDataflow.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 PowerBIDataflow.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 PowerBIDataflow.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-PowerBIDataflow.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+PowerBIDataflow.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 PowerBIDataflow.METRICS = RelationField("metrics")
 PowerBIDataflow.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 PowerBIDataflow.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-PowerBIDataflow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+PowerBIDataflow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 PowerBIDataflow.MEANINGS = RelationField("meanings")
 PowerBIDataflow.MC_MONITORS = RelationField("mcMonitors")
 PowerBIDataflow.MC_INCIDENTS = RelationField("mcIncidents")
@@ -714,7 +867,9 @@ PowerBIDataflow.POWER_BI_DATAFLOW_PARENTS = RelationField("powerBIDataflowParent
 PowerBIDataflow.TABLES = RelationField("tables")
 PowerBIDataflow.POWER_BI_PROCESSES = RelationField("powerBIProcesses")
 PowerBIDataflow.POWER_BI_DATASOURCES = RelationField("powerBIDatasources")
-PowerBIDataflow.POWER_BI_DATAFLOW_ENTITY_COLUMNS = RelationField("powerBIDataflowEntityColumns")
+PowerBIDataflow.POWER_BI_DATAFLOW_ENTITY_COLUMNS = RelationField(
+    "powerBIDataflowEntityColumns"
+)
 PowerBIDataflow.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 PowerBIDataflow.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 PowerBIDataflow.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")

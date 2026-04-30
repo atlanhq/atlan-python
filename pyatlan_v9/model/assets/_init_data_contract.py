@@ -8,8 +8,8 @@ DataContract module exports.
 This module provides convenient imports for all DataContract types and their Related variants.
 """
 
-from .data_contract_related import RelatedDataContract
 from .data_contract import DataContract
+from .data_contract_related import RelatedDataContract
 
 __all__ = [
     "DataContract",

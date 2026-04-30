@@ -8,6 +8,11 @@ Domo module exports.
 This module provides convenient imports for all Domo types and their Related variants.
 """
 
+from .domo import Domo
+from .domo_card import DomoCard
+from .domo_dashboard import DomoDashboard
+from .domo_dataset import DomoDataset
+from .domo_dataset_column import DomoDatasetColumn
 from .domo_related import (
     RelatedDomo,
     RelatedDomoCard,
@@ -15,11 +20,6 @@ from .domo_related import (
     RelatedDomoDataset,
     RelatedDomoDatasetColumn,
 )
-from .domo import Domo
-from .domo_card import DomoCard
-from .domo_dashboard import DomoDashboard
-from .domo_dataset import DomoDataset
-from .domo_dataset_column import DomoDatasetColumn
 
 __all__ = [
     "Domo",

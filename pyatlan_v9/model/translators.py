@@ -62,9 +62,7 @@ class AtlanTagTranslator(BaseTranslator):
         for key in self._CLASSIFICATION_NAMES:
             if key in raw_json:
                 raw_json[key] = [
-                    AtlanTagName(
-                        self.client.atlan_tag_cache.get_name_for_id(tag_id) or DELETED_
-                    )
+                    self.client.atlan_tag_cache.get_name_for_id(tag_id) or DELETED_
                     for tag_id in raw_json[key]
                 ]
 

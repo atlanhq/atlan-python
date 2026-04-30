@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .agentic_related import RelatedAgentic
@@ -43,6 +42,7 @@ class RelatedContext(RelatedAgentic):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Context"
 
+
 class RelatedContextRepository(RelatedContext):
     """
     Related entity reference for ContextRepository assets.
@@ -59,12 +59,15 @@ class RelatedContextRepository(RelatedContext):
     context_repository_agent_instructions: Union[str, None, UnsetType] = UNSET
     """LLM guidance and constraints for NL2SQL generation using this repository's context."""
 
-    context_repository_target_connection_qualified_name: Union[str, None, UnsetType] = UNSET
+    context_repository_target_connection_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the connection used as the execution engine for deploying and running queries against this repository."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "ContextRepository"
+
 
 class RelatedContextArtifact(RelatedContext):
     """

@@ -11,11 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
-
-import msgspec
-from msgspec import UNSET, UnsetType
-
 from .catalog_related import RelatedSaaS
 from .referenceable_related import RelatedReferenceable
 
@@ -44,6 +39,7 @@ class RelatedCognite(RelatedSaaS):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Cognite"
 
+
 class RelatedCogniteEvent(RelatedCognite):
     """
     Related entity reference for CogniteEvent assets.
@@ -57,6 +53,7 @@ class RelatedCogniteEvent(RelatedCognite):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CogniteEvent"
+
 
 class RelatedCogniteFile(RelatedCognite):
     """
@@ -72,6 +69,7 @@ class RelatedCogniteFile(RelatedCognite):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CogniteFile"
 
+
 class RelatedCogniteSequence(RelatedCognite):
     """
     Related entity reference for CogniteSequence assets.
@@ -85,6 +83,7 @@ class RelatedCogniteSequence(RelatedCognite):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CogniteSequence"
+
 
 class RelatedCogniteTimeSeries(RelatedCognite):
     """
@@ -100,6 +99,7 @@ class RelatedCogniteTimeSeries(RelatedCognite):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CogniteTimeSeries"
 
+
 class RelatedCognite3DModel(RelatedCognite):
     """
     Related entity reference for Cognite3DModel assets.
@@ -113,6 +113,7 @@ class RelatedCognite3DModel(RelatedCognite):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Cognite3DModel"
+
 
 class RelatedCogniteAsset(RelatedCognite):
     """

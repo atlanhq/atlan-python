@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -31,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextArtifact
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -45,15 +52,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .context_related import RelatedContextArtifact
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ContextRepository(Asset):
@@ -107,7 +110,9 @@ class ContextRepository(Asset):
     context_repository_agent_instructions: Union[str, None, UnsetType] = UNSET
     """LLM guidance and constraints for NL2SQL generation using this repository's context."""
 
-    context_repository_target_connection_qualified_name: Union[str, None, UnsetType] = UNSET
+    context_repository_target_connection_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the connection used as the execution engine for deploying and running queries against this repository."""
 
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -149,7 +154,9 @@ class ContextRepository(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -158,10 +165,14 @@ class ContextRepository(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -188,7 +199,9 @@ class ContextRepository(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -200,7 +213,9 @@ class ContextRepository(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -214,8 +229,6 @@ class ContextRepository(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ContextRepository"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -246,7 +259,9 @@ class ContextRepository(Asset):
         return _context_repository_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> ContextRepository:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> ContextRepository:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -268,6 +283,7 @@ class ContextRepository(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ContextRepositoryAttributes(AssetAttributes):
     """ContextRepository-specific attributes for nested API format."""
 
@@ -277,7 +293,9 @@ class ContextRepositoryAttributes(AssetAttributes):
     context_repository_agent_instructions: Union[str, None, UnsetType] = UNSET
     """LLM guidance and constraints for NL2SQL generation using this repository's context."""
 
-    context_repository_target_connection_qualified_name: Union[str, None, UnsetType] = UNSET
+    context_repository_target_connection_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the connection used as the execution engine for deploying and running queries against this repository."""
 
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -285,6 +303,7 @@ class ContextRepositoryAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
     """ContextRepository-specific relationship attributes for nested API format."""
@@ -322,7 +341,9 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -331,10 +352,14 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -361,7 +386,9 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -373,7 +400,9 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -385,13 +414,21 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class ContextRepositoryNested(AssetNested):
     """ContextRepository in nested API format for high-performance serialization."""
 
     attributes: Union[ContextRepositoryAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ContextRepositoryRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ContextRepositoryRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ContextRepositoryRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        ContextRepositoryRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        ContextRepositoryRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ContextRepositoryRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -433,37 +470,58 @@ _CONTEXT_REPOSITORY_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_context_repository_attrs(attrs: ContextRepositoryAttributes, obj: ContextRepository) -> None:
+
+def _populate_context_repository_attrs(
+    attrs: ContextRepositoryAttributes, obj: ContextRepository
+) -> None:
     """Populate ContextRepository-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.context_repository_lifecycle_status = obj.context_repository_lifecycle_status
-    attrs.context_repository_agent_instructions = obj.context_repository_agent_instructions
-    attrs.context_repository_target_connection_qualified_name = obj.context_repository_target_connection_qualified_name
+    attrs.context_repository_agent_instructions = (
+        obj.context_repository_agent_instructions
+    )
+    attrs.context_repository_target_connection_qualified_name = (
+        obj.context_repository_target_connection_qualified_name
+    )
     attrs.context_repository_qualified_name = obj.context_repository_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_context_repository_attrs(attrs: ContextRepositoryAttributes) -> dict:
     """Extract all ContextRepository attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["context_repository_lifecycle_status"] = attrs.context_repository_lifecycle_status
-    result["context_repository_agent_instructions"] = attrs.context_repository_agent_instructions
-    result["context_repository_target_connection_qualified_name"] = attrs.context_repository_target_connection_qualified_name
-    result["context_repository_qualified_name"] = attrs.context_repository_qualified_name
+    result["context_repository_lifecycle_status"] = (
+        attrs.context_repository_lifecycle_status
+    )
+    result["context_repository_agent_instructions"] = (
+        attrs.context_repository_agent_instructions
+    )
+    result["context_repository_target_connection_qualified_name"] = (
+        attrs.context_repository_target_connection_qualified_name
+    )
+    result["context_repository_qualified_name"] = (
+        attrs.context_repository_qualified_name
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _context_repository_to_nested(context_repository: ContextRepository) -> ContextRepositoryNested:
+def _context_repository_to_nested(
+    context_repository: ContextRepository,
+) -> ContextRepositoryNested:
     """Convert flat ContextRepository to nested format."""
     attrs = ContextRepositoryAttributes()
     _populate_context_repository_attrs(attrs, context_repository)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        context_repository, _CONTEXT_REPOSITORY_REL_FIELDS, ContextRepositoryRelationshipAttributes
+        context_repository,
+        _CONTEXT_REPOSITORY_REL_FIELDS,
+        ContextRepositoryRelationshipAttributes,
     )
     return ContextRepositoryNested(
         guid=context_repository.guid,
@@ -491,16 +549,23 @@ def _context_repository_to_nested(context_repository: ContextRepository) -> Cont
         remove_relationship_attributes=remove_rels,
     )
 
-def _context_repository_from_nested(nested: ContextRepositoryNested) -> ContextRepository:
+
+def _context_repository_from_nested(
+    nested: ContextRepositoryNested,
+) -> ContextRepository:
     """Convert nested format to flat ContextRepository."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ContextRepositoryAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ContextRepositoryAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CONTEXT_REPOSITORY_REL_FIELDS,
-        ContextRepositoryRelationshipAttributes
+        ContextRepositoryRelationshipAttributes,
     )
     return ContextRepository(
         guid=nested.guid,
@@ -513,7 +578,6 @@ def _context_repository_from_nested(nested: ContextRepositoryNested) -> ContextR
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -527,15 +591,21 @@ def _context_repository_from_nested(nested: ContextRepositoryNested) -> ContextR
         **merged_rels,
     )
 
-def _context_repository_to_nested_bytes(context_repository: ContextRepository, serde: Serde) -> bytes:
+
+def _context_repository_to_nested_bytes(
+    context_repository: ContextRepository, serde: Serde
+) -> bytes:
     """Convert flat ContextRepository to nested JSON bytes."""
     return serde.encode(_context_repository_to_nested(context_repository))
 
 
-def _context_repository_from_nested_bytes(data: bytes, serde: Serde) -> ContextRepository:
+def _context_repository_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> ContextRepository:
     """Convert nested JSON bytes to flat ContextRepository."""
     nested = serde.decode(data, ContextRepositoryNested)
     return _context_repository_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -546,11 +616,22 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-ContextRepository.CONTEXT_REPOSITORY_LIFECYCLE_STATUS = KeywordField("contextRepositoryLifecycleStatus", "contextRepositoryLifecycleStatus")
-ContextRepository.CONTEXT_REPOSITORY_AGENT_INSTRUCTIONS = TextField("contextRepositoryAgentInstructions", "contextRepositoryAgentInstructions")
-ContextRepository.CONTEXT_REPOSITORY_TARGET_CONNECTION_QUALIFIED_NAME = KeywordField("contextRepositoryTargetConnectionQualifiedName", "contextRepositoryTargetConnectionQualifiedName")
-ContextRepository.CONTEXT_REPOSITORY_QUALIFIED_NAME = KeywordField("contextRepositoryQualifiedName", "contextRepositoryQualifiedName")
-ContextRepository.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+ContextRepository.CONTEXT_REPOSITORY_LIFECYCLE_STATUS = KeywordField(
+    "contextRepositoryLifecycleStatus", "contextRepositoryLifecycleStatus"
+)
+ContextRepository.CONTEXT_REPOSITORY_AGENT_INSTRUCTIONS = TextField(
+    "contextRepositoryAgentInstructions", "contextRepositoryAgentInstructions"
+)
+ContextRepository.CONTEXT_REPOSITORY_TARGET_CONNECTION_QUALIFIED_NAME = KeywordField(
+    "contextRepositoryTargetConnectionQualifiedName",
+    "contextRepositoryTargetConnectionQualifiedName",
+)
+ContextRepository.CONTEXT_REPOSITORY_QUALIFIED_NAME = KeywordField(
+    "contextRepositoryQualifiedName", "contextRepositoryQualifiedName"
+)
+ContextRepository.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 ContextRepository.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ContextRepository.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ContextRepository.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -558,15 +639,21 @@ ContextRepository.APPLICATION = RelationField("application")
 ContextRepository.APPLICATION_FIELD = RelationField("applicationField")
 ContextRepository.CONTEXT_ARTIFACTS = RelationField("contextArtifacts")
 ContextRepository.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-ContextRepository.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+ContextRepository.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ContextRepository.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ContextRepository.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ContextRepository.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-ContextRepository.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+ContextRepository.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 ContextRepository.METRICS = RelationField("metrics")
 ContextRepository.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ContextRepository.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-ContextRepository.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+ContextRepository.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 ContextRepository.MEANINGS = RelationField("meanings")
 ContextRepository.MC_MONITORS = RelationField("mcMonitors")
 ContextRepository.MC_INCIDENTS = RelationField("mcIncidents")

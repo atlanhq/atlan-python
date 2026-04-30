@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,18 +48,15 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SapErpTable(Asset):
@@ -167,7 +170,9 @@ class SapErpTable(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -176,10 +181,14 @@ class SapErpTable(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -206,7 +215,9 @@ class SapErpTable(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -224,7 +235,9 @@ class SapErpTable(Asset):
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP Tables that are associated with this SAP ERP Component."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -238,8 +251,6 @@ class SapErpTable(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpTable"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -292,6 +303,7 @@ class SapErpTable(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SapErpTableAttributes(AssetAttributes):
     """SapErpTable-specific attributes for nested API format."""
 
@@ -324,6 +336,7 @@ class SapErpTableAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpTable-specific relationship attributes for nested API format."""
@@ -358,7 +371,9 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -367,10 +382,14 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -397,7 +416,9 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -415,7 +436,9 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP Tables that are associated with this SAP ERP Component."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -427,13 +450,19 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SapErpTableNested(AssetNested):
     """SapErpTable in nested API format for high-performance serialization."""
 
     attributes: Union[SapErpTableAttributes, UnsetType] = UNSET
     relationship_attributes: Union[SapErpTableRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SapErpTableRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SapErpTableRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        SapErpTableRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SapErpTableRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -476,7 +505,10 @@ _SAP_ERP_TABLE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sap_erp_table_attrs(attrs: SapErpTableAttributes, obj: SapErpTable) -> None:
+
+def _populate_sap_erp_table_attrs(
+    attrs: SapErpTableAttributes, obj: SapErpTable
+) -> None:
     """Populate SapErpTable-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sap_erp_table_type = obj.sap_erp_table_type
@@ -489,6 +521,7 @@ def _populate_sap_erp_table_attrs(attrs: SapErpTableAttributes, obj: SapErpTable
     attrs.sap_field_count = obj.sap_field_count
     attrs.sap_field_order = obj.sap_field_order
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_sap_erp_table_attrs(attrs: SapErpTableAttributes) -> dict:
     """Extract all SapErpTable attributes from the attrs struct into a flat dict."""
@@ -504,6 +537,7 @@ def _extract_sap_erp_table_attrs(attrs: SapErpTableAttributes) -> dict:
     result["sap_field_order"] = attrs.sap_field_order
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -544,16 +578,19 @@ def _sap_erp_table_to_nested(sap_erp_table: SapErpTable) -> SapErpTableNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sap_erp_table_from_nested(nested: SapErpTableNested) -> SapErpTable:
     """Convert nested format to flat SapErpTable."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SapErpTableAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else SapErpTableAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_TABLE_REL_FIELDS,
-        SapErpTableRelationshipAttributes
+        SapErpTableRelationshipAttributes,
     )
     return SapErpTable(
         guid=nested.guid,
@@ -566,7 +603,6 @@ def _sap_erp_table_from_nested(nested: SapErpTableNested) -> SapErpTable:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -580,6 +616,7 @@ def _sap_erp_table_from_nested(nested: SapErpTableNested) -> SapErpTable:
         **merged_rels,
     )
 
+
 def _sap_erp_table_to_nested_bytes(sap_erp_table: SapErpTable, serde: Serde) -> bytes:
     """Convert flat SapErpTable to nested JSON bytes."""
     return serde.encode(_sap_erp_table_to_nested(sap_erp_table))
@@ -589,6 +626,7 @@ def _sap_erp_table_from_nested_bytes(data: bytes, serde: Serde) -> SapErpTable:
     """Convert nested JSON bytes to flat SapErpTable."""
     nested = serde.decode(data, SapErpTableNested)
     return _sap_erp_table_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -600,7 +638,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SapErpTable.SAP_ERP_TABLE_TYPE = KeywordField("sapErpTableType", "sapErpTableType")
-SapErpTable.SAP_ERP_TABLE_DELIVERY_CLASS = KeywordField("sapErpTableDeliveryClass", "sapErpTableDeliveryClass")
+SapErpTable.SAP_ERP_TABLE_DELIVERY_CLASS = KeywordField(
+    "sapErpTableDeliveryClass", "sapErpTableDeliveryClass"
+)
 SapErpTable.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
 SapErpTable.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpTable.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
@@ -608,14 +648,18 @@ SapErpTable.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentN
 SapErpTable.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
 SapErpTable.SAP_FIELD_COUNT = NumericField("sapFieldCount", "sapFieldCount")
 SapErpTable.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
-SapErpTable.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SapErpTable.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SapErpTable.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SapErpTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SapErpTable.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpTable.APPLICATION = RelationField("application")
 SapErpTable.APPLICATION_FIELD = RelationField("applicationField")
 SapErpTable.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SapErpTable.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SapErpTable.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SapErpTable.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SapErpTable.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SapErpTable.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -623,7 +667,9 @@ SapErpTable.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttrib
 SapErpTable.METRICS = RelationField("metrics")
 SapErpTable.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SapErpTable.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SapErpTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SapErpTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SapErpTable.MEANINGS = RelationField("meanings")
 SapErpTable.MC_MONITORS = RelationField("mcMonitors")
 SapErpTable.MC_INCIDENTS = RelationField("mcIncidents")

@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -35,6 +41,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .fabric_related import RelatedFabricDataflowEntityColumn, RelatedFabricWorkspace
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -46,15 +53,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .fabric_related import RelatedFabricDataflowEntityColumn, RelatedFabricWorkspace
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FabricDataflow(Asset):
@@ -144,7 +147,9 @@ class FabricDataflow(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -153,16 +158,22 @@ class FabricDataflow(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the dataflow."""
 
-    fabric_dataflow_entity_columns: Union[List[RelatedFabricDataflowEntityColumn], None, UnsetType] = UNSET
+    fabric_dataflow_entity_columns: Union[
+        List[RelatedFabricDataflowEntityColumn], None, UnsetType
+    ] = UNSET
     """Individual dataflow entity columns contained in the dataflow."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -189,7 +200,9 @@ class FabricDataflow(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -201,7 +214,9 @@ class FabricDataflow(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -220,10 +235,7 @@ class FabricDataflow(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -276,6 +288,7 @@ class FabricDataflow(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class FabricDataflowAttributes(AssetAttributes):
     """FabricDataflow-specific attributes for nested API format."""
 
@@ -290,6 +303,7 @@ class FabricDataflowAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class FabricDataflowRelationshipAttributes(AssetRelationshipAttributes):
     """FabricDataflow-specific relationship attributes for nested API format."""
@@ -324,7 +338,9 @@ class FabricDataflowRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -333,16 +349,22 @@ class FabricDataflowRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the dataflow."""
 
-    fabric_dataflow_entity_columns: Union[List[RelatedFabricDataflowEntityColumn], None, UnsetType] = UNSET
+    fabric_dataflow_entity_columns: Union[
+        List[RelatedFabricDataflowEntityColumn], None, UnsetType
+    ] = UNSET
     """Individual dataflow entity columns contained in the dataflow."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -369,7 +391,9 @@ class FabricDataflowRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -381,7 +405,9 @@ class FabricDataflowRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -393,13 +419,21 @@ class FabricDataflowRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class FabricDataflowNested(AssetNested):
     """FabricDataflow in nested API format for high-performance serialization."""
 
     attributes: Union[FabricDataflowAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[FabricDataflowRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[FabricDataflowRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[FabricDataflowRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[FabricDataflowRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        FabricDataflowRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        FabricDataflowRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -442,13 +476,17 @@ _FABRIC_DATAFLOW_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_fabric_dataflow_attrs(attrs: FabricDataflowAttributes, obj: FabricDataflow) -> None:
+
+def _populate_fabric_dataflow_attrs(
+    attrs: FabricDataflowAttributes, obj: FabricDataflow
+) -> None:
     """Populate FabricDataflow-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.fabric_column_count = obj.fabric_column_count
     attrs.fabric_data_type = obj.fabric_data_type
     attrs.fabric_ordinal = obj.fabric_ordinal
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_fabric_dataflow_attrs(attrs: FabricDataflowAttributes) -> dict:
     """Extract all FabricDataflow attributes from the attrs struct into a flat dict."""
@@ -458,6 +496,7 @@ def _extract_fabric_dataflow_attrs(attrs: FabricDataflowAttributes) -> dict:
     result["fabric_ordinal"] = attrs.fabric_ordinal
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -470,7 +509,9 @@ def _fabric_dataflow_to_nested(fabric_dataflow: FabricDataflow) -> FabricDataflo
     _populate_fabric_dataflow_attrs(attrs, fabric_dataflow)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        fabric_dataflow, _FABRIC_DATAFLOW_REL_FIELDS, FabricDataflowRelationshipAttributes
+        fabric_dataflow,
+        _FABRIC_DATAFLOW_REL_FIELDS,
+        FabricDataflowRelationshipAttributes,
     )
     return FabricDataflowNested(
         guid=fabric_dataflow.guid,
@@ -498,16 +539,21 @@ def _fabric_dataflow_to_nested(fabric_dataflow: FabricDataflow) -> FabricDataflo
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _fabric_dataflow_from_nested(nested: FabricDataflowNested) -> FabricDataflow:
     """Convert nested format to flat FabricDataflow."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FabricDataflowAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else FabricDataflowAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FABRIC_DATAFLOW_REL_FIELDS,
-        FabricDataflowRelationshipAttributes
+        FabricDataflowRelationshipAttributes,
     )
     return FabricDataflow(
         guid=nested.guid,
@@ -520,7 +566,6 @@ def _fabric_dataflow_from_nested(nested: FabricDataflowNested) -> FabricDataflow
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -534,7 +579,10 @@ def _fabric_dataflow_from_nested(nested: FabricDataflowNested) -> FabricDataflow
         **merged_rels,
     )
 
-def _fabric_dataflow_to_nested_bytes(fabric_dataflow: FabricDataflow, serde: Serde) -> bytes:
+
+def _fabric_dataflow_to_nested_bytes(
+    fabric_dataflow: FabricDataflow, serde: Serde
+) -> bytes:
     """Convert flat FabricDataflow to nested JSON bytes."""
     return serde.encode(_fabric_dataflow_to_nested(fabric_dataflow))
 
@@ -543,6 +591,7 @@ def _fabric_dataflow_from_nested_bytes(data: bytes, serde: Serde) -> FabricDataf
     """Convert nested JSON bytes to flat FabricDataflow."""
     nested = serde.decode(data, FabricDataflowNested)
     return _fabric_dataflow_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -553,27 +602,39 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-FabricDataflow.FABRIC_COLUMN_COUNT = NumericField("fabricColumnCount", "fabricColumnCount")
+FabricDataflow.FABRIC_COLUMN_COUNT = NumericField(
+    "fabricColumnCount", "fabricColumnCount"
+)
 FabricDataflow.FABRIC_DATA_TYPE = KeywordField("fabricDataType", "fabricDataType")
 FabricDataflow.FABRIC_ORDINAL = NumericField("fabricOrdinal", "fabricOrdinal")
-FabricDataflow.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+FabricDataflow.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 FabricDataflow.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 FabricDataflow.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 FabricDataflow.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FabricDataflow.APPLICATION = RelationField("application")
 FabricDataflow.APPLICATION_FIELD = RelationField("applicationField")
 FabricDataflow.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-FabricDataflow.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+FabricDataflow.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 FabricDataflow.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 FabricDataflow.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 FabricDataflow.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-FabricDataflow.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+FabricDataflow.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 FabricDataflow.METRICS = RelationField("metrics")
 FabricDataflow.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 FabricDataflow.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 FabricDataflow.FABRIC_WORKSPACE = RelationField("fabricWorkspace")
-FabricDataflow.FABRIC_DATAFLOW_ENTITY_COLUMNS = RelationField("fabricDataflowEntityColumns")
-FabricDataflow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+FabricDataflow.FABRIC_DATAFLOW_ENTITY_COLUMNS = RelationField(
+    "fabricDataflowEntityColumns"
+)
+FabricDataflow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FabricDataflow.MEANINGS = RelationField("meanings")
 FabricDataflow.MC_MONITORS = RelationField("mcMonitors")
 FabricDataflow.MC_INCIDENTS = RelationField("mcIncidents")

@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,13 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Artifact(Asset):
@@ -159,7 +163,9 @@ class Artifact(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -168,10 +174,14 @@ class Artifact(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -198,7 +208,9 @@ class Artifact(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -210,7 +222,9 @@ class Artifact(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -224,8 +238,6 @@ class Artifact(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Artifact"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -278,6 +290,7 @@ class Artifact(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ArtifactAttributes(AssetAttributes):
     """Artifact-specific attributes for nested API format."""
 
@@ -307,6 +320,7 @@ class ArtifactAttributes(AssetAttributes):
 
     resource_metadata: Union[Dict[str, str], None, UnsetType] = UNSET
     """Metadata of the resource."""
+
 
 class ArtifactRelationshipAttributes(AssetRelationshipAttributes):
     """Artifact-specific relationship attributes for nested API format."""
@@ -341,7 +355,9 @@ class ArtifactRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -350,10 +366,14 @@ class ArtifactRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -380,7 +400,9 @@ class ArtifactRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -392,7 +414,9 @@ class ArtifactRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -404,13 +428,19 @@ class ArtifactRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class ArtifactNested(AssetNested):
     """Artifact in nested API format for high-performance serialization."""
 
     attributes: Union[ArtifactAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ArtifactRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ArtifactRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ArtifactRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[ArtifactRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[ArtifactRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -451,6 +481,7 @@ _ARTIFACT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_artifact_attrs(attrs: ArtifactAttributes, obj: Artifact) -> None:
     """Populate Artifact-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -463,6 +494,7 @@ def _populate_artifact_attrs(attrs: ArtifactAttributes, obj: Artifact) -> None:
     attrs.is_global = obj.is_global
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
+
 
 def _extract_artifact_attrs(attrs: ArtifactAttributes) -> dict:
     """Extract all Artifact attributes from the attrs struct into a flat dict."""
@@ -477,6 +509,7 @@ def _extract_artifact_attrs(attrs: ArtifactAttributes) -> dict:
     result["reference"] = attrs.reference
     result["resource_metadata"] = attrs.resource_metadata
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -517,16 +550,19 @@ def _artifact_to_nested(artifact: Artifact) -> ArtifactNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _artifact_from_nested(nested: ArtifactNested) -> Artifact:
     """Convert nested format to flat Artifact."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ArtifactAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else ArtifactAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ARTIFACT_REL_FIELDS,
-        ArtifactRelationshipAttributes
+        ArtifactRelationshipAttributes,
     )
     return Artifact(
         guid=nested.guid,
@@ -539,7 +575,6 @@ def _artifact_from_nested(nested: ArtifactNested) -> Artifact:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -553,6 +588,7 @@ def _artifact_from_nested(nested: ArtifactNested) -> Artifact:
         **merged_rels,
     )
 
+
 def _artifact_to_nested_bytes(artifact: Artifact, serde: Serde) -> bytes:
     """Convert flat Artifact to nested JSON bytes."""
     return serde.encode(_artifact_to_nested(artifact))
@@ -562,6 +598,7 @@ def _artifact_from_nested_bytes(data: bytes, serde: Serde) -> Artifact:
     """Convert nested JSON bytes to flat Artifact."""
     nested = serde.decode(data, ArtifactNested)
     return _artifact_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -596,7 +633,9 @@ Artifact.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribute
 Artifact.METRICS = RelationField("metrics")
 Artifact.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Artifact.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Artifact.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Artifact.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Artifact.MEANINGS = RelationField("meanings")
 Artifact.MC_MONITORS = RelationField("mcMonitors")
 Artifact.MC_INCIDENTS = RelationField("mcIncidents")

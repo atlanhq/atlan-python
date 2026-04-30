@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -46,15 +53,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .context_related import RelatedContextRepository
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class ContextArtifact(Asset):
@@ -170,7 +173,9 @@ class ContextArtifact(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -179,10 +184,14 @@ class ContextArtifact(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -209,7 +218,9 @@ class ContextArtifact(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -221,7 +232,9 @@ class ContextArtifact(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -240,10 +253,7 @@ class ContextArtifact(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -274,7 +284,9 @@ class ContextArtifact(Asset):
         return _context_artifact_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> ContextArtifact:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> ContextArtifact:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -295,6 +307,7 @@ class ContextArtifact(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class ContextArtifactAttributes(AssetAttributes):
     """ContextArtifact-specific attributes for nested API format."""
@@ -328,6 +341,7 @@ class ContextArtifactAttributes(AssetAttributes):
 
     resource_metadata: Union[Dict[str, str], None, UnsetType] = UNSET
     """Metadata of the resource."""
+
 
 class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
     """ContextArtifact-specific relationship attributes for nested API format."""
@@ -365,7 +379,9 @@ class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -374,10 +390,14 @@ class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -404,7 +424,9 @@ class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -416,7 +438,9 @@ class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -428,13 +452,21 @@ class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class ContextArtifactNested(AssetNested):
     """ContextArtifact in nested API format for high-performance serialization."""
 
     attributes: Union[ContextArtifactAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ContextArtifactRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ContextArtifactRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ContextArtifactRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[ContextArtifactRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        ContextArtifactRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        ContextArtifactRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -476,7 +508,10 @@ _CONTEXT_ARTIFACT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_context_artifact_attrs(attrs: ContextArtifactAttributes, obj: ContextArtifact) -> None:
+
+def _populate_context_artifact_attrs(
+    attrs: ContextArtifactAttributes, obj: ContextArtifact
+) -> None:
     """Populate ContextArtifact-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.context_repository_qualified_name = obj.context_repository_qualified_name
@@ -490,10 +525,13 @@ def _populate_context_artifact_attrs(attrs: ContextArtifactAttributes, obj: Cont
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
 
+
 def _extract_context_artifact_attrs(attrs: ContextArtifactAttributes) -> dict:
     """Extract all ContextArtifact attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["context_repository_qualified_name"] = attrs.context_repository_qualified_name
+    result["context_repository_qualified_name"] = (
+        attrs.context_repository_qualified_name
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["artifact_version"] = attrs.artifact_version
     result["file_type"] = attrs.file_type
@@ -505,18 +543,23 @@ def _extract_context_artifact_attrs(attrs: ContextArtifactAttributes) -> dict:
     result["resource_metadata"] = attrs.resource_metadata
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _context_artifact_to_nested(context_artifact: ContextArtifact) -> ContextArtifactNested:
+def _context_artifact_to_nested(
+    context_artifact: ContextArtifact,
+) -> ContextArtifactNested:
     """Convert flat ContextArtifact to nested format."""
     attrs = ContextArtifactAttributes()
     _populate_context_artifact_attrs(attrs, context_artifact)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        context_artifact, _CONTEXT_ARTIFACT_REL_FIELDS, ContextArtifactRelationshipAttributes
+        context_artifact,
+        _CONTEXT_ARTIFACT_REL_FIELDS,
+        ContextArtifactRelationshipAttributes,
     )
     return ContextArtifactNested(
         guid=context_artifact.guid,
@@ -544,16 +587,21 @@ def _context_artifact_to_nested(context_artifact: ContextArtifact) -> ContextArt
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _context_artifact_from_nested(nested: ContextArtifactNested) -> ContextArtifact:
     """Convert nested format to flat ContextArtifact."""
-    attrs = nested.attributes if nested.attributes is not UNSET else ContextArtifactAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else ContextArtifactAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CONTEXT_ARTIFACT_REL_FIELDS,
-        ContextArtifactRelationshipAttributes
+        ContextArtifactRelationshipAttributes,
     )
     return ContextArtifact(
         guid=nested.guid,
@@ -566,7 +614,6 @@ def _context_artifact_from_nested(nested: ContextArtifactNested) -> ContextArtif
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -580,7 +627,10 @@ def _context_artifact_from_nested(nested: ContextArtifactNested) -> ContextArtif
         **merged_rels,
     )
 
-def _context_artifact_to_nested_bytes(context_artifact: ContextArtifact, serde: Serde) -> bytes:
+
+def _context_artifact_to_nested_bytes(
+    context_artifact: ContextArtifact, serde: Serde
+) -> bytes:
     """Convert flat ContextArtifact to nested JSON bytes."""
     return serde.encode(_context_artifact_to_nested(context_artifact))
 
@@ -589,6 +639,7 @@ def _context_artifact_from_nested_bytes(data: bytes, serde: Serde) -> ContextArt
     """Convert nested JSON bytes to flat ContextArtifact."""
     nested = serde.decode(data, ContextArtifactNested)
     return _context_artifact_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -600,12 +651,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ContextArtifact.CONTEXT_REPOSITORY_QUALIFIED_NAME = KeywordField("contextRepositoryQualifiedName", "contextRepositoryQualifiedName")
-ContextArtifact.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+ContextArtifact.CONTEXT_REPOSITORY_QUALIFIED_NAME = KeywordField(
+    "contextRepositoryQualifiedName", "contextRepositoryQualifiedName"
+)
+ContextArtifact.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 ContextArtifact.ARTIFACT_VERSION = KeywordField("artifactVersion", "artifactVersion")
 ContextArtifact.FILE_TYPE = KeywordField("fileType", "fileType")
 ContextArtifact.FILE_PATH = KeywordField("filePath", "filePath")
-ContextArtifact.RESOURCE_FILE_SIZE = NumericField("resourceFileSize", "resourceFileSize")
+ContextArtifact.RESOURCE_FILE_SIZE = NumericField(
+    "resourceFileSize", "resourceFileSize"
+)
 ContextArtifact.LINK = KeywordField("link", "link")
 ContextArtifact.IS_GLOBAL = BooleanField("isGlobal", "isGlobal")
 ContextArtifact.REFERENCE = KeywordField("reference", "reference")
@@ -617,15 +674,21 @@ ContextArtifact.APPLICATION = RelationField("application")
 ContextArtifact.APPLICATION_FIELD = RelationField("applicationField")
 ContextArtifact.CONTEXT_REPOSITORY = RelationField("contextRepository")
 ContextArtifact.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-ContextArtifact.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+ContextArtifact.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 ContextArtifact.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ContextArtifact.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ContextArtifact.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-ContextArtifact.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+ContextArtifact.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 ContextArtifact.METRICS = RelationField("metrics")
 ContextArtifact.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ContextArtifact.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-ContextArtifact.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+ContextArtifact.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 ContextArtifact.MEANINGS = RelationField("meanings")
 ContextArtifact.MC_MONITORS = RelationField("mcMonitors")
 ContextArtifact.MC_INCIDENTS = RelationField("mcIncidents")

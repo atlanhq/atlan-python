@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -44,17 +50,18 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .sisense_related import (
+    RelatedSisenseDatamodel,
+    RelatedSisenseFolder,
+    RelatedSisenseWidget,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .sisense_related import RelatedSisenseDatamodel, RelatedSisenseFolder, RelatedSisenseWidget
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SisenseDashboard(Asset):
@@ -141,7 +148,9 @@ class SisenseDashboard(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -150,10 +159,14 @@ class SisenseDashboard(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -180,7 +193,9 @@ class SisenseDashboard(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -192,7 +207,9 @@ class SisenseDashboard(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     sisense_widgets: Union[List[RelatedSisenseWidget], None, UnsetType] = UNSET
@@ -220,10 +237,7 @@ class SisenseDashboard(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -254,7 +268,9 @@ class SisenseDashboard(Asset):
         return _sisense_dashboard_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SisenseDashboard:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SisenseDashboard:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -276,6 +292,7 @@ class SisenseDashboard(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SisenseDashboardAttributes(AssetAttributes):
     """SisenseDashboard-specific attributes for nested API format."""
 
@@ -287,6 +304,7 @@ class SisenseDashboardAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class SisenseDashboardRelationshipAttributes(AssetRelationshipAttributes):
     """SisenseDashboard-specific relationship attributes for nested API format."""
@@ -321,7 +339,9 @@ class SisenseDashboardRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -330,10 +350,14 @@ class SisenseDashboardRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -360,7 +384,9 @@ class SisenseDashboardRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -372,7 +398,9 @@ class SisenseDashboardRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     sisense_widgets: Union[List[RelatedSisenseWidget], None, UnsetType] = UNSET
@@ -393,13 +421,21 @@ class SisenseDashboardRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SisenseDashboardNested(AssetNested):
     """SisenseDashboard in nested API format for high-performance serialization."""
 
     attributes: Union[SisenseDashboardAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SisenseDashboardRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SisenseDashboardRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SisenseDashboardRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        SisenseDashboardRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        SisenseDashboardRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SisenseDashboardRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -443,33 +479,46 @@ _SISENSE_DASHBOARD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sisense_dashboard_attrs(attrs: SisenseDashboardAttributes, obj: SisenseDashboard) -> None:
+
+def _populate_sisense_dashboard_attrs(
+    attrs: SisenseDashboardAttributes, obj: SisenseDashboard
+) -> None:
     """Populate SisenseDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sisense_dashboard_folder_qualified_name = obj.sisense_dashboard_folder_qualified_name
+    attrs.sisense_dashboard_folder_qualified_name = (
+        obj.sisense_dashboard_folder_qualified_name
+    )
     attrs.sisense_widget_count = obj.sisense_widget_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_sisense_dashboard_attrs(attrs: SisenseDashboardAttributes) -> dict:
     """Extract all SisenseDashboard attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sisense_dashboard_folder_qualified_name"] = attrs.sisense_dashboard_folder_qualified_name
+    result["sisense_dashboard_folder_qualified_name"] = (
+        attrs.sisense_dashboard_folder_qualified_name
+    )
     result["sisense_widget_count"] = attrs.sisense_widget_count
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sisense_dashboard_to_nested(sisense_dashboard: SisenseDashboard) -> SisenseDashboardNested:
+def _sisense_dashboard_to_nested(
+    sisense_dashboard: SisenseDashboard,
+) -> SisenseDashboardNested:
     """Convert flat SisenseDashboard to nested format."""
     attrs = SisenseDashboardAttributes()
     _populate_sisense_dashboard_attrs(attrs, sisense_dashboard)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sisense_dashboard, _SISENSE_DASHBOARD_REL_FIELDS, SisenseDashboardRelationshipAttributes
+        sisense_dashboard,
+        _SISENSE_DASHBOARD_REL_FIELDS,
+        SisenseDashboardRelationshipAttributes,
     )
     return SisenseDashboardNested(
         guid=sisense_dashboard.guid,
@@ -497,16 +546,21 @@ def _sisense_dashboard_to_nested(sisense_dashboard: SisenseDashboard) -> Sisense
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sisense_dashboard_from_nested(nested: SisenseDashboardNested) -> SisenseDashboard:
     """Convert nested format to flat SisenseDashboard."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SisenseDashboardAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SisenseDashboardAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SISENSE_DASHBOARD_REL_FIELDS,
-        SisenseDashboardRelationshipAttributes
+        SisenseDashboardRelationshipAttributes,
     )
     return SisenseDashboard(
         guid=nested.guid,
@@ -519,7 +573,6 @@ def _sisense_dashboard_from_nested(nested: SisenseDashboardNested) -> SisenseDas
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -533,7 +586,10 @@ def _sisense_dashboard_from_nested(nested: SisenseDashboardNested) -> SisenseDas
         **merged_rels,
     )
 
-def _sisense_dashboard_to_nested_bytes(sisense_dashboard: SisenseDashboard, serde: Serde) -> bytes:
+
+def _sisense_dashboard_to_nested_bytes(
+    sisense_dashboard: SisenseDashboard, serde: Serde
+) -> bytes:
     """Convert flat SisenseDashboard to nested JSON bytes."""
     return serde.encode(_sisense_dashboard_to_nested(sisense_dashboard))
 
@@ -542,6 +598,7 @@ def _sisense_dashboard_from_nested_bytes(data: bytes, serde: Serde) -> SisenseDa
     """Convert nested JSON bytes to flat SisenseDashboard."""
     nested = serde.decode(data, SisenseDashboardNested)
     return _sisense_dashboard_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -553,24 +610,38 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SisenseDashboard.SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME = KeywordTextField("sisenseDashboardFolderQualifiedName", "sisenseDashboardFolderQualifiedName", "sisenseDashboardFolderQualifiedName.text")
-SisenseDashboard.SISENSE_WIDGET_COUNT = NumericField("sisenseWidgetCount", "sisenseWidgetCount")
-SisenseDashboard.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SisenseDashboard.SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME = KeywordTextField(
+    "sisenseDashboardFolderQualifiedName",
+    "sisenseDashboardFolderQualifiedName",
+    "sisenseDashboardFolderQualifiedName.text",
+)
+SisenseDashboard.SISENSE_WIDGET_COUNT = NumericField(
+    "sisenseWidgetCount", "sisenseWidgetCount"
+)
+SisenseDashboard.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SisenseDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SisenseDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SisenseDashboard.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SisenseDashboard.APPLICATION = RelationField("application")
 SisenseDashboard.APPLICATION_FIELD = RelationField("applicationField")
 SisenseDashboard.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SisenseDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SisenseDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SisenseDashboard.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SisenseDashboard.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SisenseDashboard.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SisenseDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SisenseDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SisenseDashboard.METRICS = RelationField("metrics")
 SisenseDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SisenseDashboard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SisenseDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SisenseDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SisenseDashboard.MEANINGS = RelationField("meanings")
 SisenseDashboard.MC_MONITORS = RelationField("mcMonitors")
 SisenseDashboard.MC_INCIDENTS = RelationField("mcIncidents")

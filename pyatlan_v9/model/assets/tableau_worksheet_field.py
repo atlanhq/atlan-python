@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -46,15 +52,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .tableau_related import RelatedTableauCalculatedField, RelatedTableauDashboardField, RelatedTableauDatasourceField, RelatedTableauWorksheet
+from .tableau_related import (
+    RelatedTableauCalculatedField,
+    RelatedTableauDashboardField,
+    RelatedTableauDatasourceField,
+    RelatedTableauWorksheet,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class TableauWorksheetField(Asset):
@@ -149,7 +157,9 @@ class TableauWorksheetField(Asset):
     tableau_worksheet_field_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of this field."""
 
-    tableau_worksheet_field_upstream_tables: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_tables: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Tables upstream to this worksheet field."""
 
     tableau_worksheet_field_formula: Union[str, None, UnsetType] = UNSET
@@ -158,10 +168,14 @@ class TableauWorksheetField(Asset):
     tableau_worksheet_field_bin_size: Union[str, None, UnsetType] = UNSET
     """Bin size of this field."""
 
-    tableau_worksheet_field_upstream_columns: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_columns: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Columns upstream to this field."""
 
-    tableau_worksheet_field_upstream_fields: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_fields: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Fields upstream to this field."""
 
     tableau_worksheet_field_type: Union[str, None, UnsetType] = UNSET
@@ -206,7 +220,9 @@ class TableauWorksheetField(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -215,10 +231,14 @@ class TableauWorksheetField(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -245,7 +265,9 @@ class TableauWorksheetField(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -257,7 +279,9 @@ class TableauWorksheetField(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -269,13 +293,19 @@ class TableauWorksheetField(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    tableau_dashboard_field: Union[RelatedTableauDashboardField, None, UnsetType] = UNSET
+    tableau_dashboard_field: Union[RelatedTableauDashboardField, None, UnsetType] = (
+        UNSET
+    )
     """Worksheet field used by this dashboard field."""
 
-    tableau_datasource_field: Union[RelatedTableauDatasourceField, None, UnsetType] = UNSET
+    tableau_datasource_field: Union[RelatedTableauDatasourceField, None, UnsetType] = (
+        UNSET
+    )
     """Datasource field this worksheet field uses."""
 
-    tableau_calculated_field: Union[RelatedTableauCalculatedField, None, UnsetType] = UNSET
+    tableau_calculated_field: Union[RelatedTableauCalculatedField, None, UnsetType] = (
+        UNSET
+    )
     """Calculated field this worksheet field uses."""
 
     tableau_worksheet: Union[RelatedTableauWorksheet, None, UnsetType] = UNSET
@@ -291,7 +321,6 @@ class TableauWorksheetField(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -322,7 +351,9 @@ class TableauWorksheetField(Asset):
         return _tableau_worksheet_field_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> TableauWorksheetField:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> TableauWorksheetField:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -343,6 +374,7 @@ class TableauWorksheetField(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class TableauWorksheetFieldAttributes(AssetAttributes):
     """TableauWorksheetField-specific attributes for nested API format."""
@@ -377,7 +409,9 @@ class TableauWorksheetFieldAttributes(AssetAttributes):
     tableau_worksheet_field_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of this field."""
 
-    tableau_worksheet_field_upstream_tables: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_tables: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Tables upstream to this worksheet field."""
 
     tableau_worksheet_field_formula: Union[str, None, UnsetType] = UNSET
@@ -386,10 +420,14 @@ class TableauWorksheetFieldAttributes(AssetAttributes):
     tableau_worksheet_field_bin_size: Union[str, None, UnsetType] = UNSET
     """Bin size of this field."""
 
-    tableau_worksheet_field_upstream_columns: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_columns: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Columns upstream to this field."""
 
-    tableau_worksheet_field_upstream_fields: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    tableau_worksheet_field_upstream_fields: Union[
+        List[Dict[str, str]], None, UnsetType
+    ] = UNSET
     """Fields upstream to this field."""
 
     tableau_worksheet_field_type: Union[str, None, UnsetType] = UNSET
@@ -403,6 +441,7 @@ class TableauWorksheetFieldAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class TableauWorksheetFieldRelationshipAttributes(AssetRelationshipAttributes):
     """TableauWorksheetField-specific relationship attributes for nested API format."""
@@ -437,7 +476,9 @@ class TableauWorksheetFieldRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -446,10 +487,14 @@ class TableauWorksheetFieldRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -476,7 +521,9 @@ class TableauWorksheetFieldRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -488,7 +535,9 @@ class TableauWorksheetFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -500,25 +549,39 @@ class TableauWorksheetFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    tableau_dashboard_field: Union[RelatedTableauDashboardField, None, UnsetType] = UNSET
+    tableau_dashboard_field: Union[RelatedTableauDashboardField, None, UnsetType] = (
+        UNSET
+    )
     """Worksheet field used by this dashboard field."""
 
-    tableau_datasource_field: Union[RelatedTableauDatasourceField, None, UnsetType] = UNSET
+    tableau_datasource_field: Union[RelatedTableauDatasourceField, None, UnsetType] = (
+        UNSET
+    )
     """Datasource field this worksheet field uses."""
 
-    tableau_calculated_field: Union[RelatedTableauCalculatedField, None, UnsetType] = UNSET
+    tableau_calculated_field: Union[RelatedTableauCalculatedField, None, UnsetType] = (
+        UNSET
+    )
     """Calculated field this worksheet field uses."""
 
     tableau_worksheet: Union[RelatedTableauWorksheet, None, UnsetType] = UNSET
     """Worksheet in which this field exists."""
 
+
 class TableauWorksheetFieldNested(AssetNested):
     """TableauWorksheetField in nested API format for high-performance serialization."""
 
     attributes: Union[TableauWorksheetFieldAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[TableauWorksheetFieldRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[TableauWorksheetFieldRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[TableauWorksheetFieldRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        TableauWorksheetFieldRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        TableauWorksheetFieldRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        TableauWorksheetFieldRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -563,65 +626,102 @@ _TABLEAU_WORKSHEET_FIELD_REL_FIELDS: List[str] = [
     "tableau_worksheet",
 ]
 
-def _populate_tableau_worksheet_field_attrs(attrs: TableauWorksheetFieldAttributes, obj: TableauWorksheetField) -> None:
+
+def _populate_tableau_worksheet_field_attrs(
+    attrs: TableauWorksheetFieldAttributes, obj: TableauWorksheetField
+) -> None:
     """Populate TableauWorksheetField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.tableau_site_qualified_name = obj.tableau_site_qualified_name
     attrs.tableau_project_qualified_name = obj.tableau_project_qualified_name
-    attrs.tableau_top_level_project_qualified_name = obj.tableau_top_level_project_qualified_name
+    attrs.tableau_top_level_project_qualified_name = (
+        obj.tableau_top_level_project_qualified_name
+    )
     attrs.tableau_workbook_qualified_name = obj.tableau_workbook_qualified_name
     attrs.tableau_worksheet_qualified_name = obj.tableau_worksheet_qualified_name
     attrs.tableau_project_hierarchy = obj.tableau_project_hierarchy
     attrs.tableau_fully_qualified_name = obj.tableau_fully_qualified_name
-    attrs.tableau_worksheet_field_data_category = obj.tableau_worksheet_field_data_category
+    attrs.tableau_worksheet_field_data_category = (
+        obj.tableau_worksheet_field_data_category
+    )
     attrs.tableau_worksheet_field_role = obj.tableau_worksheet_field_role
     attrs.tableau_worksheet_field_data_type = obj.tableau_worksheet_field_data_type
-    attrs.tableau_worksheet_field_upstream_tables = obj.tableau_worksheet_field_upstream_tables
+    attrs.tableau_worksheet_field_upstream_tables = (
+        obj.tableau_worksheet_field_upstream_tables
+    )
     attrs.tableau_worksheet_field_formula = obj.tableau_worksheet_field_formula
     attrs.tableau_worksheet_field_bin_size = obj.tableau_worksheet_field_bin_size
-    attrs.tableau_worksheet_field_upstream_columns = obj.tableau_worksheet_field_upstream_columns
-    attrs.tableau_worksheet_field_upstream_fields = obj.tableau_worksheet_field_upstream_fields
+    attrs.tableau_worksheet_field_upstream_columns = (
+        obj.tableau_worksheet_field_upstream_columns
+    )
+    attrs.tableau_worksheet_field_upstream_fields = (
+        obj.tableau_worksheet_field_upstream_fields
+    )
     attrs.tableau_worksheet_field_type = obj.tableau_worksheet_field_type
-    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
+    attrs.tableau_project_hierarchy_qualified_names = (
+        obj.tableau_project_hierarchy_qualified_names
+    )
     attrs.tableau_source_read_counts = obj.tableau_source_read_counts
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-def _extract_tableau_worksheet_field_attrs(attrs: TableauWorksheetFieldAttributes) -> dict:
+
+def _extract_tableau_worksheet_field_attrs(
+    attrs: TableauWorksheetFieldAttributes,
+) -> dict:
     """Extract all TableauWorksheetField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["tableau_site_qualified_name"] = attrs.tableau_site_qualified_name
     result["tableau_project_qualified_name"] = attrs.tableau_project_qualified_name
-    result["tableau_top_level_project_qualified_name"] = attrs.tableau_top_level_project_qualified_name
+    result["tableau_top_level_project_qualified_name"] = (
+        attrs.tableau_top_level_project_qualified_name
+    )
     result["tableau_workbook_qualified_name"] = attrs.tableau_workbook_qualified_name
     result["tableau_worksheet_qualified_name"] = attrs.tableau_worksheet_qualified_name
     result["tableau_project_hierarchy"] = attrs.tableau_project_hierarchy
     result["tableau_fully_qualified_name"] = attrs.tableau_fully_qualified_name
-    result["tableau_worksheet_field_data_category"] = attrs.tableau_worksheet_field_data_category
+    result["tableau_worksheet_field_data_category"] = (
+        attrs.tableau_worksheet_field_data_category
+    )
     result["tableau_worksheet_field_role"] = attrs.tableau_worksheet_field_role
-    result["tableau_worksheet_field_data_type"] = attrs.tableau_worksheet_field_data_type
-    result["tableau_worksheet_field_upstream_tables"] = attrs.tableau_worksheet_field_upstream_tables
+    result["tableau_worksheet_field_data_type"] = (
+        attrs.tableau_worksheet_field_data_type
+    )
+    result["tableau_worksheet_field_upstream_tables"] = (
+        attrs.tableau_worksheet_field_upstream_tables
+    )
     result["tableau_worksheet_field_formula"] = attrs.tableau_worksheet_field_formula
     result["tableau_worksheet_field_bin_size"] = attrs.tableau_worksheet_field_bin_size
-    result["tableau_worksheet_field_upstream_columns"] = attrs.tableau_worksheet_field_upstream_columns
-    result["tableau_worksheet_field_upstream_fields"] = attrs.tableau_worksheet_field_upstream_fields
+    result["tableau_worksheet_field_upstream_columns"] = (
+        attrs.tableau_worksheet_field_upstream_columns
+    )
+    result["tableau_worksheet_field_upstream_fields"] = (
+        attrs.tableau_worksheet_field_upstream_fields
+    )
     result["tableau_worksheet_field_type"] = attrs.tableau_worksheet_field_type
-    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
+    result["tableau_project_hierarchy_qualified_names"] = (
+        attrs.tableau_project_hierarchy_qualified_names
+    )
     result["tableau_source_read_counts"] = attrs.tableau_source_read_counts
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _tableau_worksheet_field_to_nested(tableau_worksheet_field: TableauWorksheetField) -> TableauWorksheetFieldNested:
+def _tableau_worksheet_field_to_nested(
+    tableau_worksheet_field: TableauWorksheetField,
+) -> TableauWorksheetFieldNested:
     """Convert flat TableauWorksheetField to nested format."""
     attrs = TableauWorksheetFieldAttributes()
     _populate_tableau_worksheet_field_attrs(attrs, tableau_worksheet_field)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        tableau_worksheet_field, _TABLEAU_WORKSHEET_FIELD_REL_FIELDS, TableauWorksheetFieldRelationshipAttributes
+        tableau_worksheet_field,
+        _TABLEAU_WORKSHEET_FIELD_REL_FIELDS,
+        TableauWorksheetFieldRelationshipAttributes,
     )
     return TableauWorksheetFieldNested(
         guid=tableau_worksheet_field.guid,
@@ -649,16 +749,23 @@ def _tableau_worksheet_field_to_nested(tableau_worksheet_field: TableauWorksheet
         remove_relationship_attributes=remove_rels,
     )
 
-def _tableau_worksheet_field_from_nested(nested: TableauWorksheetFieldNested) -> TableauWorksheetField:
+
+def _tableau_worksheet_field_from_nested(
+    nested: TableauWorksheetFieldNested,
+) -> TableauWorksheetField:
     """Convert nested format to flat TableauWorksheetField."""
-    attrs = nested.attributes if nested.attributes is not UNSET else TableauWorksheetFieldAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else TableauWorksheetFieldAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_WORKSHEET_FIELD_REL_FIELDS,
-        TableauWorksheetFieldRelationshipAttributes
+        TableauWorksheetFieldRelationshipAttributes,
     )
     return TableauWorksheetField(
         guid=nested.guid,
@@ -671,7 +778,6 @@ def _tableau_worksheet_field_from_nested(nested: TableauWorksheetFieldNested) ->
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -685,15 +791,21 @@ def _tableau_worksheet_field_from_nested(nested: TableauWorksheetFieldNested) ->
         **merged_rels,
     )
 
-def _tableau_worksheet_field_to_nested_bytes(tableau_worksheet_field: TableauWorksheetField, serde: Serde) -> bytes:
+
+def _tableau_worksheet_field_to_nested_bytes(
+    tableau_worksheet_field: TableauWorksheetField, serde: Serde
+) -> bytes:
     """Convert flat TableauWorksheetField to nested JSON bytes."""
     return serde.encode(_tableau_worksheet_field_to_nested(tableau_worksheet_field))
 
 
-def _tableau_worksheet_field_from_nested_bytes(data: bytes, serde: Serde) -> TableauWorksheetField:
+def _tableau_worksheet_field_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> TableauWorksheetField:
     """Convert nested JSON bytes to flat TableauWorksheetField."""
     nested = serde.decode(data, TableauWorksheetFieldNested)
     return _tableau_worksheet_field_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -704,40 +816,94 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-TableauWorksheetField.TABLEAU_SITE_QUALIFIED_NAME = KeywordField("tableauSiteQualifiedName", "tableauSiteQualifiedName")
-TableauWorksheetField.TABLEAU_PROJECT_QUALIFIED_NAME = KeywordField("tableauProjectQualifiedName", "tableauProjectQualifiedName")
-TableauWorksheetField.TABLEAU_TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField("tableauTopLevelProjectQualifiedName", "tableauTopLevelProjectQualifiedName")
-TableauWorksheetField.TABLEAU_WORKBOOK_QUALIFIED_NAME = KeywordField("tableauWorkbookQualifiedName", "tableauWorkbookQualifiedName")
-TableauWorksheetField.TABLEAU_WORKSHEET_QUALIFIED_NAME = KeywordField("tableauWorksheetQualifiedName", "tableauWorksheetQualifiedName")
-TableauWorksheetField.TABLEAU_PROJECT_HIERARCHY = KeywordField("tableauProjectHierarchy", "tableauProjectHierarchy")
-TableauWorksheetField.TABLEAU_FULLY_QUALIFIED_NAME = KeywordField("tableauFullyQualifiedName", "tableauFullyQualifiedName")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_DATA_CATEGORY = KeywordField("tableauWorksheetFieldDataCategory", "tableauWorksheetFieldDataCategory")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_ROLE = KeywordField("tableauWorksheetFieldRole", "tableauWorksheetFieldRole")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_DATA_TYPE = KeywordTextField("tableauWorksheetFieldDataType", "tableauWorksheetFieldDataType", "tableauWorksheetFieldDataType.text")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_UPSTREAM_TABLES = KeywordField("tableauWorksheetFieldUpstreamTables", "tableauWorksheetFieldUpstreamTables")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_FORMULA = KeywordField("tableauWorksheetFieldFormula", "tableauWorksheetFieldFormula")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_BIN_SIZE = KeywordField("tableauWorksheetFieldBinSize", "tableauWorksheetFieldBinSize")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_UPSTREAM_COLUMNS = KeywordField("tableauWorksheetFieldUpstreamColumns", "tableauWorksheetFieldUpstreamColumns")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_UPSTREAM_FIELDS = KeywordField("tableauWorksheetFieldUpstreamFields", "tableauWorksheetFieldUpstreamFields")
-TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_TYPE = KeywordField("tableauWorksheetFieldType", "tableauWorksheetFieldType")
-TableauWorksheetField.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
-TableauWorksheetField.TABLEAU_SOURCE_READ_COUNTS = KeywordField("tableauSourceReadCounts", "tableauSourceReadCounts")
-TableauWorksheetField.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+TableauWorksheetField.TABLEAU_SITE_QUALIFIED_NAME = KeywordField(
+    "tableauSiteQualifiedName", "tableauSiteQualifiedName"
+)
+TableauWorksheetField.TABLEAU_PROJECT_QUALIFIED_NAME = KeywordField(
+    "tableauProjectQualifiedName", "tableauProjectQualifiedName"
+)
+TableauWorksheetField.TABLEAU_TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField(
+    "tableauTopLevelProjectQualifiedName", "tableauTopLevelProjectQualifiedName"
+)
+TableauWorksheetField.TABLEAU_WORKBOOK_QUALIFIED_NAME = KeywordField(
+    "tableauWorkbookQualifiedName", "tableauWorkbookQualifiedName"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_QUALIFIED_NAME = KeywordField(
+    "tableauWorksheetQualifiedName", "tableauWorksheetQualifiedName"
+)
+TableauWorksheetField.TABLEAU_PROJECT_HIERARCHY = KeywordField(
+    "tableauProjectHierarchy", "tableauProjectHierarchy"
+)
+TableauWorksheetField.TABLEAU_FULLY_QUALIFIED_NAME = KeywordField(
+    "tableauFullyQualifiedName", "tableauFullyQualifiedName"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_DATA_CATEGORY = KeywordField(
+    "tableauWorksheetFieldDataCategory", "tableauWorksheetFieldDataCategory"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_ROLE = KeywordField(
+    "tableauWorksheetFieldRole", "tableauWorksheetFieldRole"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_DATA_TYPE = KeywordTextField(
+    "tableauWorksheetFieldDataType",
+    "tableauWorksheetFieldDataType",
+    "tableauWorksheetFieldDataType.text",
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_UPSTREAM_TABLES = KeywordField(
+    "tableauWorksheetFieldUpstreamTables", "tableauWorksheetFieldUpstreamTables"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_FORMULA = KeywordField(
+    "tableauWorksheetFieldFormula", "tableauWorksheetFieldFormula"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_BIN_SIZE = KeywordField(
+    "tableauWorksheetFieldBinSize", "tableauWorksheetFieldBinSize"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_UPSTREAM_COLUMNS = KeywordField(
+    "tableauWorksheetFieldUpstreamColumns", "tableauWorksheetFieldUpstreamColumns"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_UPSTREAM_FIELDS = KeywordField(
+    "tableauWorksheetFieldUpstreamFields", "tableauWorksheetFieldUpstreamFields"
+)
+TableauWorksheetField.TABLEAU_WORKSHEET_FIELD_TYPE = KeywordField(
+    "tableauWorksheetFieldType", "tableauWorksheetFieldType"
+)
+TableauWorksheetField.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
+    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
+)
+TableauWorksheetField.TABLEAU_SOURCE_READ_COUNTS = KeywordField(
+    "tableauSourceReadCounts", "tableauSourceReadCounts"
+)
+TableauWorksheetField.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 TableauWorksheetField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-TableauWorksheetField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+TableauWorksheetField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 TableauWorksheetField.ANOMALO_CHECKS = RelationField("anomaloChecks")
 TableauWorksheetField.APPLICATION = RelationField("application")
 TableauWorksheetField.APPLICATION_FIELD = RelationField("applicationField")
 TableauWorksheetField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-TableauWorksheetField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-TableauWorksheetField.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+TableauWorksheetField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+TableauWorksheetField.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 TableauWorksheetField.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-TableauWorksheetField.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-TableauWorksheetField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+TableauWorksheetField.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+TableauWorksheetField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 TableauWorksheetField.METRICS = RelationField("metrics")
 TableauWorksheetField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-TableauWorksheetField.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-TableauWorksheetField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+TableauWorksheetField.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+TableauWorksheetField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 TableauWorksheetField.MEANINGS = RelationField("meanings")
 TableauWorksheetField.MC_MONITORS = RelationField("mcMonitors")
 TableauWorksheetField.MC_INCIDENTS = RelationField("mcIncidents")
@@ -746,7 +912,9 @@ TableauWorksheetField.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 TableauWorksheetField.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 TableauWorksheetField.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 TableauWorksheetField.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-TableauWorksheetField.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+TableauWorksheetField.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 TableauWorksheetField.FILES = RelationField("files")
 TableauWorksheetField.LINKS = RelationField("links")
 TableauWorksheetField.README = RelationField("readme")

@@ -8,16 +8,16 @@ AI module exports.
 This module provides convenient imports for all AI types and their Related variants.
 """
 
+from .ai import AI
+from .ai_application import AIApplication
+from .ai_model import AIModel
+from .ai_model_version import AIModelVersion
 from .ai_related import (
     RelatedAI,
     RelatedAIApplication,
     RelatedAIModel,
     RelatedAIModelVersion,
 )
-from .ai import AI
-from .ai_application import AIApplication
-from .ai_model import AIModel
-from .ai_model_version import AIModelVersion
 
 __all__ = [
     "AI",

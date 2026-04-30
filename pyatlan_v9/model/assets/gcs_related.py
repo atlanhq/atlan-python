@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -58,6 +58,7 @@ class RelatedGCS(RelatedObjectStore):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "GCS"
 
+
 class RelatedGCSBucket(RelatedGCS):
     """
     Related entity reference for GCSBucket assets.
@@ -93,6 +94,7 @@ class RelatedGCSBucket(RelatedGCS):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "GCSBucket"
 
+
 class RelatedGCSObject(RelatedGCS):
     """
     Related entity reference for GCSObject assets.
@@ -124,10 +126,14 @@ class RelatedGCSObject(RelatedGCS):
     gcs_object_generation_id: Union[int, None, UnsetType] = UNSET
     """Generation ID of this object."""
 
-    gcs_object_crc32c_hash: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="gcsObjectCRC32CHash")
+    gcs_object_crc32c_hash: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="gcsObjectCRC32CHash"
+    )
     """CRC32C hash of this object."""
 
-    gcs_object_md5_hash: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="gcsObjectMD5Hash")
+    gcs_object_md5_hash: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="gcsObjectMD5Hash"
+    )
     """MD5 hash of this object."""
 
     gcs_object_data_last_modified_time: Union[int, None, UnsetType] = UNSET

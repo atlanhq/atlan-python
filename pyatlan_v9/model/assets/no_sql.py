@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,13 +52,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class NoSQL(Asset):
@@ -95,7 +100,9 @@ class NoSQL(Asset):
 
     type_name: Union[str, UnsetType] = "NoSQL"
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -131,7 +138,9 @@ class NoSQL(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -140,10 +149,14 @@ class NoSQL(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -170,7 +183,9 @@ class NoSQL(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -182,7 +197,9 @@ class NoSQL(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -196,8 +213,6 @@ class NoSQL(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "NoSQL"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -250,14 +265,18 @@ class NoSQL(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class NoSQLAttributes(AssetAttributes):
     """NoSQL-specific attributes for nested API format."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     """NoSQL-specific relationship attributes for nested API format."""
@@ -292,7 +311,9 @@ class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -301,10 +322,14 @@ class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -331,7 +356,9 @@ class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -343,7 +370,9 @@ class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -355,13 +384,19 @@ class NoSQLRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class NoSQLNested(AssetNested):
     """NoSQL in nested API format for high-performance serialization."""
 
     attributes: Union[NoSQLAttributes, UnsetType] = UNSET
     relationship_attributes: Union[NoSQLRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[NoSQLRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[NoSQLRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[NoSQLRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[NoSQLRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -402,11 +437,13 @@ _NO_SQL_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_no_sql_attrs(attrs: NoSQLAttributes, obj: NoSQL) -> None:
     """Populate NoSQL-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_no_sql_attrs(attrs: NoSQLAttributes) -> dict:
     """Extract all NoSQL attributes from the attrs struct into a flat dict."""
@@ -414,6 +451,7 @@ def _extract_no_sql_attrs(attrs: NoSQLAttributes) -> dict:
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -454,6 +492,7 @@ def _no_sql_to_nested(no_sql: NoSQL) -> NoSQLNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _no_sql_from_nested(nested: NoSQLNested) -> NoSQL:
     """Convert nested format to flat NoSQL."""
     attrs = nested.attributes if nested.attributes is not UNSET else NoSQLAttributes()
@@ -463,7 +502,7 @@ def _no_sql_from_nested(nested: NoSQLNested) -> NoSQL:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _NO_SQL_REL_FIELDS,
-        NoSQLRelationshipAttributes
+        NoSQLRelationshipAttributes,
     )
     return NoSQL(
         guid=nested.guid,
@@ -476,7 +515,6 @@ def _no_sql_from_nested(nested: NoSQLNested) -> NoSQL:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -490,6 +528,7 @@ def _no_sql_from_nested(nested: NoSQLNested) -> NoSQL:
         **merged_rels,
     )
 
+
 def _no_sql_to_nested_bytes(no_sql: NoSQL, serde: Serde) -> bytes:
     """Convert flat NoSQL to nested JSON bytes."""
     return serde.encode(_no_sql_to_nested(no_sql))
@@ -500,15 +539,15 @@ def _no_sql_from_nested_bytes(data: bytes, serde: Serde) -> NoSQL:
     nested = serde.decode(data, NoSQLNested)
     return _no_sql_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
-NoSQL.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+NoSQL.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
 NoSQL.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 NoSQL.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 NoSQL.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -524,7 +563,9 @@ NoSQL.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 NoSQL.METRICS = RelationField("metrics")
 NoSQL.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 NoSQL.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-NoSQL.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+NoSQL.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 NoSQL.MEANINGS = RelationField("meanings")
 NoSQL.MC_MONITORS = RelationField("mcMonitors")
 NoSQL.MC_INCIDENTS = RelationField("mcIncidents")

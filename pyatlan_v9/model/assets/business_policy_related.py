@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -55,13 +55,17 @@ class RelatedBusinessPolicy(RelatedAsset):
     business_policy_review_period: Union[str, None, UnsetType] = UNSET
     """Duration for the business policy to complete review."""
 
-    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyFilterDSL")
+    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicyFilterDSL"
+    )
     """Business Policy Filter ES DSL to denote the associate asset/s involved."""
 
     business_policy_base_parent_guid: Union[str, None, UnsetType] = UNSET
     """Base parent Guid for policy used in version"""
 
-    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicySelectedApprovalWF")
+    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicySelectedApprovalWF"
+    )
     """Selected approval workflow id for business policy"""
 
     business_policy_rules: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
@@ -70,6 +74,7 @@ class RelatedBusinessPolicy(RelatedAsset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "BusinessPolicy"
+
 
 class RelatedBusinessPolicyException(RelatedBusinessPolicy):
     """
@@ -90,12 +95,15 @@ class RelatedBusinessPolicyException(RelatedBusinessPolicy):
     business_policy_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the business policy through which this asset is accessible."""
 
-    business_policy_exception_filter_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyExceptionFilterDSL")
+    business_policy_exception_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicyExceptionFilterDSL"
+    )
     """Business Policy Exception Filter ES DSL to denote the associate asset/s involved."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "BusinessPolicyException"
+
 
 class RelatedBusinessPolicyIncident(RelatedBusinessPolicy):
     """
@@ -110,15 +118,20 @@ class RelatedBusinessPolicyIncident(RelatedBusinessPolicy):
     business_policy_incident_noncompliant_count: Union[int, None, UnsetType] = UNSET
     """count of noncompliant assets in the incident"""
 
-    business_policy_incident_related_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyIncidentRelatedPolicyGUIDs")
+    business_policy_incident_related_policy_guids: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="businessPolicyIncidentRelatedPolicyGUIDs")
+    )
     """policy ids related to this incident"""
 
-    business_policy_incident_filter_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyIncidentFilterDSL")
+    business_policy_incident_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicyIncidentFilterDSL"
+    )
     """Filter ES DSL to denote the associate asset/s involved."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "BusinessPolicyIncident"
+
 
 class RelatedBusinessPolicyLog(RelatedBusinessPolicy):
     """

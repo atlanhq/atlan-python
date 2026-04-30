@@ -8,16 +8,16 @@ Superset module exports.
 This module provides convenient imports for all Superset types and their Related variants.
 """
 
+from .superset import Superset
+from .superset_chart import SupersetChart
+from .superset_dashboard import SupersetDashboard
+from .superset_dataset import SupersetDataset
 from .superset_related import (
     RelatedSuperset,
     RelatedSupersetChart,
     RelatedSupersetDashboard,
     RelatedSupersetDataset,
 )
-from .superset import Superset
-from .superset_chart import SupersetChart
-from .superset_dashboard import SupersetDashboard
-from .superset_dataset import SupersetDataset
 
 __all__ = [
     "RelatedSuperset",

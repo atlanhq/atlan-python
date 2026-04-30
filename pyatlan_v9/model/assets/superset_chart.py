@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -46,16 +53,12 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .superset_related import RelatedSupersetDashboard
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SupersetChart(Asset):
@@ -148,7 +151,9 @@ class SupersetChart(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -157,10 +162,14 @@ class SupersetChart(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -187,7 +196,9 @@ class SupersetChart(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -199,7 +210,9 @@ class SupersetChart(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -221,10 +234,7 @@ class SupersetChart(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     @classmethod
     @init_guid
@@ -323,6 +333,7 @@ class SupersetChart(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SupersetChartAttributes(AssetAttributes):
     """SupersetChart-specific attributes for nested API format."""
 
@@ -340,6 +351,7 @@ class SupersetChartAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class SupersetChartRelationshipAttributes(AssetRelationshipAttributes):
     """SupersetChart-specific relationship attributes for nested API format."""
@@ -374,7 +386,9 @@ class SupersetChartRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -383,10 +397,14 @@ class SupersetChartRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -413,7 +431,9 @@ class SupersetChartRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -425,7 +445,9 @@ class SupersetChartRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -440,13 +462,21 @@ class SupersetChartRelationshipAttributes(AssetRelationshipAttributes):
     superset_dashboard: Union[RelatedSupersetDashboard, None, UnsetType] = UNSET
     """SupersetDashboard asset containing this SupersetChart."""
 
+
 class SupersetChartNested(AssetNested):
     """SupersetChart in nested API format for high-performance serialization."""
 
     attributes: Union[SupersetChartAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SupersetChartRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SupersetChartRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SupersetChartRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[SupersetChartRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        SupersetChartRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SupersetChartRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -488,7 +518,10 @@ _SUPERSET_CHART_REL_FIELDS: List[str] = [
     "superset_dashboard",
 ]
 
-def _populate_superset_chart_attrs(attrs: SupersetChartAttributes, obj: SupersetChart) -> None:
+
+def _populate_superset_chart_attrs(
+    attrs: SupersetChartAttributes, obj: SupersetChart
+) -> None:
     """Populate SupersetChart-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.superset_chart_description_markdown = obj.superset_chart_description_markdown
@@ -497,15 +530,21 @@ def _populate_superset_chart_attrs(attrs: SupersetChartAttributes, obj: Superset
     attrs.superset_dashboard_qualified_name = obj.superset_dashboard_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_superset_chart_attrs(attrs: SupersetChartAttributes) -> dict:
     """Extract all SupersetChart attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["superset_chart_description_markdown"] = attrs.superset_chart_description_markdown
+    result["superset_chart_description_markdown"] = (
+        attrs.superset_chart_description_markdown
+    )
     result["superset_chart_form_data"] = attrs.superset_chart_form_data
     result["superset_dashboard_id"] = attrs.superset_dashboard_id
-    result["superset_dashboard_qualified_name"] = attrs.superset_dashboard_qualified_name
+    result["superset_dashboard_qualified_name"] = (
+        attrs.superset_dashboard_qualified_name
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -546,16 +585,21 @@ def _superset_chart_to_nested(superset_chart: SupersetChart) -> SupersetChartNes
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _superset_chart_from_nested(nested: SupersetChartNested) -> SupersetChart:
     """Convert nested format to flat SupersetChart."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SupersetChartAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SupersetChartAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SUPERSET_CHART_REL_FIELDS,
-        SupersetChartRelationshipAttributes
+        SupersetChartRelationshipAttributes,
     )
     return SupersetChart(
         guid=nested.guid,
@@ -568,7 +612,6 @@ def _superset_chart_from_nested(nested: SupersetChartNested) -> SupersetChart:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -582,7 +625,10 @@ def _superset_chart_from_nested(nested: SupersetChartNested) -> SupersetChart:
         **merged_rels,
     )
 
-def _superset_chart_to_nested_bytes(superset_chart: SupersetChart, serde: Serde) -> bytes:
+
+def _superset_chart_to_nested_bytes(
+    superset_chart: SupersetChart, serde: Serde
+) -> bytes:
     """Convert flat SupersetChart to nested JSON bytes."""
     return serde.encode(_superset_chart_to_nested(superset_chart))
 
@@ -591,6 +637,7 @@ def _superset_chart_from_nested_bytes(data: bytes, serde: Serde) -> SupersetChar
     """Convert nested JSON bytes to flat SupersetChart."""
     nested = serde.decode(data, SupersetChartNested)
     return _superset_chart_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -602,18 +649,32 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SupersetChart.SUPERSET_CHART_DESCRIPTION_MARKDOWN = KeywordField("supersetChartDescriptionMarkdown", "supersetChartDescriptionMarkdown")
-SupersetChart.SUPERSET_CHART_FORM_DATA = KeywordField("supersetChartFormData", "supersetChartFormData")
-SupersetChart.SUPERSET_DASHBOARD_ID = NumericField("supersetDashboardId", "supersetDashboardId")
-SupersetChart.SUPERSET_DASHBOARD_QUALIFIED_NAME = KeywordTextField("supersetDashboardQualifiedName", "supersetDashboardQualifiedName", "supersetDashboardQualifiedName.text")
-SupersetChart.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SupersetChart.SUPERSET_CHART_DESCRIPTION_MARKDOWN = KeywordField(
+    "supersetChartDescriptionMarkdown", "supersetChartDescriptionMarkdown"
+)
+SupersetChart.SUPERSET_CHART_FORM_DATA = KeywordField(
+    "supersetChartFormData", "supersetChartFormData"
+)
+SupersetChart.SUPERSET_DASHBOARD_ID = NumericField(
+    "supersetDashboardId", "supersetDashboardId"
+)
+SupersetChart.SUPERSET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
+    "supersetDashboardQualifiedName",
+    "supersetDashboardQualifiedName",
+    "supersetDashboardQualifiedName.text",
+)
+SupersetChart.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SupersetChart.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SupersetChart.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SupersetChart.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SupersetChart.APPLICATION = RelationField("application")
 SupersetChart.APPLICATION_FIELD = RelationField("applicationField")
 SupersetChart.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SupersetChart.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SupersetChart.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SupersetChart.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SupersetChart.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SupersetChart.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -621,7 +682,9 @@ SupersetChart.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttr
 SupersetChart.METRICS = RelationField("metrics")
 SupersetChart.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SupersetChart.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SupersetChart.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SupersetChart.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SupersetChart.MEANINGS = RelationField("meanings")
 SupersetChart.MC_MONITORS = RelationField("mcMonitors")
 SupersetChart.MC_INCIDENTS = RelationField("mcIncidents")

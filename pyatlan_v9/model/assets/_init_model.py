@@ -8,6 +8,12 @@ Model module exports.
 This module provides convenient imports for all Model types and their Related variants.
 """
 
+from .model import Model
+from .model_attribute import ModelAttribute
+from .model_attribute_association import ModelAttributeAssociation
+from .model_data_model import ModelDataModel
+from .model_entity import ModelEntity
+from .model_entity_association import ModelEntityAssociation
 from .model_related import (
     RelatedModel,
     RelatedModelAttribute,
@@ -17,12 +23,6 @@ from .model_related import (
     RelatedModelEntityAssociation,
     RelatedModelVersion,
 )
-from .model import Model
-from .model_attribute import ModelAttribute
-from .model_attribute_association import ModelAttributeAssociation
-from .model_data_model import ModelDataModel
-from .model_entity import ModelEntity
-from .model_entity_association import ModelEntityAssociation
 from .model_version import ModelVersion
 
 __all__ = [

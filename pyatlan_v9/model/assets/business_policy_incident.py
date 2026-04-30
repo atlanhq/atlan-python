@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -30,6 +37,10 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .business_policy_related import (
+    RelatedBusinessPolicy,
+    RelatedBusinessPolicyException,
+)
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -40,15 +51,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .business_policy_related import RelatedBusinessPolicy, RelatedBusinessPolicyException
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class BusinessPolicyIncident(Asset):
@@ -99,10 +106,14 @@ class BusinessPolicyIncident(Asset):
     business_policy_incident_noncompliant_count: Union[int, None, UnsetType] = UNSET
     """count of noncompliant assets in the incident"""
 
-    business_policy_incident_related_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyIncidentRelatedPolicyGUIDs")
+    business_policy_incident_related_policy_guids: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="businessPolicyIncidentRelatedPolicyGUIDs")
+    )
     """policy ids related to this incident"""
 
-    business_policy_incident_filter_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyIncidentFilterDSL")
+    business_policy_incident_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicyIncidentFilterDSL"
+    )
     """Filter ES DSL to denote the associate asset/s involved."""
 
     business_policy_type: Union[str, None, UnsetType] = UNSET
@@ -123,13 +134,17 @@ class BusinessPolicyIncident(Asset):
     business_policy_review_period: Union[str, None, UnsetType] = UNSET
     """Duration for the business policy to complete review."""
 
-    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyFilterDSL")
+    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicyFilterDSL"
+    )
     """Business Policy Filter ES DSL to denote the associate asset/s involved."""
 
     business_policy_base_parent_guid: Union[str, None, UnsetType] = UNSET
     """Base parent Guid for policy used in version"""
 
-    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicySelectedApprovalWF")
+    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicySelectedApprovalWF"
+    )
     """Selected approval workflow id for business policy"""
 
     business_policy_rules: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
@@ -147,10 +162,14 @@ class BusinessPolicyIncident(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    related_business_policies: Union[List[RelatedBusinessPolicy], None, UnsetType] = UNSET
+    related_business_policies: Union[List[RelatedBusinessPolicy], None, UnsetType] = (
+        UNSET
+    )
     """BusinessPolicy that have the same (or relatable) compliance"""
 
-    exceptions_for_business_policy: Union[List[RelatedBusinessPolicyException], None, UnsetType] = UNSET
+    exceptions_for_business_policy: Union[
+        List[RelatedBusinessPolicyException], None, UnsetType
+    ] = UNSET
     """Exception assigned to business polices"""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
@@ -171,10 +190,14 @@ class BusinessPolicyIncident(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -189,7 +212,9 @@ class BusinessPolicyIncident(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -201,7 +226,9 @@ class BusinessPolicyIncident(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -209,8 +236,6 @@ class BusinessPolicyIncident(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "BusinessPolicyIncident"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -241,7 +266,9 @@ class BusinessPolicyIncident(Asset):
         return _business_policy_incident_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> BusinessPolicyIncident:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> BusinessPolicyIncident:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -263,16 +290,21 @@ class BusinessPolicyIncident(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class BusinessPolicyIncidentAttributes(AssetAttributes):
     """BusinessPolicyIncident-specific attributes for nested API format."""
 
     business_policy_incident_noncompliant_count: Union[int, None, UnsetType] = UNSET
     """count of noncompliant assets in the incident"""
 
-    business_policy_incident_related_policy_guids: Union[List[str], None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyIncidentRelatedPolicyGUIDs")
+    business_policy_incident_related_policy_guids: Union[List[str], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="businessPolicyIncidentRelatedPolicyGUIDs")
+    )
     """policy ids related to this incident"""
 
-    business_policy_incident_filter_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyIncidentFilterDSL")
+    business_policy_incident_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicyIncidentFilterDSL"
+    )
     """Filter ES DSL to denote the associate asset/s involved."""
 
     business_policy_type: Union[str, None, UnsetType] = UNSET
@@ -293,13 +325,17 @@ class BusinessPolicyIncidentAttributes(AssetAttributes):
     business_policy_review_period: Union[str, None, UnsetType] = UNSET
     """Duration for the business policy to complete review."""
 
-    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicyFilterDSL")
+    business_policy_filter_dsl: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicyFilterDSL"
+    )
     """Business Policy Filter ES DSL to denote the associate asset/s involved."""
 
     business_policy_base_parent_guid: Union[str, None, UnsetType] = UNSET
     """Base parent Guid for policy used in version"""
 
-    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="businessPolicySelectedApprovalWF")
+    business_policy_selected_approval_wf: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="businessPolicySelectedApprovalWF"
+    )
     """Selected approval workflow id for business policy"""
 
     business_policy_rules: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
@@ -307,6 +343,7 @@ class BusinessPolicyIncidentAttributes(AssetAttributes):
 
     incident_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
+
 
 class BusinessPolicyIncidentRelationshipAttributes(AssetRelationshipAttributes):
     """BusinessPolicyIncident-specific relationship attributes for nested API format."""
@@ -320,10 +357,14 @@ class BusinessPolicyIncidentRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    related_business_policies: Union[List[RelatedBusinessPolicy], None, UnsetType] = UNSET
+    related_business_policies: Union[List[RelatedBusinessPolicy], None, UnsetType] = (
+        UNSET
+    )
     """BusinessPolicy that have the same (or relatable) compliance"""
 
-    exceptions_for_business_policy: Union[List[RelatedBusinessPolicyException], None, UnsetType] = UNSET
+    exceptions_for_business_policy: Union[
+        List[RelatedBusinessPolicyException], None, UnsetType
+    ] = UNSET
     """Exception assigned to business polices"""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
@@ -344,10 +385,14 @@ class BusinessPolicyIncidentRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -362,7 +407,9 @@ class BusinessPolicyIncidentRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -374,19 +421,29 @@ class BusinessPolicyIncidentRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+
 class BusinessPolicyIncidentNested(AssetNested):
     """BusinessPolicyIncident in nested API format for high-performance serialization."""
 
     attributes: Union[BusinessPolicyIncidentAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[BusinessPolicyIncidentRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[BusinessPolicyIncidentRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[BusinessPolicyIncidentRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        BusinessPolicyIncidentRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        BusinessPolicyIncidentRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        BusinessPolicyIncidentRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -419,11 +476,18 @@ _BUSINESS_POLICY_INCIDENT_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-def _populate_business_policy_incident_attrs(attrs: BusinessPolicyIncidentAttributes, obj: BusinessPolicyIncident) -> None:
+
+def _populate_business_policy_incident_attrs(
+    attrs: BusinessPolicyIncidentAttributes, obj: BusinessPolicyIncident
+) -> None:
     """Populate BusinessPolicyIncident-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.business_policy_incident_noncompliant_count = obj.business_policy_incident_noncompliant_count
-    attrs.business_policy_incident_related_policy_guids = obj.business_policy_incident_related_policy_guids
+    attrs.business_policy_incident_noncompliant_count = (
+        obj.business_policy_incident_noncompliant_count
+    )
+    attrs.business_policy_incident_related_policy_guids = (
+        obj.business_policy_incident_related_policy_guids
+    )
     attrs.business_policy_incident_filter_dsl = obj.business_policy_incident_filter_dsl
     attrs.business_policy_type = obj.business_policy_type
     attrs.business_policy_long_description = obj.business_policy_long_description
@@ -433,16 +497,27 @@ def _populate_business_policy_incident_attrs(attrs: BusinessPolicyIncidentAttrib
     attrs.business_policy_review_period = obj.business_policy_review_period
     attrs.business_policy_filter_dsl = obj.business_policy_filter_dsl
     attrs.business_policy_base_parent_guid = obj.business_policy_base_parent_guid
-    attrs.business_policy_selected_approval_wf = obj.business_policy_selected_approval_wf
+    attrs.business_policy_selected_approval_wf = (
+        obj.business_policy_selected_approval_wf
+    )
     attrs.business_policy_rules = obj.business_policy_rules
     attrs.incident_severity = obj.incident_severity
 
-def _extract_business_policy_incident_attrs(attrs: BusinessPolicyIncidentAttributes) -> dict:
+
+def _extract_business_policy_incident_attrs(
+    attrs: BusinessPolicyIncidentAttributes,
+) -> dict:
     """Extract all BusinessPolicyIncident attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["business_policy_incident_noncompliant_count"] = attrs.business_policy_incident_noncompliant_count
-    result["business_policy_incident_related_policy_guids"] = attrs.business_policy_incident_related_policy_guids
-    result["business_policy_incident_filter_dsl"] = attrs.business_policy_incident_filter_dsl
+    result["business_policy_incident_noncompliant_count"] = (
+        attrs.business_policy_incident_noncompliant_count
+    )
+    result["business_policy_incident_related_policy_guids"] = (
+        attrs.business_policy_incident_related_policy_guids
+    )
+    result["business_policy_incident_filter_dsl"] = (
+        attrs.business_policy_incident_filter_dsl
+    )
     result["business_policy_type"] = attrs.business_policy_type
     result["business_policy_long_description"] = attrs.business_policy_long_description
     result["business_policy_valid_till"] = attrs.business_policy_valid_till
@@ -451,23 +526,30 @@ def _extract_business_policy_incident_attrs(attrs: BusinessPolicyIncidentAttribu
     result["business_policy_review_period"] = attrs.business_policy_review_period
     result["business_policy_filter_dsl"] = attrs.business_policy_filter_dsl
     result["business_policy_base_parent_guid"] = attrs.business_policy_base_parent_guid
-    result["business_policy_selected_approval_wf"] = attrs.business_policy_selected_approval_wf
+    result["business_policy_selected_approval_wf"] = (
+        attrs.business_policy_selected_approval_wf
+    )
     result["business_policy_rules"] = attrs.business_policy_rules
     result["incident_severity"] = attrs.incident_severity
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _business_policy_incident_to_nested(business_policy_incident: BusinessPolicyIncident) -> BusinessPolicyIncidentNested:
+def _business_policy_incident_to_nested(
+    business_policy_incident: BusinessPolicyIncident,
+) -> BusinessPolicyIncidentNested:
     """Convert flat BusinessPolicyIncident to nested format."""
     attrs = BusinessPolicyIncidentAttributes()
     _populate_business_policy_incident_attrs(attrs, business_policy_incident)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        business_policy_incident, _BUSINESS_POLICY_INCIDENT_REL_FIELDS, BusinessPolicyIncidentRelationshipAttributes
+        business_policy_incident,
+        _BUSINESS_POLICY_INCIDENT_REL_FIELDS,
+        BusinessPolicyIncidentRelationshipAttributes,
     )
     return BusinessPolicyIncidentNested(
         guid=business_policy_incident.guid,
@@ -495,16 +577,23 @@ def _business_policy_incident_to_nested(business_policy_incident: BusinessPolicy
         remove_relationship_attributes=remove_rels,
     )
 
-def _business_policy_incident_from_nested(nested: BusinessPolicyIncidentNested) -> BusinessPolicyIncident:
+
+def _business_policy_incident_from_nested(
+    nested: BusinessPolicyIncidentNested,
+) -> BusinessPolicyIncident:
     """Convert nested format to flat BusinessPolicyIncident."""
-    attrs = nested.attributes if nested.attributes is not UNSET else BusinessPolicyIncidentAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else BusinessPolicyIncidentAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _BUSINESS_POLICY_INCIDENT_REL_FIELDS,
-        BusinessPolicyIncidentRelationshipAttributes
+        BusinessPolicyIncidentRelationshipAttributes,
     )
     return BusinessPolicyIncident(
         guid=nested.guid,
@@ -517,7 +606,6 @@ def _business_policy_incident_from_nested(nested: BusinessPolicyIncidentNested) 
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -531,15 +619,21 @@ def _business_policy_incident_from_nested(nested: BusinessPolicyIncidentNested) 
         **merged_rels,
     )
 
-def _business_policy_incident_to_nested_bytes(business_policy_incident: BusinessPolicyIncident, serde: Serde) -> bytes:
+
+def _business_policy_incident_to_nested_bytes(
+    business_policy_incident: BusinessPolicyIncident, serde: Serde
+) -> bytes:
     """Convert flat BusinessPolicyIncident to nested JSON bytes."""
     return serde.encode(_business_policy_incident_to_nested(business_policy_incident))
 
 
-def _business_policy_incident_from_nested_bytes(data: bytes, serde: Serde) -> BusinessPolicyIncident:
+def _business_policy_incident_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> BusinessPolicyIncident:
     """Convert nested JSON bytes to flat BusinessPolicyIncident."""
     nested = serde.decode(data, BusinessPolicyIncidentNested)
     return _business_policy_incident_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -550,40 +644,85 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT = NumericField("businessPolicyIncidentNoncompliantCount", "businessPolicyIncidentNoncompliantCount")
-BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS = KeywordField("businessPolicyIncidentRelatedPolicyGUIDs", "businessPolicyIncidentRelatedPolicyGUIDs")
-BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_FILTER_DSL = KeywordField("businessPolicyIncidentFilterDSL", "businessPolicyIncidentFilterDSL")
-BusinessPolicyIncident.BUSINESS_POLICY_TYPE = KeywordField("businessPolicyType", "businessPolicyType")
-BusinessPolicyIncident.BUSINESS_POLICY_LONG_DESCRIPTION = KeywordField("businessPolicyLongDescription", "businessPolicyLongDescription")
-BusinessPolicyIncident.BUSINESS_POLICY_VALID_TILL = NumericField("businessPolicyValidTill", "businessPolicyValidTill")
-BusinessPolicyIncident.BUSINESS_POLICY_VALID_FROM = NumericField("businessPolicyValidFrom", "businessPolicyValidFrom")
-BusinessPolicyIncident.BUSINESS_POLICY_VERSION = NumericField("businessPolicyVersion", "businessPolicyVersion")
-BusinessPolicyIncident.BUSINESS_POLICY_REVIEW_PERIOD = KeywordField("businessPolicyReviewPeriod", "businessPolicyReviewPeriod")
-BusinessPolicyIncident.BUSINESS_POLICY_FILTER_DSL = KeywordField("businessPolicyFilterDSL", "businessPolicyFilterDSL")
-BusinessPolicyIncident.BUSINESS_POLICY_BASE_PARENT_GUID = KeywordField("businessPolicyBaseParentGuid", "businessPolicyBaseParentGuid")
-BusinessPolicyIncident.BUSINESS_POLICY_SELECTED_APPROVAL_WF = KeywordField("businessPolicySelectedApprovalWF", "businessPolicySelectedApprovalWF")
-BusinessPolicyIncident.BUSINESS_POLICY_RULES = KeywordField("businessPolicyRules", "businessPolicyRules")
-BusinessPolicyIncident.INCIDENT_SEVERITY = KeywordField("incidentSeverity", "incidentSeverity")
+BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_NONCOMPLIANT_COUNT = NumericField(
+    "businessPolicyIncidentNoncompliantCount", "businessPolicyIncidentNoncompliantCount"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_RELATED_POLICY_GUIDS = KeywordField(
+    "businessPolicyIncidentRelatedPolicyGUIDs",
+    "businessPolicyIncidentRelatedPolicyGUIDs",
+)
+BusinessPolicyIncident.BUSINESS_POLICY_INCIDENT_FILTER_DSL = KeywordField(
+    "businessPolicyIncidentFilterDSL", "businessPolicyIncidentFilterDSL"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_TYPE = KeywordField(
+    "businessPolicyType", "businessPolicyType"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_LONG_DESCRIPTION = KeywordField(
+    "businessPolicyLongDescription", "businessPolicyLongDescription"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_VALID_TILL = NumericField(
+    "businessPolicyValidTill", "businessPolicyValidTill"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_VALID_FROM = NumericField(
+    "businessPolicyValidFrom", "businessPolicyValidFrom"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_VERSION = NumericField(
+    "businessPolicyVersion", "businessPolicyVersion"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_REVIEW_PERIOD = KeywordField(
+    "businessPolicyReviewPeriod", "businessPolicyReviewPeriod"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_FILTER_DSL = KeywordField(
+    "businessPolicyFilterDSL", "businessPolicyFilterDSL"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_BASE_PARENT_GUID = KeywordField(
+    "businessPolicyBaseParentGuid", "businessPolicyBaseParentGuid"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_SELECTED_APPROVAL_WF = KeywordField(
+    "businessPolicySelectedApprovalWF", "businessPolicySelectedApprovalWF"
+)
+BusinessPolicyIncident.BUSINESS_POLICY_RULES = KeywordField(
+    "businessPolicyRules", "businessPolicyRules"
+)
+BusinessPolicyIncident.INCIDENT_SEVERITY = KeywordField(
+    "incidentSeverity", "incidentSeverity"
+)
 BusinessPolicyIncident.ANOMALO_CHECKS = RelationField("anomaloChecks")
 BusinessPolicyIncident.APPLICATION = RelationField("application")
 BusinessPolicyIncident.APPLICATION_FIELD = RelationField("applicationField")
-BusinessPolicyIncident.RELATED_BUSINESS_POLICIES = RelationField("relatedBusinessPolicies")
-BusinessPolicyIncident.EXCEPTIONS_FOR_BUSINESS_POLICY = RelationField("exceptionsForBusinessPolicy")
+BusinessPolicyIncident.RELATED_BUSINESS_POLICIES = RelationField(
+    "relatedBusinessPolicies"
+)
+BusinessPolicyIncident.EXCEPTIONS_FOR_BUSINESS_POLICY = RelationField(
+    "exceptionsForBusinessPolicy"
+)
 BusinessPolicyIncident.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-BusinessPolicyIncident.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-BusinessPolicyIncident.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+BusinessPolicyIncident.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+BusinessPolicyIncident.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 BusinessPolicyIncident.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 BusinessPolicyIncident.METRICS = RelationField("metrics")
 BusinessPolicyIncident.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-BusinessPolicyIncident.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-BusinessPolicyIncident.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+BusinessPolicyIncident.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+BusinessPolicyIncident.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 BusinessPolicyIncident.MEANINGS = RelationField("meanings")
 BusinessPolicyIncident.MC_MONITORS = RelationField("mcMonitors")
 BusinessPolicyIncident.MC_INCIDENTS = RelationField("mcIncidents")
 BusinessPolicyIncident.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-BusinessPolicyIncident.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+BusinessPolicyIncident.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 BusinessPolicyIncident.FILES = RelationField("files")
 BusinessPolicyIncident.LINKS = RelationField("links")
 BusinessPolicyIncident.README = RelationField("readme")
-BusinessPolicyIncident.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+BusinessPolicyIncident.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
 BusinessPolicyIncident.SODA_CHECKS = RelationField("sodaChecks")

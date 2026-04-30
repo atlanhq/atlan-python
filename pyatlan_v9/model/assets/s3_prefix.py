@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,18 +50,15 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .s3_related import RelatedS3Bucket, RelatedS3Object, RelatedS3Prefix
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .s3_related import RelatedS3Bucket, RelatedS3Object, RelatedS3Prefix
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class S3Prefix(Asset):
@@ -206,7 +210,9 @@ class S3Prefix(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -215,10 +221,14 @@ class S3Prefix(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -245,7 +255,9 @@ class S3Prefix(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -269,7 +281,9 @@ class S3Prefix(Asset):
     s3_objects: Union[List[RelatedS3Object], None, UnsetType] = UNSET
     """S3 objects contained in this prefix."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -288,10 +302,7 @@ class S3Prefix(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -343,6 +354,7 @@ class S3Prefix(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class S3PrefixAttributes(AssetAttributes):
     """S3Prefix-specific attributes for nested API format."""
@@ -404,6 +416,7 @@ class S3PrefixAttributes(AssetAttributes):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
+
 class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     """S3Prefix-specific relationship attributes for nested API format."""
 
@@ -437,7 +450,9 @@ class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -446,10 +461,14 @@ class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -476,7 +495,9 @@ class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -500,7 +521,9 @@ class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     s3_objects: Union[List[RelatedS3Object], None, UnsetType] = UNSET
     """S3 objects contained in this prefix."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -512,13 +535,19 @@ class S3PrefixRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class S3PrefixNested(AssetNested):
     """S3Prefix in nested API format for high-performance serialization."""
 
     attributes: Union[S3PrefixAttributes, UnsetType] = UNSET
     relationship_attributes: Union[S3PrefixRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[S3PrefixRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[S3PrefixRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[S3PrefixRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[S3PrefixRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -563,6 +592,7 @@ _S3_PREFIX_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_s3_prefix_attrs(attrs: S3PrefixAttributes, obj: S3Prefix) -> None:
     """Populate S3Prefix-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -585,6 +615,7 @@ def _populate_s3_prefix_attrs(attrs: S3PrefixAttributes, obj: S3Prefix) -> None:
     attrs.aws_owner_id = obj.aws_owner_id
     attrs.aws_tags = obj.aws_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
+
 
 def _extract_s3_prefix_attrs(attrs: S3PrefixAttributes) -> dict:
     """Extract all S3Prefix attributes from the attrs struct into a flat dict."""
@@ -609,6 +640,7 @@ def _extract_s3_prefix_attrs(attrs: S3PrefixAttributes) -> dict:
     result["aws_tags"] = attrs.aws_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -649,16 +681,19 @@ def _s3_prefix_to_nested(s3_prefix: S3Prefix) -> S3PrefixNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _s3_prefix_from_nested(nested: S3PrefixNested) -> S3Prefix:
     """Convert nested format to flat S3Prefix."""
-    attrs = nested.attributes if nested.attributes is not UNSET else S3PrefixAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else S3PrefixAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _S3_PREFIX_REL_FIELDS,
-        S3PrefixRelationshipAttributes
+        S3PrefixRelationshipAttributes,
     )
     return S3Prefix(
         guid=nested.guid,
@@ -671,7 +706,6 @@ def _s3_prefix_from_nested(nested: S3PrefixNested) -> S3Prefix:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -685,6 +719,7 @@ def _s3_prefix_from_nested(nested: S3PrefixNested) -> S3Prefix:
         **merged_rels,
     )
 
+
 def _s3_prefix_to_nested_bytes(s3_prefix: S3Prefix, serde: Serde) -> bytes:
     """Convert flat S3Prefix to nested JSON bytes."""
     return serde.encode(_s3_prefix_to_nested(s3_prefix))
@@ -694,6 +729,7 @@ def _s3_prefix_from_nested_bytes(data: bytes, serde: Serde) -> S3Prefix:
     """Convert nested JSON bytes to flat S3Prefix."""
     nested = serde.decode(data, S3PrefixNested)
     return _s3_prefix_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -706,12 +742,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 S3Prefix.S3_BUCKET_NAME = KeywordField("s3BucketName", "s3BucketName")
-S3Prefix.S3_BUCKET_QUALIFIED_NAME = KeywordField("s3BucketQualifiedName", "s3BucketQualifiedName")
+S3Prefix.S3_BUCKET_QUALIFIED_NAME = KeywordField(
+    "s3BucketQualifiedName", "s3BucketQualifiedName"
+)
 S3Prefix.S3_PREFIX_COUNT = NumericField("s3PrefixCount", "s3PrefixCount")
 S3Prefix.S3_OBJECT_COUNT = NumericField("s3ObjectCount", "s3ObjectCount")
 S3Prefix.S3_ETAG = KeywordTextField("s3ETag", "s3ETag", "s3ETag.text")
 S3Prefix.S3_ENCRYPTION = KeywordField("s3Encryption", "s3Encryption")
-S3Prefix.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField("s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName")
+S3Prefix.S3_PARENT_PREFIX_QUALIFIED_NAME = KeywordField(
+    "s3ParentPrefixQualifiedName", "s3ParentPrefixQualifiedName"
+)
 S3Prefix.S3_PREFIX_HIERARCHY = KeywordField("s3PrefixHierarchy", "s3PrefixHierarchy")
 S3Prefix.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 S3Prefix.AWS_ARN = KeywordTextField("awsArn", "awsArn", "awsArn.text")
@@ -720,10 +760,14 @@ S3Prefix.AWS_SERVICE = KeywordField("awsService", "awsService")
 S3Prefix.AWS_REGION = KeywordField("awsRegion", "awsRegion")
 S3Prefix.AWS_ACCOUNT_ID = KeywordField("awsAccountId", "awsAccountId")
 S3Prefix.AWS_RESOURCE_ID = KeywordField("awsResourceId", "awsResourceId")
-S3Prefix.AWS_OWNER_NAME = KeywordTextField("awsOwnerName", "awsOwnerName", "awsOwnerName.text")
+S3Prefix.AWS_OWNER_NAME = KeywordTextField(
+    "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+)
 S3Prefix.AWS_OWNER_ID = KeywordField("awsOwnerId", "awsOwnerId")
 S3Prefix.AWS_TAGS = KeywordField("awsTags", "awsTags")
-S3Prefix.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+S3Prefix.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 S3Prefix.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 S3Prefix.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 S3Prefix.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -738,7 +782,9 @@ S3Prefix.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribute
 S3Prefix.METRICS = RelationField("metrics")
 S3Prefix.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 S3Prefix.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-S3Prefix.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+S3Prefix.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 S3Prefix.MEANINGS = RelationField("meanings")
 S3Prefix.MC_MONITORS = RelationField("mcMonitors")
 S3Prefix.MC_INCIDENTS = RelationField("mcIncidents")

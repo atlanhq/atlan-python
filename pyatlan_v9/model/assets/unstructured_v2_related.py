@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -40,12 +39,15 @@ class RelatedUnstructuredV2(RelatedCatalog):
     unstructuredv2_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the immediate parent folder in which this asset exists."""
 
-    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = (
+        UNSET
+    )
     """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "UnstructuredV2"
+
 
 class RelatedUnstructuredV2Container(RelatedUnstructuredV2):
     """
@@ -66,6 +68,7 @@ class RelatedUnstructuredV2Container(RelatedUnstructuredV2):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "UnstructuredV2Container"
+
 
 class RelatedUnstructuredV2Folder(RelatedUnstructuredV2):
     """
@@ -92,6 +95,7 @@ class RelatedUnstructuredV2Folder(RelatedUnstructuredV2):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "UnstructuredV2Folder"
+
 
 class RelatedUnstructuredV2Object(RelatedUnstructuredV2):
     """

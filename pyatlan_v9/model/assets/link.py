@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,18 +48,15 @@ from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Link(Asset):
@@ -154,7 +157,9 @@ class Link(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -163,10 +168,14 @@ class Link(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -193,7 +202,9 @@ class Link(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -208,7 +219,9 @@ class Link(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -222,8 +235,6 @@ class Link(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Link"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -276,6 +287,7 @@ class Link(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class LinkAttributes(AssetAttributes):
     """Link-specific attributes for nested API format."""
 
@@ -299,6 +311,7 @@ class LinkAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class LinkRelationshipAttributes(AssetRelationshipAttributes):
     """Link-specific relationship attributes for nested API format."""
@@ -333,7 +346,9 @@ class LinkRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -342,10 +357,14 @@ class LinkRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -372,7 +391,9 @@ class LinkRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -387,7 +408,9 @@ class LinkRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -399,6 +422,7 @@ class LinkRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class LinkNested(AssetNested):
     """Link in nested API format for high-performance serialization."""
 
@@ -406,6 +430,7 @@ class LinkNested(AssetNested):
     relationship_attributes: Union[LinkRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[LinkRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[LinkRelationshipAttributes, UnsetType] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -447,6 +472,7 @@ _LINK_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_link_attrs(attrs: LinkAttributes, obj: Link) -> None:
     """Populate Link-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -457,6 +483,7 @@ def _populate_link_attrs(attrs: LinkAttributes, obj: Link) -> None:
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_link_attrs(attrs: LinkAttributes) -> dict:
     """Extract all Link attributes from the attrs struct into a flat dict."""
@@ -469,6 +496,7 @@ def _extract_link_attrs(attrs: LinkAttributes) -> dict:
     result["resource_metadata"] = attrs.resource_metadata
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -509,6 +537,7 @@ def _link_to_nested(link: Link) -> LinkNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _link_from_nested(nested: LinkNested) -> Link:
     """Convert nested format to flat Link."""
     attrs = nested.attributes if nested.attributes is not UNSET else LinkAttributes()
@@ -518,7 +547,7 @@ def _link_from_nested(nested: LinkNested) -> Link:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LINK_REL_FIELDS,
-        LinkRelationshipAttributes
+        LinkRelationshipAttributes,
     )
     return Link(
         guid=nested.guid,
@@ -531,7 +560,6 @@ def _link_from_nested(nested: LinkNested) -> Link:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -545,6 +573,7 @@ def _link_from_nested(nested: LinkNested) -> Link:
         **merged_rels,
     )
 
+
 def _link_to_nested_bytes(link: Link, serde: Serde) -> bytes:
     """Convert flat Link to nested JSON bytes."""
     return serde.encode(_link_to_nested(link))
@@ -554,6 +583,7 @@ def _link_from_nested_bytes(data: bytes, serde: Serde) -> Link:
     """Convert nested JSON bytes to flat Link."""
     nested = serde.decode(data, LinkNested)
     return _link_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -585,7 +615,9 @@ Link.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 Link.METRICS = RelationField("metrics")
 Link.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Link.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Link.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Link.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Link.MEANINGS = RelationField("meanings")
 Link.MC_MONITORS = RelationField("mcMonitors")
 Link.MC_INCIDENTS = RelationField("mcIncidents")

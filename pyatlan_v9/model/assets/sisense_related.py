@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -43,6 +42,7 @@ class RelatedSisense(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Sisense"
 
+
 class RelatedSisenseDashboard(RelatedSisense):
     """
     Related entity reference for SisenseDashboard assets.
@@ -62,6 +62,7 @@ class RelatedSisenseDashboard(RelatedSisense):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SisenseDashboard"
+
 
 class RelatedSisenseDatamodel(RelatedSisense):
     """
@@ -101,6 +102,7 @@ class RelatedSisenseDatamodel(RelatedSisense):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SisenseDatamodel"
 
+
 class RelatedSisenseDatamodelTable(RelatedSisense):
     """
     Related entity reference for SisenseDatamodelTable assets.
@@ -139,6 +141,7 @@ class RelatedSisenseDatamodelTable(RelatedSisense):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SisenseDatamodelTable"
 
+
 class RelatedSisenseFolder(RelatedSisense):
     """
     Related entity reference for SisenseFolder assets.
@@ -155,6 +158,7 @@ class RelatedSisenseFolder(RelatedSisense):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SisenseFolder"
+
 
 class RelatedSisenseWidget(RelatedSisense):
     """

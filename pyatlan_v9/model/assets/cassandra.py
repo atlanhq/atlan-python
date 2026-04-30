@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,13 +52,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Cassandra(Asset):
@@ -115,7 +120,9 @@ class Cassandra(Asset):
     cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -151,7 +158,9 @@ class Cassandra(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -160,10 +169,14 @@ class Cassandra(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -190,7 +203,9 @@ class Cassandra(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -202,7 +217,9 @@ class Cassandra(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -216,8 +233,6 @@ class Cassandra(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Cassandra"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -270,6 +285,7 @@ class Cassandra(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CassandraAttributes(AssetAttributes):
     """Cassandra-specific attributes for nested API format."""
 
@@ -288,11 +304,14 @@ class CassandraAttributes(AssetAttributes):
     cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class CassandraRelationshipAttributes(AssetRelationshipAttributes):
     """Cassandra-specific relationship attributes for nested API format."""
@@ -327,7 +346,9 @@ class CassandraRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -336,10 +357,14 @@ class CassandraRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -366,7 +391,9 @@ class CassandraRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -378,7 +405,9 @@ class CassandraRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -390,13 +419,19 @@ class CassandraRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class CassandraNested(AssetNested):
     """Cassandra in nested API format for high-performance serialization."""
 
     attributes: Union[CassandraAttributes, UnsetType] = UNSET
     relationship_attributes: Union[CassandraRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CassandraRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[CassandraRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[
+        CassandraRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CassandraRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -437,6 +472,7 @@ _CASSANDRA_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_cassandra_attrs(attrs: CassandraAttributes, obj: Cassandra) -> None:
     """Populate Cassandra-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -447,6 +483,7 @@ def _populate_cassandra_attrs(attrs: CassandraAttributes, obj: Cassandra) -> Non
     attrs.cassandra_view_qualified_name = obj.cassandra_view_qualified_name
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_cassandra_attrs(attrs: CassandraAttributes) -> dict:
     """Extract all Cassandra attributes from the attrs struct into a flat dict."""
@@ -459,6 +496,7 @@ def _extract_cassandra_attrs(attrs: CassandraAttributes) -> dict:
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -499,16 +537,19 @@ def _cassandra_to_nested(cassandra: Cassandra) -> CassandraNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cassandra_from_nested(nested: CassandraNested) -> Cassandra:
     """Convert nested format to flat Cassandra."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CassandraAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else CassandraAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CASSANDRA_REL_FIELDS,
-        CassandraRelationshipAttributes
+        CassandraRelationshipAttributes,
     )
     return Cassandra(
         guid=nested.guid,
@@ -521,7 +562,6 @@ def _cassandra_from_nested(nested: CassandraNested) -> Cassandra:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -535,6 +575,7 @@ def _cassandra_from_nested(nested: CassandraNested) -> Cassandra:
         **merged_rels,
     )
 
+
 def _cassandra_to_nested_bytes(cassandra: Cassandra, serde: Serde) -> bytes:
     """Convert flat Cassandra to nested JSON bytes."""
     return serde.encode(_cassandra_to_nested(cassandra))
@@ -545,21 +586,31 @@ def _cassandra_from_nested_bytes(data: bytes, serde: Serde) -> Cassandra:
     nested = serde.decode(data, CassandraNested)
     return _cassandra_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import (  # noqa: E402
-    KeywordField,
-    RelationField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
 
-Cassandra.CASSANDRA_KEYSPACE_NAME = KeywordField("cassandraKeyspaceName", "cassandraKeyspaceName")
-Cassandra.CASSANDRA_TABLE_NAME = KeywordField("cassandraTableName", "cassandraTableName")
+Cassandra.CASSANDRA_KEYSPACE_NAME = KeywordField(
+    "cassandraKeyspaceName", "cassandraKeyspaceName"
+)
+Cassandra.CASSANDRA_TABLE_NAME = KeywordField(
+    "cassandraTableName", "cassandraTableName"
+)
 Cassandra.CASSANDRA_VIEW_NAME = KeywordField("cassandraViewName", "cassandraViewName")
-Cassandra.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField("cassandraTableQualifiedName", "cassandraTableQualifiedName")
-Cassandra.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField("cassandraViewQualifiedName", "cassandraViewQualifiedName")
-Cassandra.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
-Cassandra.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+Cassandra.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField(
+    "cassandraTableQualifiedName", "cassandraTableQualifiedName"
+)
+Cassandra.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField(
+    "cassandraViewQualifiedName", "cassandraViewQualifiedName"
+)
+Cassandra.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
+Cassandra.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 Cassandra.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Cassandra.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Cassandra.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -574,7 +625,9 @@ Cassandra.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribut
 Cassandra.METRICS = RelationField("metrics")
 Cassandra.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Cassandra.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Cassandra.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Cassandra.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Cassandra.MEANINGS = RelationField("meanings")
 Cassandra.MC_MONITORS = RelationField("mcMonitors")
 Cassandra.MC_INCIDENTS = RelationField("mcIncidents")

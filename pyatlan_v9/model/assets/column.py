@@ -15,11 +15,21 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 from warnings import warn
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.utils import validate_required_fields
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -37,7 +47,14 @@ from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtMetric, RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtMetric,
+    RelatedDbtModel,
+    RelatedDbtModelColumn,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -48,22 +65,31 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import RelatedSnowflakeDynamicTable, RelatedSnowflakeSemanticLogicalTable
+from .snowflake_related import (
+    RelatedSnowflakeDynamicTable,
+    RelatedSnowflakeSemanticLogicalTable,
+)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightFilter, RelatedSqlInsightJoin
-from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.utils import validate_required_fields
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid
-
-from .sql_related import RelatedCalculationView, RelatedColumn, RelatedMaterialisedView, RelatedQuery, RelatedTable, RelatedTablePartition, RelatedView
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightFilter,
+    RelatedSqlInsightJoin,
+)
+from .sql_related import (
+    RelatedCalculationView,
+    RelatedColumn,
+    RelatedMaterialisedView,
+    RelatedQuery,
+    RelatedTable,
+    RelatedTablePartition,
+    RelatedView,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Column(Asset):
@@ -454,7 +480,9 @@ class Column(Asset):
     sql_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
     """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
 
-    sql_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -505,7 +533,9 @@ class Column(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -547,7 +577,9 @@ class Column(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: Union[RelatedCosmosMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
@@ -565,7 +597,9 @@ class Column(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -583,10 +617,14 @@ class Column(Asset):
     dq_base_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this column."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this column is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -601,7 +639,9 @@ class Column(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
@@ -610,19 +650,25 @@ class Column(Asset):
     dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """(Deprecated) Model columns related to this model column."""
 
-    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
+    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = (
+        UNSET
+    )
     """Model columns related to this column."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollection")
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -646,7 +692,9 @@ class Column(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -688,13 +736,19 @@ class Column(Asset):
     queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that access this column."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = UNSET
+    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
+        UNSET
+    )
     """Snowflake dynamic table in which this column exists."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -706,16 +760,22 @@ class Column(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
     sql_insight_filters: Union[List[RelatedSqlInsightFilter], None, UnsetType] = UNSET
     """Filter insights for this column."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -728,7 +788,6 @@ class Column(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     @classmethod
     @init_guid
@@ -977,6 +1036,7 @@ class Column(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class ColumnAttributes(AssetAttributes):
     """Column-specific attributes for nested API format."""
 
@@ -1199,7 +1259,9 @@ class ColumnAttributes(AssetAttributes):
     sql_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
     """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
 
-    sql_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -1250,7 +1312,9 @@ class ColumnAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -1277,6 +1341,7 @@ class ColumnAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     """Column-specific relationship attributes for nested API format."""
 
@@ -1295,7 +1360,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_collection: Union[RelatedCosmosMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
+    cosmos_mongo_db_collection: Union[
+        RelatedCosmosMongoDBCollection, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
     """Cosmos collection in which this column exists."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
@@ -1313,7 +1380,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -1331,10 +1400,14 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this column."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_column_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this column is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -1349,7 +1422,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_metrics: Union[List[RelatedDbtMetric], None, UnsetType] = UNSET
@@ -1358,19 +1433,25 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """(Deprecated) Model columns related to this model column."""
 
-    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
+    column_dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = (
+        UNSET
+    )
     """Model columns related to this column."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollection")
+    mongo_db_collection: Union[RelatedMongoDBCollection, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollection")
+    )
     """Collection in which the columns exist."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -1394,7 +1475,9 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -1436,13 +1519,19 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that access this column."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = UNSET
+    snowflake_dynamic_table: Union[RelatedSnowflakeDynamicTable, None, UnsetType] = (
+        UNSET
+    )
     """Snowflake dynamic table in which this column exists."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -1454,25 +1543,37 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
     sql_insight_filters: Union[List[RelatedSqlInsightFilter], None, UnsetType] = UNSET
     """Filter insights for this column."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class ColumnNested(AssetNested):
     """Column in nested API format for high-performance serialization."""
 
     attributes: Union[ColumnAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[ColumnRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1543,6 +1644,7 @@ _COLUMN_REL_FIELDS: List[str] = [
     "sql_insight_filters",
     "sql_insight_business_questions",
 ]
+
 
 def _populate_column_attrs(attrs: ColumnAttributes, obj: Column) -> None:
     """Populate Column-specific attributes on the attrs struct."""
@@ -1620,7 +1722,9 @@ def _populate_column_attrs(attrs: ColumnAttributes, obj: Column) -> None:
     attrs.sql_ai_insights_measure_type = obj.sql_ai_insights_measure_type
     attrs.sql_ai_insights_is_dimension = obj.sql_ai_insights_is_dimension
     attrs.sql_ai_insights_dimension_type = obj.sql_ai_insights_dimension_type
-    attrs.sql_ai_insights_foreign_key_column_qualified_name = obj.sql_ai_insights_foreign_key_column_qualified_name
+    attrs.sql_ai_insights_foreign_key_column_qualified_name = (
+        obj.sql_ai_insights_foreign_key_column_qualified_name
+    )
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1641,11 +1745,16 @@ def _populate_column_attrs(attrs: ColumnAttributes, obj: Column) -> None:
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_column_attrs(attrs: ColumnAttributes) -> dict:
     """Extract all Column attributes from the attrs struct into a flat dict."""
@@ -1723,7 +1832,9 @@ def _extract_column_attrs(attrs: ColumnAttributes) -> dict:
     result["sql_ai_insights_measure_type"] = attrs.sql_ai_insights_measure_type
     result["sql_ai_insights_is_dimension"] = attrs.sql_ai_insights_is_dimension
     result["sql_ai_insights_dimension_type"] = attrs.sql_ai_insights_dimension_type
-    result["sql_ai_insights_foreign_key_column_qualified_name"] = attrs.sql_ai_insights_foreign_key_column_qualified_name
+    result["sql_ai_insights_foreign_key_column_qualified_name"] = (
+        attrs.sql_ai_insights_foreign_key_column_qualified_name
+    )
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1740,16 +1851,27 @@ def _extract_column_attrs(attrs: ColumnAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -1790,6 +1912,7 @@ def _column_to_nested(column: Column) -> ColumnNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _column_from_nested(nested: ColumnNested) -> Column:
     """Convert nested format to flat Column."""
     attrs = nested.attributes if nested.attributes is not UNSET else ColumnAttributes()
@@ -1799,7 +1922,7 @@ def _column_from_nested(nested: ColumnNested) -> Column:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COLUMN_REL_FIELDS,
-        ColumnRelationshipAttributes
+        ColumnRelationshipAttributes,
     )
     return Column(
         guid=nested.guid,
@@ -1812,7 +1935,6 @@ def _column_from_nested(nested: ColumnNested) -> Column:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1826,6 +1948,7 @@ def _column_from_nested(nested: ColumnNested) -> Column:
         **merged_rels,
     )
 
+
 def _column_to_nested_bytes(column: Column, serde: Serde) -> bytes:
     """Convert flat Column to nested JSON bytes."""
     return serde.encode(_column_to_nested(column))
@@ -1835,6 +1958,7 @@ def _column_from_nested_bytes(data: bytes, serde: Serde) -> Column:
     """Convert nested JSON bytes to flat Column."""
     nested = serde.decode(data, ColumnNested)
     return _column_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1851,9 +1975,13 @@ Column.DATA_TYPE = KeywordTextField("dataType", "dataType", "dataType.text")
 Column.SUB_DATA_TYPE = KeywordField("subDataType", "subDataType")
 Column.SQL_COMPRESSION = KeywordField("sqlCompression", "sqlCompression")
 Column.SQL_ENCODING = KeywordField("sqlEncoding", "sqlEncoding")
-Column.RAW_DATA_TYPE_DEFINITION = KeywordField("rawDataTypeDefinition", "rawDataTypeDefinition")
+Column.RAW_DATA_TYPE_DEFINITION = KeywordField(
+    "rawDataTypeDefinition", "rawDataTypeDefinition"
+)
 Column.ORDER = NumericField("order", "order")
-Column.NESTED_COLUMN_ORDER = KeywordTextField("nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text")
+Column.NESTED_COLUMN_ORDER = KeywordTextField(
+    "nestedColumnOrder", "nestedColumnOrder", "nestedColumnOrder.text"
+)
 Column.NESTED_COLUMN_COUNT = NumericField("nestedColumnCount", "nestedColumnCount")
 Column.COLUMN_HIERARCHY = KeywordField("columnHierarchy", "columnHierarchy")
 Column.IS_PARTITION = BooleanField("isPartition", "isPartition")
@@ -1873,32 +2001,64 @@ Column.IS_NULLABLE = BooleanField("isNullable", "isNullable")
 Column.NUMERIC_SCALE = NumericField("numericScale", "numericScale")
 Column.MAX_LENGTH = NumericField("maxLength", "maxLength")
 Column.VALIDATIONS = KeywordField("validations", "validations")
-Column.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField("parentColumnQualifiedName", "parentColumnQualifiedName", "parentColumnQualifiedName.text")
+Column.PARENT_COLUMN_QUALIFIED_NAME = KeywordTextField(
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName",
+    "parentColumnQualifiedName.text",
+)
 Column.PARENT_COLUMN_NAME = KeywordField("parentColumnName", "parentColumnName")
-Column.SQL_DISTINCT_VALUES_COUNT = NumericField("sqlDistinctValuesCount", "sqlDistinctValuesCount")
-Column.SQL_DISTINCT_VALUES_COUNT_LONG = NumericField("sqlDistinctValuesCountLong", "sqlDistinctValuesCountLong")
-Column.SQL_DISTINCT_VALUES_PERCENTAGE = NumericField("sqlDistinctValuesPercentage", "sqlDistinctValuesPercentage")
+Column.SQL_DISTINCT_VALUES_COUNT = NumericField(
+    "sqlDistinctValuesCount", "sqlDistinctValuesCount"
+)
+Column.SQL_DISTINCT_VALUES_COUNT_LONG = NumericField(
+    "sqlDistinctValuesCountLong", "sqlDistinctValuesCountLong"
+)
+Column.SQL_DISTINCT_VALUES_PERCENTAGE = NumericField(
+    "sqlDistinctValuesPercentage", "sqlDistinctValuesPercentage"
+)
 Column.SQL_HISTOGRAM = KeywordField("sqlHistogram", "sqlHistogram")
 Column.SQL_MAX = NumericField("sqlMax", "sqlMax")
 Column.SQL_MIN = NumericField("sqlMin", "sqlMin")
 Column.SQL_MEAN = NumericField("sqlMean", "sqlMean")
 Column.SQL_SUM = NumericField("sqlSum", "sqlSum")
 Column.SQL_MEDIAN = NumericField("sqlMedian", "sqlMedian")
-Column.SQL_STANDARD_DEVIATION = NumericField("sqlStandardDeviation", "sqlStandardDeviation")
-Column.SQL_UNIQUE_VALUES_COUNT = NumericField("sqlUniqueValuesCount", "sqlUniqueValuesCount")
-Column.SQL_UNIQUE_VALUES_COUNT_LONG = NumericField("sqlUniqueValuesCountLong", "sqlUniqueValuesCountLong")
+Column.SQL_STANDARD_DEVIATION = NumericField(
+    "sqlStandardDeviation", "sqlStandardDeviation"
+)
+Column.SQL_UNIQUE_VALUES_COUNT = NumericField(
+    "sqlUniqueValuesCount", "sqlUniqueValuesCount"
+)
+Column.SQL_UNIQUE_VALUES_COUNT_LONG = NumericField(
+    "sqlUniqueValuesCountLong", "sqlUniqueValuesCountLong"
+)
 Column.SQL_AVERAGE = NumericField("sqlAverage", "sqlAverage")
 Column.SQL_AVERAGE_LENGTH = NumericField("sqlAverageLength", "sqlAverageLength")
-Column.SQL_DUPLICATE_VALUES_COUNT = NumericField("sqlDuplicateValuesCount", "sqlDuplicateValuesCount")
-Column.SQL_DUPLICATE_VALUES_COUNT_LONG = NumericField("sqlDuplicateValuesCountLong", "sqlDuplicateValuesCountLong")
-Column.SQL_MAXIMUM_STRING_LENGTH = NumericField("sqlMaximumStringLength", "sqlMaximumStringLength")
+Column.SQL_DUPLICATE_VALUES_COUNT = NumericField(
+    "sqlDuplicateValuesCount", "sqlDuplicateValuesCount"
+)
+Column.SQL_DUPLICATE_VALUES_COUNT_LONG = NumericField(
+    "sqlDuplicateValuesCountLong", "sqlDuplicateValuesCountLong"
+)
+Column.SQL_MAXIMUM_STRING_LENGTH = NumericField(
+    "sqlMaximumStringLength", "sqlMaximumStringLength"
+)
 Column.COLUMN_MAXS = KeywordField("columnMaxs", "columnMaxs")
-Column.SQL_MINIMUM_STRING_LENGTH = NumericField("sqlMinimumStringLength", "sqlMinimumStringLength")
+Column.SQL_MINIMUM_STRING_LENGTH = NumericField(
+    "sqlMinimumStringLength", "sqlMinimumStringLength"
+)
 Column.COLUMN_MINS = KeywordField("columnMins", "columnMins")
-Column.SQL_MISSING_VALUES_COUNT = NumericField("sqlMissingValuesCount", "sqlMissingValuesCount")
-Column.SQL_MISSING_VALUES_COUNT_LONG = NumericField("sqlMissingValuesCountLong", "sqlMissingValuesCountLong")
-Column.SQL_MISSING_VALUES_PERCENTAGE = NumericField("sqlMissingValuesPercentage", "sqlMissingValuesPercentage")
-Column.SQL_UNIQUENESS_PERCENTAGE = NumericField("sqlUniquenessPercentage", "sqlUniquenessPercentage")
+Column.SQL_MISSING_VALUES_COUNT = NumericField(
+    "sqlMissingValuesCount", "sqlMissingValuesCount"
+)
+Column.SQL_MISSING_VALUES_COUNT_LONG = NumericField(
+    "sqlMissingValuesCountLong", "sqlMissingValuesCountLong"
+)
+Column.SQL_MISSING_VALUES_PERCENTAGE = NumericField(
+    "sqlMissingValuesPercentage", "sqlMissingValuesPercentage"
+)
+Column.SQL_UNIQUENESS_PERCENTAGE = NumericField(
+    "sqlUniquenessPercentage", "sqlUniquenessPercentage"
+)
 Column.SQL_VARIANCE = NumericField("sqlVariance", "sqlVariance")
 Column.COLUMN_TOP_VALUES = KeywordField("columnTopValues", "columnTopValues")
 Column.SQL_MAX_VALUE = NumericField("sqlMaxValue", "sqlMaxValue")
@@ -1906,45 +2066,89 @@ Column.SQL_MIN_VALUE = NumericField("sqlMinValue", "sqlMinValue")
 Column.SQL_MEAN_VALUE = NumericField("sqlMeanValue", "sqlMeanValue")
 Column.SQL_SUM_VALUE = NumericField("sqlSumValue", "sqlSumValue")
 Column.SQL_MEDIAN_VALUE = NumericField("sqlMedianValue", "sqlMedianValue")
-Column.SQL_STANDARD_DEVIATION_VALUE = NumericField("sqlStandardDeviationValue", "sqlStandardDeviationValue")
+Column.SQL_STANDARD_DEVIATION_VALUE = NumericField(
+    "sqlStandardDeviationValue", "sqlStandardDeviationValue"
+)
 Column.SQL_AVERAGE_VALUE = NumericField("sqlAverageValue", "sqlAverageValue")
 Column.SQL_VARIANCE_VALUE = NumericField("sqlVarianceValue", "sqlVarianceValue")
-Column.SQL_AVERAGE_LENGTH_VALUE = NumericField("sqlAverageLengthValue", "sqlAverageLengthValue")
-Column.SQL_DISTRIBUTION_HISTOGRAM = KeywordField("sqlDistributionHistogram", "sqlDistributionHistogram")
+Column.SQL_AVERAGE_LENGTH_VALUE = NumericField(
+    "sqlAverageLengthValue", "sqlAverageLengthValue"
+)
+Column.SQL_DISTRIBUTION_HISTOGRAM = KeywordField(
+    "sqlDistributionHistogram", "sqlDistributionHistogram"
+)
 Column.SQL_DEPTH_LEVEL = NumericField("sqlDepthLevel", "sqlDepthLevel")
-Column.NOSQL_COLLECTION_NAME = KeywordField("nosqlCollectionName", "nosqlCollectionName")
-Column.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField("nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName")
+Column.NOSQL_COLLECTION_NAME = KeywordField(
+    "nosqlCollectionName", "nosqlCollectionName"
+)
+Column.NOSQL_COLLECTION_QUALIFIED_NAME = KeywordField(
+    "nosqlCollectionQualifiedName", "nosqlCollectionQualifiedName"
+)
 Column.SQL_IS_MEASURE = BooleanField("sqlIsMeasure", "sqlIsMeasure")
 Column.SQL_MEASURE_TYPE = KeywordField("sqlMeasureType", "sqlMeasureType")
-Column.SQL_AI_INSIGHTS_IS_MEASURE = BooleanField("sqlAiInsightsIsMeasure", "sqlAiInsightsIsMeasure")
-Column.SQL_AI_INSIGHTS_MEASURE_TYPE = KeywordField("sqlAiInsightsMeasureType", "sqlAiInsightsMeasureType")
-Column.SQL_AI_INSIGHTS_IS_DIMENSION = BooleanField("sqlAiInsightsIsDimension", "sqlAiInsightsIsDimension")
-Column.SQL_AI_INSIGHTS_DIMENSION_TYPE = KeywordField("sqlAiInsightsDimensionType", "sqlAiInsightsDimensionType")
-Column.SQL_AI_INSIGHTS_FOREIGN_KEY_COLUMN_QUALIFIED_NAME = KeywordField("sqlAiInsightsForeignKeyColumnQualifiedName", "sqlAiInsightsForeignKeyColumnQualifiedName")
+Column.SQL_AI_INSIGHTS_IS_MEASURE = BooleanField(
+    "sqlAiInsightsIsMeasure", "sqlAiInsightsIsMeasure"
+)
+Column.SQL_AI_INSIGHTS_MEASURE_TYPE = KeywordField(
+    "sqlAiInsightsMeasureType", "sqlAiInsightsMeasureType"
+)
+Column.SQL_AI_INSIGHTS_IS_DIMENSION = BooleanField(
+    "sqlAiInsightsIsDimension", "sqlAiInsightsIsDimension"
+)
+Column.SQL_AI_INSIGHTS_DIMENSION_TYPE = KeywordField(
+    "sqlAiInsightsDimensionType", "sqlAiInsightsDimensionType"
+)
+Column.SQL_AI_INSIGHTS_FOREIGN_KEY_COLUMN_QUALIFIED_NAME = KeywordField(
+    "sqlAiInsightsForeignKeyColumnQualifiedName",
+    "sqlAiInsightsForeignKeyColumnQualifiedName",
+)
 Column.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Column.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Column.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Column.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+Column.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 Column.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Column.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+Column.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 Column.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Column.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+Column.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 Column.TABLE_NAME = KeywordField("tableName", "tableName")
 Column.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 Column.VIEW_NAME = KeywordField("viewName", "viewName")
 Column.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Column.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-Column.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+Column.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+Column.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 Column.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Column.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Column.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+Column.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 Column.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Column.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-Column.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-Column.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-Column.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-Column.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-Column.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
+Column.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+Column.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+Column.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+Column.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+Column.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
 Column.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Column.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Column.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -1974,7 +2178,9 @@ Column.DBT_METRICS = RelationField("dbtMetrics")
 Column.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
 Column.COLUMN_DBT_MODEL_COLUMNS = RelationField("columnDbtModelColumns")
 Column.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-Column.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Column.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Column.MEANINGS = RelationField("meanings")
 Column.MONGO_DB_COLLECTION = RelationField("mongoDBCollection")
 Column.MC_MONITORS = RelationField("mcMonitors")
@@ -2000,7 +2206,9 @@ Column.FOREIGN_KEY_FROM = RelationField("foreignKeyFrom")
 Column.QUERIES = RelationField("queries")
 Column.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 Column.SNOWFLAKE_DYNAMIC_TABLE = RelationField("snowflakeDynamicTable")
-Column.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+Column.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 Column.SODA_CHECKS = RelationField("sodaChecks")
 Column.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Column.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

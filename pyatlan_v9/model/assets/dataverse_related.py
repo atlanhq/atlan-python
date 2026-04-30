@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedSaaS
@@ -49,6 +48,7 @@ class RelatedDataverse(RelatedSaaS):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Dataverse"
 
+
 class RelatedDataverseEntity(RelatedDataverse):
     """
     Related entity reference for DataverseEntity assets.
@@ -68,6 +68,7 @@ class RelatedDataverseEntity(RelatedDataverse):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "DataverseEntity"
+
 
 class RelatedDataverseAttribute(RelatedDataverse):
     """

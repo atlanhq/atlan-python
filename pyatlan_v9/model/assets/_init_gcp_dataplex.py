@@ -8,12 +8,9 @@ GCPDataplex module exports.
 This module provides convenient imports for all GCPDataplex types and their Related variants.
 """
 
-from .gcp_dataplex_related import (
-    RelatedGCPDataplex,
-    RelatedGCPDataplexAspectType,
-)
 from .gcp_dataplex import GCPDataplex
 from .gcp_dataplex_aspect_type import GCPDataplexAspectType
+from .gcp_dataplex_related import RelatedGCPDataplex, RelatedGCPDataplexAspectType
 
 __all__ = [
     "GCPDataplex",

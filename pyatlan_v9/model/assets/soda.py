@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,16 +49,13 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .soda_related import RelatedSodaCheck
+from .spark_related import RelatedSparkJob
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Soda(Asset):
@@ -132,7 +135,9 @@ class Soda(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -141,10 +146,14 @@ class Soda(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -171,7 +180,9 @@ class Soda(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -183,7 +194,9 @@ class Soda(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -197,8 +210,6 @@ class Soda(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Soda"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -251,6 +262,7 @@ class Soda(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class SodaAttributes(AssetAttributes):
     """Soda-specific attributes for nested API format."""
 
@@ -259,6 +271,7 @@ class SodaAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class SodaRelationshipAttributes(AssetRelationshipAttributes):
     """Soda-specific relationship attributes for nested API format."""
@@ -293,7 +306,9 @@ class SodaRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -302,10 +317,14 @@ class SodaRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -332,7 +351,9 @@ class SodaRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -344,7 +365,9 @@ class SodaRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -356,6 +379,7 @@ class SodaRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SodaNested(AssetNested):
     """Soda in nested API format for high-performance serialization."""
 
@@ -363,6 +387,7 @@ class SodaNested(AssetNested):
     relationship_attributes: Union[SodaRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[SodaRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[SodaRelationshipAttributes, UnsetType] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -403,11 +428,13 @@ _SODA_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_soda_attrs(attrs: SodaAttributes, obj: Soda) -> None:
     """Populate Soda-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_soda_attrs(attrs: SodaAttributes) -> dict:
     """Extract all Soda attributes from the attrs struct into a flat dict."""
@@ -415,6 +442,7 @@ def _extract_soda_attrs(attrs: SodaAttributes) -> dict:
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -455,6 +483,7 @@ def _soda_to_nested(soda: Soda) -> SodaNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _soda_from_nested(nested: SodaNested) -> Soda:
     """Convert nested format to flat Soda."""
     attrs = nested.attributes if nested.attributes is not UNSET else SodaAttributes()
@@ -464,7 +493,7 @@ def _soda_from_nested(nested: SodaNested) -> Soda:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SODA_REL_FIELDS,
-        SodaRelationshipAttributes
+        SodaRelationshipAttributes,
     )
     return Soda(
         guid=nested.guid,
@@ -477,7 +506,6 @@ def _soda_from_nested(nested: SodaNested) -> Soda:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -491,6 +519,7 @@ def _soda_from_nested(nested: SodaNested) -> Soda:
         **merged_rels,
     )
 
+
 def _soda_to_nested_bytes(soda: Soda, serde: Serde) -> bytes:
     """Convert flat Soda to nested JSON bytes."""
     return serde.encode(_soda_to_nested(soda))
@@ -500,6 +529,7 @@ def _soda_from_nested_bytes(data: bytes, serde: Serde) -> Soda:
     """Convert nested JSON bytes to flat Soda."""
     nested = serde.decode(data, SodaNested)
     return _soda_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -526,7 +556,9 @@ Soda.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 Soda.METRICS = RelationField("metrics")
 Soda.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Soda.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Soda.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Soda.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Soda.MEANINGS = RelationField("meanings")
 Soda.MC_MONITORS = RelationField("mcMonitors")
 Soda.MC_INCIDENTS = RelationField("mcIncidents")

@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -93,7 +93,9 @@ class RelatedSQL(RelatedCatalog):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -120,6 +122,7 @@ class RelatedSQL(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SQL"
+
 
 class RelatedCalculationView(RelatedSQL):
     """
@@ -149,6 +152,7 @@ class RelatedCalculationView(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "CalculationView"
+
 
 class RelatedColumn(RelatedSQL):
     """
@@ -379,12 +383,15 @@ class RelatedColumn(RelatedSQL):
     sql_ai_insights_dimension_type: Union[str, None, UnsetType] = UNSET
     """Type of dimension as classified by AI analysis, for example: time, categorical, geographic."""
 
-    sql_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_ai_insights_foreign_key_column_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the column in another table that this column likely references as a foreign key, inferred by AI analysis of query patterns."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Column"
+
 
 class RelatedDatabase(RelatedSQL):
     """
@@ -402,6 +409,7 @@ class RelatedDatabase(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Database"
+
 
 class RelatedFunction(RelatedSQL):
     """
@@ -431,7 +439,9 @@ class RelatedFunction(RelatedSQL):
     sql_is_external: Union[bool, None, UnsetType] = UNSET
     """Whether the function is stored or executed externally (true) or internally (false)."""
 
-    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="sqlIsDMF")
+    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlIsDMF"
+    )
     """Whether the function is a data metric function."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -458,6 +468,7 @@ class RelatedFunction(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Function"
+
 
 class RelatedMaterialisedView(RelatedSQL):
     """
@@ -509,6 +520,7 @@ class RelatedMaterialisedView(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MaterialisedView"
 
+
 class RelatedProcedure(RelatedSQL):
     """
     Related entity reference for Procedure assets.
@@ -558,6 +570,7 @@ class RelatedProcedure(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Procedure"
+
 
 class RelatedQuery(RelatedSQL):
     """
@@ -609,6 +622,7 @@ class RelatedQuery(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Query"
 
+
 class RelatedSchema(RelatedSQL):
     """
     Related entity reference for Schema assets.
@@ -634,6 +648,7 @@ class RelatedSchema(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Schema"
+
 
 class RelatedTable(RelatedSQL):
     """
@@ -730,6 +745,7 @@ class RelatedTable(RelatedSQL):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Table"
 
+
 class RelatedTablePartition(RelatedSQL):
     """
     Related entity reference for TablePartition assets.
@@ -788,6 +804,7 @@ class RelatedTablePartition(RelatedSQL):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "TablePartition"
+
 
 class RelatedView(RelatedSQL):
     """

@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .cognos_related import RelatedCognosColumn, RelatedCognosFolder
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -46,15 +53,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .cognos_related import RelatedCognosColumn, RelatedCognosFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CognosModule(Asset):
@@ -174,7 +177,9 @@ class CognosModule(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -183,10 +188,14 @@ class CognosModule(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -213,7 +222,9 @@ class CognosModule(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -225,7 +236,9 @@ class CognosModule(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -247,7 +260,6 @@ class CognosModule(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -300,6 +312,7 @@ class CognosModule(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CognosModuleAttributes(AssetAttributes):
     """CognosModule-specific attributes for nested API format."""
 
@@ -332,6 +345,7 @@ class CognosModuleAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class CognosModuleRelationshipAttributes(AssetRelationshipAttributes):
     """CognosModule-specific relationship attributes for nested API format."""
@@ -372,7 +386,9 @@ class CognosModuleRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -381,10 +397,14 @@ class CognosModuleRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -411,7 +431,9 @@ class CognosModuleRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -423,7 +445,9 @@ class CognosModuleRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -435,13 +459,21 @@ class CognosModuleRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class CognosModuleNested(AssetNested):
     """CognosModule in nested API format for high-performance serialization."""
 
     attributes: Union[CognosModuleAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[CognosModuleRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CognosModuleRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[CognosModuleRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[CognosModuleRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        CognosModuleRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CognosModuleRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -484,7 +516,10 @@ _COGNOS_MODULE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cognos_module_attrs(attrs: CognosModuleAttributes, obj: CognosModule) -> None:
+
+def _populate_cognos_module_attrs(
+    attrs: CognosModuleAttributes, obj: CognosModule
+) -> None:
     """Populate CognosModule-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.cognos_id = obj.cognos_id
@@ -497,6 +532,7 @@ def _populate_cognos_module_attrs(attrs: CognosModuleAttributes, obj: CognosModu
     attrs.cognos_is_disabled = obj.cognos_is_disabled
     attrs.cognos_default_screen_tip = obj.cognos_default_screen_tip
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_cognos_module_attrs(attrs: CognosModuleAttributes) -> dict:
     """Extract all CognosModule attributes from the attrs struct into a flat dict."""
@@ -512,6 +548,7 @@ def _extract_cognos_module_attrs(attrs: CognosModuleAttributes) -> dict:
     result["cognos_default_screen_tip"] = attrs.cognos_default_screen_tip
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -552,16 +589,21 @@ def _cognos_module_to_nested(cognos_module: CognosModule) -> CognosModuleNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cognos_module_from_nested(nested: CognosModuleNested) -> CognosModule:
     """Convert nested format to flat CognosModule."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CognosModuleAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CognosModuleAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COGNOS_MODULE_REL_FIELDS,
-        CognosModuleRelationshipAttributes
+        CognosModuleRelationshipAttributes,
     )
     return CognosModule(
         guid=nested.guid,
@@ -574,7 +616,6 @@ def _cognos_module_from_nested(nested: CognosModuleNested) -> CognosModule:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -588,6 +629,7 @@ def _cognos_module_from_nested(nested: CognosModuleNested) -> CognosModule:
         **merged_rels,
     )
 
+
 def _cognos_module_to_nested_bytes(cognos_module: CognosModule, serde: Serde) -> bytes:
     """Convert flat CognosModule to nested JSON bytes."""
     return serde.encode(_cognos_module_to_nested(cognos_module))
@@ -597,6 +639,7 @@ def _cognos_module_from_nested_bytes(data: bytes, serde: Serde) -> CognosModule:
     """Convert nested JSON bytes to flat CognosModule."""
     nested = serde.decode(data, CognosModuleNested)
     return _cognos_module_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -610,14 +653,22 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 CognosModule.COGNOS_ID = KeywordField("cognosId", "cognosId")
 CognosModule.COGNOS_PATH = KeywordField("cognosPath", "cognosPath")
-CognosModule.COGNOS_PARENT_NAME = KeywordTextField("cognosParentName", "cognosParentName", "cognosParentName.text")
-CognosModule.COGNOS_PARENT_QUALIFIED_NAME = KeywordField("cognosParentQualifiedName", "cognosParentQualifiedName")
+CognosModule.COGNOS_PARENT_NAME = KeywordTextField(
+    "cognosParentName", "cognosParentName", "cognosParentName.text"
+)
+CognosModule.COGNOS_PARENT_QUALIFIED_NAME = KeywordField(
+    "cognosParentQualifiedName", "cognosParentQualifiedName"
+)
 CognosModule.COGNOS_VERSION = KeywordField("cognosVersion", "cognosVersion")
 CognosModule.COGNOS_TYPE = KeywordField("cognosType", "cognosType")
 CognosModule.COGNOS_IS_HIDDEN = BooleanField("cognosIsHidden", "cognosIsHidden")
 CognosModule.COGNOS_IS_DISABLED = BooleanField("cognosIsDisabled", "cognosIsDisabled")
-CognosModule.COGNOS_DEFAULT_SCREEN_TIP = KeywordField("cognosDefaultScreenTip", "cognosDefaultScreenTip")
-CognosModule.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+CognosModule.COGNOS_DEFAULT_SCREEN_TIP = KeywordField(
+    "cognosDefaultScreenTip", "cognosDefaultScreenTip"
+)
+CognosModule.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 CognosModule.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CognosModule.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CognosModule.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -626,7 +677,9 @@ CognosModule.APPLICATION_FIELD = RelationField("applicationField")
 CognosModule.COGNOS_FOLDER = RelationField("cognosFolder")
 CognosModule.COGNOS_COLUMNS = RelationField("cognosColumns")
 CognosModule.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-CognosModule.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+CognosModule.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 CognosModule.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CognosModule.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CognosModule.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -634,7 +687,9 @@ CognosModule.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttri
 CognosModule.METRICS = RelationField("metrics")
 CognosModule.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CognosModule.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-CognosModule.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+CognosModule.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 CognosModule.MEANINGS = RelationField("meanings")
 CognosModule.MC_MONITORS = RelationField("mcMonitors")
 CognosModule.MC_INCIDENTS = RelationField("mcIncidents")

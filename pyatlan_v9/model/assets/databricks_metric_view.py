@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -34,7 +41,12 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -47,15 +59,16 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DatabricksMetricView(Asset):
@@ -191,7 +204,9 @@ class DatabricksMetricView(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -272,7 +287,9 @@ class DatabricksMetricView(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -281,7 +298,9 @@ class DatabricksMetricView(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -296,13 +315,17 @@ class DatabricksMetricView(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -329,7 +352,9 @@ class DatabricksMetricView(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -350,10 +375,14 @@ class DatabricksMetricView(Asset):
     atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema in which this view exists."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -365,19 +394,23 @@ class DatabricksMetricView(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
         self.type_name = "DatabricksMetricView"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -408,7 +441,9 @@ class DatabricksMetricView(Asset):
         return _databricks_metric_view_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DatabricksMetricView:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DatabricksMetricView:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -429,6 +464,7 @@ class DatabricksMetricView(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DatabricksMetricViewAttributes(AssetAttributes):
     """DatabricksMetricView-specific attributes for nested API format."""
@@ -481,7 +517,9 @@ class DatabricksMetricViewAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -532,6 +570,7 @@ class DatabricksMetricViewAttributes(AssetAttributes):
     definition: Union[str, None, UnsetType] = UNSET
     """SQL definition of this view."""
 
+
 class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     """DatabricksMetricView-specific relationship attributes for nested API format."""
 
@@ -565,7 +604,9 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -574,7 +615,9 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -589,13 +632,17 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -622,7 +669,9 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -643,10 +692,14 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     atlan_schema: Union[RelatedSchema, None, UnsetType] = UNSET
     """Schema in which this view exists."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -658,22 +711,36 @@ class DatabricksMetricViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class DatabricksMetricViewNested(AssetNested):
     """DatabricksMetricView in nested API format for high-performance serialization."""
 
     attributes: Union[DatabricksMetricViewAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DatabricksMetricViewRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DatabricksMetricViewRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DatabricksMetricViewRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        DatabricksMetricViewRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        DatabricksMetricViewRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DatabricksMetricViewRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -727,7 +794,10 @@ _DATABRICKS_METRIC_VIEW_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes, obj: DatabricksMetricView) -> None:
+
+def _populate_databricks_metric_view_attrs(
+    attrs: DatabricksMetricViewAttributes, obj: DatabricksMetricView
+) -> None:
     """Populate DatabricksMetricView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.query_count = obj.query_count
@@ -750,9 +820,13 @@ def _populate_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.column_count = obj.column_count
@@ -764,7 +838,10 @@ def _populate_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes
     attrs.is_temporary = obj.is_temporary
     attrs.definition = obj.definition
 
-def _extract_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes) -> dict:
+
+def _extract_databricks_metric_view_attrs(
+    attrs: DatabricksMetricViewAttributes,
+) -> dict:
     """Extract all DatabricksMetricView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["query_count"] = attrs.query_count
@@ -783,14 +860,24 @@ def _extract_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes)
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["column_count"] = attrs.column_count
     result["row_count"] = attrs.row_count
@@ -802,18 +889,23 @@ def _extract_databricks_metric_view_attrs(attrs: DatabricksMetricViewAttributes)
     result["definition"] = attrs.definition
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _databricks_metric_view_to_nested(databricks_metric_view: DatabricksMetricView) -> DatabricksMetricViewNested:
+def _databricks_metric_view_to_nested(
+    databricks_metric_view: DatabricksMetricView,
+) -> DatabricksMetricViewNested:
     """Convert flat DatabricksMetricView to nested format."""
     attrs = DatabricksMetricViewAttributes()
     _populate_databricks_metric_view_attrs(attrs, databricks_metric_view)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_metric_view, _DATABRICKS_METRIC_VIEW_REL_FIELDS, DatabricksMetricViewRelationshipAttributes
+        databricks_metric_view,
+        _DATABRICKS_METRIC_VIEW_REL_FIELDS,
+        DatabricksMetricViewRelationshipAttributes,
     )
     return DatabricksMetricViewNested(
         guid=databricks_metric_view.guid,
@@ -841,16 +933,23 @@ def _databricks_metric_view_to_nested(databricks_metric_view: DatabricksMetricVi
         remove_relationship_attributes=remove_rels,
     )
 
-def _databricks_metric_view_from_nested(nested: DatabricksMetricViewNested) -> DatabricksMetricView:
+
+def _databricks_metric_view_from_nested(
+    nested: DatabricksMetricViewNested,
+) -> DatabricksMetricView:
     """Convert nested format to flat DatabricksMetricView."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksMetricViewAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DatabricksMetricViewAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_METRIC_VIEW_REL_FIELDS,
-        DatabricksMetricViewRelationshipAttributes
+        DatabricksMetricViewRelationshipAttributes,
     )
     return DatabricksMetricView(
         guid=nested.guid,
@@ -863,7 +962,6 @@ def _databricks_metric_view_from_nested(nested: DatabricksMetricViewNested) -> D
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -877,15 +975,21 @@ def _databricks_metric_view_from_nested(nested: DatabricksMetricViewNested) -> D
         **merged_rels,
     )
 
-def _databricks_metric_view_to_nested_bytes(databricks_metric_view: DatabricksMetricView, serde: Serde) -> bytes:
+
+def _databricks_metric_view_to_nested_bytes(
+    databricks_metric_view: DatabricksMetricView, serde: Serde
+) -> bytes:
     """Convert flat DatabricksMetricView to nested JSON bytes."""
     return serde.encode(_databricks_metric_view_to_nested(databricks_metric_view))
 
 
-def _databricks_metric_view_from_nested_bytes(data: bytes, serde: Serde) -> DatabricksMetricView:
+def _databricks_metric_view_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DatabricksMetricView:
     """Convert nested JSON bytes to flat DatabricksMetricView."""
     nested = serde.decode(data, DatabricksMetricViewNested)
     return _databricks_metric_view_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -900,33 +1004,66 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 DatabricksMetricView.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DatabricksMetricView.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DatabricksMetricView.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksMetricView.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DatabricksMetricView.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DatabricksMetricView.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksMetricView.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DatabricksMetricView.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DatabricksMetricView.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksMetricView.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DatabricksMetricView.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DatabricksMetricView.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksMetricView.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DatabricksMetricView.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DatabricksMetricView.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksMetricView.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DatabricksMetricView.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DatabricksMetricView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DatabricksMetricView.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DatabricksMetricView.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DatabricksMetricView.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DatabricksMetricView.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DatabricksMetricView.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DatabricksMetricView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DatabricksMetricView.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DatabricksMetricView.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DatabricksMetricView.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-DatabricksMetricView.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-DatabricksMetricView.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-DatabricksMetricView.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-DatabricksMetricView.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-DatabricksMetricView.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-DatabricksMetricView.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+DatabricksMetricView.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+DatabricksMetricView.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+DatabricksMetricView.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+DatabricksMetricView.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+DatabricksMetricView.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+DatabricksMetricView.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+DatabricksMetricView.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 DatabricksMetricView.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 DatabricksMetricView.ROW_COUNT = NumericField("rowCount", "rowCount")
 DatabricksMetricView.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
 DatabricksMetricView.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-DatabricksMetricView.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+DatabricksMetricView.QUERY_PREVIEW_CONFIG = KeywordField(
+    "queryPreviewConfig", "queryPreviewConfig"
+)
 DatabricksMetricView.ALIAS = KeywordField("alias", "alias")
 DatabricksMetricView.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 DatabricksMetricView.DEFINITION = KeywordField("definition", "definition")
@@ -936,21 +1073,31 @@ DatabricksMetricView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DatabricksMetricView.APPLICATION = RelationField("application")
 DatabricksMetricView.APPLICATION_FIELD = RelationField("applicationField")
 DatabricksMetricView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DatabricksMetricView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+DatabricksMetricView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 DatabricksMetricView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DatabricksMetricView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DatabricksMetricView.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DatabricksMetricView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DatabricksMetricView.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DatabricksMetricView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DatabricksMetricView.METRICS = RelationField("metrics")
 DatabricksMetricView.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DatabricksMetricView.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+DatabricksMetricView.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 DatabricksMetricView.DBT_MODELS = RelationField("dbtModels")
 DatabricksMetricView.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DatabricksMetricView.DBT_TESTS = RelationField("dbtTests")
 DatabricksMetricView.DBT_SOURCES = RelationField("dbtSources")
 DatabricksMetricView.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DatabricksMetricView.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-DatabricksMetricView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+DatabricksMetricView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DatabricksMetricView.MEANINGS = RelationField("meanings")
 DatabricksMetricView.MC_MONITORS = RelationField("mcMonitors")
 DatabricksMetricView.MC_INCIDENTS = RelationField("mcIncidents")
@@ -959,7 +1106,9 @@ DatabricksMetricView.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 DatabricksMetricView.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DatabricksMetricView.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 DatabricksMetricView.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DatabricksMetricView.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+DatabricksMetricView.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 DatabricksMetricView.FILES = RelationField("files")
 DatabricksMetricView.LINKS = RelationField("links")
 DatabricksMetricView.README = RelationField("readme")
@@ -967,10 +1116,18 @@ DatabricksMetricView.COLUMNS = RelationField("columns")
 DatabricksMetricView.QUERIES = RelationField("queries")
 DatabricksMetricView.ATLAN_SCHEMA = RelationField("atlanSchema")
 DatabricksMetricView.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DatabricksMetricView.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+DatabricksMetricView.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DatabricksMetricView.SODA_CHECKS = RelationField("sodaChecks")
 DatabricksMetricView.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DatabricksMetricView.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-DatabricksMetricView.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
-DatabricksMetricView.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-DatabricksMetricView.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+DatabricksMetricView.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+    "sqlInsightOutgoingJoins"
+)
+DatabricksMetricView.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+    "sqlInsightIncomingJoins"
+)
+DatabricksMetricView.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)

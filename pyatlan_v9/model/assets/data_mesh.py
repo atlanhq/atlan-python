@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -32,6 +38,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .data_contract_related import RelatedDataContract
+from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -44,15 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .data_mesh_related import RelatedDataProduct
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DataMesh(Asset):
@@ -136,7 +139,9 @@ class DataMesh(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -145,10 +150,14 @@ class DataMesh(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -175,7 +184,9 @@ class DataMesh(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -187,7 +198,9 @@ class DataMesh(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -201,8 +214,6 @@ class DataMesh(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DataMesh"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -255,6 +266,7 @@ class DataMesh(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class DataMeshAttributes(AssetAttributes):
     """DataMesh-specific attributes for nested API format."""
 
@@ -266,6 +278,7 @@ class DataMeshAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     """DataMesh-specific relationship attributes for nested API format."""
@@ -300,7 +313,9 @@ class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -309,10 +324,14 @@ class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -339,7 +358,9 @@ class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -351,7 +372,9 @@ class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -363,13 +386,19 @@ class DataMeshRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class DataMeshNested(AssetNested):
     """DataMesh in nested API format for high-performance serialization."""
 
     attributes: Union[DataMeshAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DataMeshRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DataMeshRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DataMeshRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DataMeshRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[DataMeshRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -410,12 +439,14 @@ _DATA_MESH_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_data_mesh_attrs(attrs: DataMeshAttributes, obj: DataMesh) -> None:
     """Populate DataMesh-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.parent_domain_qualified_name = obj.parent_domain_qualified_name
     attrs.super_domain_qualified_name = obj.super_domain_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_data_mesh_attrs(attrs: DataMeshAttributes) -> dict:
     """Extract all DataMesh attributes from the attrs struct into a flat dict."""
@@ -424,6 +455,7 @@ def _extract_data_mesh_attrs(attrs: DataMeshAttributes) -> dict:
     result["super_domain_qualified_name"] = attrs.super_domain_qualified_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -464,16 +496,19 @@ def _data_mesh_to_nested(data_mesh: DataMesh) -> DataMeshNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _data_mesh_from_nested(nested: DataMeshNested) -> DataMesh:
     """Convert nested format to flat DataMesh."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DataMeshAttributes()
+    attrs = (
+        nested.attributes if nested.attributes is not UNSET else DataMeshAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATA_MESH_REL_FIELDS,
-        DataMeshRelationshipAttributes
+        DataMeshRelationshipAttributes,
     )
     return DataMesh(
         guid=nested.guid,
@@ -486,7 +521,6 @@ def _data_mesh_from_nested(nested: DataMeshNested) -> DataMesh:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -500,6 +534,7 @@ def _data_mesh_from_nested(nested: DataMeshNested) -> DataMesh:
         **merged_rels,
     )
 
+
 def _data_mesh_to_nested_bytes(data_mesh: DataMesh, serde: Serde) -> bytes:
     """Convert flat DataMesh to nested JSON bytes."""
     return serde.encode(_data_mesh_to_nested(data_mesh))
@@ -510,6 +545,7 @@ def _data_mesh_from_nested_bytes(data: bytes, serde: Serde) -> DataMesh:
     nested = serde.decode(data, DataMeshNested)
     return _data_mesh_from_nested(nested)
 
+
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -519,8 +555,16 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DataMesh.PARENT_DOMAIN_QUALIFIED_NAME = KeywordTextField("parentDomainQualifiedName", "parentDomainQualifiedName", "parentDomainQualifiedName.text")
-DataMesh.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField("superDomainQualifiedName", "superDomainQualifiedName", "superDomainQualifiedName.text")
+DataMesh.PARENT_DOMAIN_QUALIFIED_NAME = KeywordTextField(
+    "parentDomainQualifiedName",
+    "parentDomainQualifiedName",
+    "parentDomainQualifiedName.text",
+)
+DataMesh.SUPER_DOMAIN_QUALIFIED_NAME = KeywordTextField(
+    "superDomainQualifiedName",
+    "superDomainQualifiedName",
+    "superDomainQualifiedName.text",
+)
 DataMesh.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 DataMesh.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataMesh.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -536,7 +580,9 @@ DataMesh.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribute
 DataMesh.METRICS = RelationField("metrics")
 DataMesh.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DataMesh.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-DataMesh.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+DataMesh.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DataMesh.MEANINGS = RelationField("meanings")
 DataMesh.MC_MONITORS = RelationField("mcMonitors")
 DataMesh.MC_INCIDENTS = RelationField("mcIncidents")

@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -31,6 +38,11 @@ from .asset import (
     AssetRelationshipAttributes,
     _extract_asset_attrs,
     _populate_asset_attrs,
+)
+from .cassandra_related import (
+    RelatedCassandraColumn,
+    RelatedCassandraIndex,
+    RelatedCassandraKeyspace,
 )
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -46,15 +58,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .cassandra_related import RelatedCassandraColumn, RelatedCassandraIndex, RelatedCassandraKeyspace
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class CassandraTable(Asset):
@@ -124,7 +132,9 @@ class CassandraTable(Asset):
 
     type_name: Union[str, UnsetType] = "CassandraTable"
 
-    cassandra_table_bloom_filter_fp_chance: Union[float, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableBloomFilterFPChance")
+    cassandra_table_bloom_filter_fp_chance: Union[float, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraTableBloomFilterFPChance")
+    )
     """Bloom filter false positive chance for the CassandraTable."""
 
     cassandra_table_caching: Union[Dict[str, str], None, UnsetType] = UNSET
@@ -139,19 +149,27 @@ class CassandraTable(Asset):
     cassandra_table_compression: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compression used for the CassandraTable in Cassandra."""
 
-    cassandra_table_crc_check_chance: Union[float, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableCRCCheckChance")
+    cassandra_table_crc_check_chance: Union[float, None, UnsetType] = msgspec.field(
+        default=UNSET, name="cassandraTableCRCCheckChance"
+    )
     """CRC check chance for the CassandraTable."""
 
-    cassandra_table_dc_local_read_repair_chance: Union[float, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
+    cassandra_table_dc_local_read_repair_chance: Union[float, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
+    )
     """Local read repair chance in Cassandra."""
 
-    cassandra_table_default_ttl: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableDefaultTTL")
+    cassandra_table_default_ttl: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="cassandraTableDefaultTTL"
+    )
     """Default time-to-live for the CassandraTable in Cassandra."""
 
     cassandra_table_flags: Union[List[str], None, UnsetType] = UNSET
     """Flags associated with the CassandraTable."""
 
-    cassandra_table_gc_grace_seconds: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableGCGraceSeconds")
+    cassandra_table_gc_grace_seconds: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="cassandraTableGCGraceSeconds"
+    )
     """Grace period for garbage collection in the CassandraTable."""
 
     cassandra_table_id: Union[str, None, UnsetType] = UNSET
@@ -193,7 +211,9 @@ class CassandraTable(Asset):
     cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -238,7 +258,9 @@ class CassandraTable(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -247,10 +269,14 @@ class CassandraTable(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -277,7 +303,9 @@ class CassandraTable(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -289,7 +317,9 @@ class CassandraTable(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -308,10 +338,7 @@ class CassandraTable(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -364,10 +391,13 @@ class CassandraTable(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
+
 class CassandraTableAttributes(AssetAttributes):
     """CassandraTable-specific attributes for nested API format."""
 
-    cassandra_table_bloom_filter_fp_chance: Union[float, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableBloomFilterFPChance")
+    cassandra_table_bloom_filter_fp_chance: Union[float, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraTableBloomFilterFPChance")
+    )
     """Bloom filter false positive chance for the CassandraTable."""
 
     cassandra_table_caching: Union[Dict[str, str], None, UnsetType] = UNSET
@@ -382,19 +412,27 @@ class CassandraTableAttributes(AssetAttributes):
     cassandra_table_compression: Union[Dict[str, str], None, UnsetType] = UNSET
     """Compression used for the CassandraTable in Cassandra."""
 
-    cassandra_table_crc_check_chance: Union[float, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableCRCCheckChance")
+    cassandra_table_crc_check_chance: Union[float, None, UnsetType] = msgspec.field(
+        default=UNSET, name="cassandraTableCRCCheckChance"
+    )
     """CRC check chance for the CassandraTable."""
 
-    cassandra_table_dc_local_read_repair_chance: Union[float, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
+    cassandra_table_dc_local_read_repair_chance: Union[float, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="cassandraTableDCLocalReadRepairChance")
+    )
     """Local read repair chance in Cassandra."""
 
-    cassandra_table_default_ttl: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableDefaultTTL")
+    cassandra_table_default_ttl: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="cassandraTableDefaultTTL"
+    )
     """Default time-to-live for the CassandraTable in Cassandra."""
 
     cassandra_table_flags: Union[List[str], None, UnsetType] = UNSET
     """Flags associated with the CassandraTable."""
 
-    cassandra_table_gc_grace_seconds: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="cassandraTableGCGraceSeconds")
+    cassandra_table_gc_grace_seconds: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="cassandraTableGCGraceSeconds"
+    )
     """Grace period for garbage collection in the CassandraTable."""
 
     cassandra_table_id: Union[str, None, UnsetType] = UNSET
@@ -436,11 +474,14 @@ class CassandraTableAttributes(AssetAttributes):
     cassandra_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of view for Cassandra asset"""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="noSQLSchemaDefinition"
+    )
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
 
 class CassandraTableRelationshipAttributes(AssetRelationshipAttributes):
     """CassandraTable-specific relationship attributes for nested API format."""
@@ -484,7 +525,9 @@ class CassandraTableRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -493,10 +536,14 @@ class CassandraTableRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -523,7 +570,9 @@ class CassandraTableRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -535,7 +584,9 @@ class CassandraTableRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -547,13 +598,21 @@ class CassandraTableRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class CassandraTableNested(AssetNested):
     """CassandraTable in nested API format for high-performance serialization."""
 
     attributes: Union[CassandraTableAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[CassandraTableRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CassandraTableRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[CassandraTableRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[CassandraTableRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    append_relationship_attributes: Union[
+        CassandraTableRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        CassandraTableRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -597,22 +656,31 @@ _CASSANDRA_TABLE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_cassandra_table_attrs(attrs: CassandraTableAttributes, obj: CassandraTable) -> None:
+
+def _populate_cassandra_table_attrs(
+    attrs: CassandraTableAttributes, obj: CassandraTable
+) -> None:
     """Populate CassandraTable-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.cassandra_table_bloom_filter_fp_chance = obj.cassandra_table_bloom_filter_fp_chance
+    attrs.cassandra_table_bloom_filter_fp_chance = (
+        obj.cassandra_table_bloom_filter_fp_chance
+    )
     attrs.cassandra_table_caching = obj.cassandra_table_caching
     attrs.cassandra_table_comment = obj.cassandra_table_comment
     attrs.cassandra_table_compaction = obj.cassandra_table_compaction
     attrs.cassandra_table_compression = obj.cassandra_table_compression
     attrs.cassandra_table_crc_check_chance = obj.cassandra_table_crc_check_chance
-    attrs.cassandra_table_dc_local_read_repair_chance = obj.cassandra_table_dc_local_read_repair_chance
+    attrs.cassandra_table_dc_local_read_repair_chance = (
+        obj.cassandra_table_dc_local_read_repair_chance
+    )
     attrs.cassandra_table_default_ttl = obj.cassandra_table_default_ttl
     attrs.cassandra_table_flags = obj.cassandra_table_flags
     attrs.cassandra_table_gc_grace_seconds = obj.cassandra_table_gc_grace_seconds
     attrs.cassandra_table_id = obj.cassandra_table_id
     attrs.cassandra_table_max_index_interval = obj.cassandra_table_max_index_interval
-    attrs.cassandra_table_memtable_flush_period_in_ms = obj.cassandra_table_memtable_flush_period_in_ms
+    attrs.cassandra_table_memtable_flush_period_in_ms = (
+        obj.cassandra_table_memtable_flush_period_in_ms
+    )
     attrs.cassandra_table_min_index_interval = obj.cassandra_table_min_index_interval
     attrs.cassandra_table_read_repair_chance = obj.cassandra_table_read_repair_chance
     attrs.cassandra_table_speculative_retry = obj.cassandra_table_speculative_retry
@@ -626,25 +694,40 @@ def _populate_cassandra_table_attrs(attrs: CassandraTableAttributes, obj: Cassan
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_cassandra_table_attrs(attrs: CassandraTableAttributes) -> dict:
     """Extract all CassandraTable attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cassandra_table_bloom_filter_fp_chance"] = attrs.cassandra_table_bloom_filter_fp_chance
+    result["cassandra_table_bloom_filter_fp_chance"] = (
+        attrs.cassandra_table_bloom_filter_fp_chance
+    )
     result["cassandra_table_caching"] = attrs.cassandra_table_caching
     result["cassandra_table_comment"] = attrs.cassandra_table_comment
     result["cassandra_table_compaction"] = attrs.cassandra_table_compaction
     result["cassandra_table_compression"] = attrs.cassandra_table_compression
     result["cassandra_table_crc_check_chance"] = attrs.cassandra_table_crc_check_chance
-    result["cassandra_table_dc_local_read_repair_chance"] = attrs.cassandra_table_dc_local_read_repair_chance
+    result["cassandra_table_dc_local_read_repair_chance"] = (
+        attrs.cassandra_table_dc_local_read_repair_chance
+    )
     result["cassandra_table_default_ttl"] = attrs.cassandra_table_default_ttl
     result["cassandra_table_flags"] = attrs.cassandra_table_flags
     result["cassandra_table_gc_grace_seconds"] = attrs.cassandra_table_gc_grace_seconds
     result["cassandra_table_id"] = attrs.cassandra_table_id
-    result["cassandra_table_max_index_interval"] = attrs.cassandra_table_max_index_interval
-    result["cassandra_table_memtable_flush_period_in_ms"] = attrs.cassandra_table_memtable_flush_period_in_ms
-    result["cassandra_table_min_index_interval"] = attrs.cassandra_table_min_index_interval
-    result["cassandra_table_read_repair_chance"] = attrs.cassandra_table_read_repair_chance
-    result["cassandra_table_speculative_retry"] = attrs.cassandra_table_speculative_retry
+    result["cassandra_table_max_index_interval"] = (
+        attrs.cassandra_table_max_index_interval
+    )
+    result["cassandra_table_memtable_flush_period_in_ms"] = (
+        attrs.cassandra_table_memtable_flush_period_in_ms
+    )
+    result["cassandra_table_min_index_interval"] = (
+        attrs.cassandra_table_min_index_interval
+    )
+    result["cassandra_table_read_repair_chance"] = (
+        attrs.cassandra_table_read_repair_chance
+    )
+    result["cassandra_table_speculative_retry"] = (
+        attrs.cassandra_table_speculative_retry
+    )
     result["cassandra_table_virtual"] = attrs.cassandra_table_virtual
     result["cassandra_table_query"] = attrs.cassandra_table_query
     result["cassandra_keyspace_name"] = attrs.cassandra_keyspace_name
@@ -655,6 +738,7 @@ def _extract_cassandra_table_attrs(attrs: CassandraTableAttributes) -> dict:
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -667,7 +751,9 @@ def _cassandra_table_to_nested(cassandra_table: CassandraTable) -> CassandraTabl
     _populate_cassandra_table_attrs(attrs, cassandra_table)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cassandra_table, _CASSANDRA_TABLE_REL_FIELDS, CassandraTableRelationshipAttributes
+        cassandra_table,
+        _CASSANDRA_TABLE_REL_FIELDS,
+        CassandraTableRelationshipAttributes,
     )
     return CassandraTableNested(
         guid=cassandra_table.guid,
@@ -695,16 +781,21 @@ def _cassandra_table_to_nested(cassandra_table: CassandraTable) -> CassandraTabl
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _cassandra_table_from_nested(nested: CassandraTableNested) -> CassandraTable:
     """Convert nested format to flat CassandraTable."""
-    attrs = nested.attributes if nested.attributes is not UNSET else CassandraTableAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else CassandraTableAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CASSANDRA_TABLE_REL_FIELDS,
-        CassandraTableRelationshipAttributes
+        CassandraTableRelationshipAttributes,
     )
     return CassandraTable(
         guid=nested.guid,
@@ -717,7 +808,6 @@ def _cassandra_table_from_nested(nested: CassandraTableNested) -> CassandraTable
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -731,7 +821,10 @@ def _cassandra_table_from_nested(nested: CassandraTableNested) -> CassandraTable
         **merged_rels,
     )
 
-def _cassandra_table_to_nested_bytes(cassandra_table: CassandraTable, serde: Serde) -> bytes:
+
+def _cassandra_table_to_nested_bytes(
+    cassandra_table: CassandraTable, serde: Serde
+) -> bytes:
     """Convert flat CassandraTable to nested JSON bytes."""
     return serde.encode(_cassandra_table_to_nested(cassandra_table))
 
@@ -740,6 +833,7 @@ def _cassandra_table_from_nested_bytes(data: bytes, serde: Serde) -> CassandraTa
     """Convert nested JSON bytes to flat CassandraTable."""
     nested = serde.decode(data, CassandraTableNested)
     return _cassandra_table_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -751,31 +845,79 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CassandraTable.CASSANDRA_TABLE_BLOOM_FILTER_FP_CHANCE = NumericField("cassandraTableBloomFilterFPChance", "cassandraTableBloomFilterFPChance")
-CassandraTable.CASSANDRA_TABLE_CACHING = KeywordField("cassandraTableCaching", "cassandraTableCaching")
-CassandraTable.CASSANDRA_TABLE_COMMENT = KeywordField("cassandraTableComment", "cassandraTableComment")
-CassandraTable.CASSANDRA_TABLE_COMPACTION = KeywordField("cassandraTableCompaction", "cassandraTableCompaction")
-CassandraTable.CASSANDRA_TABLE_COMPRESSION = KeywordField("cassandraTableCompression", "cassandraTableCompression")
-CassandraTable.CASSANDRA_TABLE_CRC_CHECK_CHANCE = NumericField("cassandraTableCRCCheckChance", "cassandraTableCRCCheckChance")
-CassandraTable.CASSANDRA_TABLE_DC_LOCAL_READ_REPAIR_CHANCE = NumericField("cassandraTableDCLocalReadRepairChance", "cassandraTableDCLocalReadRepairChance")
-CassandraTable.CASSANDRA_TABLE_DEFAULT_TTL = NumericField("cassandraTableDefaultTTL", "cassandraTableDefaultTTL")
-CassandraTable.CASSANDRA_TABLE_FLAGS = KeywordField("cassandraTableFlags", "cassandraTableFlags")
-CassandraTable.CASSANDRA_TABLE_GC_GRACE_SECONDS = NumericField("cassandraTableGCGraceSeconds", "cassandraTableGCGraceSeconds")
+CassandraTable.CASSANDRA_TABLE_BLOOM_FILTER_FP_CHANCE = NumericField(
+    "cassandraTableBloomFilterFPChance", "cassandraTableBloomFilterFPChance"
+)
+CassandraTable.CASSANDRA_TABLE_CACHING = KeywordField(
+    "cassandraTableCaching", "cassandraTableCaching"
+)
+CassandraTable.CASSANDRA_TABLE_COMMENT = KeywordField(
+    "cassandraTableComment", "cassandraTableComment"
+)
+CassandraTable.CASSANDRA_TABLE_COMPACTION = KeywordField(
+    "cassandraTableCompaction", "cassandraTableCompaction"
+)
+CassandraTable.CASSANDRA_TABLE_COMPRESSION = KeywordField(
+    "cassandraTableCompression", "cassandraTableCompression"
+)
+CassandraTable.CASSANDRA_TABLE_CRC_CHECK_CHANCE = NumericField(
+    "cassandraTableCRCCheckChance", "cassandraTableCRCCheckChance"
+)
+CassandraTable.CASSANDRA_TABLE_DC_LOCAL_READ_REPAIR_CHANCE = NumericField(
+    "cassandraTableDCLocalReadRepairChance", "cassandraTableDCLocalReadRepairChance"
+)
+CassandraTable.CASSANDRA_TABLE_DEFAULT_TTL = NumericField(
+    "cassandraTableDefaultTTL", "cassandraTableDefaultTTL"
+)
+CassandraTable.CASSANDRA_TABLE_FLAGS = KeywordField(
+    "cassandraTableFlags", "cassandraTableFlags"
+)
+CassandraTable.CASSANDRA_TABLE_GC_GRACE_SECONDS = NumericField(
+    "cassandraTableGCGraceSeconds", "cassandraTableGCGraceSeconds"
+)
 CassandraTable.CASSANDRA_TABLE_ID = KeywordField("cassandraTableId", "cassandraTableId")
-CassandraTable.CASSANDRA_TABLE_MAX_INDEX_INTERVAL = NumericField("cassandraTableMaxIndexInterval", "cassandraTableMaxIndexInterval")
-CassandraTable.CASSANDRA_TABLE_MEMTABLE_FLUSH_PERIOD_IN_MS = NumericField("cassandraTableMemtableFlushPeriodInMs", "cassandraTableMemtableFlushPeriodInMs")
-CassandraTable.CASSANDRA_TABLE_MIN_INDEX_INTERVAL = NumericField("cassandraTableMinIndexInterval", "cassandraTableMinIndexInterval")
-CassandraTable.CASSANDRA_TABLE_READ_REPAIR_CHANCE = NumericField("cassandraTableReadRepairChance", "cassandraTableReadRepairChance")
-CassandraTable.CASSANDRA_TABLE_SPECULATIVE_RETRY = KeywordField("cassandraTableSpeculativeRetry", "cassandraTableSpeculativeRetry")
-CassandraTable.CASSANDRA_TABLE_VIRTUAL = BooleanField("cassandraTableVirtual", "cassandraTableVirtual")
-CassandraTable.CASSANDRA_TABLE_QUERY = KeywordField("cassandraTableQuery", "cassandraTableQuery")
-CassandraTable.CASSANDRA_KEYSPACE_NAME = KeywordField("cassandraKeyspaceName", "cassandraKeyspaceName")
-CassandraTable.CASSANDRA_TABLE_NAME = KeywordField("cassandraTableName", "cassandraTableName")
-CassandraTable.CASSANDRA_VIEW_NAME = KeywordField("cassandraViewName", "cassandraViewName")
-CassandraTable.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField("cassandraTableQualifiedName", "cassandraTableQualifiedName")
-CassandraTable.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField("cassandraViewQualifiedName", "cassandraViewQualifiedName")
-CassandraTable.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
-CassandraTable.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+CassandraTable.CASSANDRA_TABLE_MAX_INDEX_INTERVAL = NumericField(
+    "cassandraTableMaxIndexInterval", "cassandraTableMaxIndexInterval"
+)
+CassandraTable.CASSANDRA_TABLE_MEMTABLE_FLUSH_PERIOD_IN_MS = NumericField(
+    "cassandraTableMemtableFlushPeriodInMs", "cassandraTableMemtableFlushPeriodInMs"
+)
+CassandraTable.CASSANDRA_TABLE_MIN_INDEX_INTERVAL = NumericField(
+    "cassandraTableMinIndexInterval", "cassandraTableMinIndexInterval"
+)
+CassandraTable.CASSANDRA_TABLE_READ_REPAIR_CHANCE = NumericField(
+    "cassandraTableReadRepairChance", "cassandraTableReadRepairChance"
+)
+CassandraTable.CASSANDRA_TABLE_SPECULATIVE_RETRY = KeywordField(
+    "cassandraTableSpeculativeRetry", "cassandraTableSpeculativeRetry"
+)
+CassandraTable.CASSANDRA_TABLE_VIRTUAL = BooleanField(
+    "cassandraTableVirtual", "cassandraTableVirtual"
+)
+CassandraTable.CASSANDRA_TABLE_QUERY = KeywordField(
+    "cassandraTableQuery", "cassandraTableQuery"
+)
+CassandraTable.CASSANDRA_KEYSPACE_NAME = KeywordField(
+    "cassandraKeyspaceName", "cassandraKeyspaceName"
+)
+CassandraTable.CASSANDRA_TABLE_NAME = KeywordField(
+    "cassandraTableName", "cassandraTableName"
+)
+CassandraTable.CASSANDRA_VIEW_NAME = KeywordField(
+    "cassandraViewName", "cassandraViewName"
+)
+CassandraTable.CASSANDRA_TABLE_QUALIFIED_NAME = KeywordField(
+    "cassandraTableQualifiedName", "cassandraTableQualifiedName"
+)
+CassandraTable.CASSANDRA_VIEW_QUALIFIED_NAME = KeywordField(
+    "cassandraViewQualifiedName", "cassandraViewQualifiedName"
+)
+CassandraTable.NO_SQL_SCHEMA_DEFINITION = KeywordField(
+    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
+)
+CassandraTable.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 CassandraTable.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CassandraTable.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CassandraTable.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -785,15 +927,21 @@ CassandraTable.CASSANDRA_COLUMNS = RelationField("cassandraColumns")
 CassandraTable.CASSANDRA_INDEXES = RelationField("cassandraIndexes")
 CassandraTable.CASSANDRA_KEYSPACE = RelationField("cassandraKeyspace")
 CassandraTable.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-CassandraTable.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+CassandraTable.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 CassandraTable.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CassandraTable.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CassandraTable.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-CassandraTable.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+CassandraTable.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 CassandraTable.METRICS = RelationField("metrics")
 CassandraTable.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CassandraTable.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-CassandraTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+CassandraTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 CassandraTable.MEANINGS = RelationField("meanings")
 CassandraTable.MC_MONITORS = RelationField("mcMonitors")
 CassandraTable.MC_INCIDENTS = RelationField("mcIncidents")

@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,13 +51,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class Dbt(Asset):
@@ -203,7 +207,9 @@ class Dbt(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -212,10 +218,14 @@ class Dbt(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -242,7 +252,9 @@ class Dbt(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -254,7 +266,9 @@ class Dbt(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -268,8 +282,6 @@ class Dbt(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Dbt"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -321,6 +333,7 @@ class Dbt(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DbtAttributes(AssetAttributes):
     """Dbt-specific attributes for nested API format."""
@@ -385,6 +398,7 @@ class DbtAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class DbtRelationshipAttributes(AssetRelationshipAttributes):
     """Dbt-specific relationship attributes for nested API format."""
 
@@ -418,7 +432,9 @@ class DbtRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -427,10 +443,14 @@ class DbtRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -457,7 +477,9 @@ class DbtRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -469,7 +491,9 @@ class DbtRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -481,6 +505,7 @@ class DbtRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class DbtNested(AssetNested):
     """Dbt in nested API format for high-performance serialization."""
 
@@ -488,6 +513,7 @@ class DbtNested(AssetNested):
     relationship_attributes: Union[DbtRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[DbtRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[DbtRelationshipAttributes, UnsetType] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -528,6 +554,7 @@ _DBT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
+
 def _populate_dbt_attrs(attrs: DbtAttributes, obj: Dbt) -> None:
     """Populate Dbt-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -551,6 +578,7 @@ def _populate_dbt_attrs(attrs: DbtAttributes, obj: Dbt) -> None:
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+
 
 def _extract_dbt_attrs(attrs: DbtAttributes) -> dict:
     """Extract all Dbt attributes from the attrs struct into a flat dict."""
@@ -576,6 +604,7 @@ def _extract_dbt_attrs(attrs: DbtAttributes) -> dict:
     result["dbt_job_runs"] = attrs.dbt_job_runs
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -616,6 +645,7 @@ def _dbt_to_nested(dbt: Dbt) -> DbtNested:
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _dbt_from_nested(nested: DbtNested) -> Dbt:
     """Convert nested format to flat Dbt."""
     attrs = nested.attributes if nested.attributes is not UNSET else DbtAttributes()
@@ -625,7 +655,7 @@ def _dbt_from_nested(nested: DbtNested) -> Dbt:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_REL_FIELDS,
-        DbtRelationshipAttributes
+        DbtRelationshipAttributes,
     )
     return Dbt(
         guid=nested.guid,
@@ -638,7 +668,6 @@ def _dbt_from_nested(nested: DbtNested) -> Dbt:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -652,6 +681,7 @@ def _dbt_from_nested(nested: DbtNested) -> Dbt:
         **merged_rels,
     )
 
+
 def _dbt_to_nested_bytes(dbt: Dbt, serde: Serde) -> bytes:
     """Convert flat Dbt to nested JSON bytes."""
     return serde.encode(_dbt_to_nested(dbt))
@@ -661,6 +691,7 @@ def _dbt_from_nested_bytes(data: bytes, serde: Serde) -> Dbt:
     """Convert nested JSON bytes to flat Dbt."""
     nested = serde.decode(data, DbtNested)
     return _dbt_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -680,15 +711,25 @@ Dbt.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 Dbt.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 Dbt.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 Dbt.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-Dbt.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
+Dbt.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
+    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
+)
 Dbt.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 Dbt.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-Dbt.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
+Dbt.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
+    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
+)
 Dbt.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-Dbt.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
+Dbt.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
+    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
+)
 Dbt.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-Dbt.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
-Dbt.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
+Dbt.DBT_CONNECTION_CONTEXT = KeywordField(
+    "dbtConnectionContext", "dbtConnectionContext"
+)
+Dbt.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
+    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+)
 Dbt.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 Dbt.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Dbt.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -705,7 +746,9 @@ Dbt.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 Dbt.METRICS = RelationField("metrics")
 Dbt.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Dbt.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Dbt.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+Dbt.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Dbt.MEANINGS = RelationField("meanings")
 Dbt.MC_MONITORS = RelationField("mcMonitors")
 Dbt.MC_INCIDENTS = RelationField("mcIncidents")

@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -44,17 +50,14 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .sigma_related import RelatedSigmaDataElementField, RelatedSigmaPage
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .sigma_related import RelatedSigmaDataElementField, RelatedSigmaPage
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class SigmaDataElement(Asset):
@@ -168,7 +171,9 @@ class SigmaDataElement(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -177,10 +182,14 @@ class SigmaDataElement(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -207,7 +216,9 @@ class SigmaDataElement(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -219,13 +230,17 @@ class SigmaDataElement(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     sigma_page: Union[RelatedSigmaPage, None, UnsetType] = UNSET
     """Page on which this data element exists."""
 
-    sigma_data_element_fields: Union[List[RelatedSigmaDataElementField], None, UnsetType] = UNSET
+    sigma_data_element_fields: Union[
+        List[RelatedSigmaDataElementField], None, UnsetType
+    ] = UNSET
     """Data element fields that exist in this data element."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -247,7 +262,6 @@ class SigmaDataElement(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -278,7 +292,9 @@ class SigmaDataElement(Asset):
         return _sigma_data_element_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SigmaDataElement:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> SigmaDataElement:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -299,6 +315,7 @@ class SigmaDataElement(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class SigmaDataElementAttributes(AssetAttributes):
     """SigmaDataElement-specific attributes for nested API format."""
@@ -333,6 +350,7 @@ class SigmaDataElementAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+
 class SigmaDataElementRelationshipAttributes(AssetRelationshipAttributes):
     """SigmaDataElement-specific relationship attributes for nested API format."""
 
@@ -366,7 +384,9 @@ class SigmaDataElementRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -375,10 +395,14 @@ class SigmaDataElementRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -405,7 +429,9 @@ class SigmaDataElementRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -417,13 +443,17 @@ class SigmaDataElementRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     sigma_page: Union[RelatedSigmaPage, None, UnsetType] = UNSET
     """Page on which this data element exists."""
 
-    sigma_data_element_fields: Union[List[RelatedSigmaDataElementField], None, UnsetType] = UNSET
+    sigma_data_element_fields: Union[
+        List[RelatedSigmaDataElementField], None, UnsetType
+    ] = UNSET
     """Data element fields that exist in this data element."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -435,13 +465,21 @@ class SigmaDataElementRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class SigmaDataElementNested(AssetNested):
     """SigmaDataElement in nested API format for high-performance serialization."""
 
     attributes: Union[SigmaDataElementAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SigmaDataElementRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SigmaDataElementRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[SigmaDataElementRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        SigmaDataElementRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        SigmaDataElementRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        SigmaDataElementRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -484,7 +522,10 @@ _SIGMA_DATA_ELEMENT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_sigma_data_element_attrs(attrs: SigmaDataElementAttributes, obj: SigmaDataElement) -> None:
+
+def _populate_sigma_data_element_attrs(
+    attrs: SigmaDataElementAttributes, obj: SigmaDataElement
+) -> None:
     """Populate SigmaDataElement-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sigma_data_element_query = obj.sigma_data_element_query
@@ -498,6 +539,7 @@ def _populate_sigma_data_element_attrs(attrs: SigmaDataElementAttributes, obj: S
     attrs.sigma_data_element_name = obj.sigma_data_element_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
+
 def _extract_sigma_data_element_attrs(attrs: SigmaDataElementAttributes) -> dict:
     """Extract all SigmaDataElement attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -508,23 +550,30 @@ def _extract_sigma_data_element_attrs(attrs: SigmaDataElementAttributes) -> dict
     result["sigma_workbook_name"] = attrs.sigma_workbook_name
     result["sigma_page_qualified_name"] = attrs.sigma_page_qualified_name
     result["sigma_page_name"] = attrs.sigma_page_name
-    result["sigma_data_element_qualified_name"] = attrs.sigma_data_element_qualified_name
+    result["sigma_data_element_qualified_name"] = (
+        attrs.sigma_data_element_qualified_name
+    )
     result["sigma_data_element_name"] = attrs.sigma_data_element_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sigma_data_element_to_nested(sigma_data_element: SigmaDataElement) -> SigmaDataElementNested:
+def _sigma_data_element_to_nested(
+    sigma_data_element: SigmaDataElement,
+) -> SigmaDataElementNested:
     """Convert flat SigmaDataElement to nested format."""
     attrs = SigmaDataElementAttributes()
     _populate_sigma_data_element_attrs(attrs, sigma_data_element)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sigma_data_element, _SIGMA_DATA_ELEMENT_REL_FIELDS, SigmaDataElementRelationshipAttributes
+        sigma_data_element,
+        _SIGMA_DATA_ELEMENT_REL_FIELDS,
+        SigmaDataElementRelationshipAttributes,
     )
     return SigmaDataElementNested(
         guid=sigma_data_element.guid,
@@ -552,16 +601,21 @@ def _sigma_data_element_to_nested(sigma_data_element: SigmaDataElement) -> Sigma
         remove_relationship_attributes=remove_rels,
     )
 
+
 def _sigma_data_element_from_nested(nested: SigmaDataElementNested) -> SigmaDataElement:
     """Convert nested format to flat SigmaDataElement."""
-    attrs = nested.attributes if nested.attributes is not UNSET else SigmaDataElementAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else SigmaDataElementAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SIGMA_DATA_ELEMENT_REL_FIELDS,
-        SigmaDataElementRelationshipAttributes
+        SigmaDataElementRelationshipAttributes,
     )
     return SigmaDataElement(
         guid=nested.guid,
@@ -574,7 +628,6 @@ def _sigma_data_element_from_nested(nested: SigmaDataElementNested) -> SigmaData
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -588,15 +641,21 @@ def _sigma_data_element_from_nested(nested: SigmaDataElementNested) -> SigmaData
         **merged_rels,
     )
 
-def _sigma_data_element_to_nested_bytes(sigma_data_element: SigmaDataElement, serde: Serde) -> bytes:
+
+def _sigma_data_element_to_nested_bytes(
+    sigma_data_element: SigmaDataElement, serde: Serde
+) -> bytes:
     """Convert flat SigmaDataElement to nested JSON bytes."""
     return serde.encode(_sigma_data_element_to_nested(sigma_data_element))
 
 
-def _sigma_data_element_from_nested_bytes(data: bytes, serde: Serde) -> SigmaDataElement:
+def _sigma_data_element_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> SigmaDataElement:
     """Convert nested JSON bytes to flat SigmaDataElement."""
     nested = serde.decode(data, SigmaDataElementNested)
     return _sigma_data_element_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -608,31 +667,59 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SigmaDataElement.SIGMA_DATA_ELEMENT_QUERY = KeywordField("sigmaDataElementQuery", "sigmaDataElementQuery")
-SigmaDataElement.SIGMA_DATA_ELEMENT_TYPE = KeywordField("sigmaDataElementType", "sigmaDataElementType")
-SigmaDataElement.SIGMA_DATA_ELEMENT_FIELD_COUNT = NumericField("sigmaDataElementFieldCount", "sigmaDataElementFieldCount")
-SigmaDataElement.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField("sigmaWorkbookQualifiedName", "sigmaWorkbookQualifiedName", "sigmaWorkbookQualifiedName.text")
-SigmaDataElement.SIGMA_WORKBOOK_NAME = KeywordField("sigmaWorkbookName", "sigmaWorkbookName")
-SigmaDataElement.SIGMA_PAGE_QUALIFIED_NAME = KeywordTextField("sigmaPageQualifiedName", "sigmaPageQualifiedName", "sigmaPageQualifiedName.text")
+SigmaDataElement.SIGMA_DATA_ELEMENT_QUERY = KeywordField(
+    "sigmaDataElementQuery", "sigmaDataElementQuery"
+)
+SigmaDataElement.SIGMA_DATA_ELEMENT_TYPE = KeywordField(
+    "sigmaDataElementType", "sigmaDataElementType"
+)
+SigmaDataElement.SIGMA_DATA_ELEMENT_FIELD_COUNT = NumericField(
+    "sigmaDataElementFieldCount", "sigmaDataElementFieldCount"
+)
+SigmaDataElement.SIGMA_WORKBOOK_QUALIFIED_NAME = KeywordTextField(
+    "sigmaWorkbookQualifiedName",
+    "sigmaWorkbookQualifiedName",
+    "sigmaWorkbookQualifiedName.text",
+)
+SigmaDataElement.SIGMA_WORKBOOK_NAME = KeywordField(
+    "sigmaWorkbookName", "sigmaWorkbookName"
+)
+SigmaDataElement.SIGMA_PAGE_QUALIFIED_NAME = KeywordTextField(
+    "sigmaPageQualifiedName", "sigmaPageQualifiedName", "sigmaPageQualifiedName.text"
+)
 SigmaDataElement.SIGMA_PAGE_NAME = KeywordField("sigmaPageName", "sigmaPageName")
-SigmaDataElement.SIGMA_DATA_ELEMENT_QUALIFIED_NAME = KeywordTextField("sigmaDataElementQualifiedName", "sigmaDataElementQualifiedName", "sigmaDataElementQualifiedName.text")
-SigmaDataElement.SIGMA_DATA_ELEMENT_NAME = KeywordField("sigmaDataElementName", "sigmaDataElementName")
-SigmaDataElement.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SigmaDataElement.SIGMA_DATA_ELEMENT_QUALIFIED_NAME = KeywordTextField(
+    "sigmaDataElementQualifiedName",
+    "sigmaDataElementQualifiedName",
+    "sigmaDataElementQualifiedName.text",
+)
+SigmaDataElement.SIGMA_DATA_ELEMENT_NAME = KeywordField(
+    "sigmaDataElementName", "sigmaDataElementName"
+)
+SigmaDataElement.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 SigmaDataElement.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SigmaDataElement.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SigmaDataElement.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SigmaDataElement.APPLICATION = RelationField("application")
 SigmaDataElement.APPLICATION_FIELD = RelationField("applicationField")
 SigmaDataElement.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SigmaDataElement.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SigmaDataElement.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 SigmaDataElement.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SigmaDataElement.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SigmaDataElement.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SigmaDataElement.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SigmaDataElement.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 SigmaDataElement.METRICS = RelationField("metrics")
 SigmaDataElement.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SigmaDataElement.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SigmaDataElement.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+SigmaDataElement.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 SigmaDataElement.MEANINGS = RelationField("meanings")
 SigmaDataElement.MC_MONITORS = RelationField("mcMonitors")
 SigmaDataElement.MC_INCIDENTS = RelationField("mcIncidents")

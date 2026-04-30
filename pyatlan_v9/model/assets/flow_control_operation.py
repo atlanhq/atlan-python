@@ -15,10 +15,16 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -34,6 +40,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .flow_related import RelatedFlowControlOperation
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -42,15 +49,11 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .flow_related import RelatedFlowControlOperation
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FlowControlOperation(Asset):
@@ -170,7 +173,9 @@ class FlowControlOperation(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     flow_data_results: Union[List[RelatedProcess], None, UnsetType] = UNSET
@@ -182,13 +187,17 @@ class FlowControlOperation(Asset):
     flow_successors: Union[List[RelatedFlowControlOperation], None, UnsetType] = UNSET
     """Control operations that are configured to execute only after this one."""
 
-    flow_controlled_operations: Union[List[RelatedFlowControlOperation], None, UnsetType] = UNSET
+    flow_controlled_operations: Union[
+        List[RelatedFlowControlOperation], None, UnsetType
+    ] = UNSET
     """Control operations whose execution is controlled by this control operation."""
 
     flow_controlled_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Control operation that controls the execution of this control operation."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -203,7 +212,9 @@ class FlowControlOperation(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -215,7 +226,9 @@ class FlowControlOperation(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -228,10 +241,7 @@ class FlowControlOperation(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+$"
-    )
-
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -262,7 +272,9 @@ class FlowControlOperation(Asset):
         return _flow_control_operation_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> FlowControlOperation:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> FlowControlOperation:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -283,6 +295,7 @@ class FlowControlOperation(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class FlowControlOperationAttributes(AssetAttributes):
     """FlowControlOperation-specific attributes for nested API format."""
@@ -329,6 +342,7 @@ class FlowControlOperationAttributes(AssetAttributes):
     flow_input_parameters: Union[Dict[str, str], None, UnsetType] = UNSET
     """Input parameters for the flow run."""
 
+
 class FlowControlOperationRelationshipAttributes(AssetRelationshipAttributes):
     """FlowControlOperation-specific relationship attributes for nested API format."""
 
@@ -359,7 +373,9 @@ class FlowControlOperationRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     flow_data_results: Union[List[RelatedProcess], None, UnsetType] = UNSET
@@ -371,13 +387,17 @@ class FlowControlOperationRelationshipAttributes(AssetRelationshipAttributes):
     flow_successors: Union[List[RelatedFlowControlOperation], None, UnsetType] = UNSET
     """Control operations that are configured to execute only after this one."""
 
-    flow_controlled_operations: Union[List[RelatedFlowControlOperation], None, UnsetType] = UNSET
+    flow_controlled_operations: Union[
+        List[RelatedFlowControlOperation], None, UnsetType
+    ] = UNSET
     """Control operations whose execution is controlled by this control operation."""
 
     flow_controlled_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Control operation that controls the execution of this control operation."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -392,7 +412,9 @@ class FlowControlOperationRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -404,19 +426,29 @@ class FlowControlOperationRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
+
 class FlowControlOperationNested(AssetNested):
     """FlowControlOperation in nested API format for high-performance serialization."""
 
     attributes: Union[FlowControlOperationAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[FlowControlOperationRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[FlowControlOperationRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[FlowControlOperationRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        FlowControlOperationRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        FlowControlOperationRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        FlowControlOperationRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -452,7 +484,10 @@ _FLOW_CONTROL_OPERATION_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-def _populate_flow_control_operation_attrs(attrs: FlowControlOperationAttributes, obj: FlowControlOperation) -> None:
+
+def _populate_flow_control_operation_attrs(
+    attrs: FlowControlOperationAttributes, obj: FlowControlOperation
+) -> None:
     """Populate FlowControlOperation-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.flow_started_at = obj.flow_started_at
@@ -470,7 +505,10 @@ def _populate_flow_control_operation_attrs(attrs: FlowControlOperationAttributes
     attrs.flow_error_message = obj.flow_error_message
     attrs.flow_input_parameters = obj.flow_input_parameters
 
-def _extract_flow_control_operation_attrs(attrs: FlowControlOperationAttributes) -> dict:
+
+def _extract_flow_control_operation_attrs(
+    attrs: FlowControlOperationAttributes,
+) -> dict:
     """Extract all FlowControlOperation attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["flow_started_at"] = attrs.flow_started_at
@@ -482,25 +520,32 @@ def _extract_flow_control_operation_attrs(attrs: FlowControlOperationAttributes)
     result["flow_folder_name"] = attrs.flow_folder_name
     result["flow_folder_qualified_name"] = attrs.flow_folder_qualified_name
     result["flow_reusable_unit_name"] = attrs.flow_reusable_unit_name
-    result["flow_reusable_unit_qualified_name"] = attrs.flow_reusable_unit_qualified_name
+    result["flow_reusable_unit_qualified_name"] = (
+        attrs.flow_reusable_unit_qualified_name
+    )
     result["flow_id"] = attrs.flow_id
     result["flow_run_id"] = attrs.flow_run_id
     result["flow_error_message"] = attrs.flow_error_message
     result["flow_input_parameters"] = attrs.flow_input_parameters
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _flow_control_operation_to_nested(flow_control_operation: FlowControlOperation) -> FlowControlOperationNested:
+def _flow_control_operation_to_nested(
+    flow_control_operation: FlowControlOperation,
+) -> FlowControlOperationNested:
     """Convert flat FlowControlOperation to nested format."""
     attrs = FlowControlOperationAttributes()
     _populate_flow_control_operation_attrs(attrs, flow_control_operation)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        flow_control_operation, _FLOW_CONTROL_OPERATION_REL_FIELDS, FlowControlOperationRelationshipAttributes
+        flow_control_operation,
+        _FLOW_CONTROL_OPERATION_REL_FIELDS,
+        FlowControlOperationRelationshipAttributes,
     )
     return FlowControlOperationNested(
         guid=flow_control_operation.guid,
@@ -528,16 +573,23 @@ def _flow_control_operation_to_nested(flow_control_operation: FlowControlOperati
         remove_relationship_attributes=remove_rels,
     )
 
-def _flow_control_operation_from_nested(nested: FlowControlOperationNested) -> FlowControlOperation:
+
+def _flow_control_operation_from_nested(
+    nested: FlowControlOperationNested,
+) -> FlowControlOperation:
     """Convert nested format to flat FlowControlOperation."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FlowControlOperationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else FlowControlOperationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FLOW_CONTROL_OPERATION_REL_FIELDS,
-        FlowControlOperationRelationshipAttributes
+        FlowControlOperationRelationshipAttributes,
     )
     return FlowControlOperation(
         guid=nested.guid,
@@ -550,7 +602,6 @@ def _flow_control_operation_from_nested(nested: FlowControlOperationNested) -> F
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -564,15 +615,21 @@ def _flow_control_operation_from_nested(nested: FlowControlOperationNested) -> F
         **merged_rels,
     )
 
-def _flow_control_operation_to_nested_bytes(flow_control_operation: FlowControlOperation, serde: Serde) -> bytes:
+
+def _flow_control_operation_to_nested_bytes(
+    flow_control_operation: FlowControlOperation, serde: Serde
+) -> bytes:
     """Convert flat FlowControlOperation to nested JSON bytes."""
     return serde.encode(_flow_control_operation_to_nested(flow_control_operation))
 
 
-def _flow_control_operation_from_nested_bytes(data: bytes, serde: Serde) -> FlowControlOperation:
+def _flow_control_operation_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> FlowControlOperation:
     """Convert nested JSON bytes to flat FlowControlOperation."""
     nested = serde.decode(data, FlowControlOperationNested)
     return _flow_control_operation_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -588,37 +645,63 @@ FlowControlOperation.FLOW_STARTED_AT = NumericField("flowStartedAt", "flowStarte
 FlowControlOperation.FLOW_FINISHED_AT = NumericField("flowFinishedAt", "flowFinishedAt")
 FlowControlOperation.FLOW_STATUS = KeywordField("flowStatus", "flowStatus")
 FlowControlOperation.FLOW_SCHEDULE = KeywordField("flowSchedule", "flowSchedule")
-FlowControlOperation.FLOW_PROJECT_NAME = KeywordTextField("flowProjectName", "flowProjectName", "flowProjectName.text")
-FlowControlOperation.FLOW_PROJECT_QUALIFIED_NAME = KeywordField("flowProjectQualifiedName", "flowProjectQualifiedName")
-FlowControlOperation.FLOW_FOLDER_NAME = KeywordTextField("flowFolderName", "flowFolderName", "flowFolderName.text")
-FlowControlOperation.FLOW_FOLDER_QUALIFIED_NAME = KeywordField("flowFolderQualifiedName", "flowFolderQualifiedName")
-FlowControlOperation.FLOW_REUSABLE_UNIT_NAME = KeywordTextField("flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text")
-FlowControlOperation.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField("flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName")
+FlowControlOperation.FLOW_PROJECT_NAME = KeywordTextField(
+    "flowProjectName", "flowProjectName", "flowProjectName.text"
+)
+FlowControlOperation.FLOW_PROJECT_QUALIFIED_NAME = KeywordField(
+    "flowProjectQualifiedName", "flowProjectQualifiedName"
+)
+FlowControlOperation.FLOW_FOLDER_NAME = KeywordTextField(
+    "flowFolderName", "flowFolderName", "flowFolderName.text"
+)
+FlowControlOperation.FLOW_FOLDER_QUALIFIED_NAME = KeywordField(
+    "flowFolderQualifiedName", "flowFolderQualifiedName"
+)
+FlowControlOperation.FLOW_REUSABLE_UNIT_NAME = KeywordTextField(
+    "flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text"
+)
+FlowControlOperation.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField(
+    "flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName"
+)
 FlowControlOperation.FLOW_ID = KeywordField("flowId", "flowId")
 FlowControlOperation.FLOW_RUN_ID = KeywordField("flowRunId", "flowRunId")
-FlowControlOperation.FLOW_ERROR_MESSAGE = KeywordField("flowErrorMessage", "flowErrorMessage")
-FlowControlOperation.FLOW_INPUT_PARAMETERS = KeywordField("flowInputParameters", "flowInputParameters")
+FlowControlOperation.FLOW_ERROR_MESSAGE = KeywordField(
+    "flowErrorMessage", "flowErrorMessage"
+)
+FlowControlOperation.FLOW_INPUT_PARAMETERS = KeywordField(
+    "flowInputParameters", "flowInputParameters"
+)
 FlowControlOperation.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FlowControlOperation.APPLICATION = RelationField("application")
 FlowControlOperation.APPLICATION_FIELD = RelationField("applicationField")
 FlowControlOperation.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-FlowControlOperation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+FlowControlOperation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 FlowControlOperation.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 FlowControlOperation.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 FlowControlOperation.METRICS = RelationField("metrics")
 FlowControlOperation.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-FlowControlOperation.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+FlowControlOperation.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
 FlowControlOperation.FLOW_DATA_RESULTS = RelationField("flowDataResults")
 FlowControlOperation.FLOW_PREDECESSORS = RelationField("flowPredecessors")
 FlowControlOperation.FLOW_SUCCESSORS = RelationField("flowSuccessors")
-FlowControlOperation.FLOW_CONTROLLED_OPERATIONS = RelationField("flowControlledOperations")
+FlowControlOperation.FLOW_CONTROLLED_OPERATIONS = RelationField(
+    "flowControlledOperations"
+)
 FlowControlOperation.FLOW_CONTROLLED_BY = RelationField("flowControlledBy")
-FlowControlOperation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+FlowControlOperation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FlowControlOperation.MEANINGS = RelationField("meanings")
 FlowControlOperation.MC_MONITORS = RelationField("mcMonitors")
 FlowControlOperation.MC_INCIDENTS = RelationField("mcIncidents")
 FlowControlOperation.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-FlowControlOperation.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+FlowControlOperation.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 FlowControlOperation.FILES = RelationField("files")
 FlowControlOperation.LINKS = RelationField("links")
 FlowControlOperation.README = RelationField("readme")

@@ -14,10 +14,17 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .adf_related import RelatedAdfActivity
 from .airflow_related import RelatedAirflowTask
@@ -38,6 +45,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
+from .flow_related import RelatedFlowControlOperation
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .matillion_related import RelatedMatillionComponent
@@ -50,15 +58,11 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .flow_related import RelatedFlowControlOperation
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class FlowFieldOperation(Asset):
@@ -221,7 +225,9 @@ class FlowFieldOperation(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     fabric_activities: Union[List[RelatedFabricActivity], None, UnsetType] = UNSET
@@ -233,7 +239,9 @@ class FlowFieldOperation(Asset):
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -248,7 +256,9 @@ class FlowFieldOperation(Asset):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflow")
+    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIDataflow"
+    )
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
@@ -266,7 +276,9 @@ class FlowFieldOperation(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -284,7 +296,9 @@ class FlowFieldOperation(Asset):
     sql_functions: Union[List[RelatedFunction], None, UnsetType] = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -295,8 +309,6 @@ class FlowFieldOperation(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "FlowFieldOperation"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -327,7 +339,9 @@ class FlowFieldOperation(Asset):
         return _flow_field_operation_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> FlowFieldOperation:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> FlowFieldOperation:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -348,6 +362,7 @@ class FlowFieldOperation(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class FlowFieldOperationAttributes(AssetAttributes):
     """FlowFieldOperation-specific attributes for nested API format."""
@@ -415,6 +430,7 @@ class FlowFieldOperationAttributes(AssetAttributes):
     is_pass_through: Union[bool, None, UnsetType] = UNSET
     """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
+
 class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     """FlowFieldOperation-specific relationship attributes for nested API format."""
 
@@ -451,7 +467,9 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     fabric_activities: Union[List[RelatedFabricActivity], None, UnsetType] = UNSET
@@ -463,7 +481,9 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -478,7 +498,9 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     mc_incidents: Union[List[RelatedMCIncident], None, UnsetType] = UNSET
     """"""
 
-    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(default=UNSET, name="powerBIDataflow")
+    power_bi_dataflow: Union[RelatedPowerBIDataflow, None, UnsetType] = msgspec.field(
+        default=UNSET, name="powerBIDataflow"
+    )
     """PowerBI Dataflow that is associated with this lineage process."""
 
     inputs: Union[List[RelatedCatalog], None, UnsetType] = UNSET
@@ -496,7 +518,9 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -514,7 +538,9 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     sql_functions: Union[List[RelatedFunction], None, UnsetType] = UNSET
     """Functions used by this process."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -523,13 +549,21 @@ class FlowFieldOperationRelationshipAttributes(AssetRelationshipAttributes):
     spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class FlowFieldOperationNested(AssetNested):
     """FlowFieldOperation in nested API format for high-performance serialization."""
 
     attributes: Union[FlowFieldOperationAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[FlowFieldOperationRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[FlowFieldOperationRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[FlowFieldOperationRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        FlowFieldOperationRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        FlowFieldOperationRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        FlowFieldOperationRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -574,7 +608,10 @@ _FLOW_FIELD_OPERATION_REL_FIELDS: List[str] = [
     "spark_jobs",
 ]
 
-def _populate_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes, obj: FlowFieldOperation) -> None:
+
+def _populate_flow_field_operation_attrs(
+    attrs: FlowFieldOperationAttributes, obj: FlowFieldOperation
+) -> None:
     """Populate FlowFieldOperation-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.flow_started_at = obj.flow_started_at
@@ -593,11 +630,14 @@ def _populate_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes, ob
     attrs.flow_input_parameters = obj.flow_input_parameters
     attrs.code = obj.code
     attrs.sql = obj.sql
-    attrs.parent_connection_process_qualified_name = obj.parent_connection_process_qualified_name
+    attrs.parent_connection_process_qualified_name = (
+        obj.parent_connection_process_qualified_name
+    )
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
     attrs.is_pass_through = obj.is_pass_through
+
 
 def _extract_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes) -> dict:
     """Extract all FlowFieldOperation attributes from the attrs struct into a flat dict."""
@@ -611,32 +651,41 @@ def _extract_flow_field_operation_attrs(attrs: FlowFieldOperationAttributes) -> 
     result["flow_folder_name"] = attrs.flow_folder_name
     result["flow_folder_qualified_name"] = attrs.flow_folder_qualified_name
     result["flow_reusable_unit_name"] = attrs.flow_reusable_unit_name
-    result["flow_reusable_unit_qualified_name"] = attrs.flow_reusable_unit_qualified_name
+    result["flow_reusable_unit_qualified_name"] = (
+        attrs.flow_reusable_unit_qualified_name
+    )
     result["flow_id"] = attrs.flow_id
     result["flow_run_id"] = attrs.flow_run_id
     result["flow_error_message"] = attrs.flow_error_message
     result["flow_input_parameters"] = attrs.flow_input_parameters
     result["code"] = attrs.code
     result["sql"] = attrs.sql
-    result["parent_connection_process_qualified_name"] = attrs.parent_connection_process_qualified_name
+    result["parent_connection_process_qualified_name"] = (
+        attrs.parent_connection_process_qualified_name
+    )
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
     result["is_pass_through"] = attrs.is_pass_through
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _flow_field_operation_to_nested(flow_field_operation: FlowFieldOperation) -> FlowFieldOperationNested:
+def _flow_field_operation_to_nested(
+    flow_field_operation: FlowFieldOperation,
+) -> FlowFieldOperationNested:
     """Convert flat FlowFieldOperation to nested format."""
     attrs = FlowFieldOperationAttributes()
     _populate_flow_field_operation_attrs(attrs, flow_field_operation)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        flow_field_operation, _FLOW_FIELD_OPERATION_REL_FIELDS, FlowFieldOperationRelationshipAttributes
+        flow_field_operation,
+        _FLOW_FIELD_OPERATION_REL_FIELDS,
+        FlowFieldOperationRelationshipAttributes,
     )
     return FlowFieldOperationNested(
         guid=flow_field_operation.guid,
@@ -664,16 +713,23 @@ def _flow_field_operation_to_nested(flow_field_operation: FlowFieldOperation) ->
         remove_relationship_attributes=remove_rels,
     )
 
-def _flow_field_operation_from_nested(nested: FlowFieldOperationNested) -> FlowFieldOperation:
+
+def _flow_field_operation_from_nested(
+    nested: FlowFieldOperationNested,
+) -> FlowFieldOperation:
     """Convert nested format to flat FlowFieldOperation."""
-    attrs = nested.attributes if nested.attributes is not UNSET else FlowFieldOperationAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else FlowFieldOperationAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _FLOW_FIELD_OPERATION_REL_FIELDS,
-        FlowFieldOperationRelationshipAttributes
+        FlowFieldOperationRelationshipAttributes,
     )
     return FlowFieldOperation(
         guid=nested.guid,
@@ -686,7 +742,6 @@ def _flow_field_operation_from_nested(nested: FlowFieldOperationNested) -> FlowF
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -700,15 +755,21 @@ def _flow_field_operation_from_nested(nested: FlowFieldOperationNested) -> FlowF
         **merged_rels,
     )
 
-def _flow_field_operation_to_nested_bytes(flow_field_operation: FlowFieldOperation, serde: Serde) -> bytes:
+
+def _flow_field_operation_to_nested_bytes(
+    flow_field_operation: FlowFieldOperation, serde: Serde
+) -> bytes:
     """Convert flat FlowFieldOperation to nested JSON bytes."""
     return serde.encode(_flow_field_operation_to_nested(flow_field_operation))
 
 
-def _flow_field_operation_from_nested_bytes(data: bytes, serde: Serde) -> FlowFieldOperation:
+def _flow_field_operation_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> FlowFieldOperation:
     """Convert nested JSON bytes to flat FlowFieldOperation."""
     nested = serde.decode(data, FlowFieldOperationNested)
     return _flow_field_operation_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -725,21 +786,41 @@ FlowFieldOperation.FLOW_STARTED_AT = NumericField("flowStartedAt", "flowStartedA
 FlowFieldOperation.FLOW_FINISHED_AT = NumericField("flowFinishedAt", "flowFinishedAt")
 FlowFieldOperation.FLOW_STATUS = KeywordField("flowStatus", "flowStatus")
 FlowFieldOperation.FLOW_SCHEDULE = KeywordField("flowSchedule", "flowSchedule")
-FlowFieldOperation.FLOW_PROJECT_NAME = KeywordTextField("flowProjectName", "flowProjectName", "flowProjectName.text")
-FlowFieldOperation.FLOW_PROJECT_QUALIFIED_NAME = KeywordField("flowProjectQualifiedName", "flowProjectQualifiedName")
-FlowFieldOperation.FLOW_FOLDER_NAME = KeywordTextField("flowFolderName", "flowFolderName", "flowFolderName.text")
-FlowFieldOperation.FLOW_FOLDER_QUALIFIED_NAME = KeywordField("flowFolderQualifiedName", "flowFolderQualifiedName")
-FlowFieldOperation.FLOW_REUSABLE_UNIT_NAME = KeywordTextField("flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text")
-FlowFieldOperation.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField("flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName")
+FlowFieldOperation.FLOW_PROJECT_NAME = KeywordTextField(
+    "flowProjectName", "flowProjectName", "flowProjectName.text"
+)
+FlowFieldOperation.FLOW_PROJECT_QUALIFIED_NAME = KeywordField(
+    "flowProjectQualifiedName", "flowProjectQualifiedName"
+)
+FlowFieldOperation.FLOW_FOLDER_NAME = KeywordTextField(
+    "flowFolderName", "flowFolderName", "flowFolderName.text"
+)
+FlowFieldOperation.FLOW_FOLDER_QUALIFIED_NAME = KeywordField(
+    "flowFolderQualifiedName", "flowFolderQualifiedName"
+)
+FlowFieldOperation.FLOW_REUSABLE_UNIT_NAME = KeywordTextField(
+    "flowReusableUnitName", "flowReusableUnitName", "flowReusableUnitName.text"
+)
+FlowFieldOperation.FLOW_REUSABLE_UNIT_QUALIFIED_NAME = KeywordField(
+    "flowReusableUnitQualifiedName", "flowReusableUnitQualifiedName"
+)
 FlowFieldOperation.FLOW_ID = KeywordField("flowId", "flowId")
 FlowFieldOperation.FLOW_RUN_ID = KeywordField("flowRunId", "flowRunId")
-FlowFieldOperation.FLOW_ERROR_MESSAGE = KeywordField("flowErrorMessage", "flowErrorMessage")
-FlowFieldOperation.FLOW_INPUT_PARAMETERS = KeywordField("flowInputParameters", "flowInputParameters")
+FlowFieldOperation.FLOW_ERROR_MESSAGE = KeywordField(
+    "flowErrorMessage", "flowErrorMessage"
+)
+FlowFieldOperation.FLOW_INPUT_PARAMETERS = KeywordField(
+    "flowInputParameters", "flowInputParameters"
+)
 FlowFieldOperation.CODE = KeywordField("code", "code")
 FlowFieldOperation.SQL = KeywordField("sql", "sql")
-FlowFieldOperation.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField("parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName")
+FlowFieldOperation.PARENT_CONNECTION_PROCESS_QUALIFIED_NAME = KeywordField(
+    "parentConnectionProcessQualifiedName", "parentConnectionProcessQualifiedName"
+)
 FlowFieldOperation.AST = KeywordField("ast", "ast")
-FlowFieldOperation.ADDITIONAL_ETL_CONTEXT = KeywordField("additionalEtlContext", "additionalEtlContext")
+FlowFieldOperation.ADDITIONAL_ETL_CONTEXT = KeywordField(
+    "additionalEtlContext", "additionalEtlContext"
+)
 FlowFieldOperation.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
 FlowFieldOperation.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
 FlowFieldOperation.ADF_ACTIVITY = RelationField("adfActivity")
@@ -748,7 +829,9 @@ FlowFieldOperation.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FlowFieldOperation.APPLICATION = RelationField("application")
 FlowFieldOperation.APPLICATION_FIELD = RelationField("applicationField")
 FlowFieldOperation.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-FlowFieldOperation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+FlowFieldOperation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 FlowFieldOperation.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 FlowFieldOperation.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 FlowFieldOperation.METRICS = RelationField("metrics")
@@ -757,7 +840,9 @@ FlowFieldOperation.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatase
 FlowFieldOperation.FABRIC_ACTIVITIES = RelationField("fabricActivities")
 FlowFieldOperation.FIVETRAN_CONNECTOR = RelationField("fivetranConnector")
 FlowFieldOperation.FLOW_ORCHESTRATED_BY = RelationField("flowOrchestratedBy")
-FlowFieldOperation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+FlowFieldOperation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FlowFieldOperation.MEANINGS = RelationField("meanings")
 FlowFieldOperation.MATILLION_COMPONENT = RelationField("matillionComponent")
 FlowFieldOperation.MC_MONITORS = RelationField("mcMonitors")

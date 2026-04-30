@@ -11,9 +11,8 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -69,6 +68,7 @@ class RelatedAnaplan(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Anaplan"
 
+
 class RelatedAnaplanWorkspace(RelatedAnaplan):
     """
     Related entity reference for AnaplanWorkspace assets.
@@ -89,6 +89,7 @@ class RelatedAnaplanWorkspace(RelatedAnaplan):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanWorkspace"
 
+
 class RelatedAnaplanApp(RelatedAnaplan):
     """
     Related entity reference for AnaplanApp assets.
@@ -102,6 +103,7 @@ class RelatedAnaplanApp(RelatedAnaplan):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanApp"
+
 
 class RelatedAnaplanPage(RelatedAnaplan):
     """
@@ -126,6 +128,7 @@ class RelatedAnaplanPage(RelatedAnaplan):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanPage"
 
+
 class RelatedAnaplanModel(RelatedAnaplan):
     """
     Related entity reference for AnaplanModel assets.
@@ -140,6 +143,7 @@ class RelatedAnaplanModel(RelatedAnaplan):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanModel"
 
+
 class RelatedAnaplanModule(RelatedAnaplan):
     """
     Related entity reference for AnaplanModule assets.
@@ -153,6 +157,7 @@ class RelatedAnaplanModule(RelatedAnaplan):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanModule"
+
 
 class RelatedAnaplanList(RelatedAnaplan):
     """
@@ -171,6 +176,7 @@ class RelatedAnaplanList(RelatedAnaplan):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanList"
 
+
 class RelatedAnaplanSystemDimension(RelatedAnaplan):
     """
     Related entity reference for AnaplanSystemDimension assets.
@@ -185,6 +191,7 @@ class RelatedAnaplanSystemDimension(RelatedAnaplan):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanSystemDimension"
 
+
 class RelatedAnaplanDimension(RelatedAnaplan):
     """
     Related entity reference for AnaplanDimension assets.
@@ -198,6 +205,7 @@ class RelatedAnaplanDimension(RelatedAnaplan):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanDimension"
+
 
 class RelatedAnaplanLineItem(RelatedAnaplan):
     """
@@ -215,6 +223,7 @@ class RelatedAnaplanLineItem(RelatedAnaplan):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AnaplanLineItem"
+
 
 class RelatedAnaplanView(RelatedAnaplan):
     """

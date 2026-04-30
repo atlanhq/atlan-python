@@ -11,11 +11,6 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
-
-import msgspec
-from msgspec import UNSET, UnsetType
-
 from .artifact_related import RelatedArtifact
 from .referenceable_related import RelatedReferenceable
 

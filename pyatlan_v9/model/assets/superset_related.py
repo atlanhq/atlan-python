@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -47,6 +47,7 @@ class RelatedSuperset(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Superset"
 
+
 class RelatedSupersetChart(RelatedSuperset):
     """
     Related entity reference for SupersetChart assets.
@@ -67,6 +68,7 @@ class RelatedSupersetChart(RelatedSuperset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SupersetChart"
 
+
 class RelatedSupersetDashboard(RelatedSuperset):
     """
     Related entity reference for SupersetDashboard assets.
@@ -80,7 +82,9 @@ class RelatedSupersetDashboard(RelatedSuperset):
     superset_dashboard_changed_by_name: Union[str, None, UnsetType] = UNSET
     """Name of the user who changed the dashboard."""
 
-    superset_dashboard_changed_by_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="supersetDashboardChangedByURL")
+    superset_dashboard_changed_by_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="supersetDashboardChangedByURL"
+    )
     """URL of the user profile that changed the dashboard"""
 
     superset_dashboard_is_managed_externally: Union[bool, None, UnsetType] = UNSET
@@ -89,7 +93,9 @@ class RelatedSupersetDashboard(RelatedSuperset):
     superset_dashboard_is_published: Union[bool, None, UnsetType] = UNSET
     """Whether the dashboard is published (true) or not (false)."""
 
-    superset_dashboard_thumbnail_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="supersetDashboardThumbnailURL")
+    superset_dashboard_thumbnail_url: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="supersetDashboardThumbnailURL"
+    )
     """URL for the dashboard thumbnail image in superset."""
 
     superset_dashboard_chart_count: Union[int, None, UnsetType] = UNSET
@@ -98,6 +104,7 @@ class RelatedSupersetDashboard(RelatedSuperset):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SupersetDashboard"
+
 
 class RelatedSupersetDataset(RelatedSuperset):
     """

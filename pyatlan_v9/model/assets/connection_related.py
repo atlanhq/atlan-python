@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -88,22 +88,34 @@ class RelatedConnection(RelatedAsset):
     default_credential_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier (GUID) for the default credentials to use for this connection."""
 
-    connection_dq_credential_guid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQCredentialGuid")
+    connection_dq_credential_guid: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="connectionDQCredentialGuid"
+    )
     """Unique identifier (GUID) for the data quality credentials to use for this connection."""
 
-    connection_is_dq_enabled: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="connectionIsDQEnabled")
+    connection_is_dq_enabled: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="connectionIsDQEnabled"
+    )
     """Whether data quality is enabled for this connection (true) or not (false)."""
 
-    connection_dq_environment_setup_status: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatus")
+    connection_dq_environment_setup_status: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="connectionDQEnvironmentSetupStatus"
+    )
     """Status of the data quality environment setup for this connection."""
 
-    connection_dq_environment_setup_error_message: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupErrorMessage")
+    connection_dq_environment_setup_error_message: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupErrorMessage")
+    )
     """Error message if data quality environment setup failed for this connection."""
 
-    connection_dq_environment_setup_status_updated_at: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatusUpdatedAt")
+    connection_dq_environment_setup_status_updated_at: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="connectionDQEnvironmentSetupStatusUpdatedAt")
+    )
     """Timestamp when the data quality environment setup status was last updated."""
 
-    connection_dq_environment_source_database_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionDQEnvironmentSourceDatabaseName")
+    connection_dq_environment_source_database_name: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="connectionDQEnvironmentSourceDatabaseName")
+    )
     """Name of the database in the source environment for data quality."""
 
     connector_icon: Union[str, None, UnsetType] = UNSET
@@ -127,13 +139,17 @@ class RelatedConnection(RelatedAsset):
     connection_dbt_environments: Union[List[str], None, UnsetType] = UNSET
     """"""
 
-    connection_sso_credential_guid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="connectionSSOCredentialGuid")
+    connection_sso_credential_guid: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="connectionSSOCredentialGuid"
+    )
     """Unique identifier (GUID) for the SSO credentials to use for this connection."""
 
     use_object_storage: Union[bool, None, UnsetType] = UNSET
     """Whether to upload to S3, GCP, or another storage location (true) or not (false)."""
 
-    connection_insights_via_oauth_cookie: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="connectionInsightsViaOAuthCookie")
+    connection_insights_via_oauth_cookie: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="connectionInsightsViaOAuthCookie"
+    )
     """Whether cookie based OAuth is enabled in Insights for this connection (true) or not (false)."""
 
     object_storage_upload_threshold: Union[int, None, UnsetType] = UNSET

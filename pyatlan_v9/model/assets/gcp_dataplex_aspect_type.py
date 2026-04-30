@@ -14,10 +14,16 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
-import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -35,6 +41,7 @@ from .asset_related import RelatedAsset
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -45,15 +52,11 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class GCPDataplexAspectType(Asset):
@@ -186,7 +189,9 @@ class GCPDataplexAspectType(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -195,13 +200,17 @@ class GCPDataplexAspectType(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     gcp_dataplex_aspect_type_entries: Union[List[RelatedAsset], None, UnsetType] = UNSET
     """Dataplex Aspect Types whose aspects are attached to this entry (asset)."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -228,7 +237,9 @@ class GCPDataplexAspectType(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -240,7 +251,9 @@ class GCPDataplexAspectType(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -254,8 +267,6 @@ class GCPDataplexAspectType(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "GCPDataplexAspectType"
-
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -286,7 +297,9 @@ class GCPDataplexAspectType(Asset):
         return _gcp_dataplex_aspect_type_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> GCPDataplexAspectType:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> GCPDataplexAspectType:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -307,6 +320,7 @@ class GCPDataplexAspectType(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class GCPDataplexAspectTypeAttributes(AssetAttributes):
     """GCPDataplexAspectType-specific attributes for nested API format."""
@@ -356,6 +370,7 @@ class GCPDataplexAspectTypeAttributes(AssetAttributes):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
+
 class GCPDataplexAspectTypeRelationshipAttributes(AssetRelationshipAttributes):
     """GCPDataplexAspectType-specific relationship attributes for nested API format."""
 
@@ -389,7 +404,9 @@ class GCPDataplexAspectTypeRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -398,13 +415,17 @@ class GCPDataplexAspectTypeRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
     gcp_dataplex_aspect_type_entries: Union[List[RelatedAsset], None, UnsetType] = UNSET
     """Dataplex Aspect Types whose aspects are attached to this entry (asset)."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -431,7 +452,9 @@ class GCPDataplexAspectTypeRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -443,7 +466,9 @@ class GCPDataplexAspectTypeRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -455,13 +480,21 @@ class GCPDataplexAspectTypeRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
+
 class GCPDataplexAspectTypeNested(AssetNested):
     """GCPDataplexAspectType in nested API format for high-performance serialization."""
 
     attributes: Union[GCPDataplexAspectTypeAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[GCPDataplexAspectTypeRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[GCPDataplexAspectTypeRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[GCPDataplexAspectTypeRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        GCPDataplexAspectTypeRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        GCPDataplexAspectTypeRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        GCPDataplexAspectTypeRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -503,13 +536,20 @@ _GCP_DATAPLEX_ASPECT_TYPE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-def _populate_gcp_dataplex_aspect_type_attrs(attrs: GCPDataplexAspectTypeAttributes, obj: GCPDataplexAspectType) -> None:
+
+def _populate_gcp_dataplex_aspect_type_attrs(
+    attrs: GCPDataplexAspectTypeAttributes, obj: GCPDataplexAspectType
+) -> None:
     """Populate GCPDataplexAspectType-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.gcp_dataplex_aspect_type_resource_name = obj.gcp_dataplex_aspect_type_resource_name
+    attrs.gcp_dataplex_aspect_type_resource_name = (
+        obj.gcp_dataplex_aspect_type_resource_name
+    )
     attrs.gcp_dataplex_aspect_type_project = obj.gcp_dataplex_aspect_type_project
     attrs.gcp_dataplex_aspect_type_location = obj.gcp_dataplex_aspect_type_location
-    attrs.gcp_dataplex_aspect_type_metadata_template = obj.gcp_dataplex_aspect_type_metadata_template
+    attrs.gcp_dataplex_aspect_type_metadata_template = (
+        obj.gcp_dataplex_aspect_type_metadata_template
+    )
     attrs.gcp_dataplex_aspect_type_labels = obj.gcp_dataplex_aspect_type_labels
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.google_service = obj.google_service
@@ -522,13 +562,22 @@ def _populate_gcp_dataplex_aspect_type_attrs(attrs: GCPDataplexAspectTypeAttribu
     attrs.google_tags = obj.google_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
 
-def _extract_gcp_dataplex_aspect_type_attrs(attrs: GCPDataplexAspectTypeAttributes) -> dict:
+
+def _extract_gcp_dataplex_aspect_type_attrs(
+    attrs: GCPDataplexAspectTypeAttributes,
+) -> dict:
     """Extract all GCPDataplexAspectType attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["gcp_dataplex_aspect_type_resource_name"] = attrs.gcp_dataplex_aspect_type_resource_name
+    result["gcp_dataplex_aspect_type_resource_name"] = (
+        attrs.gcp_dataplex_aspect_type_resource_name
+    )
     result["gcp_dataplex_aspect_type_project"] = attrs.gcp_dataplex_aspect_type_project
-    result["gcp_dataplex_aspect_type_location"] = attrs.gcp_dataplex_aspect_type_location
-    result["gcp_dataplex_aspect_type_metadata_template"] = attrs.gcp_dataplex_aspect_type_metadata_template
+    result["gcp_dataplex_aspect_type_location"] = (
+        attrs.gcp_dataplex_aspect_type_location
+    )
+    result["gcp_dataplex_aspect_type_metadata_template"] = (
+        attrs.gcp_dataplex_aspect_type_metadata_template
+    )
     result["gcp_dataplex_aspect_type_labels"] = attrs.gcp_dataplex_aspect_type_labels
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["google_service"] = attrs.google_service
@@ -542,18 +591,23 @@ def _extract_gcp_dataplex_aspect_type_attrs(attrs: GCPDataplexAspectTypeAttribut
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
 
+
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _gcp_dataplex_aspect_type_to_nested(gcp_dataplex_aspect_type: GCPDataplexAspectType) -> GCPDataplexAspectTypeNested:
+def _gcp_dataplex_aspect_type_to_nested(
+    gcp_dataplex_aspect_type: GCPDataplexAspectType,
+) -> GCPDataplexAspectTypeNested:
     """Convert flat GCPDataplexAspectType to nested format."""
     attrs = GCPDataplexAspectTypeAttributes()
     _populate_gcp_dataplex_aspect_type_attrs(attrs, gcp_dataplex_aspect_type)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        gcp_dataplex_aspect_type, _GCP_DATAPLEX_ASPECT_TYPE_REL_FIELDS, GCPDataplexAspectTypeRelationshipAttributes
+        gcp_dataplex_aspect_type,
+        _GCP_DATAPLEX_ASPECT_TYPE_REL_FIELDS,
+        GCPDataplexAspectTypeRelationshipAttributes,
     )
     return GCPDataplexAspectTypeNested(
         guid=gcp_dataplex_aspect_type.guid,
@@ -581,16 +635,23 @@ def _gcp_dataplex_aspect_type_to_nested(gcp_dataplex_aspect_type: GCPDataplexAsp
         remove_relationship_attributes=remove_rels,
     )
 
-def _gcp_dataplex_aspect_type_from_nested(nested: GCPDataplexAspectTypeNested) -> GCPDataplexAspectType:
+
+def _gcp_dataplex_aspect_type_from_nested(
+    nested: GCPDataplexAspectTypeNested,
+) -> GCPDataplexAspectType:
     """Convert nested format to flat GCPDataplexAspectType."""
-    attrs = nested.attributes if nested.attributes is not UNSET else GCPDataplexAspectTypeAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else GCPDataplexAspectTypeAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _GCP_DATAPLEX_ASPECT_TYPE_REL_FIELDS,
-        GCPDataplexAspectTypeRelationshipAttributes
+        GCPDataplexAspectTypeRelationshipAttributes,
     )
     return GCPDataplexAspectType(
         guid=nested.guid,
@@ -603,7 +664,6 @@ def _gcp_dataplex_aspect_type_from_nested(nested: GCPDataplexAspectTypeNested) -
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -617,15 +677,21 @@ def _gcp_dataplex_aspect_type_from_nested(nested: GCPDataplexAspectTypeNested) -
         **merged_rels,
     )
 
-def _gcp_dataplex_aspect_type_to_nested_bytes(gcp_dataplex_aspect_type: GCPDataplexAspectType, serde: Serde) -> bytes:
+
+def _gcp_dataplex_aspect_type_to_nested_bytes(
+    gcp_dataplex_aspect_type: GCPDataplexAspectType, serde: Serde
+) -> bytes:
     """Convert flat GCPDataplexAspectType to nested JSON bytes."""
     return serde.encode(_gcp_dataplex_aspect_type_to_nested(gcp_dataplex_aspect_type))
 
 
-def _gcp_dataplex_aspect_type_from_nested_bytes(data: bytes, serde: Serde) -> GCPDataplexAspectType:
+def _gcp_dataplex_aspect_type_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> GCPDataplexAspectType:
     """Convert nested JSON bytes to flat GCPDataplexAspectType."""
     nested = serde.decode(data, GCPDataplexAspectTypeNested)
     return _gcp_dataplex_aspect_type_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -637,37 +703,75 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_RESOURCE_NAME = KeywordField("gcpDataplexAspectTypeResourceName", "gcpDataplexAspectTypeResourceName")
-GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_PROJECT = KeywordField("gcpDataplexAspectTypeProject", "gcpDataplexAspectTypeProject")
-GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_LOCATION = KeywordField("gcpDataplexAspectTypeLocation", "gcpDataplexAspectTypeLocation")
-GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_METADATA_TEMPLATE = KeywordField("gcpDataplexAspectTypeMetadataTemplate", "gcpDataplexAspectTypeMetadataTemplate")
-GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_LABELS = KeywordField("gcpDataplexAspectTypeLabels", "gcpDataplexAspectTypeLabels")
-GCPDataplexAspectType.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_RESOURCE_NAME = KeywordField(
+    "gcpDataplexAspectTypeResourceName", "gcpDataplexAspectTypeResourceName"
+)
+GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_PROJECT = KeywordField(
+    "gcpDataplexAspectTypeProject", "gcpDataplexAspectTypeProject"
+)
+GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_LOCATION = KeywordField(
+    "gcpDataplexAspectTypeLocation", "gcpDataplexAspectTypeLocation"
+)
+GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_METADATA_TEMPLATE = KeywordField(
+    "gcpDataplexAspectTypeMetadataTemplate", "gcpDataplexAspectTypeMetadataTemplate"
+)
+GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_LABELS = KeywordField(
+    "gcpDataplexAspectTypeLabels", "gcpDataplexAspectTypeLabels"
+)
+GCPDataplexAspectType.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 GCPDataplexAspectType.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
-GCPDataplexAspectType.GOOGLE_PROJECT_NAME = KeywordTextField("googleProjectName", "googleProjectName", "googleProjectName.text")
-GCPDataplexAspectType.GOOGLE_PROJECT_ID = KeywordTextField("googleProjectId", "googleProjectId", "googleProjectId.text")
-GCPDataplexAspectType.GOOGLE_PROJECT_NUMBER = NumericField("googleProjectNumber", "googleProjectNumber")
+GCPDataplexAspectType.GOOGLE_PROJECT_NAME = KeywordTextField(
+    "googleProjectName", "googleProjectName", "googleProjectName.text"
+)
+GCPDataplexAspectType.GOOGLE_PROJECT_ID = KeywordTextField(
+    "googleProjectId", "googleProjectId", "googleProjectId.text"
+)
+GCPDataplexAspectType.GOOGLE_PROJECT_NUMBER = NumericField(
+    "googleProjectNumber", "googleProjectNumber"
+)
 GCPDataplexAspectType.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
-GCPDataplexAspectType.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
+GCPDataplexAspectType.GOOGLE_LOCATION_TYPE = KeywordField(
+    "googleLocationType", "googleLocationType"
+)
 GCPDataplexAspectType.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
 GCPDataplexAspectType.GOOGLE_TAGS = KeywordField("googleTags", "googleTags")
-GCPDataplexAspectType.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
+GCPDataplexAspectType.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
+    "cloudUniformResourceName", "cloudUniformResourceName"
+)
 GCPDataplexAspectType.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-GCPDataplexAspectType.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+GCPDataplexAspectType.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 GCPDataplexAspectType.ANOMALO_CHECKS = RelationField("anomaloChecks")
 GCPDataplexAspectType.APPLICATION = RelationField("application")
 GCPDataplexAspectType.APPLICATION_FIELD = RelationField("applicationField")
 GCPDataplexAspectType.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-GCPDataplexAspectType.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-GCPDataplexAspectType.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+GCPDataplexAspectType.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+GCPDataplexAspectType.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
 GCPDataplexAspectType.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-GCPDataplexAspectType.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-GCPDataplexAspectType.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+GCPDataplexAspectType.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+GCPDataplexAspectType.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 GCPDataplexAspectType.METRICS = RelationField("metrics")
 GCPDataplexAspectType.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-GCPDataplexAspectType.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_ENTRIES = RelationField("gcpDataplexAspectTypeEntries")
-GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+GCPDataplexAspectType.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_ENTRIES = RelationField(
+    "gcpDataplexAspectTypeEntries"
+)
+GCPDataplexAspectType.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 GCPDataplexAspectType.MEANINGS = RelationField("meanings")
 GCPDataplexAspectType.MC_MONITORS = RelationField("mcMonitors")
 GCPDataplexAspectType.MC_INCIDENTS = RelationField("mcIncidents")
@@ -676,7 +780,9 @@ GCPDataplexAspectType.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 GCPDataplexAspectType.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 GCPDataplexAspectType.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 GCPDataplexAspectType.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-GCPDataplexAspectType.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+GCPDataplexAspectType.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 GCPDataplexAspectType.FILES = RelationField("files")
 GCPDataplexAspectType.LINKS = RelationField("links")
 GCPDataplexAspectType.README = RelationField("readme")

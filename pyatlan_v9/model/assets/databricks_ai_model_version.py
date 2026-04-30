@@ -15,10 +15,17 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
+
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 from .ai_related import RelatedAIModel
 from .airflow_related import RelatedAirflowTask
@@ -36,7 +43,13 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
+from .databricks_related import RelatedDatabricksAIModelContext
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtSeed,
+    RelatedDbtSource,
+    RelatedDbtTest,
+)
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -49,16 +62,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
-from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .databricks_related import RelatedDatabricksAIModelContext
+from .sql_insight_related import (
+    RelatedSqlInsightBusinessQuestion,
+    RelatedSqlInsightJoin,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
+
 
 @register_asset
 class DatabricksAIModelVersion(Asset):
@@ -243,7 +255,9 @@ class DatabricksAIModelVersion(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -279,25 +293,39 @@ class DatabricksAIModelVersion(Asset):
     ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
     """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
 
-    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     ai_model: Union[RelatedAIModel, None, UnsetType] = UNSET
@@ -333,7 +361,9 @@ class DatabricksAIModelVersion(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -342,10 +372,14 @@ class DatabricksAIModelVersion(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    databricks_ai_model_context: Union[RelatedDatabricksAIModelContext, None, UnsetType] = msgspec.field(default=UNSET, name="databricksAIModelContext")
+    databricks_ai_model_context: Union[
+        RelatedDatabricksAIModelContext, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="databricksAIModelContext")
     """Context containing the version."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -360,13 +394,17 @@ class DatabricksAIModelVersion(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -393,7 +431,9 @@ class DatabricksAIModelVersion(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -405,10 +445,14 @@ class DatabricksAIModelVersion(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -420,13 +464,19 @@ class DatabricksAIModelVersion(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -439,7 +489,6 @@ class DatabricksAIModelVersion(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
-
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -470,7 +519,9 @@ class DatabricksAIModelVersion(Asset):
         return _databricks_ai_model_version_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DatabricksAIModelVersion:
+    def from_json(
+        json_data: str | bytes, serde: Serde | None = None
+    ) -> DatabricksAIModelVersion:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -491,6 +542,7 @@ class DatabricksAIModelVersion(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
+
 
 class DatabricksAIModelVersionAttributes(AssetAttributes):
     """DatabricksAIModelVersion-specific attributes for nested API format."""
@@ -579,7 +631,9 @@ class DatabricksAIModelVersionAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlAIModelContextQualifiedName"
+    )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -615,26 +669,41 @@ class DatabricksAIModelVersionAttributes(AssetAttributes):
     ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
     """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
 
-    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
+    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAIPrivacyConfig"
+    )
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
+    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAIFairnessConfig"
+    )
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
+    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAIBiasMitigationConfig"
+    )
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
+    )
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
+    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAITransparencyConfig"
+    )
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
+    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="ethicalAIAccountabilityConfig"
+    )
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
+    )
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
+
 
 class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     """DatabricksAIModelVersion-specific relationship attributes for nested API format."""
@@ -672,7 +741,9 @@ class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
+    model_implemented_attributes: Union[
+        List[RelatedModelAttribute], None, UnsetType
+    ] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -681,10 +752,14 @@ class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
+        UNSET
+    )
     """Rules where this dataset is referenced."""
 
-    databricks_ai_model_context: Union[RelatedDatabricksAIModelContext, None, UnsetType] = msgspec.field(default=UNSET, name="databricksAIModelContext")
+    databricks_ai_model_context: Union[
+        RelatedDatabricksAIModelContext, None, UnsetType
+    ] = msgspec.field(default=UNSET, name="databricksAIModelContext")
     """Context containing the version."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -699,13 +774,17 @@ class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlDBTSources"
+    )
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -732,7 +811,9 @@ class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
+        UNSET
+    )
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -744,10 +825,14 @@ class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
+    schema_registry_subjects: Union[
+        List[RelatedSchemaRegistrySubject], None, UnsetType
+    ] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
+    snowflake_semantic_logical_tables: Union[
+        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
+    ] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -759,22 +844,36 @@ class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
+        UNSET
+    )
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
+    sql_insight_business_questions: Union[
+        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
+    ] = UNSET
     """Business question insights for this SQL asset."""
+
 
 class DatabricksAIModelVersionNested(AssetNested):
     """DatabricksAIModelVersion in nested API format for high-performance serialization."""
 
     attributes: Union[DatabricksAIModelVersionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DatabricksAIModelVersionRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DatabricksAIModelVersionRelationshipAttributes, UnsetType] = UNSET
-    remove_relationship_attributes: Union[DatabricksAIModelVersionRelationshipAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[
+        DatabricksAIModelVersionRelationshipAttributes, UnsetType
+    ] = UNSET
+    append_relationship_attributes: Union[
+        DatabricksAIModelVersionRelationshipAttributes, UnsetType
+    ] = UNSET
+    remove_relationship_attributes: Union[
+        DatabricksAIModelVersionRelationshipAttributes, UnsetType
+    ] = UNSET
+
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -827,7 +926,10 @@ _DATABRICKS_AI_MODEL_VERSION_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-def _populate_databricks_ai_model_version_attrs(attrs: DatabricksAIModelVersionAttributes, obj: DatabricksAIModelVersion) -> None:
+
+def _populate_databricks_ai_model_version_attrs(
+    attrs: DatabricksAIModelVersionAttributes, obj: DatabricksAIModelVersion
+) -> None:
     """Populate DatabricksAIModelVersion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.databricks_id = obj.databricks_id
@@ -862,9 +964,13 @@ def _populate_databricks_ai_model_version_attrs(attrs: DatabricksAIModelVersionA
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
+    attrs.sql_ai_insights_popular_business_question_count = (
+        obj.sql_ai_insights_popular_business_question_count
+    )
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
+    attrs.sql_ai_insights_popular_filter_count = (
+        obj.sql_ai_insights_popular_filter_count
+    )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.ai_model_qualified_name = obj.ai_model_qualified_name
@@ -873,12 +979,19 @@ def _populate_databricks_ai_model_version_attrs(attrs: DatabricksAIModelVersionA
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
     attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
-    attrs.ethical_ai_reliability_and_safety_config = obj.ethical_ai_reliability_and_safety_config
+    attrs.ethical_ai_reliability_and_safety_config = (
+        obj.ethical_ai_reliability_and_safety_config
+    )
     attrs.ethical_ai_transparency_config = obj.ethical_ai_transparency_config
     attrs.ethical_ai_accountability_config = obj.ethical_ai_accountability_config
-    attrs.ethical_ai_environmental_consciousness_config = obj.ethical_ai_environmental_consciousness_config
+    attrs.ethical_ai_environmental_consciousness_config = (
+        obj.ethical_ai_environmental_consciousness_config
+    )
 
-def _extract_databricks_ai_model_version_attrs(attrs: DatabricksAIModelVersionAttributes) -> dict:
+
+def _extract_databricks_ai_model_version_attrs(
+    attrs: DatabricksAIModelVersionAttributes,
+) -> dict:
     """Extract all DatabricksAIModelVersion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["databricks_id"] = attrs.databricks_id
@@ -909,39 +1022,60 @@ def _extract_databricks_ai_model_version_attrs(attrs: DatabricksAIModelVersionAt
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
+    result["sql_ai_model_context_qualified_name"] = (
+        attrs.sql_ai_model_context_qualified_name
+    )
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
-    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
-    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
-    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
+    result["sql_ai_insights_popular_business_question_count"] = (
+        attrs.sql_ai_insights_popular_business_question_count
+    )
+    result["sql_ai_insights_popular_join_count"] = (
+        attrs.sql_ai_insights_popular_join_count
+    )
+    result["sql_ai_insights_popular_filter_count"] = (
+        attrs.sql_ai_insights_popular_filter_count
+    )
+    result["sql_ai_insights_relationship_count"] = (
+        attrs.sql_ai_insights_relationship_count
+    )
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["ai_model_qualified_name"] = attrs.ai_model_qualified_name
     result["ai_model_version_stage"] = attrs.ai_model_version_stage
     result["ai_model_version_metrics"] = attrs.ai_model_version_metrics
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
-    result["ethical_ai_bias_mitigation_config"] = attrs.ethical_ai_bias_mitigation_config
-    result["ethical_ai_reliability_and_safety_config"] = attrs.ethical_ai_reliability_and_safety_config
+    result["ethical_ai_bias_mitigation_config"] = (
+        attrs.ethical_ai_bias_mitigation_config
+    )
+    result["ethical_ai_reliability_and_safety_config"] = (
+        attrs.ethical_ai_reliability_and_safety_config
+    )
     result["ethical_ai_transparency_config"] = attrs.ethical_ai_transparency_config
     result["ethical_ai_accountability_config"] = attrs.ethical_ai_accountability_config
-    result["ethical_ai_environmental_consciousness_config"] = attrs.ethical_ai_environmental_consciousness_config
+    result["ethical_ai_environmental_consciousness_config"] = (
+        attrs.ethical_ai_environmental_consciousness_config
+    )
     return result
+
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _databricks_ai_model_version_to_nested(databricks_ai_model_version: DatabricksAIModelVersion) -> DatabricksAIModelVersionNested:
+def _databricks_ai_model_version_to_nested(
+    databricks_ai_model_version: DatabricksAIModelVersion,
+) -> DatabricksAIModelVersionNested:
     """Convert flat DatabricksAIModelVersion to nested format."""
     attrs = DatabricksAIModelVersionAttributes()
     _populate_databricks_ai_model_version_attrs(attrs, databricks_ai_model_version)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_ai_model_version, _DATABRICKS_AI_MODEL_VERSION_REL_FIELDS, DatabricksAIModelVersionRelationshipAttributes
+        databricks_ai_model_version,
+        _DATABRICKS_AI_MODEL_VERSION_REL_FIELDS,
+        DatabricksAIModelVersionRelationshipAttributes,
     )
     return DatabricksAIModelVersionNested(
         guid=databricks_ai_model_version.guid,
@@ -969,16 +1103,23 @@ def _databricks_ai_model_version_to_nested(databricks_ai_model_version: Databric
         remove_relationship_attributes=remove_rels,
     )
 
-def _databricks_ai_model_version_from_nested(nested: DatabricksAIModelVersionNested) -> DatabricksAIModelVersion:
+
+def _databricks_ai_model_version_from_nested(
+    nested: DatabricksAIModelVersionNested,
+) -> DatabricksAIModelVersion:
     """Convert nested format to flat DatabricksAIModelVersion."""
-    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksAIModelVersionAttributes()
+    attrs = (
+        nested.attributes
+        if nested.attributes is not UNSET
+        else DatabricksAIModelVersionAttributes()
+    )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_AI_MODEL_VERSION_REL_FIELDS,
-        DatabricksAIModelVersionRelationshipAttributes
+        DatabricksAIModelVersionRelationshipAttributes,
     )
     return DatabricksAIModelVersion(
         guid=nested.guid,
@@ -991,7 +1132,6 @@ def _databricks_ai_model_version_from_nested(nested: DatabricksAIModelVersionNes
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1005,15 +1145,23 @@ def _databricks_ai_model_version_from_nested(nested: DatabricksAIModelVersionNes
         **merged_rels,
     )
 
-def _databricks_ai_model_version_to_nested_bytes(databricks_ai_model_version: DatabricksAIModelVersion, serde: Serde) -> bytes:
+
+def _databricks_ai_model_version_to_nested_bytes(
+    databricks_ai_model_version: DatabricksAIModelVersion, serde: Serde
+) -> bytes:
     """Convert flat DatabricksAIModelVersion to nested JSON bytes."""
-    return serde.encode(_databricks_ai_model_version_to_nested(databricks_ai_model_version))
+    return serde.encode(
+        _databricks_ai_model_version_to_nested(databricks_ai_model_version)
+    )
 
 
-def _databricks_ai_model_version_from_nested_bytes(data: bytes, serde: Serde) -> DatabricksAIModelVersion:
+def _databricks_ai_model_version_from_nested_bytes(
+    data: bytes, serde: Serde
+) -> DatabricksAIModelVersion:
     """Convert nested JSON bytes to flat DatabricksAIModelVersion."""
     nested = serde.decode(data, DatabricksAIModelVersionNested)
     return _databricks_ai_model_version_from_nested(nested)
+
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1026,75 +1174,171 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 DatabricksAIModelVersion.DATABRICKS_ID = NumericField("databricksId", "databricksId")
-DatabricksAIModelVersion.DATABRICKS_RUN_ID = KeywordField("databricksRunId", "databricksRunId")
-DatabricksAIModelVersion.DATABRICKS_RUN_NAME = KeywordField("databricksRunName", "databricksRunName")
-DatabricksAIModelVersion.DATABRICKS_RUN_START_TIME = NumericField("databricksRunStartTime", "databricksRunStartTime")
-DatabricksAIModelVersion.DATABRICKS_RUN_END_TIME = NumericField("databricksRunEndTime", "databricksRunEndTime")
-DatabricksAIModelVersion.DATABRICKS_STATUS = KeywordField("databricksStatus", "databricksStatus")
-DatabricksAIModelVersion.DATABRICKS_ALIASES = KeywordField("databricksAliases", "databricksAliases")
-DatabricksAIModelVersion.DATABRICKS_DATASET_COUNT = NumericField("databricksDatasetCount", "databricksDatasetCount")
-DatabricksAIModelVersion.DATABRICKS_SOURCE = KeywordField("databricksSource", "databricksSource")
-DatabricksAIModelVersion.DATABRICKS_ARTIFACT_URI = KeywordField("databricksArtifactUri", "databricksArtifactUri")
-DatabricksAIModelVersion.DATABRICKS_METRICS = KeywordField("databricksMetrics", "databricksMetrics")
-DatabricksAIModelVersion.DATABRICKS_PARAMS = KeywordField("databricksParams", "databricksParams")
+DatabricksAIModelVersion.DATABRICKS_RUN_ID = KeywordField(
+    "databricksRunId", "databricksRunId"
+)
+DatabricksAIModelVersion.DATABRICKS_RUN_NAME = KeywordField(
+    "databricksRunName", "databricksRunName"
+)
+DatabricksAIModelVersion.DATABRICKS_RUN_START_TIME = NumericField(
+    "databricksRunStartTime", "databricksRunStartTime"
+)
+DatabricksAIModelVersion.DATABRICKS_RUN_END_TIME = NumericField(
+    "databricksRunEndTime", "databricksRunEndTime"
+)
+DatabricksAIModelVersion.DATABRICKS_STATUS = KeywordField(
+    "databricksStatus", "databricksStatus"
+)
+DatabricksAIModelVersion.DATABRICKS_ALIASES = KeywordField(
+    "databricksAliases", "databricksAliases"
+)
+DatabricksAIModelVersion.DATABRICKS_DATASET_COUNT = NumericField(
+    "databricksDatasetCount", "databricksDatasetCount"
+)
+DatabricksAIModelVersion.DATABRICKS_SOURCE = KeywordField(
+    "databricksSource", "databricksSource"
+)
+DatabricksAIModelVersion.DATABRICKS_ARTIFACT_URI = KeywordField(
+    "databricksArtifactUri", "databricksArtifactUri"
+)
+DatabricksAIModelVersion.DATABRICKS_METRICS = KeywordField(
+    "databricksMetrics", "databricksMetrics"
+)
+DatabricksAIModelVersion.DATABRICKS_PARAMS = KeywordField(
+    "databricksParams", "databricksParams"
+)
 DatabricksAIModelVersion.QUERY_COUNT = NumericField("queryCount", "queryCount")
-DatabricksAIModelVersion.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
+DatabricksAIModelVersion.QUERY_USER_COUNT = NumericField(
+    "queryUserCount", "queryUserCount"
+)
 DatabricksAIModelVersion.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksAIModelVersion.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
+DatabricksAIModelVersion.QUERY_COUNT_UPDATED_AT = NumericField(
+    "queryCountUpdatedAt", "queryCountUpdatedAt"
+)
 DatabricksAIModelVersion.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksAIModelVersion.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
+DatabricksAIModelVersion.DATABASE_QUALIFIED_NAME = KeywordField(
+    "databaseQualifiedName", "databaseQualifiedName"
+)
 DatabricksAIModelVersion.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksAIModelVersion.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
+DatabricksAIModelVersion.SCHEMA_QUALIFIED_NAME = KeywordField(
+    "schemaQualifiedName", "schemaQualifiedName"
+)
 DatabricksAIModelVersion.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksAIModelVersion.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
+DatabricksAIModelVersion.TABLE_QUALIFIED_NAME = KeywordField(
+    "tableQualifiedName", "tableQualifiedName"
+)
 DatabricksAIModelVersion.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksAIModelVersion.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-DatabricksAIModelVersion.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-DatabricksAIModelVersion.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
+DatabricksAIModelVersion.VIEW_QUALIFIED_NAME = KeywordField(
+    "viewQualifiedName", "viewQualifiedName"
+)
+DatabricksAIModelVersion.CALCULATION_VIEW_NAME = KeywordField(
+    "calculationViewName", "calculationViewName"
+)
+DatabricksAIModelVersion.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
+    "calculationViewQualifiedName", "calculationViewQualifiedName"
+)
 DatabricksAIModelVersion.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-DatabricksAIModelVersion.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DatabricksAIModelVersion.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
+DatabricksAIModelVersion.LAST_PROFILED_AT = NumericField(
+    "lastProfiledAt", "lastProfiledAt"
+)
+DatabricksAIModelVersion.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
+    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
+)
 DatabricksAIModelVersion.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DatabricksAIModelVersion.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-DatabricksAIModelVersion.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
-DatabricksAIModelVersion.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
-DatabricksAIModelVersion.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
-DatabricksAIModelVersion.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
-DatabricksAIModelVersion.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
-DatabricksAIModelVersion.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
-DatabricksAIModelVersion.AI_MODEL_QUALIFIED_NAME = KeywordField("aiModelQualifiedName", "aiModelQualifiedName")
-DatabricksAIModelVersion.AI_MODEL_VERSION_STAGE = KeywordField("aiModelVersionStage", "aiModelVersionStage")
-DatabricksAIModelVersion.AI_MODEL_VERSION_METRICS = KeywordField("aiModelVersionMetrics", "aiModelVersionMetrics")
-DatabricksAIModelVersion.ETHICAL_AI_PRIVACY_CONFIG = KeywordField("ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig")
-DatabricksAIModelVersion.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField("ethicalAIFairnessConfig", "ethicalAIFairnessConfig")
-DatabricksAIModelVersion.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField("ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig")
-DatabricksAIModelVersion.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField("ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig")
-DatabricksAIModelVersion.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField("ethicalAITransparencyConfig", "ethicalAITransparencyConfig")
-DatabricksAIModelVersion.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField("ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig")
-DatabricksAIModelVersion.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField("ethicalAIEnvironmentalConsciousnessConfig", "ethicalAIEnvironmentalConsciousnessConfig")
+DatabricksAIModelVersion.SQL_HAS_AI_INSIGHTS = BooleanField(
+    "sqlHasAiInsights", "sqlHasAiInsights"
+)
+DatabricksAIModelVersion.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
+    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
+)
+DatabricksAIModelVersion.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
+    "sqlAiInsightsPopularBusinessQuestionCount",
+    "sqlAiInsightsPopularBusinessQuestionCount",
+)
+DatabricksAIModelVersion.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
+    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
+)
+DatabricksAIModelVersion.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
+    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
+)
+DatabricksAIModelVersion.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
+    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
+)
+DatabricksAIModelVersion.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
+DatabricksAIModelVersion.AI_MODEL_QUALIFIED_NAME = KeywordField(
+    "aiModelQualifiedName", "aiModelQualifiedName"
+)
+DatabricksAIModelVersion.AI_MODEL_VERSION_STAGE = KeywordField(
+    "aiModelVersionStage", "aiModelVersionStage"
+)
+DatabricksAIModelVersion.AI_MODEL_VERSION_METRICS = KeywordField(
+    "aiModelVersionMetrics", "aiModelVersionMetrics"
+)
+DatabricksAIModelVersion.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
+    "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
+)
+DatabricksAIModelVersion.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField(
+    "ethicalAIFairnessConfig", "ethicalAIFairnessConfig"
+)
+DatabricksAIModelVersion.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField(
+    "ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig"
+)
+DatabricksAIModelVersion.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField(
+    "ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig"
+)
+DatabricksAIModelVersion.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField(
+    "ethicalAITransparencyConfig", "ethicalAITransparencyConfig"
+)
+DatabricksAIModelVersion.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField(
+    "ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig"
+)
+DatabricksAIModelVersion.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
+    "ethicalAIEnvironmentalConsciousnessConfig",
+    "ethicalAIEnvironmentalConsciousnessConfig",
+)
 DatabricksAIModelVersion.AI_MODEL = RelationField("aiModel")
 DatabricksAIModelVersion.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-DatabricksAIModelVersion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+DatabricksAIModelVersion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
 DatabricksAIModelVersion.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DatabricksAIModelVersion.APPLICATION = RelationField("application")
 DatabricksAIModelVersion.APPLICATION_FIELD = RelationField("applicationField")
 DatabricksAIModelVersion.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DatabricksAIModelVersion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
-DatabricksAIModelVersion.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-DatabricksAIModelVersion.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DatabricksAIModelVersion.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-DatabricksAIModelVersion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+DatabricksAIModelVersion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
+DatabricksAIModelVersion.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+DatabricksAIModelVersion.INPUT_PORT_DATA_PRODUCTS = RelationField(
+    "inputPortDataProducts"
+)
+DatabricksAIModelVersion.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+    "modelImplementedEntities"
+)
+DatabricksAIModelVersion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+    "modelImplementedAttributes"
+)
 DatabricksAIModelVersion.METRICS = RelationField("metrics")
 DatabricksAIModelVersion.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DatabricksAIModelVersion.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-DatabricksAIModelVersion.DATABRICKS_AI_MODEL_CONTEXT = RelationField("databricksAIModelContext")
+DatabricksAIModelVersion.DQ_REFERENCE_DATASET_RULES = RelationField(
+    "dqReferenceDatasetRules"
+)
+DatabricksAIModelVersion.DATABRICKS_AI_MODEL_CONTEXT = RelationField(
+    "databricksAIModelContext"
+)
 DatabricksAIModelVersion.DBT_MODELS = RelationField("dbtModels")
 DatabricksAIModelVersion.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DatabricksAIModelVersion.DBT_TESTS = RelationField("dbtTests")
 DatabricksAIModelVersion.DBT_SOURCES = RelationField("dbtSources")
 DatabricksAIModelVersion.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DatabricksAIModelVersion.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-DatabricksAIModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
+DatabricksAIModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DatabricksAIModelVersion.MEANINGS = RelationField("meanings")
 DatabricksAIModelVersion.MC_MONITORS = RelationField("mcMonitors")
 DatabricksAIModelVersion.MC_INCIDENTS = RelationField("mcIncidents")
@@ -1102,16 +1346,30 @@ DatabricksAIModelVersion.PARTIAL_CHILD_FIELDS = RelationField("partialChildField
 DatabricksAIModelVersion.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 DatabricksAIModelVersion.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DatabricksAIModelVersion.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-DatabricksAIModelVersion.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DatabricksAIModelVersion.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+DatabricksAIModelVersion.USER_DEF_RELATIONSHIP_TO = RelationField(
+    "userDefRelationshipTo"
+)
+DatabricksAIModelVersion.USER_DEF_RELATIONSHIP_FROM = RelationField(
+    "userDefRelationshipFrom"
+)
 DatabricksAIModelVersion.FILES = RelationField("files")
 DatabricksAIModelVersion.LINKS = RelationField("links")
 DatabricksAIModelVersion.README = RelationField("readme")
-DatabricksAIModelVersion.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DatabricksAIModelVersion.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
+DatabricksAIModelVersion.SCHEMA_REGISTRY_SUBJECTS = RelationField(
+    "schemaRegistrySubjects"
+)
+DatabricksAIModelVersion.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
+    "snowflakeSemanticLogicalTables"
+)
 DatabricksAIModelVersion.SODA_CHECKS = RelationField("sodaChecks")
 DatabricksAIModelVersion.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DatabricksAIModelVersion.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-DatabricksAIModelVersion.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
-DatabricksAIModelVersion.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-DatabricksAIModelVersion.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")
+DatabricksAIModelVersion.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
+    "sqlInsightOutgoingJoins"
+)
+DatabricksAIModelVersion.SQL_INSIGHT_INCOMING_JOINS = RelationField(
+    "sqlInsightIncomingJoins"
+)
+DatabricksAIModelVersion.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
+    "sqlInsightBusinessQuestions"
+)
