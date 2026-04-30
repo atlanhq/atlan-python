@@ -45,6 +45,7 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedADLSContainer",
         "RelatedADLSObject",
     ],
+    "_init_agentic": ["Agentic", "RelatedAgentic"],
     "_init_ai": [
         "AI",
         "AIApplication",
@@ -116,6 +117,7 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedApplicationField",
     ],
     "_init_app_workflow_run": ["AppWorkflowRun", "RelatedAppWorkflowRun"],
+    "_init_artifact": ["Artifact", "RelatedArtifact"],
     "_init_asset": [
         "Asset",
         "DataSet",
@@ -165,9 +167,6 @@ __PYATLAN_V9_ASSETS__ = {
     ],
     "_init_business_policy": [
         "BusinessPolicy",
-        "BusinessPolicyException",
-        "BusinessPolicyIncident",
-        "BusinessPolicyLog",
         "RelatedBusinessPolicy",
         "RelatedBusinessPolicyException",
         "RelatedBusinessPolicyIncident",
@@ -254,6 +253,14 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedCognosReport",
     ],
     "_init_connection": ["Connection", "RelatedConnection"],
+    "_init_context": [
+        "Context",
+        "ContextArtifact",
+        "ContextRepository",
+        "RelatedContext",
+        "RelatedContextArtifact",
+        "RelatedContextRepository",
+    ],
     "_init_cosmos_mongo_db": [
         "CosmosMongoDB",
         "CosmosMongoDBAccount",
@@ -473,6 +480,12 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedFlowReusableUnit",
     ],
     "_init_form": ["Form", "RelatedForm", "RelatedResponse"],
+    "_init_gcp_dataplex": [
+        "GCPDataplex",
+        "GCPDataplexAspectType",
+        "RelatedGCPDataplex",
+        "RelatedGCPDataplexAspectType",
+    ],
     "_init_gcs": [
         "GCS",
         "GCSBucket",
@@ -514,6 +527,14 @@ __PYATLAN_V9_ASSETS__ = {
         "RelatedKafkaConsumerGroup",
         "RelatedKafkaField",
         "RelatedKafkaTopic",
+    ],
+    "_init_knowledge": [
+        "Knowledge",
+        "KnowledgeFile",
+        "KnowledgeFolder",
+        "RelatedKnowledge",
+        "RelatedKnowledgeFile",
+        "RelatedKnowledgeFolder",
     ],
     "_init_looker": [
         "Looker",
@@ -904,6 +925,8 @@ __PYATLAN_V9_ASSETS__ = {
         "SisenseFolder",
         "SisenseWidget",
     ],
+    "_init_skill": ["RelatedSkill", "Skill"],
+    "_init_skill_artifact": ["RelatedSkillArtifact", "SkillArtifact"],
     "_init_snowflake": [
         "RelatedSnowflake",
         "RelatedSnowflakeAIModelContext",
@@ -1046,6 +1069,16 @@ __PYATLAN_V9_ASSETS__ = {
         "ThoughtspotTable",
         "ThoughtspotView",
         "ThoughtspotWorksheet",
+    ],
+    "_init_unstructured_v2": [
+        "RelatedUnstructuredV2",
+        "RelatedUnstructuredV2Container",
+        "RelatedUnstructuredV2Folder",
+        "RelatedUnstructuredV2Object",
+        "UnstructuredV2",
+        "UnstructuredV2Container",
+        "UnstructuredV2Folder",
+        "UnstructuredV2Object",
     ],
     "_init_workflow": ["RelatedWorkflow", "RelatedWorkflowRun", "Workflow"],
 }

@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -51,7 +44,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .dynamo_db_related import RelatedDynamoDBAttribute, RelatedDynamoDBTable
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
@@ -81,6 +74,14 @@ from .sql_related import (
     RelatedTablePartition,
     RelatedView,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .dynamo_db_related import RelatedDynamoDBAttribute, RelatedDynamoDBTable
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -130,6 +131,7 @@ class DynamoDBAttribute(Asset):
     PARENT_COLUMN_NAME: ClassVar[Any] = None
     COLUMN_DISTINCT_VALUES_COUNT: ClassVar[Any] = None
     COLUMN_DISTINCT_VALUES_COUNT_LONG: ClassVar[Any] = None
+    COLUMN_DISTINCT_VALUES_PERCENTAGE: ClassVar[Any] = None
     COLUMN_HISTOGRAM: ClassVar[Any] = None
     COLUMN_MAX: ClassVar[Any] = None
     COLUMN_MIN: ClassVar[Any] = None
@@ -226,6 +228,7 @@ class DynamoDBAttribute(Asset):
     COLUMN_DBT_MODEL_COLUMNS: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
     DYNAMO_DB_TABLE: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MONGO_DB_COLLECTION: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -382,6 +385,9 @@ class DynamoDBAttribute(Asset):
 
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
+
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
 
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
@@ -688,6 +694,11 @@ class DynamoDBAttribute(Asset):
         default=UNSET, name="dynamoDBTable"
     )
     """DynamoDB table in which this attribute exists."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -1065,6 +1076,9 @@ class DynamoDBAttributeAttributes(AssetAttributes):
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
+
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
@@ -1375,6 +1389,11 @@ class DynamoDBAttributeRelationshipAttributes(AssetRelationshipAttributes):
     )
     """DynamoDB table in which this attribute exists."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1541,6 +1560,7 @@ _DYNAMO_DB_ATTRIBUTE_REL_FIELDS: List[str] = [
     "column_dbt_model_columns",
     "dbt_seed_assets",
     "dynamo_db_table",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mongo_db_collection",
     "mc_monitors",
@@ -1619,6 +1639,7 @@ def _populate_dynamo_db_attribute_attrs(
     attrs.parent_column_name = obj.parent_column_name
     attrs.column_distinct_values_count = obj.column_distinct_values_count
     attrs.column_distinct_values_count_long = obj.column_distinct_values_count_long
+    attrs.column_distinct_values_percentage = obj.column_distinct_values_percentage
     attrs.column_histogram = obj.column_histogram
     attrs.column_max = obj.column_max
     attrs.column_min = obj.column_min
@@ -1735,6 +1756,9 @@ def _extract_dynamo_db_attribute_attrs(attrs: DynamoDBAttributeAttributes) -> di
     result["column_distinct_values_count"] = attrs.column_distinct_values_count
     result["column_distinct_values_count_long"] = (
         attrs.column_distinct_values_count_long
+    )
+    result["column_distinct_values_percentage"] = (
+        attrs.column_distinct_values_percentage
     )
     result["column_histogram"] = attrs.column_histogram
     result["column_max"] = attrs.column_max
@@ -2007,6 +2031,9 @@ DynamoDBAttribute.COLUMN_DISTINCT_VALUES_COUNT = NumericField(
 DynamoDBAttribute.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField(
     "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
 )
+DynamoDBAttribute.COLUMN_DISTINCT_VALUES_PERCENTAGE = NumericField(
+    "columnDistinctValuesPercentage", "columnDistinctValuesPercentage"
+)
 DynamoDBAttribute.COLUMN_HISTOGRAM = KeywordField("columnHistogram", "columnHistogram")
 DynamoDBAttribute.COLUMN_MAX = NumericField("columnMax", "columnMax")
 DynamoDBAttribute.COLUMN_MIN = NumericField("columnMin", "columnMin")
@@ -2193,6 +2220,9 @@ DynamoDBAttribute.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
 DynamoDBAttribute.COLUMN_DBT_MODEL_COLUMNS = RelationField("columnDbtModelColumns")
 DynamoDBAttribute.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 DynamoDBAttribute.DYNAMO_DB_TABLE = RelationField("dynamoDBTable")
+DynamoDBAttribute.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DynamoDBAttribute.MEANINGS = RelationField("meanings")
 DynamoDBAttribute.MONGO_DB_COLLECTION = RelationField("mongoDBCollection")
 DynamoDBAttribute.MC_MONITORS = RelationField("mcMonitors")

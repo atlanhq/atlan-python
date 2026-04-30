@@ -18,13 +18,6 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -39,17 +32,25 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .flow_related import (
-    RelatedFlowDataset,
-    RelatedFlowDatasetOperation,
-    RelatedFlowReusableUnit,
-)
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .flow_related import (
+    RelatedFlowDataset,
+    RelatedFlowDatasetOperation,
+    RelatedFlowReusableUnit,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -91,6 +92,7 @@ class FlowReusableUnit(Asset):
     FLOW_DATA_FLOWS: ClassVar[Any] = None
     FLOW_ABSTRACTS: ClassVar[Any] = None
     FLOW_DATASETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -190,6 +192,11 @@ class FlowReusableUnit(Asset):
 
     flow_datasets: Union[List[RelatedFlowDataset], None, UnsetType] = UNSET
     """Ephemeral datasets that are contained within the reusable unit."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -438,6 +445,11 @@ class FlowReusableUnitRelationshipAttributes(AssetRelationshipAttributes):
     flow_datasets: Union[List[RelatedFlowDataset], None, UnsetType] = UNSET
     """Ephemeral datasets that are contained within the reusable unit."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -507,6 +519,7 @@ _FLOW_REUSABLE_UNIT_REL_FIELDS: List[str] = [
     "flow_data_flows",
     "flow_abstracts",
     "flow_datasets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -733,6 +746,9 @@ FlowReusableUnit.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetR
 FlowReusableUnit.FLOW_DATA_FLOWS = RelationField("flowDataFlows")
 FlowReusableUnit.FLOW_ABSTRACTS = RelationField("flowAbstracts")
 FlowReusableUnit.FLOW_DATASETS = RelationField("flowDatasets")
+FlowReusableUnit.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FlowReusableUnit.MEANINGS = RelationField("meanings")
 FlowReusableUnit.MC_MONITORS = RelationField("mcMonitors")
 FlowReusableUnit.MC_INCIDENTS = RelationField("mcIncidents")

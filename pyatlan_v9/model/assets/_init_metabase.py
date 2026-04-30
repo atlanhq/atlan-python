@@ -8,16 +8,16 @@ Metabase module exports.
 This module provides convenient imports for all Metabase types and their Related variants.
 """
 
-from .metabase import Metabase
-from .metabase_collection import MetabaseCollection
-from .metabase_dashboard import MetabaseDashboard
-from .metabase_question import MetabaseQuestion
 from .metabase_related import (
     RelatedMetabase,
     RelatedMetabaseCollection,
     RelatedMetabaseDashboard,
     RelatedMetabaseQuestion,
 )
+from .metabase import Metabase
+from .metabase_collection import MetabaseCollection
+from .metabase_dashboard import MetabaseDashboard
+from .metabase_question import MetabaseQuestion
 
 __all__ = [
     "Metabase",

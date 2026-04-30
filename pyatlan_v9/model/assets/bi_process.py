@@ -19,13 +19,6 @@ from typing import Any, ClassVar, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .adf_related import RelatedAdfActivity
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -46,17 +39,25 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
 from .flow_related import RelatedFlowControlOperation
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .power_bi_related import RelatedPowerBIDataflow
-from .process_related import RelatedBIProcess, RelatedColumnProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .process_related import RelatedBIProcess, RelatedColumnProcess
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -75,6 +76,7 @@ class BIProcess(Asset):
     AST: ClassVar[Any] = None
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
+    IS_PASS_THROUGH: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -90,6 +92,7 @@ class BIProcess(Asset):
     FABRIC_ACTIVITIES: ClassVar[Any] = None
     FIVETRAN_CONNECTOR: ClassVar[Any] = None
     FLOW_ORCHESTRATED_BY: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -126,6 +129,9 @@ class BIProcess(Asset):
 
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
+
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
@@ -173,6 +179,11 @@ class BIProcess(Asset):
 
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -370,6 +381,9 @@ class BIProcessAttributes(AssetAttributes):
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
 
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
 
 class BIProcessRelationshipAttributes(AssetRelationshipAttributes):
     """BIProcess-specific relationship attributes for nested API format."""
@@ -420,6 +434,11 @@ class BIProcessRelationshipAttributes(AssetRelationshipAttributes):
 
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -516,6 +535,7 @@ _BI_PROCESS_REL_FIELDS: List[str] = [
     "fabric_activities",
     "fivetran_connector",
     "flow_orchestrated_by",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "matillion_component",
     "mc_monitors",
@@ -548,6 +568,7 @@ def _populate_bi_process_attrs(attrs: BIProcessAttributes, obj: BIProcess) -> No
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
+    attrs.is_pass_through = obj.is_pass_through
 
 
 def _extract_bi_process_attrs(attrs: BIProcessAttributes) -> dict:
@@ -561,6 +582,7 @@ def _extract_bi_process_attrs(attrs: BIProcessAttributes) -> dict:
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
+    result["is_pass_through"] = attrs.is_pass_through
     return result
 
 
@@ -662,7 +684,11 @@ def _bi_process_from_nested_bytes(data: bytes, serde: Serde) -> BIProcess:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
+    KeywordField,
+    RelationField,
+)
 
 BIProcess.CODE = KeywordField("code", "code")
 BIProcess.SQL = KeywordField("sql", "sql")
@@ -674,6 +700,7 @@ BIProcess.ADDITIONAL_ETL_CONTEXT = KeywordField(
     "additionalEtlContext", "additionalEtlContext"
 )
 BIProcess.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
+BIProcess.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
 BIProcess.ADF_ACTIVITY = RelationField("adfActivity")
 BIProcess.AIRFLOW_TASKS = RelationField("airflowTasks")
 BIProcess.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -689,6 +716,9 @@ BIProcess.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 BIProcess.FABRIC_ACTIVITIES = RelationField("fabricActivities")
 BIProcess.FIVETRAN_CONNECTOR = RelationField("fivetranConnector")
 BIProcess.FLOW_ORCHESTRATED_BY = RelationField("flowOrchestratedBy")
+BIProcess.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 BIProcess.MEANINGS = RelationField("meanings")
 BIProcess.MATILLION_COMPONENT = RelationField("matillionComponent")
 BIProcess.MC_MONITORS = RelationField("mcMonitors")

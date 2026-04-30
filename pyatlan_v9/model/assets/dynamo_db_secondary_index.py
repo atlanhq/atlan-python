@@ -19,13 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -47,7 +40,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .dynamo_db_related import RelatedDynamoDBSecondaryIndex
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -70,6 +63,14 @@ from .sql_related import (
     RelatedTable,
     RelatedTablePartition,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .dynamo_db_related import RelatedDynamoDBSecondaryIndex
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -161,6 +162,7 @@ class DynamoDBSecondaryIndex(Asset):
     DBT_SOURCES: ClassVar[Any] = None
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -446,6 +448,11 @@ class DynamoDBSecondaryIndex(Asset):
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -922,6 +929,11 @@ class DynamoDBSecondaryIndexRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1054,6 +1066,7 @@ _DYNAMO_DB_SECONDARY_INDEX_REL_FIELDS: List[str] = [
     "dbt_sources",
     "sql_dbt_sources",
     "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1527,6 +1540,9 @@ DynamoDBSecondaryIndex.DBT_TESTS = RelationField("dbtTests")
 DynamoDBSecondaryIndex.DBT_SOURCES = RelationField("dbtSources")
 DynamoDBSecondaryIndex.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DynamoDBSecondaryIndex.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+DynamoDBSecondaryIndex.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DynamoDBSecondaryIndex.MEANINGS = RelationField("meanings")
 DynamoDBSecondaryIndex.MC_MONITORS = RelationField("mcMonitors")
 DynamoDBSecondaryIndex.MC_INCIDENTS = RelationField("mcIncidents")

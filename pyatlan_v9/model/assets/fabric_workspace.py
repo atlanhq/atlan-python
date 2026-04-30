@@ -18,13 +18,6 @@ from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -40,14 +33,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .fabric_related import (
-    RelatedFabricDashboard,
-    RelatedFabricDataflow,
-    RelatedFabricDataPipeline,
-    RelatedFabricReport,
-    RelatedFabricSemanticModel,
-    RelatedFabricWorkspace,
-)
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -59,6 +45,21 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedDatabase
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .fabric_related import (
+    RelatedFabricDashboard,
+    RelatedFabricDataPipeline,
+    RelatedFabricDataflow,
+    RelatedFabricReport,
+    RelatedFabricSemanticModel,
+    RelatedFabricWorkspace,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -95,6 +96,7 @@ class FabricWorkspace(Asset):
     FABRIC_DATA_PIPELINES: ClassVar[Any] = None
     FABRIC_REPORTS: ClassVar[Any] = None
     FABRIC_SEMANTIC_MODELS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -191,6 +193,11 @@ class FabricWorkspace(Asset):
         UNSET
     )
     """Individual semantic models contained in the workspace."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -448,6 +455,11 @@ class FabricWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Individual semantic models contained in the workspace."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -542,6 +554,7 @@ _FABRIC_WORKSPACE_REL_FIELDS: List[str] = [
     "fabric_data_pipelines",
     "fabric_reports",
     "fabric_semantic_models",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -726,6 +739,9 @@ FabricWorkspace.FABRIC_DATAFLOWS = RelationField("fabricDataflows")
 FabricWorkspace.FABRIC_DATA_PIPELINES = RelationField("fabricDataPipelines")
 FabricWorkspace.FABRIC_REPORTS = RelationField("fabricReports")
 FabricWorkspace.FABRIC_SEMANTIC_MODELS = RelationField("fabricSemanticModels")
+FabricWorkspace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FabricWorkspace.MEANINGS = RelationField("meanings")
 FabricWorkspace.MC_MONITORS = RelationField("mcMonitors")
 FabricWorkspace.MC_INCIDENTS = RelationField("mcIncidents")

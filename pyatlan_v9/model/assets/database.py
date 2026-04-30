@@ -19,14 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -49,6 +41,7 @@ from .dbt_related import (
     RelatedDbtTest,
 )
 from .fabric_related import RelatedFabricWorkspace
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -64,6 +57,14 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .sql_related import RelatedDatabase, RelatedSchema
 
 # =============================================================================
@@ -124,6 +125,7 @@ class Database(Asset):
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
     FABRIC_WORKSPACE: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -294,6 +296,11 @@ class Database(Asset):
 
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the database."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -699,6 +706,11 @@ class DatabaseRelationshipAttributes(AssetRelationshipAttributes):
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the database."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -815,6 +827,7 @@ _DATABASE_REL_FIELDS: List[str] = [
     "sql_dbt_sources",
     "dbt_seed_assets",
     "fabric_workspace",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1091,6 +1104,9 @@ Database.DBT_SOURCES = RelationField("dbtSources")
 Database.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 Database.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 Database.FABRIC_WORKSPACE = RelationField("fabricWorkspace")
+Database.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Database.MEANINGS = RelationField("meanings")
 Database.MC_MONITORS = RelationField("mcMonitors")
 Database.MC_INCIDENTS = RelationField("mcIncidents")

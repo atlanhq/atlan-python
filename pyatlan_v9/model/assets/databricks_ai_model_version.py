@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .ai_related import RelatedAIModel
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,16 +36,13 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import (
-    RelatedDatabricksAIModelContext,
-    RelatedDatabricksAIModelVersion,
-)
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -67,6 +57,17 @@ from .spark_related import RelatedSparkJob
 from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .databricks_related import (
+    RelatedDatabricksAIModelContext,
+    RelatedDatabricksAIModelVersion,
 )
 
 # =============================================================================
@@ -149,6 +150,7 @@ class DatabricksAIModelVersion(Asset):
     DBT_SOURCES: ClassVar[Any] = None
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -424,6 +426,11 @@ class DatabricksAIModelVersion(Asset):
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -900,6 +907,11 @@ class DatabricksAIModelVersionRelationshipAttributes(AssetRelationshipAttributes
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1016,6 +1028,7 @@ _DATABRICKS_AI_MODEL_VERSION_REL_FIELDS: List[str] = [
     "dbt_sources",
     "sql_dbt_sources",
     "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1488,6 +1501,9 @@ DatabricksAIModelVersion.DBT_TESTS = RelationField("dbtTests")
 DatabricksAIModelVersion.DBT_SOURCES = RelationField("dbtSources")
 DatabricksAIModelVersion.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DatabricksAIModelVersion.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+DatabricksAIModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DatabricksAIModelVersion.MEANINGS = RelationField("meanings")
 DatabricksAIModelVersion.MC_MONITORS = RelationField("mcMonitors")
 DatabricksAIModelVersion.MC_INCIDENTS = RelationField("mcIncidents")

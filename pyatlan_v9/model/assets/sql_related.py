@@ -254,6 +254,9 @@ class RelatedColumn(RelatedSQL):
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
+
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 

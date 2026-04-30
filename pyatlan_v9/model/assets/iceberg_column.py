@@ -19,13 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -50,8 +43,8 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .iceberg_related import RelatedIcebergColumn
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -80,6 +73,14 @@ from .sql_related import (
     RelatedTablePartition,
     RelatedView,
 )
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .iceberg_related import RelatedIcebergColumn
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -149,6 +150,7 @@ class IcebergColumn(Asset):
     PARENT_COLUMN_NAME: ClassVar[Any] = None
     COLUMN_DISTINCT_VALUES_COUNT: ClassVar[Any] = None
     COLUMN_DISTINCT_VALUES_COUNT_LONG: ClassVar[Any] = None
+    COLUMN_DISTINCT_VALUES_PERCENTAGE: ClassVar[Any] = None
     COLUMN_HISTOGRAM: ClassVar[Any] = None
     COLUMN_MAX: ClassVar[Any] = None
     COLUMN_MIN: ClassVar[Any] = None
@@ -220,6 +222,7 @@ class IcebergColumn(Asset):
     DBT_MODEL_COLUMNS: ClassVar[Any] = None
     COLUMN_DBT_MODEL_COLUMNS: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MONGO_DB_COLLECTION: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -426,6 +429,9 @@ class IcebergColumn(Asset):
 
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
+
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
 
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
@@ -653,6 +659,11 @@ class IcebergColumn(Asset):
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -1063,6 +1074,9 @@ class IcebergColumnAttributes(AssetAttributes):
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
+
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
@@ -1294,6 +1308,11 @@ class IcebergColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1459,6 +1478,7 @@ _ICEBERG_COLUMN_REL_FIELDS: List[str] = [
     "dbt_model_columns",
     "column_dbt_model_columns",
     "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mongo_db_collection",
     "mc_monitors",
@@ -1563,6 +1583,7 @@ def _populate_iceberg_column_attrs(
     attrs.parent_column_name = obj.parent_column_name
     attrs.column_distinct_values_count = obj.column_distinct_values_count
     attrs.column_distinct_values_count_long = obj.column_distinct_values_count_long
+    attrs.column_distinct_values_percentage = obj.column_distinct_values_percentage
     attrs.column_histogram = obj.column_histogram
     attrs.column_max = obj.column_max
     attrs.column_min = obj.column_min
@@ -1683,6 +1704,9 @@ def _extract_iceberg_column_attrs(attrs: IcebergColumnAttributes) -> dict:
     result["column_distinct_values_count"] = attrs.column_distinct_values_count
     result["column_distinct_values_count_long"] = (
         attrs.column_distinct_values_count_long
+    )
+    result["column_distinct_values_percentage"] = (
+        attrs.column_distinct_values_percentage
     )
     result["column_histogram"] = attrs.column_histogram
     result["column_max"] = attrs.column_max
@@ -1952,6 +1976,9 @@ IcebergColumn.COLUMN_DISTINCT_VALUES_COUNT = NumericField(
 IcebergColumn.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField(
     "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
 )
+IcebergColumn.COLUMN_DISTINCT_VALUES_PERCENTAGE = NumericField(
+    "columnDistinctValuesPercentage", "columnDistinctValuesPercentage"
+)
 IcebergColumn.COLUMN_HISTOGRAM = KeywordField("columnHistogram", "columnHistogram")
 IcebergColumn.COLUMN_MAX = NumericField("columnMax", "columnMax")
 IcebergColumn.COLUMN_MIN = NumericField("columnMin", "columnMin")
@@ -2080,6 +2107,9 @@ IcebergColumn.DBT_METRICS = RelationField("dbtMetrics")
 IcebergColumn.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
 IcebergColumn.COLUMN_DBT_MODEL_COLUMNS = RelationField("columnDbtModelColumns")
 IcebergColumn.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+IcebergColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 IcebergColumn.MEANINGS = RelationField("meanings")
 IcebergColumn.MONGO_DB_COLLECTION = RelationField("mongoDBCollection")
 IcebergColumn.MC_MONITORS = RelationField("mcMonitors")

@@ -8,10 +8,6 @@ Kafka module exports.
 This module provides convenient imports for all Kafka types and their Related variants.
 """
 
-from .kafka import Kafka
-from .kafka_cluster import KafkaCluster
-from .kafka_consumer_group import KafkaConsumerGroup
-from .kafka_field import KafkaField
 from .kafka_related import (
     RelatedAzureEventHub,
     RelatedAzureEventHubConsumerGroup,
@@ -21,6 +17,10 @@ from .kafka_related import (
     RelatedKafkaField,
     RelatedKafkaTopic,
 )
+from .kafka import Kafka
+from .kafka_cluster import KafkaCluster
+from .kafka_consumer_group import KafkaConsumerGroup
+from .kafka_field import KafkaField
 from .kafka_topic import KafkaTopic
 
 __all__ = [

@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .adf_related import RelatedAdfActivity
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -46,11 +39,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
-from .flow_related import (
-    RelatedFlowControlOperation,
-    RelatedFlowDatasetOperation,
-    RelatedFlowReusableUnit,
-)
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -62,6 +51,18 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedFunction, RelatedProcedure
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .flow_related import (
+    RelatedFlowControlOperation,
+    RelatedFlowDatasetOperation,
+    RelatedFlowReusableUnit,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -94,6 +95,7 @@ class FlowDatasetOperation(Asset):
     AST: ClassVar[Any] = None
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
+    IS_PASS_THROUGH: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -110,6 +112,7 @@ class FlowDatasetOperation(Asset):
     FIVETRAN_CONNECTOR: ClassVar[Any] = None
     FLOW_ORCHESTRATED_BY: ClassVar[Any] = None
     FLOW_REUSABLE_UNIT: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -189,6 +192,9 @@ class FlowDatasetOperation(Asset):
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
 
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
 
@@ -238,6 +244,11 @@ class FlowDatasetOperation(Asset):
 
     flow_reusable_unit: Union[RelatedFlowReusableUnit, None, UnsetType] = UNSET
     """Reusable unit of dataset operations that are all executed together."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -497,6 +508,9 @@ class FlowDatasetOperationAttributes(AssetAttributes):
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
 
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
 
 class FlowDatasetOperationRelationshipAttributes(AssetRelationshipAttributes):
     """FlowDatasetOperation-specific relationship attributes for nested API format."""
@@ -550,6 +564,11 @@ class FlowDatasetOperationRelationshipAttributes(AssetRelationshipAttributes):
 
     flow_reusable_unit: Union[RelatedFlowReusableUnit, None, UnsetType] = UNSET
     """Reusable unit of dataset operations that are all executed together."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -649,6 +668,7 @@ _FLOW_DATASET_OPERATION_REL_FIELDS: List[str] = [
     "fivetran_connector",
     "flow_orchestrated_by",
     "flow_reusable_unit",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "matillion_component",
     "mc_monitors",
@@ -697,6 +717,7 @@ def _populate_flow_dataset_operation_attrs(
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
+    attrs.is_pass_through = obj.is_pass_through
 
 
 def _extract_flow_dataset_operation_attrs(
@@ -728,6 +749,7 @@ def _extract_flow_dataset_operation_attrs(
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
+    result["is_pass_through"] = attrs.is_pass_through
     return result
 
 
@@ -842,6 +864,7 @@ def _flow_dataset_operation_from_nested_bytes(
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
@@ -888,6 +911,7 @@ FlowDatasetOperation.ADDITIONAL_ETL_CONTEXT = KeywordField(
     "additionalEtlContext", "additionalEtlContext"
 )
 FlowDatasetOperation.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
+FlowDatasetOperation.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
 FlowDatasetOperation.ADF_ACTIVITY = RelationField("adfActivity")
 FlowDatasetOperation.AIRFLOW_TASKS = RelationField("airflowTasks")
 FlowDatasetOperation.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -908,6 +932,9 @@ FlowDatasetOperation.FABRIC_ACTIVITIES = RelationField("fabricActivities")
 FlowDatasetOperation.FIVETRAN_CONNECTOR = RelationField("fivetranConnector")
 FlowDatasetOperation.FLOW_ORCHESTRATED_BY = RelationField("flowOrchestratedBy")
 FlowDatasetOperation.FLOW_REUSABLE_UNIT = RelationField("flowReusableUnit")
+FlowDatasetOperation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FlowDatasetOperation.MEANINGS = RelationField("meanings")
 FlowDatasetOperation.MATILLION_COMPONENT = RelationField("matillionComponent")
 FlowDatasetOperation.MC_MONITORS = RelationField("mcMonitors")

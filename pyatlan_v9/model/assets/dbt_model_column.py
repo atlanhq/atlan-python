@@ -19,13 +19,6 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -41,12 +34,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtModelColumn,
-    RelatedDbtSeed,
-    RelatedDbtTest,
-)
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -58,6 +46,19 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .dbt_related import (
+    RelatedDbtModel,
+    RelatedDbtModelColumn,
+    RelatedDbtSeed,
+    RelatedDbtTest,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -112,6 +113,7 @@ class DbtModelColumn(Asset):
     SQL_COLUMN: ClassVar[Any] = None
     DBT_MODEL_COLUMN_SQL_COLUMNS: ClassVar[Any] = None
     DBT_SEED: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -258,6 +260,11 @@ class DbtModelColumn(Asset):
 
     dbt_seed: Union[RelatedDbtSeed, None, UnsetType] = UNSET
     """Seed in which this dbt column exists."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -579,6 +586,11 @@ class DbtModelColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed: Union[RelatedDbtSeed, None, UnsetType] = UNSET
     """Seed in which this dbt column exists."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -672,6 +684,7 @@ _DBT_MODEL_COLUMN_REL_FIELDS: List[str] = [
     "sql_column",
     "dbt_model_column_sql_columns",
     "dbt_seed",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -929,6 +942,9 @@ DbtModelColumn.DBT_MODEL = RelationField("dbtModel")
 DbtModelColumn.SQL_COLUMN = RelationField("sqlColumn")
 DbtModelColumn.DBT_MODEL_COLUMN_SQL_COLUMNS = RelationField("dbtModelColumnSqlColumns")
 DbtModelColumn.DBT_SEED = RelationField("dbtSeed")
+DbtModelColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DbtModelColumn.MEANINGS = RelationField("meanings")
 DbtModelColumn.MC_MONITORS = RelationField("mcMonitors")
 DbtModelColumn.MC_INCIDENTS = RelationField("mcIncidents")

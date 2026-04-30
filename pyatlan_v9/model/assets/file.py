@@ -18,14 +18,6 @@ from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -42,16 +34,25 @@ from .asset_related import RelatedAsset
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
-from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -66,6 +67,7 @@ class File(Asset):
 
     FILE_TYPE: ClassVar[Any] = None
     FILE_PATH: ClassVar[Any] = None
+    RESOURCE_FILE_SIZE: ClassVar[Any] = None
     LINK: ClassVar[Any] = None
     IS_GLOBAL: ClassVar[Any] = None
     REFERENCE: ClassVar[Any] = None
@@ -85,6 +87,7 @@ class File(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -108,6 +111,9 @@ class File(Asset):
 
     file_path: Union[str, None, UnsetType] = UNSET
     """URL giving the online location where the file can be accessed."""
+
+    resource_file_size: Union[int, None, UnsetType] = UNSET
+    """Size of the file in bytes."""
 
     link: Union[str, None, UnsetType] = UNSET
     """URL to the resource."""
@@ -169,6 +175,11 @@ class File(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -438,6 +449,9 @@ class FileAttributes(AssetAttributes):
     file_path: Union[str, None, UnsetType] = UNSET
     """URL giving the online location where the file can be accessed."""
 
+    resource_file_size: Union[int, None, UnsetType] = UNSET
+    """Size of the file in bytes."""
+
     link: Union[str, None, UnsetType] = UNSET
     """URL to the resource."""
 
@@ -502,6 +516,11 @@ class FileRelationshipAttributes(AssetRelationshipAttributes):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -588,6 +607,7 @@ _FILE_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -613,6 +633,7 @@ def _populate_file_attrs(attrs: FileAttributes, obj: File) -> None:
     _populate_asset_attrs(attrs, obj)
     attrs.file_type = obj.file_type
     attrs.file_path = obj.file_path
+    attrs.resource_file_size = obj.resource_file_size
     attrs.link = obj.link
     attrs.is_global = obj.is_global
     attrs.reference = obj.reference
@@ -625,6 +646,7 @@ def _extract_file_attrs(attrs: FileAttributes) -> dict:
     result = _extract_asset_attrs(attrs)
     result["file_type"] = attrs.file_type
     result["file_path"] = attrs.file_path
+    result["resource_file_size"] = attrs.resource_file_size
     result["link"] = attrs.link
     result["is_global"] = attrs.is_global
     result["reference"] = attrs.reference
@@ -732,11 +754,13 @@ def _file_from_nested_bytes(data: bytes, serde: Serde) -> File:
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     BooleanField,
     KeywordField,
+    NumericField,
     RelationField,
 )
 
 File.FILE_TYPE = KeywordField("fileType", "fileType")
 File.FILE_PATH = KeywordField("filePath", "filePath")
+File.RESOURCE_FILE_SIZE = NumericField("resourceFileSize", "resourceFileSize")
 File.LINK = KeywordField("link", "link")
 File.IS_GLOBAL = BooleanField("isGlobal", "isGlobal")
 File.REFERENCE = KeywordField("reference", "reference")
@@ -756,6 +780,9 @@ File.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 File.METRICS = RelationField("metrics")
 File.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 File.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+File.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 File.MEANINGS = RelationField("meanings")
 File.MC_MONITORS = RelationField("mcMonitors")
 File.MC_INCIDENTS = RelationField("mcIncidents")

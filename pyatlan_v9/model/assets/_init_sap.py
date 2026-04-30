@@ -8,15 +8,6 @@ SAP module exports.
 This module provides convenient imports for all SAP types and their Related variants.
 """
 
-from .sap import SAP
-from .sap_erp_abap_program import SapErpAbapProgram
-from .sap_erp_cds_view import SapErpCdsView
-from .sap_erp_column import SapErpColumn
-from .sap_erp_component import SapErpComponent
-from .sap_erp_function_module import SapErpFunctionModule
-from .sap_erp_table import SapErpTable
-from .sap_erp_transaction_code import SapErpTransactionCode
-from .sap_erp_view import SapErpView
 from .sap_related import (
     RelatedSAP,
     RelatedSapErpAbapProgram,
@@ -28,6 +19,15 @@ from .sap_related import (
     RelatedSapErpTransactionCode,
     RelatedSapErpView,
 )
+from .sap import SAP
+from .sap_erp_abap_program import SapErpAbapProgram
+from .sap_erp_cds_view import SapErpCdsView
+from .sap_erp_column import SapErpColumn
+from .sap_erp_component import SapErpComponent
+from .sap_erp_function_module import SapErpFunctionModule
+from .sap_erp_table import SapErpTable
+from .sap_erp_transaction_code import SapErpTransactionCode
+from .sap_erp_view import SapErpView
 
 __all__ = [
     "RelatedSAP",

@@ -8,13 +8,13 @@ DataQuality module exports.
 This module provides convenient imports for all DataQuality types and their Related variants.
 """
 
-from .data_quality import DataQuality
 from .data_quality_related import (
     RelatedDataQuality,
     RelatedDataQualityRule,
     RelatedDataQualityRuleTemplate,
     RelatedMetric,
 )
+from .data_quality import DataQuality
 from .data_quality_rule import DataQualityRule
 from .data_quality_rule_template import DataQualityRuleTemplate
 from .metric import Metric

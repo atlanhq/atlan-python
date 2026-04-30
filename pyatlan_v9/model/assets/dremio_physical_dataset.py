@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -48,11 +41,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
-from .dremio_related import (
-    RelatedDremioFolder,
-    RelatedDremioPhysicalDataset,
-    RelatedDremioSource,
-)
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -74,6 +63,18 @@ from .sql_related import (
     RelatedSchema,
     RelatedTable,
     RelatedTablePartition,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .dremio_related import (
+    RelatedDremioFolder,
+    RelatedDremioPhysicalDataset,
+    RelatedDremioSource,
 )
 
 # =============================================================================
@@ -169,6 +170,7 @@ class DremioPhysicalDataset(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     DREMIO_SOURCE: ClassVar[Any] = None
     DREMIO_FOLDER: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -449,6 +451,11 @@ class DremioPhysicalDataset(Asset):
 
     dremio_folder: Union[RelatedDremioFolder, None, UnsetType] = UNSET
     """Dremio Folder that contains the physical datasets (tables)."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -934,6 +941,11 @@ class DremioPhysicalDatasetRelationshipAttributes(AssetRelationshipAttributes):
     dremio_folder: Union[RelatedDremioFolder, None, UnsetType] = UNSET
     """Dremio Folder that contains the physical datasets (tables)."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1068,6 +1080,7 @@ _DREMIO_PHYSICAL_DATASET_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "dremio_source",
     "dremio_folder",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1540,6 +1553,9 @@ DremioPhysicalDataset.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DremioPhysicalDataset.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 DremioPhysicalDataset.DREMIO_SOURCE = RelationField("dremioSource")
 DremioPhysicalDataset.DREMIO_FOLDER = RelationField("dremioFolder")
+DremioPhysicalDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DremioPhysicalDataset.MEANINGS = RelationField("meanings")
 DremioPhysicalDataset.MC_MONITORS = RelationField("mcMonitors")
 DremioPhysicalDataset.MC_INCIDENTS = RelationField("mcIncidents")

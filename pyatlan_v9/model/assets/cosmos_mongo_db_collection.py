@@ -20,13 +20,6 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -39,10 +32,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cosmos_mongo_db_related import (
-    RelatedCosmosMongoDBCollection,
-    RelatedCosmosMongoDBDatabase,
-)
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -52,6 +41,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBDatabase
@@ -74,6 +64,17 @@ from .sql_related import (
     RelatedSchema,
     RelatedTable,
     RelatedTablePartition,
+)
+from pyatlan_v9.model.conversion_utils import (
+    categorize_relationships,
+    merge_relationships,
+)
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cosmos_mongo_db_related import (
+    RelatedCosmosMongoDBCollection,
+    RelatedCosmosMongoDBDatabase,
 )
 
 # =============================================================================
@@ -175,6 +176,7 @@ class CosmosMongoDBCollection(Asset):
     DBT_SOURCES: ClassVar[Any] = None
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MONGO_DB_DATABASE: ClassVar[Any] = None
     MONGO_DB_COLUMNS: ClassVar[Any] = None
@@ -504,6 +506,11 @@ class CosmosMongoDBCollection(Asset):
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -1052,6 +1059,11 @@ class CosmosMongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes)
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1193,6 +1205,7 @@ _COSMOS_MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "dbt_sources",
     "sql_dbt_sources",
     "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mongo_db_database",
     "mongo_db_columns",
@@ -1741,6 +1754,9 @@ CosmosMongoDBCollection.DBT_TESTS = RelationField("dbtTests")
 CosmosMongoDBCollection.DBT_SOURCES = RelationField("dbtSources")
 CosmosMongoDBCollection.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 CosmosMongoDBCollection.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+CosmosMongoDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 CosmosMongoDBCollection.MEANINGS = RelationField("meanings")
 CosmosMongoDBCollection.MONGO_DB_DATABASE = RelationField("mongoDBDatabase")
 CosmosMongoDBCollection.MONGO_DB_COLUMNS = RelationField("mongoDBColumns")

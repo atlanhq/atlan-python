@@ -8,13 +8,13 @@ AssetGrouping module exports.
 This module provides convenient imports for all AssetGrouping types and their Related variants.
 """
 
-from .asset_grouping import AssetGrouping
-from .asset_grouping_collection import AssetGroupingCollection
 from .asset_grouping_related import (
     RelatedAssetGrouping,
     RelatedAssetGroupingCollection,
     RelatedAssetGroupingStrategy,
 )
+from .asset_grouping import AssetGrouping
+from .asset_grouping_collection import AssetGroupingCollection
 from .asset_grouping_strategy import AssetGroupingStrategy
 
 __all__ = [
