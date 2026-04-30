@@ -18,10 +18,10 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import DbtJobRun
 
-from .core.dbt import Dbt
+from .core.semantic_measure import SemanticMeasure
 
 
-class DbtMeasure(Dbt):
+class DbtMeasure(SemanticMeasure):
     """Description"""
 
     type_name: str = Field(default="DbtMeasure", allow_mutation=False)
@@ -567,7 +567,7 @@ class DbtMeasure(Dbt):
             self.attributes = self.Attributes()
         self.attributes.semantic_model = semantic_model
 
-    class Attributes(Dbt.Attributes):
+    class Attributes(SemanticMeasure.Attributes):
         dbt_semantic_model_qualified_name: Optional[str] = Field(
             default=None, description=""
         )
