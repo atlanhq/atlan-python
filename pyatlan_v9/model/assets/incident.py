@@ -27,10 +27,10 @@ from pyatlan_v9.model.serde import Serde, get_serde
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
-from .asset_related import RelatedIncident
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable import (
@@ -57,7 +57,7 @@ class Incident(Referenceable):
     Base class for Incident assets.
     """
 
-    INCIDENT_SEVERITY: ClassVar[Any] = None
+    ASSET_SEVERITY: ClassVar[Any] = None
     NAME: ClassVar[Any] = None
     DISPLAY_NAME: ClassVar[Any] = None
     DESCRIPTION: ClassVar[Any] = None
@@ -197,6 +197,14 @@ class Incident(Referenceable):
     ASSET_SODA_CHECK_STATUSES: ClassVar[Any] = None
     ASSET_SODA_SOURCE_URL: ClassVar[Any] = None
     ASSET_ICON: ClassVar[Any] = None
+    ASSET_SUMMARY_V2_PROVIDER: ClassVar[Any] = None
+    ASSET_SUMMARY_V2: ClassVar[Any] = None
+    ASSET_SUMMARY_V2_FILTER_TOKENS: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_SCORE_VALUE: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_ENTITIES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_LATEST_SCORES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_AVG_SCORES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_MIN_SCORES: ClassVar[Any] = None
     ASSET_EXTERNAL_DQ_METADATA_DETAILS: ClassVar[Any] = None
     IS_PARTIAL: ClassVar[Any] = None
     IS_AI_GENERATED: ClassVar[Any] = None
@@ -261,6 +269,7 @@ class Incident(Referenceable):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -272,7 +281,9 @@ class Incident(Referenceable):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
 
-    incident_severity: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "Incident"
+
+    asset_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 
     name: Union[str, None, UnsetType] = UNSET
@@ -717,6 +728,40 @@ class Incident(Referenceable):
 
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
+
+    asset_summary_v2_provider: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Provider metadata for the summary stored in assetSummaryV2, as a string map. Required key: 'name' (e.g., 'bigid', 'collibra') — frontend uses this to pick the renderer and icon. Optional key: 'summary_source_url' — deep link to the asset's summary in the provider's UI, surfaced as a 'Show in {name}' button."""
+
+    asset_summary_v2: Union[str, None, UnsetType] = UNSET
+    """Provider-defined summary as a JSON-stringified object. Shape varies by provider — frontend reads assetSummaryV2Provider.name to know how to render. For BigID: { classifier_counts, attribute_counts, policy_violation_counts }."""
+
+    asset_summary_v2_filter_tokens: Union[List[str], None, UnsetType] = UNSET
+    """Wildcard-searchable tokens for side-panel summary filters. Format: '<dimension>|||<value>|||<count>' (extra parts allowed for richer dimensions). Dimensions are provider-defined; v2 dimension used by BigID: 'classification'."""
+
+    asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQScoreValue"
+    )
+    """Single asset-level DQ score (0–100). Populated natively by tools that provide one."""
+
+    asset_external_dq_test_entities: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQTestEntities"
+    )
+    """Ordered list of DQ test/scan names on this asset. Positionally aligned with the score metrics."""
+
+    asset_external_dq_test_latest_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestLatestScores")
+    )
+    """List of scores of the most recent run for each DQ test."""
+
+    asset_external_dq_test_avg_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestAvgScores")
+    )
+    """List of mean scores across all runs for each DQ test."""
+
+    asset_external_dq_test_min_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestMinScores")
+    )
+    """List of minimum (floor) score across all runs for each DQ test."""
 
     asset_external_dq_metadata_details: Union[
         Dict[str, Dict[str, Any]], None, UnsetType
@@ -986,6 +1031,11 @@ class Incident(Referenceable):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1022,66 +1072,6 @@ class Incident(Referenceable):
 
     def __post_init__(self) -> None:
         self.type_name = "Incident"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Incident instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Incident validation failed: {errors}")
-
-    def minimize(self) -> "Incident":
-        """
-        Return a minimal copy of this Incident with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Incident with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Incident instance with only the minimum required fields.
-        """
-        self.validate()
-        return Incident(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedIncident":
-        """
-        Create a :class:`RelatedIncident` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedIncident reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedIncident(guid=self.guid)
-        return RelatedIncident(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1138,7 +1128,7 @@ class Incident(Referenceable):
 class IncidentAttributes(ReferenceableAttributes):
     """Incident-specific attributes for nested API format."""
 
-    incident_severity: Union[str, None, UnsetType] = UNSET
+    asset_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 
     name: Union[str, None, UnsetType] = UNSET
@@ -1583,6 +1573,40 @@ class IncidentAttributes(ReferenceableAttributes):
 
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
+
+    asset_summary_v2_provider: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Provider metadata for the summary stored in assetSummaryV2, as a string map. Required key: 'name' (e.g., 'bigid', 'collibra') — frontend uses this to pick the renderer and icon. Optional key: 'summary_source_url' — deep link to the asset's summary in the provider's UI, surfaced as a 'Show in {name}' button."""
+
+    asset_summary_v2: Union[str, None, UnsetType] = UNSET
+    """Provider-defined summary as a JSON-stringified object. Shape varies by provider — frontend reads assetSummaryV2Provider.name to know how to render. For BigID: { classifier_counts, attribute_counts, policy_violation_counts }."""
+
+    asset_summary_v2_filter_tokens: Union[List[str], None, UnsetType] = UNSET
+    """Wildcard-searchable tokens for side-panel summary filters. Format: '<dimension>|||<value>|||<count>' (extra parts allowed for richer dimensions). Dimensions are provider-defined; v2 dimension used by BigID: 'classification'."""
+
+    asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQScoreValue"
+    )
+    """Single asset-level DQ score (0–100). Populated natively by tools that provide one."""
+
+    asset_external_dq_test_entities: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQTestEntities"
+    )
+    """Ordered list of DQ test/scan names on this asset. Positionally aligned with the score metrics."""
+
+    asset_external_dq_test_latest_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestLatestScores")
+    )
+    """List of scores of the most recent run for each DQ test."""
+
+    asset_external_dq_test_avg_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestAvgScores")
+    )
+    """List of mean scores across all runs for each DQ test."""
+
+    asset_external_dq_test_min_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestMinScores")
+    )
+    """List of minimum (floor) score across all runs for each DQ test."""
 
     asset_external_dq_metadata_details: Union[
         Dict[str, Dict[str, Any]], None, UnsetType
@@ -1856,6 +1880,11 @@ class IncidentRelationshipAttributes(ReferenceableRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1920,6 +1949,7 @@ _INCIDENT_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1936,7 +1966,7 @@ _INCIDENT_REL_FIELDS: List[str] = [
 def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
     """Populate Incident-specific attributes on the attrs struct."""
     _populate_referenceable_attrs(attrs, obj)
-    attrs.incident_severity = obj.incident_severity
+    attrs.asset_severity = obj.asset_severity
     attrs.name = obj.name
     attrs.display_name = obj.display_name
     attrs.description = obj.description
@@ -2114,6 +2144,16 @@ def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
     attrs.asset_soda_check_statuses = obj.asset_soda_check_statuses
     attrs.asset_soda_source_url = obj.asset_soda_source_url
     attrs.asset_icon = obj.asset_icon
+    attrs.asset_summary_v2_provider = obj.asset_summary_v2_provider
+    attrs.asset_summary_v2 = obj.asset_summary_v2
+    attrs.asset_summary_v2_filter_tokens = obj.asset_summary_v2_filter_tokens
+    attrs.asset_external_dq_score_value = obj.asset_external_dq_score_value
+    attrs.asset_external_dq_test_entities = obj.asset_external_dq_test_entities
+    attrs.asset_external_dq_test_latest_scores = (
+        obj.asset_external_dq_test_latest_scores
+    )
+    attrs.asset_external_dq_test_avg_scores = obj.asset_external_dq_test_avg_scores
+    attrs.asset_external_dq_test_min_scores = obj.asset_external_dq_test_min_scores
     attrs.asset_external_dq_metadata_details = obj.asset_external_dq_metadata_details
     attrs.is_partial = obj.is_partial
     attrs.is_ai_generated = obj.is_ai_generated
@@ -2187,7 +2227,7 @@ def _populate_incident_attrs(attrs: IncidentAttributes, obj: Incident) -> None:
 def _extract_incident_attrs(attrs: IncidentAttributes) -> dict:
     """Extract all Incident attributes from the attrs struct into a flat dict."""
     result = _extract_referenceable_attrs(attrs)
-    result["incident_severity"] = attrs.incident_severity
+    result["asset_severity"] = attrs.asset_severity
     result["name"] = attrs.name
     result["display_name"] = attrs.display_name
     result["description"] = attrs.description
@@ -2389,6 +2429,20 @@ def _extract_incident_attrs(attrs: IncidentAttributes) -> dict:
     result["asset_soda_check_statuses"] = attrs.asset_soda_check_statuses
     result["asset_soda_source_url"] = attrs.asset_soda_source_url
     result["asset_icon"] = attrs.asset_icon
+    result["asset_summary_v2_provider"] = attrs.asset_summary_v2_provider
+    result["asset_summary_v2"] = attrs.asset_summary_v2
+    result["asset_summary_v2_filter_tokens"] = attrs.asset_summary_v2_filter_tokens
+    result["asset_external_dq_score_value"] = attrs.asset_external_dq_score_value
+    result["asset_external_dq_test_entities"] = attrs.asset_external_dq_test_entities
+    result["asset_external_dq_test_latest_scores"] = (
+        attrs.asset_external_dq_test_latest_scores
+    )
+    result["asset_external_dq_test_avg_scores"] = (
+        attrs.asset_external_dq_test_avg_scores
+    )
+    result["asset_external_dq_test_min_scores"] = (
+        attrs.asset_external_dq_test_min_scores
+    )
     result["asset_external_dq_metadata_details"] = (
         attrs.asset_external_dq_metadata_details
     )
@@ -2503,9 +2557,6 @@ def _incident_to_nested(incident: Incident) -> IncidentNested:
         is_incomplete=incident.is_incomplete,
         provenance_type=incident.provenance_type,
         home_id=incident.home_id,
-        depth=incident.depth,
-        immediate_upstream=incident.immediate_upstream,
-        immediate_downstream=incident.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -2537,6 +2588,7 @@ def _incident_from_nested(nested: IncidentNested) -> Incident:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -2545,9 +2597,6 @@ def _incident_from_nested(nested: IncidentNested) -> Incident:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_incident_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -2578,7 +2627,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-Incident.INCIDENT_SEVERITY = KeywordField("incidentSeverity", "incidentSeverity")
+Incident.ASSET_SEVERITY = KeywordField("assetSeverity", "assetSeverity")
 Incident.NAME = KeywordField("name", "name")
 Incident.DISPLAY_NAME = KeywordField("displayName", "displayName")
 Incident.DESCRIPTION = KeywordField("description", "description")
@@ -2912,6 +2961,28 @@ Incident.ASSET_SODA_SOURCE_URL = KeywordField(
     "assetSodaSourceURL", "assetSodaSourceURL"
 )
 Incident.ASSET_ICON = KeywordField("assetIcon", "assetIcon")
+Incident.ASSET_SUMMARY_V2_PROVIDER = KeywordField(
+    "assetSummaryV2Provider", "assetSummaryV2Provider"
+)
+Incident.ASSET_SUMMARY_V2 = KeywordField("assetSummaryV2", "assetSummaryV2")
+Incident.ASSET_SUMMARY_V2_FILTER_TOKENS = KeywordField(
+    "assetSummaryV2FilterTokens", "assetSummaryV2FilterTokens"
+)
+Incident.ASSET_EXTERNAL_DQ_SCORE_VALUE = NumericField(
+    "assetExternalDQScoreValue", "assetExternalDQScoreValue"
+)
+Incident.ASSET_EXTERNAL_DQ_TEST_ENTITIES = KeywordField(
+    "assetExternalDQTestEntities", "assetExternalDQTestEntities"
+)
+Incident.ASSET_EXTERNAL_DQ_TEST_LATEST_SCORES = NumericField(
+    "assetExternalDQTestLatestScores", "assetExternalDQTestLatestScores"
+)
+Incident.ASSET_EXTERNAL_DQ_TEST_AVG_SCORES = NumericField(
+    "assetExternalDQTestAvgScores", "assetExternalDQTestAvgScores"
+)
+Incident.ASSET_EXTERNAL_DQ_TEST_MIN_SCORES = NumericField(
+    "assetExternalDQTestMinScores", "assetExternalDQTestMinScores"
+)
 Incident.ASSET_EXTERNAL_DQ_METADATA_DETAILS = KeywordField(
     "assetExternalDQMetadataDetails", "assetExternalDQMetadataDetails"
 )
@@ -3061,6 +3132,9 @@ Incident.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Incident.METRICS = RelationField("metrics")
 Incident.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Incident.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+Incident.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Incident.MEANINGS = RelationField("meanings")
 Incident.MC_MONITORS = RelationField("mcMonitors")
 Incident.MC_INCIDENTS = RelationField("mcIncidents")

@@ -42,6 +42,7 @@ from .asset_related import RelatedAsset
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -89,6 +90,7 @@ class MCIncident(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITOR: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -107,6 +109,8 @@ class MCIncident(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "MCIncident"
 
     mc_incident_id: Union[str, None, UnsetType] = UNSET
     """Identifier of this incident, from Monte Carlo."""
@@ -187,6 +191,11 @@ class MCIncident(Asset):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -253,72 +262,6 @@ class MCIncident(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this MCIncident instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.mc_monitor is UNSET:
-                errors.append("mc_monitor is required for creation")
-        if errors:
-            raise ValueError(f"MCIncident validation failed: {errors}")
-
-    def minimize(self) -> "MCIncident":
-        """
-        Return a minimal copy of this MCIncident with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new MCIncident with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new MCIncident instance with only the minimum required fields.
-        """
-        self.validate()
-        return MCIncident(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedMCIncident":
-        """
-        Create a :class:`RelatedMCIncident` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedMCIncident reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedMCIncident(guid=self.guid)
-        return RelatedMCIncident(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -458,6 +401,11 @@ class MCIncidentRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -550,6 +498,7 @@ _MC_INCIDENT_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitor",
     "mc_monitors",
@@ -637,9 +586,6 @@ def _mc_incident_to_nested(mc_incident: MCIncident) -> MCIncidentNested:
         is_incomplete=mc_incident.is_incomplete,
         provenance_type=mc_incident.provenance_type,
         home_id=mc_incident.home_id,
-        depth=mc_incident.depth,
-        immediate_upstream=mc_incident.immediate_upstream,
-        immediate_downstream=mc_incident.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -671,6 +617,7 @@ def _mc_incident_from_nested(nested: MCIncidentNested) -> MCIncident:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -679,9 +626,6 @@ def _mc_incident_from_nested(nested: MCIncidentNested) -> MCIncident:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_mc_incident_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -747,6 +691,9 @@ MCIncident.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribu
 MCIncident.METRICS = RelationField("metrics")
 MCIncident.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MCIncident.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+MCIncident.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 MCIncident.MEANINGS = RelationField("meanings")
 MCIncident.MC_MONITOR = RelationField("mcMonitor")
 MCIncident.MC_MONITORS = RelationField("mcMonitors")
