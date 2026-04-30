@@ -42,6 +42,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricActivity, RelatedFabricDataPipeline
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -86,6 +87,7 @@ class FabricActivity(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     FABRIC_DATA_PIPELINE: ClassVar[Any] = None
     FABRIC_PROCESS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -172,6 +174,11 @@ class FabricActivity(Asset):
 
     fabric_process: Union[RelatedProcess, None, UnsetType] = UNSET
     """Process containing the Fabric activity."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -435,6 +442,11 @@ class FabricActivityRelationshipAttributes(AssetRelationshipAttributes):
     fabric_process: Union[RelatedProcess, None, UnsetType] = UNSET
     """Process containing the Fabric activity."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -525,6 +537,7 @@ _FABRIC_ACTIVITY_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "fabric_data_pipeline",
     "fabric_process",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -715,6 +728,9 @@ FabricActivity.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 FabricActivity.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 FabricActivity.FABRIC_DATA_PIPELINE = RelationField("fabricDataPipeline")
 FabricActivity.FABRIC_PROCESS = RelationField("fabricProcess")
+FabricActivity.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FabricActivity.MEANINGS = RelationField("meanings")
 FabricActivity.MC_MONITORS = RelationField("mcMonitors")
 FabricActivity.MC_INCIDENTS = RelationField("mcIncidents")

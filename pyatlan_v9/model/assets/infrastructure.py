@@ -31,6 +31,7 @@ from .asset_related import RelatedInfrastructure
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable import (
@@ -196,6 +197,14 @@ class Infrastructure(Referenceable):
     ASSET_SODA_CHECK_STATUSES: ClassVar[Any] = None
     ASSET_SODA_SOURCE_URL: ClassVar[Any] = None
     ASSET_ICON: ClassVar[Any] = None
+    ASSET_SUMMARY_V2_PROVIDER: ClassVar[Any] = None
+    ASSET_SUMMARY_V2: ClassVar[Any] = None
+    ASSET_SUMMARY_V2_FILTER_TOKENS: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_SCORE_VALUE: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_ENTITIES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_LATEST_SCORES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_AVG_SCORES: ClassVar[Any] = None
+    ASSET_EXTERNAL_DQ_TEST_MIN_SCORES: ClassVar[Any] = None
     ASSET_EXTERNAL_DQ_METADATA_DETAILS: ClassVar[Any] = None
     IS_PARTIAL: ClassVar[Any] = None
     IS_AI_GENERATED: ClassVar[Any] = None
@@ -260,6 +269,7 @@ class Infrastructure(Referenceable):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -714,6 +724,40 @@ class Infrastructure(Referenceable):
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
+    asset_summary_v2_provider: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Provider metadata for the summary stored in assetSummaryV2, as a string map. Required key: 'name' (e.g., 'bigid', 'collibra') — frontend uses this to pick the renderer and icon. Optional key: 'summary_source_url' — deep link to the asset's summary in the provider's UI, surfaced as a 'Show in {name}' button."""
+
+    asset_summary_v2: Union[str, None, UnsetType] = UNSET
+    """Provider-defined summary as a JSON-stringified object. Shape varies by provider — frontend reads assetSummaryV2Provider.name to know how to render. For BigID: { classifier_counts, attribute_counts, policy_violation_counts }."""
+
+    asset_summary_v2_filter_tokens: Union[List[str], None, UnsetType] = UNSET
+    """Wildcard-searchable tokens for side-panel summary filters. Format: '<dimension>|||<value>|||<count>' (extra parts allowed for richer dimensions). Dimensions are provider-defined; v2 dimension used by BigID: 'classification'."""
+
+    asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQScoreValue"
+    )
+    """Single asset-level DQ score (0–100). Populated natively by tools that provide one."""
+
+    asset_external_dq_test_entities: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQTestEntities"
+    )
+    """Ordered list of DQ test/scan names on this asset. Positionally aligned with the score metrics."""
+
+    asset_external_dq_test_latest_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestLatestScores")
+    )
+    """List of scores of the most recent run for each DQ test."""
+
+    asset_external_dq_test_avg_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestAvgScores")
+    )
+    """List of mean scores across all runs for each DQ test."""
+
+    asset_external_dq_test_min_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestMinScores")
+    )
+    """List of minimum (floor) score across all runs for each DQ test."""
+
     asset_external_dq_metadata_details: Union[
         Dict[str, Dict[str, Any]], None, UnsetType
     ] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
@@ -981,6 +1025,11 @@ class Infrastructure(Referenceable):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -1577,6 +1626,40 @@ class InfrastructureAttributes(ReferenceableAttributes):
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
+    asset_summary_v2_provider: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Provider metadata for the summary stored in assetSummaryV2, as a string map. Required key: 'name' (e.g., 'bigid', 'collibra') — frontend uses this to pick the renderer and icon. Optional key: 'summary_source_url' — deep link to the asset's summary in the provider's UI, surfaced as a 'Show in {name}' button."""
+
+    asset_summary_v2: Union[str, None, UnsetType] = UNSET
+    """Provider-defined summary as a JSON-stringified object. Shape varies by provider — frontend reads assetSummaryV2Provider.name to know how to render. For BigID: { classifier_counts, attribute_counts, policy_violation_counts }."""
+
+    asset_summary_v2_filter_tokens: Union[List[str], None, UnsetType] = UNSET
+    """Wildcard-searchable tokens for side-panel summary filters. Format: '<dimension>|||<value>|||<count>' (extra parts allowed for richer dimensions). Dimensions are provider-defined; v2 dimension used by BigID: 'classification'."""
+
+    asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQScoreValue"
+    )
+    """Single asset-level DQ score (0–100). Populated natively by tools that provide one."""
+
+    asset_external_dq_test_entities: Union[List[str], None, UnsetType] = msgspec.field(
+        default=UNSET, name="assetExternalDQTestEntities"
+    )
+    """Ordered list of DQ test/scan names on this asset. Positionally aligned with the score metrics."""
+
+    asset_external_dq_test_latest_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestLatestScores")
+    )
+    """List of scores of the most recent run for each DQ test."""
+
+    asset_external_dq_test_avg_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestAvgScores")
+    )
+    """List of mean scores across all runs for each DQ test."""
+
+    asset_external_dq_test_min_scores: Union[List[float], None, UnsetType] = (
+        msgspec.field(default=UNSET, name="assetExternalDQTestMinScores")
+    )
+    """List of minimum (floor) score across all runs for each DQ test."""
+
     asset_external_dq_metadata_details: Union[
         Dict[str, Dict[str, Any]], None, UnsetType
     ] = msgspec.field(default=UNSET, name="assetExternalDQMetadataDetails")
@@ -1849,6 +1932,11 @@ class InfrastructureRelationshipAttributes(ReferenceableRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1915,6 +2003,7 @@ _INFRASTRUCTURE_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -2110,6 +2199,16 @@ def _populate_infrastructure_attrs(
     attrs.asset_soda_check_statuses = obj.asset_soda_check_statuses
     attrs.asset_soda_source_url = obj.asset_soda_source_url
     attrs.asset_icon = obj.asset_icon
+    attrs.asset_summary_v2_provider = obj.asset_summary_v2_provider
+    attrs.asset_summary_v2 = obj.asset_summary_v2
+    attrs.asset_summary_v2_filter_tokens = obj.asset_summary_v2_filter_tokens
+    attrs.asset_external_dq_score_value = obj.asset_external_dq_score_value
+    attrs.asset_external_dq_test_entities = obj.asset_external_dq_test_entities
+    attrs.asset_external_dq_test_latest_scores = (
+        obj.asset_external_dq_test_latest_scores
+    )
+    attrs.asset_external_dq_test_avg_scores = obj.asset_external_dq_test_avg_scores
+    attrs.asset_external_dq_test_min_scores = obj.asset_external_dq_test_min_scores
     attrs.asset_external_dq_metadata_details = obj.asset_external_dq_metadata_details
     attrs.is_partial = obj.is_partial
     attrs.is_ai_generated = obj.is_ai_generated
@@ -2384,6 +2483,20 @@ def _extract_infrastructure_attrs(attrs: InfrastructureAttributes) -> dict:
     result["asset_soda_check_statuses"] = attrs.asset_soda_check_statuses
     result["asset_soda_source_url"] = attrs.asset_soda_source_url
     result["asset_icon"] = attrs.asset_icon
+    result["asset_summary_v2_provider"] = attrs.asset_summary_v2_provider
+    result["asset_summary_v2"] = attrs.asset_summary_v2
+    result["asset_summary_v2_filter_tokens"] = attrs.asset_summary_v2_filter_tokens
+    result["asset_external_dq_score_value"] = attrs.asset_external_dq_score_value
+    result["asset_external_dq_test_entities"] = attrs.asset_external_dq_test_entities
+    result["asset_external_dq_test_latest_scores"] = (
+        attrs.asset_external_dq_test_latest_scores
+    )
+    result["asset_external_dq_test_avg_scores"] = (
+        attrs.asset_external_dq_test_avg_scores
+    )
+    result["asset_external_dq_test_min_scores"] = (
+        attrs.asset_external_dq_test_min_scores
+    )
     result["asset_external_dq_metadata_details"] = (
         attrs.asset_external_dq_metadata_details
     )
@@ -2924,6 +3037,28 @@ Infrastructure.ASSET_SODA_SOURCE_URL = KeywordField(
     "assetSodaSourceURL", "assetSodaSourceURL"
 )
 Infrastructure.ASSET_ICON = KeywordField("assetIcon", "assetIcon")
+Infrastructure.ASSET_SUMMARY_V2_PROVIDER = KeywordField(
+    "assetSummaryV2Provider", "assetSummaryV2Provider"
+)
+Infrastructure.ASSET_SUMMARY_V2 = KeywordField("assetSummaryV2", "assetSummaryV2")
+Infrastructure.ASSET_SUMMARY_V2_FILTER_TOKENS = KeywordField(
+    "assetSummaryV2FilterTokens", "assetSummaryV2FilterTokens"
+)
+Infrastructure.ASSET_EXTERNAL_DQ_SCORE_VALUE = NumericField(
+    "assetExternalDQScoreValue", "assetExternalDQScoreValue"
+)
+Infrastructure.ASSET_EXTERNAL_DQ_TEST_ENTITIES = KeywordField(
+    "assetExternalDQTestEntities", "assetExternalDQTestEntities"
+)
+Infrastructure.ASSET_EXTERNAL_DQ_TEST_LATEST_SCORES = NumericField(
+    "assetExternalDQTestLatestScores", "assetExternalDQTestLatestScores"
+)
+Infrastructure.ASSET_EXTERNAL_DQ_TEST_AVG_SCORES = NumericField(
+    "assetExternalDQTestAvgScores", "assetExternalDQTestAvgScores"
+)
+Infrastructure.ASSET_EXTERNAL_DQ_TEST_MIN_SCORES = NumericField(
+    "assetExternalDQTestMinScores", "assetExternalDQTestMinScores"
+)
 Infrastructure.ASSET_EXTERNAL_DQ_METADATA_DETAILS = KeywordField(
     "assetExternalDQMetadataDetails", "assetExternalDQMetadataDetails"
 )
@@ -3083,6 +3218,9 @@ Infrastructure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Infrastructure.METRICS = RelationField("metrics")
 Infrastructure.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Infrastructure.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+Infrastructure.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Infrastructure.MEANINGS = RelationField("meanings")
 Infrastructure.MC_MONITORS = RelationField("mcMonitors")
 Infrastructure.MC_INCIDENTS = RelationField("mcIncidents")

@@ -41,6 +41,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .micro_strategy_related import (
     RelatedMicroStrategyDossier,
@@ -96,6 +97,7 @@ class MicroStrategyVisualization(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MICRO_STRATEGY_PROJECT: ClassVar[Any] = None
     MICRO_STRATEGY_DOSSIER: ClassVar[Any] = None
@@ -202,6 +204,11 @@ class MicroStrategyVisualization(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -493,6 +500,11 @@ class MicroStrategyVisualizationRelationshipAttributes(AssetRelationshipAttribut
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -587,6 +599,7 @@ _MICRO_STRATEGY_VISUALIZATION_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "micro_strategy_project",
     "micro_strategy_dossier",
@@ -868,6 +881,9 @@ MicroStrategyVisualization.METRICS = RelationField("metrics")
 MicroStrategyVisualization.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MicroStrategyVisualization.DQ_REFERENCE_DATASET_RULES = RelationField(
     "dqReferenceDatasetRules"
+)
+MicroStrategyVisualization.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
 )
 MicroStrategyVisualization.MEANINGS = RelationField("meanings")
 MicroStrategyVisualization.MICRO_STRATEGY_PROJECT = RelationField(

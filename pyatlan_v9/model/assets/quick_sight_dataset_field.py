@@ -39,8 +39,10 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -69,11 +71,14 @@ class QuickSightDatasetField(Asset):
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
+    CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST: ClassVar[Any] = None
+    DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     INPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
     MODEL_IMPLEMENTED_ENTITIES: ClassVar[Any] = None
@@ -81,6 +86,7 @@ class QuickSightDatasetField(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -114,6 +120,9 @@ class QuickSightDatasetField(Asset):
     quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
     """Name of the QuickSight sheet."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -128,6 +137,12 @@ class QuickSightDatasetField(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -153,6 +168,11 @@ class QuickSightDatasetField(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -198,7 +218,7 @@ class QuickSightDatasetField(Asset):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -419,6 +439,9 @@ class QuickSightDatasetFieldAttributes(AssetAttributes):
     quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
     """Name of the QuickSight sheet."""
 
+    catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
+    """Unique identifier of the dataset this asset belongs to."""
+
 
 class QuickSightDatasetFieldRelationshipAttributes(AssetRelationshipAttributes):
     """QuickSightDatasetField-specific relationship attributes for nested API format."""
@@ -437,6 +460,12 @@ class QuickSightDatasetFieldRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest version of the data contract (in any status) for this asset."""
+
+    data_contract_latest_certified: Union[RelatedDataContract, None, UnsetType] = UNSET
+    """Latest certified version of the data contract for this asset."""
 
     output_port_data_products: Union[List[RelatedDataProduct], None, UnsetType] = UNSET
     """Data products for which this asset is an output port."""
@@ -462,6 +491,11 @@ class QuickSightDatasetFieldRelationshipAttributes(AssetRelationshipAttributes):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -507,7 +541,7 @@ class QuickSightDatasetFieldRelationshipAttributes(AssetRelationshipAttributes):
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
-    """"""
+    """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
@@ -545,6 +579,8 @@ _QUICK_SIGHT_DATASET_FIELD_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "data_contract_latest",
+    "data_contract_latest_certified",
     "output_port_data_products",
     "input_port_data_products",
     "model_implemented_entities",
@@ -552,6 +588,7 @@ _QUICK_SIGHT_DATASET_FIELD_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -582,6 +619,7 @@ def _populate_quick_sight_dataset_field_attrs(
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
+    attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_quick_sight_dataset_field_attrs(
@@ -596,6 +634,7 @@ def _extract_quick_sight_dataset_field_attrs(
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
+    result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
 
@@ -730,6 +769,9 @@ QuickSightDatasetField.QUICK_SIGHT_SHEET_ID = KeywordField(
 QuickSightDatasetField.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
     "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
 )
+QuickSightDatasetField.CATALOG_DATASET_GUID = KeywordField(
+    "catalogDatasetGuid", "catalogDatasetGuid"
+)
 QuickSightDatasetField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 QuickSightDatasetField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
     "outputFromAirflowTasks"
@@ -737,6 +779,10 @@ QuickSightDatasetField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 QuickSightDatasetField.ANOMALO_CHECKS = RelationField("anomaloChecks")
 QuickSightDatasetField.APPLICATION = RelationField("application")
 QuickSightDatasetField.APPLICATION_FIELD = RelationField("applicationField")
+QuickSightDatasetField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+QuickSightDatasetField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+    "dataContractLatestCertified"
+)
 QuickSightDatasetField.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
     "outputPortDataProducts"
 )
@@ -751,6 +797,9 @@ QuickSightDatasetField.METRICS = RelationField("metrics")
 QuickSightDatasetField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 QuickSightDatasetField.DQ_REFERENCE_DATASET_RULES = RelationField(
     "dqReferenceDatasetRules"
+)
+QuickSightDatasetField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
 )
 QuickSightDatasetField.MEANINGS = RelationField("meanings")
 QuickSightDatasetField.MC_MONITORS = RelationField("mcMonitors")

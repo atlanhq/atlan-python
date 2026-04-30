@@ -42,6 +42,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .domo_related import RelatedDomoCard, RelatedDomoDashboard, RelatedDomoDataset
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -86,6 +87,7 @@ class DomoCard(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     DOMO_DASHBOARDS: ClassVar[Any] = None
     DOMO_DATASET: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -172,6 +174,11 @@ class DomoCard(Asset):
 
     domo_dataset: Union[RelatedDomoDataset, None, UnsetType] = UNSET
     """Domo Dataset that contains this Domo Card."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -429,6 +436,11 @@ class DomoCardRelationshipAttributes(AssetRelationshipAttributes):
     domo_dataset: Union[RelatedDomoDataset, None, UnsetType] = UNSET
     """Domo Dataset that contains this Domo Card."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -517,6 +529,7 @@ _DOMO_CARD_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "domo_dashboards",
     "domo_dataset",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -687,6 +700,9 @@ DomoCard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DomoCard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 DomoCard.DOMO_DASHBOARDS = RelationField("domoDashboards")
 DomoCard.DOMO_DATASET = RelationField("domoDataset")
+DomoCard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DomoCard.MEANINGS = RelationField("meanings")
 DomoCard.MC_MONITORS = RelationField("mcMonitors")
 DomoCard.MC_INCIDENTS = RelationField("mcIncidents")

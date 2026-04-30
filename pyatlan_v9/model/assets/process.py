@@ -49,6 +49,7 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
 from .flow_related import RelatedFlowControlOperation
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .matillion_related import RelatedMatillionComponent
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -78,6 +79,7 @@ class Process(Asset):
     AST: ClassVar[Any] = None
     ADDITIONAL_ETL_CONTEXT: ClassVar[Any] = None
     AI_DATASET_TYPE: ClassVar[Any] = None
+    IS_PASS_THROUGH: ClassVar[Any] = None
     ADF_ACTIVITY: ClassVar[Any] = None
     AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -93,6 +95,7 @@ class Process(Asset):
     FABRIC_ACTIVITIES: ClassVar[Any] = None
     FIVETRAN_CONNECTOR: ClassVar[Any] = None
     FLOW_ORCHESTRATED_BY: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MATILLION_COMPONENT: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -129,6 +132,9 @@ class Process(Asset):
 
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
+
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
 
     adf_activity: Union[RelatedAdfActivity, None, UnsetType] = UNSET
     """ADF Activity that is associated with this lineage process."""
@@ -176,6 +182,11 @@ class Process(Asset):
 
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -492,6 +503,9 @@ class ProcessAttributes(AssetAttributes):
     ai_dataset_type: Union[str, None, UnsetType] = UNSET
     """Dataset type for AI Model - dataset process."""
 
+    is_pass_through: Union[bool, None, UnsetType] = UNSET
+    """Whether this process represents a pass-through data flow where data is moved without transformation, as opposed to a flow where data is actively modified."""
+
 
 class ProcessRelationshipAttributes(AssetRelationshipAttributes):
     """Process-specific relationship attributes for nested API format."""
@@ -542,6 +556,11 @@ class ProcessRelationshipAttributes(AssetRelationshipAttributes):
 
     flow_orchestrated_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Orchestrated control operation that ran these data flows (process)."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -638,6 +657,7 @@ _PROCESS_REL_FIELDS: List[str] = [
     "fabric_activities",
     "fivetran_connector",
     "flow_orchestrated_by",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "matillion_component",
     "mc_monitors",
@@ -670,6 +690,7 @@ def _populate_process_attrs(attrs: ProcessAttributes, obj: Process) -> None:
     attrs.ast = obj.ast
     attrs.additional_etl_context = obj.additional_etl_context
     attrs.ai_dataset_type = obj.ai_dataset_type
+    attrs.is_pass_through = obj.is_pass_through
 
 
 def _extract_process_attrs(attrs: ProcessAttributes) -> dict:
@@ -683,6 +704,7 @@ def _extract_process_attrs(attrs: ProcessAttributes) -> dict:
     result["ast"] = attrs.ast
     result["additional_etl_context"] = attrs.additional_etl_context
     result["ai_dataset_type"] = attrs.ai_dataset_type
+    result["is_pass_through"] = attrs.is_pass_through
     return result
 
 
@@ -782,7 +804,11 @@ def _process_from_nested_bytes(data: bytes, serde: Serde) -> Process:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
+    KeywordField,
+    RelationField,
+)
 
 Process.CODE = KeywordField("code", "code")
 Process.SQL = KeywordField("sql", "sql")
@@ -794,6 +820,7 @@ Process.ADDITIONAL_ETL_CONTEXT = KeywordField(
     "additionalEtlContext", "additionalEtlContext"
 )
 Process.AI_DATASET_TYPE = KeywordField("aiDatasetType", "aiDatasetType")
+Process.IS_PASS_THROUGH = BooleanField("isPassThrough", "isPassThrough")
 Process.ADF_ACTIVITY = RelationField("adfActivity")
 Process.AIRFLOW_TASKS = RelationField("airflowTasks")
 Process.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -809,6 +836,9 @@ Process.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 Process.FABRIC_ACTIVITIES = RelationField("fabricActivities")
 Process.FIVETRAN_CONNECTOR = RelationField("fivetranConnector")
 Process.FLOW_ORCHESTRATED_BY = RelationField("flowOrchestratedBy")
+Process.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Process.MEANINGS = RelationField("meanings")
 Process.MATILLION_COMPONENT = RelationField("matillionComponent")
 Process.MC_MONITORS = RelationField("mcMonitors")

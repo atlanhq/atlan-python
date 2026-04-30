@@ -108,6 +108,9 @@ class RelatedFile(RelatedResource):
     file_path: Union[str, None, UnsetType] = UNSET
     """URL giving the online location where the file can be accessed."""
 
+    resource_file_size: Union[int, None, UnsetType] = UNSET
+    """Size of the file in bytes."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "File"

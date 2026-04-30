@@ -48,6 +48,7 @@ from .dbt_related import (
     RelatedDbtTest,
 )
 from .fabric_related import RelatedFabricWorkspace
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .iceberg_related import RelatedIcebergCatalog
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -131,6 +132,7 @@ class IcebergCatalog(Asset):
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
     FABRIC_WORKSPACE: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -322,6 +324,11 @@ class IcebergCatalog(Asset):
 
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the database."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -690,6 +697,11 @@ class IcebergCatalogRelationshipAttributes(AssetRelationshipAttributes):
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the database."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -808,6 +820,7 @@ _ICEBERG_CATALOG_REL_FIELDS: List[str] = [
     "sql_dbt_sources",
     "dbt_seed_assets",
     "fabric_workspace",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1137,6 +1150,9 @@ IcebergCatalog.DBT_SOURCES = RelationField("dbtSources")
 IcebergCatalog.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 IcebergCatalog.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 IcebergCatalog.FABRIC_WORKSPACE = RelationField("fabricWorkspace")
+IcebergCatalog.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 IcebergCatalog.MEANINGS = RelationField("meanings")
 IcebergCatalog.MC_MONITORS = RelationField("mcMonitors")
 IcebergCatalog.MC_INCIDENTS = RelationField("mcIncidents")

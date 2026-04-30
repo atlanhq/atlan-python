@@ -41,6 +41,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -83,6 +84,7 @@ class TableauDatasource(Asset):
     UPSTREAM_TABLES: ClassVar[Any] = None
     UPSTREAM_DATASOURCES: ClassVar[Any] = None
     TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES: ClassVar[Any] = None
+    TABLEAU_SOURCE_READ_COUNTS: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -98,6 +100,7 @@ class TableauDatasource(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -160,6 +163,9 @@ class TableauDatasource(Asset):
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
 
+    tableau_source_read_counts: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Read/view counts on this asset bucketed by time window, as reported by Tableau's Content Exploration API."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -208,6 +214,11 @@ class TableauDatasource(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -450,6 +461,9 @@ class TableauDatasourceAttributes(AssetAttributes):
     tableau_project_hierarchy_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Array of qualified names representing the project hierarchy for this Tableau asset."""
 
+    tableau_source_read_counts: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """Read/view counts on this asset bucketed by time window, as reported by Tableau's Content Exploration API."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -502,6 +516,11 @@ class TableauDatasourceRelationshipAttributes(AssetRelationshipAttributes):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -600,6 +619,7 @@ _TABLEAU_DATASOURCE_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -643,6 +663,7 @@ def _populate_tableau_datasource_attrs(
     attrs.tableau_project_hierarchy_qualified_names = (
         obj.tableau_project_hierarchy_qualified_names
     )
+    attrs.tableau_source_read_counts = obj.tableau_source_read_counts
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -665,6 +686,7 @@ def _extract_tableau_datasource_attrs(attrs: TableauDatasourceAttributes) -> dic
     result["tableau_project_hierarchy_qualified_names"] = (
         attrs.tableau_project_hierarchy_qualified_names
     )
+    result["tableau_source_read_counts"] = attrs.tableau_source_read_counts
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -817,6 +839,9 @@ TableauDatasource.UPSTREAM_DATASOURCES = KeywordField(
 TableauDatasource.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
     "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
 )
+TableauDatasource.TABLEAU_SOURCE_READ_COUNTS = KeywordField(
+    "tableauSourceReadCounts", "tableauSourceReadCounts"
+)
 TableauDatasource.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -838,6 +863,9 @@ TableauDatasource.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
 TableauDatasource.METRICS = RelationField("metrics")
 TableauDatasource.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 TableauDatasource.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+TableauDatasource.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 TableauDatasource.MEANINGS = RelationField("meanings")
 TableauDatasource.MC_MONITORS = RelationField("mcMonitors")
 TableauDatasource.MC_INCIDENTS = RelationField("mcIncidents")

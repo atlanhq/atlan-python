@@ -53,6 +53,7 @@ from .dynamo_db_related import (
     RelatedDynamoDBLocalSecondaryIndex,
     RelatedDynamoDBTable,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -170,6 +171,7 @@ class DynamoDBTable(Asset):
     DYNAMO_DB_GLOBAL_SECONDARY_INDEXES: ClassVar[Any] = None
     DYNAMO_DB_LOCAL_SECONDARY_INDEXES: ClassVar[Any] = None
     DYNAMO_DB_COLUMNS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -475,6 +477,11 @@ class DynamoDBTable(Asset):
         msgspec.field(default=UNSET, name="dynamoDBColumns")
     )
     """Columns (attributes) that exist within this DynamoDB table."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -967,6 +974,11 @@ class DynamoDBTableRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Columns (attributes) that exist within this DynamoDB table."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1102,6 +1114,7 @@ _DYNAMO_DB_TABLE_REL_FIELDS: List[str] = [
     "dynamo_db_global_secondary_indexes",
     "dynamo_db_local_secondary_indexes",
     "dynamo_db_columns",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1543,6 +1556,9 @@ DynamoDBTable.DYNAMO_DB_LOCAL_SECONDARY_INDEXES = RelationField(
     "dynamoDBLocalSecondaryIndexes"
 )
 DynamoDBTable.DYNAMO_DB_COLUMNS = RelationField("dynamoDBColumns")
+DynamoDBTable.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DynamoDBTable.MEANINGS = RelationField("meanings")
 DynamoDBTable.MC_MONITORS = RelationField("mcMonitors")
 DynamoDBTable.MC_INCIDENTS = RelationField("mcIncidents")

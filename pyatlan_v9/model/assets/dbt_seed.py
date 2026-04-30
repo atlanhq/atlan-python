@@ -42,6 +42,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .dbt_related import RelatedDbtModelColumn, RelatedDbtSeed
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -103,6 +104,7 @@ class DbtSeed(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     DBT_SEED_SQL_ASSETS: ClassVar[Any] = None
     DBT_MODEL_COLUMNS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -237,6 +239,11 @@ class DbtSeed(Asset):
 
     dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """Columns that exist within this dbt seed."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -542,6 +549,11 @@ class DbtSeedRelationshipAttributes(AssetRelationshipAttributes):
     dbt_model_columns: Union[List[RelatedDbtModelColumn], None, UnsetType] = UNSET
     """Columns that exist within this dbt seed."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -630,6 +642,7 @@ _DBT_SEED_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "dbt_seed_sql_assets",
     "dbt_model_columns",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -854,6 +867,9 @@ DbtSeed.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DbtSeed.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 DbtSeed.DBT_SEED_SQL_ASSETS = RelationField("dbtSeedSqlAssets")
 DbtSeed.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
+DbtSeed.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DbtSeed.MEANINGS = RelationField("meanings")
 DbtSeed.MC_MONITORS = RelationField("mcMonitors")
 DbtSeed.MC_INCIDENTS = RelationField("mcIncidents")

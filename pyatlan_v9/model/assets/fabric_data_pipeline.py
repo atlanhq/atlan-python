@@ -46,6 +46,7 @@ from .fabric_related import (
     RelatedFabricDataPipeline,
     RelatedFabricWorkspace,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -88,6 +89,7 @@ class FabricDataPipeline(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     FABRIC_WORKSPACE: ClassVar[Any] = None
     FABRIC_ACTIVITIES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -168,6 +170,11 @@ class FabricDataPipeline(Asset):
 
     fabric_activities: Union[List[RelatedFabricActivity], None, UnsetType] = UNSET
     """Individual activities contained in the data pipeline."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -421,6 +428,11 @@ class FabricDataPipelineRelationshipAttributes(AssetRelationshipAttributes):
     fabric_activities: Union[List[RelatedFabricActivity], None, UnsetType] = UNSET
     """Individual activities contained in the data pipeline."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -511,6 +523,7 @@ _FABRIC_DATA_PIPELINE_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "fabric_workspace",
     "fabric_activities",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -697,6 +710,9 @@ FabricDataPipeline.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 FabricDataPipeline.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 FabricDataPipeline.FABRIC_WORKSPACE = RelationField("fabricWorkspace")
 FabricDataPipeline.FABRIC_ACTIVITIES = RelationField("fabricActivities")
+FabricDataPipeline.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FabricDataPipeline.MEANINGS = RelationField("meanings")
 FabricDataPipeline.MC_MONITORS = RelationField("mcMonitors")
 FabricDataPipeline.MC_INCIDENTS = RelationField("mcIncidents")

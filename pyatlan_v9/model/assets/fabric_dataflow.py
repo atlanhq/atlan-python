@@ -46,6 +46,7 @@ from .fabric_related import (
     RelatedFabricDataflowEntityColumn,
     RelatedFabricWorkspace,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -88,6 +89,7 @@ class FabricDataflow(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     FABRIC_WORKSPACE: ClassVar[Any] = None
     FABRIC_DATAFLOW_ENTITY_COLUMNS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -170,6 +172,11 @@ class FabricDataflow(Asset):
         List[RelatedFabricDataflowEntityColumn], None, UnsetType
     ] = UNSET
     """Individual dataflow entity columns contained in the dataflow."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -423,6 +430,11 @@ class FabricDataflowRelationshipAttributes(AssetRelationshipAttributes):
     ] = UNSET
     """Individual dataflow entity columns contained in the dataflow."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -513,6 +525,7 @@ _FABRIC_DATAFLOW_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "fabric_workspace",
     "fabric_dataflow_entity_columns",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -692,6 +705,9 @@ FabricDataflow.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRul
 FabricDataflow.FABRIC_WORKSPACE = RelationField("fabricWorkspace")
 FabricDataflow.FABRIC_DATAFLOW_ENTITY_COLUMNS = RelationField(
     "fabricDataflowEntityColumns"
+)
+FabricDataflow.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
 )
 FabricDataflow.MEANINGS = RelationField("meanings")
 FabricDataflow.MC_MONITORS = RelationField("mcMonitors")

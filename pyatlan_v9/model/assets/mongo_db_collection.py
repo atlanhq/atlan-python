@@ -48,6 +48,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection, RelatedMongoDBDatabase
@@ -168,6 +169,7 @@ class MongoDBCollection(Asset):
     DBT_SOURCES: ClassVar[Any] = None
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MONGO_DB_DATABASE: ClassVar[Any] = None
     MONGO_DB_COLUMNS: ClassVar[Any] = None
@@ -485,6 +487,11 @@ class MongoDBCollection(Asset):
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -1015,6 +1022,11 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1157,6 +1169,7 @@ _MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "dbt_sources",
     "sql_dbt_sources",
     "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mongo_db_database",
     "mongo_db_columns",
@@ -1667,6 +1680,9 @@ MongoDBCollection.DBT_TESTS = RelationField("dbtTests")
 MongoDBCollection.DBT_SOURCES = RelationField("dbtSources")
 MongoDBCollection.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 MongoDBCollection.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+MongoDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 MongoDBCollection.MEANINGS = RelationField("meanings")
 MongoDBCollection.MONGO_DB_DATABASE = RelationField("mongoDBDatabase")
 MongoDBCollection.MONGO_DB_COLUMNS = RelationField("mongoDBColumns")

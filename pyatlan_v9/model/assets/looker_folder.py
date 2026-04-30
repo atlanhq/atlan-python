@@ -41,6 +41,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .looker_related import (
     RelatedLookerDashboard,
@@ -88,6 +89,7 @@ class LookerFolder(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     DASHBOARDS: ClassVar[Any] = None
     LOOKS: ClassVar[Any] = None
@@ -174,6 +176,11 @@ class LookerFolder(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -427,6 +434,11 @@ class LookerFolderRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -527,6 +539,7 @@ _LOOKER_FOLDER_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "dashboards",
     "looks",
@@ -707,6 +720,9 @@ LookerFolder.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttri
 LookerFolder.METRICS = RelationField("metrics")
 LookerFolder.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 LookerFolder.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+LookerFolder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 LookerFolder.MEANINGS = RelationField("meanings")
 LookerFolder.DASHBOARDS = RelationField("dashboards")
 LookerFolder.LOOKS = RelationField("looks")

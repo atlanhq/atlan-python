@@ -60,7 +60,7 @@ class AsyncAtlanTagTranslator(AsyncBaseTranslator):
                 tag_names = []
                 for tag_id in raw_json[key]:
                     name = await self.client.atlan_tag_cache.get_name_for_id(tag_id)
-                    tag_names.append(AtlanTagName(name or DELETED_))
+                    tag_names.append(name or DELETED_)
                 raw_json[key] = tag_names
 
         for key in self._CLASSIFICATION_KEYS:
@@ -82,11 +82,10 @@ class AsyncAtlanTagTranslator(AsyncBaseTranslator):
                 if not attr_id:
                     continue
                 attributes = classification.get("attributes")
-                if not attributes or not attributes.get(attr_id):
-                    continue
+                source_tags = attributes.get(attr_id) if attributes else None
                 classification[self._SOURCE_ATTACHMENTS] = [
                     msgspec.convert(source_tag["attributes"], type=SourceTagAttachment)
-                    for source_tag in attributes.get(attr_id)
+                    for source_tag in (source_tags or [])
                     if isinstance(source_tag, dict) and source_tag.get("attributes")
                 ]
 

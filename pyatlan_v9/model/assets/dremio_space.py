@@ -52,6 +52,7 @@ from .dremio_related import (
     RelatedDremioSpace,
     RelatedDremioVirtualDataset,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -134,6 +135,7 @@ class DremioSpace(Asset):
     DBT_SEED_ASSETS: ClassVar[Any] = None
     DREMIO_FOLDERS: ClassVar[Any] = None
     DREMIO_VIRTUAL_DATASETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -329,6 +331,11 @@ class DremioSpace(Asset):
         List[RelatedDremioVirtualDataset], None, UnsetType
     ] = UNSET
     """Virtual datasets (views) directly contained within the Dremio Space."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -699,6 +706,11 @@ class DremioSpaceRelationshipAttributes(AssetRelationshipAttributes):
     ] = UNSET
     """Virtual datasets (views) directly contained within the Dremio Space."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -813,6 +825,7 @@ _DREMIO_SPACE_REL_FIELDS: List[str] = [
     "dbt_seed_assets",
     "dremio_folders",
     "dremio_virtual_datasets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1128,6 +1141,9 @@ DremioSpace.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DremioSpace.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 DremioSpace.DREMIO_FOLDERS = RelationField("dremioFolders")
 DremioSpace.DREMIO_VIRTUAL_DATASETS = RelationField("dremioVirtualDatasets")
+DremioSpace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DremioSpace.MEANINGS = RelationField("meanings")
 DremioSpace.MC_MONITORS = RelationField("mcMonitors")
 DremioSpace.MC_INCIDENTS = RelationField("mcIncidents")

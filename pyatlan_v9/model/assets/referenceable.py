@@ -33,7 +33,7 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 
-from .entity import Entity
+from .entity import AtlasClassification, Entity
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .referenceable_related import RelatedReferenceable
 
@@ -295,7 +295,7 @@ class ReferenceableNested(
     update_time: Union[Any, UnsetType] = UNSET
     created_by: Union[Any, UnsetType] = UNSET
     updated_by: Union[Any, UnsetType] = UNSET
-    classifications: Union[Any, UnsetType] = UNSET
+    classifications: Union[List[AtlasClassification], None, UnsetType] = UNSET
     classification_names: Union[Any, UnsetType] = UNSET
     meanings: Union[Any, UnsetType] = UNSET
     labels: Union[Any, UnsetType] = UNSET
@@ -461,6 +461,46 @@ Referenceable.REPLICATED_TO = KeywordField("replicatedTo", "replicatedTo")
 Referenceable.MEANINGS = RelationField("meanings")
 Referenceable.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
 Referenceable.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+# ---------------------------------------------------------------------------
+# Referenceable internal field descriptors (entity-level, not in typedef)
+# ---------------------------------------------------------------------------
+
+Referenceable.STATUS = InternalKeywordField("status", "__state", "__state")
+Referenceable.GUID = InternalKeywordField("guid", "__guid", "__guid")
+Referenceable.TYPE_NAME = InternalKeywordTextField(
+    "typeName", "__typeName.keyword", "__typeName", "__typeName"
+)
+Referenceable.CREATED_BY = InternalKeywordField(
+    "createdBy", "__createdBy", "__createdBy"
+)
+Referenceable.UPDATED_BY = InternalKeywordField(
+    "updatedBy", "__modifiedBy", "__modifiedBy"
+)
+Referenceable.ATLAN_TAGS = InternalKeywordTextField(
+    "classificationNames",
+    "__traitNames",
+    "__classificationsText",
+    "__classificationNames",
+)
+Referenceable.PROPAGATED_ATLAN_TAGS = InternalKeywordTextField(
+    "classificationNames",
+    "__propagatedTraitNames",
+    "__classificationsText",
+    "__propagatedClassificationNames",
+)
+Referenceable.ASSIGNED_TERMS = InternalKeywordTextField(
+    "meanings", "__meanings", "__meaningsText", "__meanings"
+)
+Referenceable.SUPER_TYPE_NAMES = InternalKeywordTextField(
+    "typeName", "__superTypeNames.keyword", "__superTypeNames", "__superTypeNames"
+)
+Referenceable.CREATE_TIME = InternalNumericField(
+    "createTime", "__timestamp", "__timestamp"
+)
+Referenceable.UPDATE_TIME = InternalNumericField(
+    "updateTime", "__modificationTimestamp", "__modificationTimestamp"
+)
+Referenceable.CUSTOM_ATTRIBUTES = TextField("customAttributes", "customAttributes")
 
 Referenceable.TYPE_NAME = InternalKeywordTextField(
     "typeName", "__typeName.keyword", "__typeName", "__typeName"

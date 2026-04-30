@@ -42,6 +42,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fivetran_related import RelatedFivetranConnector
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -127,6 +128,7 @@ class FivetranConnector(Asset):
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     PROCESSES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -350,6 +352,11 @@ class FivetranConnector(Asset):
 
     processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes related to this Fivetran connector"""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -734,6 +741,11 @@ class FivetranConnectorRelationshipAttributes(AssetRelationshipAttributes):
     processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes related to this Fivetran connector"""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -823,6 +835,7 @@ _FIVETRAN_CONNECTOR_REL_FIELDS: List[str] = [
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
     "processes",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1341,6 +1354,9 @@ FivetranConnector.METRICS = RelationField("metrics")
 FivetranConnector.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 FivetranConnector.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 FivetranConnector.PROCESSES = RelationField("processes")
+FivetranConnector.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FivetranConnector.MEANINGS = RelationField("meanings")
 FivetranConnector.MC_MONITORS = RelationField("mcMonitors")
 FivetranConnector.MC_INCIDENTS = RelationField("mcIncidents")

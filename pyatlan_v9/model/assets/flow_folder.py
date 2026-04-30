@@ -41,6 +41,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .flow_related import RelatedFlowFolder
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .referenceable_related import RelatedReferenceable
@@ -85,6 +86,7 @@ class FlowFolder(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     FLOW_SUB_FOLDERS: ClassVar[Any] = None
     FLOW_PARENT_FOLDER: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -175,6 +177,11 @@ class FlowFolder(Asset):
 
     flow_parent_folder: Union[RelatedFlowFolder, None, UnsetType] = UNSET
     """Parent folder containing the sub-folders."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -422,6 +429,11 @@ class FlowFolderRelationshipAttributes(AssetRelationshipAttributes):
     flow_parent_folder: Union[RelatedFlowFolder, None, UnsetType] = UNSET
     """Parent folder containing the sub-folders."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -488,6 +500,7 @@ _FLOW_FOLDER_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "flow_sub_folders",
     "flow_parent_folder",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -687,6 +700,9 @@ FlowFolder.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 FlowFolder.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 FlowFolder.FLOW_SUB_FOLDERS = RelationField("flowSubFolders")
 FlowFolder.FLOW_PARENT_FOLDER = RelationField("flowParentFolder")
+FlowFolder.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FlowFolder.MEANINGS = RelationField("meanings")
 FlowFolder.MC_MONITORS = RelationField("mcMonitors")
 FlowFolder.MC_INCIDENTS = RelationField("mcIncidents")

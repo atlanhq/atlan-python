@@ -47,6 +47,7 @@ from .dbt_related import (
     RelatedDbtSeed,
     RelatedDbtTest,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -112,6 +113,7 @@ class DbtModelColumn(Asset):
     SQL_COLUMN: ClassVar[Any] = None
     DBT_MODEL_COLUMN_SQL_COLUMNS: ClassVar[Any] = None
     DBT_SEED: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -258,6 +260,11 @@ class DbtModelColumn(Asset):
 
     dbt_seed: Union[RelatedDbtSeed, None, UnsetType] = UNSET
     """Seed in which this dbt column exists."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -579,6 +586,11 @@ class DbtModelColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed: Union[RelatedDbtSeed, None, UnsetType] = UNSET
     """Seed in which this dbt column exists."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -672,6 +684,7 @@ _DBT_MODEL_COLUMN_REL_FIELDS: List[str] = [
     "sql_column",
     "dbt_model_column_sql_columns",
     "dbt_seed",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -929,6 +942,9 @@ DbtModelColumn.DBT_MODEL = RelationField("dbtModel")
 DbtModelColumn.SQL_COLUMN = RelationField("sqlColumn")
 DbtModelColumn.DBT_MODEL_COLUMN_SQL_COLUMNS = RelationField("dbtModelColumnSqlColumns")
 DbtModelColumn.DBT_SEED = RelationField("dbtSeed")
+DbtModelColumn.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DbtModelColumn.MEANINGS = RelationField("meanings")
 DbtModelColumn.MC_MONITORS = RelationField("mcMonitors")
 DbtModelColumn.MC_INCIDENTS = RelationField("mcIncidents")

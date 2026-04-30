@@ -125,7 +125,7 @@ class RelatedQuickSightFolder(RelatedQuickSight):
     # __post_init__ sets it to "QuickSightFolder" so it serializes correctly
 
     quick_sight_folder_type: Union[str, None, UnsetType] = UNSET
-    """Type of this folder, for example: SHARED."""
+    """Type of this folder, for example: SHARED or RESTRICTED."""
 
     quick_sight_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
     """Detailed path of this folder."""

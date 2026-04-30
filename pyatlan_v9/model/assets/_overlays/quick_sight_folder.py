@@ -23,9 +23,7 @@
             qualified_name=qualified_name,
             connection_qualified_name=connection_qualified_name,
             connector_name=connector_name,
-            quick_sight_folder_type=quick_sight_folder_type
-            if quick_sight_folder_type is not None
-            else UNSET,
+            quick_sight_folder_type=quick_sight_folder_type if quick_sight_folder_type is not None else UNSET,
         )
 
     @classmethod

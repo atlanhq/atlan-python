@@ -47,6 +47,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -116,6 +117,7 @@ class DbtTest(Asset):
     DBT_SOURCES: ClassVar[Any] = None
     DBT_MODEL_COLUMNS: ClassVar[Any] = None
     SQL_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -278,6 +280,11 @@ class DbtTest(Asset):
 
     sql_assets: Union[List[RelatedSQL], None, UnsetType] = UNSET
     """Assets related to this test."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -599,6 +606,11 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     sql_assets: Union[List[RelatedSQL], None, UnsetType] = UNSET
     """Assets related to this test."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -689,6 +701,7 @@ _DBT_TEST_REL_FIELDS: List[str] = [
     "dbt_sources",
     "dbt_model_columns",
     "sql_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -935,6 +948,9 @@ DbtTest.DBT_MODELS = RelationField("dbtModels")
 DbtTest.DBT_SOURCES = RelationField("dbtSources")
 DbtTest.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
 DbtTest.SQL_ASSETS = RelationField("sqlAssets")
+DbtTest.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DbtTest.MEANINGS = RelationField("meanings")
 DbtTest.MC_MONITORS = RelationField("mcMonitors")
 DbtTest.MC_INCIDENTS = RelationField("mcIncidents")

@@ -41,6 +41,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .mode_related import RelatedModeChart, RelatedModeQuery, RelatedModeReport
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -90,6 +91,7 @@ class ModeQuery(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MODE_REPORT: ClassVar[Any] = None
     MODE_CHARTS: ClassVar[Any] = None
@@ -190,6 +192,11 @@ class ModeQuery(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -475,6 +482,11 @@ class ModeQueryRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -567,6 +579,7 @@ _MODE_QUERY_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mode_report",
     "mode_charts",
@@ -768,6 +781,9 @@ ModeQuery.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribut
 ModeQuery.METRICS = RelationField("metrics")
 ModeQuery.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ModeQuery.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+ModeQuery.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 ModeQuery.MEANINGS = RelationField("meanings")
 ModeQuery.MODE_REPORT = RelationField("modeReport")
 ModeQuery.MODE_CHARTS = RelationField("modeCharts")

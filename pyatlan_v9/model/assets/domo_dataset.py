@@ -41,6 +41,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .domo_related import RelatedDomoCard, RelatedDomoDataset, RelatedDomoDatasetColumn
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -87,6 +88,7 @@ class DomoDataset(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     DOMO_CARDS: ClassVar[Any] = None
     DOMO_DATASET_COLUMNS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -179,6 +181,11 @@ class DomoDataset(Asset):
 
     domo_dataset_columns: Union[List[RelatedDomoDatasetColumn], None, UnsetType] = UNSET
     """Domo Dataset Columns that are contained by this Domo Dataset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -430,6 +437,11 @@ class DomoDatasetRelationshipAttributes(AssetRelationshipAttributes):
     domo_dataset_columns: Union[List[RelatedDomoDatasetColumn], None, UnsetType] = UNSET
     """Domo Dataset Columns that are contained by this Domo Dataset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -518,6 +530,7 @@ _DOMO_DATASET_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "domo_cards",
     "domo_dataset_columns",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -709,6 +722,9 @@ DomoDataset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DomoDataset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 DomoDataset.DOMO_CARDS = RelationField("domoCards")
 DomoDataset.DOMO_DATASET_COLUMNS = RelationField("domoDatasetColumns")
+DomoDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DomoDataset.MEANINGS = RelationField("meanings")
 DomoDataset.MC_MONITORS = RelationField("mcMonitors")
 DomoDataset.MC_INCIDENTS = RelationField("mcIncidents")

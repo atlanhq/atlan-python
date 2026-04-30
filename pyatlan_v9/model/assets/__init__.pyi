@@ -38,6 +38,8 @@ __all__ = [
     "RelatedADLSAccount",
     "RelatedADLSContainer",
     "RelatedADLSObject",
+    "Agentic",
+    "RelatedAgentic",
     "AI",
     "AIApplication",
     "AIModel",
@@ -98,6 +100,8 @@ __all__ = [
     "RelatedApplicationField",
     "AppWorkflowRun",
     "RelatedAppWorkflowRun",
+    "Artifact",
+    "RelatedArtifact",
     "Asset",
     "DataSet",
     "Incident",
@@ -215,6 +219,12 @@ __all__ = [
     "RelatedCognosReport",
     "Connection",
     "RelatedConnection",
+    "Context",
+    "ContextArtifact",
+    "ContextRepository",
+    "RelatedContext",
+    "RelatedContextArtifact",
+    "RelatedContextRepository",
     "CosmosMongoDB",
     "CosmosMongoDBAccount",
     "CosmosMongoDBCollection",
@@ -405,6 +415,10 @@ __all__ = [
     "Form",
     "RelatedForm",
     "RelatedResponse",
+    "GCPDataplex",
+    "GCPDataplexAspectType",
+    "RelatedGCPDataplex",
+    "RelatedGCPDataplexAspectType",
     "GCS",
     "GCSBucket",
     "GCSObject",
@@ -439,6 +453,12 @@ __all__ = [
     "RelatedKafkaConsumerGroup",
     "RelatedKafkaField",
     "RelatedKafkaTopic",
+    "Knowledge",
+    "KnowledgeFile",
+    "KnowledgeFolder",
+    "RelatedKnowledge",
+    "RelatedKnowledgeFile",
+    "RelatedKnowledgeFolder",
     "Looker",
     "LookerDashboard",
     "LookerExplore",
@@ -776,6 +796,10 @@ __all__ = [
     "SisenseDatamodelTable",
     "SisenseFolder",
     "SisenseWidget",
+    "RelatedSkill",
+    "Skill",
+    "RelatedSkillArtifact",
+    "SkillArtifact",
     "RelatedSnowflake",
     "RelatedSnowflakeAIModelContext",
     "RelatedSnowflakeAIModelVersion",
@@ -900,6 +924,14 @@ __all__ = [
     "ThoughtspotTable",
     "ThoughtspotView",
     "ThoughtspotWorksheet",
+    "RelatedUnstructuredV2",
+    "RelatedUnstructuredV2Container",
+    "RelatedUnstructuredV2Folder",
+    "RelatedUnstructuredV2Object",
+    "UnstructuredV2",
+    "UnstructuredV2Container",
+    "UnstructuredV2Folder",
+    "UnstructuredV2Object",
     "RelatedWorkflow",
     "RelatedWorkflowRun",
     "Workflow",
@@ -931,6 +963,8 @@ from .adls_related import RelatedADLS as RelatedADLS
 from .adls_related import RelatedADLSAccount as RelatedADLSAccount
 from .adls_related import RelatedADLSContainer as RelatedADLSContainer
 from .adls_related import RelatedADLSObject as RelatedADLSObject
+from .agentic import Agentic as Agentic
+from .agentic_related import RelatedAgentic as RelatedAgentic
 from .ai import AI as AI
 from .ai_application import AIApplication as AIApplication
 from .ai_model import AIModel as AIModel
@@ -993,6 +1027,8 @@ from .app_workflow_run import AppWorkflowRun as AppWorkflowRun
 from .app_workflow_run_related import RelatedAppWorkflowRun as RelatedAppWorkflowRun
 from .application import Application as Application
 from .application_field import ApplicationField as ApplicationField
+from .artifact import Artifact as Artifact
+from .artifact_related import RelatedArtifact as RelatedArtifact
 from .asset import Asset as Asset
 from .asset_grouping import AssetGrouping as AssetGrouping
 from .asset_grouping_collection import (
@@ -1138,6 +1174,12 @@ from .column import Column as Column
 from .column_process import ColumnProcess as ColumnProcess
 from .connection import Connection as Connection
 from .connection_related import RelatedConnection as RelatedConnection
+from .context import Context as Context
+from .context_artifact import ContextArtifact as ContextArtifact
+from .context_related import RelatedContext as RelatedContext
+from .context_related import RelatedContextArtifact as RelatedContextArtifact
+from .context_related import RelatedContextRepository as RelatedContextRepository
+from .context_repository import ContextRepository as ContextRepository
 from .cosmos_mongo_db import CosmosMongoDB as CosmosMongoDB
 from .cosmos_mongo_db_account import CosmosMongoDBAccount as CosmosMongoDBAccount
 from .cosmos_mongo_db_collection import (
@@ -1391,6 +1433,12 @@ from .form import Form as Form
 from .form_related import RelatedForm as RelatedForm
 from .form_related import RelatedResponse as RelatedResponse
 from .function import Function as Function
+from .gcp_dataplex import GCPDataplex as GCPDataplex
+from .gcp_dataplex_aspect_type import GCPDataplexAspectType as GCPDataplexAspectType
+from .gcp_dataplex_related import RelatedGCPDataplex as RelatedGCPDataplex
+from .gcp_dataplex_related import (
+    RelatedGCPDataplexAspectType as RelatedGCPDataplexAspectType,
+)
 from .gcs import GCS as GCS
 from .gcs_bucket import GCSBucket as GCSBucket
 from .gcs_object import GCSObject as GCSObject
@@ -1428,6 +1476,12 @@ from .kafka_related import RelatedKafkaConsumerGroup as RelatedKafkaConsumerGrou
 from .kafka_related import RelatedKafkaField as RelatedKafkaField
 from .kafka_related import RelatedKafkaTopic as RelatedKafkaTopic
 from .kafka_topic import KafkaTopic as KafkaTopic
+from .knowledge import Knowledge as Knowledge
+from .knowledge_file import KnowledgeFile as KnowledgeFile
+from .knowledge_folder import KnowledgeFolder as KnowledgeFolder
+from .knowledge_related import RelatedKnowledge as RelatedKnowledge
+from .knowledge_related import RelatedKnowledgeFile as RelatedKnowledgeFile
+from .knowledge_related import RelatedKnowledgeFolder as RelatedKnowledgeFolder
 from .link import Link as Link
 from .looker import Looker as Looker
 from .looker_dashboard import LookerDashboard as LookerDashboard
@@ -1833,6 +1887,10 @@ from .sisense_related import (
 from .sisense_related import RelatedSisenseFolder as RelatedSisenseFolder
 from .sisense_related import RelatedSisenseWidget as RelatedSisenseWidget
 from .sisense_widget import SisenseWidget as SisenseWidget
+from .skill import Skill as Skill
+from .skill_artifact import SkillArtifact as SkillArtifact
+from .skill_artifact_related import RelatedSkillArtifact as RelatedSkillArtifact
+from .skill_related import RelatedSkill as RelatedSkill
 from .snowflake import Snowflake as Snowflake
 from .snowflake_ai_model_context import (
     SnowflakeAIModelContext as SnowflakeAIModelContext,
@@ -1993,6 +2051,22 @@ from .thoughtspot_related import (
 from .thoughtspot_table import ThoughtspotTable as ThoughtspotTable
 from .thoughtspot_view import ThoughtspotView as ThoughtspotView
 from .thoughtspot_worksheet import ThoughtspotWorksheet as ThoughtspotWorksheet
+from .unstructured_v2 import UnstructuredV2 as UnstructuredV2
+from .unstructured_v2_container import (
+    UnstructuredV2Container as UnstructuredV2Container,
+)
+from .unstructured_v2_folder import UnstructuredV2Folder as UnstructuredV2Folder
+from .unstructured_v2_object import UnstructuredV2Object as UnstructuredV2Object
+from .unstructured_v2_related import RelatedUnstructuredV2 as RelatedUnstructuredV2
+from .unstructured_v2_related import (
+    RelatedUnstructuredV2Container as RelatedUnstructuredV2Container,
+)
+from .unstructured_v2_related import (
+    RelatedUnstructuredV2Folder as RelatedUnstructuredV2Folder,
+)
+from .unstructured_v2_related import (
+    RelatedUnstructuredV2Object as RelatedUnstructuredV2Object,
+)
 from .view import View as View
 from .workflow import Workflow as Workflow
 from .workflow_related import RelatedWorkflow as RelatedWorkflow

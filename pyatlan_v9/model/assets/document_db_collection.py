@@ -50,6 +50,7 @@ from .dbt_related import (
     RelatedDbtTest,
 )
 from .document_db_related import RelatedDocumentDBCollection, RelatedDocumentDBDatabase
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -170,6 +171,7 @@ class DocumentDBCollection(Asset):
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
     DOCUMENT_DB_DATABASE: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -490,6 +492,11 @@ class DocumentDBCollection(Asset):
         msgspec.field(default=UNSET, name="documentDBDatabase")
     )
     """Database in which the collection exists."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -1061,6 +1068,11 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Database in which the collection exists."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1194,6 +1206,7 @@ _DOCUMENT_DB_COLLECTION_REL_FIELDS: List[str] = [
     "sql_dbt_sources",
     "dbt_seed_assets",
     "document_db_database",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -1716,6 +1729,9 @@ DocumentDBCollection.DBT_SOURCES = RelationField("dbtSources")
 DocumentDBCollection.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DocumentDBCollection.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 DocumentDBCollection.DOCUMENT_DB_DATABASE = RelationField("documentDBDatabase")
+DocumentDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 DocumentDBCollection.MEANINGS = RelationField("meanings")
 DocumentDBCollection.MC_MONITORS = RelationField("mcMonitors")
 DocumentDBCollection.MC_INCIDENTS = RelationField("mcIncidents")

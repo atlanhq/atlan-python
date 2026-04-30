@@ -62,9 +62,7 @@ class AtlanTagTranslator(BaseTranslator):
         for key in self._CLASSIFICATION_NAMES:
             if key in raw_json:
                 raw_json[key] = [
-                    AtlanTagName(
-                        self.client.atlan_tag_cache.get_name_for_id(tag_id) or DELETED_
-                    )
+                    self.client.atlan_tag_cache.get_name_for_id(tag_id) or DELETED_
                     for tag_id in raw_json[key]
                 ]
 
@@ -85,11 +83,10 @@ class AtlanTagTranslator(BaseTranslator):
                 if not attr_id:
                     continue
                 attributes = classification.get("attributes")
-                if not attributes or not attributes.get(attr_id):
-                    continue
+                source_tags = attributes.get(attr_id) if attributes else None
                 classification[self._SOURCE_ATTACHMENTS] = [
                     msgspec.convert(source_tag["attributes"], type=SourceTagAttachment)
-                    for source_tag in attributes.get(attr_id)
+                    for source_tag in (source_tags or [])
                     if isinstance(source_tag, dict) and source_tag.get("attributes")
                 ]
 

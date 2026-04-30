@@ -48,6 +48,7 @@ from .dbt_related import (
     RelatedDbtTest,
 )
 from .fabric_related import RelatedFabricWorkspace
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection, RelatedMongoDBDatabase
@@ -126,6 +127,7 @@ class MongoDBDatabase(Asset):
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
     FABRIC_WORKSPACE: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MONGO_DB_COLLECTIONS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -307,6 +309,11 @@ class MongoDBDatabase(Asset):
 
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the database."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -671,6 +678,11 @@ class MongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the database."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -794,6 +806,7 @@ _MONGO_DB_DATABASE_REL_FIELDS: List[str] = [
     "sql_dbt_sources",
     "dbt_seed_assets",
     "fabric_workspace",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mongo_db_collections",
     "mc_monitors",
@@ -1105,6 +1118,9 @@ MongoDBDatabase.DBT_SOURCES = RelationField("dbtSources")
 MongoDBDatabase.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 MongoDBDatabase.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 MongoDBDatabase.FABRIC_WORKSPACE = RelationField("fabricWorkspace")
+MongoDBDatabase.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 MongoDBDatabase.MEANINGS = RelationField("meanings")
 MongoDBDatabase.MONGO_DB_COLLECTIONS = RelationField("mongoDBCollections")
 MongoDBDatabase.MC_MONITORS = RelationField("mcMonitors")

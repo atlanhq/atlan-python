@@ -41,6 +41,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .flow_related import RelatedFlowControlOperation
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .process_related import RelatedProcess
@@ -89,6 +90,7 @@ class FlowControlOperation(Asset):
     FLOW_SUCCESSORS: ClassVar[Any] = None
     FLOW_CONTROLLED_OPERATIONS: ClassVar[Any] = None
     FLOW_CONTROLLED_BY: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -190,6 +192,11 @@ class FlowControlOperation(Asset):
 
     flow_controlled_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Control operation that controls the execution of this control operation."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -450,6 +457,11 @@ class FlowControlOperationRelationshipAttributes(AssetRelationshipAttributes):
     flow_controlled_by: Union[RelatedFlowControlOperation, None, UnsetType] = UNSET
     """Control operation that controls the execution of this control operation."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -521,6 +533,7 @@ _FLOW_CONTROL_OPERATION_REL_FIELDS: List[str] = [
     "flow_successors",
     "flow_controlled_operations",
     "flow_controlled_by",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -747,6 +760,9 @@ FlowControlOperation.FLOW_CONTROLLED_OPERATIONS = RelationField(
     "flowControlledOperations"
 )
 FlowControlOperation.FLOW_CONTROLLED_BY = RelationField("flowControlledBy")
+FlowControlOperation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FlowControlOperation.MEANINGS = RelationField("meanings")
 FlowControlOperation.MC_MONITORS = RelationField("mcMonitors")
 FlowControlOperation.MC_INCIDENTS = RelationField("mcIncidents")

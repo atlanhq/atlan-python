@@ -55,6 +55,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .mongo_db_related import RelatedMongoDBCollection
@@ -126,6 +127,7 @@ class Column(Asset):
     PARENT_COLUMN_NAME: ClassVar[Any] = None
     COLUMN_DISTINCT_VALUES_COUNT: ClassVar[Any] = None
     COLUMN_DISTINCT_VALUES_COUNT_LONG: ClassVar[Any] = None
+    COLUMN_DISTINCT_VALUES_PERCENTAGE: ClassVar[Any] = None
     COLUMN_HISTOGRAM: ClassVar[Any] = None
     COLUMN_MAX: ClassVar[Any] = None
     COLUMN_MIN: ClassVar[Any] = None
@@ -222,6 +224,7 @@ class Column(Asset):
     DBT_MODEL_COLUMNS: ClassVar[Any] = None
     COLUMN_DBT_MODEL_COLUMNS: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MONGO_DB_COLLECTION: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -345,6 +348,9 @@ class Column(Asset):
 
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
+
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
 
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
@@ -649,6 +655,11 @@ class Column(Asset):
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -1210,6 +1221,9 @@ class ColumnAttributes(AssetAttributes):
     column_distinct_values_count_long: Union[int, None, UnsetType] = UNSET
     """Number of rows that contain distinct values."""
 
+    column_distinct_values_percentage: Union[float, None, UnsetType] = UNSET
+    """Percentage of rows in a column that contain distinct values."""
+
     column_histogram: Union[Dict[str, Any], None, UnsetType] = UNSET
     """List of values in a histogram that represents the contents of this column."""
 
@@ -1518,6 +1532,11 @@ class ColumnRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -1681,6 +1700,7 @@ _COLUMN_REL_FIELDS: List[str] = [
     "dbt_model_columns",
     "column_dbt_model_columns",
     "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mongo_db_collection",
     "mc_monitors",
@@ -1750,6 +1770,7 @@ def _populate_column_attrs(attrs: ColumnAttributes, obj: Column) -> None:
     attrs.parent_column_name = obj.parent_column_name
     attrs.column_distinct_values_count = obj.column_distinct_values_count
     attrs.column_distinct_values_count_long = obj.column_distinct_values_count_long
+    attrs.column_distinct_values_percentage = obj.column_distinct_values_percentage
     attrs.column_histogram = obj.column_histogram
     attrs.column_max = obj.column_max
     attrs.column_min = obj.column_min
@@ -1860,6 +1881,9 @@ def _extract_column_attrs(attrs: ColumnAttributes) -> dict:
     result["column_distinct_values_count"] = attrs.column_distinct_values_count
     result["column_distinct_values_count_long"] = (
         attrs.column_distinct_values_count_long
+    )
+    result["column_distinct_values_percentage"] = (
+        attrs.column_distinct_values_percentage
     )
     result["column_histogram"] = attrs.column_histogram
     result["column_max"] = attrs.column_max
@@ -2094,6 +2118,9 @@ Column.COLUMN_DISTINCT_VALUES_COUNT = NumericField(
 Column.COLUMN_DISTINCT_VALUES_COUNT_LONG = NumericField(
     "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
 )
+Column.COLUMN_DISTINCT_VALUES_PERCENTAGE = NumericField(
+    "columnDistinctValuesPercentage", "columnDistinctValuesPercentage"
+)
 Column.COLUMN_HISTOGRAM = KeywordField("columnHistogram", "columnHistogram")
 Column.COLUMN_MAX = NumericField("columnMax", "columnMax")
 Column.COLUMN_MIN = NumericField("columnMin", "columnMin")
@@ -2260,6 +2287,9 @@ Column.DBT_METRICS = RelationField("dbtMetrics")
 Column.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
 Column.COLUMN_DBT_MODEL_COLUMNS = RelationField("columnDbtModelColumns")
 Column.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+Column.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 Column.MEANINGS = RelationField("meanings")
 Column.MONGO_DB_COLLECTION = RelationField("mongoDBCollection")
 Column.MC_MONITORS = RelationField("mcMonitors")

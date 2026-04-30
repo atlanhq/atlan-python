@@ -42,6 +42,7 @@ from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricDashboard, RelatedFabricWorkspace
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
@@ -83,6 +84,7 @@ class FabricDashboard(Asset):
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     FABRIC_WORKSPACE: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
@@ -160,6 +162,11 @@ class FabricDashboard(Asset):
 
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the dashboard."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -410,6 +417,11 @@ class FabricDashboardRelationshipAttributes(AssetRelationshipAttributes):
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the dashboard."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -499,6 +511,7 @@ _FABRIC_DASHBOARD_REL_FIELDS: List[str] = [
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
     "fabric_workspace",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mc_monitors",
     "mc_incidents",
@@ -678,6 +691,9 @@ FabricDashboard.METRICS = RelationField("metrics")
 FabricDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 FabricDashboard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 FabricDashboard.FABRIC_WORKSPACE = RelationField("fabricWorkspace")
+FabricDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 FabricDashboard.MEANINGS = RelationField("meanings")
 FabricDashboard.MC_MONITORS = RelationField("mcMonitors")
 FabricDashboard.MC_INCIDENTS = RelationField("mcIncidents")

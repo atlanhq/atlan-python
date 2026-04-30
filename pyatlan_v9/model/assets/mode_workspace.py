@@ -40,6 +40,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .mode_related import RelatedModeCollection, RelatedModeWorkspace
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -88,6 +89,7 @@ class ModeWorkspace(Asset):
     METRICS: ClassVar[Any] = None
     DQ_BASE_DATASET_RULES: ClassVar[Any] = None
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     MODE_COLLECTIONS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -184,6 +186,11 @@ class ModeWorkspace(Asset):
         UNSET
     )
     """Rules where this dataset is referenced."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -441,6 +448,11 @@ class ModeWorkspaceRelationshipAttributes(AssetRelationshipAttributes):
     )
     """Rules where this dataset is referenced."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -532,6 +544,7 @@ _MODE_WORKSPACE_REL_FIELDS: List[str] = [
     "metrics",
     "dq_base_dataset_rules",
     "dq_reference_dataset_rules",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "mode_collections",
     "mc_monitors",
@@ -739,6 +752,9 @@ ModeWorkspace.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttr
 ModeWorkspace.METRICS = RelationField("metrics")
 ModeWorkspace.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ModeWorkspace.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+ModeWorkspace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 ModeWorkspace.MEANINGS = RelationField("meanings")
 ModeWorkspace.MODE_COLLECTIONS = RelationField("modeCollections")
 ModeWorkspace.MC_MONITORS = RelationField("mcMonitors")

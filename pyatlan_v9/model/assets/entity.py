@@ -31,8 +31,8 @@ class AtlasClassification(
     propagation settings and validity periods.
     """
 
-    type_name: Union[str, UnsetType] = UNSET
-    """The name of the classification type."""
+    type_name: Union[Any, UnsetType] = UNSET
+    """The name of the classification type (str or AtlanTagName after translation)."""
 
     entity_guid: Union[str, UnsetType] = UNSET
     """The GUID of the entity this classification is assigned to."""
@@ -51,6 +51,18 @@ class AtlasClassification(
 
     attributes: Union[Dict[str, Any], UnsetType] = UNSET
     """Custom attributes for this classification."""
+
+    source_tag_attachments: Union[List[Any], None, UnsetType] = UNSET
+    """Source tag attachments extracted by the AtlanTagName translator."""
+
+    tag_id: Union[str, None, UnsetType] = UNSET
+    """Original tag ID before translation to a human-readable name."""
+
+    restrict_propagation_through_lineage: Union[bool, None, UnsetType] = UNSET
+    """Whether propagation through lineage is restricted."""
+
+    restrict_propagation_through_hierarchy: Union[bool, None, UnsetType] = UNSET
+    """Whether propagation through hierarchy is restricted."""
 
 
 class TermAssignment(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):

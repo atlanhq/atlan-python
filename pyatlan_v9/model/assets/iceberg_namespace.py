@@ -49,6 +49,7 @@ from .dbt_related import (
     RelatedDbtSource,
     RelatedDbtTest,
 )
+from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .iceberg_related import RelatedIcebergNamespace
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -148,6 +149,7 @@ class IcebergNamespace(Asset):
     DBT_SOURCES: ClassVar[Any] = None
     SQL_DBT_SOURCES: ClassVar[Any] = None
     DBT_SEED_ASSETS: ClassVar[Any] = None
+    GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     ICEBERG_SUB_NAMESPACES: ClassVar[Any] = None
     ICEBERG_PARENT_NAMESPACE: ClassVar[Any] = None
@@ -353,6 +355,11 @@ class IcebergNamespace(Asset):
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
+
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
@@ -785,6 +792,11 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
+    gcp_dataplex_aspect_type_metadata_entities: Union[
+        List[RelatedGCPDataplexAspectType], None, UnsetType
+    ] = UNSET
+    """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
+
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
@@ -957,6 +969,7 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "dbt_sources",
     "sql_dbt_sources",
     "dbt_seed_assets",
+    "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "iceberg_sub_namespaces",
     "iceberg_parent_namespace",
@@ -1300,6 +1313,9 @@ IcebergNamespace.DBT_TESTS = RelationField("dbtTests")
 IcebergNamespace.DBT_SOURCES = RelationField("dbtSources")
 IcebergNamespace.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 IcebergNamespace.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
+IcebergNamespace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+    "gcpDataplexAspectTypeMetadataEntities"
+)
 IcebergNamespace.MEANINGS = RelationField("meanings")
 IcebergNamespace.ICEBERG_SUB_NAMESPACES = RelationField("icebergSubNamespaces")
 IcebergNamespace.ICEBERG_PARENT_NAMESPACE = RelationField("icebergParentNamespace")
