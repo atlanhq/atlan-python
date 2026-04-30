@@ -33,7 +33,9 @@ from .process import Process
 {% endif %}
 
 {% set entity_def = asset_info.entity_def %}
-{%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types %}
+{# Use asset_info.super_class so _SUPERCLASS_OVERRIDES applies — see SHA-887 #}
+{%- set super_class_name = 'AtlanObject' if not entity_def.super_types else asset_info.super_class %}
+{%- set super_classes = [super_class_name] %}
 
 {{ asset_info.import_super_class }}
 

@@ -91,6 +91,17 @@ DOCS_DIR = PARENT.parent / "documentation"
 MKDOCS_ASSETS_DIR = PARENT.parent.parent / "docs" / "api" / "assets"
 TEMPLATES_DIR = PARENT / "templates"
 
+# Override default first-supertype selection for known mismatches.
+# Atlas typedefs sometimes list supertypes in an order that places the
+# wrong parent first for Python MRO purposes (e.g. DbtMeasure has
+# superTypes=["Dbt", "SemanticMeasure"] but publish-app ordering needs
+# SemanticMeasure as the Python parent — see SHA-887). The override only
+# applies when the named supertype is actually present in the typedef,
+# so a typedef change that drops it won't silently break.
+_SUPERCLASS_OVERRIDES: Dict[str, str] = {
+    "DbtMeasure": "SemanticMeasure",
+}
+
 
 def get_type(type_: str):
     ret_value = type_
@@ -305,18 +316,40 @@ class AssetInfo:
     def name(self):
         return self._name
 
+    def _resolve_super_type_name(self) -> str:
+        """Resolve the supertype name to use as the Python parent class.
+
+        Defaults to the first entry in ``super_types``. When the asset
+        appears in :data:`_SUPERCLASS_OVERRIDES` and the override is itself
+        a declared supertype, the override wins — this corrects ordering
+        mismatches in upstream Atlas typedefs without blocking on a
+        typedef change (see SHA-887 for the originating case).
+
+        Callers should only invoke this when ``entity_def.super_types`` is
+        non-empty (i.e. not :class:`Referenceable`); the assertion guards
+        against accidental misuse from new call sites.
+        """
+        super_types = self.entity_def.super_types
+        assert super_types, (
+            f"_resolve_super_type_name called on {self._name} with no super_types"
+        )
+        override = _SUPERCLASS_OVERRIDES.get(self._name)
+        if override and override in super_types:
+            return override
+        return super_types[0]
+
     @property
     def super_class(self):
         if self._name == REFERENCEABLE:
             return "AtlanObject"
         else:
-            return self.entity_def.super_types[0]
+            return self._resolve_super_type_name()
 
     @property
     def import_super_class(self):
         if self._name == REFERENCEABLE:
             return ""
-        super_type = AssetInfo.asset_info_by_name[self.entity_def.super_types[0]]
+        super_type = AssetInfo.asset_info_by_name[self._resolve_super_type_name()]
         if self.name not in self._CORE_ASSETS and super_type.name in self._CORE_ASSETS:
             return f"from .core.{super_type.module_name} import {super_type.name}"
         elif (
