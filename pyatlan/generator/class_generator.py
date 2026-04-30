@@ -324,8 +324,15 @@ class AssetInfo:
         a declared supertype, the override wins — this corrects ordering
         mismatches in upstream Atlas typedefs without blocking on a
         typedef change (see SHA-887 for the originating case).
+
+        Callers should only invoke this when ``entity_def.super_types`` is
+        non-empty (i.e. not :class:`Referenceable`); the assertion guards
+        against accidental misuse from new call sites.
         """
         super_types = self.entity_def.super_types
+        assert super_types, (
+            f"_resolve_super_type_name called on {self._name} with no super_types"
+        )
         override = _SUPERCLASS_OVERRIDES.get(self._name)
         if override and override in super_types:
             return override
