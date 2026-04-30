@@ -15,19 +15,11 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .access_control_related import RelatedAccessControl, RelatedAuthPolicy
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -49,11 +41,16 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .access_control_related import RelatedAccessControl, RelatedAuthPolicy
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AuthPolicy(Asset):
@@ -192,14 +189,10 @@ class AuthPolicy(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -214,9 +207,7 @@ class AuthPolicy(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -228,9 +219,7 @@ class AuthPolicy(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -243,7 +232,10 @@ class AuthPolicy(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     @classmethod
     @init_guid
@@ -302,7 +294,6 @@ class AuthPolicy(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AuthPolicyAttributes(AssetAttributes):
     """AuthPolicy-specific attributes for nested API format."""
 
@@ -360,7 +351,6 @@ class AuthPolicyAttributes(AssetAttributes):
     policy_validity_schedule: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """TBC"""
 
-
 class AuthPolicyRelationshipAttributes(AssetRelationshipAttributes):
     """AuthPolicy-specific relationship attributes for nested API format."""
 
@@ -397,14 +387,10 @@ class AuthPolicyRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -419,9 +405,7 @@ class AuthPolicyRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -433,27 +417,19 @@ class AuthPolicyRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
-
 
 class AuthPolicyNested(AssetNested):
     """AuthPolicy in nested API format for high-performance serialization."""
 
     attributes: Union[AuthPolicyAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AuthPolicyRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        AuthPolicyRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AuthPolicyRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[AuthPolicyRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AuthPolicyRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -486,7 +462,6 @@ _AUTH_POLICY_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
 def _populate_auth_policy_attrs(attrs: AuthPolicyAttributes, obj: AuthPolicy) -> None:
     """Populate AuthPolicy-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -508,7 +483,6 @@ def _populate_auth_policy_attrs(attrs: AuthPolicyAttributes, obj: AuthPolicy) ->
     attrs.policy_type = obj.policy_type
     attrs.policy_users = obj.policy_users
     attrs.policy_validity_schedule = obj.policy_validity_schedule
-
 
 def _extract_auth_policy_attrs(attrs: AuthPolicyAttributes) -> dict:
     """Extract all AuthPolicy attributes from the attrs struct into a flat dict."""
@@ -532,7 +506,6 @@ def _extract_auth_policy_attrs(attrs: AuthPolicyAttributes) -> dict:
     result["policy_users"] = attrs.policy_users
     result["policy_validity_schedule"] = attrs.policy_validity_schedule
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -573,19 +546,16 @@ def _auth_policy_to_nested(auth_policy: AuthPolicy) -> AuthPolicyNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _auth_policy_from_nested(nested: AuthPolicyNested) -> AuthPolicy:
     """Convert nested format to flat AuthPolicy."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else AuthPolicyAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AuthPolicyAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AUTH_POLICY_REL_FIELDS,
-        AuthPolicyRelationshipAttributes,
+        AuthPolicyRelationshipAttributes
     )
     return AuthPolicy(
         guid=nested.guid,
@@ -612,7 +582,6 @@ def _auth_policy_from_nested(nested: AuthPolicyNested) -> AuthPolicy:
         **merged_rels,
     )
 
-
 def _auth_policy_to_nested_bytes(auth_policy: AuthPolicy, serde: Serde) -> bytes:
     """Convert flat AuthPolicy to nested JSON bytes."""
     return serde.encode(_auth_policy_to_nested(auth_policy))
@@ -622,7 +591,6 @@ def _auth_policy_from_nested_bytes(data: bytes, serde: Serde) -> AuthPolicy:
     """Convert nested JSON bytes to flat AuthPolicy."""
     nested = serde.decode(data, AuthPolicyNested)
     return _auth_policy_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -638,30 +606,20 @@ AuthPolicy.IS_POLICY_ENABLED = BooleanField("isPolicyEnabled", "isPolicyEnabled"
 AuthPolicy.POLICY_ACTIONS = KeywordField("policyActions", "policyActions")
 AuthPolicy.POLICY_CATEGORY = KeywordField("policyCategory", "policyCategory")
 AuthPolicy.POLICY_CONDITIONS = KeywordField("policyConditions", "policyConditions")
-AuthPolicy.POLICY_DELEGATE_ADMIN = BooleanField(
-    "policyDelegateAdmin", "policyDelegateAdmin"
-)
-AuthPolicy.POLICY_FILTER_CRITERIA = KeywordField(
-    "policyFilterCriteria", "policyFilterCriteria"
-)
+AuthPolicy.POLICY_DELEGATE_ADMIN = BooleanField("policyDelegateAdmin", "policyDelegateAdmin")
+AuthPolicy.POLICY_FILTER_CRITERIA = KeywordField("policyFilterCriteria", "policyFilterCriteria")
 AuthPolicy.POLICY_GROUPS = KeywordField("policyGroups", "policyGroups")
 AuthPolicy.POLICY_MASK_TYPE = KeywordField("policyMaskType", "policyMaskType")
 AuthPolicy.POLICY_PRIORITY = NumericField("policyPriority", "policyPriority")
-AuthPolicy.POLICY_RESOURCE_CATEGORY = KeywordField(
-    "policyResourceCategory", "policyResourceCategory"
-)
-AuthPolicy.POLICY_RESOURCE_SIGNATURE = KeywordField(
-    "policyResourceSignature", "policyResourceSignature"
-)
+AuthPolicy.POLICY_RESOURCE_CATEGORY = KeywordField("policyResourceCategory", "policyResourceCategory")
+AuthPolicy.POLICY_RESOURCE_SIGNATURE = KeywordField("policyResourceSignature", "policyResourceSignature")
 AuthPolicy.POLICY_RESOURCES = KeywordField("policyResources", "policyResources")
 AuthPolicy.POLICY_ROLES = KeywordField("policyRoles", "policyRoles")
 AuthPolicy.POLICY_SERVICE_NAME = KeywordField("policyServiceName", "policyServiceName")
 AuthPolicy.POLICY_SUB_CATEGORY = KeywordField("policySubCategory", "policySubCategory")
 AuthPolicy.POLICY_TYPE = KeywordField("policyType", "policyType")
 AuthPolicy.POLICY_USERS = KeywordField("policyUsers", "policyUsers")
-AuthPolicy.POLICY_VALIDITY_SCHEDULE = KeywordField(
-    "policyValiditySchedule", "policyValiditySchedule"
-)
+AuthPolicy.POLICY_VALIDITY_SCHEDULE = KeywordField("policyValiditySchedule", "policyValiditySchedule")
 AuthPolicy.POLICIES = RelationField("policies")
 AuthPolicy.ACCESS_CONTROL = RelationField("accessControl")
 AuthPolicy.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -674,9 +632,7 @@ AuthPolicy.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AuthPolicy.METRICS = RelationField("metrics")
 AuthPolicy.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AuthPolicy.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AuthPolicy.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+AuthPolicy.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 AuthPolicy.MEANINGS = RelationField("meanings")
 AuthPolicy.MC_MONITORS = RelationField("mcMonitors")
 AuthPolicy.MC_INCIDENTS = RelationField("mcIncidents")

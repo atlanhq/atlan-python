@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -48,19 +42,18 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .salesforce_related import (
-    RelatedSalesforceDashboard,
-    RelatedSalesforceObject,
-    RelatedSalesforceReport,
-)
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .salesforce_related import RelatedSalesforceDashboard, RelatedSalesforceObject, RelatedSalesforceReport
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SalesforceOrganization(Asset):
@@ -151,9 +144,7 @@ class SalesforceOrganization(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -162,14 +153,10 @@ class SalesforceOrganization(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -196,9 +183,7 @@ class SalesforceOrganization(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -219,9 +204,7 @@ class SalesforceOrganization(Asset):
     objects: Union[List[RelatedSalesforceObject], None, UnsetType] = UNSET
     """Objects that exist within this organization."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -235,6 +218,8 @@ class SalesforceOrganization(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SalesforceOrganization"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -265,9 +250,7 @@ class SalesforceOrganization(Asset):
         return _salesforce_organization_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SalesforceOrganization:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SalesforceOrganization:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -289,7 +272,6 @@ class SalesforceOrganization(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SalesforceOrganizationAttributes(AssetAttributes):
     """SalesforceOrganization-specific attributes for nested API format."""
 
@@ -304,7 +286,6 @@ class SalesforceOrganizationAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class SalesforceOrganizationRelationshipAttributes(AssetRelationshipAttributes):
     """SalesforceOrganization-specific relationship attributes for nested API format."""
@@ -339,9 +320,7 @@ class SalesforceOrganizationRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -350,14 +329,10 @@ class SalesforceOrganizationRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -384,9 +359,7 @@ class SalesforceOrganizationRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -407,9 +380,7 @@ class SalesforceOrganizationRelationshipAttributes(AssetRelationshipAttributes):
     objects: Union[List[RelatedSalesforceObject], None, UnsetType] = UNSET
     """Objects that exist within this organization."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -421,21 +392,13 @@ class SalesforceOrganizationRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SalesforceOrganizationNested(AssetNested):
     """SalesforceOrganization in nested API format for high-performance serialization."""
 
     attributes: Union[SalesforceOrganizationAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        SalesforceOrganizationRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        SalesforceOrganizationRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SalesforceOrganizationRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SalesforceOrganizationRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SalesforceOrganizationRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SalesforceOrganizationRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -479,10 +442,7 @@ _SALESFORCE_ORGANIZATION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_salesforce_organization_attrs(
-    attrs: SalesforceOrganizationAttributes, obj: SalesforceOrganization
-) -> None:
+def _populate_salesforce_organization_attrs(attrs: SalesforceOrganizationAttributes, obj: SalesforceOrganization) -> None:
     """Populate SalesforceOrganization-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.source_id = obj.source_id
@@ -490,10 +450,7 @@ def _populate_salesforce_organization_attrs(
     attrs.api_name = obj.api_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
-def _extract_salesforce_organization_attrs(
-    attrs: SalesforceOrganizationAttributes,
-) -> dict:
+def _extract_salesforce_organization_attrs(attrs: SalesforceOrganizationAttributes) -> dict:
     """Extract all SalesforceOrganization attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["source_id"] = attrs.source_id
@@ -502,23 +459,18 @@ def _extract_salesforce_organization_attrs(
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _salesforce_organization_to_nested(
-    salesforce_organization: SalesforceOrganization,
-) -> SalesforceOrganizationNested:
+def _salesforce_organization_to_nested(salesforce_organization: SalesforceOrganization) -> SalesforceOrganizationNested:
     """Convert flat SalesforceOrganization to nested format."""
     attrs = SalesforceOrganizationAttributes()
     _populate_salesforce_organization_attrs(attrs, salesforce_organization)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        salesforce_organization,
-        _SALESFORCE_ORGANIZATION_REL_FIELDS,
-        SalesforceOrganizationRelationshipAttributes,
+        salesforce_organization, _SALESFORCE_ORGANIZATION_REL_FIELDS, SalesforceOrganizationRelationshipAttributes
     )
     return SalesforceOrganizationNested(
         guid=salesforce_organization.guid,
@@ -546,23 +498,16 @@ def _salesforce_organization_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _salesforce_organization_from_nested(
-    nested: SalesforceOrganizationNested,
-) -> SalesforceOrganization:
+def _salesforce_organization_from_nested(nested: SalesforceOrganizationNested) -> SalesforceOrganization:
     """Convert nested format to flat SalesforceOrganization."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SalesforceOrganizationAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SalesforceOrganizationAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SALESFORCE_ORGANIZATION_REL_FIELDS,
-        SalesforceOrganizationRelationshipAttributes,
+        SalesforceOrganizationRelationshipAttributes
     )
     return SalesforceOrganization(
         guid=nested.guid,
@@ -589,64 +534,43 @@ def _salesforce_organization_from_nested(
         **merged_rels,
     )
 
-
-def _salesforce_organization_to_nested_bytes(
-    salesforce_organization: SalesforceOrganization, serde: Serde
-) -> bytes:
+def _salesforce_organization_to_nested_bytes(salesforce_organization: SalesforceOrganization, serde: Serde) -> bytes:
     """Convert flat SalesforceOrganization to nested JSON bytes."""
     return serde.encode(_salesforce_organization_to_nested(salesforce_organization))
 
 
-def _salesforce_organization_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> SalesforceOrganization:
+def _salesforce_organization_from_nested_bytes(data: bytes, serde: Serde) -> SalesforceOrganization:
     """Convert nested JSON bytes to flat SalesforceOrganization."""
     nested = serde.decode(data, SalesforceOrganizationNested)
     return _salesforce_organization_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
 SalesforceOrganization.SOURCE_ID = KeywordField("sourceId", "sourceId")
-SalesforceOrganization.ORGANIZATION_QUALIFIED_NAME = KeywordField(
-    "organizationQualifiedName", "organizationQualifiedName"
-)
+SalesforceOrganization.ORGANIZATION_QUALIFIED_NAME = KeywordField("organizationQualifiedName", "organizationQualifiedName")
 SalesforceOrganization.API_NAME = KeywordField("apiName", "apiName")
-SalesforceOrganization.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+SalesforceOrganization.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 SalesforceOrganization.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SalesforceOrganization.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+SalesforceOrganization.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SalesforceOrganization.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SalesforceOrganization.APPLICATION = RelationField("application")
 SalesforceOrganization.APPLICATION_FIELD = RelationField("applicationField")
 SalesforceOrganization.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SalesforceOrganization.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-SalesforceOrganization.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
+SalesforceOrganization.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SalesforceOrganization.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SalesforceOrganization.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SalesforceOrganization.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-SalesforceOrganization.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SalesforceOrganization.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+SalesforceOrganization.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SalesforceOrganization.METRICS = RelationField("metrics")
 SalesforceOrganization.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SalesforceOrganization.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
-SalesforceOrganization.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SalesforceOrganization.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SalesforceOrganization.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SalesforceOrganization.MEANINGS = RelationField("meanings")
 SalesforceOrganization.MC_MONITORS = RelationField("mcMonitors")
 SalesforceOrganization.MC_INCIDENTS = RelationField("mcIncidents")
@@ -655,18 +579,14 @@ SalesforceOrganization.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObject
 SalesforceOrganization.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SalesforceOrganization.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 SalesforceOrganization.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SalesforceOrganization.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+SalesforceOrganization.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 SalesforceOrganization.FILES = RelationField("files")
 SalesforceOrganization.LINKS = RelationField("links")
 SalesforceOrganization.README = RelationField("readme")
 SalesforceOrganization.REPORTS = RelationField("reports")
 SalesforceOrganization.DASHBOARDS = RelationField("dashboards")
 SalesforceOrganization.OBJECTS = RelationField("objects")
-SalesforceOrganization.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
+SalesforceOrganization.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SalesforceOrganization.SODA_CHECKS = RelationField("sodaChecks")
 SalesforceOrganization.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SalesforceOrganization.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

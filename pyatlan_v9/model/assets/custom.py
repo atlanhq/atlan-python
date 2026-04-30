@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -51,11 +45,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Custom(Asset):
@@ -131,9 +127,7 @@ class Custom(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -142,14 +136,10 @@ class Custom(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -176,9 +166,7 @@ class Custom(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -190,9 +178,7 @@ class Custom(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -206,6 +192,8 @@ class Custom(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Custom"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -258,13 +246,11 @@ class Custom(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class CustomAttributes(AssetAttributes):
     """Custom-specific attributes for nested API format."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class CustomRelationshipAttributes(AssetRelationshipAttributes):
     """Custom-specific relationship attributes for nested API format."""
@@ -299,9 +285,7 @@ class CustomRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -310,14 +294,10 @@ class CustomRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -344,9 +324,7 @@ class CustomRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -358,9 +336,7 @@ class CustomRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -372,19 +348,13 @@ class CustomRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class CustomNested(AssetNested):
     """Custom in nested API format for high-performance serialization."""
 
     attributes: Union[CustomAttributes, UnsetType] = UNSET
     relationship_attributes: Union[CustomRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[CustomRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[CustomRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[CustomRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[CustomRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -425,19 +395,16 @@ _CUSTOM_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_custom_attrs(attrs: CustomAttributes, obj: Custom) -> None:
     """Populate Custom-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_custom_attrs(attrs: CustomAttributes) -> dict:
     """Extract all Custom attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -478,7 +445,6 @@ def _custom_to_nested(custom: Custom) -> CustomNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _custom_from_nested(nested: CustomNested) -> Custom:
     """Convert nested format to flat Custom."""
     attrs = nested.attributes if nested.attributes is not UNSET else CustomAttributes()
@@ -488,7 +454,7 @@ def _custom_from_nested(nested: CustomNested) -> Custom:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CUSTOM_REL_FIELDS,
-        CustomRelationshipAttributes,
+        CustomRelationshipAttributes
     )
     return Custom(
         guid=nested.guid,
@@ -515,7 +481,6 @@ def _custom_from_nested(nested: CustomNested) -> Custom:
         **merged_rels,
     )
 
-
 def _custom_to_nested_bytes(custom: Custom, serde: Serde) -> bytes:
     """Convert flat Custom to nested JSON bytes."""
     return serde.encode(_custom_to_nested(custom))
@@ -526,11 +491,13 @@ def _custom_from_nested_bytes(data: bytes, serde: Serde) -> Custom:
     nested = serde.decode(data, CustomNested)
     return _custom_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
 Custom.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Custom.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -547,9 +514,7 @@ Custom.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes"
 Custom.METRICS = RelationField("metrics")
 Custom.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Custom.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Custom.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Custom.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Custom.MEANINGS = RelationField("meanings")
 Custom.MC_MONITORS = RelationField("mcMonitors")
 Custom.MC_INCIDENTS = RelationField("mcIncidents")

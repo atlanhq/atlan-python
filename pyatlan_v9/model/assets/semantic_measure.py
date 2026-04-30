@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -50,14 +44,17 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .semantic_related import RelatedSemanticModel
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .semantic_related import RelatedSemanticModel
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SemanticMeasure(Asset):
@@ -162,9 +159,7 @@ class SemanticMeasure(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -173,14 +168,10 @@ class SemanticMeasure(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -207,9 +198,7 @@ class SemanticMeasure(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -221,9 +210,7 @@ class SemanticMeasure(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
@@ -245,7 +232,10 @@ class SemanticMeasure(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -276,9 +266,7 @@ class SemanticMeasure(Asset):
         return _semantic_measure_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SemanticMeasure:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SemanticMeasure:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -299,7 +287,6 @@ class SemanticMeasure(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class SemanticMeasureAttributes(AssetAttributes):
     """SemanticMeasure-specific attributes for nested API format."""
@@ -327,7 +314,6 @@ class SemanticMeasureAttributes(AssetAttributes):
 
     semantic_labels: Union[List[str], None, UnsetType] = UNSET
     """Labels associated with the semantic field."""
-
 
 class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     """SemanticMeasure-specific relationship attributes for nested API format."""
@@ -362,9 +348,7 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -373,14 +357,10 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -407,9 +387,7 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -421,9 +399,7 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
@@ -438,21 +414,13 @@ class SemanticMeasureRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SemanticMeasureNested(AssetNested):
     """SemanticMeasure in nested API format for high-performance serialization."""
 
     attributes: Union[SemanticMeasureAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SemanticMeasureRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        SemanticMeasureRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SemanticMeasureRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SemanticMeasureRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SemanticMeasureRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SemanticMeasureRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -494,10 +462,7 @@ _SEMANTIC_MEASURE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_semantic_measure_attrs(
-    attrs: SemanticMeasureAttributes, obj: SemanticMeasure
-) -> None:
+def _populate_semantic_measure_attrs(attrs: SemanticMeasureAttributes, obj: SemanticMeasure) -> None:
     """Populate SemanticMeasure-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
@@ -508,7 +473,6 @@ def _populate_semantic_measure_attrs(
     attrs.semantic_access_modifier = obj.semantic_access_modifier
     attrs.semantic_data_type = obj.semantic_data_type
     attrs.semantic_labels = obj.semantic_labels
-
 
 def _extract_semantic_measure_attrs(attrs: SemanticMeasureAttributes) -> dict:
     """Extract all SemanticMeasure attributes from the attrs struct into a flat dict."""
@@ -523,23 +487,18 @@ def _extract_semantic_measure_attrs(attrs: SemanticMeasureAttributes) -> dict:
     result["semantic_labels"] = attrs.semantic_labels
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _semantic_measure_to_nested(
-    semantic_measure: SemanticMeasure,
-) -> SemanticMeasureNested:
+def _semantic_measure_to_nested(semantic_measure: SemanticMeasure) -> SemanticMeasureNested:
     """Convert flat SemanticMeasure to nested format."""
     attrs = SemanticMeasureAttributes()
     _populate_semantic_measure_attrs(attrs, semantic_measure)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        semantic_measure,
-        _SEMANTIC_MEASURE_REL_FIELDS,
-        SemanticMeasureRelationshipAttributes,
+        semantic_measure, _SEMANTIC_MEASURE_REL_FIELDS, SemanticMeasureRelationshipAttributes
     )
     return SemanticMeasureNested(
         guid=semantic_measure.guid,
@@ -567,21 +526,16 @@ def _semantic_measure_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _semantic_measure_from_nested(nested: SemanticMeasureNested) -> SemanticMeasure:
     """Convert nested format to flat SemanticMeasure."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SemanticMeasureAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SemanticMeasureAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SEMANTIC_MEASURE_REL_FIELDS,
-        SemanticMeasureRelationshipAttributes,
+        SemanticMeasureRelationshipAttributes
     )
     return SemanticMeasure(
         guid=nested.guid,
@@ -608,10 +562,7 @@ def _semantic_measure_from_nested(nested: SemanticMeasureNested) -> SemanticMeas
         **merged_rels,
     )
 
-
-def _semantic_measure_to_nested_bytes(
-    semantic_measure: SemanticMeasure, serde: Serde
-) -> bytes:
+def _semantic_measure_to_nested_bytes(semantic_measure: SemanticMeasure, serde: Serde) -> bytes:
     """Convert flat SemanticMeasure to nested JSON bytes."""
     return serde.encode(_semantic_measure_to_nested(semantic_measure))
 
@@ -620,7 +571,6 @@ def _semantic_measure_from_nested_bytes(data: bytes, serde: Serde) -> SemanticMe
     """Convert nested JSON bytes to flat SemanticMeasure."""
     nested = serde.decode(data, SemanticMeasureNested)
     return _semantic_measure_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -631,23 +581,13 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-SemanticMeasure.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
-SemanticMeasure.SEMANTIC_EXPRESSION = KeywordField(
-    "semanticExpression", "semanticExpression"
-)
+SemanticMeasure.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SemanticMeasure.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
 SemanticMeasure.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
 SemanticMeasure.SEMANTIC_SYNONYMS = KeywordField("semanticSynonyms", "semanticSynonyms")
-SemanticMeasure.SEMANTIC_SAMPLE_VALUES = TextField(
-    "semanticSampleValues", "semanticSampleValues"
-)
-SemanticMeasure.SEMANTIC_ACCESS_MODIFIER = KeywordField(
-    "semanticAccessModifier", "semanticAccessModifier"
-)
-SemanticMeasure.SEMANTIC_DATA_TYPE = KeywordField(
-    "semanticDataType", "semanticDataType"
-)
+SemanticMeasure.SEMANTIC_SAMPLE_VALUES = TextField("semanticSampleValues", "semanticSampleValues")
+SemanticMeasure.SEMANTIC_ACCESS_MODIFIER = KeywordField("semanticAccessModifier", "semanticAccessModifier")
+SemanticMeasure.SEMANTIC_DATA_TYPE = KeywordField("semanticDataType", "semanticDataType")
 SemanticMeasure.SEMANTIC_LABELS = KeywordField("semanticLabels", "semanticLabels")
 SemanticMeasure.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SemanticMeasure.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -655,21 +595,15 @@ SemanticMeasure.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SemanticMeasure.APPLICATION = RelationField("application")
 SemanticMeasure.APPLICATION_FIELD = RelationField("applicationField")
 SemanticMeasure.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SemanticMeasure.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+SemanticMeasure.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 SemanticMeasure.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SemanticMeasure.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SemanticMeasure.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SemanticMeasure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SemanticMeasure.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SemanticMeasure.METRICS = RelationField("metrics")
 SemanticMeasure.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SemanticMeasure.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SemanticMeasure.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SemanticMeasure.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SemanticMeasure.MEANINGS = RelationField("meanings")
 SemanticMeasure.MC_MONITORS = RelationField("mcMonitors")
 SemanticMeasure.MC_INCIDENTS = RelationField("mcIncidents")

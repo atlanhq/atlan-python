@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .ai_related import RelatedAIModel
 from .airflow_related import RelatedAirflowTask
@@ -43,12 +36,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -58,21 +46,18 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
-from .snowflake_related import (
-    RelatedSnowflakeAIModelContext,
-    RelatedSnowflakeSemanticLogicalTable,
-)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import (
-    RelatedSqlInsightBusinessQuestion,
-    RelatedSqlInsightJoin,
-)
+from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .snowflake_related import RelatedSnowflakeAIModelContext, RelatedSnowflakeSemanticLogicalTable
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SnowflakeAIModelVersion(Asset):
@@ -229,9 +214,7 @@ class SnowflakeAIModelVersion(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -267,39 +250,25 @@ class SnowflakeAIModelVersion(Asset):
     ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
     """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
 
-    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIPrivacyConfig"
-    )
+    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIFairnessConfig"
-    )
+    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIBiasMitigationConfig"
-    )
+    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
-    )
+    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAITransparencyConfig"
-    )
+    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIAccountabilityConfig"
-    )
+    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
-    )
+    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     ai_model: Union[RelatedAIModel, None, UnsetType] = UNSET
@@ -335,9 +304,7 @@ class SnowflakeAIModelVersion(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -346,9 +313,7 @@ class SnowflakeAIModelVersion(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -363,17 +328,13 @@ class SnowflakeAIModelVersion(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -400,9 +361,7 @@ class SnowflakeAIModelVersion(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -414,19 +373,13 @@ class SnowflakeAIModelVersion(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_ai_model_context: Union[
-        RelatedSnowflakeAIModelContext, None, UnsetType
-    ] = msgspec.field(default=UNSET, name="snowflakeAIModelContext")
+    snowflake_ai_model_context: Union[RelatedSnowflakeAIModelContext, None, UnsetType] = msgspec.field(default=UNSET, name="snowflakeAIModelContext")
     """Context containing the version."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -438,19 +391,13 @@ class SnowflakeAIModelVersion(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -463,6 +410,7 @@ class SnowflakeAIModelVersion(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -493,9 +441,7 @@ class SnowflakeAIModelVersion(Asset):
         return _snowflake_ai_model_version_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SnowflakeAIModelVersion:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SnowflakeAIModelVersion:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -516,7 +462,6 @@ class SnowflakeAIModelVersion(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class SnowflakeAIModelVersionAttributes(AssetAttributes):
     """SnowflakeAIModelVersion-specific attributes for nested API format."""
@@ -584,9 +529,7 @@ class SnowflakeAIModelVersionAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -622,41 +565,26 @@ class SnowflakeAIModelVersionAttributes(AssetAttributes):
     ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
     """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
 
-    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIPrivacyConfig"
-    )
+    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIFairnessConfig"
-    )
+    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIBiasMitigationConfig"
-    )
+    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
-    )
+    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAITransparencyConfig"
-    )
+    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIAccountabilityConfig"
-    )
+    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
-    )
+    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
-
 
 class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     """SnowflakeAIModelVersion-specific relationship attributes for nested API format."""
@@ -694,9 +622,7 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -705,9 +631,7 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -722,17 +646,13 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -759,9 +679,7 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -773,19 +691,13 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_ai_model_context: Union[
-        RelatedSnowflakeAIModelContext, None, UnsetType
-    ] = msgspec.field(default=UNSET, name="snowflakeAIModelContext")
+    snowflake_ai_model_context: Union[RelatedSnowflakeAIModelContext, None, UnsetType] = msgspec.field(default=UNSET, name="snowflakeAIModelContext")
     """Context containing the version."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -797,36 +709,22 @@ class SnowflakeAIModelVersionRelationshipAttributes(AssetRelationshipAttributes)
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
-
 
 class SnowflakeAIModelVersionNested(AssetNested):
     """SnowflakeAIModelVersion in nested API format for high-performance serialization."""
 
     attributes: Union[SnowflakeAIModelVersionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        SnowflakeAIModelVersionRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        SnowflakeAIModelVersionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SnowflakeAIModelVersionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SnowflakeAIModelVersionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SnowflakeAIModelVersionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SnowflakeAIModelVersionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -879,10 +777,7 @@ _SNOWFLAKE_AI_MODEL_VERSION_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-
-def _populate_snowflake_ai_model_version_attrs(
-    attrs: SnowflakeAIModelVersionAttributes, obj: SnowflakeAIModelVersion
-) -> None:
+def _populate_snowflake_ai_model_version_attrs(attrs: SnowflakeAIModelVersionAttributes, obj: SnowflakeAIModelVersion) -> None:
     """Populate SnowflakeAIModelVersion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.snowflake_name = obj.snowflake_name
@@ -910,13 +805,9 @@ def _populate_snowflake_ai_model_version_attrs(
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = (
-        obj.sql_ai_insights_popular_business_question_count
-    )
+    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = (
-        obj.sql_ai_insights_popular_filter_count
-    )
+    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.ai_model_qualified_name = obj.ai_model_qualified_name
@@ -925,19 +816,12 @@ def _populate_snowflake_ai_model_version_attrs(
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
     attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
-    attrs.ethical_ai_reliability_and_safety_config = (
-        obj.ethical_ai_reliability_and_safety_config
-    )
+    attrs.ethical_ai_reliability_and_safety_config = obj.ethical_ai_reliability_and_safety_config
     attrs.ethical_ai_transparency_config = obj.ethical_ai_transparency_config
     attrs.ethical_ai_accountability_config = obj.ethical_ai_accountability_config
-    attrs.ethical_ai_environmental_consciousness_config = (
-        obj.ethical_ai_environmental_consciousness_config
-    )
+    attrs.ethical_ai_environmental_consciousness_config = obj.ethical_ai_environmental_consciousness_config
 
-
-def _extract_snowflake_ai_model_version_attrs(
-    attrs: SnowflakeAIModelVersionAttributes,
-) -> dict:
+def _extract_snowflake_ai_model_version_attrs(attrs: SnowflakeAIModelVersionAttributes) -> dict:
     """Extract all SnowflakeAIModelVersion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["snowflake_name"] = attrs.snowflake_name
@@ -961,60 +845,39 @@ def _extract_snowflake_ai_model_version_attrs(
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = (
-        attrs.sql_ai_insights_popular_business_question_count
-    )
-    result["sql_ai_insights_popular_join_count"] = (
-        attrs.sql_ai_insights_popular_join_count
-    )
-    result["sql_ai_insights_popular_filter_count"] = (
-        attrs.sql_ai_insights_popular_filter_count
-    )
-    result["sql_ai_insights_relationship_count"] = (
-        attrs.sql_ai_insights_relationship_count
-    )
+    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
+    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
+    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
+    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["ai_model_qualified_name"] = attrs.ai_model_qualified_name
     result["ai_model_version_stage"] = attrs.ai_model_version_stage
     result["ai_model_version_metrics"] = attrs.ai_model_version_metrics
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
-    result["ethical_ai_bias_mitigation_config"] = (
-        attrs.ethical_ai_bias_mitigation_config
-    )
-    result["ethical_ai_reliability_and_safety_config"] = (
-        attrs.ethical_ai_reliability_and_safety_config
-    )
+    result["ethical_ai_bias_mitigation_config"] = attrs.ethical_ai_bias_mitigation_config
+    result["ethical_ai_reliability_and_safety_config"] = attrs.ethical_ai_reliability_and_safety_config
     result["ethical_ai_transparency_config"] = attrs.ethical_ai_transparency_config
     result["ethical_ai_accountability_config"] = attrs.ethical_ai_accountability_config
-    result["ethical_ai_environmental_consciousness_config"] = (
-        attrs.ethical_ai_environmental_consciousness_config
-    )
+    result["ethical_ai_environmental_consciousness_config"] = attrs.ethical_ai_environmental_consciousness_config
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _snowflake_ai_model_version_to_nested(
-    snowflake_ai_model_version: SnowflakeAIModelVersion,
-) -> SnowflakeAIModelVersionNested:
+def _snowflake_ai_model_version_to_nested(snowflake_ai_model_version: SnowflakeAIModelVersion) -> SnowflakeAIModelVersionNested:
     """Convert flat SnowflakeAIModelVersion to nested format."""
     attrs = SnowflakeAIModelVersionAttributes()
     _populate_snowflake_ai_model_version_attrs(attrs, snowflake_ai_model_version)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        snowflake_ai_model_version,
-        _SNOWFLAKE_AI_MODEL_VERSION_REL_FIELDS,
-        SnowflakeAIModelVersionRelationshipAttributes,
+        snowflake_ai_model_version, _SNOWFLAKE_AI_MODEL_VERSION_REL_FIELDS, SnowflakeAIModelVersionRelationshipAttributes
     )
     return SnowflakeAIModelVersionNested(
         guid=snowflake_ai_model_version.guid,
@@ -1042,23 +905,16 @@ def _snowflake_ai_model_version_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _snowflake_ai_model_version_from_nested(
-    nested: SnowflakeAIModelVersionNested,
-) -> SnowflakeAIModelVersion:
+def _snowflake_ai_model_version_from_nested(nested: SnowflakeAIModelVersionNested) -> SnowflakeAIModelVersion:
     """Convert nested format to flat SnowflakeAIModelVersion."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SnowflakeAIModelVersionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SnowflakeAIModelVersionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SNOWFLAKE_AI_MODEL_VERSION_REL_FIELDS,
-        SnowflakeAIModelVersionRelationshipAttributes,
+        SnowflakeAIModelVersionRelationshipAttributes
     )
     return SnowflakeAIModelVersion(
         guid=nested.guid,
@@ -1085,23 +941,15 @@ def _snowflake_ai_model_version_from_nested(
         **merged_rels,
     )
 
-
-def _snowflake_ai_model_version_to_nested_bytes(
-    snowflake_ai_model_version: SnowflakeAIModelVersion, serde: Serde
-) -> bytes:
+def _snowflake_ai_model_version_to_nested_bytes(snowflake_ai_model_version: SnowflakeAIModelVersion, serde: Serde) -> bytes:
     """Convert flat SnowflakeAIModelVersion to nested JSON bytes."""
-    return serde.encode(
-        _snowflake_ai_model_version_to_nested(snowflake_ai_model_version)
-    )
+    return serde.encode(_snowflake_ai_model_version_to_nested(snowflake_ai_model_version))
 
 
-def _snowflake_ai_model_version_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> SnowflakeAIModelVersion:
+def _snowflake_ai_model_version_from_nested_bytes(data: bytes, serde: Serde) -> SnowflakeAIModelVersion:
     """Convert nested JSON bytes to flat SnowflakeAIModelVersion."""
     nested = serde.decode(data, SnowflakeAIModelVersionNested)
     return _snowflake_ai_model_version_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1115,144 +963,66 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 SnowflakeAIModelVersion.SNOWFLAKE_NAME = KeywordField("snowflakeName", "snowflakeName")
 SnowflakeAIModelVersion.SNOWFLAKE_TYPE = KeywordField("snowflakeType", "snowflakeType")
-SnowflakeAIModelVersion.SNOWFLAKE_ALIASES = KeywordField(
-    "snowflakeAliases", "snowflakeAliases"
-)
-SnowflakeAIModelVersion.SNOWFLAKE_METRICS = KeywordField(
-    "snowflakeMetrics", "snowflakeMetrics"
-)
-SnowflakeAIModelVersion.SNOWFLAKE_FUNCTIONS = KeywordField(
-    "snowflakeFunctions", "snowflakeFunctions"
-)
+SnowflakeAIModelVersion.SNOWFLAKE_ALIASES = KeywordField("snowflakeAliases", "snowflakeAliases")
+SnowflakeAIModelVersion.SNOWFLAKE_METRICS = KeywordField("snowflakeMetrics", "snowflakeMetrics")
+SnowflakeAIModelVersion.SNOWFLAKE_FUNCTIONS = KeywordField("snowflakeFunctions", "snowflakeFunctions")
 SnowflakeAIModelVersion.QUERY_COUNT = NumericField("queryCount", "queryCount")
-SnowflakeAIModelVersion.QUERY_USER_COUNT = NumericField(
-    "queryUserCount", "queryUserCount"
-)
+SnowflakeAIModelVersion.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 SnowflakeAIModelVersion.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-SnowflakeAIModelVersion.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+SnowflakeAIModelVersion.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 SnowflakeAIModelVersion.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-SnowflakeAIModelVersion.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+SnowflakeAIModelVersion.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 SnowflakeAIModelVersion.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-SnowflakeAIModelVersion.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+SnowflakeAIModelVersion.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 SnowflakeAIModelVersion.TABLE_NAME = KeywordField("tableName", "tableName")
-SnowflakeAIModelVersion.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+SnowflakeAIModelVersion.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 SnowflakeAIModelVersion.VIEW_NAME = KeywordField("viewName", "viewName")
-SnowflakeAIModelVersion.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-SnowflakeAIModelVersion.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-SnowflakeAIModelVersion.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+SnowflakeAIModelVersion.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+SnowflakeAIModelVersion.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+SnowflakeAIModelVersion.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 SnowflakeAIModelVersion.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-SnowflakeAIModelVersion.LAST_PROFILED_AT = NumericField(
-    "lastProfiledAt", "lastProfiledAt"
-)
-SnowflakeAIModelVersion.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+SnowflakeAIModelVersion.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
+SnowflakeAIModelVersion.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 SnowflakeAIModelVersion.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-SnowflakeAIModelVersion.SQL_HAS_AI_INSIGHTS = BooleanField(
-    "sqlHasAiInsights", "sqlHasAiInsights"
-)
-SnowflakeAIModelVersion.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
-    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
-)
-SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
-    "sqlAiInsightsPopularBusinessQuestionCount",
-    "sqlAiInsightsPopularBusinessQuestionCount",
-)
-SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
-    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
-)
-SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
-    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
-)
-SnowflakeAIModelVersion.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
-    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
-)
-SnowflakeAIModelVersion.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
-SnowflakeAIModelVersion.AI_MODEL_QUALIFIED_NAME = KeywordField(
-    "aiModelQualifiedName", "aiModelQualifiedName"
-)
-SnowflakeAIModelVersion.AI_MODEL_VERSION_STAGE = KeywordField(
-    "aiModelVersionStage", "aiModelVersionStage"
-)
-SnowflakeAIModelVersion.AI_MODEL_VERSION_METRICS = KeywordField(
-    "aiModelVersionMetrics", "aiModelVersionMetrics"
-)
-SnowflakeAIModelVersion.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
-    "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
-)
-SnowflakeAIModelVersion.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField(
-    "ethicalAIFairnessConfig", "ethicalAIFairnessConfig"
-)
-SnowflakeAIModelVersion.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField(
-    "ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig"
-)
-SnowflakeAIModelVersion.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField(
-    "ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig"
-)
-SnowflakeAIModelVersion.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField(
-    "ethicalAITransparencyConfig", "ethicalAITransparencyConfig"
-)
-SnowflakeAIModelVersion.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField(
-    "ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig"
-)
-SnowflakeAIModelVersion.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
-    "ethicalAIEnvironmentalConsciousnessConfig",
-    "ethicalAIEnvironmentalConsciousnessConfig",
-)
+SnowflakeAIModelVersion.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
+SnowflakeAIModelVersion.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
+SnowflakeAIModelVersion.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SnowflakeAIModelVersion.AI_MODEL_QUALIFIED_NAME = KeywordField("aiModelQualifiedName", "aiModelQualifiedName")
+SnowflakeAIModelVersion.AI_MODEL_VERSION_STAGE = KeywordField("aiModelVersionStage", "aiModelVersionStage")
+SnowflakeAIModelVersion.AI_MODEL_VERSION_METRICS = KeywordField("aiModelVersionMetrics", "aiModelVersionMetrics")
+SnowflakeAIModelVersion.ETHICAL_AI_PRIVACY_CONFIG = KeywordField("ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig")
+SnowflakeAIModelVersion.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField("ethicalAIFairnessConfig", "ethicalAIFairnessConfig")
+SnowflakeAIModelVersion.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField("ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig")
+SnowflakeAIModelVersion.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField("ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig")
+SnowflakeAIModelVersion.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField("ethicalAITransparencyConfig", "ethicalAITransparencyConfig")
+SnowflakeAIModelVersion.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField("ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig")
+SnowflakeAIModelVersion.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField("ethicalAIEnvironmentalConsciousnessConfig", "ethicalAIEnvironmentalConsciousnessConfig")
 SnowflakeAIModelVersion.AI_MODEL = RelationField("aiModel")
 SnowflakeAIModelVersion.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SnowflakeAIModelVersion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+SnowflakeAIModelVersion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SnowflakeAIModelVersion.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SnowflakeAIModelVersion.APPLICATION = RelationField("application")
 SnowflakeAIModelVersion.APPLICATION_FIELD = RelationField("applicationField")
 SnowflakeAIModelVersion.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SnowflakeAIModelVersion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-SnowflakeAIModelVersion.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-SnowflakeAIModelVersion.INPUT_PORT_DATA_PRODUCTS = RelationField(
-    "inputPortDataProducts"
-)
-SnowflakeAIModelVersion.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-SnowflakeAIModelVersion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SnowflakeAIModelVersion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SnowflakeAIModelVersion.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+SnowflakeAIModelVersion.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+SnowflakeAIModelVersion.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+SnowflakeAIModelVersion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SnowflakeAIModelVersion.METRICS = RelationField("metrics")
 SnowflakeAIModelVersion.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SnowflakeAIModelVersion.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
+SnowflakeAIModelVersion.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 SnowflakeAIModelVersion.DBT_MODELS = RelationField("dbtModels")
 SnowflakeAIModelVersion.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 SnowflakeAIModelVersion.DBT_TESTS = RelationField("dbtTests")
 SnowflakeAIModelVersion.DBT_SOURCES = RelationField("dbtSources")
 SnowflakeAIModelVersion.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 SnowflakeAIModelVersion.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-SnowflakeAIModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SnowflakeAIModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SnowflakeAIModelVersion.MEANINGS = RelationField("meanings")
 SnowflakeAIModelVersion.MC_MONITORS = RelationField("mcMonitors")
 SnowflakeAIModelVersion.MC_INCIDENTS = RelationField("mcIncidents")
@@ -1260,33 +1030,17 @@ SnowflakeAIModelVersion.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields
 SnowflakeAIModelVersion.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 SnowflakeAIModelVersion.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SnowflakeAIModelVersion.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-SnowflakeAIModelVersion.USER_DEF_RELATIONSHIP_TO = RelationField(
-    "userDefRelationshipTo"
-)
-SnowflakeAIModelVersion.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+SnowflakeAIModelVersion.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+SnowflakeAIModelVersion.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 SnowflakeAIModelVersion.FILES = RelationField("files")
 SnowflakeAIModelVersion.LINKS = RelationField("links")
 SnowflakeAIModelVersion.README = RelationField("readme")
-SnowflakeAIModelVersion.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
-SnowflakeAIModelVersion.SNOWFLAKE_AI_MODEL_CONTEXT = RelationField(
-    "snowflakeAIModelContext"
-)
-SnowflakeAIModelVersion.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+SnowflakeAIModelVersion.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SnowflakeAIModelVersion.SNOWFLAKE_AI_MODEL_CONTEXT = RelationField("snowflakeAIModelContext")
+SnowflakeAIModelVersion.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 SnowflakeAIModelVersion.SODA_CHECKS = RelationField("sodaChecks")
 SnowflakeAIModelVersion.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 SnowflakeAIModelVersion.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-SnowflakeAIModelVersion.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
-    "sqlInsightOutgoingJoins"
-)
-SnowflakeAIModelVersion.SQL_INSIGHT_INCOMING_JOINS = RelationField(
-    "sqlInsightIncomingJoins"
-)
-SnowflakeAIModelVersion.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
-    "sqlInsightBusinessQuestions"
-)
+SnowflakeAIModelVersion.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+SnowflakeAIModelVersion.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+SnowflakeAIModelVersion.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")

@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .asset_related import RelatedAsset
@@ -87,7 +88,6 @@ class RelatedFlow(RelatedAsset):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Flow"
 
-
 class RelatedFlowProject(RelatedFlow):
     """
     Related entity reference for FlowProject assets.
@@ -101,7 +101,6 @@ class RelatedFlowProject(RelatedFlow):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FlowProject"
-
 
 class RelatedFlowFolder(RelatedFlow):
     """
@@ -117,7 +116,6 @@ class RelatedFlowFolder(RelatedFlow):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FlowFolder"
 
-
 class RelatedFlowControlOperation(RelatedFlow):
     """
     Related entity reference for FlowControlOperation assets.
@@ -131,7 +129,6 @@ class RelatedFlowControlOperation(RelatedFlow):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FlowControlOperation"
-
 
 class RelatedFlowReusableUnit(RelatedFlow):
     """
@@ -153,7 +150,6 @@ class RelatedFlowReusableUnit(RelatedFlow):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FlowReusableUnit"
 
-
 class RelatedFlowDatasetOperation(RelatedFlow):
     """
     Related entity reference for FlowDatasetOperation assets.
@@ -168,7 +164,6 @@ class RelatedFlowDatasetOperation(RelatedFlow):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FlowDatasetOperation"
 
-
 class RelatedFlowFieldOperation(RelatedFlow):
     """
     Related entity reference for FlowFieldOperation assets.
@@ -182,7 +177,6 @@ class RelatedFlowFieldOperation(RelatedFlow):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FlowFieldOperation"
-
 
 class RelatedFlowDataset(RelatedFlow):
     """
@@ -209,7 +203,6 @@ class RelatedFlowDataset(RelatedFlow):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FlowDataset"
-
 
 class RelatedFlowField(RelatedFlow):
     """

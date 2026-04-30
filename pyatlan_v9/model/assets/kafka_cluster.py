@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,7 +37,6 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .kafka_related import RelatedKafkaTopic
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -53,11 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .kafka_related import RelatedKafkaTopic
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class KafkaCluster(Asset):
@@ -166,9 +163,7 @@ class KafkaCluster(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -177,14 +172,10 @@ class KafkaCluster(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -214,9 +205,7 @@ class KafkaCluster(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -228,9 +217,7 @@ class KafkaCluster(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -249,7 +236,10 @@ class KafkaCluster(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/cluster/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/cluster/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -302,7 +292,6 @@ class KafkaCluster(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class KafkaClusterAttributes(AssetAttributes):
     """KafkaCluster-specific attributes for nested API format."""
 
@@ -332,7 +321,6 @@ class KafkaClusterAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class KafkaClusterRelationshipAttributes(AssetRelationshipAttributes):
     """KafkaCluster-specific relationship attributes for nested API format."""
@@ -367,9 +355,7 @@ class KafkaClusterRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -378,14 +364,10 @@ class KafkaClusterRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -415,9 +397,7 @@ class KafkaClusterRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -429,9 +409,7 @@ class KafkaClusterRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -443,21 +421,13 @@ class KafkaClusterRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class KafkaClusterNested(AssetNested):
     """KafkaCluster in nested API format for high-performance serialization."""
 
     attributes: Union[KafkaClusterAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[KafkaClusterRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        KafkaClusterRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        KafkaClusterRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[KafkaClusterRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[KafkaClusterRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[KafkaClusterRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -499,10 +469,7 @@ _KAFKA_CLUSTER_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_kafka_cluster_attrs(
-    attrs: KafkaClusterAttributes, obj: KafkaCluster
-) -> None:
+def _populate_kafka_cluster_attrs(attrs: KafkaClusterAttributes, obj: KafkaCluster) -> None:
     """Populate KafkaCluster-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.kafka_topic_count = obj.kafka_topic_count
@@ -514,7 +481,6 @@ def _populate_kafka_cluster_attrs(
     attrs.kafka_authentication_type = obj.kafka_authentication_type
     attrs.kafka_environment = obj.kafka_environment
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_kafka_cluster_attrs(attrs: KafkaClusterAttributes) -> dict:
     """Extract all KafkaCluster attributes from the attrs struct into a flat dict."""
@@ -529,7 +495,6 @@ def _extract_kafka_cluster_attrs(attrs: KafkaClusterAttributes) -> dict:
     result["kafka_environment"] = attrs.kafka_environment
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -570,21 +535,16 @@ def _kafka_cluster_to_nested(kafka_cluster: KafkaCluster) -> KafkaClusterNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _kafka_cluster_from_nested(nested: KafkaClusterNested) -> KafkaCluster:
     """Convert nested format to flat KafkaCluster."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else KafkaClusterAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else KafkaClusterAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _KAFKA_CLUSTER_REL_FIELDS,
-        KafkaClusterRelationshipAttributes,
+        KafkaClusterRelationshipAttributes
     )
     return KafkaCluster(
         guid=nested.guid,
@@ -611,7 +571,6 @@ def _kafka_cluster_from_nested(nested: KafkaClusterNested) -> KafkaCluster:
         **merged_rels,
     )
 
-
 def _kafka_cluster_to_nested_bytes(kafka_cluster: KafkaCluster, serde: Serde) -> bytes:
     """Convert flat KafkaCluster to nested JSON bytes."""
     return serde.encode(_kafka_cluster_to_nested(kafka_cluster))
@@ -621,7 +580,6 @@ def _kafka_cluster_from_nested_bytes(data: bytes, serde: Serde) -> KafkaCluster:
     """Convert nested JSON bytes to flat KafkaCluster."""
     nested = serde.decode(data, KafkaClusterNested)
     return _kafka_cluster_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -634,37 +592,21 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 KafkaCluster.KAFKA_TOPIC_COUNT = NumericField("kafkaTopicCount", "kafkaTopicCount")
-KafkaCluster.KAFKA_PARTITION_COUNT = NumericField(
-    "kafkaPartitionCount", "kafkaPartitionCount"
-)
+KafkaCluster.KAFKA_PARTITION_COUNT = NumericField("kafkaPartitionCount", "kafkaPartitionCount")
 KafkaCluster.KAFKA_BROKER_COUNT = NumericField("kafkaBrokerCount", "kafkaBrokerCount")
-KafkaCluster.KAFKA_BOOTSTRAP_SERVERS = KeywordField(
-    "kafkaBootstrapServers", "kafkaBootstrapServers"
-)
-KafkaCluster.KAFKA_CLUSTER_TYPE = KeywordTextField(
-    "kafkaClusterType", "kafkaClusterType", "kafkaClusterType.text"
-)
-KafkaCluster.KAFKA_SCHEMA_REGISTRY_URL = KeywordField(
-    "kafkaSchemaRegistryUrl", "kafkaSchemaRegistryUrl"
-)
-KafkaCluster.KAFKA_AUTHENTICATION_TYPE = KeywordTextField(
-    "kafkaAuthenticationType", "kafkaAuthenticationType", "kafkaAuthenticationType.text"
-)
-KafkaCluster.KAFKA_ENVIRONMENT = KeywordTextField(
-    "kafkaEnvironment", "kafkaEnvironment", "kafkaEnvironment.text"
-)
-KafkaCluster.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+KafkaCluster.KAFKA_BOOTSTRAP_SERVERS = KeywordField("kafkaBootstrapServers", "kafkaBootstrapServers")
+KafkaCluster.KAFKA_CLUSTER_TYPE = KeywordTextField("kafkaClusterType", "kafkaClusterType", "kafkaClusterType.text")
+KafkaCluster.KAFKA_SCHEMA_REGISTRY_URL = KeywordField("kafkaSchemaRegistryUrl", "kafkaSchemaRegistryUrl")
+KafkaCluster.KAFKA_AUTHENTICATION_TYPE = KeywordTextField("kafkaAuthenticationType", "kafkaAuthenticationType", "kafkaAuthenticationType.text")
+KafkaCluster.KAFKA_ENVIRONMENT = KeywordTextField("kafkaEnvironment", "kafkaEnvironment", "kafkaEnvironment.text")
+KafkaCluster.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 KafkaCluster.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 KafkaCluster.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 KafkaCluster.ANOMALO_CHECKS = RelationField("anomaloChecks")
 KafkaCluster.APPLICATION = RelationField("application")
 KafkaCluster.APPLICATION_FIELD = RelationField("applicationField")
 KafkaCluster.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-KafkaCluster.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+KafkaCluster.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 KafkaCluster.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 KafkaCluster.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 KafkaCluster.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -672,9 +614,7 @@ KafkaCluster.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttri
 KafkaCluster.METRICS = RelationField("metrics")
 KafkaCluster.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 KafkaCluster.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-KafkaCluster.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+KafkaCluster.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 KafkaCluster.MEANINGS = RelationField("meanings")
 KafkaCluster.KAFKA_TOPICS = RelationField("kafkaTopics")
 KafkaCluster.MC_MONITORS = RelationField("mcMonitors")

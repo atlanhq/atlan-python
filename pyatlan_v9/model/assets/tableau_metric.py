@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -52,12 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
 from .tableau_related import RelatedTableauProject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class TableauMetric(Asset):
@@ -158,9 +155,7 @@ class TableauMetric(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -169,14 +164,10 @@ class TableauMetric(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -203,9 +194,7 @@ class TableauMetric(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -217,9 +206,7 @@ class TableauMetric(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -244,6 +231,7 @@ class TableauMetric(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -296,7 +284,6 @@ class TableauMetric(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class TableauMetricAttributes(AssetAttributes):
     """TableauMetric-specific attributes for nested API format."""
 
@@ -320,7 +307,6 @@ class TableauMetricAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class TableauMetricRelationshipAttributes(AssetRelationshipAttributes):
     """TableauMetric-specific relationship attributes for nested API format."""
@@ -355,9 +341,7 @@ class TableauMetricRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -366,14 +350,10 @@ class TableauMetricRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -400,9 +380,7 @@ class TableauMetricRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -414,9 +392,7 @@ class TableauMetricRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -431,21 +407,13 @@ class TableauMetricRelationshipAttributes(AssetRelationshipAttributes):
     project: Union[RelatedTableauProject, None, UnsetType] = UNSET
     """Project in which this metric exists."""
 
-
 class TableauMetricNested(AssetNested):
     """TableauMetric in nested API format for high-performance serialization."""
 
     attributes: Union[TableauMetricAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[TableauMetricRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        TableauMetricRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        TableauMetricRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[TableauMetricRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[TableauMetricRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[TableauMetricRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -487,22 +455,16 @@ _TABLEAU_METRIC_REL_FIELDS: List[str] = [
     "project",
 ]
 
-
-def _populate_tableau_metric_attrs(
-    attrs: TableauMetricAttributes, obj: TableauMetric
-) -> None:
+def _populate_tableau_metric_attrs(attrs: TableauMetricAttributes, obj: TableauMetric) -> None:
     """Populate TableauMetric-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.site_qualified_name = obj.site_qualified_name
     attrs.project_qualified_name = obj.project_qualified_name
     attrs.top_level_project_qualified_name = obj.top_level_project_qualified_name
     attrs.project_hierarchy = obj.project_hierarchy
-    attrs.tableau_project_hierarchy_qualified_names = (
-        obj.tableau_project_hierarchy_qualified_names
-    )
+    attrs.tableau_project_hierarchy_qualified_names = obj.tableau_project_hierarchy_qualified_names
     attrs.tableau_source_read_counts = obj.tableau_source_read_counts
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_tableau_metric_attrs(attrs: TableauMetricAttributes) -> dict:
     """Extract all TableauMetric attributes from the attrs struct into a flat dict."""
@@ -511,13 +473,10 @@ def _extract_tableau_metric_attrs(attrs: TableauMetricAttributes) -> dict:
     result["project_qualified_name"] = attrs.project_qualified_name
     result["top_level_project_qualified_name"] = attrs.top_level_project_qualified_name
     result["project_hierarchy"] = attrs.project_hierarchy
-    result["tableau_project_hierarchy_qualified_names"] = (
-        attrs.tableau_project_hierarchy_qualified_names
-    )
+    result["tableau_project_hierarchy_qualified_names"] = attrs.tableau_project_hierarchy_qualified_names
     result["tableau_source_read_counts"] = attrs.tableau_source_read_counts
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -558,21 +517,16 @@ def _tableau_metric_to_nested(tableau_metric: TableauMetric) -> TableauMetricNes
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _tableau_metric_from_nested(nested: TableauMetricNested) -> TableauMetric:
     """Convert nested format to flat TableauMetric."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else TableauMetricAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else TableauMetricAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TABLEAU_METRIC_REL_FIELDS,
-        TableauMetricRelationshipAttributes,
+        TableauMetricRelationshipAttributes
     )
     return TableauMetric(
         guid=nested.guid,
@@ -599,10 +553,7 @@ def _tableau_metric_from_nested(nested: TableauMetricNested) -> TableauMetric:
         **merged_rels,
     )
 
-
-def _tableau_metric_to_nested_bytes(
-    tableau_metric: TableauMetric, serde: Serde
-) -> bytes:
+def _tableau_metric_to_nested_bytes(tableau_metric: TableauMetric, serde: Serde) -> bytes:
     """Convert flat TableauMetric to nested JSON bytes."""
     return serde.encode(_tableau_metric_to_nested(tableau_metric))
 
@@ -612,40 +563,28 @@ def _tableau_metric_from_nested_bytes(data: bytes, serde: Serde) -> TableauMetri
     nested = serde.decode(data, TableauMetricNested)
     return _tableau_metric_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
-TableauMetric.SITE_QUALIFIED_NAME = KeywordField(
-    "siteQualifiedName", "siteQualifiedName"
-)
-TableauMetric.PROJECT_QUALIFIED_NAME = KeywordField(
-    "projectQualifiedName", "projectQualifiedName"
-)
-TableauMetric.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField(
-    "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
-)
+TableauMetric.SITE_QUALIFIED_NAME = KeywordField("siteQualifiedName", "siteQualifiedName")
+TableauMetric.PROJECT_QUALIFIED_NAME = KeywordField("projectQualifiedName", "projectQualifiedName")
+TableauMetric.TOP_LEVEL_PROJECT_QUALIFIED_NAME = KeywordField("topLevelProjectQualifiedName", "topLevelProjectQualifiedName")
 TableauMetric.PROJECT_HIERARCHY = KeywordField("projectHierarchy", "projectHierarchy")
-TableauMetric.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField(
-    "tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames"
-)
-TableauMetric.TABLEAU_SOURCE_READ_COUNTS = KeywordField(
-    "tableauSourceReadCounts", "tableauSourceReadCounts"
-)
-TableauMetric.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+TableauMetric.TABLEAU_PROJECT_HIERARCHY_QUALIFIED_NAMES = KeywordField("tableauProjectHierarchyQualifiedNames", "tableauProjectHierarchyQualifiedNames")
+TableauMetric.TABLEAU_SOURCE_READ_COUNTS = KeywordField("tableauSourceReadCounts", "tableauSourceReadCounts")
+TableauMetric.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 TableauMetric.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 TableauMetric.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 TableauMetric.ANOMALO_CHECKS = RelationField("anomaloChecks")
 TableauMetric.APPLICATION = RelationField("application")
 TableauMetric.APPLICATION_FIELD = RelationField("applicationField")
 TableauMetric.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-TableauMetric.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+TableauMetric.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 TableauMetric.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 TableauMetric.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 TableauMetric.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -653,9 +592,7 @@ TableauMetric.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttr
 TableauMetric.METRICS = RelationField("metrics")
 TableauMetric.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 TableauMetric.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-TableauMetric.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+TableauMetric.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 TableauMetric.MEANINGS = RelationField("meanings")
 TableauMetric.MC_MONITORS = RelationField("mcMonitors")
 TableauMetric.MC_INCIDENTS = RelationField("mcIncidents")

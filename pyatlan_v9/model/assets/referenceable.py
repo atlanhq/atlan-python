@@ -19,7 +19,11 @@ from typing import Any, ClassVar, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.fields.atlan_fields import (
+    InternalKeywordField,
+    KeywordField,
+    KeywordTextField,
+)
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
@@ -392,6 +396,7 @@ def _referenceable_from_nested_bytes(data: bytes, serde: Serde) -> Referenceable
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import RelationField  # noqa: E402
 
+Referenceable.STATUS = InternalKeywordField("status", "__state", "__state")
 Referenceable.QUALIFIED_NAME = KeywordTextField(
     "qualifiedName", "qualifiedName", "qualifiedName.text"
 )

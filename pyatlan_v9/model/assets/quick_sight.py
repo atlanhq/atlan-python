@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -51,11 +45,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class QuickSight(Asset):
@@ -143,9 +139,7 @@ class QuickSight(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -154,14 +148,10 @@ class QuickSight(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -188,9 +178,7 @@ class QuickSight(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -202,9 +190,7 @@ class QuickSight(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -218,6 +204,8 @@ class QuickSight(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "QuickSight"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -270,7 +258,6 @@ class QuickSight(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class QuickSightAttributes(AssetAttributes):
     """QuickSight-specific attributes for nested API format."""
 
@@ -285,7 +272,6 @@ class QuickSightAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     """QuickSight-specific relationship attributes for nested API format."""
@@ -320,9 +306,7 @@ class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -331,14 +315,10 @@ class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -365,9 +345,7 @@ class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -379,9 +357,7 @@ class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -393,19 +369,13 @@ class QuickSightRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class QuickSightNested(AssetNested):
     """QuickSight in nested API format for high-performance serialization."""
 
     attributes: Union[QuickSightAttributes, UnsetType] = UNSET
     relationship_attributes: Union[QuickSightRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        QuickSightRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        QuickSightRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[QuickSightRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[QuickSightRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -446,7 +416,6 @@ _QUICK_SIGHT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_quick_sight_attrs(attrs: QuickSightAttributes, obj: QuickSight) -> None:
     """Populate QuickSight-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -454,7 +423,6 @@ def _populate_quick_sight_attrs(attrs: QuickSightAttributes, obj: QuickSight) ->
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_quick_sight_attrs(attrs: QuickSightAttributes) -> dict:
     """Extract all QuickSight attributes from the attrs struct into a flat dict."""
@@ -464,7 +432,6 @@ def _extract_quick_sight_attrs(attrs: QuickSightAttributes) -> dict:
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -505,19 +472,16 @@ def _quick_sight_to_nested(quick_sight: QuickSight) -> QuickSightNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _quick_sight_from_nested(nested: QuickSightNested) -> QuickSight:
     """Convert nested format to flat QuickSight."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else QuickSightAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else QuickSightAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QUICK_SIGHT_REL_FIELDS,
-        QuickSightRelationshipAttributes,
+        QuickSightRelationshipAttributes
     )
     return QuickSight(
         guid=nested.guid,
@@ -544,7 +508,6 @@ def _quick_sight_from_nested(nested: QuickSightNested) -> QuickSight:
         **merged_rels,
     )
 
-
 def _quick_sight_to_nested_bytes(quick_sight: QuickSight, serde: Serde) -> bytes:
     """Convert flat QuickSight to nested JSON bytes."""
     return serde.encode(_quick_sight_to_nested(quick_sight))
@@ -554,7 +517,6 @@ def _quick_sight_from_nested_bytes(data: bytes, serde: Serde) -> QuickSight:
     """Convert nested JSON bytes to flat QuickSight."""
     nested = serde.decode(data, QuickSightNested)
     return _quick_sight_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -567,12 +529,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 
 QuickSight.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
 QuickSight.QUICK_SIGHT_SHEET_ID = KeywordField("quickSightSheetId", "quickSightSheetId")
-QuickSight.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
-    "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
-)
-QuickSight.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+QuickSight.QUICK_SIGHT_SHEET_NAME = KeywordTextField("quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text")
+QuickSight.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 QuickSight.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 QuickSight.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 QuickSight.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -587,9 +545,7 @@ QuickSight.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribu
 QuickSight.METRICS = RelationField("metrics")
 QuickSight.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 QuickSight.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-QuickSight.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+QuickSight.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 QuickSight.MEANINGS = RelationField("meanings")
 QuickSight.MC_MONITORS = RelationField("mcMonitors")
 QuickSight.MC_INCIDENTS = RelationField("mcIncidents")

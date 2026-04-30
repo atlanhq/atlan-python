@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -48,15 +42,18 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSapErpAbapProgram, RelatedSapErpComponent
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sap_related import RelatedSapErpAbapProgram, RelatedSapErpComponent
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SapErpTransactionCode(Asset):
@@ -162,9 +159,7 @@ class SapErpTransactionCode(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -173,14 +168,10 @@ class SapErpTransactionCode(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -207,9 +198,7 @@ class SapErpTransactionCode(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -227,9 +216,7 @@ class SapErpTransactionCode(Asset):
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP Transaction Codes that are associated with this SAP ERP Component."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -243,6 +230,8 @@ class SapErpTransactionCode(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpTransactionCode"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -273,9 +262,7 @@ class SapErpTransactionCode(Asset):
         return _sap_erp_transaction_code_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SapErpTransactionCode:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SapErpTransactionCode:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -296,7 +283,6 @@ class SapErpTransactionCode(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class SapErpTransactionCodeAttributes(AssetAttributes):
     """SapErpTransactionCode-specific attributes for nested API format."""
@@ -324,7 +310,6 @@ class SapErpTransactionCodeAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class SapErpTransactionCodeRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpTransactionCode-specific relationship attributes for nested API format."""
@@ -359,9 +344,7 @@ class SapErpTransactionCodeRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -370,14 +353,10 @@ class SapErpTransactionCodeRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -404,9 +383,7 @@ class SapErpTransactionCodeRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -424,9 +401,7 @@ class SapErpTransactionCodeRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP Transaction Codes that are associated with this SAP ERP Component."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -438,21 +413,13 @@ class SapErpTransactionCodeRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SapErpTransactionCodeNested(AssetNested):
     """SapErpTransactionCode in nested API format for high-performance serialization."""
 
     attributes: Union[SapErpTransactionCodeAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        SapErpTransactionCodeRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        SapErpTransactionCodeRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SapErpTransactionCodeRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SapErpTransactionCodeRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SapErpTransactionCodeRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SapErpTransactionCodeRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -495,10 +462,7 @@ _SAP_ERP_TRANSACTION_CODE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_sap_erp_transaction_code_attrs(
-    attrs: SapErpTransactionCodeAttributes, obj: SapErpTransactionCode
-) -> None:
+def _populate_sap_erp_transaction_code_attrs(attrs: SapErpTransactionCodeAttributes, obj: SapErpTransactionCode) -> None:
     """Populate SapErpTransactionCode-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sap_technical_name = obj.sap_technical_name
@@ -510,10 +474,7 @@ def _populate_sap_erp_transaction_code_attrs(
     attrs.sap_field_order = obj.sap_field_order
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
-def _extract_sap_erp_transaction_code_attrs(
-    attrs: SapErpTransactionCodeAttributes,
-) -> dict:
+def _extract_sap_erp_transaction_code_attrs(attrs: SapErpTransactionCodeAttributes) -> dict:
     """Extract all SapErpTransactionCode attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["sap_technical_name"] = attrs.sap_technical_name
@@ -526,23 +487,18 @@ def _extract_sap_erp_transaction_code_attrs(
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sap_erp_transaction_code_to_nested(
-    sap_erp_transaction_code: SapErpTransactionCode,
-) -> SapErpTransactionCodeNested:
+def _sap_erp_transaction_code_to_nested(sap_erp_transaction_code: SapErpTransactionCode) -> SapErpTransactionCodeNested:
     """Convert flat SapErpTransactionCode to nested format."""
     attrs = SapErpTransactionCodeAttributes()
     _populate_sap_erp_transaction_code_attrs(attrs, sap_erp_transaction_code)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sap_erp_transaction_code,
-        _SAP_ERP_TRANSACTION_CODE_REL_FIELDS,
-        SapErpTransactionCodeRelationshipAttributes,
+        sap_erp_transaction_code, _SAP_ERP_TRANSACTION_CODE_REL_FIELDS, SapErpTransactionCodeRelationshipAttributes
     )
     return SapErpTransactionCodeNested(
         guid=sap_erp_transaction_code.guid,
@@ -570,23 +526,16 @@ def _sap_erp_transaction_code_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _sap_erp_transaction_code_from_nested(
-    nested: SapErpTransactionCodeNested,
-) -> SapErpTransactionCode:
+def _sap_erp_transaction_code_from_nested(nested: SapErpTransactionCodeNested) -> SapErpTransactionCode:
     """Convert nested format to flat SapErpTransactionCode."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SapErpTransactionCodeAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SapErpTransactionCodeAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_TRANSACTION_CODE_REL_FIELDS,
-        SapErpTransactionCodeRelationshipAttributes,
+        SapErpTransactionCodeRelationshipAttributes
     )
     return SapErpTransactionCode(
         guid=nested.guid,
@@ -613,21 +562,15 @@ def _sap_erp_transaction_code_from_nested(
         **merged_rels,
     )
 
-
-def _sap_erp_transaction_code_to_nested_bytes(
-    sap_erp_transaction_code: SapErpTransactionCode, serde: Serde
-) -> bytes:
+def _sap_erp_transaction_code_to_nested_bytes(sap_erp_transaction_code: SapErpTransactionCode, serde: Serde) -> bytes:
     """Convert flat SapErpTransactionCode to nested JSON bytes."""
     return serde.encode(_sap_erp_transaction_code_to_nested(sap_erp_transaction_code))
 
 
-def _sap_erp_transaction_code_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> SapErpTransactionCode:
+def _sap_erp_transaction_code_from_nested_bytes(data: bytes, serde: Serde) -> SapErpTransactionCode:
     """Convert nested JSON bytes to flat SapErpTransactionCode."""
     nested = serde.decode(data, SapErpTransactionCodeNested)
     return _sap_erp_transaction_code_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -638,53 +581,29 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpTransactionCode.SAP_TECHNICAL_NAME = KeywordField(
-    "sapTechnicalName", "sapTechnicalName"
-)
-SapErpTransactionCode.SAP_LOGICAL_NAME = KeywordField(
-    "sapLogicalName", "sapLogicalName"
-)
-SapErpTransactionCode.SAP_PACKAGE_NAME = KeywordField(
-    "sapPackageName", "sapPackageName"
-)
-SapErpTransactionCode.SAP_COMPONENT_NAME = KeywordField(
-    "sapComponentName", "sapComponentName"
-)
+SapErpTransactionCode.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
+SapErpTransactionCode.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
+SapErpTransactionCode.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
+SapErpTransactionCode.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentName")
 SapErpTransactionCode.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
 SapErpTransactionCode.SAP_FIELD_COUNT = NumericField("sapFieldCount", "sapFieldCount")
 SapErpTransactionCode.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
-SapErpTransactionCode.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+SapErpTransactionCode.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 SapErpTransactionCode.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SapErpTransactionCode.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+SapErpTransactionCode.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SapErpTransactionCode.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpTransactionCode.APPLICATION = RelationField("application")
 SapErpTransactionCode.APPLICATION_FIELD = RelationField("applicationField")
 SapErpTransactionCode.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SapErpTransactionCode.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-SapErpTransactionCode.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
+SapErpTransactionCode.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SapErpTransactionCode.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SapErpTransactionCode.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SapErpTransactionCode.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-SapErpTransactionCode.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SapErpTransactionCode.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+SapErpTransactionCode.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SapErpTransactionCode.METRICS = RelationField("metrics")
 SapErpTransactionCode.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SapErpTransactionCode.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
-SapErpTransactionCode.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SapErpTransactionCode.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SapErpTransactionCode.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SapErpTransactionCode.MEANINGS = RelationField("meanings")
 SapErpTransactionCode.MC_MONITORS = RelationField("mcMonitors")
 SapErpTransactionCode.MC_INCIDENTS = RelationField("mcIncidents")
@@ -693,9 +612,7 @@ SapErpTransactionCode.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 SapErpTransactionCode.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SapErpTransactionCode.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 SapErpTransactionCode.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SapErpTransactionCode.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+SapErpTransactionCode.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 SapErpTransactionCode.FILES = RelationField("files")
 SapErpTransactionCode.LINKS = RelationField("links")
 SapErpTransactionCode.README = RelationField("readme")

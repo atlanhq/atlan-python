@@ -15,22 +15,13 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
-from .api_related import RelatedAPISpec
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
     _ASSET_REL_FIELDS,
@@ -55,11 +46,16 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .api_related import RelatedAPISpec
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class APIPath(Asset):
@@ -120,9 +116,7 @@ class APIPath(Asset):
     api_path_summary: Union[str, None, UnsetType] = UNSET
     """Descriptive summary intended to apply to all operations in this path."""
 
-    api_path_raw_uri: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="apiPathRawURI"
-    )
+    api_path_raw_uri: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="apiPathRawURI")
     """Absolute path to an individual endpoint."""
 
     api_path_is_templated: Union[bool, None, UnsetType] = UNSET
@@ -197,9 +191,7 @@ class APIPath(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -208,14 +200,10 @@ class APIPath(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -242,9 +230,7 @@ class APIPath(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -256,9 +242,7 @@ class APIPath(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -277,7 +261,10 @@ class APIPath(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     @property
     def api_path_raw_u_r_i(self) -> Union[str, None, UnsetType]:
@@ -384,16 +371,13 @@ class APIPath(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class APIPathAttributes(AssetAttributes):
     """APIPath-specific attributes for nested API format."""
 
     api_path_summary: Union[str, None, UnsetType] = UNSET
     """Descriptive summary intended to apply to all operations in this path."""
 
-    api_path_raw_uri: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="apiPathRawURI"
-    )
+    api_path_raw_uri: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="apiPathRawURI")
     """Absolute path to an individual endpoint."""
 
     api_path_is_templated: Union[bool, None, UnsetType] = UNSET
@@ -435,7 +419,6 @@ class APIPathAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class APIPathRelationshipAttributes(AssetRelationshipAttributes):
     """APIPath-specific relationship attributes for nested API format."""
 
@@ -472,9 +455,7 @@ class APIPathRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -483,14 +464,10 @@ class APIPathRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -517,9 +494,7 @@ class APIPathRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -531,9 +506,7 @@ class APIPathRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -545,19 +518,13 @@ class APIPathRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class APIPathNested(AssetNested):
     """APIPath in nested API format for high-performance serialization."""
 
     attributes: Union[APIPathAttributes, UnsetType] = UNSET
     relationship_attributes: Union[APIPathRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[APIPathRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[APIPathRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[APIPathRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[APIPathRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -599,7 +566,6 @@ _API_PATH_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_api_path_attrs(attrs: APIPathAttributes, obj: APIPath) -> None:
     """Populate APIPath-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -619,7 +585,6 @@ def _populate_api_path_attrs(attrs: APIPathAttributes, obj: APIPath) -> None:
     attrs.api_object_qualified_name = obj.api_object_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
 def _extract_api_path_attrs(attrs: APIPathAttributes) -> dict:
     """Extract all APIPath attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -627,9 +592,7 @@ def _extract_api_path_attrs(attrs: APIPathAttributes) -> dict:
     result["api_path_raw_uri"] = attrs.api_path_raw_uri
     result["api_path_is_templated"] = attrs.api_path_is_templated
     result["api_path_available_operations"] = attrs.api_path_available_operations
-    result["api_path_available_response_codes"] = (
-        attrs.api_path_available_response_codes
-    )
+    result["api_path_available_response_codes"] = attrs.api_path_available_response_codes
     result["api_path_is_ingress_exposed"] = attrs.api_path_is_ingress_exposed
     result["api_spec_type"] = attrs.api_spec_type
     result["api_spec_version"] = attrs.api_spec_version
@@ -641,7 +604,6 @@ def _extract_api_path_attrs(attrs: APIPathAttributes) -> dict:
     result["api_object_qualified_name"] = attrs.api_object_qualified_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -682,7 +644,6 @@ def _api_path_to_nested(api_path: APIPath) -> APIPathNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _api_path_from_nested(nested: APIPathNested) -> APIPath:
     """Convert nested format to flat APIPath."""
     attrs = nested.attributes if nested.attributes is not UNSET else APIPathAttributes()
@@ -692,7 +653,7 @@ def _api_path_from_nested(nested: APIPathNested) -> APIPath:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _API_PATH_REL_FIELDS,
-        APIPathRelationshipAttributes,
+        APIPathRelationshipAttributes
     )
     return APIPath(
         guid=nested.guid,
@@ -719,7 +680,6 @@ def _api_path_from_nested(nested: APIPathNested) -> APIPath:
         **merged_rels,
     )
 
-
 def _api_path_to_nested_bytes(api_path: APIPath, serde: Serde) -> bytes:
     """Convert flat APIPath to nested JSON bytes."""
     return serde.encode(_api_path_to_nested(api_path))
@@ -729,7 +689,6 @@ def _api_path_from_nested_bytes(data: bytes, serde: Serde) -> APIPath:
     """Convert nested JSON bytes to flat APIPath."""
     nested = serde.decode(data, APIPathNested)
     return _api_path_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -742,33 +701,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 APIPath.API_PATH_SUMMARY = KeywordField("apiPathSummary", "apiPathSummary")
-APIPath.API_PATH_RAW_URI = KeywordTextField(
-    "apiPathRawURI", "apiPathRawURI", "apiPathRawURI.text"
-)
+APIPath.API_PATH_RAW_URI = KeywordTextField("apiPathRawURI", "apiPathRawURI", "apiPathRawURI.text")
 APIPath.API_PATH_IS_TEMPLATED = BooleanField("apiPathIsTemplated", "apiPathIsTemplated")
-APIPath.API_PATH_AVAILABLE_OPERATIONS = KeywordField(
-    "apiPathAvailableOperations", "apiPathAvailableOperations"
-)
-APIPath.API_PATH_AVAILABLE_RESPONSE_CODES = KeywordField(
-    "apiPathAvailableResponseCodes", "apiPathAvailableResponseCodes"
-)
-APIPath.API_PATH_IS_INGRESS_EXPOSED = BooleanField(
-    "apiPathIsIngressExposed", "apiPathIsIngressExposed"
-)
+APIPath.API_PATH_AVAILABLE_OPERATIONS = KeywordField("apiPathAvailableOperations", "apiPathAvailableOperations")
+APIPath.API_PATH_AVAILABLE_RESPONSE_CODES = KeywordField("apiPathAvailableResponseCodes", "apiPathAvailableResponseCodes")
+APIPath.API_PATH_IS_INGRESS_EXPOSED = BooleanField("apiPathIsIngressExposed", "apiPathIsIngressExposed")
 APIPath.API_SPEC_TYPE = KeywordField("apiSpecType", "apiSpecType")
 APIPath.API_SPEC_VERSION = KeywordField("apiSpecVersion", "apiSpecVersion")
 APIPath.API_SPEC_NAME = KeywordField("apiSpecName", "apiSpecName")
-APIPath.API_SPEC_QUALIFIED_NAME = KeywordTextField(
-    "apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text"
-)
+APIPath.API_SPEC_QUALIFIED_NAME = KeywordTextField("apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text")
 APIPath.API_EXTERNAL_DOCS = KeywordField("apiExternalDocs", "apiExternalDocs")
 APIPath.API_IS_AUTH_OPTIONAL = BooleanField("apiIsAuthOptional", "apiIsAuthOptional")
-APIPath.API_IS_OBJECT_REFERENCE = BooleanField(
-    "apiIsObjectReference", "apiIsObjectReference"
-)
-APIPath.API_OBJECT_QUALIFIED_NAME = KeywordField(
-    "apiObjectQualifiedName", "apiObjectQualifiedName"
-)
+APIPath.API_IS_OBJECT_REFERENCE = BooleanField("apiIsObjectReference", "apiIsObjectReference")
+APIPath.API_OBJECT_QUALIFIED_NAME = KeywordField("apiObjectQualifiedName", "apiObjectQualifiedName")
 APIPath.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 APIPath.API_SPEC = RelationField("apiSpec")
 APIPath.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -785,9 +730,7 @@ APIPath.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes
 APIPath.METRICS = RelationField("metrics")
 APIPath.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 APIPath.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-APIPath.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+APIPath.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 APIPath.MEANINGS = RelationField("meanings")
 APIPath.MC_MONITORS = RelationField("mcMonitors")
 APIPath.MC_INCIDENTS = RelationField("mcIncidents")

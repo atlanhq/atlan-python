@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,7 +37,6 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .metabase_related import RelatedMetabaseCollection, RelatedMetabaseDashboard
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -53,11 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .metabase_related import RelatedMetabaseCollection, RelatedMetabaseDashboard
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class MetabaseQuestion(Asset):
@@ -155,9 +152,7 @@ class MetabaseQuestion(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -166,14 +161,10 @@ class MetabaseQuestion(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -206,9 +197,7 @@ class MetabaseQuestion(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -220,9 +209,7 @@ class MetabaseQuestion(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -241,7 +228,10 @@ class MetabaseQuestion(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -272,9 +262,7 @@ class MetabaseQuestion(Asset):
         return _metabase_question_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> MetabaseQuestion:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MetabaseQuestion:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -296,7 +284,6 @@ class MetabaseQuestion(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class MetabaseQuestionAttributes(AssetAttributes):
     """MetabaseQuestion-specific attributes for nested API format."""
 
@@ -317,7 +304,6 @@ class MetabaseQuestionAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     """MetabaseQuestion-specific relationship attributes for nested API format."""
@@ -352,9 +338,7 @@ class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -363,14 +347,10 @@ class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -403,9 +383,7 @@ class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -417,9 +395,7 @@ class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -431,21 +407,13 @@ class MetabaseQuestionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class MetabaseQuestionNested(AssetNested):
     """MetabaseQuestion in nested API format for high-performance serialization."""
 
     attributes: Union[MetabaseQuestionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        MetabaseQuestionRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        MetabaseQuestionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        MetabaseQuestionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[MetabaseQuestionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[MetabaseQuestionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[MetabaseQuestionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -488,10 +456,7 @@ _METABASE_QUESTION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_metabase_question_attrs(
-    attrs: MetabaseQuestionAttributes, obj: MetabaseQuestion
-) -> None:
+def _populate_metabase_question_attrs(attrs: MetabaseQuestionAttributes, obj: MetabaseQuestion) -> None:
     """Populate MetabaseQuestion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.metabase_dashboard_count = obj.metabase_dashboard_count
@@ -501,7 +466,6 @@ def _populate_metabase_question_attrs(
     attrs.metabase_collection_qualified_name = obj.metabase_collection_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
 def _extract_metabase_question_attrs(attrs: MetabaseQuestionAttributes) -> dict:
     """Extract all MetabaseQuestion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
@@ -509,29 +473,22 @@ def _extract_metabase_question_attrs(attrs: MetabaseQuestionAttributes) -> dict:
     result["metabase_query_type"] = attrs.metabase_query_type
     result["metabase_query"] = attrs.metabase_query
     result["metabase_collection_name"] = attrs.metabase_collection_name
-    result["metabase_collection_qualified_name"] = (
-        attrs.metabase_collection_qualified_name
-    )
+    result["metabase_collection_qualified_name"] = attrs.metabase_collection_qualified_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _metabase_question_to_nested(
-    metabase_question: MetabaseQuestion,
-) -> MetabaseQuestionNested:
+def _metabase_question_to_nested(metabase_question: MetabaseQuestion) -> MetabaseQuestionNested:
     """Convert flat MetabaseQuestion to nested format."""
     attrs = MetabaseQuestionAttributes()
     _populate_metabase_question_attrs(attrs, metabase_question)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        metabase_question,
-        _METABASE_QUESTION_REL_FIELDS,
-        MetabaseQuestionRelationshipAttributes,
+        metabase_question, _METABASE_QUESTION_REL_FIELDS, MetabaseQuestionRelationshipAttributes
     )
     return MetabaseQuestionNested(
         guid=metabase_question.guid,
@@ -559,21 +516,16 @@ def _metabase_question_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _metabase_question_from_nested(nested: MetabaseQuestionNested) -> MetabaseQuestion:
     """Convert nested format to flat MetabaseQuestion."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else MetabaseQuestionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else MetabaseQuestionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _METABASE_QUESTION_REL_FIELDS,
-        MetabaseQuestionRelationshipAttributes,
+        MetabaseQuestionRelationshipAttributes
     )
     return MetabaseQuestion(
         guid=nested.guid,
@@ -600,10 +552,7 @@ def _metabase_question_from_nested(nested: MetabaseQuestionNested) -> MetabaseQu
         **merged_rels,
     )
 
-
-def _metabase_question_to_nested_bytes(
-    metabase_question: MetabaseQuestion, serde: Serde
-) -> bytes:
+def _metabase_question_to_nested_bytes(metabase_question: MetabaseQuestion, serde: Serde) -> bytes:
     """Convert flat MetabaseQuestion to nested JSON bytes."""
     return serde.encode(_metabase_question_to_nested(metabase_question))
 
@@ -612,7 +561,6 @@ def _metabase_question_from_nested_bytes(data: bytes, serde: Serde) -> MetabaseQ
     """Convert nested JSON bytes to flat MetabaseQuestion."""
     nested = serde.decode(data, MetabaseQuestionNested)
     return _metabase_question_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -624,45 +572,27 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MetabaseQuestion.METABASE_DASHBOARD_COUNT = NumericField(
-    "metabaseDashboardCount", "metabaseDashboardCount"
-)
-MetabaseQuestion.METABASE_QUERY_TYPE = KeywordTextField(
-    "metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text"
-)
+MetabaseQuestion.METABASE_DASHBOARD_COUNT = NumericField("metabaseDashboardCount", "metabaseDashboardCount")
+MetabaseQuestion.METABASE_QUERY_TYPE = KeywordTextField("metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text")
 MetabaseQuestion.METABASE_QUERY = KeywordField("metabaseQuery", "metabaseQuery")
-MetabaseQuestion.METABASE_COLLECTION_NAME = KeywordField(
-    "metabaseCollectionName", "metabaseCollectionName"
-)
-MetabaseQuestion.METABASE_COLLECTION_QUALIFIED_NAME = KeywordTextField(
-    "metabaseCollectionQualifiedName",
-    "metabaseCollectionQualifiedName",
-    "metabaseCollectionQualifiedName.text",
-)
-MetabaseQuestion.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+MetabaseQuestion.METABASE_COLLECTION_NAME = KeywordField("metabaseCollectionName", "metabaseCollectionName")
+MetabaseQuestion.METABASE_COLLECTION_QUALIFIED_NAME = KeywordTextField("metabaseCollectionQualifiedName", "metabaseCollectionQualifiedName", "metabaseCollectionQualifiedName.text")
+MetabaseQuestion.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 MetabaseQuestion.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MetabaseQuestion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MetabaseQuestion.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MetabaseQuestion.APPLICATION = RelationField("application")
 MetabaseQuestion.APPLICATION_FIELD = RelationField("applicationField")
 MetabaseQuestion.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-MetabaseQuestion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+MetabaseQuestion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 MetabaseQuestion.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MetabaseQuestion.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MetabaseQuestion.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MetabaseQuestion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+MetabaseQuestion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 MetabaseQuestion.METRICS = RelationField("metrics")
 MetabaseQuestion.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MetabaseQuestion.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-MetabaseQuestion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+MetabaseQuestion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 MetabaseQuestion.MEANINGS = RelationField("meanings")
 MetabaseQuestion.METABASE_COLLECTION = RelationField("metabaseCollection")
 MetabaseQuestion.METABASE_DASHBOARDS = RelationField("metabaseDashboards")

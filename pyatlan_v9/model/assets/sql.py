@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,12 +34,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -59,15 +47,14 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import (
-    RelatedSqlInsightBusinessQuestion,
-    RelatedSqlInsightJoin,
-)
+from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SQL(Asset):
@@ -192,9 +179,7 @@ class SQL(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -251,9 +236,7 @@ class SQL(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -262,9 +245,7 @@ class SQL(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -279,17 +260,13 @@ class SQL(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -316,9 +293,7 @@ class SQL(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -330,14 +305,10 @@ class SQL(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -349,23 +320,19 @@ class SQL(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
         self.type_name = "SQL"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -418,7 +385,6 @@ class SQL(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SQLAttributes(AssetAttributes):
     """SQL-specific attributes for nested API format."""
 
@@ -470,9 +436,7 @@ class SQLAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -498,7 +462,6 @@ class SQLAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class SQLRelationshipAttributes(AssetRelationshipAttributes):
     """SQL-specific relationship attributes for nested API format."""
@@ -533,9 +496,7 @@ class SQLRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -544,9 +505,7 @@ class SQLRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -561,17 +520,13 @@ class SQLRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -598,9 +553,7 @@ class SQLRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -612,14 +565,10 @@ class SQLRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -631,21 +580,14 @@ class SQLRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
-
 
 class SQLNested(AssetNested):
     """SQL in nested API format for high-performance serialization."""
@@ -654,7 +596,6 @@ class SQLNested(AssetNested):
     relationship_attributes: Union[SQLRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[SQLRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[SQLRelationshipAttributes, UnsetType] = UNSET
-
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -705,7 +646,6 @@ _SQL_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-
 def _populate_sql_attrs(attrs: SQLAttributes, obj: SQL) -> None:
     """Populate SQL-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -729,16 +669,11 @@ def _populate_sql_attrs(attrs: SQLAttributes, obj: SQL) -> None:
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = (
-        obj.sql_ai_insights_popular_business_question_count
-    )
+    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = (
-        obj.sql_ai_insights_popular_filter_count
-    )
+    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_sql_attrs(attrs: SQLAttributes) -> dict:
     """Extract all SQL attributes from the attrs struct into a flat dict."""
@@ -759,27 +694,16 @@ def _extract_sql_attrs(attrs: SQLAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = (
-        attrs.sql_ai_insights_popular_business_question_count
-    )
-    result["sql_ai_insights_popular_join_count"] = (
-        attrs.sql_ai_insights_popular_join_count
-    )
-    result["sql_ai_insights_popular_filter_count"] = (
-        attrs.sql_ai_insights_popular_filter_count
-    )
-    result["sql_ai_insights_relationship_count"] = (
-        attrs.sql_ai_insights_relationship_count
-    )
+    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
+    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
+    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
+    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -820,7 +744,6 @@ def _sql_to_nested(sql: SQL) -> SQLNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _sql_from_nested(nested: SQLNested) -> SQL:
     """Convert nested format to flat SQL."""
     attrs = nested.attributes if nested.attributes is not UNSET else SQLAttributes()
@@ -830,7 +753,7 @@ def _sql_from_nested(nested: SQLNested) -> SQL:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SQL_REL_FIELDS,
-        SQLRelationshipAttributes,
+        SQLRelationshipAttributes
     )
     return SQL(
         guid=nested.guid,
@@ -857,7 +780,6 @@ def _sql_from_nested(nested: SQLNested) -> SQL:
         **merged_rels,
     )
 
-
 def _sql_to_nested_bytes(sql: SQL, serde: Serde) -> bytes:
     """Convert flat SQL to nested JSON bytes."""
     return serde.encode(_sql_to_nested(sql))
@@ -867,7 +789,6 @@ def _sql_from_nested_bytes(data: bytes, serde: Serde) -> SQL:
     """Convert nested JSON bytes to flat SQL."""
     nested = serde.decode(data, SQLNested)
     return _sql_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -884,9 +805,7 @@ SQL.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 SQL.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
 SQL.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 SQL.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-SQL.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+SQL.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 SQL.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
 SQL.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 SQL.TABLE_NAME = KeywordField("tableName", "tableName")
@@ -894,32 +813,17 @@ SQL.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedNam
 SQL.VIEW_NAME = KeywordField("viewName", "viewName")
 SQL.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
 SQL.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
-SQL.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+SQL.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 SQL.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 SQL.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-SQL.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+SQL.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 SQL.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 SQL.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-SQL.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
-    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
-)
-SQL.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
-    "sqlAiInsightsPopularBusinessQuestionCount",
-    "sqlAiInsightsPopularBusinessQuestionCount",
-)
-SQL.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
-    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
-)
-SQL.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
-    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
-)
-SQL.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
-    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
-)
+SQL.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
+SQL.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
+SQL.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
+SQL.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
+SQL.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
 SQL.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 SQL.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SQL.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -941,9 +845,7 @@ SQL.DBT_TESTS = RelationField("dbtTests")
 SQL.DBT_SOURCES = RelationField("dbtSources")
 SQL.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 SQL.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-SQL.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SQL.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SQL.MEANINGS = RelationField("meanings")
 SQL.MC_MONITORS = RelationField("mcMonitors")
 SQL.MC_INCIDENTS = RelationField("mcIncidents")

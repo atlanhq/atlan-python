@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,7 +37,6 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .mode_related import RelatedModeReport, RelatedModeWorkspace
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -53,11 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .mode_related import RelatedModeReport, RelatedModeWorkspace
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class ModeCollection(Asset):
@@ -179,9 +176,7 @@ class ModeCollection(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -190,14 +185,10 @@ class ModeCollection(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -230,9 +221,7 @@ class ModeCollection(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -244,9 +233,7 @@ class ModeCollection(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -265,7 +252,10 @@ class ModeCollection(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -318,7 +308,6 @@ class ModeCollection(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class ModeCollectionAttributes(AssetAttributes):
     """ModeCollection-specific attributes for nested API format."""
 
@@ -358,7 +347,6 @@ class ModeCollectionAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     """ModeCollection-specific relationship attributes for nested API format."""
 
@@ -392,9 +380,7 @@ class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -403,14 +389,10 @@ class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -443,9 +425,7 @@ class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -457,9 +437,7 @@ class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -471,21 +449,13 @@ class ModeCollectionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class ModeCollectionNested(AssetNested):
     """ModeCollection in nested API format for high-performance serialization."""
 
     attributes: Union[ModeCollectionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ModeCollectionRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        ModeCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        ModeCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[ModeCollectionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[ModeCollectionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[ModeCollectionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -528,10 +498,7 @@ _MODE_COLLECTION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_mode_collection_attrs(
-    attrs: ModeCollectionAttributes, obj: ModeCollection
-) -> None:
+def _populate_mode_collection_attrs(attrs: ModeCollectionAttributes, obj: ModeCollection) -> None:
     """Populate ModeCollection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.mode_collection_type = obj.mode_collection_type
@@ -546,7 +513,6 @@ def _populate_mode_collection_attrs(
     attrs.mode_query_name = obj.mode_query_name
     attrs.mode_query_qualified_name = obj.mode_query_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_mode_collection_attrs(attrs: ModeCollectionAttributes) -> dict:
     """Extract all ModeCollection attributes from the attrs struct into a flat dict."""
@@ -565,7 +531,6 @@ def _extract_mode_collection_attrs(attrs: ModeCollectionAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
@@ -577,9 +542,7 @@ def _mode_collection_to_nested(mode_collection: ModeCollection) -> ModeCollectio
     _populate_mode_collection_attrs(attrs, mode_collection)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        mode_collection,
-        _MODE_COLLECTION_REL_FIELDS,
-        ModeCollectionRelationshipAttributes,
+        mode_collection, _MODE_COLLECTION_REL_FIELDS, ModeCollectionRelationshipAttributes
     )
     return ModeCollectionNested(
         guid=mode_collection.guid,
@@ -607,21 +570,16 @@ def _mode_collection_to_nested(mode_collection: ModeCollection) -> ModeCollectio
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _mode_collection_from_nested(nested: ModeCollectionNested) -> ModeCollection:
     """Convert nested format to flat ModeCollection."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else ModeCollectionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else ModeCollectionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MODE_COLLECTION_REL_FIELDS,
-        ModeCollectionRelationshipAttributes,
+        ModeCollectionRelationshipAttributes
     )
     return ModeCollection(
         guid=nested.guid,
@@ -648,10 +606,7 @@ def _mode_collection_from_nested(nested: ModeCollectionNested) -> ModeCollection
         **merged_rels,
     )
 
-
-def _mode_collection_to_nested_bytes(
-    mode_collection: ModeCollection, serde: Serde
-) -> bytes:
+def _mode_collection_to_nested_bytes(mode_collection: ModeCollection, serde: Serde) -> bytes:
     """Convert flat ModeCollection to nested JSON bytes."""
     return serde.encode(_mode_collection_to_nested(mode_collection))
 
@@ -660,7 +615,6 @@ def _mode_collection_from_nested_bytes(data: bytes, serde: Serde) -> ModeCollect
     """Convert nested JSON bytes to flat ModeCollection."""
     nested = serde.decode(data, ModeCollectionNested)
     return _mode_collection_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -671,57 +625,33 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-ModeCollection.MODE_COLLECTION_TYPE = KeywordField(
-    "modeCollectionType", "modeCollectionType"
-)
-ModeCollection.MODE_COLLECTION_STATE = KeywordField(
-    "modeCollectionState", "modeCollectionState"
-)
+ModeCollection.MODE_COLLECTION_TYPE = KeywordField("modeCollectionType", "modeCollectionType")
+ModeCollection.MODE_COLLECTION_STATE = KeywordField("modeCollectionState", "modeCollectionState")
 ModeCollection.MODE_ID = KeywordField("modeId", "modeId")
 ModeCollection.MODE_TOKEN = KeywordTextField("modeToken", "modeToken", "modeToken.text")
-ModeCollection.MODE_WORKSPACE_NAME = KeywordField(
-    "modeWorkspaceName", "modeWorkspaceName"
-)
-ModeCollection.MODE_WORKSPACE_USERNAME = KeywordTextField(
-    "modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text"
-)
-ModeCollection.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField(
-    "modeWorkspaceQualifiedName",
-    "modeWorkspaceQualifiedName",
-    "modeWorkspaceQualifiedName.text",
-)
+ModeCollection.MODE_WORKSPACE_NAME = KeywordField("modeWorkspaceName", "modeWorkspaceName")
+ModeCollection.MODE_WORKSPACE_USERNAME = KeywordTextField("modeWorkspaceUsername", "modeWorkspaceUsername", "modeWorkspaceUsername.text")
+ModeCollection.MODE_WORKSPACE_QUALIFIED_NAME = KeywordTextField("modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName", "modeWorkspaceQualifiedName.text")
 ModeCollection.MODE_REPORT_NAME = KeywordField("modeReportName", "modeReportName")
-ModeCollection.MODE_REPORT_QUALIFIED_NAME = KeywordTextField(
-    "modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text"
-)
+ModeCollection.MODE_REPORT_QUALIFIED_NAME = KeywordTextField("modeReportQualifiedName", "modeReportQualifiedName", "modeReportQualifiedName.text")
 ModeCollection.MODE_QUERY_NAME = KeywordField("modeQueryName", "modeQueryName")
-ModeCollection.MODE_QUERY_QUALIFIED_NAME = KeywordTextField(
-    "modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text"
-)
-ModeCollection.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+ModeCollection.MODE_QUERY_QUALIFIED_NAME = KeywordTextField("modeQueryQualifiedName", "modeQueryQualifiedName", "modeQueryQualifiedName.text")
+ModeCollection.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 ModeCollection.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ModeCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ModeCollection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ModeCollection.APPLICATION = RelationField("application")
 ModeCollection.APPLICATION_FIELD = RelationField("applicationField")
 ModeCollection.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-ModeCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+ModeCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 ModeCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ModeCollection.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ModeCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-ModeCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+ModeCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 ModeCollection.METRICS = RelationField("metrics")
 ModeCollection.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ModeCollection.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-ModeCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+ModeCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 ModeCollection.MEANINGS = RelationField("meanings")
 ModeCollection.MODE_WORKSPACE = RelationField("modeWorkspace")
 ModeCollection.MODE_REPORTS = RelationField("modeReports")

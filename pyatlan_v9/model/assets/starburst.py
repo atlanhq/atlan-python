@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,12 +34,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -59,15 +47,14 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import (
-    RelatedSqlInsightBusinessQuestion,
-    RelatedSqlInsightJoin,
-)
+from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Starburst(Asset):
@@ -204,9 +191,7 @@ class Starburst(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -263,9 +248,7 @@ class Starburst(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -274,9 +257,7 @@ class Starburst(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -291,17 +272,13 @@ class Starburst(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -328,9 +305,7 @@ class Starburst(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -342,14 +317,10 @@ class Starburst(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -361,23 +332,19 @@ class Starburst(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
         self.type_name = "Starburst"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -429,7 +396,6 @@ class Starburst(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class StarburstAttributes(AssetAttributes):
     """Starburst-specific attributes for nested API format."""
@@ -491,9 +457,7 @@ class StarburstAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -519,7 +483,6 @@ class StarburstAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class StarburstRelationshipAttributes(AssetRelationshipAttributes):
     """Starburst-specific relationship attributes for nested API format."""
@@ -554,9 +517,7 @@ class StarburstRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -565,9 +526,7 @@ class StarburstRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -582,17 +541,13 @@ class StarburstRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -619,9 +574,7 @@ class StarburstRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -633,14 +586,10 @@ class StarburstRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -652,34 +601,22 @@ class StarburstRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
-
 
 class StarburstNested(AssetNested):
     """Starburst in nested API format for high-performance serialization."""
 
     attributes: Union[StarburstAttributes, UnsetType] = UNSET
     relationship_attributes: Union[StarburstRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        StarburstRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        StarburstRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[StarburstRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[StarburstRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -730,7 +667,6 @@ _STARBURST_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-
 def _populate_starburst_attrs(attrs: StarburstAttributes, obj: Starburst) -> None:
     """Populate Starburst-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -757,16 +693,11 @@ def _populate_starburst_attrs(attrs: StarburstAttributes, obj: Starburst) -> Non
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = (
-        obj.sql_ai_insights_popular_business_question_count
-    )
+    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = (
-        obj.sql_ai_insights_popular_filter_count
-    )
+    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_starburst_attrs(attrs: StarburstAttributes) -> dict:
     """Extract all Starburst attributes from the attrs struct into a flat dict."""
@@ -790,27 +721,16 @@ def _extract_starburst_attrs(attrs: StarburstAttributes) -> dict:
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = (
-        attrs.sql_ai_insights_popular_business_question_count
-    )
-    result["sql_ai_insights_popular_join_count"] = (
-        attrs.sql_ai_insights_popular_join_count
-    )
-    result["sql_ai_insights_popular_filter_count"] = (
-        attrs.sql_ai_insights_popular_filter_count
-    )
-    result["sql_ai_insights_relationship_count"] = (
-        attrs.sql_ai_insights_relationship_count
-    )
+    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
+    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
+    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
+    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -851,19 +771,16 @@ def _starburst_to_nested(starburst: Starburst) -> StarburstNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _starburst_from_nested(nested: StarburstNested) -> Starburst:
     """Convert nested format to flat Starburst."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else StarburstAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else StarburstAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _STARBURST_REL_FIELDS,
-        StarburstRelationshipAttributes,
+        StarburstRelationshipAttributes
     )
     return Starburst(
         guid=nested.guid,
@@ -890,7 +807,6 @@ def _starburst_from_nested(nested: StarburstNested) -> Starburst:
         **merged_rels,
     )
 
-
 def _starburst_to_nested_bytes(starburst: Starburst, serde: Serde) -> bytes:
     """Convert flat Starburst to nested JSON bytes."""
     return serde.encode(_starburst_to_nested(starburst))
@@ -900,7 +816,6 @@ def _starburst_from_nested_bytes(data: bytes, serde: Serde) -> Starburst:
     """Convert nested JSON bytes to flat Starburst."""
     nested = serde.decode(data, StarburstNested)
     return _starburst_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -912,67 +827,34 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Starburst.STARBURST_DATA_PRODUCT_NAME = KeywordField(
-    "starburstDataProductName", "starburstDataProductName"
-)
-Starburst.STARBURST_DATASET_QUALIFIED_NAME = KeywordField(
-    "starburstDatasetQualifiedName", "starburstDatasetQualifiedName"
-)
-Starburst.STARBURST_DATASET_NAME = KeywordField(
-    "starburstDatasetName", "starburstDatasetName"
-)
+Starburst.STARBURST_DATA_PRODUCT_NAME = KeywordField("starburstDataProductName", "starburstDataProductName")
+Starburst.STARBURST_DATASET_QUALIFIED_NAME = KeywordField("starburstDatasetQualifiedName", "starburstDatasetQualifiedName")
+Starburst.STARBURST_DATASET_NAME = KeywordField("starburstDatasetName", "starburstDatasetName")
 Starburst.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Starburst.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 Starburst.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-Starburst.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+Starburst.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 Starburst.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-Starburst.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+Starburst.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 Starburst.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-Starburst.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+Starburst.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 Starburst.TABLE_NAME = KeywordField("tableName", "tableName")
-Starburst.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+Starburst.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 Starburst.VIEW_NAME = KeywordField("viewName", "viewName")
 Starburst.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
-Starburst.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-Starburst.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+Starburst.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+Starburst.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 Starburst.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 Starburst.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-Starburst.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+Starburst.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 Starburst.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Starburst.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
-Starburst.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
-    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
-)
-Starburst.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
-    "sqlAiInsightsPopularBusinessQuestionCount",
-    "sqlAiInsightsPopularBusinessQuestionCount",
-)
-Starburst.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
-    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
-)
-Starburst.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
-    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
-)
-Starburst.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
-    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
-)
-Starburst.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+Starburst.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
+Starburst.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
+Starburst.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
+Starburst.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
+Starburst.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
+Starburst.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Starburst.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Starburst.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Starburst.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -993,9 +875,7 @@ Starburst.DBT_TESTS = RelationField("dbtTests")
 Starburst.DBT_SOURCES = RelationField("dbtSources")
 Starburst.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 Starburst.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-Starburst.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Starburst.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Starburst.MEANINGS = RelationField("meanings")
 Starburst.MC_MONITORS = RelationField("mcMonitors")
 Starburst.MC_INCIDENTS = RelationField("mcIncidents")
@@ -1009,9 +889,7 @@ Starburst.FILES = RelationField("files")
 Starburst.LINKS = RelationField("links")
 Starburst.README = RelationField("readme")
 Starburst.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-Starburst.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+Starburst.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 Starburst.SODA_CHECKS = RelationField("sodaChecks")
 Starburst.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 Starburst.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

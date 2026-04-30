@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,7 +32,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cube_related import RelatedCubeDimension, RelatedCubeField, RelatedCubeHierarchy
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -53,11 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cube_related import RelatedCubeDimension, RelatedCubeField, RelatedCubeHierarchy
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class CubeField(Asset):
@@ -185,9 +182,7 @@ class CubeField(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -196,14 +191,10 @@ class CubeField(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -242,9 +233,7 @@ class CubeField(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -256,9 +245,7 @@ class CubeField(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -280,6 +267,7 @@ class CubeField(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -332,7 +320,6 @@ class CubeField(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class CubeFieldAttributes(AssetAttributes):
     """CubeField-specific attributes for nested API format."""
 
@@ -375,7 +362,6 @@ class CubeFieldAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class CubeFieldRelationshipAttributes(AssetRelationshipAttributes):
     """CubeField-specific relationship attributes for nested API format."""
 
@@ -409,9 +395,7 @@ class CubeFieldRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -420,14 +404,10 @@ class CubeFieldRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -466,9 +446,7 @@ class CubeFieldRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -480,9 +458,7 @@ class CubeFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -494,19 +470,13 @@ class CubeFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class CubeFieldNested(AssetNested):
     """CubeField in nested API format for high-performance serialization."""
 
     attributes: Union[CubeFieldAttributes, UnsetType] = UNSET
     relationship_attributes: Union[CubeFieldRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        CubeFieldRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        CubeFieldRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[CubeFieldRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[CubeFieldRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -551,7 +521,6 @@ _CUBE_FIELD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_cube_field_attrs(attrs: CubeFieldAttributes, obj: CubeField) -> None:
     """Populate CubeField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -568,7 +537,6 @@ def _populate_cube_field_attrs(attrs: CubeFieldAttributes, obj: CubeField) -> No
     attrs.cube_hierarchy_name = obj.cube_hierarchy_name
     attrs.cube_hierarchy_qualified_name = obj.cube_hierarchy_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_cube_field_attrs(attrs: CubeFieldAttributes) -> dict:
     """Extract all CubeField attributes from the attrs struct into a flat dict."""
@@ -587,7 +555,6 @@ def _extract_cube_field_attrs(attrs: CubeFieldAttributes) -> dict:
     result["cube_hierarchy_qualified_name"] = attrs.cube_hierarchy_qualified_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -628,19 +595,16 @@ def _cube_field_to_nested(cube_field: CubeField) -> CubeFieldNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _cube_field_from_nested(nested: CubeFieldNested) -> CubeField:
     """Convert nested format to flat CubeField."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else CubeFieldAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else CubeFieldAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _CUBE_FIELD_REL_FIELDS,
-        CubeFieldRelationshipAttributes,
+        CubeFieldRelationshipAttributes
     )
     return CubeField(
         guid=nested.guid,
@@ -667,7 +631,6 @@ def _cube_field_from_nested(nested: CubeFieldNested) -> CubeField:
         **merged_rels,
     )
 
-
 def _cube_field_to_nested_bytes(cube_field: CubeField, serde: Serde) -> bytes:
     """Convert flat CubeField to nested JSON bytes."""
     return serde.encode(_cube_field_to_nested(cube_field))
@@ -677,7 +640,6 @@ def _cube_field_from_nested_bytes(data: bytes, serde: Serde) -> CubeField:
     """Convert nested JSON bytes to flat CubeField."""
     nested = serde.decode(data, CubeFieldNested)
     return _cube_field_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -689,39 +651,19 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CubeField.CUBE_PARENT_FIELD_NAME = KeywordTextField(
-    "cubeParentFieldName", "cubeParentFieldName", "cubeParentFieldName.text"
-)
-CubeField.CUBE_PARENT_FIELD_QUALIFIED_NAME = KeywordField(
-    "cubeParentFieldQualifiedName", "cubeParentFieldQualifiedName"
-)
+CubeField.CUBE_PARENT_FIELD_NAME = KeywordTextField("cubeParentFieldName", "cubeParentFieldName", "cubeParentFieldName.text")
+CubeField.CUBE_PARENT_FIELD_QUALIFIED_NAME = KeywordField("cubeParentFieldQualifiedName", "cubeParentFieldQualifiedName")
 CubeField.CUBE_FIELD_LEVEL = NumericField("cubeFieldLevel", "cubeFieldLevel")
-CubeField.CUBE_FIELD_GENERATION = NumericField(
-    "cubeFieldGeneration", "cubeFieldGeneration"
-)
-CubeField.CUBE_FIELD_MEASURE_EXPRESSION = KeywordTextField(
-    "cubeFieldMeasureExpression",
-    "cubeFieldMeasureExpression",
-    "cubeFieldMeasureExpression.text",
-)
+CubeField.CUBE_FIELD_GENERATION = NumericField("cubeFieldGeneration", "cubeFieldGeneration")
+CubeField.CUBE_FIELD_MEASURE_EXPRESSION = KeywordTextField("cubeFieldMeasureExpression", "cubeFieldMeasureExpression", "cubeFieldMeasureExpression.text")
 CubeField.CUBE_SUB_FIELD_COUNT = NumericField("cubeSubFieldCount", "cubeSubFieldCount")
 CubeField.CUBE_NAME = KeywordTextField("cubeName", "cubeName", "cubeName.text")
 CubeField.CUBE_QUALIFIED_NAME = KeywordField("cubeQualifiedName", "cubeQualifiedName")
-CubeField.CUBE_DIMENSION_NAME = KeywordTextField(
-    "cubeDimensionName", "cubeDimensionName", "cubeDimensionName.text"
-)
-CubeField.CUBE_DIMENSION_QUALIFIED_NAME = KeywordField(
-    "cubeDimensionQualifiedName", "cubeDimensionQualifiedName"
-)
-CubeField.CUBE_HIERARCHY_NAME = KeywordTextField(
-    "cubeHierarchyName", "cubeHierarchyName", "cubeHierarchyName.text"
-)
-CubeField.CUBE_HIERARCHY_QUALIFIED_NAME = KeywordField(
-    "cubeHierarchyQualifiedName", "cubeHierarchyQualifiedName"
-)
-CubeField.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+CubeField.CUBE_DIMENSION_NAME = KeywordTextField("cubeDimensionName", "cubeDimensionName", "cubeDimensionName.text")
+CubeField.CUBE_DIMENSION_QUALIFIED_NAME = KeywordField("cubeDimensionQualifiedName", "cubeDimensionQualifiedName")
+CubeField.CUBE_HIERARCHY_NAME = KeywordTextField("cubeHierarchyName", "cubeHierarchyName", "cubeHierarchyName.text")
+CubeField.CUBE_HIERARCHY_QUALIFIED_NAME = KeywordField("cubeHierarchyQualifiedName", "cubeHierarchyQualifiedName")
+CubeField.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 CubeField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CubeField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CubeField.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -736,9 +678,7 @@ CubeField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribut
 CubeField.METRICS = RelationField("metrics")
 CubeField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CubeField.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-CubeField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+CubeField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 CubeField.MEANINGS = RelationField("meanings")
 CubeField.MC_MONITORS = RelationField("mcMonitors")
 CubeField.MC_INCIDENTS = RelationField("mcIncidents")

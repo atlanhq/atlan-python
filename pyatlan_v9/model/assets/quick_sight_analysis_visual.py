@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -48,17 +41,21 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .quick_sight_related import RelatedQuickSightAnalysis
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .quick_sight_related import RelatedQuickSightAnalysis
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class QuickSightAnalysisVisual(Asset):
@@ -151,9 +148,7 @@ class QuickSightAnalysisVisual(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -162,14 +157,10 @@ class QuickSightAnalysisVisual(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -199,9 +190,7 @@ class QuickSightAnalysisVisual(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -213,9 +202,7 @@ class QuickSightAnalysisVisual(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -237,6 +224,7 @@ class QuickSightAnalysisVisual(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     @classmethod
     @init_guid
@@ -330,9 +318,7 @@ class QuickSightAnalysisVisual(Asset):
         return _quick_sight_analysis_visual_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> QuickSightAnalysisVisual:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> QuickSightAnalysisVisual:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -354,7 +340,6 @@ class QuickSightAnalysisVisual(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class QuickSightAnalysisVisualAttributes(AssetAttributes):
     """QuickSightAnalysisVisual-specific attributes for nested API format."""
 
@@ -372,7 +357,6 @@ class QuickSightAnalysisVisualAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class QuickSightAnalysisVisualRelationshipAttributes(AssetRelationshipAttributes):
     """QuickSightAnalysisVisual-specific relationship attributes for nested API format."""
@@ -407,9 +391,7 @@ class QuickSightAnalysisVisualRelationshipAttributes(AssetRelationshipAttributes
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -418,14 +400,10 @@ class QuickSightAnalysisVisualRelationshipAttributes(AssetRelationshipAttributes
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -455,9 +433,7 @@ class QuickSightAnalysisVisualRelationshipAttributes(AssetRelationshipAttributes
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -469,9 +445,7 @@ class QuickSightAnalysisVisualRelationshipAttributes(AssetRelationshipAttributes
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -483,21 +457,13 @@ class QuickSightAnalysisVisualRelationshipAttributes(AssetRelationshipAttributes
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class QuickSightAnalysisVisualNested(AssetNested):
     """QuickSightAnalysisVisual in nested API format for high-performance serialization."""
 
     attributes: Union[QuickSightAnalysisVisualAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        QuickSightAnalysisVisualRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        QuickSightAnalysisVisualRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        QuickSightAnalysisVisualRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[QuickSightAnalysisVisualRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[QuickSightAnalysisVisualRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[QuickSightAnalysisVisualRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -539,10 +505,7 @@ _QUICK_SIGHT_ANALYSIS_VISUAL_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_quick_sight_analysis_visual_attrs(
-    attrs: QuickSightAnalysisVisualAttributes, obj: QuickSightAnalysisVisual
-) -> None:
+def _populate_quick_sight_analysis_visual_attrs(attrs: QuickSightAnalysisVisualAttributes, obj: QuickSightAnalysisVisual) -> None:
     """Populate QuickSightAnalysisVisual-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.quick_sight_analysis_qualified_name = obj.quick_sight_analysis_qualified_name
@@ -551,38 +514,28 @@ def _populate_quick_sight_analysis_visual_attrs(
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
-def _extract_quick_sight_analysis_visual_attrs(
-    attrs: QuickSightAnalysisVisualAttributes,
-) -> dict:
+def _extract_quick_sight_analysis_visual_attrs(attrs: QuickSightAnalysisVisualAttributes) -> dict:
     """Extract all QuickSightAnalysisVisual attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_analysis_qualified_name"] = (
-        attrs.quick_sight_analysis_qualified_name
-    )
+    result["quick_sight_analysis_qualified_name"] = attrs.quick_sight_analysis_qualified_name
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _quick_sight_analysis_visual_to_nested(
-    quick_sight_analysis_visual: QuickSightAnalysisVisual,
-) -> QuickSightAnalysisVisualNested:
+def _quick_sight_analysis_visual_to_nested(quick_sight_analysis_visual: QuickSightAnalysisVisual) -> QuickSightAnalysisVisualNested:
     """Convert flat QuickSightAnalysisVisual to nested format."""
     attrs = QuickSightAnalysisVisualAttributes()
     _populate_quick_sight_analysis_visual_attrs(attrs, quick_sight_analysis_visual)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        quick_sight_analysis_visual,
-        _QUICK_SIGHT_ANALYSIS_VISUAL_REL_FIELDS,
-        QuickSightAnalysisVisualRelationshipAttributes,
+        quick_sight_analysis_visual, _QUICK_SIGHT_ANALYSIS_VISUAL_REL_FIELDS, QuickSightAnalysisVisualRelationshipAttributes
     )
     return QuickSightAnalysisVisualNested(
         guid=quick_sight_analysis_visual.guid,
@@ -610,23 +563,16 @@ def _quick_sight_analysis_visual_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _quick_sight_analysis_visual_from_nested(
-    nested: QuickSightAnalysisVisualNested,
-) -> QuickSightAnalysisVisual:
+def _quick_sight_analysis_visual_from_nested(nested: QuickSightAnalysisVisualNested) -> QuickSightAnalysisVisual:
     """Convert nested format to flat QuickSightAnalysisVisual."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else QuickSightAnalysisVisualAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else QuickSightAnalysisVisualAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QUICK_SIGHT_ANALYSIS_VISUAL_REL_FIELDS,
-        QuickSightAnalysisVisualRelationshipAttributes,
+        QuickSightAnalysisVisualRelationshipAttributes
     )
     return QuickSightAnalysisVisual(
         guid=nested.guid,
@@ -653,23 +599,15 @@ def _quick_sight_analysis_visual_from_nested(
         **merged_rels,
     )
 
-
-def _quick_sight_analysis_visual_to_nested_bytes(
-    quick_sight_analysis_visual: QuickSightAnalysisVisual, serde: Serde
-) -> bytes:
+def _quick_sight_analysis_visual_to_nested_bytes(quick_sight_analysis_visual: QuickSightAnalysisVisual, serde: Serde) -> bytes:
     """Convert flat QuickSightAnalysisVisual to nested JSON bytes."""
-    return serde.encode(
-        _quick_sight_analysis_visual_to_nested(quick_sight_analysis_visual)
-    )
+    return serde.encode(_quick_sight_analysis_visual_to_nested(quick_sight_analysis_visual))
 
 
-def _quick_sight_analysis_visual_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> QuickSightAnalysisVisual:
+def _quick_sight_analysis_visual_from_nested_bytes(data: bytes, serde: Serde) -> QuickSightAnalysisVisual:
     """Convert nested JSON bytes to flat QuickSightAnalysisVisual."""
     nested = serde.decode(data, QuickSightAnalysisVisualNested)
     return _quick_sight_analysis_visual_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -680,52 +618,26 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightAnalysisVisual.QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME = KeywordTextField(
-    "quickSightAnalysisQualifiedName",
-    "quickSightAnalysisQualifiedName",
-    "quickSightAnalysisQualifiedName.text",
-)
+QuickSightAnalysisVisual.QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME = KeywordTextField("quickSightAnalysisQualifiedName", "quickSightAnalysisQualifiedName", "quickSightAnalysisQualifiedName.text")
 QuickSightAnalysisVisual.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
-QuickSightAnalysisVisual.QUICK_SIGHT_SHEET_ID = KeywordField(
-    "quickSightSheetId", "quickSightSheetId"
-)
-QuickSightAnalysisVisual.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
-    "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
-)
-QuickSightAnalysisVisual.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+QuickSightAnalysisVisual.QUICK_SIGHT_SHEET_ID = KeywordField("quickSightSheetId", "quickSightSheetId")
+QuickSightAnalysisVisual.QUICK_SIGHT_SHEET_NAME = KeywordTextField("quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text")
+QuickSightAnalysisVisual.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 QuickSightAnalysisVisual.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-QuickSightAnalysisVisual.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+QuickSightAnalysisVisual.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 QuickSightAnalysisVisual.ANOMALO_CHECKS = RelationField("anomaloChecks")
 QuickSightAnalysisVisual.APPLICATION = RelationField("application")
 QuickSightAnalysisVisual.APPLICATION_FIELD = RelationField("applicationField")
 QuickSightAnalysisVisual.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-QuickSightAnalysisVisual.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-QuickSightAnalysisVisual.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-QuickSightAnalysisVisual.INPUT_PORT_DATA_PRODUCTS = RelationField(
-    "inputPortDataProducts"
-)
-QuickSightAnalysisVisual.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-QuickSightAnalysisVisual.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+QuickSightAnalysisVisual.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+QuickSightAnalysisVisual.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+QuickSightAnalysisVisual.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+QuickSightAnalysisVisual.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+QuickSightAnalysisVisual.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 QuickSightAnalysisVisual.METRICS = RelationField("metrics")
 QuickSightAnalysisVisual.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-QuickSightAnalysisVisual.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
-QuickSightAnalysisVisual.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+QuickSightAnalysisVisual.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+QuickSightAnalysisVisual.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 QuickSightAnalysisVisual.MEANINGS = RelationField("meanings")
 QuickSightAnalysisVisual.MC_MONITORS = RelationField("mcMonitors")
 QuickSightAnalysisVisual.MC_INCIDENTS = RelationField("mcIncidents")
@@ -734,18 +646,12 @@ QuickSightAnalysisVisual.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObje
 QuickSightAnalysisVisual.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 QuickSightAnalysisVisual.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 QuickSightAnalysisVisual.QUICK_SIGHT_ANALYSIS = RelationField("quickSightAnalysis")
-QuickSightAnalysisVisual.USER_DEF_RELATIONSHIP_TO = RelationField(
-    "userDefRelationshipTo"
-)
-QuickSightAnalysisVisual.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+QuickSightAnalysisVisual.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+QuickSightAnalysisVisual.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 QuickSightAnalysisVisual.FILES = RelationField("files")
 QuickSightAnalysisVisual.LINKS = RelationField("links")
 QuickSightAnalysisVisual.README = RelationField("readme")
-QuickSightAnalysisVisual.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
+QuickSightAnalysisVisual.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 QuickSightAnalysisVisual.SODA_CHECKS = RelationField("sodaChecks")
 QuickSightAnalysisVisual.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 QuickSightAnalysisVisual.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

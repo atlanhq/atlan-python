@@ -15,18 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,13 +35,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
-from .document_db_related import RelatedDocumentDBDatabase
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -62,22 +48,18 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import (
-    RelatedSqlInsightBusinessQuestion,
-    RelatedSqlInsightJoin,
-)
-from .sql_related import (
-    RelatedColumn,
-    RelatedQuery,
-    RelatedSchema,
-    RelatedTable,
-    RelatedTablePartition,
-)
+from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema, RelatedTable, RelatedTablePartition
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .document_db_related import RelatedDocumentDBDatabase
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DocumentDBCollection(Asset):
@@ -201,69 +183,43 @@ class DocumentDBCollection(Asset):
 
     type_name: Union[str, UnsetType] = "DocumentDBCollection"
 
-    document_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionSubtype"
-    )
+    document_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionSubtype")
     """Subtype of a DocumentDBCollection, for example: Capped, Time Series, etc."""
 
-    document_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionIsCapped"
-    )
+    document_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionIsCapped")
     """Whether the collection is capped (true) or not (false)."""
 
-    document_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionTimeField"
-    )
+    document_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTimeField")
     """Name of the field containing the date in each time series document."""
 
-    document_db_collection_time_granularity: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionTimeGranularity")
-    )
+    document_db_collection_time_granularity: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTimeGranularity")
     """Closest match to the time span between consecutive incoming measurements."""
 
-    document_db_collection_expire_after_seconds: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionExpireAfterSeconds")
-    )
+    document_db_collection_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionExpireAfterSeconds")
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    document_db_collection_maximum_document_count: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionMaximumDocumentCount")
-    )
+    document_db_collection_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionMaximumDocumentCount")
     """Maximum number of documents allowed in a capped collection."""
 
-    document_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionMaxSize"
-    )
+    document_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionMaxSize")
     """Maximum size allowed in a capped collection."""
 
-    document_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionNumOrphanDocs"
-    )
+    document_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionNumOrphanDocs")
     """Number of orphaned documents in the collection."""
 
-    document_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionNumIndexes"
-    )
+    document_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionNumIndexes")
     """Number of indexes in the collection."""
 
-    document_db_collection_total_index_size: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionTotalIndexSize")
-    )
+    document_db_collection_total_index_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTotalIndexSize")
     """Total size of all indexes."""
 
-    document_db_collection_average_object_size: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionAverageObjectSize")
-    )
+    document_db_collection_average_object_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionAverageObjectSize")
     """Average size of an object in the collection."""
 
-    document_db_collection_schema_definition: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionSchemaDefinition")
-    )
+    document_db_collection_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionSchemaDefinition")
     """Definition of the schema applicable for the collection."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -398,9 +354,7 @@ class DocumentDBCollection(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -454,9 +408,7 @@ class DocumentDBCollection(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -465,9 +417,7 @@ class DocumentDBCollection(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -482,22 +432,16 @@ class DocumentDBCollection(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    document_db_database: Union[RelatedDocumentDBDatabase, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBDatabase")
-    )
+    document_db_database: Union[RelatedDocumentDBDatabase, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBDatabase")
     """Database in which the collection exists."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -524,9 +468,7 @@ class DocumentDBCollection(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -556,14 +498,10 @@ class DocumentDBCollection(Asset):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -575,19 +513,13 @@ class DocumentDBCollection(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -597,7 +529,10 @@ class DocumentDBCollection(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     @classmethod
     @init_guid
@@ -674,9 +609,7 @@ class DocumentDBCollection(Asset):
         return _document_db_collection_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> DocumentDBCollection:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DocumentDBCollection:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -698,73 +631,46 @@ class DocumentDBCollection(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class DocumentDBCollectionAttributes(AssetAttributes):
     """DocumentDBCollection-specific attributes for nested API format."""
 
-    document_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionSubtype"
-    )
+    document_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionSubtype")
     """Subtype of a DocumentDBCollection, for example: Capped, Time Series, etc."""
 
-    document_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionIsCapped"
-    )
+    document_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionIsCapped")
     """Whether the collection is capped (true) or not (false)."""
 
-    document_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionTimeField"
-    )
+    document_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTimeField")
     """Name of the field containing the date in each time series document."""
 
-    document_db_collection_time_granularity: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionTimeGranularity")
-    )
+    document_db_collection_time_granularity: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTimeGranularity")
     """Closest match to the time span between consecutive incoming measurements."""
 
-    document_db_collection_expire_after_seconds: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionExpireAfterSeconds")
-    )
+    document_db_collection_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionExpireAfterSeconds")
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    document_db_collection_maximum_document_count: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionMaximumDocumentCount")
-    )
+    document_db_collection_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionMaximumDocumentCount")
     """Maximum number of documents allowed in a capped collection."""
 
-    document_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionMaxSize"
-    )
+    document_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionMaxSize")
     """Maximum size allowed in a capped collection."""
 
-    document_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionNumOrphanDocs"
-    )
+    document_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionNumOrphanDocs")
     """Number of orphaned documents in the collection."""
 
-    document_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="documentDBCollectionNumIndexes"
-    )
+    document_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionNumIndexes")
     """Number of indexes in the collection."""
 
-    document_db_collection_total_index_size: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionTotalIndexSize")
-    )
+    document_db_collection_total_index_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionTotalIndexSize")
     """Total size of all indexes."""
 
-    document_db_collection_average_object_size: Union[int, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionAverageObjectSize")
-    )
+    document_db_collection_average_object_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionAverageObjectSize")
     """Average size of an object in the collection."""
 
-    document_db_collection_schema_definition: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBCollectionSchemaDefinition")
-    )
+    document_db_collection_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBCollectionSchemaDefinition")
     """Definition of the schema applicable for the collection."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -899,9 +805,7 @@ class DocumentDBCollectionAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -924,7 +828,6 @@ class DocumentDBCollectionAttributes(AssetAttributes):
 
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
-
 
 class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     """DocumentDBCollection-specific relationship attributes for nested API format."""
@@ -959,9 +862,7 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -970,9 +871,7 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -987,22 +886,16 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    document_db_database: Union[RelatedDocumentDBDatabase, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="documentDBDatabase")
-    )
+    document_db_database: Union[RelatedDocumentDBDatabase, None, UnsetType] = msgspec.field(default=UNSET, name="documentDBDatabase")
     """Database in which the collection exists."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -1029,9 +922,7 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -1061,14 +952,10 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -1080,36 +967,22 @@ class DocumentDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
-
 
 class DocumentDBCollectionNested(AssetNested):
     """DocumentDBCollection in nested API format for high-performance serialization."""
 
     attributes: Union[DocumentDBCollectionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        DocumentDBCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        DocumentDBCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DocumentDBCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[DocumentDBCollectionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DocumentDBCollectionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DocumentDBCollectionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1167,38 +1040,21 @@ _DOCUMENT_DB_COLLECTION_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-
-def _populate_document_db_collection_attrs(
-    attrs: DocumentDBCollectionAttributes, obj: DocumentDBCollection
-) -> None:
+def _populate_document_db_collection_attrs(attrs: DocumentDBCollectionAttributes, obj: DocumentDBCollection) -> None:
     """Populate DocumentDBCollection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.document_db_collection_subtype = obj.document_db_collection_subtype
     attrs.document_db_collection_is_capped = obj.document_db_collection_is_capped
     attrs.document_db_collection_time_field = obj.document_db_collection_time_field
-    attrs.document_db_collection_time_granularity = (
-        obj.document_db_collection_time_granularity
-    )
-    attrs.document_db_collection_expire_after_seconds = (
-        obj.document_db_collection_expire_after_seconds
-    )
-    attrs.document_db_collection_maximum_document_count = (
-        obj.document_db_collection_maximum_document_count
-    )
+    attrs.document_db_collection_time_granularity = obj.document_db_collection_time_granularity
+    attrs.document_db_collection_expire_after_seconds = obj.document_db_collection_expire_after_seconds
+    attrs.document_db_collection_maximum_document_count = obj.document_db_collection_maximum_document_count
     attrs.document_db_collection_max_size = obj.document_db_collection_max_size
-    attrs.document_db_collection_num_orphan_docs = (
-        obj.document_db_collection_num_orphan_docs
-    )
+    attrs.document_db_collection_num_orphan_docs = obj.document_db_collection_num_orphan_docs
     attrs.document_db_collection_num_indexes = obj.document_db_collection_num_indexes
-    attrs.document_db_collection_total_index_size = (
-        obj.document_db_collection_total_index_size
-    )
-    attrs.document_db_collection_average_object_size = (
-        obj.document_db_collection_average_object_size
-    )
-    attrs.document_db_collection_schema_definition = (
-        obj.document_db_collection_schema_definition
-    )
+    attrs.document_db_collection_total_index_size = obj.document_db_collection_total_index_size
+    attrs.document_db_collection_average_object_size = obj.document_db_collection_average_object_size
+    attrs.document_db_collection_schema_definition = obj.document_db_collection_schema_definition
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.column_count = obj.column_count
@@ -1248,51 +1104,26 @@ def _populate_document_db_collection_attrs(
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = (
-        obj.sql_ai_insights_popular_business_question_count
-    )
+    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = (
-        obj.sql_ai_insights_popular_filter_count
-    )
+    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
 
-
-def _extract_document_db_collection_attrs(
-    attrs: DocumentDBCollectionAttributes,
-) -> dict:
+def _extract_document_db_collection_attrs(attrs: DocumentDBCollectionAttributes) -> dict:
     """Extract all DocumentDBCollection attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["document_db_collection_subtype"] = attrs.document_db_collection_subtype
     result["document_db_collection_is_capped"] = attrs.document_db_collection_is_capped
-    result["document_db_collection_time_field"] = (
-        attrs.document_db_collection_time_field
-    )
-    result["document_db_collection_time_granularity"] = (
-        attrs.document_db_collection_time_granularity
-    )
-    result["document_db_collection_expire_after_seconds"] = (
-        attrs.document_db_collection_expire_after_seconds
-    )
-    result["document_db_collection_maximum_document_count"] = (
-        attrs.document_db_collection_maximum_document_count
-    )
+    result["document_db_collection_time_field"] = attrs.document_db_collection_time_field
+    result["document_db_collection_time_granularity"] = attrs.document_db_collection_time_granularity
+    result["document_db_collection_expire_after_seconds"] = attrs.document_db_collection_expire_after_seconds
+    result["document_db_collection_maximum_document_count"] = attrs.document_db_collection_maximum_document_count
     result["document_db_collection_max_size"] = attrs.document_db_collection_max_size
-    result["document_db_collection_num_orphan_docs"] = (
-        attrs.document_db_collection_num_orphan_docs
-    )
-    result["document_db_collection_num_indexes"] = (
-        attrs.document_db_collection_num_indexes
-    )
-    result["document_db_collection_total_index_size"] = (
-        attrs.document_db_collection_total_index_size
-    )
-    result["document_db_collection_average_object_size"] = (
-        attrs.document_db_collection_average_object_size
-    )
-    result["document_db_collection_schema_definition"] = (
-        attrs.document_db_collection_schema_definition
-    )
+    result["document_db_collection_num_orphan_docs"] = attrs.document_db_collection_num_orphan_docs
+    result["document_db_collection_num_indexes"] = attrs.document_db_collection_num_indexes
+    result["document_db_collection_total_index_size"] = attrs.document_db_collection_total_index_size
+    result["document_db_collection_average_object_size"] = attrs.document_db_collection_average_object_size
+    result["document_db_collection_schema_definition"] = attrs.document_db_collection_schema_definition
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["column_count"] = attrs.column_count
@@ -1338,43 +1169,28 @@ def _extract_document_db_collection_attrs(
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = (
-        attrs.sql_ai_insights_popular_business_question_count
-    )
-    result["sql_ai_insights_popular_join_count"] = (
-        attrs.sql_ai_insights_popular_join_count
-    )
-    result["sql_ai_insights_popular_filter_count"] = (
-        attrs.sql_ai_insights_popular_filter_count
-    )
-    result["sql_ai_insights_relationship_count"] = (
-        attrs.sql_ai_insights_relationship_count
-    )
+    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
+    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
+    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
+    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _document_db_collection_to_nested(
-    document_db_collection: DocumentDBCollection,
-) -> DocumentDBCollectionNested:
+def _document_db_collection_to_nested(document_db_collection: DocumentDBCollection) -> DocumentDBCollectionNested:
     """Convert flat DocumentDBCollection to nested format."""
     attrs = DocumentDBCollectionAttributes()
     _populate_document_db_collection_attrs(attrs, document_db_collection)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        document_db_collection,
-        _DOCUMENT_DB_COLLECTION_REL_FIELDS,
-        DocumentDBCollectionRelationshipAttributes,
+        document_db_collection, _DOCUMENT_DB_COLLECTION_REL_FIELDS, DocumentDBCollectionRelationshipAttributes
     )
     return DocumentDBCollectionNested(
         guid=document_db_collection.guid,
@@ -1402,23 +1218,16 @@ def _document_db_collection_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _document_db_collection_from_nested(
-    nested: DocumentDBCollectionNested,
-) -> DocumentDBCollection:
+def _document_db_collection_from_nested(nested: DocumentDBCollectionNested) -> DocumentDBCollection:
     """Convert nested format to flat DocumentDBCollection."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else DocumentDBCollectionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DocumentDBCollectionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DOCUMENT_DB_COLLECTION_REL_FIELDS,
-        DocumentDBCollectionRelationshipAttributes,
+        DocumentDBCollectionRelationshipAttributes
     )
     return DocumentDBCollection(
         guid=nested.guid,
@@ -1445,21 +1254,15 @@ def _document_db_collection_from_nested(
         **merged_rels,
     )
 
-
-def _document_db_collection_to_nested_bytes(
-    document_db_collection: DocumentDBCollection, serde: Serde
-) -> bytes:
+def _document_db_collection_to_nested_bytes(document_db_collection: DocumentDBCollection, serde: Serde) -> bytes:
     """Convert flat DocumentDBCollection to nested JSON bytes."""
     return serde.encode(_document_db_collection_to_nested(document_db_collection))
 
 
-def _document_db_collection_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> DocumentDBCollection:
+def _document_db_collection_from_nested_bytes(data: bytes, serde: Serde) -> DocumentDBCollection:
     """Convert nested JSON bytes to flat DocumentDBCollection."""
     nested = serde.decode(data, DocumentDBCollectionNested)
     return _document_db_collection_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1472,183 +1275,85 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_SUBTYPE = KeywordField(
-    "documentDBCollectionSubtype", "documentDBCollectionSubtype"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_IS_CAPPED = BooleanField(
-    "documentDBCollectionIsCapped", "documentDBCollectionIsCapped"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_TIME_FIELD = KeywordField(
-    "documentDBCollectionTimeField", "documentDBCollectionTimeField"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_TIME_GRANULARITY = KeywordField(
-    "documentDBCollectionTimeGranularity", "documentDBCollectionTimeGranularity"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_EXPIRE_AFTER_SECONDS = NumericField(
-    "documentDBCollectionExpireAfterSeconds", "documentDBCollectionExpireAfterSeconds"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT = NumericField(
-    "documentDBCollectionMaximumDocumentCount",
-    "documentDBCollectionMaximumDocumentCount",
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_MAX_SIZE = NumericField(
-    "documentDBCollectionMaxSize", "documentDBCollectionMaxSize"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_NUM_ORPHAN_DOCS = NumericField(
-    "documentDBCollectionNumOrphanDocs", "documentDBCollectionNumOrphanDocs"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_NUM_INDEXES = NumericField(
-    "documentDBCollectionNumIndexes", "documentDBCollectionNumIndexes"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_TOTAL_INDEX_SIZE = NumericField(
-    "documentDBCollectionTotalIndexSize", "documentDBCollectionTotalIndexSize"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_AVERAGE_OBJECT_SIZE = NumericField(
-    "documentDBCollectionAverageObjectSize", "documentDBCollectionAverageObjectSize"
-)
-DocumentDBCollection.DOCUMENT_DB_COLLECTION_SCHEMA_DEFINITION = TextField(
-    "documentDBCollectionSchemaDefinition", "documentDBCollectionSchemaDefinition"
-)
-DocumentDBCollection.NO_SQL_SCHEMA_DEFINITION = KeywordField(
-    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-)
-DocumentDBCollection.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_SUBTYPE = KeywordField("documentDBCollectionSubtype", "documentDBCollectionSubtype")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_IS_CAPPED = BooleanField("documentDBCollectionIsCapped", "documentDBCollectionIsCapped")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_TIME_FIELD = KeywordField("documentDBCollectionTimeField", "documentDBCollectionTimeField")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_TIME_GRANULARITY = KeywordField("documentDBCollectionTimeGranularity", "documentDBCollectionTimeGranularity")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_EXPIRE_AFTER_SECONDS = NumericField("documentDBCollectionExpireAfterSeconds", "documentDBCollectionExpireAfterSeconds")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT = NumericField("documentDBCollectionMaximumDocumentCount", "documentDBCollectionMaximumDocumentCount")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_MAX_SIZE = NumericField("documentDBCollectionMaxSize", "documentDBCollectionMaxSize")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_NUM_ORPHAN_DOCS = NumericField("documentDBCollectionNumOrphanDocs", "documentDBCollectionNumOrphanDocs")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_NUM_INDEXES = NumericField("documentDBCollectionNumIndexes", "documentDBCollectionNumIndexes")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_TOTAL_INDEX_SIZE = NumericField("documentDBCollectionTotalIndexSize", "documentDBCollectionTotalIndexSize")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_AVERAGE_OBJECT_SIZE = NumericField("documentDBCollectionAverageObjectSize", "documentDBCollectionAverageObjectSize")
+DocumentDBCollection.DOCUMENT_DB_COLLECTION_SCHEMA_DEFINITION = TextField("documentDBCollectionSchemaDefinition", "documentDBCollectionSchemaDefinition")
+DocumentDBCollection.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+DocumentDBCollection.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 DocumentDBCollection.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 DocumentDBCollection.ROW_COUNT = NumericField("rowCount", "rowCount")
 DocumentDBCollection.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
-DocumentDBCollection.TABLE_OBJECT_COUNT = NumericField(
-    "tableObjectCount", "tableObjectCount"
-)
+DocumentDBCollection.TABLE_OBJECT_COUNT = NumericField("tableObjectCount", "tableObjectCount")
 DocumentDBCollection.ALIAS = KeywordField("alias", "alias")
 DocumentDBCollection.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 DocumentDBCollection.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-DocumentDBCollection.QUERY_PREVIEW_CONFIG = KeywordField(
-    "queryPreviewConfig", "queryPreviewConfig"
-)
-DocumentDBCollection.EXTERNAL_LOCATION = KeywordField(
-    "externalLocation", "externalLocation"
-)
-DocumentDBCollection.EXTERNAL_LOCATION_REGION = KeywordField(
-    "externalLocationRegion", "externalLocationRegion"
-)
-DocumentDBCollection.EXTERNAL_LOCATION_FORMAT = KeywordField(
-    "externalLocationFormat", "externalLocationFormat"
-)
+DocumentDBCollection.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+DocumentDBCollection.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
+DocumentDBCollection.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
+DocumentDBCollection.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
 DocumentDBCollection.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-DocumentDBCollection.PARTITION_STRATEGY = KeywordField(
-    "partitionStrategy", "partitionStrategy"
-)
+DocumentDBCollection.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
 DocumentDBCollection.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
-DocumentDBCollection.TABLE_DEFINITION = KeywordField(
-    "tableDefinition", "tableDefinition"
-)
+DocumentDBCollection.TABLE_DEFINITION = KeywordField("tableDefinition", "tableDefinition")
 DocumentDBCollection.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 DocumentDBCollection.IS_SHARDED = BooleanField("isSharded", "isSharded")
 DocumentDBCollection.TABLE_TYPE = KeywordField("tableType", "tableType")
-DocumentDBCollection.ICEBERG_CATALOG_NAME = KeywordField(
-    "icebergCatalogName", "icebergCatalogName"
-)
-DocumentDBCollection.ICEBERG_TABLE_TYPE = KeywordField(
-    "icebergTableType", "icebergTableType"
-)
-DocumentDBCollection.ICEBERG_CATALOG_SOURCE = KeywordField(
-    "icebergCatalogSource", "icebergCatalogSource"
-)
-DocumentDBCollection.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
-    "icebergCatalogTableName", "icebergCatalogTableName"
-)
-DocumentDBCollection.TABLE_IMPALA_PARAMETERS = KeywordField(
-    "tableImpalaParameters", "tableImpalaParameters"
-)
-DocumentDBCollection.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
-    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
-)
-DocumentDBCollection.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
-    "tableExternalVolumeName", "tableExternalVolumeName"
-)
-DocumentDBCollection.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
-    "icebergTableBaseLocation", "icebergTableBaseLocation"
-)
-DocumentDBCollection.TABLE_RETENTION_TIME = NumericField(
-    "tableRetentionTime", "tableRetentionTime"
-)
+DocumentDBCollection.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
+DocumentDBCollection.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
+DocumentDBCollection.ICEBERG_CATALOG_SOURCE = KeywordField("icebergCatalogSource", "icebergCatalogSource")
+DocumentDBCollection.ICEBERG_CATALOG_TABLE_NAME = KeywordField("icebergCatalogTableName", "icebergCatalogTableName")
+DocumentDBCollection.TABLE_IMPALA_PARAMETERS = KeywordField("tableImpalaParameters", "tableImpalaParameters")
+DocumentDBCollection.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField("icebergCatalogTableNamespace", "icebergCatalogTableNamespace")
+DocumentDBCollection.TABLE_EXTERNAL_VOLUME_NAME = KeywordField("tableExternalVolumeName", "tableExternalVolumeName")
+DocumentDBCollection.ICEBERG_TABLE_BASE_LOCATION = KeywordField("icebergTableBaseLocation", "icebergTableBaseLocation")
+DocumentDBCollection.TABLE_RETENTION_TIME = NumericField("tableRetentionTime", "tableRetentionTime")
 DocumentDBCollection.QUERY_COUNT = NumericField("queryCount", "queryCount")
 DocumentDBCollection.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DocumentDBCollection.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DocumentDBCollection.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+DocumentDBCollection.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 DocumentDBCollection.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DocumentDBCollection.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+DocumentDBCollection.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 DocumentDBCollection.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DocumentDBCollection.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+DocumentDBCollection.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 DocumentDBCollection.TABLE_NAME = KeywordField("tableName", "tableName")
-DocumentDBCollection.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+DocumentDBCollection.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 DocumentDBCollection.VIEW_NAME = KeywordField("viewName", "viewName")
-DocumentDBCollection.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-DocumentDBCollection.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-DocumentDBCollection.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+DocumentDBCollection.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+DocumentDBCollection.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+DocumentDBCollection.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 DocumentDBCollection.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 DocumentDBCollection.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-DocumentDBCollection.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+DocumentDBCollection.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 DocumentDBCollection.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DocumentDBCollection.SQL_HAS_AI_INSIGHTS = BooleanField(
-    "sqlHasAiInsights", "sqlHasAiInsights"
-)
-DocumentDBCollection.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
-    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
-)
-DocumentDBCollection.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
-    "sqlAiInsightsPopularBusinessQuestionCount",
-    "sqlAiInsightsPopularBusinessQuestionCount",
-)
-DocumentDBCollection.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
-    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
-)
-DocumentDBCollection.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
-    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
-)
-DocumentDBCollection.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
-    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
-)
+DocumentDBCollection.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
+DocumentDBCollection.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
+DocumentDBCollection.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
+DocumentDBCollection.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
+DocumentDBCollection.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
+DocumentDBCollection.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
 DocumentDBCollection.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DocumentDBCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DocumentDBCollection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DocumentDBCollection.APPLICATION = RelationField("application")
 DocumentDBCollection.APPLICATION_FIELD = RelationField("applicationField")
 DocumentDBCollection.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DocumentDBCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+DocumentDBCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DocumentDBCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DocumentDBCollection.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-DocumentDBCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-DocumentDBCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+DocumentDBCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+DocumentDBCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 DocumentDBCollection.METRICS = RelationField("metrics")
 DocumentDBCollection.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DocumentDBCollection.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
+DocumentDBCollection.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 DocumentDBCollection.DBT_MODELS = RelationField("dbtModels")
 DocumentDBCollection.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DocumentDBCollection.DBT_TESTS = RelationField("dbtTests")
@@ -1656,9 +1361,7 @@ DocumentDBCollection.DBT_SOURCES = RelationField("dbtSources")
 DocumentDBCollection.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DocumentDBCollection.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 DocumentDBCollection.DOCUMENT_DB_DATABASE = RelationField("documentDBDatabase")
-DocumentDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+DocumentDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 DocumentDBCollection.MEANINGS = RelationField("meanings")
 DocumentDBCollection.MC_MONITORS = RelationField("mcMonitors")
 DocumentDBCollection.MC_INCIDENTS = RelationField("mcIncidents")
@@ -1667,9 +1370,7 @@ DocumentDBCollection.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects"
 DocumentDBCollection.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DocumentDBCollection.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 DocumentDBCollection.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-DocumentDBCollection.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+DocumentDBCollection.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 DocumentDBCollection.FILES = RelationField("files")
 DocumentDBCollection.LINKS = RelationField("links")
 DocumentDBCollection.README = RelationField("readme")
@@ -1680,18 +1381,10 @@ DocumentDBCollection.DIMENSIONS = RelationField("dimensions")
 DocumentDBCollection.FACTS = RelationField("facts")
 DocumentDBCollection.PARTITIONS = RelationField("partitions")
 DocumentDBCollection.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-DocumentDBCollection.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+DocumentDBCollection.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 DocumentDBCollection.SODA_CHECKS = RelationField("sodaChecks")
 DocumentDBCollection.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DocumentDBCollection.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-DocumentDBCollection.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
-    "sqlInsightOutgoingJoins"
-)
-DocumentDBCollection.SQL_INSIGHT_INCOMING_JOINS = RelationField(
-    "sqlInsightIncomingJoins"
-)
-DocumentDBCollection.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
-    "sqlInsightBusinessQuestions"
-)
+DocumentDBCollection.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+DocumentDBCollection.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+DocumentDBCollection.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")

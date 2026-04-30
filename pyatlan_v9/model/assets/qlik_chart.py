@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -48,17 +41,20 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .qlik_related import RelatedQlikColumn, RelatedQlikSheet
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .qlik_related import RelatedQlikColumn, RelatedQlikSheet
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class QlikChart(Asset):
@@ -184,9 +180,7 @@ class QlikChart(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -195,14 +189,10 @@ class QlikChart(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -235,9 +225,7 @@ class QlikChart(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -249,9 +237,7 @@ class QlikChart(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -273,6 +259,7 @@ class QlikChart(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -325,7 +312,6 @@ class QlikChart(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class QlikChartAttributes(AssetAttributes):
     """QlikChart-specific attributes for nested API format."""
 
@@ -368,7 +354,6 @@ class QlikChartAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class QlikChartRelationshipAttributes(AssetRelationshipAttributes):
     """QlikChart-specific relationship attributes for nested API format."""
 
@@ -402,9 +387,7 @@ class QlikChartRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -413,14 +396,10 @@ class QlikChartRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -453,9 +432,7 @@ class QlikChartRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -467,9 +444,7 @@ class QlikChartRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -481,19 +456,13 @@ class QlikChartRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class QlikChartNested(AssetNested):
     """QlikChart in nested API format for high-performance serialization."""
 
     attributes: Union[QlikChartAttributes, UnsetType] = UNSET
     relationship_attributes: Union[QlikChartRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        QlikChartRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        QlikChartRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[QlikChartRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[QlikChartRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -536,7 +505,6 @@ _QLIK_CHART_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_qlik_chart_attrs(attrs: QlikChartAttributes, obj: QlikChart) -> None:
     """Populate QlikChart-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -553,7 +521,6 @@ def _populate_qlik_chart_attrs(attrs: QlikChartAttributes, obj: QlikChart) -> No
     attrs.qlik_owner_id = obj.qlik_owner_id
     attrs.qlik_is_published = obj.qlik_is_published
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_qlik_chart_attrs(attrs: QlikChartAttributes) -> dict:
     """Extract all QlikChart attributes from the attrs struct into a flat dict."""
@@ -572,7 +539,6 @@ def _extract_qlik_chart_attrs(attrs: QlikChartAttributes) -> dict:
     result["qlik_is_published"] = attrs.qlik_is_published
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -613,19 +579,16 @@ def _qlik_chart_to_nested(qlik_chart: QlikChart) -> QlikChartNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _qlik_chart_from_nested(nested: QlikChartNested) -> QlikChart:
     """Convert nested format to flat QlikChart."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else QlikChartAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else QlikChartAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _QLIK_CHART_REL_FIELDS,
-        QlikChartRelationshipAttributes,
+        QlikChartRelationshipAttributes
     )
     return QlikChart(
         guid=nested.guid,
@@ -652,7 +615,6 @@ def _qlik_chart_from_nested(nested: QlikChartNested) -> QlikChart:
         **merged_rels,
     )
 
-
 def _qlik_chart_to_nested_bytes(qlik_chart: QlikChart, serde: Serde) -> bytes:
     """Convert flat QlikChart to nested JSON bytes."""
     return serde.encode(_qlik_chart_to_nested(qlik_chart))
@@ -662,7 +624,6 @@ def _qlik_chart_from_nested_bytes(data: bytes, serde: Serde) -> QlikChart:
     """Convert nested JSON bytes to flat QlikChart."""
     nested = serde.decode(data, QlikChartNested)
     return _qlik_chart_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -681,18 +642,12 @@ QlikChart.QLIK_TYPE = KeywordField("qlikType", "qlikType")
 QlikChart.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikChart.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikChart.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")
-QlikChart.QLIK_SPACE_QUALIFIED_NAME = KeywordTextField(
-    "qlikSpaceQualifiedName", "qlikSpaceQualifiedName", "qlikSpaceQualifiedName.text"
-)
+QlikChart.QLIK_SPACE_QUALIFIED_NAME = KeywordTextField("qlikSpaceQualifiedName", "qlikSpaceQualifiedName", "qlikSpaceQualifiedName.text")
 QlikChart.QLIK_APP_ID = KeywordField("qlikAppId", "qlikAppId")
-QlikChart.QLIK_APP_QUALIFIED_NAME = KeywordTextField(
-    "qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text"
-)
+QlikChart.QLIK_APP_QUALIFIED_NAME = KeywordTextField("qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text")
 QlikChart.QLIK_OWNER_ID = KeywordField("qlikOwnerId", "qlikOwnerId")
 QlikChart.QLIK_IS_PUBLISHED = BooleanField("qlikIsPublished", "qlikIsPublished")
-QlikChart.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+QlikChart.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 QlikChart.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 QlikChart.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 QlikChart.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -707,9 +662,7 @@ QlikChart.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribut
 QlikChart.METRICS = RelationField("metrics")
 QlikChart.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 QlikChart.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-QlikChart.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+QlikChart.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 QlikChart.MEANINGS = RelationField("meanings")
 QlikChart.MC_MONITORS = RelationField("mcMonitors")
 QlikChart.MC_INCIDENTS = RelationField("mcIncidents")

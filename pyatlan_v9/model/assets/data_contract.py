@@ -15,10 +15,12 @@ This module provides:
 from __future__ import annotations
 
 import re
+from json import JSONDecodeError, loads
 from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
+from pyatlan.errors import ErrorCode
 from pyatlan_v9.model.contract import DataContractSpec
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
@@ -259,16 +261,41 @@ class DataContract(Asset):
         contract_spec: Union[DataContractSpec, str, None] = None,
     ) -> "DataContract":
         """Create a new DataContract asset."""
-        attrs = DataContract.Attributes.creator(
-            asset_qualified_name=asset_qualified_name,
-            contract_json=contract_json,
-            contract_spec=contract_spec,
-        )
+        validate_required_fields(["asset_qualified_name"], [asset_qualified_name])
+        if not (contract_json or contract_spec):
+            raise ValueError(
+                "At least one of `contract_json` or `contract_spec` "
+                "must be provided to create a contract."
+            )
+        if contract_json and contract_spec:
+            raise ValueError(
+                "Both `contract_json` and `contract_spec` cannot be "
+                "provided simultaneously to create a contract."
+            )
+        last_slash_index = asset_qualified_name.rfind("/")
+        default_dataset = asset_qualified_name[last_slash_index + 1 :]  # noqa
+        if contract_json:
+            try:
+                contract_name = f"Data contract for {loads(contract_json)['dataset'] or default_dataset}"
+            except (JSONDecodeError, KeyError):
+                raise ErrorCode.INVALID_CONTRACT_JSON.exception_with_parameters()
+        else:
+            if isinstance(contract_spec, DataContractSpec):
+                contract_name = (
+                    f"Data contract for {contract_spec.dataset or default_dataset}"
+                )
+                contract_spec = contract_spec.to_yaml()
+            else:
+                is_dataset_found = re.search(
+                    r"dataset:\s*([^\s#]+)", contract_spec or default_dataset
+                )
+                dataset = is_dataset_found.group(1) if is_dataset_found else None
+                contract_name = f"Data contract for {dataset or default_dataset}"
         return cls(
-            name=attrs.name,
-            qualified_name=attrs.qualified_name,
-            data_contract_json=attrs.data_contract_json,
-            data_contract_spec=attrs.data_contract_spec,
+            name=contract_name,
+            qualified_name=f"{asset_qualified_name}/contract",
+            data_contract_json=contract_json,
+            data_contract_spec=contract_spec,
         )
 
     @classmethod

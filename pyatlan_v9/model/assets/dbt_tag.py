@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -52,11 +46,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DbtTag(Asset):
@@ -224,9 +220,7 @@ class DbtTag(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -235,14 +229,10 @@ class DbtTag(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -269,9 +259,7 @@ class DbtTag(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -283,9 +271,7 @@ class DbtTag(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -307,6 +293,7 @@ class DbtTag(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/account/[^/]+/project/[^/]+/tag/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -358,7 +345,6 @@ class DbtTag(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class DbtTagAttributes(AssetAttributes):
     """DbtTag-specific attributes for nested API format."""
@@ -435,7 +421,6 @@ class DbtTagAttributes(AssetAttributes):
     mapped_classification_name: Union[str, None, UnsetType] = UNSET
     """Name of the classification in Atlan that is mapped to this tag."""
 
-
 class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     """DbtTag-specific relationship attributes for nested API format."""
 
@@ -469,9 +454,7 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -480,14 +463,10 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -514,9 +493,7 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -528,9 +505,7 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -542,19 +517,13 @@ class DbtTagRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DbtTagNested(AssetNested):
     """DbtTag in nested API format for high-performance serialization."""
 
     attributes: Union[DbtTagAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DbtTagRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DbtTagRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[DbtTagRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[DbtTagRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DbtTagRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -595,7 +564,6 @@ _DBT_TAG_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_dbt_tag_attrs(attrs: DbtTagAttributes, obj: DbtTag) -> None:
     """Populate DbtTag-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -623,7 +591,6 @@ def _populate_dbt_tag_attrs(attrs: DbtTagAttributes, obj: DbtTag) -> None:
     attrs.tag_attributes = obj.tag_attributes
     attrs.tag_allowed_values = obj.tag_allowed_values
     attrs.mapped_classification_name = obj.mapped_classification_name
-
 
 def _extract_dbt_tag_attrs(attrs: DbtTagAttributes) -> dict:
     """Extract all DbtTag attributes from the attrs struct into a flat dict."""
@@ -653,7 +620,6 @@ def _extract_dbt_tag_attrs(attrs: DbtTagAttributes) -> dict:
     result["tag_allowed_values"] = attrs.tag_allowed_values
     result["mapped_classification_name"] = attrs.mapped_classification_name
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -694,7 +660,6 @@ def _dbt_tag_to_nested(dbt_tag: DbtTag) -> DbtTagNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _dbt_tag_from_nested(nested: DbtTagNested) -> DbtTag:
     """Convert nested format to flat DbtTag."""
     attrs = nested.attributes if nested.attributes is not UNSET else DbtTagAttributes()
@@ -704,7 +669,7 @@ def _dbt_tag_from_nested(nested: DbtTagNested) -> DbtTag:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_TAG_REL_FIELDS,
-        DbtTagRelationshipAttributes,
+        DbtTagRelationshipAttributes
     )
     return DbtTag(
         guid=nested.guid,
@@ -731,7 +696,6 @@ def _dbt_tag_from_nested(nested: DbtTagNested) -> DbtTag:
         **merged_rels,
     )
 
-
 def _dbt_tag_to_nested_bytes(dbt_tag: DbtTag, serde: Serde) -> bytes:
     """Convert flat DbtTag to nested JSON bytes."""
     return serde.encode(_dbt_tag_to_nested(dbt_tag))
@@ -741,7 +705,6 @@ def _dbt_tag_from_nested_bytes(data: bytes, serde: Serde) -> DbtTag:
     """Convert nested JSON bytes to flat DbtTag."""
     nested = serde.decode(data, DbtTagNested)
     return _dbt_tag_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -762,35 +725,21 @@ DbtTag.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtTag.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtTag.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtTag.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtTag.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
-    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
-)
+DbtTag.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
 DbtTag.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtTag.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtTag.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
-    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
-)
+DbtTag.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
 DbtTag.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtTag.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
-    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
-)
+DbtTag.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
 DbtTag.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtTag.DBT_CONNECTION_CONTEXT = KeywordField(
-    "dbtConnectionContext", "dbtConnectionContext"
-)
-DbtTag.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
-    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
-)
+DbtTag.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
+DbtTag.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
 DbtTag.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtTag.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 DbtTag.TAG_ID = KeywordField("tagId", "tagId")
 DbtTag.TAG_ATTRIBUTES = KeywordField("tagAttributes", "tagAttributes")
-DbtTag.TAG_ALLOWED_VALUES = KeywordTextField(
-    "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
-)
-DbtTag.MAPPED_CLASSIFICATION_NAME = KeywordField(
-    "mappedClassificationName", "mappedClassificationName"
-)
+DbtTag.TAG_ALLOWED_VALUES = KeywordTextField("tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text")
+DbtTag.MAPPED_CLASSIFICATION_NAME = KeywordField("mappedClassificationName", "mappedClassificationName")
 DbtTag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DbtTag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DbtTag.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -805,9 +754,7 @@ DbtTag.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes"
 DbtTag.METRICS = RelationField("metrics")
 DbtTag.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DbtTag.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-DbtTag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+DbtTag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 DbtTag.MEANINGS = RelationField("meanings")
 DbtTag.MC_MONITORS = RelationField("mcMonitors")
 DbtTag.MC_INCIDENTS = RelationField("mcIncidents")

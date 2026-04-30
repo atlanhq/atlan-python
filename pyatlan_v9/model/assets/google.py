@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -46,11 +40,13 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Google(Asset):
@@ -145,14 +141,10 @@ class Google(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -167,9 +159,7 @@ class Google(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -181,9 +171,7 @@ class Google(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -191,6 +179,8 @@ class Google(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Google"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -243,7 +233,6 @@ class Google(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class GoogleAttributes(AssetAttributes):
     """Google-specific attributes for nested API format."""
 
@@ -273,7 +262,6 @@ class GoogleAttributes(AssetAttributes):
 
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
-
 
 class GoogleRelationshipAttributes(AssetRelationshipAttributes):
     """Google-specific relationship attributes for nested API format."""
@@ -305,14 +293,10 @@ class GoogleRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -327,9 +311,7 @@ class GoogleRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -341,27 +323,19 @@ class GoogleRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
-
 
 class GoogleNested(AssetNested):
     """Google in nested API format for high-performance serialization."""
 
     attributes: Union[GoogleAttributes, UnsetType] = UNSET
     relationship_attributes: Union[GoogleRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[GoogleRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[GoogleRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[GoogleRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[GoogleRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -392,7 +366,6 @@ _GOOGLE_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
 def _populate_google_attrs(attrs: GoogleAttributes, obj: Google) -> None:
     """Populate Google-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -405,7 +378,6 @@ def _populate_google_attrs(attrs: GoogleAttributes, obj: Google) -> None:
     attrs.google_labels = obj.google_labels
     attrs.google_tags = obj.google_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
-
 
 def _extract_google_attrs(attrs: GoogleAttributes) -> dict:
     """Extract all Google attributes from the attrs struct into a flat dict."""
@@ -420,7 +392,6 @@ def _extract_google_attrs(attrs: GoogleAttributes) -> dict:
     result["google_tags"] = attrs.google_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -461,7 +432,6 @@ def _google_to_nested(google: Google) -> GoogleNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _google_from_nested(nested: GoogleNested) -> Google:
     """Convert nested format to flat Google."""
     attrs = nested.attributes if nested.attributes is not UNSET else GoogleAttributes()
@@ -471,7 +441,7 @@ def _google_from_nested(nested: GoogleNested) -> Google:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _GOOGLE_REL_FIELDS,
-        GoogleRelationshipAttributes,
+        GoogleRelationshipAttributes
     )
     return Google(
         guid=nested.guid,
@@ -498,7 +468,6 @@ def _google_from_nested(nested: GoogleNested) -> Google:
         **merged_rels,
     )
 
-
 def _google_to_nested_bytes(google: Google, serde: Serde) -> bytes:
     """Convert flat Google to nested JSON bytes."""
     return serde.encode(_google_to_nested(google))
@@ -508,7 +477,6 @@ def _google_from_nested_bytes(data: bytes, serde: Serde) -> Google:
     """Convert nested JSON bytes to flat Google."""
     nested = serde.decode(data, GoogleNested)
     return _google_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -521,20 +489,14 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Google.GOOGLE_SERVICE = KeywordField("googleService", "googleService")
-Google.GOOGLE_PROJECT_NAME = KeywordTextField(
-    "googleProjectName", "googleProjectName", "googleProjectName.text"
-)
-Google.GOOGLE_PROJECT_ID = KeywordTextField(
-    "googleProjectId", "googleProjectId", "googleProjectId.text"
-)
+Google.GOOGLE_PROJECT_NAME = KeywordTextField("googleProjectName", "googleProjectName", "googleProjectName.text")
+Google.GOOGLE_PROJECT_ID = KeywordTextField("googleProjectId", "googleProjectId", "googleProjectId.text")
 Google.CLOUD_PROJECT_NUMBER = NumericField("cloudProjectNumber", "cloudProjectNumber")
 Google.GOOGLE_LOCATION = KeywordField("googleLocation", "googleLocation")
 Google.GOOGLE_LOCATION_TYPE = KeywordField("googleLocationType", "googleLocationType")
 Google.GOOGLE_LABELS = KeywordField("googleLabels", "googleLabels")
 Google.GOOGLE_TAGS = KeywordField("googleTags", "googleTags")
-Google.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
-    "cloudUniformResourceName", "cloudUniformResourceName"
-)
+Google.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
 Google.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Google.APPLICATION = RelationField("application")
 Google.APPLICATION_FIELD = RelationField("applicationField")
@@ -545,9 +507,7 @@ Google.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Google.METRICS = RelationField("metrics")
 Google.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Google.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Google.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Google.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Google.MEANINGS = RelationField("meanings")
 Google.MC_MONITORS = RelationField("mcMonitors")
 Google.MC_INCIDENTS = RelationField("mcIncidents")

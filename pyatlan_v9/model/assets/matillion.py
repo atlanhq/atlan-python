@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -51,11 +45,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Matillion(Asset):
@@ -135,9 +131,7 @@ class Matillion(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -146,14 +140,10 @@ class Matillion(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -180,9 +170,7 @@ class Matillion(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -194,9 +182,7 @@ class Matillion(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -210,6 +196,8 @@ class Matillion(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Matillion"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -262,7 +250,6 @@ class Matillion(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class MatillionAttributes(AssetAttributes):
     """Matillion-specific attributes for nested API format."""
 
@@ -271,7 +258,6 @@ class MatillionAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class MatillionRelationshipAttributes(AssetRelationshipAttributes):
     """Matillion-specific relationship attributes for nested API format."""
@@ -306,9 +292,7 @@ class MatillionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -317,14 +301,10 @@ class MatillionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -351,9 +331,7 @@ class MatillionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -365,9 +343,7 @@ class MatillionRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -379,19 +355,13 @@ class MatillionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class MatillionNested(AssetNested):
     """Matillion in nested API format for high-performance serialization."""
 
     attributes: Union[MatillionAttributes, UnsetType] = UNSET
     relationship_attributes: Union[MatillionRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        MatillionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        MatillionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[MatillionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[MatillionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -432,13 +402,11 @@ _MATILLION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_matillion_attrs(attrs: MatillionAttributes, obj: Matillion) -> None:
     """Populate Matillion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.matillion_version = obj.matillion_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_matillion_attrs(attrs: MatillionAttributes) -> dict:
     """Extract all Matillion attributes from the attrs struct into a flat dict."""
@@ -446,7 +414,6 @@ def _extract_matillion_attrs(attrs: MatillionAttributes) -> dict:
     result["matillion_version"] = attrs.matillion_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -487,19 +454,16 @@ def _matillion_to_nested(matillion: Matillion) -> MatillionNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _matillion_from_nested(nested: MatillionNested) -> Matillion:
     """Convert nested format to flat Matillion."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else MatillionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else MatillionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MATILLION_REL_FIELDS,
-        MatillionRelationshipAttributes,
+        MatillionRelationshipAttributes
     )
     return Matillion(
         guid=nested.guid,
@@ -526,7 +490,6 @@ def _matillion_from_nested(nested: MatillionNested) -> Matillion:
         **merged_rels,
     )
 
-
 def _matillion_to_nested_bytes(matillion: Matillion, serde: Serde) -> bytes:
     """Convert flat Matillion to nested JSON bytes."""
     return serde.encode(_matillion_to_nested(matillion))
@@ -537,16 +500,16 @@ def _matillion_from_nested_bytes(data: bytes, serde: Serde) -> Matillion:
     nested = serde.decode(data, MatillionNested)
     return _matillion_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
 Matillion.MATILLION_VERSION = KeywordField("matillionVersion", "matillionVersion")
-Matillion.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+Matillion.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Matillion.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Matillion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Matillion.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -561,9 +524,7 @@ Matillion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribut
 Matillion.METRICS = RelationField("metrics")
 Matillion.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Matillion.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Matillion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Matillion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Matillion.MEANINGS = RelationField("meanings")
 Matillion.MC_MONITORS = RelationField("mcMonitors")
 Matillion.MC_INCIDENTS = RelationField("mcIncidents")

@@ -15,6 +15,7 @@ from pyatlan_v9.client.contract import V9ContractClient
 from pyatlan_v9.errors import InvalidRequestError
 from pyatlan_v9.model import DataContract
 from pyatlan_v9.model.assets import Table
+from pyatlan_v9.model.assets.data_contract import DataContractAttributes
 from pyatlan_v9.model.contract import DataContractSpec
 from tests_v9.unit.model.constants import (
     ASSET_QUALIFIED_NAME,
@@ -65,7 +66,7 @@ owners:
 
 
 def _assert_contract(
-    contract: Union[DataContract, DataContract.Attributes],
+    contract: Union[DataContract, DataContractAttributes],
     is_json: bool = False,
     contract_name: str = DATA_CONTRACT_NAME,
 ) -> None:
@@ -122,8 +123,8 @@ def test_creator_with_invalid_contract_json_raises_error(
 
 
 def test_creator_attributes_with_required_parameters():
-    """Test DataContract.Attributes.creator for JSON payload."""
-    attributes = DataContract.Attributes.creator(
+    """Test DataContract.creator for JSON payload (v9: no separate Attributes class)."""
+    attributes = DataContract.creator(
         asset_qualified_name=ASSET_QUALIFIED_NAME,
         contract_json=dumps(DATA_CONTRACT_JSON),
     )

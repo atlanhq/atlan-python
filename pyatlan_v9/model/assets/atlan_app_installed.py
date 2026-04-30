@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -38,7 +31,6 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .atlan_app_related import RelatedAtlanAppTool, RelatedAtlanAppWorkflow
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -53,11 +45,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .atlan_app_related import RelatedAtlanAppTool, RelatedAtlanAppWorkflow
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AtlanAppInstalled(Asset):
@@ -113,9 +109,7 @@ class AtlanAppInstalled(Asset):
     atlan_app_current_version_id: Union[int, None, UnsetType] = UNSET
     """Current version identifier for the atlan application."""
 
-    atlan_app_current_version_uuid: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="atlanAppCurrentVersionUUID"
-    )
+    atlan_app_current_version_uuid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="atlanAppCurrentVersionUUID")
     """Current version uuid for the atlan application. This is externally exposed information."""
 
     atlan_app_deployment_config: Union[str, None, UnsetType] = UNSET
@@ -175,9 +169,7 @@ class AtlanAppInstalled(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -186,14 +178,10 @@ class AtlanAppInstalled(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -220,9 +208,7 @@ class AtlanAppInstalled(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -234,9 +220,7 @@ class AtlanAppInstalled(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -250,6 +234,8 @@ class AtlanAppInstalled(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AtlanAppInstalled"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -280,9 +266,7 @@ class AtlanAppInstalled(Asset):
         return _atlan_app_installed_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> AtlanAppInstalled:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> AtlanAppInstalled:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -304,16 +288,13 @@ class AtlanAppInstalled(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AtlanAppInstalledAttributes(AssetAttributes):
     """AtlanAppInstalled-specific attributes for nested API format."""
 
     atlan_app_current_version_id: Union[int, None, UnsetType] = UNSET
     """Current version identifier for the atlan application."""
 
-    atlan_app_current_version_uuid: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="atlanAppCurrentVersionUUID"
-    )
+    atlan_app_current_version_uuid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="atlanAppCurrentVersionUUID")
     """Current version uuid for the atlan application. This is externally exposed information."""
 
     atlan_app_deployment_config: Union[str, None, UnsetType] = UNSET
@@ -336,7 +317,6 @@ class AtlanAppInstalledAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class AtlanAppInstalledRelationshipAttributes(AssetRelationshipAttributes):
     """AtlanAppInstalled-specific relationship attributes for nested API format."""
@@ -377,9 +357,7 @@ class AtlanAppInstalledRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -388,14 +366,10 @@ class AtlanAppInstalledRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -422,9 +396,7 @@ class AtlanAppInstalledRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -436,9 +408,7 @@ class AtlanAppInstalledRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -450,21 +420,13 @@ class AtlanAppInstalledRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class AtlanAppInstalledNested(AssetNested):
     """AtlanAppInstalled in nested API format for high-performance serialization."""
 
     attributes: Union[AtlanAppInstalledAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        AtlanAppInstalledRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        AtlanAppInstalledRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AtlanAppInstalledRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[AtlanAppInstalledRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[AtlanAppInstalledRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AtlanAppInstalledRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -507,10 +469,7 @@ _ATLAN_APP_INSTALLED_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_atlan_app_installed_attrs(
-    attrs: AtlanAppInstalledAttributes, obj: AtlanAppInstalled
-) -> None:
+def _populate_atlan_app_installed_attrs(attrs: AtlanAppInstalledAttributes, obj: AtlanAppInstalled) -> None:
     """Populate AtlanAppInstalled-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.atlan_app_current_version_id = obj.atlan_app_current_version_id
@@ -522,7 +481,6 @@ def _populate_atlan_app_installed_attrs(
     attrs.atlan_app_metadata = obj.atlan_app_metadata
     attrs.app_id = obj.app_id
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_atlan_app_installed_attrs(attrs: AtlanAppInstalledAttributes) -> dict:
     """Extract all AtlanAppInstalled attributes from the attrs struct into a flat dict."""
@@ -538,23 +496,18 @@ def _extract_atlan_app_installed_attrs(attrs: AtlanAppInstalledAttributes) -> di
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _atlan_app_installed_to_nested(
-    atlan_app_installed: AtlanAppInstalled,
-) -> AtlanAppInstalledNested:
+def _atlan_app_installed_to_nested(atlan_app_installed: AtlanAppInstalled) -> AtlanAppInstalledNested:
     """Convert flat AtlanAppInstalled to nested format."""
     attrs = AtlanAppInstalledAttributes()
     _populate_atlan_app_installed_attrs(attrs, atlan_app_installed)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        atlan_app_installed,
-        _ATLAN_APP_INSTALLED_REL_FIELDS,
-        AtlanAppInstalledRelationshipAttributes,
+        atlan_app_installed, _ATLAN_APP_INSTALLED_REL_FIELDS, AtlanAppInstalledRelationshipAttributes
     )
     return AtlanAppInstalledNested(
         guid=atlan_app_installed.guid,
@@ -582,23 +535,16 @@ def _atlan_app_installed_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _atlan_app_installed_from_nested(
-    nested: AtlanAppInstalledNested,
-) -> AtlanAppInstalled:
+def _atlan_app_installed_from_nested(nested: AtlanAppInstalledNested) -> AtlanAppInstalled:
     """Convert nested format to flat AtlanAppInstalled."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else AtlanAppInstalledAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AtlanAppInstalledAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ATLAN_APP_INSTALLED_REL_FIELDS,
-        AtlanAppInstalledRelationshipAttributes,
+        AtlanAppInstalledRelationshipAttributes
     )
     return AtlanAppInstalled(
         guid=nested.guid,
@@ -625,21 +571,15 @@ def _atlan_app_installed_from_nested(
         **merged_rels,
     )
 
-
-def _atlan_app_installed_to_nested_bytes(
-    atlan_app_installed: AtlanAppInstalled, serde: Serde
-) -> bytes:
+def _atlan_app_installed_to_nested_bytes(atlan_app_installed: AtlanAppInstalled, serde: Serde) -> bytes:
     """Convert flat AtlanAppInstalled to nested JSON bytes."""
     return serde.encode(_atlan_app_installed_to_nested(atlan_app_installed))
 
 
-def _atlan_app_installed_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> AtlanAppInstalled:
+def _atlan_app_installed_from_nested_bytes(data: bytes, serde: Serde) -> AtlanAppInstalled:
     """Convert nested JSON bytes to flat AtlanAppInstalled."""
     nested = serde.decode(data, AtlanAppInstalledNested)
     return _atlan_app_installed_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -651,27 +591,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-AtlanAppInstalled.ATLAN_APP_CURRENT_VERSION_ID = NumericField(
-    "atlanAppCurrentVersionId", "atlanAppCurrentVersionId"
-)
-AtlanAppInstalled.ATLAN_APP_CURRENT_VERSION_UUID = KeywordField(
-    "atlanAppCurrentVersionUUID", "atlanAppCurrentVersionUUID"
-)
-AtlanAppInstalled.ATLAN_APP_DEPLOYMENT_CONFIG = KeywordField(
-    "atlanAppDeploymentConfig", "atlanAppDeploymentConfig"
-)
-AtlanAppInstalled.ATLAN_APP_DEPLOYMENT_NAME = KeywordField(
-    "atlanAppDeploymentName", "atlanAppDeploymentName"
-)
-AtlanAppInstalled.ATLAN_APP_QUALIFIED_NAME = KeywordField(
-    "atlanAppQualifiedName", "atlanAppQualifiedName"
-)
+AtlanAppInstalled.ATLAN_APP_CURRENT_VERSION_ID = NumericField("atlanAppCurrentVersionId", "atlanAppCurrentVersionId")
+AtlanAppInstalled.ATLAN_APP_CURRENT_VERSION_UUID = KeywordField("atlanAppCurrentVersionUUID", "atlanAppCurrentVersionUUID")
+AtlanAppInstalled.ATLAN_APP_DEPLOYMENT_CONFIG = KeywordField("atlanAppDeploymentConfig", "atlanAppDeploymentConfig")
+AtlanAppInstalled.ATLAN_APP_DEPLOYMENT_NAME = KeywordField("atlanAppDeploymentName", "atlanAppDeploymentName")
+AtlanAppInstalled.ATLAN_APP_QUALIFIED_NAME = KeywordField("atlanAppQualifiedName", "atlanAppQualifiedName")
 AtlanAppInstalled.ATLAN_APP_NAME = KeywordField("atlanAppName", "atlanAppName")
 AtlanAppInstalled.ATLAN_APP_METADATA = TextField("atlanAppMetadata", "atlanAppMetadata")
 AtlanAppInstalled.APP_ID = KeywordField("appId", "appId")
-AtlanAppInstalled.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+AtlanAppInstalled.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 AtlanAppInstalled.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AtlanAppInstalled.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AtlanAppInstalled.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -680,21 +608,15 @@ AtlanAppInstalled.APPLICATION_FIELD = RelationField("applicationField")
 AtlanAppInstalled.ATLAN_APP_TOOLS = RelationField("atlanAppTools")
 AtlanAppInstalled.ATLAN_APP_WORKFLOWS = RelationField("atlanAppWorkflows")
 AtlanAppInstalled.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AtlanAppInstalled.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+AtlanAppInstalled.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 AtlanAppInstalled.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AtlanAppInstalled.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AtlanAppInstalled.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AtlanAppInstalled.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+AtlanAppInstalled.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 AtlanAppInstalled.METRICS = RelationField("metrics")
 AtlanAppInstalled.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AtlanAppInstalled.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AtlanAppInstalled.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+AtlanAppInstalled.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 AtlanAppInstalled.MEANINGS = RelationField("meanings")
 AtlanAppInstalled.MC_MONITORS = RelationField("mcMonitors")
 AtlanAppInstalled.MC_INCIDENTS = RelationField("mcIncidents")

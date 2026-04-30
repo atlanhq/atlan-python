@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -53,11 +47,13 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSQL
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SqlInsightJoin(Asset):
@@ -175,9 +171,7 @@ class SqlInsightJoin(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -186,14 +180,10 @@ class SqlInsightJoin(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -220,9 +210,7 @@ class SqlInsightJoin(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -234,9 +222,7 @@ class SqlInsightJoin(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -261,7 +247,10 @@ class SqlInsightJoin(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -314,7 +303,6 @@ class SqlInsightJoin(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SqlInsightJoinAttributes(AssetAttributes):
     """SqlInsightJoin-specific attributes for nested API format."""
 
@@ -351,7 +339,6 @@ class SqlInsightJoinAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class SqlInsightJoinRelationshipAttributes(AssetRelationshipAttributes):
     """SqlInsightJoin-specific relationship attributes for nested API format."""
 
@@ -385,9 +372,7 @@ class SqlInsightJoinRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -396,14 +381,10 @@ class SqlInsightJoinRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -430,9 +411,7 @@ class SqlInsightJoinRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -444,9 +423,7 @@ class SqlInsightJoinRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -464,21 +441,13 @@ class SqlInsightJoinRelationshipAttributes(AssetRelationshipAttributes):
     sql_insight_joined_dataset: Union[RelatedSQL, None, UnsetType] = UNSET
     """SQL dataset that is the joined side in this join insight."""
 
-
 class SqlInsightJoinNested(AssetNested):
     """SqlInsightJoin in nested API format for high-performance serialization."""
 
     attributes: Union[SqlInsightJoinAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SqlInsightJoinRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        SqlInsightJoinRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SqlInsightJoinRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SqlInsightJoinRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SqlInsightJoinRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SqlInsightJoinRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -521,18 +490,11 @@ _SQL_INSIGHT_JOIN_REL_FIELDS: List[str] = [
     "sql_insight_joined_dataset",
 ]
 
-
-def _populate_sql_insight_join_attrs(
-    attrs: SqlInsightJoinAttributes, obj: SqlInsightJoin
-) -> None:
+def _populate_sql_insight_join_attrs(attrs: SqlInsightJoinAttributes, obj: SqlInsightJoin) -> None:
     """Populate SqlInsightJoin-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sql_insight_source_dataset_qualified_name = (
-        obj.sql_insight_source_dataset_qualified_name
-    )
-    attrs.sql_insight_joined_dataset_qualified_name = (
-        obj.sql_insight_joined_dataset_qualified_name
-    )
+    attrs.sql_insight_source_dataset_qualified_name = obj.sql_insight_source_dataset_qualified_name
+    attrs.sql_insight_joined_dataset_qualified_name = obj.sql_insight_joined_dataset_qualified_name
     attrs.sql_insight_type = obj.sql_insight_type
     attrs.sql_insight_cardinality = obj.sql_insight_cardinality
     attrs.sql_insight_when_to_use = obj.sql_insight_when_to_use
@@ -543,16 +505,11 @@ def _populate_sql_insight_join_attrs(
     attrs.sql_insight_example_queries = obj.sql_insight_example_queries
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
 def _extract_sql_insight_join_attrs(attrs: SqlInsightJoinAttributes) -> dict:
     """Extract all SqlInsightJoin attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sql_insight_source_dataset_qualified_name"] = (
-        attrs.sql_insight_source_dataset_qualified_name
-    )
-    result["sql_insight_joined_dataset_qualified_name"] = (
-        attrs.sql_insight_joined_dataset_qualified_name
-    )
+    result["sql_insight_source_dataset_qualified_name"] = attrs.sql_insight_source_dataset_qualified_name
+    result["sql_insight_joined_dataset_qualified_name"] = attrs.sql_insight_joined_dataset_qualified_name
     result["sql_insight_type"] = attrs.sql_insight_type
     result["sql_insight_cardinality"] = attrs.sql_insight_cardinality
     result["sql_insight_when_to_use"] = attrs.sql_insight_when_to_use
@@ -564,23 +521,18 @@ def _extract_sql_insight_join_attrs(attrs: SqlInsightJoinAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _sql_insight_join_to_nested(
-    sql_insight_join: SqlInsightJoin,
-) -> SqlInsightJoinNested:
+def _sql_insight_join_to_nested(sql_insight_join: SqlInsightJoin) -> SqlInsightJoinNested:
     """Convert flat SqlInsightJoin to nested format."""
     attrs = SqlInsightJoinAttributes()
     _populate_sql_insight_join_attrs(attrs, sql_insight_join)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sql_insight_join,
-        _SQL_INSIGHT_JOIN_REL_FIELDS,
-        SqlInsightJoinRelationshipAttributes,
+        sql_insight_join, _SQL_INSIGHT_JOIN_REL_FIELDS, SqlInsightJoinRelationshipAttributes
     )
     return SqlInsightJoinNested(
         guid=sql_insight_join.guid,
@@ -608,21 +560,16 @@ def _sql_insight_join_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _sql_insight_join_from_nested(nested: SqlInsightJoinNested) -> SqlInsightJoin:
     """Convert nested format to flat SqlInsightJoin."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SqlInsightJoinAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SqlInsightJoinAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SQL_INSIGHT_JOIN_REL_FIELDS,
-        SqlInsightJoinRelationshipAttributes,
+        SqlInsightJoinRelationshipAttributes
     )
     return SqlInsightJoin(
         guid=nested.guid,
@@ -649,10 +596,7 @@ def _sql_insight_join_from_nested(nested: SqlInsightJoinNested) -> SqlInsightJoi
         **merged_rels,
     )
 
-
-def _sql_insight_join_to_nested_bytes(
-    sql_insight_join: SqlInsightJoin, serde: Serde
-) -> bytes:
+def _sql_insight_join_to_nested_bytes(sql_insight_join: SqlInsightJoin, serde: Serde) -> bytes:
     """Convert flat SqlInsightJoin to nested JSON bytes."""
     return serde.encode(_sql_insight_join_to_nested(sql_insight_join))
 
@@ -661,7 +605,6 @@ def _sql_insight_join_from_nested_bytes(data: bytes, serde: Serde) -> SqlInsight
     """Convert nested JSON bytes to flat SqlInsightJoin."""
     nested = serde.decode(data, SqlInsightJoinNested)
     return _sql_insight_join_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -672,58 +615,32 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SqlInsightJoin.SQL_INSIGHT_SOURCE_DATASET_QUALIFIED_NAME = KeywordField(
-    "sqlInsightSourceDatasetQualifiedName", "sqlInsightSourceDatasetQualifiedName"
-)
-SqlInsightJoin.SQL_INSIGHT_JOINED_DATASET_QUALIFIED_NAME = KeywordField(
-    "sqlInsightJoinedDatasetQualifiedName", "sqlInsightJoinedDatasetQualifiedName"
-)
+SqlInsightJoin.SQL_INSIGHT_SOURCE_DATASET_QUALIFIED_NAME = KeywordField("sqlInsightSourceDatasetQualifiedName", "sqlInsightSourceDatasetQualifiedName")
+SqlInsightJoin.SQL_INSIGHT_JOINED_DATASET_QUALIFIED_NAME = KeywordField("sqlInsightJoinedDatasetQualifiedName", "sqlInsightJoinedDatasetQualifiedName")
 SqlInsightJoin.SQL_INSIGHT_TYPE = KeywordField("sqlInsightType", "sqlInsightType")
-SqlInsightJoin.SQL_INSIGHT_CARDINALITY = KeywordField(
-    "sqlInsightCardinality", "sqlInsightCardinality"
-)
-SqlInsightJoin.SQL_INSIGHT_WHEN_TO_USE = KeywordField(
-    "sqlInsightWhenToUse", "sqlInsightWhenToUse"
-)
-SqlInsightJoin.SQL_INSIGHT_COLUMN_PAIRS = KeywordField(
-    "sqlInsightColumnPairs", "sqlInsightColumnPairs"
-)
-SqlInsightJoin.SQL_INSIGHT_QUERY_COUNT = NumericField(
-    "sqlInsightQueryCount", "sqlInsightQueryCount"
-)
-SqlInsightJoin.SQL_INSIGHT_UNIQUE_USERS = NumericField(
-    "sqlInsightUniqueUsers", "sqlInsightUniqueUsers"
-)
-SqlInsightJoin.SQL_INSIGHT_LAST_SEEN_AT = NumericField(
-    "sqlInsightLastSeenAt", "sqlInsightLastSeenAt"
-)
-SqlInsightJoin.SQL_INSIGHT_EXAMPLE_QUERIES = KeywordField(
-    "sqlInsightExampleQueries", "sqlInsightExampleQueries"
-)
-SqlInsightJoin.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+SqlInsightJoin.SQL_INSIGHT_CARDINALITY = KeywordField("sqlInsightCardinality", "sqlInsightCardinality")
+SqlInsightJoin.SQL_INSIGHT_WHEN_TO_USE = KeywordField("sqlInsightWhenToUse", "sqlInsightWhenToUse")
+SqlInsightJoin.SQL_INSIGHT_COLUMN_PAIRS = KeywordField("sqlInsightColumnPairs", "sqlInsightColumnPairs")
+SqlInsightJoin.SQL_INSIGHT_QUERY_COUNT = NumericField("sqlInsightQueryCount", "sqlInsightQueryCount")
+SqlInsightJoin.SQL_INSIGHT_UNIQUE_USERS = NumericField("sqlInsightUniqueUsers", "sqlInsightUniqueUsers")
+SqlInsightJoin.SQL_INSIGHT_LAST_SEEN_AT = NumericField("sqlInsightLastSeenAt", "sqlInsightLastSeenAt")
+SqlInsightJoin.SQL_INSIGHT_EXAMPLE_QUERIES = KeywordField("sqlInsightExampleQueries", "sqlInsightExampleQueries")
+SqlInsightJoin.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 SqlInsightJoin.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SqlInsightJoin.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SqlInsightJoin.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SqlInsightJoin.APPLICATION = RelationField("application")
 SqlInsightJoin.APPLICATION_FIELD = RelationField("applicationField")
 SqlInsightJoin.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SqlInsightJoin.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+SqlInsightJoin.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 SqlInsightJoin.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SqlInsightJoin.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SqlInsightJoin.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SqlInsightJoin.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SqlInsightJoin.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SqlInsightJoin.METRICS = RelationField("metrics")
 SqlInsightJoin.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SqlInsightJoin.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SqlInsightJoin.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SqlInsightJoin.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SqlInsightJoin.MEANINGS = RelationField("meanings")
 SqlInsightJoin.MC_MONITORS = RelationField("mcMonitors")
 SqlInsightJoin.MC_INCIDENTS = RelationField("mcIncidents")

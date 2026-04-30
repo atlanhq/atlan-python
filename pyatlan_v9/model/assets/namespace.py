@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -42,17 +36,20 @@ from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
-from .namespace_related import RelatedFolder
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .sql_related import RelatedQuery
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .namespace_related import RelatedFolder
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Namespace(Asset):
@@ -113,14 +110,10 @@ class Namespace(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -138,9 +131,7 @@ class Namespace(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -155,9 +146,7 @@ class Namespace(Asset):
     children_queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -165,6 +154,8 @@ class Namespace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Namespace"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -217,12 +208,10 @@ class Namespace(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class NamespaceAttributes(AssetAttributes):
     """Namespace-specific attributes for nested API format."""
 
     pass
-
 
 class NamespaceRelationshipAttributes(AssetRelationshipAttributes):
     """Namespace-specific relationship attributes for nested API format."""
@@ -254,14 +243,10 @@ class NamespaceRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -279,9 +264,7 @@ class NamespaceRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -296,27 +279,19 @@ class NamespaceRelationshipAttributes(AssetRelationshipAttributes):
     children_queries: Union[List[RelatedQuery], None, UnsetType] = UNSET
     """Queries that exist within this namespace."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
-
 
 class NamespaceNested(AssetNested):
     """Namespace in nested API format for high-performance serialization."""
 
     attributes: Union[NamespaceAttributes, UnsetType] = UNSET
     relationship_attributes: Union[NamespaceRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        NamespaceRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        NamespaceRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[NamespaceRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[NamespaceRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -349,16 +324,13 @@ _NAMESPACE_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
 def _populate_namespace_attrs(attrs: NamespaceAttributes, obj: Namespace) -> None:
     """Populate Namespace-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
 
-
 def _extract_namespace_attrs(attrs: NamespaceAttributes) -> dict:
     """Extract all Namespace attributes from the attrs struct into a flat dict."""
     return _extract_asset_attrs(attrs)
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -399,19 +371,16 @@ def _namespace_to_nested(namespace: Namespace) -> NamespaceNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _namespace_from_nested(nested: NamespaceNested) -> Namespace:
     """Convert nested format to flat Namespace."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else NamespaceAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else NamespaceAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _NAMESPACE_REL_FIELDS,
-        NamespaceRelationshipAttributes,
+        NamespaceRelationshipAttributes
     )
     return Namespace(
         guid=nested.guid,
@@ -438,7 +407,6 @@ def _namespace_from_nested(nested: NamespaceNested) -> Namespace:
         **merged_rels,
     )
 
-
 def _namespace_to_nested_bytes(namespace: Namespace, serde: Serde) -> bytes:
     """Convert flat Namespace to nested JSON bytes."""
     return serde.encode(_namespace_to_nested(namespace))
@@ -448,7 +416,6 @@ def _namespace_from_nested_bytes(data: bytes, serde: Serde) -> Namespace:
     """Convert nested JSON bytes to flat Namespace."""
     nested = serde.decode(data, NamespaceNested)
     return _namespace_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -465,9 +432,7 @@ Namespace.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Namespace.METRICS = RelationField("metrics")
 Namespace.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Namespace.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Namespace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Namespace.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Namespace.MEANINGS = RelationField("meanings")
 Namespace.MC_MONITORS = RelationField("mcMonitors")
 Namespace.MC_INCIDENTS = RelationField("mcIncidents")

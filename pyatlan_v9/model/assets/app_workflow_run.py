@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -52,11 +46,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AppWorkflowRun(Asset):
@@ -204,9 +200,7 @@ class AppWorkflowRun(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -215,14 +209,10 @@ class AppWorkflowRun(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -249,9 +239,7 @@ class AppWorkflowRun(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -263,9 +251,7 @@ class AppWorkflowRun(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -279,6 +265,8 @@ class AppWorkflowRun(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AppWorkflowRun"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -330,7 +318,6 @@ class AppWorkflowRun(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class AppWorkflowRunAttributes(AssetAttributes):
     """AppWorkflowRun-specific attributes for nested API format."""
@@ -389,7 +376,6 @@ class AppWorkflowRunAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class AppWorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     """AppWorkflowRun-specific relationship attributes for nested API format."""
 
@@ -426,9 +412,7 @@ class AppWorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -437,14 +421,10 @@ class AppWorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -471,9 +451,7 @@ class AppWorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -485,9 +463,7 @@ class AppWorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -499,21 +475,13 @@ class AppWorkflowRunRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class AppWorkflowRunNested(AssetNested):
     """AppWorkflowRun in nested API format for high-performance serialization."""
 
     attributes: Union[AppWorkflowRunAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AppWorkflowRunRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        AppWorkflowRunRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AppWorkflowRunRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[AppWorkflowRunRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[AppWorkflowRunRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AppWorkflowRunRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -555,10 +523,7 @@ _APP_WORKFLOW_RUN_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_app_workflow_run_attrs(
-    attrs: AppWorkflowRunAttributes, obj: AppWorkflowRun
-) -> None:
+def _populate_app_workflow_run_attrs(attrs: AppWorkflowRunAttributes, obj: AppWorkflowRun) -> None:
     """Populate AppWorkflowRun-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.app_workflow_run_label = obj.app_workflow_run_label
@@ -570,20 +535,15 @@ def _populate_app_workflow_run_attrs(
     attrs.app_workflow_run_steps = obj.app_workflow_run_steps
     attrs.app_workflow_run_app_qualified_name = obj.app_workflow_run_app_qualified_name
     attrs.app_workflow_run_app_name = obj.app_workflow_run_app_name
-    attrs.app_workflow_run_app_workflow_qualified_name = (
-        obj.app_workflow_run_app_workflow_qualified_name
-    )
+    attrs.app_workflow_run_app_workflow_qualified_name = obj.app_workflow_run_app_workflow_qualified_name
     attrs.app_workflow_run_app_workflow_name = obj.app_workflow_run_app_workflow_name
     attrs.app_workflow_run_app_workflow_slug = obj.app_workflow_run_app_workflow_slug
-    attrs.app_workflow_run_app_workflow_version = (
-        obj.app_workflow_run_app_workflow_version
-    )
+    attrs.app_workflow_run_app_workflow_version = obj.app_workflow_run_app_workflow_version
     attrs.app_workflow_run_temporal_run_id = obj.app_workflow_run_temporal_run_id
     attrs.app_workflow_run_is_test_run = obj.app_workflow_run_is_test_run
     attrs.app_workflow_run_dag = obj.app_workflow_run_dag
     attrs.app_workflow_run_error_handling = obj.app_workflow_run_error_handling
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_app_workflow_run_attrs(attrs: AppWorkflowRunAttributes) -> dict:
     """Extract all AppWorkflowRun attributes from the attrs struct into a flat dict."""
@@ -595,22 +555,12 @@ def _extract_app_workflow_run_attrs(attrs: AppWorkflowRunAttributes) -> dict:
     result["app_workflow_run_completed_at"] = attrs.app_workflow_run_completed_at
     result["app_workflow_run_outputs"] = attrs.app_workflow_run_outputs
     result["app_workflow_run_steps"] = attrs.app_workflow_run_steps
-    result["app_workflow_run_app_qualified_name"] = (
-        attrs.app_workflow_run_app_qualified_name
-    )
+    result["app_workflow_run_app_qualified_name"] = attrs.app_workflow_run_app_qualified_name
     result["app_workflow_run_app_name"] = attrs.app_workflow_run_app_name
-    result["app_workflow_run_app_workflow_qualified_name"] = (
-        attrs.app_workflow_run_app_workflow_qualified_name
-    )
-    result["app_workflow_run_app_workflow_name"] = (
-        attrs.app_workflow_run_app_workflow_name
-    )
-    result["app_workflow_run_app_workflow_slug"] = (
-        attrs.app_workflow_run_app_workflow_slug
-    )
-    result["app_workflow_run_app_workflow_version"] = (
-        attrs.app_workflow_run_app_workflow_version
-    )
+    result["app_workflow_run_app_workflow_qualified_name"] = attrs.app_workflow_run_app_workflow_qualified_name
+    result["app_workflow_run_app_workflow_name"] = attrs.app_workflow_run_app_workflow_name
+    result["app_workflow_run_app_workflow_slug"] = attrs.app_workflow_run_app_workflow_slug
+    result["app_workflow_run_app_workflow_version"] = attrs.app_workflow_run_app_workflow_version
     result["app_workflow_run_temporal_run_id"] = attrs.app_workflow_run_temporal_run_id
     result["app_workflow_run_is_test_run"] = attrs.app_workflow_run_is_test_run
     result["app_workflow_run_dag"] = attrs.app_workflow_run_dag
@@ -618,23 +568,18 @@ def _extract_app_workflow_run_attrs(attrs: AppWorkflowRunAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _app_workflow_run_to_nested(
-    app_workflow_run: AppWorkflowRun,
-) -> AppWorkflowRunNested:
+def _app_workflow_run_to_nested(app_workflow_run: AppWorkflowRun) -> AppWorkflowRunNested:
     """Convert flat AppWorkflowRun to nested format."""
     attrs = AppWorkflowRunAttributes()
     _populate_app_workflow_run_attrs(attrs, app_workflow_run)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        app_workflow_run,
-        _APP_WORKFLOW_RUN_REL_FIELDS,
-        AppWorkflowRunRelationshipAttributes,
+        app_workflow_run, _APP_WORKFLOW_RUN_REL_FIELDS, AppWorkflowRunRelationshipAttributes
     )
     return AppWorkflowRunNested(
         guid=app_workflow_run.guid,
@@ -662,21 +607,16 @@ def _app_workflow_run_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _app_workflow_run_from_nested(nested: AppWorkflowRunNested) -> AppWorkflowRun:
     """Convert nested format to flat AppWorkflowRun."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else AppWorkflowRunAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AppWorkflowRunAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _APP_WORKFLOW_RUN_REL_FIELDS,
-        AppWorkflowRunRelationshipAttributes,
+        AppWorkflowRunRelationshipAttributes
     )
     return AppWorkflowRun(
         guid=nested.guid,
@@ -703,10 +643,7 @@ def _app_workflow_run_from_nested(nested: AppWorkflowRunNested) -> AppWorkflowRu
         **merged_rels,
     )
 
-
-def _app_workflow_run_to_nested_bytes(
-    app_workflow_run: AppWorkflowRun, serde: Serde
-) -> bytes:
+def _app_workflow_run_to_nested_bytes(app_workflow_run: AppWorkflowRun, serde: Serde) -> bytes:
     """Convert flat AppWorkflowRun to nested JSON bytes."""
     return serde.encode(_app_workflow_run_to_nested(app_workflow_run))
 
@@ -715,7 +652,6 @@ def _app_workflow_run_from_nested_bytes(data: bytes, serde: Serde) -> AppWorkflo
     """Convert nested JSON bytes to flat AppWorkflowRun."""
     nested = serde.decode(data, AppWorkflowRunNested)
     return _app_workflow_run_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -728,60 +664,24 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-AppWorkflowRun.APP_WORKFLOW_RUN_LABEL = KeywordField(
-    "appWorkflowRunLabel", "appWorkflowRunLabel"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_STATUS = KeywordField(
-    "appWorkflowRunStatus", "appWorkflowRunStatus"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_STARTED_AT = NumericField(
-    "appWorkflowRunStartedAt", "appWorkflowRunStartedAt"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_STARTED_BY = KeywordField(
-    "appWorkflowRunStartedBy", "appWorkflowRunStartedBy"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_COMPLETED_AT = NumericField(
-    "appWorkflowRunCompletedAt", "appWorkflowRunCompletedAt"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_OUTPUTS = KeywordField(
-    "appWorkflowRunOutputs", "appWorkflowRunOutputs"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_STEPS = KeywordField(
-    "appWorkflowRunSteps", "appWorkflowRunSteps"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_APP_QUALIFIED_NAME = KeywordField(
-    "appWorkflowRunAppQualifiedName", "appWorkflowRunAppQualifiedName"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_APP_NAME = KeywordField(
-    "appWorkflowRunAppName", "appWorkflowRunAppName"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_QUALIFIED_NAME = KeywordField(
-    "appWorkflowRunAppWorkflowQualifiedName", "appWorkflowRunAppWorkflowQualifiedName"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_NAME = KeywordField(
-    "appWorkflowRunAppWorkflowName", "appWorkflowRunAppWorkflowName"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_SLUG = KeywordField(
-    "appWorkflowRunAppWorkflowSlug", "appWorkflowRunAppWorkflowSlug"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_VERSION = KeywordField(
-    "appWorkflowRunAppWorkflowVersion", "appWorkflowRunAppWorkflowVersion"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_TEMPORAL_RUN_ID = KeywordField(
-    "appWorkflowRunTemporalRunId", "appWorkflowRunTemporalRunId"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_IS_TEST_RUN = BooleanField(
-    "appWorkflowRunIsTestRun", "appWorkflowRunIsTestRun"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_DAG = TextField(
-    "appWorkflowRunDag", "appWorkflowRunDag"
-)
-AppWorkflowRun.APP_WORKFLOW_RUN_ERROR_HANDLING = KeywordField(
-    "appWorkflowRunErrorHandling", "appWorkflowRunErrorHandling"
-)
-AppWorkflowRun.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+AppWorkflowRun.APP_WORKFLOW_RUN_LABEL = KeywordField("appWorkflowRunLabel", "appWorkflowRunLabel")
+AppWorkflowRun.APP_WORKFLOW_RUN_STATUS = KeywordField("appWorkflowRunStatus", "appWorkflowRunStatus")
+AppWorkflowRun.APP_WORKFLOW_RUN_STARTED_AT = NumericField("appWorkflowRunStartedAt", "appWorkflowRunStartedAt")
+AppWorkflowRun.APP_WORKFLOW_RUN_STARTED_BY = KeywordField("appWorkflowRunStartedBy", "appWorkflowRunStartedBy")
+AppWorkflowRun.APP_WORKFLOW_RUN_COMPLETED_AT = NumericField("appWorkflowRunCompletedAt", "appWorkflowRunCompletedAt")
+AppWorkflowRun.APP_WORKFLOW_RUN_OUTPUTS = KeywordField("appWorkflowRunOutputs", "appWorkflowRunOutputs")
+AppWorkflowRun.APP_WORKFLOW_RUN_STEPS = KeywordField("appWorkflowRunSteps", "appWorkflowRunSteps")
+AppWorkflowRun.APP_WORKFLOW_RUN_APP_QUALIFIED_NAME = KeywordField("appWorkflowRunAppQualifiedName", "appWorkflowRunAppQualifiedName")
+AppWorkflowRun.APP_WORKFLOW_RUN_APP_NAME = KeywordField("appWorkflowRunAppName", "appWorkflowRunAppName")
+AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_QUALIFIED_NAME = KeywordField("appWorkflowRunAppWorkflowQualifiedName", "appWorkflowRunAppWorkflowQualifiedName")
+AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_NAME = KeywordField("appWorkflowRunAppWorkflowName", "appWorkflowRunAppWorkflowName")
+AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_SLUG = KeywordField("appWorkflowRunAppWorkflowSlug", "appWorkflowRunAppWorkflowSlug")
+AppWorkflowRun.APP_WORKFLOW_RUN_APP_WORKFLOW_VERSION = KeywordField("appWorkflowRunAppWorkflowVersion", "appWorkflowRunAppWorkflowVersion")
+AppWorkflowRun.APP_WORKFLOW_RUN_TEMPORAL_RUN_ID = KeywordField("appWorkflowRunTemporalRunId", "appWorkflowRunTemporalRunId")
+AppWorkflowRun.APP_WORKFLOW_RUN_IS_TEST_RUN = BooleanField("appWorkflowRunIsTestRun", "appWorkflowRunIsTestRun")
+AppWorkflowRun.APP_WORKFLOW_RUN_DAG = TextField("appWorkflowRunDag", "appWorkflowRunDag")
+AppWorkflowRun.APP_WORKFLOW_RUN_ERROR_HANDLING = KeywordField("appWorkflowRunErrorHandling", "appWorkflowRunErrorHandling")
+AppWorkflowRun.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 AppWorkflowRun.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AppWorkflowRun.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AppWorkflowRun.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -789,21 +689,15 @@ AppWorkflowRun.APPLICATION = RelationField("application")
 AppWorkflowRun.APPLICATION_FIELD = RelationField("applicationField")
 AppWorkflowRun.ATLAN_APP_WORKFLOW = RelationField("atlanAppWorkflow")
 AppWorkflowRun.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AppWorkflowRun.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+AppWorkflowRun.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 AppWorkflowRun.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AppWorkflowRun.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AppWorkflowRun.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AppWorkflowRun.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+AppWorkflowRun.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 AppWorkflowRun.METRICS = RelationField("metrics")
 AppWorkflowRun.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AppWorkflowRun.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AppWorkflowRun.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+AppWorkflowRun.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 AppWorkflowRun.MEANINGS = RelationField("meanings")
 AppWorkflowRun.MC_MONITORS = RelationField("mcMonitors")
 AppWorkflowRun.MC_INCIDENTS = RelationField("mcIncidents")

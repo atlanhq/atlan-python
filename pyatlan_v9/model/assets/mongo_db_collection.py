@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -42,16 +35,10 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
-from .mongo_db_related import RelatedMongoDBDatabase
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
@@ -61,22 +48,17 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import (
-    RelatedSqlInsightBusinessQuestion,
-    RelatedSqlInsightJoin,
-)
-from .sql_related import (
-    RelatedColumn,
-    RelatedQuery,
-    RelatedSchema,
-    RelatedTable,
-    RelatedTablePartition,
-)
+from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from .sql_related import RelatedColumn, RelatedQuery, RelatedSchema, RelatedTable, RelatedTablePartition
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .mongo_db_related import RelatedMongoDBDatabase
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class MongoDBCollection(Asset):
@@ -201,69 +183,43 @@ class MongoDBCollection(Asset):
 
     type_name: Union[str, UnsetType] = "MongoDBCollection"
 
-    mongo_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBCollectionSubtype"
-    )
+    mongo_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollectionSubtype")
     """Subtype of a MongoDB collection, for example: Capped, Time Series, etc."""
 
-    mongo_db_is_capped: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBIsCapped"
-    )
+    mongo_db_is_capped: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBIsCapped")
     """Whether the collection is capped (true) or not (false)."""
 
-    mongo_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBCollectionTimeField"
-    )
+    mongo_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollectionTimeField")
     """Name of the field containing the date in each time series document."""
 
-    mongo_db_time_granularity: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTimeGranularity"
-    )
+    mongo_db_time_granularity: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBTimeGranularity")
     """Closest match to the time span between consecutive incoming measurements."""
 
-    mongo_db_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBExpireAfterSeconds"
-    )
+    mongo_db_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBExpireAfterSeconds")
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    mongo_db_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaximumDocumentCount"
-    )
+    mongo_db_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBMaximumDocumentCount")
     """Maximum number of documents allowed in a capped collection."""
 
-    mongo_db_max_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaxSize"
-    )
+    mongo_db_max_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBMaxSize")
     """Maximum size allowed in a capped collection."""
 
-    mongo_db_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumOrphanDocs"
-    )
+    mongo_db_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBNumOrphanDocs")
     """Number of orphaned documents in the collection."""
 
-    mongo_db_num_indexes: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumIndexes"
-    )
+    mongo_db_num_indexes: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBNumIndexes")
     """Number of indexes on the collection."""
 
-    mongo_db_total_index_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTotalIndexSize"
-    )
+    mongo_db_total_index_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBTotalIndexSize")
     """Total size of all indexes."""
 
-    mongo_db_average_object_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBAverageObjectSize"
-    )
+    mongo_db_average_object_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBAverageObjectSize")
     """Average size of an object in the collection."""
 
-    mongo_db_collection_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBCollectionSchemaDefinition"
-    )
+    mongo_db_collection_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollectionSchemaDefinition")
     """Definition of the schema applicable for the collection."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -398,9 +354,7 @@ class MongoDBCollection(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -454,9 +408,7 @@ class MongoDBCollection(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -465,9 +417,7 @@ class MongoDBCollection(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -482,30 +432,22 @@ class MongoDBCollection(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_database: Union[RelatedMongoDBDatabase, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBDatabase"
-    )
+    mongo_db_database: Union[RelatedMongoDBDatabase, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBDatabase")
     """Database in which the collection exists."""
 
-    mongo_db_columns: Union[List[RelatedColumn], None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBColumns"
-    )
+    mongo_db_columns: Union[List[RelatedColumn], None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBColumns")
     """Columns that exist within this collection."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -529,9 +471,7 @@ class MongoDBCollection(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -561,14 +501,10 @@ class MongoDBCollection(Asset):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -580,19 +516,13 @@ class MongoDBCollection(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -602,7 +532,10 @@ class MongoDBCollection(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -633,9 +566,7 @@ class MongoDBCollection(Asset):
         return _mongo_db_collection_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> MongoDBCollection:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MongoDBCollection:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -657,73 +588,46 @@ class MongoDBCollection(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class MongoDBCollectionAttributes(AssetAttributes):
     """MongoDBCollection-specific attributes for nested API format."""
 
-    mongo_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBCollectionSubtype"
-    )
+    mongo_db_collection_subtype: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollectionSubtype")
     """Subtype of a MongoDB collection, for example: Capped, Time Series, etc."""
 
-    mongo_db_is_capped: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBIsCapped"
-    )
+    mongo_db_is_capped: Union[bool, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBIsCapped")
     """Whether the collection is capped (true) or not (false)."""
 
-    mongo_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBCollectionTimeField"
-    )
+    mongo_db_collection_time_field: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollectionTimeField")
     """Name of the field containing the date in each time series document."""
 
-    mongo_db_time_granularity: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTimeGranularity"
-    )
+    mongo_db_time_granularity: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBTimeGranularity")
     """Closest match to the time span between consecutive incoming measurements."""
 
-    mongo_db_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBExpireAfterSeconds"
-    )
+    mongo_db_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBExpireAfterSeconds")
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    mongo_db_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaximumDocumentCount"
-    )
+    mongo_db_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBMaximumDocumentCount")
     """Maximum number of documents allowed in a capped collection."""
 
-    mongo_db_max_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaxSize"
-    )
+    mongo_db_max_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBMaxSize")
     """Maximum size allowed in a capped collection."""
 
-    mongo_db_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumOrphanDocs"
-    )
+    mongo_db_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBNumOrphanDocs")
     """Number of orphaned documents in the collection."""
 
-    mongo_db_num_indexes: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumIndexes"
-    )
+    mongo_db_num_indexes: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBNumIndexes")
     """Number of indexes on the collection."""
 
-    mongo_db_total_index_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTotalIndexSize"
-    )
+    mongo_db_total_index_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBTotalIndexSize")
     """Total size of all indexes."""
 
-    mongo_db_average_object_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBAverageObjectSize"
-    )
+    mongo_db_average_object_size: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBAverageObjectSize")
     """Average size of an object in the collection."""
 
-    mongo_db_collection_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBCollectionSchemaDefinition"
-    )
+    mongo_db_collection_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollectionSchemaDefinition")
     """Definition of the schema applicable for the collection."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -858,9 +762,7 @@ class MongoDBCollectionAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -883,7 +785,6 @@ class MongoDBCollectionAttributes(AssetAttributes):
 
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
-
 
 class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     """MongoDBCollection-specific relationship attributes for nested API format."""
@@ -918,9 +819,7 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -929,9 +828,7 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -946,30 +843,22 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_database: Union[RelatedMongoDBDatabase, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBDatabase"
-    )
+    mongo_db_database: Union[RelatedMongoDBDatabase, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBDatabase")
     """Database in which the collection exists."""
 
-    mongo_db_columns: Union[List[RelatedColumn], None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBColumns"
-    )
+    mongo_db_columns: Union[List[RelatedColumn], None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBColumns")
     """Columns that exist within this collection."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -993,9 +882,7 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -1025,14 +912,10 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     partitions: Union[List[RelatedTablePartition], None, UnsetType] = UNSET
     """Partitions that exist within this table."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -1044,36 +927,22 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
-
 
 class MongoDBCollectionNested(AssetNested):
     """MongoDBCollection in nested API format for high-performance serialization."""
 
     attributes: Union[MongoDBCollectionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        MongoDBCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        MongoDBCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        MongoDBCollectionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[MongoDBCollectionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[MongoDBCollectionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[MongoDBCollectionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -1132,10 +1001,7 @@ _MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-
-def _populate_mongo_db_collection_attrs(
-    attrs: MongoDBCollectionAttributes, obj: MongoDBCollection
-) -> None:
+def _populate_mongo_db_collection_attrs(attrs: MongoDBCollectionAttributes, obj: MongoDBCollection) -> None:
     """Populate MongoDBCollection-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.mongo_db_collection_subtype = obj.mongo_db_collection_subtype
@@ -1149,9 +1015,7 @@ def _populate_mongo_db_collection_attrs(
     attrs.mongo_db_num_indexes = obj.mongo_db_num_indexes
     attrs.mongo_db_total_index_size = obj.mongo_db_total_index_size
     attrs.mongo_db_average_object_size = obj.mongo_db_average_object_size
-    attrs.mongo_db_collection_schema_definition = (
-        obj.mongo_db_collection_schema_definition
-    )
+    attrs.mongo_db_collection_schema_definition = obj.mongo_db_collection_schema_definition
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.column_count = obj.column_count
@@ -1201,15 +1065,10 @@ def _populate_mongo_db_collection_attrs(
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = (
-        obj.sql_ai_insights_popular_business_question_count
-    )
+    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = (
-        obj.sql_ai_insights_popular_filter_count
-    )
+    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
-
 
 def _extract_mongo_db_collection_attrs(attrs: MongoDBCollectionAttributes) -> dict:
     """Extract all MongoDBCollection attributes from the attrs struct into a flat dict."""
@@ -1225,9 +1084,7 @@ def _extract_mongo_db_collection_attrs(attrs: MongoDBCollectionAttributes) -> di
     result["mongo_db_num_indexes"] = attrs.mongo_db_num_indexes
     result["mongo_db_total_index_size"] = attrs.mongo_db_total_index_size
     result["mongo_db_average_object_size"] = attrs.mongo_db_average_object_size
-    result["mongo_db_collection_schema_definition"] = (
-        attrs.mongo_db_collection_schema_definition
-    )
+    result["mongo_db_collection_schema_definition"] = attrs.mongo_db_collection_schema_definition
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["column_count"] = attrs.column_count
@@ -1273,43 +1130,28 @@ def _extract_mongo_db_collection_attrs(attrs: MongoDBCollectionAttributes) -> di
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = (
-        attrs.sql_ai_insights_popular_business_question_count
-    )
-    result["sql_ai_insights_popular_join_count"] = (
-        attrs.sql_ai_insights_popular_join_count
-    )
-    result["sql_ai_insights_popular_filter_count"] = (
-        attrs.sql_ai_insights_popular_filter_count
-    )
-    result["sql_ai_insights_relationship_count"] = (
-        attrs.sql_ai_insights_relationship_count
-    )
+    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
+    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
+    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
+    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _mongo_db_collection_to_nested(
-    mongo_db_collection: MongoDBCollection,
-) -> MongoDBCollectionNested:
+def _mongo_db_collection_to_nested(mongo_db_collection: MongoDBCollection) -> MongoDBCollectionNested:
     """Convert flat MongoDBCollection to nested format."""
     attrs = MongoDBCollectionAttributes()
     _populate_mongo_db_collection_attrs(attrs, mongo_db_collection)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        mongo_db_collection,
-        _MONGO_DB_COLLECTION_REL_FIELDS,
-        MongoDBCollectionRelationshipAttributes,
+        mongo_db_collection, _MONGO_DB_COLLECTION_REL_FIELDS, MongoDBCollectionRelationshipAttributes
     )
     return MongoDBCollectionNested(
         guid=mongo_db_collection.guid,
@@ -1337,23 +1179,16 @@ def _mongo_db_collection_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _mongo_db_collection_from_nested(
-    nested: MongoDBCollectionNested,
-) -> MongoDBCollection:
+def _mongo_db_collection_from_nested(nested: MongoDBCollectionNested) -> MongoDBCollection:
     """Convert nested format to flat MongoDBCollection."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else MongoDBCollectionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else MongoDBCollectionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MONGO_DB_COLLECTION_REL_FIELDS,
-        MongoDBCollectionRelationshipAttributes,
+        MongoDBCollectionRelationshipAttributes
     )
     return MongoDBCollection(
         guid=nested.guid,
@@ -1380,21 +1215,15 @@ def _mongo_db_collection_from_nested(
         **merged_rels,
     )
 
-
-def _mongo_db_collection_to_nested_bytes(
-    mongo_db_collection: MongoDBCollection, serde: Serde
-) -> bytes:
+def _mongo_db_collection_to_nested_bytes(mongo_db_collection: MongoDBCollection, serde: Serde) -> bytes:
     """Convert flat MongoDBCollection to nested JSON bytes."""
     return serde.encode(_mongo_db_collection_to_nested(mongo_db_collection))
 
 
-def _mongo_db_collection_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> MongoDBCollection:
+def _mongo_db_collection_from_nested_bytes(data: bytes, serde: Serde) -> MongoDBCollection:
     """Convert nested JSON bytes to flat MongoDBCollection."""
     nested = serde.decode(data, MongoDBCollectionNested)
     return _mongo_db_collection_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1407,173 +1236,82 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MongoDBCollection.MONGO_DB_COLLECTION_SUBTYPE = KeywordTextField(
-    "mongoDBCollectionSubtype",
-    "mongoDBCollectionSubtype",
-    "mongoDBCollectionSubtype.text",
-)
-MongoDBCollection.MONGO_DB_IS_CAPPED = BooleanField(
-    "mongoDBIsCapped", "mongoDBIsCapped"
-)
-MongoDBCollection.MONGO_DB_COLLECTION_TIME_FIELD = KeywordField(
-    "mongoDBCollectionTimeField", "mongoDBCollectionTimeField"
-)
-MongoDBCollection.MONGO_DB_TIME_GRANULARITY = KeywordField(
-    "mongoDBTimeGranularity", "mongoDBTimeGranularity"
-)
-MongoDBCollection.MONGO_DB_EXPIRE_AFTER_SECONDS = NumericField(
-    "mongoDBExpireAfterSeconds", "mongoDBExpireAfterSeconds"
-)
-MongoDBCollection.MONGO_DB_MAXIMUM_DOCUMENT_COUNT = NumericField(
-    "mongoDBMaximumDocumentCount", "mongoDBMaximumDocumentCount"
-)
+MongoDBCollection.MONGO_DB_COLLECTION_SUBTYPE = KeywordTextField("mongoDBCollectionSubtype", "mongoDBCollectionSubtype", "mongoDBCollectionSubtype.text")
+MongoDBCollection.MONGO_DB_IS_CAPPED = BooleanField("mongoDBIsCapped", "mongoDBIsCapped")
+MongoDBCollection.MONGO_DB_COLLECTION_TIME_FIELD = KeywordField("mongoDBCollectionTimeField", "mongoDBCollectionTimeField")
+MongoDBCollection.MONGO_DB_TIME_GRANULARITY = KeywordField("mongoDBTimeGranularity", "mongoDBTimeGranularity")
+MongoDBCollection.MONGO_DB_EXPIRE_AFTER_SECONDS = NumericField("mongoDBExpireAfterSeconds", "mongoDBExpireAfterSeconds")
+MongoDBCollection.MONGO_DB_MAXIMUM_DOCUMENT_COUNT = NumericField("mongoDBMaximumDocumentCount", "mongoDBMaximumDocumentCount")
 MongoDBCollection.MONGO_DB_MAX_SIZE = NumericField("mongoDBMaxSize", "mongoDBMaxSize")
-MongoDBCollection.MONGO_DB_NUM_ORPHAN_DOCS = NumericField(
-    "mongoDBNumOrphanDocs", "mongoDBNumOrphanDocs"
-)
-MongoDBCollection.MONGO_DB_NUM_INDEXES = NumericField(
-    "mongoDBNumIndexes", "mongoDBNumIndexes"
-)
-MongoDBCollection.MONGO_DB_TOTAL_INDEX_SIZE = NumericField(
-    "mongoDBTotalIndexSize", "mongoDBTotalIndexSize"
-)
-MongoDBCollection.MONGO_DB_AVERAGE_OBJECT_SIZE = NumericField(
-    "mongoDBAverageObjectSize", "mongoDBAverageObjectSize"
-)
-MongoDBCollection.MONGO_DB_COLLECTION_SCHEMA_DEFINITION = KeywordField(
-    "mongoDBCollectionSchemaDefinition", "mongoDBCollectionSchemaDefinition"
-)
-MongoDBCollection.NO_SQL_SCHEMA_DEFINITION = KeywordField(
-    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-)
-MongoDBCollection.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+MongoDBCollection.MONGO_DB_NUM_ORPHAN_DOCS = NumericField("mongoDBNumOrphanDocs", "mongoDBNumOrphanDocs")
+MongoDBCollection.MONGO_DB_NUM_INDEXES = NumericField("mongoDBNumIndexes", "mongoDBNumIndexes")
+MongoDBCollection.MONGO_DB_TOTAL_INDEX_SIZE = NumericField("mongoDBTotalIndexSize", "mongoDBTotalIndexSize")
+MongoDBCollection.MONGO_DB_AVERAGE_OBJECT_SIZE = NumericField("mongoDBAverageObjectSize", "mongoDBAverageObjectSize")
+MongoDBCollection.MONGO_DB_COLLECTION_SCHEMA_DEFINITION = KeywordField("mongoDBCollectionSchemaDefinition", "mongoDBCollectionSchemaDefinition")
+MongoDBCollection.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+MongoDBCollection.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 MongoDBCollection.COLUMN_COUNT = NumericField("columnCount", "columnCount")
 MongoDBCollection.ROW_COUNT = NumericField("rowCount", "rowCount")
 MongoDBCollection.SIZE_BYTES = NumericField("sizeBytes", "sizeBytes")
-MongoDBCollection.TABLE_OBJECT_COUNT = NumericField(
-    "tableObjectCount", "tableObjectCount"
-)
+MongoDBCollection.TABLE_OBJECT_COUNT = NumericField("tableObjectCount", "tableObjectCount")
 MongoDBCollection.ALIAS = KeywordField("alias", "alias")
 MongoDBCollection.IS_TEMPORARY = BooleanField("isTemporary", "isTemporary")
 MongoDBCollection.IS_QUERY_PREVIEW = BooleanField("isQueryPreview", "isQueryPreview")
-MongoDBCollection.QUERY_PREVIEW_CONFIG = KeywordField(
-    "queryPreviewConfig", "queryPreviewConfig"
-)
-MongoDBCollection.EXTERNAL_LOCATION = KeywordField(
-    "externalLocation", "externalLocation"
-)
-MongoDBCollection.EXTERNAL_LOCATION_REGION = KeywordField(
-    "externalLocationRegion", "externalLocationRegion"
-)
-MongoDBCollection.EXTERNAL_LOCATION_FORMAT = KeywordField(
-    "externalLocationFormat", "externalLocationFormat"
-)
+MongoDBCollection.QUERY_PREVIEW_CONFIG = KeywordField("queryPreviewConfig", "queryPreviewConfig")
+MongoDBCollection.EXTERNAL_LOCATION = KeywordField("externalLocation", "externalLocation")
+MongoDBCollection.EXTERNAL_LOCATION_REGION = KeywordField("externalLocationRegion", "externalLocationRegion")
+MongoDBCollection.EXTERNAL_LOCATION_FORMAT = KeywordField("externalLocationFormat", "externalLocationFormat")
 MongoDBCollection.IS_PARTITIONED = BooleanField("isPartitioned", "isPartitioned")
-MongoDBCollection.PARTITION_STRATEGY = KeywordField(
-    "partitionStrategy", "partitionStrategy"
-)
+MongoDBCollection.PARTITION_STRATEGY = KeywordField("partitionStrategy", "partitionStrategy")
 MongoDBCollection.PARTITION_COUNT = NumericField("partitionCount", "partitionCount")
 MongoDBCollection.TABLE_DEFINITION = KeywordField("tableDefinition", "tableDefinition")
 MongoDBCollection.PARTITION_LIST = KeywordField("partitionList", "partitionList")
 MongoDBCollection.IS_SHARDED = BooleanField("isSharded", "isSharded")
 MongoDBCollection.TABLE_TYPE = KeywordField("tableType", "tableType")
-MongoDBCollection.ICEBERG_CATALOG_NAME = KeywordField(
-    "icebergCatalogName", "icebergCatalogName"
-)
-MongoDBCollection.ICEBERG_TABLE_TYPE = KeywordField(
-    "icebergTableType", "icebergTableType"
-)
-MongoDBCollection.ICEBERG_CATALOG_SOURCE = KeywordField(
-    "icebergCatalogSource", "icebergCatalogSource"
-)
-MongoDBCollection.ICEBERG_CATALOG_TABLE_NAME = KeywordField(
-    "icebergCatalogTableName", "icebergCatalogTableName"
-)
-MongoDBCollection.TABLE_IMPALA_PARAMETERS = KeywordField(
-    "tableImpalaParameters", "tableImpalaParameters"
-)
-MongoDBCollection.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField(
-    "icebergCatalogTableNamespace", "icebergCatalogTableNamespace"
-)
-MongoDBCollection.TABLE_EXTERNAL_VOLUME_NAME = KeywordField(
-    "tableExternalVolumeName", "tableExternalVolumeName"
-)
-MongoDBCollection.ICEBERG_TABLE_BASE_LOCATION = KeywordField(
-    "icebergTableBaseLocation", "icebergTableBaseLocation"
-)
-MongoDBCollection.TABLE_RETENTION_TIME = NumericField(
-    "tableRetentionTime", "tableRetentionTime"
-)
+MongoDBCollection.ICEBERG_CATALOG_NAME = KeywordField("icebergCatalogName", "icebergCatalogName")
+MongoDBCollection.ICEBERG_TABLE_TYPE = KeywordField("icebergTableType", "icebergTableType")
+MongoDBCollection.ICEBERG_CATALOG_SOURCE = KeywordField("icebergCatalogSource", "icebergCatalogSource")
+MongoDBCollection.ICEBERG_CATALOG_TABLE_NAME = KeywordField("icebergCatalogTableName", "icebergCatalogTableName")
+MongoDBCollection.TABLE_IMPALA_PARAMETERS = KeywordField("tableImpalaParameters", "tableImpalaParameters")
+MongoDBCollection.ICEBERG_CATALOG_TABLE_NAMESPACE = KeywordField("icebergCatalogTableNamespace", "icebergCatalogTableNamespace")
+MongoDBCollection.TABLE_EXTERNAL_VOLUME_NAME = KeywordField("tableExternalVolumeName", "tableExternalVolumeName")
+MongoDBCollection.ICEBERG_TABLE_BASE_LOCATION = KeywordField("icebergTableBaseLocation", "icebergTableBaseLocation")
+MongoDBCollection.TABLE_RETENTION_TIME = NumericField("tableRetentionTime", "tableRetentionTime")
 MongoDBCollection.QUERY_COUNT = NumericField("queryCount", "queryCount")
 MongoDBCollection.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 MongoDBCollection.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-MongoDBCollection.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+MongoDBCollection.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 MongoDBCollection.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-MongoDBCollection.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+MongoDBCollection.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 MongoDBCollection.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-MongoDBCollection.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+MongoDBCollection.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 MongoDBCollection.TABLE_NAME = KeywordField("tableName", "tableName")
-MongoDBCollection.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+MongoDBCollection.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 MongoDBCollection.VIEW_NAME = KeywordField("viewName", "viewName")
-MongoDBCollection.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-MongoDBCollection.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-MongoDBCollection.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+MongoDBCollection.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+MongoDBCollection.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+MongoDBCollection.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 MongoDBCollection.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
 MongoDBCollection.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
-MongoDBCollection.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+MongoDBCollection.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 MongoDBCollection.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-MongoDBCollection.SQL_HAS_AI_INSIGHTS = BooleanField(
-    "sqlHasAiInsights", "sqlHasAiInsights"
-)
-MongoDBCollection.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
-    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
-)
-MongoDBCollection.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
-    "sqlAiInsightsPopularBusinessQuestionCount",
-    "sqlAiInsightsPopularBusinessQuestionCount",
-)
-MongoDBCollection.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
-    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
-)
-MongoDBCollection.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
-    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
-)
-MongoDBCollection.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
-    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
-)
+MongoDBCollection.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
+MongoDBCollection.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
+MongoDBCollection.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
+MongoDBCollection.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
+MongoDBCollection.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
+MongoDBCollection.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
 MongoDBCollection.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MongoDBCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MongoDBCollection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MongoDBCollection.APPLICATION = RelationField("application")
 MongoDBCollection.APPLICATION_FIELD = RelationField("applicationField")
 MongoDBCollection.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-MongoDBCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+MongoDBCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 MongoDBCollection.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MongoDBCollection.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 MongoDBCollection.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-MongoDBCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+MongoDBCollection.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 MongoDBCollection.METRICS = RelationField("metrics")
 MongoDBCollection.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MongoDBCollection.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
@@ -1583,9 +1321,7 @@ MongoDBCollection.DBT_TESTS = RelationField("dbtTests")
 MongoDBCollection.DBT_SOURCES = RelationField("dbtSources")
 MongoDBCollection.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 MongoDBCollection.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-MongoDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+MongoDBCollection.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 MongoDBCollection.MEANINGS = RelationField("meanings")
 MongoDBCollection.MONGO_DB_DATABASE = RelationField("mongoDBDatabase")
 MongoDBCollection.MONGO_DB_COLUMNS = RelationField("mongoDBColumns")
@@ -1607,14 +1343,10 @@ MongoDBCollection.DIMENSIONS = RelationField("dimensions")
 MongoDBCollection.FACTS = RelationField("facts")
 MongoDBCollection.PARTITIONS = RelationField("partitions")
 MongoDBCollection.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-MongoDBCollection.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+MongoDBCollection.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 MongoDBCollection.SODA_CHECKS = RelationField("sodaChecks")
 MongoDBCollection.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 MongoDBCollection.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
 MongoDBCollection.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
 MongoDBCollection.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
-MongoDBCollection.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
-    "sqlInsightBusinessQuestions"
-)
+MongoDBCollection.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")

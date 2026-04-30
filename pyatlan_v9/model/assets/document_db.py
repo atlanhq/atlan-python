@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -52,11 +45,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DocumentDB(Asset):
@@ -100,9 +95,7 @@ class DocumentDB(Asset):
 
     type_name: Union[str, UnsetType] = "DocumentDB"
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -138,9 +131,7 @@ class DocumentDB(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -149,14 +140,10 @@ class DocumentDB(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -183,9 +170,7 @@ class DocumentDB(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -197,9 +182,7 @@ class DocumentDB(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -213,6 +196,8 @@ class DocumentDB(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DocumentDB"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -265,18 +250,14 @@ class DocumentDB(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class DocumentDBAttributes(AssetAttributes):
     """DocumentDB-specific attributes for nested API format."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     """DocumentDB-specific relationship attributes for nested API format."""
@@ -311,9 +292,7 @@ class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -322,14 +301,10 @@ class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -356,9 +331,7 @@ class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -370,9 +343,7 @@ class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -384,19 +355,13 @@ class DocumentDBRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DocumentDBNested(AssetNested):
     """DocumentDB in nested API format for high-performance serialization."""
 
     attributes: Union[DocumentDBAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DocumentDBRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        DocumentDBRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DocumentDBRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[DocumentDBRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DocumentDBRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -437,13 +402,11 @@ _DOCUMENT_DB_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_document_db_attrs(attrs: DocumentDBAttributes, obj: DocumentDB) -> None:
     """Populate DocumentDB-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_document_db_attrs(attrs: DocumentDBAttributes) -> dict:
     """Extract all DocumentDB attributes from the attrs struct into a flat dict."""
@@ -451,7 +414,6 @@ def _extract_document_db_attrs(attrs: DocumentDBAttributes) -> dict:
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -492,19 +454,16 @@ def _document_db_to_nested(document_db: DocumentDB) -> DocumentDBNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _document_db_from_nested(nested: DocumentDBNested) -> DocumentDB:
     """Convert nested format to flat DocumentDB."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else DocumentDBAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DocumentDBAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DOCUMENT_DB_REL_FIELDS,
-        DocumentDBRelationshipAttributes,
+        DocumentDBRelationshipAttributes
     )
     return DocumentDB(
         guid=nested.guid,
@@ -531,7 +490,6 @@ def _document_db_from_nested(nested: DocumentDBNested) -> DocumentDB:
         **merged_rels,
     )
 
-
 def _document_db_to_nested_bytes(document_db: DocumentDB, serde: Serde) -> bytes:
     """Convert flat DocumentDB to nested JSON bytes."""
     return serde.encode(_document_db_to_nested(document_db))
@@ -542,18 +500,16 @@ def _document_db_from_nested_bytes(data: bytes, serde: Serde) -> DocumentDB:
     nested = serde.decode(data, DocumentDBNested)
     return _document_db_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
-DocumentDB.NO_SQL_SCHEMA_DEFINITION = KeywordField(
-    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-)
-DocumentDB.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+DocumentDB.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+DocumentDB.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 DocumentDB.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DocumentDB.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DocumentDB.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -568,9 +524,7 @@ DocumentDB.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribu
 DocumentDB.METRICS = RelationField("metrics")
 DocumentDB.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DocumentDB.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-DocumentDB.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+DocumentDB.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 DocumentDB.MEANINGS = RelationField("meanings")
 DocumentDB.MC_MONITORS = RelationField("mcMonitors")
 DocumentDB.MC_INCIDENTS = RelationField("mcIncidents")

@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -48,15 +42,18 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SapErpCdsView(Asset):
@@ -170,9 +167,7 @@ class SapErpCdsView(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -181,14 +176,10 @@ class SapErpCdsView(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -215,9 +206,7 @@ class SapErpCdsView(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -235,9 +224,7 @@ class SapErpCdsView(Asset):
     sap_erp_columns: Union[List[RelatedSapErpColumn], None, UnsetType] = UNSET
     """SAP ERP Columns that exist within this CDS view."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -251,6 +238,8 @@ class SapErpCdsView(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpCdsView"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -303,7 +292,6 @@ class SapErpCdsView(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SapErpCdsViewAttributes(AssetAttributes):
     """SapErpCdsView-specific attributes for nested API format."""
 
@@ -336,7 +324,6 @@ class SapErpCdsViewAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     """SapErpCdsView-specific relationship attributes for nested API format."""
@@ -371,9 +358,7 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -382,14 +367,10 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -416,9 +397,7 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -436,9 +415,7 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_columns: Union[List[RelatedSapErpColumn], None, UnsetType] = UNSET
     """SAP ERP Columns that exist within this CDS view."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -450,21 +427,13 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SapErpCdsViewNested(AssetNested):
     """SapErpCdsView in nested API format for high-performance serialization."""
 
     attributes: Union[SapErpCdsViewAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[SapErpCdsViewRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        SapErpCdsViewRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SapErpCdsViewRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SapErpCdsViewRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SapErpCdsViewRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SapErpCdsViewRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -507,10 +476,7 @@ _SAP_ERP_CDS_VIEW_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_sap_erp_cds_view_attrs(
-    attrs: SapErpCdsViewAttributes, obj: SapErpCdsView
-) -> None:
+def _populate_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes, obj: SapErpCdsView) -> None:
     """Populate SapErpCdsView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.sap_technical_name = obj.sap_technical_name
@@ -523,7 +489,6 @@ def _populate_sap_erp_cds_view_attrs(
     attrs.sap_field_count = obj.sap_field_count
     attrs.sap_field_order = obj.sap_field_order
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes) -> dict:
     """Extract all SapErpCdsView attributes from the attrs struct into a flat dict."""
@@ -540,7 +505,6 @@ def _extract_sap_erp_cds_view_attrs(attrs: SapErpCdsViewAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
@@ -552,9 +516,7 @@ def _sap_erp_cds_view_to_nested(sap_erp_cds_view: SapErpCdsView) -> SapErpCdsVie
     _populate_sap_erp_cds_view_attrs(attrs, sap_erp_cds_view)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        sap_erp_cds_view,
-        _SAP_ERP_CDS_VIEW_REL_FIELDS,
-        SapErpCdsViewRelationshipAttributes,
+        sap_erp_cds_view, _SAP_ERP_CDS_VIEW_REL_FIELDS, SapErpCdsViewRelationshipAttributes
     )
     return SapErpCdsViewNested(
         guid=sap_erp_cds_view.guid,
@@ -582,21 +544,16 @@ def _sap_erp_cds_view_to_nested(sap_erp_cds_view: SapErpCdsView) -> SapErpCdsVie
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _sap_erp_cds_view_from_nested(nested: SapErpCdsViewNested) -> SapErpCdsView:
     """Convert nested format to flat SapErpCdsView."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SapErpCdsViewAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SapErpCdsViewAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SAP_ERP_CDS_VIEW_REL_FIELDS,
-        SapErpCdsViewRelationshipAttributes,
+        SapErpCdsViewRelationshipAttributes
     )
     return SapErpCdsView(
         guid=nested.guid,
@@ -623,10 +580,7 @@ def _sap_erp_cds_view_from_nested(nested: SapErpCdsViewNested) -> SapErpCdsView:
         **merged_rels,
     )
 
-
-def _sap_erp_cds_view_to_nested_bytes(
-    sap_erp_cds_view: SapErpCdsView, serde: Serde
-) -> bytes:
+def _sap_erp_cds_view_to_nested_bytes(sap_erp_cds_view: SapErpCdsView, serde: Serde) -> bytes:
     """Convert flat SapErpCdsView to nested JSON bytes."""
     return serde.encode(_sap_erp_cds_view_to_nested(sap_erp_cds_view))
 
@@ -635,7 +589,6 @@ def _sap_erp_cds_view_from_nested_bytes(data: bytes, serde: Serde) -> SapErpCdsV
     """Convert nested JSON bytes to flat SapErpCdsView."""
     nested = serde.decode(data, SapErpCdsViewNested)
     return _sap_erp_cds_view_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -655,18 +608,14 @@ SapErpCdsView.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponen
 SapErpCdsView.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
 SapErpCdsView.SAP_FIELD_COUNT = NumericField("sapFieldCount", "sapFieldCount")
 SapErpCdsView.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
-SapErpCdsView.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+SapErpCdsView.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 SapErpCdsView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SapErpCdsView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SapErpCdsView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpCdsView.APPLICATION = RelationField("application")
 SapErpCdsView.APPLICATION_FIELD = RelationField("applicationField")
 SapErpCdsView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SapErpCdsView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+SapErpCdsView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 SapErpCdsView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SapErpCdsView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SapErpCdsView.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -674,9 +623,7 @@ SapErpCdsView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttr
 SapErpCdsView.METRICS = RelationField("metrics")
 SapErpCdsView.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SapErpCdsView.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SapErpCdsView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SapErpCdsView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SapErpCdsView.MEANINGS = RelationField("meanings")
 SapErpCdsView.MC_MONITORS = RelationField("mcMonitors")
 SapErpCdsView.MC_INCIDENTS = RelationField("mcIncidents")

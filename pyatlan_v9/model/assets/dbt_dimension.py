@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -52,11 +46,13 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .semantic_related import RelatedSemanticModel
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DbtDimension(Asset):
@@ -245,9 +241,7 @@ class DbtDimension(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -256,14 +250,10 @@ class DbtDimension(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -290,9 +280,7 @@ class DbtDimension(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -304,9 +292,7 @@ class DbtDimension(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
@@ -323,6 +309,8 @@ class DbtDimension(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DbtDimension"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -374,7 +362,6 @@ class DbtDimension(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class DbtDimensionAttributes(AssetAttributes):
     """DbtDimension-specific attributes for nested API format."""
@@ -466,7 +453,6 @@ class DbtDimensionAttributes(AssetAttributes):
     semantic_labels: Union[List[str], None, UnsetType] = UNSET
     """Labels associated with the semantic field."""
 
-
 class DbtDimensionRelationshipAttributes(AssetRelationshipAttributes):
     """DbtDimension-specific relationship attributes for nested API format."""
 
@@ -500,9 +486,7 @@ class DbtDimensionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -511,14 +495,10 @@ class DbtDimensionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -545,9 +525,7 @@ class DbtDimensionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -559,9 +537,7 @@ class DbtDimensionRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     semantic_model: Union[RelatedSemanticModel, None, UnsetType] = UNSET
@@ -576,21 +552,13 @@ class DbtDimensionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DbtDimensionNested(AssetNested):
     """DbtDimension in nested API format for high-performance serialization."""
 
     attributes: Union[DbtDimensionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[DbtDimensionRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        DbtDimensionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DbtDimensionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[DbtDimensionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DbtDimensionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DbtDimensionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -632,10 +600,7 @@ _DBT_DIMENSION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_dbt_dimension_attrs(
-    attrs: DbtDimensionAttributes, obj: DbtDimension
-) -> None:
+def _populate_dbt_dimension_attrs(attrs: DbtDimensionAttributes, obj: DbtDimension) -> None:
     """Populate DbtDimension-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dbt_semantic_model_qualified_name = obj.dbt_semantic_model_qualified_name
@@ -668,16 +633,11 @@ def _populate_dbt_dimension_attrs(
     attrs.semantic_data_type = obj.semantic_data_type
     attrs.semantic_labels = obj.semantic_labels
 
-
 def _extract_dbt_dimension_attrs(attrs: DbtDimensionAttributes) -> dict:
     """Extract all DbtDimension attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dbt_semantic_model_qualified_name"] = (
-        attrs.dbt_semantic_model_qualified_name
-    )
-    result["dbt_semantic_field_time_granularity"] = (
-        attrs.dbt_semantic_field_time_granularity
-    )
+    result["dbt_semantic_model_qualified_name"] = attrs.dbt_semantic_model_qualified_name
+    result["dbt_semantic_field_time_granularity"] = attrs.dbt_semantic_field_time_granularity
     result["dbt_alias"] = attrs.dbt_alias
     result["dbt_meta"] = attrs.dbt_meta
     result["dbt_unique_id"] = attrs.dbt_unique_id
@@ -706,7 +666,6 @@ def _extract_dbt_dimension_attrs(attrs: DbtDimensionAttributes) -> dict:
     result["semantic_data_type"] = attrs.semantic_data_type
     result["semantic_labels"] = attrs.semantic_labels
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -747,21 +706,16 @@ def _dbt_dimension_to_nested(dbt_dimension: DbtDimension) -> DbtDimensionNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _dbt_dimension_from_nested(nested: DbtDimensionNested) -> DbtDimension:
     """Convert nested format to flat DbtDimension."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else DbtDimensionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DbtDimensionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_DIMENSION_REL_FIELDS,
-        DbtDimensionRelationshipAttributes,
+        DbtDimensionRelationshipAttributes
     )
     return DbtDimension(
         guid=nested.guid,
@@ -788,7 +742,6 @@ def _dbt_dimension_from_nested(nested: DbtDimensionNested) -> DbtDimension:
         **merged_rels,
     )
 
-
 def _dbt_dimension_to_nested_bytes(dbt_dimension: DbtDimension, serde: Serde) -> bytes:
     """Convert flat DbtDimension to nested JSON bytes."""
     return serde.encode(_dbt_dimension_to_nested(dbt_dimension))
@@ -798,7 +751,6 @@ def _dbt_dimension_from_nested_bytes(data: bytes, serde: Serde) -> DbtDimension:
     """Convert nested JSON bytes to flat DbtDimension."""
     nested = serde.decode(data, DbtDimensionNested)
     return _dbt_dimension_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -810,12 +762,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     TextField,
 )
 
-DbtDimension.DBT_SEMANTIC_MODEL_QUALIFIED_NAME = KeywordField(
-    "dbtSemanticModelQualifiedName", "dbtSemanticModelQualifiedName"
-)
-DbtDimension.DBT_SEMANTIC_FIELD_TIME_GRANULARITY = KeywordField(
-    "dbtSemanticFieldTimeGranularity", "dbtSemanticFieldTimeGranularity"
-)
+DbtDimension.DBT_SEMANTIC_MODEL_QUALIFIED_NAME = KeywordField("dbtSemanticModelQualifiedName", "dbtSemanticModelQualifiedName")
+DbtDimension.DBT_SEMANTIC_FIELD_TIME_GRANULARITY = KeywordField("dbtSemanticFieldTimeGranularity", "dbtSemanticFieldTimeGranularity")
 DbtDimension.DBT_ALIAS = KeywordField("dbtAlias", "dbtAlias")
 DbtDimension.DBT_META = KeywordField("dbtMeta", "dbtMeta")
 DbtDimension.DBT_UNIQUE_ID = KeywordField("dbtUniqueId", "dbtUniqueId")
@@ -825,42 +773,22 @@ DbtDimension.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtDimension.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtDimension.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtDimension.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtDimension.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
-    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
-)
+DbtDimension.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
 DbtDimension.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtDimension.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtDimension.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
-    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
-)
-DbtDimension.DBT_ENVIRONMENT_NAME = KeywordField(
-    "dbtEnvironmentName", "dbtEnvironmentName"
-)
-DbtDimension.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
-    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
-)
+DbtDimension.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
+DbtDimension.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
+DbtDimension.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
 DbtDimension.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtDimension.DBT_CONNECTION_CONTEXT = KeywordField(
-    "dbtConnectionContext", "dbtConnectionContext"
-)
-DbtDimension.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
-    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
-)
+DbtDimension.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
+DbtDimension.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
 DbtDimension.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
-DbtDimension.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
-DbtDimension.SEMANTIC_EXPRESSION = KeywordField(
-    "semanticExpression", "semanticExpression"
-)
+DbtDimension.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+DbtDimension.SEMANTIC_EXPRESSION = KeywordField("semanticExpression", "semanticExpression")
 DbtDimension.SEMANTIC_TYPE = KeywordField("semanticType", "semanticType")
 DbtDimension.SEMANTIC_SYNONYMS = KeywordField("semanticSynonyms", "semanticSynonyms")
-DbtDimension.SEMANTIC_SAMPLE_VALUES = TextField(
-    "semanticSampleValues", "semanticSampleValues"
-)
-DbtDimension.SEMANTIC_ACCESS_MODIFIER = KeywordField(
-    "semanticAccessModifier", "semanticAccessModifier"
-)
+DbtDimension.SEMANTIC_SAMPLE_VALUES = TextField("semanticSampleValues", "semanticSampleValues")
+DbtDimension.SEMANTIC_ACCESS_MODIFIER = KeywordField("semanticAccessModifier", "semanticAccessModifier")
 DbtDimension.SEMANTIC_DATA_TYPE = KeywordField("semanticDataType", "semanticDataType")
 DbtDimension.SEMANTIC_LABELS = KeywordField("semanticLabels", "semanticLabels")
 DbtDimension.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -869,9 +797,7 @@ DbtDimension.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DbtDimension.APPLICATION = RelationField("application")
 DbtDimension.APPLICATION_FIELD = RelationField("applicationField")
 DbtDimension.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DbtDimension.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+DbtDimension.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DbtDimension.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DbtDimension.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DbtDimension.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -879,9 +805,7 @@ DbtDimension.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttri
 DbtDimension.METRICS = RelationField("metrics")
 DbtDimension.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DbtDimension.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-DbtDimension.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+DbtDimension.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 DbtDimension.MEANINGS = RelationField("meanings")
 DbtDimension.MC_MONITORS = RelationField("mcMonitors")
 DbtDimension.MC_INCIDENTS = RelationField("mcIncidents")

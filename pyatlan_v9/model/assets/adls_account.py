@@ -14,20 +14,11 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .adls_related import RelatedADLSContainer
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -54,11 +45,16 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .adls_related import RelatedADLSContainer
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class ADLSAccount(Asset):
@@ -119,9 +115,7 @@ class ADLSAccount(Asset):
 
     type_name: Union[str, UnsetType] = "ADLSAccount"
 
-    adls_etag: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="adlsETag"
-    )
+    adls_etag: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="adlsETag")
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
     adls_encryption_type: Union[str, None, UnsetType] = UNSET
@@ -208,9 +202,7 @@ class ADLSAccount(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -219,14 +211,10 @@ class ADLSAccount(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -253,9 +241,7 @@ class ADLSAccount(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -267,9 +253,7 @@ class ADLSAccount(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -283,6 +267,8 @@ class ADLSAccount(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ADLSAccount"
+
+
 
     @classmethod
     @init_guid
@@ -367,13 +353,10 @@ class ADLSAccount(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class ADLSAccountAttributes(AssetAttributes):
     """ADLSAccount-specific attributes for nested API format."""
 
-    adls_etag: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="adlsETag"
-    )
+    adls_etag: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="adlsETag")
     """Entity tag for the asset. An entity tag is a hash of the object and represents changes to the contents of an object only, not its metadata."""
 
     adls_encryption_type: Union[str, None, UnsetType] = UNSET
@@ -427,7 +410,6 @@ class ADLSAccountAttributes(AssetAttributes):
     cloud_uniform_resource_name: Union[str, None, UnsetType] = UNSET
     """Uniform resource name (URN) for the asset: AWS ARN, Google Cloud URI, Azure resource ID, Oracle OCID, and so on."""
 
-
 class ADLSAccountRelationshipAttributes(AssetRelationshipAttributes):
     """ADLSAccount-specific relationship attributes for nested API format."""
 
@@ -464,9 +446,7 @@ class ADLSAccountRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -475,14 +455,10 @@ class ADLSAccountRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -509,9 +485,7 @@ class ADLSAccountRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -523,9 +497,7 @@ class ADLSAccountRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -537,19 +509,13 @@ class ADLSAccountRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class ADLSAccountNested(AssetNested):
     """ADLSAccount in nested API format for high-performance serialization."""
 
     attributes: Union[ADLSAccountAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ADLSAccountRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        ADLSAccountRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        ADLSAccountRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[ADLSAccountRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[ADLSAccountRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -591,10 +557,7 @@ _ADLS_ACCOUNT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_adls_account_attrs(
-    attrs: ADLSAccountAttributes, obj: ADLSAccount
-) -> None:
+def _populate_adls_account_attrs(attrs: ADLSAccountAttributes, obj: ADLSAccount) -> None:
     """Populate ADLSAccount-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.adls_etag = obj.adls_etag
@@ -615,7 +578,6 @@ def _populate_adls_account_attrs(
     attrs.adls_account_secondary_location = obj.adls_account_secondary_location
     attrs.azure_tags = obj.azure_tags
     attrs.cloud_uniform_resource_name = obj.cloud_uniform_resource_name
-
 
 def _extract_adls_account_attrs(attrs: ADLSAccountAttributes) -> dict:
     """Extract all ADLSAccount attributes from the attrs struct into a flat dict."""
@@ -639,7 +601,6 @@ def _extract_adls_account_attrs(attrs: ADLSAccountAttributes) -> dict:
     result["azure_tags"] = attrs.azure_tags
     result["cloud_uniform_resource_name"] = attrs.cloud_uniform_resource_name
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -680,19 +641,16 @@ def _adls_account_to_nested(adls_account: ADLSAccount) -> ADLSAccountNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _adls_account_from_nested(nested: ADLSAccountNested) -> ADLSAccount:
     """Convert nested format to flat ADLSAccount."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else ADLSAccountAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else ADLSAccountAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ADLS_ACCOUNT_REL_FIELDS,
-        ADLSAccountRelationshipAttributes,
+        ADLSAccountRelationshipAttributes
     )
     return ADLSAccount(
         guid=nested.guid,
@@ -719,7 +677,6 @@ def _adls_account_from_nested(nested: ADLSAccountNested) -> ADLSAccount:
         **merged_rels,
     )
 
-
 def _adls_account_to_nested_bytes(adls_account: ADLSAccount, serde: Serde) -> bytes:
     """Convert flat ADLSAccount to nested JSON bytes."""
     return serde.encode(_adls_account_to_nested(adls_account))
@@ -729,7 +686,6 @@ def _adls_account_from_nested_bytes(data: bytes, serde: Serde) -> ADLSAccount:
     """Convert nested JSON bytes to flat ADLSAccount."""
     nested = serde.decode(data, ADLSAccountNested)
     return _adls_account_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -741,53 +697,23 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 ADLSAccount.ADLS_ETAG = KeywordField("adlsETag", "adlsETag")
-ADLSAccount.ADLS_ENCRYPTION_TYPE = KeywordField(
-    "adlsEncryptionType", "adlsEncryptionType"
-)
-ADLSAccount.ADLS_ACCOUNT_RESOURCE_GROUP = KeywordTextField(
-    "adlsAccountResourceGroup",
-    "adlsAccountResourceGroup",
-    "adlsAccountResourceGroup.text",
-)
-ADLSAccount.ADLS_ACCOUNT_SUBSCRIPTION = KeywordTextField(
-    "adlsAccountSubscription", "adlsAccountSubscription", "adlsAccountSubscription.text"
-)
-ADLSAccount.ADLS_ACCOUNT_PERFORMANCE = KeywordField(
-    "adlsAccountPerformance", "adlsAccountPerformance"
-)
-ADLSAccount.ADLS_ACCOUNT_REPLICATION = KeywordField(
-    "adlsAccountReplication", "adlsAccountReplication"
-)
+ADLSAccount.ADLS_ENCRYPTION_TYPE = KeywordField("adlsEncryptionType", "adlsEncryptionType")
+ADLSAccount.ADLS_ACCOUNT_RESOURCE_GROUP = KeywordTextField("adlsAccountResourceGroup", "adlsAccountResourceGroup", "adlsAccountResourceGroup.text")
+ADLSAccount.ADLS_ACCOUNT_SUBSCRIPTION = KeywordTextField("adlsAccountSubscription", "adlsAccountSubscription", "adlsAccountSubscription.text")
+ADLSAccount.ADLS_ACCOUNT_PERFORMANCE = KeywordField("adlsAccountPerformance", "adlsAccountPerformance")
+ADLSAccount.ADLS_ACCOUNT_REPLICATION = KeywordField("adlsAccountReplication", "adlsAccountReplication")
 ADLSAccount.ADLS_ACCOUNT_KIND = KeywordField("adlsAccountKind", "adlsAccountKind")
-ADLSAccount.ADLS_PRIMARY_DISK_STATE = KeywordField(
-    "adlsPrimaryDiskState", "adlsPrimaryDiskState"
-)
-ADLSAccount.ADLS_ACCOUNT_PROVISION_STATE = KeywordField(
-    "adlsAccountProvisionState", "adlsAccountProvisionState"
-)
-ADLSAccount.ADLS_ACCOUNT_ACCESS_TIER = KeywordField(
-    "adlsAccountAccessTier", "adlsAccountAccessTier"
-)
-ADLSAccount.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField(
-    "adlsAccountQualifiedName",
-    "adlsAccountQualifiedName",
-    "adlsAccountQualifiedName.text",
-)
+ADLSAccount.ADLS_PRIMARY_DISK_STATE = KeywordField("adlsPrimaryDiskState", "adlsPrimaryDiskState")
+ADLSAccount.ADLS_ACCOUNT_PROVISION_STATE = KeywordField("adlsAccountProvisionState", "adlsAccountProvisionState")
+ADLSAccount.ADLS_ACCOUNT_ACCESS_TIER = KeywordField("adlsAccountAccessTier", "adlsAccountAccessTier")
+ADLSAccount.ADLS_ACCOUNT_QUALIFIED_NAME = KeywordTextField("adlsAccountQualifiedName", "adlsAccountQualifiedName", "adlsAccountQualifiedName.text")
 ADLSAccount.ADLS_ACCOUNT_NAME = KeywordField("adlsAccountName", "adlsAccountName")
-ADLSAccount.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
-ADLSAccount.AZURE_RESOURCE_ID = KeywordTextField(
-    "azureResourceId", "azureResourceId", "azureResourceId.text"
-)
+ADLSAccount.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+ADLSAccount.AZURE_RESOURCE_ID = KeywordTextField("azureResourceId", "azureResourceId", "azureResourceId.text")
 ADLSAccount.AZURE_LOCATION = KeywordField("azureLocation", "azureLocation")
-ADLSAccount.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField(
-    "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
-)
+ADLSAccount.ADLS_ACCOUNT_SECONDARY_LOCATION = KeywordField("adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation")
 ADLSAccount.AZURE_TAGS = KeywordField("azureTags", "azureTags")
-ADLSAccount.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField(
-    "cloudUniformResourceName", "cloudUniformResourceName"
-)
+ADLSAccount.CLOUD_UNIFORM_RESOURCE_NAME = KeywordField("cloudUniformResourceName", "cloudUniformResourceName")
 ADLSAccount.ADLS_CONTAINERS = RelationField("adlsContainers")
 ADLSAccount.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ADLSAccount.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -795,9 +721,7 @@ ADLSAccount.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ADLSAccount.APPLICATION = RelationField("application")
 ADLSAccount.APPLICATION_FIELD = RelationField("applicationField")
 ADLSAccount.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-ADLSAccount.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+ADLSAccount.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 ADLSAccount.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ADLSAccount.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ADLSAccount.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -805,9 +729,7 @@ ADLSAccount.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttrib
 ADLSAccount.METRICS = RelationField("metrics")
 ADLSAccount.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ADLSAccount.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-ADLSAccount.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+ADLSAccount.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 ADLSAccount.MEANINGS = RelationField("meanings")
 ADLSAccount.MC_MONITORS = RelationField("mcMonitors")
 ADLSAccount.MC_INCIDENTS = RelationField("mcIncidents")

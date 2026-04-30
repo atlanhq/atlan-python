@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -51,11 +45,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Superset(Asset):
@@ -139,9 +135,7 @@ class Superset(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -150,14 +144,10 @@ class Superset(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -184,9 +174,7 @@ class Superset(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -198,9 +186,7 @@ class Superset(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -214,6 +200,8 @@ class Superset(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Superset"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -266,7 +254,6 @@ class Superset(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SupersetAttributes(AssetAttributes):
     """Superset-specific attributes for nested API format."""
 
@@ -278,7 +265,6 @@ class SupersetAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class SupersetRelationshipAttributes(AssetRelationshipAttributes):
     """Superset-specific relationship attributes for nested API format."""
@@ -313,9 +299,7 @@ class SupersetRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -324,14 +308,10 @@ class SupersetRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -358,9 +338,7 @@ class SupersetRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -372,9 +350,7 @@ class SupersetRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -386,19 +362,13 @@ class SupersetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SupersetNested(AssetNested):
     """Superset in nested API format for high-performance serialization."""
 
     attributes: Union[SupersetAttributes, UnsetType] = UNSET
     relationship_attributes: Union[SupersetRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[SupersetRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[SupersetRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[SupersetRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SupersetRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -439,7 +409,6 @@ _SUPERSET_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_superset_attrs(attrs: SupersetAttributes, obj: Superset) -> None:
     """Populate Superset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -447,17 +416,13 @@ def _populate_superset_attrs(attrs: SupersetAttributes, obj: Superset) -> None:
     attrs.superset_dashboard_qualified_name = obj.superset_dashboard_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
 def _extract_superset_attrs(attrs: SupersetAttributes) -> dict:
     """Extract all Superset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["superset_dashboard_id"] = attrs.superset_dashboard_id
-    result["superset_dashboard_qualified_name"] = (
-        attrs.superset_dashboard_qualified_name
-    )
+    result["superset_dashboard_qualified_name"] = attrs.superset_dashboard_qualified_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -498,19 +463,16 @@ def _superset_to_nested(superset: Superset) -> SupersetNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _superset_from_nested(nested: SupersetNested) -> Superset:
     """Convert nested format to flat Superset."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else SupersetAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SupersetAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SUPERSET_REL_FIELDS,
-        SupersetRelationshipAttributes,
+        SupersetRelationshipAttributes
     )
     return Superset(
         guid=nested.guid,
@@ -537,7 +499,6 @@ def _superset_from_nested(nested: SupersetNested) -> Superset:
         **merged_rels,
     )
 
-
 def _superset_to_nested_bytes(superset: Superset, serde: Serde) -> bytes:
     """Convert flat Superset to nested JSON bytes."""
     return serde.encode(_superset_to_nested(superset))
@@ -547,7 +508,6 @@ def _superset_from_nested_bytes(data: bytes, serde: Serde) -> Superset:
     """Convert nested JSON bytes to flat Superset."""
     nested = serde.decode(data, SupersetNested)
     return _superset_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -559,14 +519,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Superset.SUPERSET_DASHBOARD_ID = NumericField(
-    "supersetDashboardId", "supersetDashboardId"
-)
-Superset.SUPERSET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
-    "supersetDashboardQualifiedName",
-    "supersetDashboardQualifiedName",
-    "supersetDashboardQualifiedName.text",
-)
+Superset.SUPERSET_DASHBOARD_ID = NumericField("supersetDashboardId", "supersetDashboardId")
+Superset.SUPERSET_DASHBOARD_QUALIFIED_NAME = KeywordTextField("supersetDashboardQualifiedName", "supersetDashboardQualifiedName", "supersetDashboardQualifiedName.text")
 Superset.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Superset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Superset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -582,9 +536,7 @@ Superset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribute
 Superset.METRICS = RelationField("metrics")
 Superset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Superset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Superset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Superset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Superset.MEANINGS = RelationField("meanings")
 Superset.MC_MONITORS = RelationField("mcMonitors")
 Superset.MC_INCIDENTS = RelationField("mcIncidents")

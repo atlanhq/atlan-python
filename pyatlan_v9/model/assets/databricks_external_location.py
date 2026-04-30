@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,13 +34,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import RelatedDatabricksExternalLocationPath
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -60,15 +47,16 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import (
-    RelatedSqlInsightBusinessQuestion,
-    RelatedSqlInsightJoin,
-)
+from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .databricks_related import RelatedDatabricksExternalLocationPath
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DatabricksExternalLocation(Asset):
@@ -202,9 +190,7 @@ class DatabricksExternalLocation(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -261,9 +247,7 @@ class DatabricksExternalLocation(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -272,14 +256,10 @@ class DatabricksExternalLocation(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    databricks_external_location_paths: Union[
-        List[RelatedDatabricksExternalLocationPath], None, UnsetType
-    ] = UNSET
+    databricks_external_location_paths: Union[List[RelatedDatabricksExternalLocationPath], None, UnsetType] = UNSET
     """Paths contained within the external location."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -294,17 +274,13 @@ class DatabricksExternalLocation(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -331,9 +307,7 @@ class DatabricksExternalLocation(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -345,14 +319,10 @@ class DatabricksExternalLocation(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -364,23 +334,19 @@ class DatabricksExternalLocation(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
         self.type_name = "DatabricksExternalLocation"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -411,9 +377,7 @@ class DatabricksExternalLocation(Asset):
         return _databricks_external_location_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> DatabricksExternalLocation:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> DatabricksExternalLocation:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -434,7 +398,6 @@ class DatabricksExternalLocation(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class DatabricksExternalLocationAttributes(AssetAttributes):
     """DatabricksExternalLocation-specific attributes for nested API format."""
@@ -493,9 +456,7 @@ class DatabricksExternalLocationAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -521,7 +482,6 @@ class DatabricksExternalLocationAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttributes):
     """DatabricksExternalLocation-specific relationship attributes for nested API format."""
@@ -556,9 +516,7 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -567,14 +525,10 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    databricks_external_location_paths: Union[
-        List[RelatedDatabricksExternalLocationPath], None, UnsetType
-    ] = UNSET
+    databricks_external_location_paths: Union[List[RelatedDatabricksExternalLocationPath], None, UnsetType] = UNSET
     """Paths contained within the external location."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -589,17 +543,13 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
     """DBT seeds that materialize the SQL asset."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -626,9 +576,7 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -640,14 +588,10 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -659,36 +603,22 @@ class DatabricksExternalLocationRelationshipAttributes(AssetRelationshipAttribut
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
-
 
 class DatabricksExternalLocationNested(AssetNested):
     """DatabricksExternalLocation in nested API format for high-performance serialization."""
 
     attributes: Union[DatabricksExternalLocationAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        DatabricksExternalLocationRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        DatabricksExternalLocationRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DatabricksExternalLocationRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[DatabricksExternalLocationRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[DatabricksExternalLocationRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DatabricksExternalLocationRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -740,10 +670,7 @@ _DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-
-def _populate_databricks_external_location_attrs(
-    attrs: DatabricksExternalLocationAttributes, obj: DatabricksExternalLocation
-) -> None:
+def _populate_databricks_external_location_attrs(attrs: DatabricksExternalLocationAttributes, obj: DatabricksExternalLocation) -> None:
     """Populate DatabricksExternalLocation-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.databricks_url = obj.databricks_url
@@ -768,20 +695,13 @@ def _populate_databricks_external_location_attrs(
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = (
-        obj.sql_ai_insights_popular_business_question_count
-    )
+    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = (
-        obj.sql_ai_insights_popular_filter_count
-    )
+    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
-def _extract_databricks_external_location_attrs(
-    attrs: DatabricksExternalLocationAttributes,
-) -> dict:
+def _extract_databricks_external_location_attrs(attrs: DatabricksExternalLocationAttributes) -> dict:
     """Extract all DatabricksExternalLocation attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["databricks_url"] = attrs.databricks_url
@@ -802,44 +722,29 @@ def _extract_databricks_external_location_attrs(
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = (
-        attrs.sql_ai_insights_popular_business_question_count
-    )
-    result["sql_ai_insights_popular_join_count"] = (
-        attrs.sql_ai_insights_popular_join_count
-    )
-    result["sql_ai_insights_popular_filter_count"] = (
-        attrs.sql_ai_insights_popular_filter_count
-    )
-    result["sql_ai_insights_relationship_count"] = (
-        attrs.sql_ai_insights_relationship_count
-    )
+    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
+    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
+    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
+    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _databricks_external_location_to_nested(
-    databricks_external_location: DatabricksExternalLocation,
-) -> DatabricksExternalLocationNested:
+def _databricks_external_location_to_nested(databricks_external_location: DatabricksExternalLocation) -> DatabricksExternalLocationNested:
     """Convert flat DatabricksExternalLocation to nested format."""
     attrs = DatabricksExternalLocationAttributes()
     _populate_databricks_external_location_attrs(attrs, databricks_external_location)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        databricks_external_location,
-        _DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS,
-        DatabricksExternalLocationRelationshipAttributes,
+        databricks_external_location, _DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS, DatabricksExternalLocationRelationshipAttributes
     )
     return DatabricksExternalLocationNested(
         guid=databricks_external_location.guid,
@@ -867,23 +772,16 @@ def _databricks_external_location_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _databricks_external_location_from_nested(
-    nested: DatabricksExternalLocationNested,
-) -> DatabricksExternalLocation:
+def _databricks_external_location_from_nested(nested: DatabricksExternalLocationNested) -> DatabricksExternalLocation:
     """Convert nested format to flat DatabricksExternalLocation."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else DatabricksExternalLocationAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DatabricksExternalLocationAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATABRICKS_EXTERNAL_LOCATION_REL_FIELDS,
-        DatabricksExternalLocationRelationshipAttributes,
+        DatabricksExternalLocationRelationshipAttributes
     )
     return DatabricksExternalLocation(
         guid=nested.guid,
@@ -910,23 +808,15 @@ def _databricks_external_location_from_nested(
         **merged_rels,
     )
 
-
-def _databricks_external_location_to_nested_bytes(
-    databricks_external_location: DatabricksExternalLocation, serde: Serde
-) -> bytes:
+def _databricks_external_location_to_nested_bytes(databricks_external_location: DatabricksExternalLocation, serde: Serde) -> bytes:
     """Convert flat DatabricksExternalLocation to nested JSON bytes."""
-    return serde.encode(
-        _databricks_external_location_to_nested(databricks_external_location)
-    )
+    return serde.encode(_databricks_external_location_to_nested(databricks_external_location))
 
 
-def _databricks_external_location_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> DatabricksExternalLocation:
+def _databricks_external_location_from_nested_bytes(data: bytes, serde: Serde) -> DatabricksExternalLocation:
     """Convert nested JSON bytes to flat DatabricksExternalLocation."""
     nested = serde.decode(data, DatabricksExternalLocationNested)
     return _databricks_external_location_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -938,114 +828,55 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DatabricksExternalLocation.DATABRICKS_URL = KeywordField(
-    "databricksUrl", "databricksUrl"
-)
-DatabricksExternalLocation.DATABRICKS_OWNER = KeywordField(
-    "databricksOwner", "databricksOwner"
-)
+DatabricksExternalLocation.DATABRICKS_URL = KeywordField("databricksUrl", "databricksUrl")
+DatabricksExternalLocation.DATABRICKS_OWNER = KeywordField("databricksOwner", "databricksOwner")
 DatabricksExternalLocation.QUERY_COUNT = NumericField("queryCount", "queryCount")
-DatabricksExternalLocation.QUERY_USER_COUNT = NumericField(
-    "queryUserCount", "queryUserCount"
-)
+DatabricksExternalLocation.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 DatabricksExternalLocation.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-DatabricksExternalLocation.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+DatabricksExternalLocation.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 DatabricksExternalLocation.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-DatabricksExternalLocation.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+DatabricksExternalLocation.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 DatabricksExternalLocation.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-DatabricksExternalLocation.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+DatabricksExternalLocation.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 DatabricksExternalLocation.TABLE_NAME = KeywordField("tableName", "tableName")
-DatabricksExternalLocation.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+DatabricksExternalLocation.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 DatabricksExternalLocation.VIEW_NAME = KeywordField("viewName", "viewName")
-DatabricksExternalLocation.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-DatabricksExternalLocation.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-DatabricksExternalLocation.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+DatabricksExternalLocation.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+DatabricksExternalLocation.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+DatabricksExternalLocation.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 DatabricksExternalLocation.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-DatabricksExternalLocation.LAST_PROFILED_AT = NumericField(
-    "lastProfiledAt", "lastProfiledAt"
-)
-DatabricksExternalLocation.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+DatabricksExternalLocation.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
+DatabricksExternalLocation.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 DatabricksExternalLocation.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-DatabricksExternalLocation.SQL_HAS_AI_INSIGHTS = BooleanField(
-    "sqlHasAiInsights", "sqlHasAiInsights"
-)
-DatabricksExternalLocation.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
-    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
-)
-DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = (
-    NumericField(
-        "sqlAiInsightsPopularBusinessQuestionCount",
-        "sqlAiInsightsPopularBusinessQuestionCount",
-    )
-)
-DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
-    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
-)
-DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
-    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
-)
-DatabricksExternalLocation.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
-    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
-)
-DatabricksExternalLocation.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+DatabricksExternalLocation.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
+DatabricksExternalLocation.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
+DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
+DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
+DatabricksExternalLocation.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
+DatabricksExternalLocation.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
+DatabricksExternalLocation.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 DatabricksExternalLocation.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-DatabricksExternalLocation.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+DatabricksExternalLocation.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DatabricksExternalLocation.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DatabricksExternalLocation.APPLICATION = RelationField("application")
 DatabricksExternalLocation.APPLICATION_FIELD = RelationField("applicationField")
 DatabricksExternalLocation.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DatabricksExternalLocation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-DatabricksExternalLocation.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-DatabricksExternalLocation.INPUT_PORT_DATA_PRODUCTS = RelationField(
-    "inputPortDataProducts"
-)
-DatabricksExternalLocation.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-DatabricksExternalLocation.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+DatabricksExternalLocation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+DatabricksExternalLocation.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+DatabricksExternalLocation.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+DatabricksExternalLocation.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+DatabricksExternalLocation.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 DatabricksExternalLocation.METRICS = RelationField("metrics")
 DatabricksExternalLocation.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-DatabricksExternalLocation.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
-DatabricksExternalLocation.DATABRICKS_EXTERNAL_LOCATION_PATHS = RelationField(
-    "databricksExternalLocationPaths"
-)
+DatabricksExternalLocation.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+DatabricksExternalLocation.DATABRICKS_EXTERNAL_LOCATION_PATHS = RelationField("databricksExternalLocationPaths")
 DatabricksExternalLocation.DBT_MODELS = RelationField("dbtModels")
 DatabricksExternalLocation.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 DatabricksExternalLocation.DBT_TESTS = RelationField("dbtTests")
 DatabricksExternalLocation.DBT_SOURCES = RelationField("dbtSources")
 DatabricksExternalLocation.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 DatabricksExternalLocation.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
-DatabricksExternalLocation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+DatabricksExternalLocation.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 DatabricksExternalLocation.MEANINGS = RelationField("meanings")
 DatabricksExternalLocation.MC_MONITORS = RelationField("mcMonitors")
 DatabricksExternalLocation.MC_INCIDENTS = RelationField("mcIncidents")
@@ -1053,30 +884,16 @@ DatabricksExternalLocation.PARTIAL_CHILD_FIELDS = RelationField("partialChildFie
 DatabricksExternalLocation.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
 DatabricksExternalLocation.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 DatabricksExternalLocation.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-DatabricksExternalLocation.USER_DEF_RELATIONSHIP_TO = RelationField(
-    "userDefRelationshipTo"
-)
-DatabricksExternalLocation.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+DatabricksExternalLocation.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+DatabricksExternalLocation.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 DatabricksExternalLocation.FILES = RelationField("files")
 DatabricksExternalLocation.LINKS = RelationField("links")
 DatabricksExternalLocation.README = RelationField("readme")
-DatabricksExternalLocation.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
-DatabricksExternalLocation.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+DatabricksExternalLocation.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+DatabricksExternalLocation.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 DatabricksExternalLocation.SODA_CHECKS = RelationField("sodaChecks")
 DatabricksExternalLocation.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 DatabricksExternalLocation.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-DatabricksExternalLocation.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
-    "sqlInsightOutgoingJoins"
-)
-DatabricksExternalLocation.SQL_INSIGHT_INCOMING_JOINS = RelationField(
-    "sqlInsightIncomingJoins"
-)
-DatabricksExternalLocation.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
-    "sqlInsightBusinessQuestions"
-)
+DatabricksExternalLocation.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+DatabricksExternalLocation.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+DatabricksExternalLocation.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")

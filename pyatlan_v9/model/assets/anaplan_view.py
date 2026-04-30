@@ -15,21 +15,12 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan.model.enums import AtlanConnectorType
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
 from .airflow_related import RelatedAirflowTask
-from .anaplan_related import RelatedAnaplanDimension, RelatedAnaplanModule
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -55,11 +46,17 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan.model.enums import AtlanConnectorType
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .anaplan_related import RelatedAnaplanDimension, RelatedAnaplanModule
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AnaplanView(Asset):
@@ -146,19 +143,13 @@ class AnaplanView(Asset):
     anaplan_module: Union[RelatedAnaplanModule, None, UnsetType] = UNSET
     """Module containing the view."""
 
-    anaplan_row_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = (
-        UNSET
-    )
+    anaplan_row_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = UNSET
     """Row dimensions related to the view."""
 
-    anaplan_column_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = (
-        UNSET
-    )
+    anaplan_column_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = UNSET
     """Column dimensions related to the view."""
 
-    anaplan_page_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = (
-        UNSET
-    )
+    anaplan_page_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = UNSET
     """Page dimensions related to the view."""
 
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
@@ -185,9 +176,7 @@ class AnaplanView(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -196,14 +185,10 @@ class AnaplanView(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -230,9 +215,7 @@ class AnaplanView(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -244,9 +227,7 @@ class AnaplanView(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -268,6 +249,7 @@ class AnaplanView(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     @classmethod
     @init_guid
@@ -371,7 +353,6 @@ class AnaplanView(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AnaplanViewAttributes(AssetAttributes):
     """AnaplanView-specific attributes for nested API format."""
 
@@ -399,7 +380,6 @@ class AnaplanViewAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class AnaplanViewRelationshipAttributes(AssetRelationshipAttributes):
     """AnaplanView-specific relationship attributes for nested API format."""
 
@@ -412,19 +392,13 @@ class AnaplanViewRelationshipAttributes(AssetRelationshipAttributes):
     anaplan_module: Union[RelatedAnaplanModule, None, UnsetType] = UNSET
     """Module containing the view."""
 
-    anaplan_row_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = (
-        UNSET
-    )
+    anaplan_row_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = UNSET
     """Row dimensions related to the view."""
 
-    anaplan_column_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = (
-        UNSET
-    )
+    anaplan_column_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = UNSET
     """Column dimensions related to the view."""
 
-    anaplan_page_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = (
-        UNSET
-    )
+    anaplan_page_dimensions: Union[List[RelatedAnaplanDimension], None, UnsetType] = UNSET
     """Page dimensions related to the view."""
 
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
@@ -451,9 +425,7 @@ class AnaplanViewRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -462,14 +434,10 @@ class AnaplanViewRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -496,9 +464,7 @@ class AnaplanViewRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -510,9 +476,7 @@ class AnaplanViewRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -524,19 +488,13 @@ class AnaplanViewRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class AnaplanViewNested(AssetNested):
     """AnaplanView in nested API format for high-performance serialization."""
 
     attributes: Union[AnaplanViewAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AnaplanViewRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        AnaplanViewRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AnaplanViewRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[AnaplanViewRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AnaplanViewRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -581,10 +539,7 @@ _ANAPLAN_VIEW_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_anaplan_view_attrs(
-    attrs: AnaplanViewAttributes, obj: AnaplanView
-) -> None:
+def _populate_anaplan_view_attrs(attrs: AnaplanViewAttributes, obj: AnaplanView) -> None:
     """Populate AnaplanView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.anaplan_workspace_qualified_name = obj.anaplan_workspace_qualified_name
@@ -595,7 +550,6 @@ def _populate_anaplan_view_attrs(
     attrs.anaplan_module_name = obj.anaplan_module_name
     attrs.anaplan_source_id = obj.anaplan_source_id
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_anaplan_view_attrs(attrs: AnaplanViewAttributes) -> dict:
     """Extract all AnaplanView attributes from the attrs struct into a flat dict."""
@@ -609,7 +563,6 @@ def _extract_anaplan_view_attrs(attrs: AnaplanViewAttributes) -> dict:
     result["anaplan_source_id"] = attrs.anaplan_source_id
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -650,19 +603,16 @@ def _anaplan_view_to_nested(anaplan_view: AnaplanView) -> AnaplanViewNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _anaplan_view_from_nested(nested: AnaplanViewNested) -> AnaplanView:
     """Convert nested format to flat AnaplanView."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else AnaplanViewAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AnaplanViewAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ANAPLAN_VIEW_REL_FIELDS,
-        AnaplanViewRelationshipAttributes,
+        AnaplanViewRelationshipAttributes
     )
     return AnaplanView(
         guid=nested.guid,
@@ -689,7 +639,6 @@ def _anaplan_view_from_nested(nested: AnaplanViewNested) -> AnaplanView:
         **merged_rels,
     )
 
-
 def _anaplan_view_to_nested_bytes(anaplan_view: AnaplanView, serde: Serde) -> bytes:
     """Convert flat AnaplanView to nested JSON bytes."""
     return serde.encode(_anaplan_view_to_nested(anaplan_view))
@@ -700,30 +649,22 @@ def _anaplan_view_from_nested_bytes(data: bytes, serde: Serde) -> AnaplanView:
     nested = serde.decode(data, AnaplanViewNested)
     return _anaplan_view_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
-AnaplanView.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField(
-    "anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName"
-)
-AnaplanView.ANAPLAN_WORKSPACE_NAME = KeywordField(
-    "anaplanWorkspaceName", "anaplanWorkspaceName"
-)
-AnaplanView.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField(
-    "anaplanModelQualifiedName", "anaplanModelQualifiedName"
-)
+AnaplanView.ANAPLAN_WORKSPACE_QUALIFIED_NAME = KeywordField("anaplanWorkspaceQualifiedName", "anaplanWorkspaceQualifiedName")
+AnaplanView.ANAPLAN_WORKSPACE_NAME = KeywordField("anaplanWorkspaceName", "anaplanWorkspaceName")
+AnaplanView.ANAPLAN_MODEL_QUALIFIED_NAME = KeywordField("anaplanModelQualifiedName", "anaplanModelQualifiedName")
 AnaplanView.ANAPLAN_MODEL_NAME = KeywordField("anaplanModelName", "anaplanModelName")
-AnaplanView.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField(
-    "anaplanModuleQualifiedName", "anaplanModuleQualifiedName"
-)
+AnaplanView.ANAPLAN_MODULE_QUALIFIED_NAME = KeywordField("anaplanModuleQualifiedName", "anaplanModuleQualifiedName")
 AnaplanView.ANAPLAN_MODULE_NAME = KeywordField("anaplanModuleName", "anaplanModuleName")
 AnaplanView.ANAPLAN_SOURCE_ID = KeywordField("anaplanSourceId", "anaplanSourceId")
-AnaplanView.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+AnaplanView.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 AnaplanView.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AnaplanView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 AnaplanView.ANAPLAN_MODULE = RelationField("anaplanModule")
@@ -734,9 +675,7 @@ AnaplanView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AnaplanView.APPLICATION = RelationField("application")
 AnaplanView.APPLICATION_FIELD = RelationField("applicationField")
 AnaplanView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AnaplanView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+AnaplanView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 AnaplanView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AnaplanView.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AnaplanView.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -744,9 +683,7 @@ AnaplanView.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttrib
 AnaplanView.METRICS = RelationField("metrics")
 AnaplanView.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AnaplanView.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AnaplanView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+AnaplanView.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 AnaplanView.MEANINGS = RelationField("meanings")
 AnaplanView.MC_MONITORS = RelationField("mcMonitors")
 AnaplanView.MC_INCIDENTS = RelationField("mcIncidents")

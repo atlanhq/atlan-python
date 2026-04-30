@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,7 +37,6 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .kafka_related import RelatedKafkaTopic
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -53,11 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .kafka_related import RelatedKafkaTopic
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class KafkaField(Asset):
@@ -162,9 +159,7 @@ class KafkaField(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -173,14 +168,10 @@ class KafkaField(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -210,9 +201,7 @@ class KafkaField(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -224,9 +213,7 @@ class KafkaField(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -248,6 +235,7 @@ class KafkaField(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/topic/[^/]+/field/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -300,7 +288,6 @@ class KafkaField(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class KafkaFieldAttributes(AssetAttributes):
     """KafkaField-specific attributes for nested API format."""
 
@@ -327,7 +314,6 @@ class KafkaFieldAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class KafkaFieldRelationshipAttributes(AssetRelationshipAttributes):
     """KafkaField-specific relationship attributes for nested API format."""
@@ -362,9 +348,7 @@ class KafkaFieldRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -373,14 +357,10 @@ class KafkaFieldRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -410,9 +390,7 @@ class KafkaFieldRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -424,9 +402,7 @@ class KafkaFieldRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -438,19 +414,13 @@ class KafkaFieldRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class KafkaFieldNested(AssetNested):
     """KafkaField in nested API format for high-performance serialization."""
 
     attributes: Union[KafkaFieldAttributes, UnsetType] = UNSET
     relationship_attributes: Union[KafkaFieldRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        KafkaFieldRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        KafkaFieldRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[KafkaFieldRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[KafkaFieldRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -492,7 +462,6 @@ _KAFKA_FIELD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_kafka_field_attrs(attrs: KafkaFieldAttributes, obj: KafkaField) -> None:
     """Populate KafkaField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -504,7 +473,6 @@ def _populate_kafka_field_attrs(attrs: KafkaFieldAttributes, obj: KafkaField) ->
     attrs.kafka_topic_qualified_name = obj.kafka_topic_qualified_name
     attrs.kafka_field_schema_type = obj.kafka_field_schema_type
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_kafka_field_attrs(attrs: KafkaFieldAttributes) -> dict:
     """Extract all KafkaField attributes from the attrs struct into a flat dict."""
@@ -518,7 +486,6 @@ def _extract_kafka_field_attrs(attrs: KafkaFieldAttributes) -> dict:
     result["kafka_field_schema_type"] = attrs.kafka_field_schema_type
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -559,19 +526,16 @@ def _kafka_field_to_nested(kafka_field: KafkaField) -> KafkaFieldNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _kafka_field_from_nested(nested: KafkaFieldNested) -> KafkaField:
     """Convert nested format to flat KafkaField."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else KafkaFieldAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else KafkaFieldAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _KAFKA_FIELD_REL_FIELDS,
-        KafkaFieldRelationshipAttributes,
+        KafkaFieldRelationshipAttributes
     )
     return KafkaField(
         guid=nested.guid,
@@ -598,7 +562,6 @@ def _kafka_field_from_nested(nested: KafkaFieldNested) -> KafkaField:
         **merged_rels,
     )
 
-
 def _kafka_field_to_nested_bytes(kafka_field: KafkaField, serde: Serde) -> bytes:
     """Convert flat KafkaField to nested JSON bytes."""
     return serde.encode(_kafka_field_to_nested(kafka_field))
@@ -608,7 +571,6 @@ def _kafka_field_from_nested_bytes(data: bytes, serde: Serde) -> KafkaField:
     """Convert nested JSON bytes to flat KafkaField."""
     nested = serde.decode(data, KafkaFieldNested)
     return _kafka_field_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -621,28 +583,14 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-KafkaField.KAFKA_FIELD_DATA_TYPE = KeywordTextField(
-    "kafkaFieldDataType", "kafkaFieldDataType", "kafkaFieldDataType.text"
-)
-KafkaField.KAFKA_FIELD_IS_OPTIONAL = BooleanField(
-    "kafkaFieldIsOptional", "kafkaFieldIsOptional"
-)
-KafkaField.KAFKA_FIELD_DEFAULT_VALUE = KeywordField(
-    "kafkaFieldDefaultValue", "kafkaFieldDefaultValue"
-)
-KafkaField.KAFKA_FIELD_VERSION_INTRODUCED = KeywordField(
-    "kafkaFieldVersionIntroduced", "kafkaFieldVersionIntroduced"
-)
+KafkaField.KAFKA_FIELD_DATA_TYPE = KeywordTextField("kafkaFieldDataType", "kafkaFieldDataType", "kafkaFieldDataType.text")
+KafkaField.KAFKA_FIELD_IS_OPTIONAL = BooleanField("kafkaFieldIsOptional", "kafkaFieldIsOptional")
+KafkaField.KAFKA_FIELD_DEFAULT_VALUE = KeywordField("kafkaFieldDefaultValue", "kafkaFieldDefaultValue")
+KafkaField.KAFKA_FIELD_VERSION_INTRODUCED = KeywordField("kafkaFieldVersionIntroduced", "kafkaFieldVersionIntroduced")
 KafkaField.KAFKA_FIELD_ORDER = NumericField("kafkaFieldOrder", "kafkaFieldOrder")
-KafkaField.KAFKA_TOPIC_QUALIFIED_NAME = KeywordField(
-    "kafkaTopicQualifiedName", "kafkaTopicQualifiedName"
-)
-KafkaField.KAFKA_FIELD_SCHEMA_TYPE = KeywordField(
-    "kafkaFieldSchemaType", "kafkaFieldSchemaType"
-)
-KafkaField.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+KafkaField.KAFKA_TOPIC_QUALIFIED_NAME = KeywordField("kafkaTopicQualifiedName", "kafkaTopicQualifiedName")
+KafkaField.KAFKA_FIELD_SCHEMA_TYPE = KeywordField("kafkaFieldSchemaType", "kafkaFieldSchemaType")
+KafkaField.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 KafkaField.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 KafkaField.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 KafkaField.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -657,9 +605,7 @@ KafkaField.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribu
 KafkaField.METRICS = RelationField("metrics")
 KafkaField.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 KafkaField.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-KafkaField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+KafkaField.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 KafkaField.MEANINGS = RelationField("meanings")
 KafkaField.KAFKA_TOPIC = RelationField("kafkaTopic")
 KafkaField.MC_MONITORS = RelationField("mcMonitors")

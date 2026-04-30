@@ -14,19 +14,11 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -52,11 +44,16 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSpark, RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .airflow_related import RelatedAirflowTask
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AirflowDag(Asset):
@@ -177,9 +174,7 @@ class AirflowDag(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -188,14 +183,10 @@ class AirflowDag(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -222,9 +213,7 @@ class AirflowDag(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -236,9 +225,7 @@ class AirflowDag(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -255,6 +242,8 @@ class AirflowDag(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AirflowDag"
+
+
 
     @classmethod
     @init_guid
@@ -337,7 +326,6 @@ class AirflowDag(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AirflowDagAttributes(AssetAttributes):
     """AirflowDag-specific attributes for nested API format."""
 
@@ -373,7 +361,6 @@ class AirflowDagAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     """AirflowDag-specific relationship attributes for nested API format."""
@@ -411,9 +398,7 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -422,14 +407,10 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -456,9 +437,7 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -470,9 +449,7 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -487,19 +464,13 @@ class AirflowDagRelationshipAttributes(AssetRelationshipAttributes):
     spark_orchestrated_assets: Union[List[RelatedSpark], None, UnsetType] = UNSET
     """Spark assets that are executed by this airflow asset."""
 
-
 class AirflowDagNested(AssetNested):
     """AirflowDag in nested API format for high-performance serialization."""
 
     attributes: Union[AirflowDagAttributes, UnsetType] = UNSET
     relationship_attributes: Union[AirflowDagRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        AirflowDagRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AirflowDagRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[AirflowDagRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AirflowDagRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -542,7 +513,6 @@ _AIRFLOW_DAG_REL_FIELDS: List[str] = [
     "spark_orchestrated_assets",
 ]
 
-
 def _populate_airflow_dag_attrs(attrs: AirflowDagAttributes, obj: AirflowDag) -> None:
     """Populate AirflowDag-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -557,7 +527,6 @@ def _populate_airflow_dag_attrs(attrs: AirflowDagAttributes, obj: AirflowDag) ->
     attrs.airflow_run_end_time = obj.airflow_run_end_time
     attrs.airflow_run_open_lineage_state = obj.airflow_run_open_lineage_state
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_airflow_dag_attrs(attrs: AirflowDagAttributes) -> dict:
     """Extract all AirflowDag attributes from the attrs struct into a flat dict."""
@@ -574,7 +543,6 @@ def _extract_airflow_dag_attrs(attrs: AirflowDagAttributes) -> dict:
     result["airflow_run_open_lineage_state"] = attrs.airflow_run_open_lineage_state
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -615,19 +583,16 @@ def _airflow_dag_to_nested(airflow_dag: AirflowDag) -> AirflowDagNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _airflow_dag_from_nested(nested: AirflowDagNested) -> AirflowDag:
     """Convert nested format to flat AirflowDag."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else AirflowDagAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AirflowDagAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AIRFLOW_DAG_REL_FIELDS,
-        AirflowDagRelationshipAttributes,
+        AirflowDagRelationshipAttributes
     )
     return AirflowDag(
         guid=nested.guid,
@@ -654,7 +619,6 @@ def _airflow_dag_from_nested(nested: AirflowDagNested) -> AirflowDag:
         **merged_rels,
     )
 
-
 def _airflow_dag_to_nested_bytes(airflow_dag: AirflowDag, serde: Serde) -> bytes:
     """Convert flat AirflowDag to nested JSON bytes."""
     return serde.encode(_airflow_dag_to_nested(airflow_dag))
@@ -665,7 +629,6 @@ def _airflow_dag_from_nested_bytes(data: bytes, serde: Serde) -> AirflowDag:
     nested = serde.decode(data, AirflowDagNested)
     return _airflow_dag_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -675,29 +638,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-AirflowDag.AIRFLOW_DAG_SCHEDULE = KeywordField(
-    "airflowDagSchedule", "airflowDagSchedule"
-)
-AirflowDag.AIRFLOW_DAG_SCHEDULE_DELTA = NumericField(
-    "airflowDagScheduleDelta", "airflowDagScheduleDelta"
-)
+AirflowDag.AIRFLOW_DAG_SCHEDULE = KeywordField("airflowDagSchedule", "airflowDagSchedule")
+AirflowDag.AIRFLOW_DAG_SCHEDULE_DELTA = NumericField("airflowDagScheduleDelta", "airflowDagScheduleDelta")
 AirflowDag.AIRFLOW_TAGS = KeywordField("airflowTags", "airflowTags")
 AirflowDag.AIRFLOW_RUN_VERSION = KeywordField("airflowRunVersion", "airflowRunVersion")
-AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_VERSION = KeywordField(
-    "airflowRunOpenLineageVersion", "airflowRunOpenLineageVersion"
-)
+AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_VERSION = KeywordField("airflowRunOpenLineageVersion", "airflowRunOpenLineageVersion")
 AirflowDag.AIRFLOW_RUN_NAME = KeywordField("airflowRunName", "airflowRunName")
 AirflowDag.AIRFLOW_RUN_TYPE = KeywordField("airflowRunType", "airflowRunType")
-AirflowDag.AIRFLOW_RUN_START_TIME = NumericField(
-    "airflowRunStartTime", "airflowRunStartTime"
-)
+AirflowDag.AIRFLOW_RUN_START_TIME = NumericField("airflowRunStartTime", "airflowRunStartTime")
 AirflowDag.AIRFLOW_RUN_END_TIME = NumericField("airflowRunEndTime", "airflowRunEndTime")
-AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_STATE = KeywordField(
-    "airflowRunOpenLineageState", "airflowRunOpenLineageState"
-)
-AirflowDag.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+AirflowDag.AIRFLOW_RUN_OPEN_LINEAGE_STATE = KeywordField("airflowRunOpenLineageState", "airflowRunOpenLineageState")
+AirflowDag.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 AirflowDag.AIRFLOW_TASKS = RelationField("airflowTasks")
 AirflowDag.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AirflowDag.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -713,9 +664,7 @@ AirflowDag.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttribu
 AirflowDag.METRICS = RelationField("metrics")
 AirflowDag.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AirflowDag.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AirflowDag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+AirflowDag.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 AirflowDag.MEANINGS = RelationField("meanings")
 AirflowDag.MC_MONITORS = RelationField("mcMonitors")
 AirflowDag.MC_INCIDENTS = RelationField("mcIncidents")

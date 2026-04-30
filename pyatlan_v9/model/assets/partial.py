@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -45,18 +38,21 @@ from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
-from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .partial_related import RelatedPartialField, RelatedPartialObject
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Partial(Asset):
@@ -104,9 +100,7 @@ class Partial(Asset):
 
     type_name: Union[str, UnsetType] = "Partial"
 
-    partial_structure_json: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="partialStructureJSON"
-    )
+    partial_structure_json: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="partialStructureJSON")
     """Complete JSON structure of this partial asset, as a string."""
 
     partial_resolved_type_name: Union[str, None, UnsetType] = UNSET
@@ -154,9 +148,7 @@ class Partial(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -165,14 +157,10 @@ class Partial(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -199,9 +187,7 @@ class Partial(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -213,9 +199,7 @@ class Partial(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -229,6 +213,8 @@ class Partial(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Partial"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -281,13 +267,10 @@ class Partial(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class PartialAttributes(AssetAttributes):
     """Partial-specific attributes for nested API format."""
 
-    partial_structure_json: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="partialStructureJSON"
-    )
+    partial_structure_json: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="partialStructureJSON")
     """Complete JSON structure of this partial asset, as a string."""
 
     partial_resolved_type_name: Union[str, None, UnsetType] = UNSET
@@ -304,7 +287,6 @@ class PartialAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class PartialRelationshipAttributes(AssetRelationshipAttributes):
     """Partial-specific relationship attributes for nested API format."""
@@ -339,9 +321,7 @@ class PartialRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -350,14 +330,10 @@ class PartialRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -384,9 +360,7 @@ class PartialRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -398,9 +372,7 @@ class PartialRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -412,19 +384,13 @@ class PartialRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class PartialNested(AssetNested):
     """Partial in nested API format for high-performance serialization."""
 
     attributes: Union[PartialAttributes, UnsetType] = UNSET
     relationship_attributes: Union[PartialRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[PartialRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[PartialRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[PartialRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[PartialRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -465,7 +431,6 @@ _PARTIAL_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_partial_attrs(attrs: PartialAttributes, obj: Partial) -> None:
     """Populate Partial-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -476,20 +441,16 @@ def _populate_partial_attrs(attrs: PartialAttributes, obj: Partial) -> None:
     attrs.partial_parent_qualified_name = obj.partial_parent_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
 def _extract_partial_attrs(attrs: PartialAttributes) -> dict:
     """Extract all Partial attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["partial_structure_json"] = attrs.partial_structure_json
     result["partial_resolved_type_name"] = attrs.partial_resolved_type_name
-    result["partial_unknown_attributes_hash_id"] = (
-        attrs.partial_unknown_attributes_hash_id
-    )
+    result["partial_unknown_attributes_hash_id"] = attrs.partial_unknown_attributes_hash_id
     result["partial_parent_type"] = attrs.partial_parent_type
     result["partial_parent_qualified_name"] = attrs.partial_parent_qualified_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -530,7 +491,6 @@ def _partial_to_nested(partial: Partial) -> PartialNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _partial_from_nested(nested: PartialNested) -> Partial:
     """Convert nested format to flat Partial."""
     attrs = nested.attributes if nested.attributes is not UNSET else PartialAttributes()
@@ -540,7 +500,7 @@ def _partial_from_nested(nested: PartialNested) -> Partial:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PARTIAL_REL_FIELDS,
-        PartialRelationshipAttributes,
+        PartialRelationshipAttributes
     )
     return Partial(
         guid=nested.guid,
@@ -567,7 +527,6 @@ def _partial_from_nested(nested: PartialNested) -> Partial:
         **merged_rels,
     )
 
-
 def _partial_to_nested_bytes(partial: Partial, serde: Serde) -> bytes:
     """Convert flat Partial to nested JSON bytes."""
     return serde.encode(_partial_to_nested(partial))
@@ -578,25 +537,19 @@ def _partial_from_nested_bytes(data: bytes, serde: Serde) -> Partial:
     nested = serde.decode(data, PartialNested)
     return _partial_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
-Partial.PARTIAL_STRUCTURE_JSON = KeywordField(
-    "partialStructureJSON", "partialStructureJSON"
-)
-Partial.PARTIAL_RESOLVED_TYPE_NAME = KeywordField(
-    "partialResolvedTypeName", "partialResolvedTypeName"
-)
-Partial.PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID = KeywordField(
-    "partialUnknownAttributesHashId", "partialUnknownAttributesHashId"
-)
+Partial.PARTIAL_STRUCTURE_JSON = KeywordField("partialStructureJSON", "partialStructureJSON")
+Partial.PARTIAL_RESOLVED_TYPE_NAME = KeywordField("partialResolvedTypeName", "partialResolvedTypeName")
+Partial.PARTIAL_UNKNOWN_ATTRIBUTES_HASH_ID = KeywordField("partialUnknownAttributesHashId", "partialUnknownAttributesHashId")
 Partial.PARTIAL_PARENT_TYPE = KeywordField("partialParentType", "partialParentType")
-Partial.PARTIAL_PARENT_QUALIFIED_NAME = KeywordField(
-    "partialParentQualifiedName", "partialParentQualifiedName"
-)
+Partial.PARTIAL_PARENT_QUALIFIED_NAME = KeywordField("partialParentQualifiedName", "partialParentQualifiedName")
 Partial.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Partial.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Partial.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -612,9 +565,7 @@ Partial.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes
 Partial.METRICS = RelationField("metrics")
 Partial.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Partial.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Partial.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Partial.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Partial.MEANINGS = RelationField("meanings")
 Partial.MC_MONITORS = RelationField("mcMonitors")
 Partial.MC_INCIDENTS = RelationField("mcIncidents")

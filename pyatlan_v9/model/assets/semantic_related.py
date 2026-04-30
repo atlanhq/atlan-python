@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import List, Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
@@ -42,7 +43,6 @@ class RelatedSemantic(RelatedCatalog):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Semantic"
 
-
 class RelatedSemanticModel(RelatedSemantic):
     """
     Related entity reference for SemanticModel assets.
@@ -56,7 +56,6 @@ class RelatedSemanticModel(RelatedSemantic):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SemanticModel"
-
 
 class RelatedSemanticField(RelatedSemantic):
     """
@@ -93,7 +92,6 @@ class RelatedSemanticField(RelatedSemantic):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SemanticField"
 
-
 class RelatedSemanticMeasure(RelatedSemantic):
     """
     Related entity reference for SemanticMeasure assets.
@@ -108,7 +106,6 @@ class RelatedSemanticMeasure(RelatedSemantic):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SemanticMeasure"
 
-
 class RelatedSemanticDimension(RelatedSemantic):
     """
     Related entity reference for SemanticDimension assets.
@@ -122,7 +119,6 @@ class RelatedSemanticDimension(RelatedSemantic):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SemanticDimension"
-
 
 class RelatedSemanticEntity(RelatedSemantic):
     """

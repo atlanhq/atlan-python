@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,12 +37,6 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .looker_related import (
-    RelatedLookerField,
-    RelatedLookerFolder,
-    RelatedLookerLook,
-    RelatedLookerTile,
-)
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -58,11 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .looker_related import RelatedLookerField, RelatedLookerFolder, RelatedLookerLook, RelatedLookerTile
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class LookerDashboard(Asset):
@@ -174,9 +166,7 @@ class LookerDashboard(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -185,14 +175,10 @@ class LookerDashboard(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -231,9 +217,7 @@ class LookerDashboard(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -245,9 +229,7 @@ class LookerDashboard(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -266,7 +248,10 @@ class LookerDashboard(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -297,9 +282,7 @@ class LookerDashboard(Asset):
         return _looker_dashboard_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> LookerDashboard:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> LookerDashboard:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -320,7 +303,6 @@ class LookerDashboard(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class LookerDashboardAttributes(AssetAttributes):
     """LookerDashboard-specific attributes for nested API format."""
@@ -351,7 +333,6 @@ class LookerDashboardAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     """LookerDashboard-specific relationship attributes for nested API format."""
@@ -386,9 +367,7 @@ class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -397,14 +376,10 @@ class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -443,9 +418,7 @@ class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -457,9 +430,7 @@ class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -471,21 +442,13 @@ class LookerDashboardRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class LookerDashboardNested(AssetNested):
     """LookerDashboard in nested API format for high-performance serialization."""
 
     attributes: Union[LookerDashboardAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[LookerDashboardRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        LookerDashboardRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        LookerDashboardRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[LookerDashboardRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[LookerDashboardRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[LookerDashboardRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -530,10 +493,7 @@ _LOOKER_DASHBOARD_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_looker_dashboard_attrs(
-    attrs: LookerDashboardAttributes, obj: LookerDashboard
-) -> None:
+def _populate_looker_dashboard_attrs(attrs: LookerDashboardAttributes, obj: LookerDashboard) -> None:
     """Populate LookerDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.folder_name = obj.folder_name
@@ -545,7 +505,6 @@ def _populate_looker_dashboard_attrs(
     attrs.source_last_viewed_at = obj.source_last_viewed_at
     attrs.looker_slug = obj.looker_slug
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_looker_dashboard_attrs(attrs: LookerDashboardAttributes) -> dict:
     """Extract all LookerDashboard attributes from the attrs struct into a flat dict."""
@@ -561,23 +520,18 @@ def _extract_looker_dashboard_attrs(attrs: LookerDashboardAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _looker_dashboard_to_nested(
-    looker_dashboard: LookerDashboard,
-) -> LookerDashboardNested:
+def _looker_dashboard_to_nested(looker_dashboard: LookerDashboard) -> LookerDashboardNested:
     """Convert flat LookerDashboard to nested format."""
     attrs = LookerDashboardAttributes()
     _populate_looker_dashboard_attrs(attrs, looker_dashboard)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        looker_dashboard,
-        _LOOKER_DASHBOARD_REL_FIELDS,
-        LookerDashboardRelationshipAttributes,
+        looker_dashboard, _LOOKER_DASHBOARD_REL_FIELDS, LookerDashboardRelationshipAttributes
     )
     return LookerDashboardNested(
         guid=looker_dashboard.guid,
@@ -605,21 +559,16 @@ def _looker_dashboard_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _looker_dashboard_from_nested(nested: LookerDashboardNested) -> LookerDashboard:
     """Convert nested format to flat LookerDashboard."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else LookerDashboardAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else LookerDashboardAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _LOOKER_DASHBOARD_REL_FIELDS,
-        LookerDashboardRelationshipAttributes,
+        LookerDashboardRelationshipAttributes
     )
     return LookerDashboard(
         guid=nested.guid,
@@ -646,10 +595,7 @@ def _looker_dashboard_from_nested(nested: LookerDashboardNested) -> LookerDashbo
         **merged_rels,
     )
 
-
-def _looker_dashboard_to_nested_bytes(
-    looker_dashboard: LookerDashboard, serde: Serde
-) -> bytes:
+def _looker_dashboard_to_nested_bytes(looker_dashboard: LookerDashboard, serde: Serde) -> bytes:
     """Convert flat LookerDashboard to nested JSON bytes."""
     return serde.encode(_looker_dashboard_to_nested(looker_dashboard))
 
@@ -658,7 +604,6 @@ def _looker_dashboard_from_nested_bytes(data: bytes, serde: Serde) -> LookerDash
     """Convert nested JSON bytes to flat LookerDashboard."""
     nested = serde.decode(data, LookerDashboardNested)
     return _looker_dashboard_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -672,43 +617,27 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 LookerDashboard.FOLDER_NAME = KeywordField("folderName", "folderName")
 LookerDashboard.SOURCE_USER_ID = NumericField("sourceUserId", "sourceUserId")
 LookerDashboard.SOURCE_VIEW_COUNT = NumericField("sourceViewCount", "sourceViewCount")
-LookerDashboard.SOURCE_METADATA_ID = NumericField(
-    "sourceMetadataId", "sourceMetadataId"
-)
-LookerDashboard.SOURCELAST_UPDATER_ID = NumericField(
-    "sourcelastUpdaterId", "sourcelastUpdaterId"
-)
-LookerDashboard.SOURCE_LAST_ACCESSED_AT = NumericField(
-    "sourceLastAccessedAt", "sourceLastAccessedAt"
-)
-LookerDashboard.SOURCE_LAST_VIEWED_AT = NumericField(
-    "sourceLastViewedAt", "sourceLastViewedAt"
-)
+LookerDashboard.SOURCE_METADATA_ID = NumericField("sourceMetadataId", "sourceMetadataId")
+LookerDashboard.SOURCELAST_UPDATER_ID = NumericField("sourcelastUpdaterId", "sourcelastUpdaterId")
+LookerDashboard.SOURCE_LAST_ACCESSED_AT = NumericField("sourceLastAccessedAt", "sourceLastAccessedAt")
+LookerDashboard.SOURCE_LAST_VIEWED_AT = NumericField("sourceLastViewedAt", "sourceLastViewedAt")
 LookerDashboard.LOOKER_SLUG = KeywordField("lookerSlug", "lookerSlug")
-LookerDashboard.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+LookerDashboard.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 LookerDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 LookerDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 LookerDashboard.ANOMALO_CHECKS = RelationField("anomaloChecks")
 LookerDashboard.APPLICATION = RelationField("application")
 LookerDashboard.APPLICATION_FIELD = RelationField("applicationField")
 LookerDashboard.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-LookerDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+LookerDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 LookerDashboard.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 LookerDashboard.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 LookerDashboard.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-LookerDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+LookerDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 LookerDashboard.METRICS = RelationField("metrics")
 LookerDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 LookerDashboard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-LookerDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+LookerDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 LookerDashboard.MEANINGS = RelationField("meanings")
 LookerDashboard.FOLDER = RelationField("folder")
 LookerDashboard.LOOKS = RelationField("looks")

@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -51,7 +51,6 @@ class RelatedAtlanApp(RelatedApp):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AtlanApp"
 
-
 class RelatedAtlanAppInstalled(RelatedAtlanApp):
     """
     Related entity reference for AtlanAppInstalled assets.
@@ -65,9 +64,7 @@ class RelatedAtlanAppInstalled(RelatedAtlanApp):
     atlan_app_current_version_id: Union[int, None, UnsetType] = UNSET
     """Current version identifier for the atlan application."""
 
-    atlan_app_current_version_uuid: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="atlanAppCurrentVersionUUID"
-    )
+    atlan_app_current_version_uuid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="atlanAppCurrentVersionUUID")
     """Current version uuid for the atlan application. This is externally exposed information."""
 
     atlan_app_deployment_config: Union[str, None, UnsetType] = UNSET
@@ -79,7 +76,6 @@ class RelatedAtlanAppInstalled(RelatedAtlanApp):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AtlanAppInstalled"
-
 
 class RelatedAtlanAppDeployment(RelatedAtlanApp):
     """
@@ -94,9 +90,7 @@ class RelatedAtlanAppDeployment(RelatedAtlanApp):
     atlan_app_version_id: Union[int, None, UnsetType] = UNSET
     """Version identifier for deployment."""
 
-    atlan_app_version_uuid: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="atlanAppVersionUUID"
-    )
+    atlan_app_version_uuid: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="atlanAppVersionUUID")
     """Version uuid for deployment. This is externally exposed information."""
 
     atlan_app_status: Union[str, None, UnsetType] = UNSET
@@ -114,7 +108,6 @@ class RelatedAtlanAppDeployment(RelatedAtlanApp):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AtlanAppDeployment"
-
 
 class RelatedAtlanAppTool(RelatedAtlanApp):
     """
@@ -141,7 +134,6 @@ class RelatedAtlanAppTool(RelatedAtlanApp):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "AtlanAppTool"
-
 
 class RelatedAtlanAppWorkflow(RelatedAtlanApp):
     """

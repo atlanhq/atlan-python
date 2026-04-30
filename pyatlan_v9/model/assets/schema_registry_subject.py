@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -49,17 +43,17 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .schema_registry_related import (
-    RelatedSchemaRegistrySubject,
-    RelatedSchemaRegistryVersion,
-)
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .schema_registry_related import RelatedSchemaRegistrySubject, RelatedSchemaRegistryVersion
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SchemaRegistrySubject(Asset):
@@ -124,14 +118,10 @@ class SchemaRegistrySubject(Asset):
     schema_registry_subject_latest_schema_version: Union[str, None, UnsetType] = UNSET
     """Latest schema version of the subject."""
 
-    schema_registry_subject_latest_schema_definition: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    schema_registry_subject_latest_schema_definition: Union[str, None, UnsetType] = UNSET
     """Definition of the latest schema in the subject."""
 
-    schema_registry_subject_governing_asset_qualified_names: Union[
-        List[str], None, UnsetType
-    ] = UNSET
+    schema_registry_subject_governing_asset_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """List of asset qualified names that this subject is governing/validating."""
 
     schema_registry_schema_type: Union[str, None, UnsetType] = UNSET
@@ -173,9 +163,7 @@ class SchemaRegistrySubject(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -184,14 +172,10 @@ class SchemaRegistrySubject(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -218,9 +202,7 @@ class SchemaRegistrySubject(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -232,17 +214,13 @@ class SchemaRegistrySubject(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
     """Assets governed by this schema registry subject."""
 
-    schema_registry_versions: Union[
-        List[RelatedSchemaRegistryVersion], None, UnsetType
-    ] = UNSET
+    schema_registry_versions: Union[List[RelatedSchemaRegistryVersion], None, UnsetType] = UNSET
     """Individual schema versions within this subject."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -256,6 +234,8 @@ class SchemaRegistrySubject(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SchemaRegistrySubject"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -286,9 +266,7 @@ class SchemaRegistrySubject(Asset):
         return _schema_registry_subject_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SchemaRegistrySubject:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SchemaRegistrySubject:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -310,7 +288,6 @@ class SchemaRegistrySubject(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SchemaRegistrySubjectAttributes(AssetAttributes):
     """SchemaRegistrySubject-specific attributes for nested API format."""
 
@@ -326,14 +303,10 @@ class SchemaRegistrySubjectAttributes(AssetAttributes):
     schema_registry_subject_latest_schema_version: Union[str, None, UnsetType] = UNSET
     """Latest schema version of the subject."""
 
-    schema_registry_subject_latest_schema_definition: Union[str, None, UnsetType] = (
-        UNSET
-    )
+    schema_registry_subject_latest_schema_definition: Union[str, None, UnsetType] = UNSET
     """Definition of the latest schema in the subject."""
 
-    schema_registry_subject_governing_asset_qualified_names: Union[
-        List[str], None, UnsetType
-    ] = UNSET
+    schema_registry_subject_governing_asset_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """List of asset qualified names that this subject is governing/validating."""
 
     schema_registry_schema_type: Union[str, None, UnsetType] = UNSET
@@ -344,7 +317,6 @@ class SchemaRegistrySubjectAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class SchemaRegistrySubjectRelationshipAttributes(AssetRelationshipAttributes):
     """SchemaRegistrySubject-specific relationship attributes for nested API format."""
@@ -379,9 +351,7 @@ class SchemaRegistrySubjectRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -390,14 +360,10 @@ class SchemaRegistrySubjectRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -424,9 +390,7 @@ class SchemaRegistrySubjectRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -438,17 +402,13 @@ class SchemaRegistrySubjectRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
     """Assets governed by this schema registry subject."""
 
-    schema_registry_versions: Union[
-        List[RelatedSchemaRegistryVersion], None, UnsetType
-    ] = UNSET
+    schema_registry_versions: Union[List[RelatedSchemaRegistryVersion], None, UnsetType] = UNSET
     """Individual schema versions within this subject."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -460,21 +420,13 @@ class SchemaRegistrySubjectRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class SchemaRegistrySubjectNested(AssetNested):
     """SchemaRegistrySubject in nested API format for high-performance serialization."""
 
     attributes: Union[SchemaRegistrySubjectAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        SchemaRegistrySubjectRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        SchemaRegistrySubjectRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SchemaRegistrySubjectRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SchemaRegistrySubjectRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SchemaRegistrySubjectRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SchemaRegistrySubjectRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -517,78 +469,45 @@ _SCHEMA_REGISTRY_SUBJECT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_schema_registry_subject_attrs(
-    attrs: SchemaRegistrySubjectAttributes, obj: SchemaRegistrySubject
-) -> None:
+def _populate_schema_registry_subject_attrs(attrs: SchemaRegistrySubjectAttributes, obj: SchemaRegistrySubject) -> None:
     """Populate SchemaRegistrySubject-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.schema_registry_subject_base_name = obj.schema_registry_subject_base_name
-    attrs.schema_registry_subject_is_key_schema = (
-        obj.schema_registry_subject_is_key_schema
-    )
-    attrs.schema_registry_subject_schema_compatibility = (
-        obj.schema_registry_subject_schema_compatibility
-    )
-    attrs.schema_registry_subject_latest_schema_version = (
-        obj.schema_registry_subject_latest_schema_version
-    )
-    attrs.schema_registry_subject_latest_schema_definition = (
-        obj.schema_registry_subject_latest_schema_definition
-    )
-    attrs.schema_registry_subject_governing_asset_qualified_names = (
-        obj.schema_registry_subject_governing_asset_qualified_names
-    )
+    attrs.schema_registry_subject_is_key_schema = obj.schema_registry_subject_is_key_schema
+    attrs.schema_registry_subject_schema_compatibility = obj.schema_registry_subject_schema_compatibility
+    attrs.schema_registry_subject_latest_schema_version = obj.schema_registry_subject_latest_schema_version
+    attrs.schema_registry_subject_latest_schema_definition = obj.schema_registry_subject_latest_schema_definition
+    attrs.schema_registry_subject_governing_asset_qualified_names = obj.schema_registry_subject_governing_asset_qualified_names
     attrs.schema_registry_schema_type = obj.schema_registry_schema_type
     attrs.schema_registry_schema_id = obj.schema_registry_schema_id
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
-def _extract_schema_registry_subject_attrs(
-    attrs: SchemaRegistrySubjectAttributes,
-) -> dict:
+def _extract_schema_registry_subject_attrs(attrs: SchemaRegistrySubjectAttributes) -> dict:
     """Extract all SchemaRegistrySubject attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["schema_registry_subject_base_name"] = (
-        attrs.schema_registry_subject_base_name
-    )
-    result["schema_registry_subject_is_key_schema"] = (
-        attrs.schema_registry_subject_is_key_schema
-    )
-    result["schema_registry_subject_schema_compatibility"] = (
-        attrs.schema_registry_subject_schema_compatibility
-    )
-    result["schema_registry_subject_latest_schema_version"] = (
-        attrs.schema_registry_subject_latest_schema_version
-    )
-    result["schema_registry_subject_latest_schema_definition"] = (
-        attrs.schema_registry_subject_latest_schema_definition
-    )
-    result["schema_registry_subject_governing_asset_qualified_names"] = (
-        attrs.schema_registry_subject_governing_asset_qualified_names
-    )
+    result["schema_registry_subject_base_name"] = attrs.schema_registry_subject_base_name
+    result["schema_registry_subject_is_key_schema"] = attrs.schema_registry_subject_is_key_schema
+    result["schema_registry_subject_schema_compatibility"] = attrs.schema_registry_subject_schema_compatibility
+    result["schema_registry_subject_latest_schema_version"] = attrs.schema_registry_subject_latest_schema_version
+    result["schema_registry_subject_latest_schema_definition"] = attrs.schema_registry_subject_latest_schema_definition
+    result["schema_registry_subject_governing_asset_qualified_names"] = attrs.schema_registry_subject_governing_asset_qualified_names
     result["schema_registry_schema_type"] = attrs.schema_registry_schema_type
     result["schema_registry_schema_id"] = attrs.schema_registry_schema_id
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _schema_registry_subject_to_nested(
-    schema_registry_subject: SchemaRegistrySubject,
-) -> SchemaRegistrySubjectNested:
+def _schema_registry_subject_to_nested(schema_registry_subject: SchemaRegistrySubject) -> SchemaRegistrySubjectNested:
     """Convert flat SchemaRegistrySubject to nested format."""
     attrs = SchemaRegistrySubjectAttributes()
     _populate_schema_registry_subject_attrs(attrs, schema_registry_subject)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        schema_registry_subject,
-        _SCHEMA_REGISTRY_SUBJECT_REL_FIELDS,
-        SchemaRegistrySubjectRelationshipAttributes,
+        schema_registry_subject, _SCHEMA_REGISTRY_SUBJECT_REL_FIELDS, SchemaRegistrySubjectRelationshipAttributes
     )
     return SchemaRegistrySubjectNested(
         guid=schema_registry_subject.guid,
@@ -616,23 +535,16 @@ def _schema_registry_subject_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _schema_registry_subject_from_nested(
-    nested: SchemaRegistrySubjectNested,
-) -> SchemaRegistrySubject:
+def _schema_registry_subject_from_nested(nested: SchemaRegistrySubjectNested) -> SchemaRegistrySubject:
     """Convert nested format to flat SchemaRegistrySubject."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SchemaRegistrySubjectAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SchemaRegistrySubjectAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SCHEMA_REGISTRY_SUBJECT_REL_FIELDS,
-        SchemaRegistrySubjectRelationshipAttributes,
+        SchemaRegistrySubjectRelationshipAttributes
     )
     return SchemaRegistrySubject(
         guid=nested.guid,
@@ -659,21 +571,15 @@ def _schema_registry_subject_from_nested(
         **merged_rels,
     )
 
-
-def _schema_registry_subject_to_nested_bytes(
-    schema_registry_subject: SchemaRegistrySubject, serde: Serde
-) -> bytes:
+def _schema_registry_subject_to_nested_bytes(schema_registry_subject: SchemaRegistrySubject, serde: Serde) -> bytes:
     """Convert flat SchemaRegistrySubject to nested JSON bytes."""
     return serde.encode(_schema_registry_subject_to_nested(schema_registry_subject))
 
 
-def _schema_registry_subject_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> SchemaRegistrySubject:
+def _schema_registry_subject_from_nested_bytes(data: bytes, serde: Serde) -> SchemaRegistrySubject:
     """Convert nested JSON bytes to flat SchemaRegistrySubject."""
     nested = serde.decode(data, SchemaRegistrySubjectNested)
     return _schema_registry_subject_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -684,68 +590,30 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_BASE_NAME = KeywordField(
-    "schemaRegistrySubjectBaseName", "schemaRegistrySubjectBaseName"
-)
-SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_IS_KEY_SCHEMA = BooleanField(
-    "schemaRegistrySubjectIsKeySchema", "schemaRegistrySubjectIsKeySchema"
-)
-SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_SCHEMA_COMPATIBILITY = KeywordField(
-    "schemaRegistrySubjectSchemaCompatibility",
-    "schemaRegistrySubjectSchemaCompatibility",
-)
-SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION = KeywordField(
-    "schemaRegistrySubjectLatestSchemaVersion",
-    "schemaRegistrySubjectLatestSchemaVersion",
-)
-SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_DEFINITION = KeywordField(
-    "schemaRegistrySubjectLatestSchemaDefinition",
-    "schemaRegistrySubjectLatestSchemaDefinition",
-)
-SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES = (
-    KeywordField(
-        "schemaRegistrySubjectGoverningAssetQualifiedNames",
-        "schemaRegistrySubjectGoverningAssetQualifiedNames",
-    )
-)
-SchemaRegistrySubject.SCHEMA_REGISTRY_SCHEMA_TYPE = KeywordField(
-    "schemaRegistrySchemaType", "schemaRegistrySchemaType"
-)
-SchemaRegistrySubject.SCHEMA_REGISTRY_SCHEMA_ID = KeywordField(
-    "schemaRegistrySchemaId", "schemaRegistrySchemaId"
-)
-SchemaRegistrySubject.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_BASE_NAME = KeywordField("schemaRegistrySubjectBaseName", "schemaRegistrySubjectBaseName")
+SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_IS_KEY_SCHEMA = BooleanField("schemaRegistrySubjectIsKeySchema", "schemaRegistrySubjectIsKeySchema")
+SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_SCHEMA_COMPATIBILITY = KeywordField("schemaRegistrySubjectSchemaCompatibility", "schemaRegistrySubjectSchemaCompatibility")
+SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION = KeywordField("schemaRegistrySubjectLatestSchemaVersion", "schemaRegistrySubjectLatestSchemaVersion")
+SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_DEFINITION = KeywordField("schemaRegistrySubjectLatestSchemaDefinition", "schemaRegistrySubjectLatestSchemaDefinition")
+SchemaRegistrySubject.SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES = KeywordField("schemaRegistrySubjectGoverningAssetQualifiedNames", "schemaRegistrySubjectGoverningAssetQualifiedNames")
+SchemaRegistrySubject.SCHEMA_REGISTRY_SCHEMA_TYPE = KeywordField("schemaRegistrySchemaType", "schemaRegistrySchemaType")
+SchemaRegistrySubject.SCHEMA_REGISTRY_SCHEMA_ID = KeywordField("schemaRegistrySchemaId", "schemaRegistrySchemaId")
+SchemaRegistrySubject.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 SchemaRegistrySubject.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-SchemaRegistrySubject.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+SchemaRegistrySubject.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SchemaRegistrySubject.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SchemaRegistrySubject.APPLICATION = RelationField("application")
 SchemaRegistrySubject.APPLICATION_FIELD = RelationField("applicationField")
 SchemaRegistrySubject.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SchemaRegistrySubject.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-SchemaRegistrySubject.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
+SchemaRegistrySubject.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SchemaRegistrySubject.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SchemaRegistrySubject.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-SchemaRegistrySubject.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-SchemaRegistrySubject.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SchemaRegistrySubject.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+SchemaRegistrySubject.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SchemaRegistrySubject.METRICS = RelationField("metrics")
 SchemaRegistrySubject.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-SchemaRegistrySubject.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
-SchemaRegistrySubject.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SchemaRegistrySubject.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SchemaRegistrySubject.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SchemaRegistrySubject.MEANINGS = RelationField("meanings")
 SchemaRegistrySubject.MC_MONITORS = RelationField("mcMonitors")
 SchemaRegistrySubject.MC_INCIDENTS = RelationField("mcIncidents")
@@ -754,9 +622,7 @@ SchemaRegistrySubject.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 SchemaRegistrySubject.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 SchemaRegistrySubject.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 SchemaRegistrySubject.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-SchemaRegistrySubject.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+SchemaRegistrySubject.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 SchemaRegistrySubject.FILES = RelationField("files")
 SchemaRegistrySubject.LINKS = RelationField("links")
 SchemaRegistrySubject.README = RelationField("readme")

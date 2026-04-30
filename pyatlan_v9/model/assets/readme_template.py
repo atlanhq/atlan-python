@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -47,15 +41,18 @@ from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
-from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class ReadmeTemplate(Asset):
@@ -155,9 +152,7 @@ class ReadmeTemplate(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -166,14 +161,10 @@ class ReadmeTemplate(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -200,9 +191,7 @@ class ReadmeTemplate(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -214,9 +203,7 @@ class ReadmeTemplate(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -230,6 +217,8 @@ class ReadmeTemplate(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ReadmeTemplate"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -282,7 +271,6 @@ class ReadmeTemplate(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class ReadmeTemplateAttributes(AssetAttributes):
     """ReadmeTemplate-specific attributes for nested API format."""
 
@@ -306,7 +294,6 @@ class ReadmeTemplateAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     """ReadmeTemplate-specific relationship attributes for nested API format."""
@@ -341,9 +328,7 @@ class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -352,14 +337,10 @@ class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -386,9 +367,7 @@ class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -400,9 +379,7 @@ class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -414,21 +391,13 @@ class ReadmeTemplateRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class ReadmeTemplateNested(AssetNested):
     """ReadmeTemplate in nested API format for high-performance serialization."""
 
     attributes: Union[ReadmeTemplateAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[ReadmeTemplateRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        ReadmeTemplateRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        ReadmeTemplateRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[ReadmeTemplateRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[ReadmeTemplateRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[ReadmeTemplateRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -469,10 +438,7 @@ _README_TEMPLATE_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_readme_template_attrs(
-    attrs: ReadmeTemplateAttributes, obj: ReadmeTemplate
-) -> None:
+def _populate_readme_template_attrs(attrs: ReadmeTemplateAttributes, obj: ReadmeTemplate) -> None:
     """Populate ReadmeTemplate-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.icon = obj.icon
@@ -482,7 +448,6 @@ def _populate_readme_template_attrs(
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_readme_template_attrs(attrs: ReadmeTemplateAttributes) -> dict:
     """Extract all ReadmeTemplate attributes from the attrs struct into a flat dict."""
@@ -496,7 +461,6 @@ def _extract_readme_template_attrs(attrs: ReadmeTemplateAttributes) -> dict:
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
@@ -508,9 +472,7 @@ def _readme_template_to_nested(readme_template: ReadmeTemplate) -> ReadmeTemplat
     _populate_readme_template_attrs(attrs, readme_template)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        readme_template,
-        _README_TEMPLATE_REL_FIELDS,
-        ReadmeTemplateRelationshipAttributes,
+        readme_template, _README_TEMPLATE_REL_FIELDS, ReadmeTemplateRelationshipAttributes
     )
     return ReadmeTemplateNested(
         guid=readme_template.guid,
@@ -538,21 +500,16 @@ def _readme_template_to_nested(readme_template: ReadmeTemplate) -> ReadmeTemplat
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _readme_template_from_nested(nested: ReadmeTemplateNested) -> ReadmeTemplate:
     """Convert nested format to flat ReadmeTemplate."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else ReadmeTemplateAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else ReadmeTemplateAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _README_TEMPLATE_REL_FIELDS,
-        ReadmeTemplateRelationshipAttributes,
+        ReadmeTemplateRelationshipAttributes
     )
     return ReadmeTemplate(
         guid=nested.guid,
@@ -579,10 +536,7 @@ def _readme_template_from_nested(nested: ReadmeTemplateNested) -> ReadmeTemplate
         **merged_rels,
     )
 
-
-def _readme_template_to_nested_bytes(
-    readme_template: ReadmeTemplate, serde: Serde
-) -> bytes:
+def _readme_template_to_nested_bytes(readme_template: ReadmeTemplate, serde: Serde) -> bytes:
     """Convert flat ReadmeTemplate to nested JSON bytes."""
     return serde.encode(_readme_template_to_nested(readme_template))
 
@@ -591,7 +545,6 @@ def _readme_template_from_nested_bytes(data: bytes, serde: Serde) -> ReadmeTempl
     """Convert nested JSON bytes to flat ReadmeTemplate."""
     nested = serde.decode(data, ReadmeTemplateNested)
     return _readme_template_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -608,30 +561,22 @@ ReadmeTemplate.LINK = KeywordField("link", "link")
 ReadmeTemplate.IS_GLOBAL = BooleanField("isGlobal", "isGlobal")
 ReadmeTemplate.REFERENCE = KeywordField("reference", "reference")
 ReadmeTemplate.RESOURCE_METADATA = KeywordField("resourceMetadata", "resourceMetadata")
-ReadmeTemplate.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+ReadmeTemplate.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 ReadmeTemplate.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 ReadmeTemplate.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 ReadmeTemplate.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ReadmeTemplate.APPLICATION = RelationField("application")
 ReadmeTemplate.APPLICATION_FIELD = RelationField("applicationField")
 ReadmeTemplate.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-ReadmeTemplate.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+ReadmeTemplate.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 ReadmeTemplate.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 ReadmeTemplate.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 ReadmeTemplate.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-ReadmeTemplate.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+ReadmeTemplate.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 ReadmeTemplate.METRICS = RelationField("metrics")
 ReadmeTemplate.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 ReadmeTemplate.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-ReadmeTemplate.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+ReadmeTemplate.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 ReadmeTemplate.MEANINGS = RelationField("meanings")
 ReadmeTemplate.MC_MONITORS = RelationField("mcMonitors")
 ReadmeTemplate.MC_INCIDENTS = RelationField("mcIncidents")

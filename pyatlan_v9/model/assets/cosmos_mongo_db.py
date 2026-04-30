@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -52,11 +45,13 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class CosmosMongoDB(Asset):
@@ -100,9 +95,7 @@ class CosmosMongoDB(Asset):
 
     type_name: Union[str, UnsetType] = "CosmosMongoDB"
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -138,9 +131,7 @@ class CosmosMongoDB(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -149,14 +140,10 @@ class CosmosMongoDB(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -183,9 +170,7 @@ class CosmosMongoDB(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -197,9 +182,7 @@ class CosmosMongoDB(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -213,6 +196,8 @@ class CosmosMongoDB(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "CosmosMongoDB"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -265,18 +250,14 @@ class CosmosMongoDB(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class CosmosMongoDBAttributes(AssetAttributes):
     """CosmosMongoDB-specific attributes for nested API format."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     """CosmosMongoDB-specific relationship attributes for nested API format."""
@@ -311,9 +292,7 @@ class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -322,14 +301,10 @@ class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -356,9 +331,7 @@ class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -370,9 +343,7 @@ class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -384,21 +355,13 @@ class CosmosMongoDBRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class CosmosMongoDBNested(AssetNested):
     """CosmosMongoDB in nested API format for high-performance serialization."""
 
     attributes: Union[CosmosMongoDBAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[CosmosMongoDBRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        CosmosMongoDBRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        CosmosMongoDBRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[CosmosMongoDBRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[CosmosMongoDBRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[CosmosMongoDBRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -439,15 +402,11 @@ _COSMOS_MONGO_DB_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_cosmos_mongo_db_attrs(
-    attrs: CosmosMongoDBAttributes, obj: CosmosMongoDB
-) -> None:
+def _populate_cosmos_mongo_db_attrs(attrs: CosmosMongoDBAttributes, obj: CosmosMongoDB) -> None:
     """Populate CosmosMongoDB-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_cosmos_mongo_db_attrs(attrs: CosmosMongoDBAttributes) -> dict:
     """Extract all CosmosMongoDB attributes from the attrs struct into a flat dict."""
@@ -455,7 +414,6 @@ def _extract_cosmos_mongo_db_attrs(attrs: CosmosMongoDBAttributes) -> dict:
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -468,9 +426,7 @@ def _cosmos_mongo_db_to_nested(cosmos_mongo_db: CosmosMongoDB) -> CosmosMongoDBN
     _populate_cosmos_mongo_db_attrs(attrs, cosmos_mongo_db)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cosmos_mongo_db,
-        _COSMOS_MONGO_DB_REL_FIELDS,
-        CosmosMongoDBRelationshipAttributes,
+        cosmos_mongo_db, _COSMOS_MONGO_DB_REL_FIELDS, CosmosMongoDBRelationshipAttributes
     )
     return CosmosMongoDBNested(
         guid=cosmos_mongo_db.guid,
@@ -498,21 +454,16 @@ def _cosmos_mongo_db_to_nested(cosmos_mongo_db: CosmosMongoDB) -> CosmosMongoDBN
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _cosmos_mongo_db_from_nested(nested: CosmosMongoDBNested) -> CosmosMongoDB:
     """Convert nested format to flat CosmosMongoDB."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else CosmosMongoDBAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else CosmosMongoDBAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COSMOS_MONGO_DB_REL_FIELDS,
-        CosmosMongoDBRelationshipAttributes,
+        CosmosMongoDBRelationshipAttributes
     )
     return CosmosMongoDB(
         guid=nested.guid,
@@ -539,10 +490,7 @@ def _cosmos_mongo_db_from_nested(nested: CosmosMongoDBNested) -> CosmosMongoDB:
         **merged_rels,
     )
 
-
-def _cosmos_mongo_db_to_nested_bytes(
-    cosmos_mongo_db: CosmosMongoDB, serde: Serde
-) -> bytes:
+def _cosmos_mongo_db_to_nested_bytes(cosmos_mongo_db: CosmosMongoDB, serde: Serde) -> bytes:
     """Convert flat CosmosMongoDB to nested JSON bytes."""
     return serde.encode(_cosmos_mongo_db_to_nested(cosmos_mongo_db))
 
@@ -552,27 +500,23 @@ def _cosmos_mongo_db_from_nested_bytes(data: bytes, serde: Serde) -> CosmosMongo
     nested = serde.decode(data, CosmosMongoDBNested)
     return _cosmos_mongo_db_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
-CosmosMongoDB.NO_SQL_SCHEMA_DEFINITION = KeywordField(
-    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-)
-CosmosMongoDB.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+CosmosMongoDB.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+CosmosMongoDB.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 CosmosMongoDB.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CosmosMongoDB.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CosmosMongoDB.ANOMALO_CHECKS = RelationField("anomaloChecks")
 CosmosMongoDB.APPLICATION = RelationField("application")
 CosmosMongoDB.APPLICATION_FIELD = RelationField("applicationField")
 CosmosMongoDB.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-CosmosMongoDB.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+CosmosMongoDB.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 CosmosMongoDB.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CosmosMongoDB.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 CosmosMongoDB.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -580,9 +524,7 @@ CosmosMongoDB.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttr
 CosmosMongoDB.METRICS = RelationField("metrics")
 CosmosMongoDB.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 CosmosMongoDB.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-CosmosMongoDB.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+CosmosMongoDB.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 CosmosMongoDB.MEANINGS = RelationField("meanings")
 CosmosMongoDB.MC_MONITORS = RelationField("mcMonitors")
 CosmosMongoDB.MC_INCIDENTS = RelationField("mcIncidents")

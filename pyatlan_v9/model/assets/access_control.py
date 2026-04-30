@@ -14,18 +14,11 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .access_control_related import RelatedAuthPolicy
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -47,11 +40,15 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .access_control_related import RelatedAuthPolicy
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AccessControl(Asset):
@@ -158,14 +155,10 @@ class AccessControl(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -180,9 +173,7 @@ class AccessControl(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -194,9 +185,7 @@ class AccessControl(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -204,6 +193,8 @@ class AccessControl(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AccessControl"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -256,7 +247,6 @@ class AccessControl(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AccessControlAttributes(AssetAttributes):
     """AccessControl-specific attributes for nested API format."""
 
@@ -293,7 +283,6 @@ class AccessControlAttributes(AssetAttributes):
     is_access_control_enabled: Union[bool, None, UnsetType] = UNSET
     """TBC"""
 
-
 class AccessControlRelationshipAttributes(AssetRelationshipAttributes):
     """AccessControl-specific relationship attributes for nested API format."""
 
@@ -327,14 +316,10 @@ class AccessControlRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -349,9 +334,7 @@ class AccessControlRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -363,29 +346,19 @@ class AccessControlRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
 
-
 class AccessControlNested(AssetNested):
     """AccessControl in nested API format for high-performance serialization."""
 
     attributes: Union[AccessControlAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AccessControlRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        AccessControlRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AccessControlRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[AccessControlRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[AccessControlRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AccessControlRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -417,10 +390,7 @@ _ACCESS_CONTROL_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
-def _populate_access_control_attrs(
-    attrs: AccessControlAttributes, obj: AccessControl
-) -> None:
+def _populate_access_control_attrs(attrs: AccessControlAttributes, obj: AccessControl) -> None:
     """Populate AccessControl-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.channel_link = obj.channel_link
@@ -434,7 +404,6 @@ def _populate_access_control_attrs(
     attrs.deny_sidebar_tabs = obj.deny_sidebar_tabs
     attrs.display_preferences = obj.display_preferences
     attrs.is_access_control_enabled = obj.is_access_control_enabled
-
 
 def _extract_access_control_attrs(attrs: AccessControlAttributes) -> dict:
     """Extract all AccessControl attributes from the attrs struct into a flat dict."""
@@ -451,7 +420,6 @@ def _extract_access_control_attrs(attrs: AccessControlAttributes) -> dict:
     result["display_preferences"] = attrs.display_preferences
     result["is_access_control_enabled"] = attrs.is_access_control_enabled
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -492,21 +460,16 @@ def _access_control_to_nested(access_control: AccessControl) -> AccessControlNes
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _access_control_from_nested(nested: AccessControlNested) -> AccessControl:
     """Convert nested format to flat AccessControl."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else AccessControlAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AccessControlAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _ACCESS_CONTROL_REL_FIELDS,
-        AccessControlRelationshipAttributes,
+        AccessControlRelationshipAttributes
     )
     return AccessControl(
         guid=nested.guid,
@@ -533,10 +496,7 @@ def _access_control_from_nested(nested: AccessControlNested) -> AccessControl:
         **merged_rels,
     )
 
-
-def _access_control_to_nested_bytes(
-    access_control: AccessControl, serde: Serde
-) -> bytes:
+def _access_control_to_nested_bytes(access_control: AccessControl, serde: Serde) -> bytes:
     """Convert flat AccessControl to nested JSON bytes."""
     return serde.encode(_access_control_to_nested(access_control))
 
@@ -545,7 +505,6 @@ def _access_control_from_nested_bytes(data: bytes, serde: Serde) -> AccessContro
     """Convert nested JSON bytes to flat AccessControl."""
     nested = serde.decode(data, AccessControlNested)
     return _access_control_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -557,44 +516,28 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 AccessControl.CHANNEL_LINK = KeywordField("channelLink", "channelLink")
-AccessControl.DEFAULT_NAVIGATION = KeywordField(
-    "defaultNavigation", "defaultNavigation"
-)
+AccessControl.DEFAULT_NAVIGATION = KeywordField("defaultNavigation", "defaultNavigation")
 AccessControl.DENY_ASSET_FILTERS = KeywordField("denyAssetFilters", "denyAssetFilters")
-AccessControl.DENY_ASSET_METADATA_TYPES = KeywordField(
-    "denyAssetMetadataTypes", "denyAssetMetadataTypes"
-)
+AccessControl.DENY_ASSET_METADATA_TYPES = KeywordField("denyAssetMetadataTypes", "denyAssetMetadataTypes")
 AccessControl.DENY_ASSET_TABS = KeywordField("denyAssetTabs", "denyAssetTabs")
 AccessControl.DENY_ASSET_TYPES = KeywordField("denyAssetTypes", "denyAssetTypes")
-AccessControl.DENY_CUSTOM_METADATA_GUIDS = KeywordField(
-    "denyCustomMetadataGuids", "denyCustomMetadataGuids"
-)
-AccessControl.DENY_NAVIGATION_PAGES = KeywordField(
-    "denyNavigationPages", "denyNavigationPages"
-)
+AccessControl.DENY_CUSTOM_METADATA_GUIDS = KeywordField("denyCustomMetadataGuids", "denyCustomMetadataGuids")
+AccessControl.DENY_NAVIGATION_PAGES = KeywordField("denyNavigationPages", "denyNavigationPages")
 AccessControl.DENY_SIDEBAR_TABS = KeywordField("denySidebarTabs", "denySidebarTabs")
-AccessControl.DISPLAY_PREFERENCES = KeywordField(
-    "displayPreferences", "displayPreferences"
-)
-AccessControl.IS_ACCESS_CONTROL_ENABLED = BooleanField(
-    "isAccessControlEnabled", "isAccessControlEnabled"
-)
+AccessControl.DISPLAY_PREFERENCES = KeywordField("displayPreferences", "displayPreferences")
+AccessControl.IS_ACCESS_CONTROL_ENABLED = BooleanField("isAccessControlEnabled", "isAccessControlEnabled")
 AccessControl.POLICIES = RelationField("policies")
 AccessControl.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AccessControl.APPLICATION = RelationField("application")
 AccessControl.APPLICATION_FIELD = RelationField("applicationField")
 AccessControl.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AccessControl.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+AccessControl.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 AccessControl.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AccessControl.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AccessControl.METRICS = RelationField("metrics")
 AccessControl.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AccessControl.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AccessControl.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+AccessControl.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 AccessControl.MEANINGS = RelationField("meanings")
 AccessControl.MC_MONITORS = RelationField("mcMonitors")
 AccessControl.MC_INCIDENTS = RelationField("mcIncidents")

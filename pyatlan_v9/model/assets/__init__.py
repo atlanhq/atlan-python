@@ -72,9 +72,7 @@ def _build_lazy_index() -> dict[str, str]:
                     if isinstance(target, ast.Name) and target.id == "__all__":
                         if isinstance(node.value, (ast.List, ast.Tuple)):
                             for elt in node.value.elts:
-                                if isinstance(elt, ast.Constant) and isinstance(
-                                    elt.value, str
-                                ):
+                                if isinstance(elt, ast.Constant) and isinstance(elt.value, str):
                                     index[elt.value] = module_info.name
     return index
 

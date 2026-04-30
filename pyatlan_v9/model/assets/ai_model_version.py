@@ -15,19 +15,11 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-
-from .ai_related import RelatedAIModel
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -54,11 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .ai_related import RelatedAIModel
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class AIModelVersion(Asset):
@@ -121,39 +117,25 @@ class AIModelVersion(Asset):
     ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
     """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
 
-    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIPrivacyConfig"
-    )
+    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIFairnessConfig"
-    )
+    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIBiasMitigationConfig"
-    )
+    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
-    )
+    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAITransparencyConfig"
-    )
+    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIAccountabilityConfig"
-    )
+    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
-    )
+    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -192,9 +174,7 @@ class AIModelVersion(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -203,14 +183,10 @@ class AIModelVersion(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -237,9 +213,7 @@ class AIModelVersion(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -251,9 +225,7 @@ class AIModelVersion(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -272,7 +244,10 @@ class AIModelVersion(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -325,7 +300,6 @@ class AIModelVersion(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class AIModelVersionAttributes(AssetAttributes):
     """AIModelVersion-specific attributes for nested API format."""
 
@@ -338,44 +312,29 @@ class AIModelVersionAttributes(AssetAttributes):
     ai_model_version_metrics: Union[Dict[str, str], None, UnsetType] = UNSET
     """Evaluation and performance metrics recorded for this AI model version, stored as key-value pairs (e.g. accuracy, F1 score, precision, recall)."""
 
-    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIPrivacyConfig"
-    )
+    ethical_ai_privacy_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIPrivacyConfig")
     """Privacy configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIFairnessConfig"
-    )
+    ethical_ai_fairness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIFairnessConfig")
     """Fairness configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIBiasMitigationConfig"
-    )
+    ethical_ai_bias_mitigation_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIBiasMitigationConfig")
     """Bias mitigation configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
-    )
+    ethical_ai_reliability_and_safety_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIReliabilityAndSafetyConfig")
     """Reliability and safety configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAITransparencyConfig"
-    )
+    ethical_ai_transparency_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAITransparencyConfig")
     """Transparency configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="ethicalAIAccountabilityConfig"
-    )
+    ethical_ai_accountability_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIAccountabilityConfig")
     """Accountability configuration for ensuring the ethical use of an AI asset"""
 
-    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
-    )
+    ethical_ai_environmental_consciousness_config: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="ethicalAIEnvironmentalConsciousnessConfig")
     """Environmental consciousness configuration for ensuring the ethical use of an AI asset"""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     """AIModelVersion-specific relationship attributes for nested API format."""
@@ -413,9 +372,7 @@ class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -424,14 +381,10 @@ class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -458,9 +411,7 @@ class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -472,9 +423,7 @@ class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -486,21 +435,13 @@ class AIModelVersionRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class AIModelVersionNested(AssetNested):
     """AIModelVersion in nested API format for high-performance serialization."""
 
     attributes: Union[AIModelVersionAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[AIModelVersionRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    append_relationship_attributes: Union[
-        AIModelVersionRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        AIModelVersionRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[AIModelVersionRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[AIModelVersionRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[AIModelVersionRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -542,10 +483,7 @@ _AI_MODEL_VERSION_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_ai_model_version_attrs(
-    attrs: AIModelVersionAttributes, obj: AIModelVersion
-) -> None:
+def _populate_ai_model_version_attrs(attrs: AIModelVersionAttributes, obj: AIModelVersion) -> None:
     """Populate AIModelVersion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.ai_model_qualified_name = obj.ai_model_qualified_name
@@ -554,16 +492,11 @@ def _populate_ai_model_version_attrs(
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
     attrs.ethical_ai_bias_mitigation_config = obj.ethical_ai_bias_mitigation_config
-    attrs.ethical_ai_reliability_and_safety_config = (
-        obj.ethical_ai_reliability_and_safety_config
-    )
+    attrs.ethical_ai_reliability_and_safety_config = obj.ethical_ai_reliability_and_safety_config
     attrs.ethical_ai_transparency_config = obj.ethical_ai_transparency_config
     attrs.ethical_ai_accountability_config = obj.ethical_ai_accountability_config
-    attrs.ethical_ai_environmental_consciousness_config = (
-        obj.ethical_ai_environmental_consciousness_config
-    )
+    attrs.ethical_ai_environmental_consciousness_config = obj.ethical_ai_environmental_consciousness_config
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_ai_model_version_attrs(attrs: AIModelVersionAttributes) -> dict:
     """Extract all AIModelVersion attributes from the attrs struct into a flat dict."""
@@ -573,37 +506,26 @@ def _extract_ai_model_version_attrs(attrs: AIModelVersionAttributes) -> dict:
     result["ai_model_version_metrics"] = attrs.ai_model_version_metrics
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
-    result["ethical_ai_bias_mitigation_config"] = (
-        attrs.ethical_ai_bias_mitigation_config
-    )
-    result["ethical_ai_reliability_and_safety_config"] = (
-        attrs.ethical_ai_reliability_and_safety_config
-    )
+    result["ethical_ai_bias_mitigation_config"] = attrs.ethical_ai_bias_mitigation_config
+    result["ethical_ai_reliability_and_safety_config"] = attrs.ethical_ai_reliability_and_safety_config
     result["ethical_ai_transparency_config"] = attrs.ethical_ai_transparency_config
     result["ethical_ai_accountability_config"] = attrs.ethical_ai_accountability_config
-    result["ethical_ai_environmental_consciousness_config"] = (
-        attrs.ethical_ai_environmental_consciousness_config
-    )
+    result["ethical_ai_environmental_consciousness_config"] = attrs.ethical_ai_environmental_consciousness_config
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _ai_model_version_to_nested(
-    ai_model_version: AIModelVersion,
-) -> AIModelVersionNested:
+def _ai_model_version_to_nested(ai_model_version: AIModelVersion) -> AIModelVersionNested:
     """Convert flat AIModelVersion to nested format."""
     attrs = AIModelVersionAttributes()
     _populate_ai_model_version_attrs(attrs, ai_model_version)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        ai_model_version,
-        _AI_MODEL_VERSION_REL_FIELDS,
-        AIModelVersionRelationshipAttributes,
+        ai_model_version, _AI_MODEL_VERSION_REL_FIELDS, AIModelVersionRelationshipAttributes
     )
     return AIModelVersionNested(
         guid=ai_model_version.guid,
@@ -631,21 +553,16 @@ def _ai_model_version_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _ai_model_version_from_nested(nested: AIModelVersionNested) -> AIModelVersion:
     """Convert nested format to flat AIModelVersion."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else AIModelVersionAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else AIModelVersionAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _AI_MODEL_VERSION_REL_FIELDS,
-        AIModelVersionRelationshipAttributes,
+        AIModelVersionRelationshipAttributes
     )
     return AIModelVersion(
         guid=nested.guid,
@@ -672,10 +589,7 @@ def _ai_model_version_from_nested(nested: AIModelVersionNested) -> AIModelVersio
         **merged_rels,
     )
 
-
-def _ai_model_version_to_nested_bytes(
-    ai_model_version: AIModelVersion, serde: Serde
-) -> bytes:
+def _ai_model_version_to_nested_bytes(ai_model_version: AIModelVersion, serde: Serde) -> bytes:
     """Convert flat AIModelVersion to nested JSON bytes."""
     return serde.encode(_ai_model_version_to_nested(ai_model_version))
 
@@ -685,46 +599,25 @@ def _ai_model_version_from_nested_bytes(data: bytes, serde: Serde) -> AIModelVer
     nested = serde.decode(data, AIModelVersionNested)
     return _ai_model_version_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    RelationField,
+)
 
-AIModelVersion.AI_MODEL_QUALIFIED_NAME = KeywordField(
-    "aiModelQualifiedName", "aiModelQualifiedName"
-)
-AIModelVersion.AI_MODEL_VERSION_STAGE = KeywordField(
-    "aiModelVersionStage", "aiModelVersionStage"
-)
-AIModelVersion.AI_MODEL_VERSION_METRICS = KeywordField(
-    "aiModelVersionMetrics", "aiModelVersionMetrics"
-)
-AIModelVersion.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
-    "ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig"
-)
-AIModelVersion.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField(
-    "ethicalAIFairnessConfig", "ethicalAIFairnessConfig"
-)
-AIModelVersion.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField(
-    "ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig"
-)
-AIModelVersion.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField(
-    "ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig"
-)
-AIModelVersion.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField(
-    "ethicalAITransparencyConfig", "ethicalAITransparencyConfig"
-)
-AIModelVersion.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField(
-    "ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig"
-)
-AIModelVersion.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField(
-    "ethicalAIEnvironmentalConsciousnessConfig",
-    "ethicalAIEnvironmentalConsciousnessConfig",
-)
-AIModelVersion.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+AIModelVersion.AI_MODEL_QUALIFIED_NAME = KeywordField("aiModelQualifiedName", "aiModelQualifiedName")
+AIModelVersion.AI_MODEL_VERSION_STAGE = KeywordField("aiModelVersionStage", "aiModelVersionStage")
+AIModelVersion.AI_MODEL_VERSION_METRICS = KeywordField("aiModelVersionMetrics", "aiModelVersionMetrics")
+AIModelVersion.ETHICAL_AI_PRIVACY_CONFIG = KeywordField("ethicalAIPrivacyConfig", "ethicalAIPrivacyConfig")
+AIModelVersion.ETHICAL_AI_FAIRNESS_CONFIG = KeywordField("ethicalAIFairnessConfig", "ethicalAIFairnessConfig")
+AIModelVersion.ETHICAL_AI_BIAS_MITIGATION_CONFIG = KeywordField("ethicalAIBiasMitigationConfig", "ethicalAIBiasMitigationConfig")
+AIModelVersion.ETHICAL_AI_RELIABILITY_AND_SAFETY_CONFIG = KeywordField("ethicalAIReliabilityAndSafetyConfig", "ethicalAIReliabilityAndSafetyConfig")
+AIModelVersion.ETHICAL_AI_TRANSPARENCY_CONFIG = KeywordField("ethicalAITransparencyConfig", "ethicalAITransparencyConfig")
+AIModelVersion.ETHICAL_AI_ACCOUNTABILITY_CONFIG = KeywordField("ethicalAIAccountabilityConfig", "ethicalAIAccountabilityConfig")
+AIModelVersion.ETHICAL_AI_ENVIRONMENTAL_CONSCIOUSNESS_CONFIG = KeywordField("ethicalAIEnvironmentalConsciousnessConfig", "ethicalAIEnvironmentalConsciousnessConfig")
+AIModelVersion.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 AIModelVersion.AI_MODEL = RelationField("aiModel")
 AIModelVersion.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 AIModelVersion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
@@ -732,21 +625,15 @@ AIModelVersion.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AIModelVersion.APPLICATION = RelationField("application")
 AIModelVersion.APPLICATION_FIELD = RelationField("applicationField")
 AIModelVersion.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-AIModelVersion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+AIModelVersion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 AIModelVersion.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 AIModelVersion.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 AIModelVersion.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-AIModelVersion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+AIModelVersion.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 AIModelVersion.METRICS = RelationField("metrics")
 AIModelVersion.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 AIModelVersion.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-AIModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+AIModelVersion.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 AIModelVersion.MEANINGS = RelationField("meanings")
 AIModelVersion.MC_MONITORS = RelationField("mcMonitors")
 AIModelVersion.MC_INCIDENTS = RelationField("mcIncidents")

@@ -14,18 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -53,12 +45,16 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
 from .superset_related import RelatedSupersetChart, RelatedSupersetDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class SupersetDashboard(Asset):
@@ -114,9 +110,7 @@ class SupersetDashboard(Asset):
     superset_dashboard_changed_by_name: Union[str, None, UnsetType] = UNSET
     """Name of the user who changed the dashboard."""
 
-    superset_dashboard_changed_by_url: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="supersetDashboardChangedByURL"
-    )
+    superset_dashboard_changed_by_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="supersetDashboardChangedByURL")
     """URL of the user profile that changed the dashboard"""
 
     superset_dashboard_is_managed_externally: Union[bool, None, UnsetType] = UNSET
@@ -125,9 +119,7 @@ class SupersetDashboard(Asset):
     superset_dashboard_is_published: Union[bool, None, UnsetType] = UNSET
     """Whether the dashboard is published (true) or not (false)."""
 
-    superset_dashboard_thumbnail_url: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="supersetDashboardThumbnailURL"
-    )
+    superset_dashboard_thumbnail_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="supersetDashboardThumbnailURL")
     """URL for the dashboard thumbnail image in superset."""
 
     superset_dashboard_chart_count: Union[int, None, UnsetType] = UNSET
@@ -172,9 +164,7 @@ class SupersetDashboard(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -183,14 +173,10 @@ class SupersetDashboard(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -217,9 +203,7 @@ class SupersetDashboard(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -231,9 +215,7 @@ class SupersetDashboard(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -253,6 +235,8 @@ class SupersetDashboard(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SupersetDashboard"
+
+
 
     @classmethod
     @init_guid
@@ -313,9 +297,7 @@ class SupersetDashboard(Asset):
         return _superset_dashboard_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> SupersetDashboard:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SupersetDashboard:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -337,16 +319,13 @@ class SupersetDashboard(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class SupersetDashboardAttributes(AssetAttributes):
     """SupersetDashboard-specific attributes for nested API format."""
 
     superset_dashboard_changed_by_name: Union[str, None, UnsetType] = UNSET
     """Name of the user who changed the dashboard."""
 
-    superset_dashboard_changed_by_url: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="supersetDashboardChangedByURL"
-    )
+    superset_dashboard_changed_by_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="supersetDashboardChangedByURL")
     """URL of the user profile that changed the dashboard"""
 
     superset_dashboard_is_managed_externally: Union[bool, None, UnsetType] = UNSET
@@ -355,9 +334,7 @@ class SupersetDashboardAttributes(AssetAttributes):
     superset_dashboard_is_published: Union[bool, None, UnsetType] = UNSET
     """Whether the dashboard is published (true) or not (false)."""
 
-    superset_dashboard_thumbnail_url: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="supersetDashboardThumbnailURL"
-    )
+    superset_dashboard_thumbnail_url: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="supersetDashboardThumbnailURL")
     """URL for the dashboard thumbnail image in superset."""
 
     superset_dashboard_chart_count: Union[int, None, UnsetType] = UNSET
@@ -371,7 +348,6 @@ class SupersetDashboardAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class SupersetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     """SupersetDashboard-specific relationship attributes for nested API format."""
@@ -406,9 +382,7 @@ class SupersetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -417,14 +391,10 @@ class SupersetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -451,9 +421,7 @@ class SupersetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -465,9 +433,7 @@ class SupersetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -485,21 +451,13 @@ class SupersetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     superset_datasets: Union[List[RelatedSupersetDataset], None, UnsetType] = UNSET
     """SupersetDatasets assets contained within this SupersetDashboard."""
 
-
 class SupersetDashboardNested(AssetNested):
     """SupersetDashboard in nested API format for high-performance serialization."""
 
     attributes: Union[SupersetDashboardAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        SupersetDashboardRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        SupersetDashboardRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        SupersetDashboardRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[SupersetDashboardRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SupersetDashboardRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[SupersetDashboardRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -542,17 +500,12 @@ _SUPERSET_DASHBOARD_REL_FIELDS: List[str] = [
     "superset_datasets",
 ]
 
-
-def _populate_superset_dashboard_attrs(
-    attrs: SupersetDashboardAttributes, obj: SupersetDashboard
-) -> None:
+def _populate_superset_dashboard_attrs(attrs: SupersetDashboardAttributes, obj: SupersetDashboard) -> None:
     """Populate SupersetDashboard-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.superset_dashboard_changed_by_name = obj.superset_dashboard_changed_by_name
     attrs.superset_dashboard_changed_by_url = obj.superset_dashboard_changed_by_url
-    attrs.superset_dashboard_is_managed_externally = (
-        obj.superset_dashboard_is_managed_externally
-    )
+    attrs.superset_dashboard_is_managed_externally = obj.superset_dashboard_is_managed_externally
     attrs.superset_dashboard_is_published = obj.superset_dashboard_is_published
     attrs.superset_dashboard_thumbnail_url = obj.superset_dashboard_thumbnail_url
     attrs.superset_dashboard_chart_count = obj.superset_dashboard_chart_count
@@ -560,46 +513,32 @@ def _populate_superset_dashboard_attrs(
     attrs.superset_dashboard_qualified_name = obj.superset_dashboard_qualified_name
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
 def _extract_superset_dashboard_attrs(attrs: SupersetDashboardAttributes) -> dict:
     """Extract all SupersetDashboard attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["superset_dashboard_changed_by_name"] = (
-        attrs.superset_dashboard_changed_by_name
-    )
-    result["superset_dashboard_changed_by_url"] = (
-        attrs.superset_dashboard_changed_by_url
-    )
-    result["superset_dashboard_is_managed_externally"] = (
-        attrs.superset_dashboard_is_managed_externally
-    )
+    result["superset_dashboard_changed_by_name"] = attrs.superset_dashboard_changed_by_name
+    result["superset_dashboard_changed_by_url"] = attrs.superset_dashboard_changed_by_url
+    result["superset_dashboard_is_managed_externally"] = attrs.superset_dashboard_is_managed_externally
     result["superset_dashboard_is_published"] = attrs.superset_dashboard_is_published
     result["superset_dashboard_thumbnail_url"] = attrs.superset_dashboard_thumbnail_url
     result["superset_dashboard_chart_count"] = attrs.superset_dashboard_chart_count
     result["superset_dashboard_id"] = attrs.superset_dashboard_id
-    result["superset_dashboard_qualified_name"] = (
-        attrs.superset_dashboard_qualified_name
-    )
+    result["superset_dashboard_qualified_name"] = attrs.superset_dashboard_qualified_name
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _superset_dashboard_to_nested(
-    superset_dashboard: SupersetDashboard,
-) -> SupersetDashboardNested:
+def _superset_dashboard_to_nested(superset_dashboard: SupersetDashboard) -> SupersetDashboardNested:
     """Convert flat SupersetDashboard to nested format."""
     attrs = SupersetDashboardAttributes()
     _populate_superset_dashboard_attrs(attrs, superset_dashboard)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        superset_dashboard,
-        _SUPERSET_DASHBOARD_REL_FIELDS,
-        SupersetDashboardRelationshipAttributes,
+        superset_dashboard, _SUPERSET_DASHBOARD_REL_FIELDS, SupersetDashboardRelationshipAttributes
     )
     return SupersetDashboardNested(
         guid=superset_dashboard.guid,
@@ -627,23 +566,16 @@ def _superset_dashboard_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _superset_dashboard_from_nested(
-    nested: SupersetDashboardNested,
-) -> SupersetDashboard:
+def _superset_dashboard_from_nested(nested: SupersetDashboardNested) -> SupersetDashboard:
     """Convert nested format to flat SupersetDashboard."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else SupersetDashboardAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else SupersetDashboardAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _SUPERSET_DASHBOARD_REL_FIELDS,
-        SupersetDashboardRelationshipAttributes,
+        SupersetDashboardRelationshipAttributes
     )
     return SupersetDashboard(
         guid=nested.guid,
@@ -670,21 +602,15 @@ def _superset_dashboard_from_nested(
         **merged_rels,
     )
 
-
-def _superset_dashboard_to_nested_bytes(
-    superset_dashboard: SupersetDashboard, serde: Serde
-) -> bytes:
+def _superset_dashboard_to_nested_bytes(superset_dashboard: SupersetDashboard, serde: Serde) -> bytes:
     """Convert flat SupersetDashboard to nested JSON bytes."""
     return serde.encode(_superset_dashboard_to_nested(superset_dashboard))
 
 
-def _superset_dashboard_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> SupersetDashboard:
+def _superset_dashboard_from_nested_bytes(data: bytes, serde: Serde) -> SupersetDashboard:
     """Convert nested JSON bytes to flat SupersetDashboard."""
     nested = serde.decode(data, SupersetDashboardNested)
     return _superset_dashboard_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -697,56 +623,30 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SupersetDashboard.SUPERSET_DASHBOARD_CHANGED_BY_NAME = KeywordField(
-    "supersetDashboardChangedByName", "supersetDashboardChangedByName"
-)
-SupersetDashboard.SUPERSET_DASHBOARD_CHANGED_BY_URL = KeywordField(
-    "supersetDashboardChangedByURL", "supersetDashboardChangedByURL"
-)
-SupersetDashboard.SUPERSET_DASHBOARD_IS_MANAGED_EXTERNALLY = BooleanField(
-    "supersetDashboardIsManagedExternally", "supersetDashboardIsManagedExternally"
-)
-SupersetDashboard.SUPERSET_DASHBOARD_IS_PUBLISHED = BooleanField(
-    "supersetDashboardIsPublished", "supersetDashboardIsPublished"
-)
-SupersetDashboard.SUPERSET_DASHBOARD_THUMBNAIL_URL = KeywordField(
-    "supersetDashboardThumbnailURL", "supersetDashboardThumbnailURL"
-)
-SupersetDashboard.SUPERSET_DASHBOARD_CHART_COUNT = NumericField(
-    "supersetDashboardChartCount", "supersetDashboardChartCount"
-)
-SupersetDashboard.SUPERSET_DASHBOARD_ID = NumericField(
-    "supersetDashboardId", "supersetDashboardId"
-)
-SupersetDashboard.SUPERSET_DASHBOARD_QUALIFIED_NAME = KeywordTextField(
-    "supersetDashboardQualifiedName",
-    "supersetDashboardQualifiedName",
-    "supersetDashboardQualifiedName.text",
-)
-SupersetDashboard.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+SupersetDashboard.SUPERSET_DASHBOARD_CHANGED_BY_NAME = KeywordField("supersetDashboardChangedByName", "supersetDashboardChangedByName")
+SupersetDashboard.SUPERSET_DASHBOARD_CHANGED_BY_URL = KeywordField("supersetDashboardChangedByURL", "supersetDashboardChangedByURL")
+SupersetDashboard.SUPERSET_DASHBOARD_IS_MANAGED_EXTERNALLY = BooleanField("supersetDashboardIsManagedExternally", "supersetDashboardIsManagedExternally")
+SupersetDashboard.SUPERSET_DASHBOARD_IS_PUBLISHED = BooleanField("supersetDashboardIsPublished", "supersetDashboardIsPublished")
+SupersetDashboard.SUPERSET_DASHBOARD_THUMBNAIL_URL = KeywordField("supersetDashboardThumbnailURL", "supersetDashboardThumbnailURL")
+SupersetDashboard.SUPERSET_DASHBOARD_CHART_COUNT = NumericField("supersetDashboardChartCount", "supersetDashboardChartCount")
+SupersetDashboard.SUPERSET_DASHBOARD_ID = NumericField("supersetDashboardId", "supersetDashboardId")
+SupersetDashboard.SUPERSET_DASHBOARD_QUALIFIED_NAME = KeywordTextField("supersetDashboardQualifiedName", "supersetDashboardQualifiedName", "supersetDashboardQualifiedName.text")
+SupersetDashboard.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 SupersetDashboard.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 SupersetDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SupersetDashboard.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SupersetDashboard.APPLICATION = RelationField("application")
 SupersetDashboard.APPLICATION_FIELD = RelationField("applicationField")
 SupersetDashboard.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-SupersetDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+SupersetDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 SupersetDashboard.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 SupersetDashboard.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 SupersetDashboard.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-SupersetDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+SupersetDashboard.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 SupersetDashboard.METRICS = RelationField("metrics")
 SupersetDashboard.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 SupersetDashboard.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-SupersetDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+SupersetDashboard.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 SupersetDashboard.MEANINGS = RelationField("meanings")
 SupersetDashboard.MC_MONITORS = RelationField("mcMonitors")
 SupersetDashboard.MC_INCIDENTS = RelationField("mcIncidents")

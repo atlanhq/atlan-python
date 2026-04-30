@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
@@ -40,7 +40,6 @@ class RelatedSqlInsight(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SqlInsight"
-
 
 class RelatedSqlInsightJoin(RelatedSqlInsight):
     """
@@ -86,7 +85,6 @@ class RelatedSqlInsightJoin(RelatedSqlInsight):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SqlInsightJoin"
 
-
 class RelatedSqlInsightFilter(RelatedSqlInsight):
     """
     Related entity reference for SqlInsightFilter assets.
@@ -109,9 +107,7 @@ class RelatedSqlInsightFilter(RelatedSqlInsight):
     sql_insight_operator: Union[str, None, UnsetType] = UNSET
     """SQL operator observed on this column, such as =, !=, IN, LIKE."""
 
-    sql_insight_predicate_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlInsightPredicateSQL"
-    )
+    sql_insight_predicate_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlInsightPredicateSQL")
     """SQL predicate expression for this filter pattern."""
 
     sql_insight_when_to_use: Union[str, None, UnsetType] = UNSET
@@ -133,7 +129,6 @@ class RelatedSqlInsightFilter(RelatedSqlInsight):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SqlInsightFilter"
 
-
 class RelatedSqlInsightBusinessQuestion(RelatedSqlInsight):
     """
     Related entity reference for SqlInsightBusinessQuestion assets.
@@ -147,9 +142,7 @@ class RelatedSqlInsightBusinessQuestion(RelatedSqlInsight):
     sql_insight_text: Union[str, None, UnsetType] = UNSET
     """Natural language text of the business question."""
 
-    sql_insight_canonical_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlInsightCanonicalSQL"
-    )
+    sql_insight_canonical_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlInsightCanonicalSQL")
     """Canonical SQL query that answers this business question."""
 
     sql_insight_query_count: Union[int, None, UnsetType] = UNSET

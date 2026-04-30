@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -46,11 +40,13 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Task(Asset):
@@ -165,14 +161,10 @@ class Task(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -187,9 +179,7 @@ class Task(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -201,9 +191,7 @@ class Task(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -211,6 +199,8 @@ class Task(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Task"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -263,7 +253,6 @@ class Task(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class TaskAttributes(AssetAttributes):
     """Task-specific attributes for nested API format."""
 
@@ -309,7 +298,6 @@ class TaskAttributes(AssetAttributes):
     task_updated_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who updated this task."""
 
-
 class TaskRelationshipAttributes(AssetRelationshipAttributes):
     """Task-specific relationship attributes for nested API format."""
 
@@ -340,14 +328,10 @@ class TaskRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -362,9 +346,7 @@ class TaskRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -376,14 +358,11 @@ class TaskRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
-
 
 class TaskNested(AssetNested):
     """Task in nested API format for high-performance serialization."""
@@ -392,7 +371,6 @@ class TaskNested(AssetNested):
     relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
     append_relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
     remove_relationship_attributes: Union[TaskRelationshipAttributes, UnsetType] = UNSET
-
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -423,7 +401,6 @@ _TASK_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
 def _populate_task_attrs(attrs: TaskAttributes, obj: Task) -> None:
     """Populate Task-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -441,7 +418,6 @@ def _populate_task_attrs(attrs: TaskAttributes, obj: Task) -> None:
     attrs.task_integration_config = obj.task_integration_config
     attrs.task_created_by = obj.task_created_by
     attrs.task_updated_by = obj.task_updated_by
-
 
 def _extract_task_attrs(attrs: TaskAttributes) -> dict:
     """Extract all Task attributes from the attrs struct into a flat dict."""
@@ -461,7 +437,6 @@ def _extract_task_attrs(attrs: TaskAttributes) -> dict:
     result["task_created_by"] = attrs.task_created_by
     result["task_updated_by"] = attrs.task_updated_by
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -502,7 +477,6 @@ def _task_to_nested(task: Task) -> TaskNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _task_from_nested(nested: TaskNested) -> Task:
     """Convert nested format to flat Task."""
     attrs = nested.attributes if nested.attributes is not UNSET else TaskAttributes()
@@ -512,7 +486,7 @@ def _task_from_nested(nested: TaskNested) -> Task:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _TASK_REL_FIELDS,
-        TaskRelationshipAttributes,
+        TaskRelationshipAttributes
     )
     return Task(
         guid=nested.guid,
@@ -539,7 +513,6 @@ def _task_from_nested(nested: TaskNested) -> Task:
         **merged_rels,
     )
 
-
 def _task_to_nested_bytes(task: Task, serde: Serde) -> bytes:
     """Convert flat Task to nested JSON bytes."""
     return serde.encode(_task_to_nested(task))
@@ -549,7 +522,6 @@ def _task_from_nested_bytes(data: bytes, serde: Serde) -> Task:
     """Convert nested JSON bytes to flat Task."""
     nested = serde.decode(data, TaskNested)
     return _task_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -565,22 +537,14 @@ Task.TASK_RECIPIENT = KeywordField("taskRecipient", "taskRecipient")
 Task.TASK_TYPE = KeywordField("taskType", "taskType")
 Task.TASK_REQUESTOR = KeywordField("taskRequestor", "taskRequestor")
 Task.TASK_IS_READ = BooleanField("taskIsRead", "taskIsRead")
-Task.TASK_REQUESTOR_COMMENT = KeywordField(
-    "taskRequestorComment", "taskRequestorComment"
-)
-Task.TASK_RELATED_ASSET_GUID = KeywordField(
-    "taskRelatedAssetGuid", "taskRelatedAssetGuid"
-)
+Task.TASK_REQUESTOR_COMMENT = KeywordField("taskRequestorComment", "taskRequestorComment")
+Task.TASK_RELATED_ASSET_GUID = KeywordField("taskRelatedAssetGuid", "taskRelatedAssetGuid")
 Task.TASK_PROPOSALS = KeywordField("taskProposals", "taskProposals")
 Task.TASK_EXPIRES_AT = NumericField("taskExpiresAt", "taskExpiresAt")
 Task.TASK_ACTIONS = KeywordField("taskActions", "taskActions")
-Task.TASK_EXECUTION_COMMENT = KeywordField(
-    "taskExecutionComment", "taskExecutionComment"
-)
+Task.TASK_EXECUTION_COMMENT = KeywordField("taskExecutionComment", "taskExecutionComment")
 Task.TASK_EXECUTION_ACTION = KeywordField("taskExecutionAction", "taskExecutionAction")
-Task.TASK_INTEGRATION_CONFIG = KeywordField(
-    "taskIntegrationConfig", "taskIntegrationConfig"
-)
+Task.TASK_INTEGRATION_CONFIG = KeywordField("taskIntegrationConfig", "taskIntegrationConfig")
 Task.TASK_CREATED_BY = KeywordField("taskCreatedBy", "taskCreatedBy")
 Task.TASK_UPDATED_BY = KeywordField("taskUpdatedBy", "taskUpdatedBy")
 Task.ANOMALO_CHECKS = RelationField("anomaloChecks")
@@ -593,9 +557,7 @@ Task.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Task.METRICS = RelationField("metrics")
 Task.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Task.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Task.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Task.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Task.MEANINGS = RelationField("meanings")
 Task.MC_MONITORS = RelationField("mcMonitors")
 Task.MC_INCIDENTS = RelationField("mcIncidents")

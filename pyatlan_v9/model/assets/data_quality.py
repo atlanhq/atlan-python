@@ -14,16 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -39,7 +33,6 @@ from .asset import (
 )
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
-from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -51,11 +44,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DataQuality(Asset):
@@ -135,9 +132,7 @@ class DataQuality(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -146,14 +141,10 @@ class DataQuality(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -180,9 +171,7 @@ class DataQuality(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -194,9 +183,7 @@ class DataQuality(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -210,6 +197,8 @@ class DataQuality(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DataQuality"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -262,7 +251,6 @@ class DataQuality(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class DataQualityAttributes(AssetAttributes):
     """DataQuality-specific attributes for nested API format."""
 
@@ -271,7 +259,6 @@ class DataQualityAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class DataQualityRelationshipAttributes(AssetRelationshipAttributes):
     """DataQuality-specific relationship attributes for nested API format."""
@@ -306,9 +293,7 @@ class DataQualityRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -317,14 +302,10 @@ class DataQualityRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -351,9 +332,7 @@ class DataQualityRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -365,9 +344,7 @@ class DataQualityRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -379,19 +356,13 @@ class DataQualityRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DataQualityNested(AssetNested):
     """DataQuality in nested API format for high-performance serialization."""
 
     attributes: Union[DataQualityAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DataQualityRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[
-        DataQualityRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        DataQualityRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    append_relationship_attributes: Union[DataQualityRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DataQualityRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -432,15 +403,11 @@ _DATA_QUALITY_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_data_quality_attrs(
-    attrs: DataQualityAttributes, obj: DataQuality
-) -> None:
+def _populate_data_quality_attrs(attrs: DataQualityAttributes, obj: DataQuality) -> None:
     """Populate DataQuality-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_data_quality_attrs(attrs: DataQualityAttributes) -> dict:
     """Extract all DataQuality attributes from the attrs struct into a flat dict."""
@@ -448,7 +415,6 @@ def _extract_data_quality_attrs(attrs: DataQualityAttributes) -> dict:
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -489,19 +455,16 @@ def _data_quality_to_nested(data_quality: DataQuality) -> DataQualityNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _data_quality_from_nested(nested: DataQualityNested) -> DataQuality:
     """Convert nested format to flat DataQuality."""
-    attrs = (
-        nested.attributes if nested.attributes is not UNSET else DataQualityAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else DataQualityAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DATA_QUALITY_REL_FIELDS,
-        DataQualityRelationshipAttributes,
+        DataQualityRelationshipAttributes
     )
     return DataQuality(
         guid=nested.guid,
@@ -528,7 +491,6 @@ def _data_quality_from_nested(nested: DataQualityNested) -> DataQuality:
         **merged_rels,
     )
 
-
 def _data_quality_to_nested_bytes(data_quality: DataQuality, serde: Serde) -> bytes:
     """Convert flat DataQuality to nested JSON bytes."""
     return serde.encode(_data_quality_to_nested(data_quality))
@@ -539,7 +501,6 @@ def _data_quality_from_nested_bytes(data: bytes, serde: Serde) -> DataQuality:
     nested = serde.decode(data, DataQualityNested)
     return _data_quality_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -549,21 +510,15 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DataQuality.DQ_IS_PART_OF_CONTRACT = BooleanField(
-    "dqIsPartOfContract", "dqIsPartOfContract"
-)
-DataQuality.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+DataQuality.DQ_IS_PART_OF_CONTRACT = BooleanField("dqIsPartOfContract", "dqIsPartOfContract")
+DataQuality.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 DataQuality.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 DataQuality.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 DataQuality.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DataQuality.APPLICATION = RelationField("application")
 DataQuality.APPLICATION_FIELD = RelationField("applicationField")
 DataQuality.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-DataQuality.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+DataQuality.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DataQuality.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 DataQuality.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 DataQuality.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
@@ -571,9 +526,7 @@ DataQuality.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttrib
 DataQuality.METRICS = RelationField("metrics")
 DataQuality.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 DataQuality.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-DataQuality.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+DataQuality.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 DataQuality.MEANINGS = RelationField("meanings")
 DataQuality.MC_MONITORS = RelationField("mcMonitors")
 DataQuality.MC_INCIDENTS = RelationField("mcIncidents")

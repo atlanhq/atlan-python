@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,7 +34,6 @@ from .asset import (
 from .asset_related import RelatedAsset
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
-from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -54,11 +46,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedColumn
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Metric(Asset):
@@ -112,9 +108,7 @@ class Metric(Asset):
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
-    metric_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="metricSQL"
-    )
+    metric_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="metricSQL")
     """SQL query used to compute the metric."""
 
     metric_filters: Union[str, None, UnsetType] = UNSET
@@ -159,9 +153,7 @@ class Metric(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
@@ -179,14 +171,10 @@ class Metric(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -213,9 +201,7 @@ class Metric(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -227,9 +213,7 @@ class Metric(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -243,6 +227,8 @@ class Metric(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Metric"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -295,16 +281,13 @@ class Metric(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class MetricAttributes(AssetAttributes):
     """Metric-specific attributes for nested API format."""
 
     metric_type: Union[str, None, UnsetType] = UNSET
     """Type of the metric."""
 
-    metric_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="metricSQL"
-    )
+    metric_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="metricSQL")
     """SQL query used to compute the metric."""
 
     metric_filters: Union[str, None, UnsetType] = UNSET
@@ -318,7 +301,6 @@ class MetricAttributes(AssetAttributes):
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
-
 
 class MetricRelationshipAttributes(AssetRelationshipAttributes):
     """Metric-specific relationship attributes for nested API format."""
@@ -353,9 +335,7 @@ class MetricRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
@@ -373,14 +353,10 @@ class MetricRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -407,9 +383,7 @@ class MetricRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -421,9 +395,7 @@ class MetricRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -435,19 +407,13 @@ class MetricRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class MetricNested(AssetNested):
     """Metric in nested API format for high-performance serialization."""
 
     attributes: Union[MetricAttributes, UnsetType] = UNSET
     relationship_attributes: Union[MetricRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[MetricRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[MetricRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[MetricRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[MetricRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -491,7 +457,6 @@ _METRIC_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_metric_attrs(attrs: MetricAttributes, obj: Metric) -> None:
     """Populate Metric-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -501,7 +466,6 @@ def _populate_metric_attrs(attrs: MetricAttributes, obj: Metric) -> None:
     attrs.metric_time_grains = obj.metric_time_grains
     attrs.dq_is_part_of_contract = obj.dq_is_part_of_contract
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_metric_attrs(attrs: MetricAttributes) -> dict:
     """Extract all Metric attributes from the attrs struct into a flat dict."""
@@ -513,7 +477,6 @@ def _extract_metric_attrs(attrs: MetricAttributes) -> dict:
     result["dq_is_part_of_contract"] = attrs.dq_is_part_of_contract
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -554,7 +517,6 @@ def _metric_to_nested(metric: Metric) -> MetricNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _metric_from_nested(nested: MetricNested) -> Metric:
     """Convert nested format to flat Metric."""
     attrs = nested.attributes if nested.attributes is not UNSET else MetricAttributes()
@@ -564,7 +526,7 @@ def _metric_from_nested(nested: MetricNested) -> Metric:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _METRIC_REL_FIELDS,
-        MetricRelationshipAttributes,
+        MetricRelationshipAttributes
     )
     return Metric(
         guid=nested.guid,
@@ -591,7 +553,6 @@ def _metric_from_nested(nested: MetricNested) -> Metric:
         **merged_rels,
     )
 
-
 def _metric_to_nested_bytes(metric: Metric, serde: Serde) -> bytes:
     """Convert flat Metric to nested JSON bytes."""
     return serde.encode(_metric_to_nested(metric))
@@ -601,7 +562,6 @@ def _metric_from_nested_bytes(data: bytes, serde: Serde) -> Metric:
     """Convert nested JSON bytes to flat Metric."""
     nested = serde.decode(data, MetricNested)
     return _metric_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -635,9 +595,7 @@ Metric.METRIC_TIMESTAMP_COLUMN = RelationField("metricTimestampColumn")
 Metric.METRIC_DIMENSION_COLUMNS = RelationField("metricDimensionColumns")
 Metric.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Metric.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Metric.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Metric.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Metric.MEANINGS = RelationField("meanings")
 Metric.MC_MONITORS = RelationField("mcMonitors")
 Metric.MC_INCIDENTS = RelationField("mcIncidents")

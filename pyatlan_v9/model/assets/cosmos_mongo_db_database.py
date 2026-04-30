@@ -15,17 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -39,19 +32,10 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cosmos_mongo_db_related import (
-    RelatedCosmosMongoDBAccount,
-    RelatedCosmosMongoDBCollection,
-)
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import (
-    RelatedDbtModel,
-    RelatedDbtSeed,
-    RelatedDbtSource,
-    RelatedDbtTest,
-)
+from .dbt_related import RelatedDbtModel, RelatedDbtSeed, RelatedDbtSource, RelatedDbtTest
 from .fabric_related import RelatedFabricWorkspace
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -66,16 +50,17 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import RelatedSnowflakeSemanticLogicalTable
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import (
-    RelatedSqlInsightBusinessQuestion,
-    RelatedSqlInsightJoin,
-)
+from .sql_insight_related import RelatedSqlInsightBusinessQuestion, RelatedSqlInsightJoin
 from .sql_related import RelatedSchema
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .cosmos_mongo_db_related import RelatedCosmosMongoDBAccount, RelatedCosmosMongoDBCollection
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class CosmosMongoDBDatabase(Asset):
@@ -161,22 +146,16 @@ class CosmosMongoDBDatabase(Asset):
 
     type_name: Union[str, UnsetType] = "CosmosMongoDBDatabase"
 
-    cosmos_mongo_db_account_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountQualifiedName"
-    )
+    cosmos_mongo_db_account_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBAccountQualifiedName")
     """Unique name of the account in which this database exists."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-    mongo_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBDatabaseCollectionCount"
-    )
+    mongo_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBDatabaseCollectionCount")
     """Number of collections in the database."""
 
     schema_count: Union[int, None, UnsetType] = UNSET
@@ -230,9 +209,7 @@ class CosmosMongoDBDatabase(Asset):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -271,14 +248,10 @@ class CosmosMongoDBDatabase(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_account: Union[RelatedCosmosMongoDBAccount, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="cosmosMongoDBAccount")
-    )
+    cosmos_mongo_db_account: Union[RelatedCosmosMongoDBAccount, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBAccount")
     """Account in which the database exists."""
 
-    cosmos_mongo_db_collections: Union[
-        List[RelatedCosmosMongoDBCollection], None, UnsetType
-    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollections")
+    cosmos_mongo_db_collections: Union[List[RelatedCosmosMongoDBCollection], None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBCollections")
     """Collections that exist within this database."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
@@ -296,9 +269,7 @@ class CosmosMongoDBDatabase(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -307,9 +278,7 @@ class CosmosMongoDBDatabase(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -324,9 +293,7 @@ class CosmosMongoDBDatabase(Asset):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -335,17 +302,13 @@ class CosmosMongoDBDatabase(Asset):
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the database."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collections: Union[List[RelatedMongoDBCollection], None, UnsetType] = (
-        msgspec.field(default=UNSET, name="mongoDBCollections")
-    )
+    mongo_db_collections: Union[List[RelatedMongoDBCollection], None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollections")
     """Collections that exist within this database."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -369,9 +332,7 @@ class CosmosMongoDBDatabase(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -386,14 +347,10 @@ class CosmosMongoDBDatabase(Asset):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -405,19 +362,13 @@ class CosmosMongoDBDatabase(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
 
     def __post_init__(self) -> None:
@@ -427,7 +378,10 @@ class CosmosMongoDBDatabase(Asset):
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
+        r"^.+/[^/]+/[^/]+$"
+    )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -458,9 +412,7 @@ class CosmosMongoDBDatabase(Asset):
         return _cosmos_mongo_db_database_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> CosmosMongoDBDatabase:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> CosmosMongoDBDatabase:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -482,26 +434,19 @@ class CosmosMongoDBDatabase(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class CosmosMongoDBDatabaseAttributes(AssetAttributes):
     """CosmosMongoDBDatabase-specific attributes for nested API format."""
 
-    cosmos_mongo_db_account_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="cosmosMongoDBAccountQualifiedName"
-    )
+    cosmos_mongo_db_account_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBAccountQualifiedName")
     """Unique name of the account in which this database exists."""
 
-    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="noSQLSchemaDefinition"
-    )
+    no_sql_schema_definition: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="noSQLSchemaDefinition")
     """Represents attributes for describing the key schema for the table and indexes."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-    mongo_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBDatabaseCollectionCount"
-    )
+    mongo_db_database_collection_count: Union[int, None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBDatabaseCollectionCount")
     """Number of collections in the database."""
 
     schema_count: Union[int, None, UnsetType] = UNSET
@@ -555,9 +500,7 @@ class CosmosMongoDBDatabaseAttributes(AssetAttributes):
     last_profiled_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this asset was last profiled, in milliseconds."""
 
-    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlAIModelContextQualifiedName"
-    )
+    sql_ai_model_context_qualified_name: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="sqlAIModelContextQualifiedName")
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
 
     sql_is_secure: Union[bool, None, UnsetType] = UNSET
@@ -581,7 +524,6 @@ class CosmosMongoDBDatabaseAttributes(AssetAttributes):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
-
 class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     """CosmosMongoDBDatabase-specific relationship attributes for nested API format."""
 
@@ -600,14 +542,10 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
-    cosmos_mongo_db_account: Union[RelatedCosmosMongoDBAccount, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="cosmosMongoDBAccount")
-    )
+    cosmos_mongo_db_account: Union[RelatedCosmosMongoDBAccount, None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBAccount")
     """Account in which the database exists."""
 
-    cosmos_mongo_db_collections: Union[
-        List[RelatedCosmosMongoDBCollection], None, UnsetType
-    ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollections")
+    cosmos_mongo_db_collections: Union[List[RelatedCosmosMongoDBCollection], None, UnsetType] = msgspec.field(default=UNSET, name="cosmosMongoDBCollections")
     """Collections that exist within this database."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
@@ -625,9 +563,7 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -636,9 +572,7 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -653,9 +587,7 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = UNSET
     """Source containing the assets."""
 
-    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlDBTSources"
-    )
+    sql_dbt_sources: Union[List[RelatedDbtSource], None, UnsetType] = msgspec.field(default=UNSET, name="sqlDBTSources")
     """Sources related to this asset."""
 
     dbt_seed_assets: Union[List[RelatedDbtSeed], None, UnsetType] = UNSET
@@ -664,17 +596,13 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     fabric_workspace: Union[RelatedFabricWorkspace, None, UnsetType] = UNSET
     """Workspace containing the database."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
-    mongo_db_collections: Union[List[RelatedMongoDBCollection], None, UnsetType] = (
-        msgspec.field(default=UNSET, name="mongoDBCollections")
-    )
+    mongo_db_collections: Union[List[RelatedMongoDBCollection], None, UnsetType] = msgspec.field(default=UNSET, name="mongoDBCollections")
     """Collections that exist within this database."""
 
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
@@ -698,9 +626,7 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -715,14 +641,10 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
-    snowflake_semantic_logical_tables: Union[
-        List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType
-    ] = UNSET
+    snowflake_semantic_logical_tables: Union[List[RelatedSnowflakeSemanticLogicalTable], None, UnsetType] = UNSET
     """Semantic logical tables that reference this physical table or view."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -734,36 +656,22 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_outgoing_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the source dataset."""
 
-    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = (
-        UNSET
-    )
+    sql_insight_incoming_joins: Union[List[RelatedSqlInsightJoin], None, UnsetType] = UNSET
     """Join insights where this asset is the joined dataset."""
 
-    sql_insight_business_questions: Union[
-        List[RelatedSqlInsightBusinessQuestion], None, UnsetType
-    ] = UNSET
+    sql_insight_business_questions: Union[List[RelatedSqlInsightBusinessQuestion], None, UnsetType] = UNSET
     """Business question insights for this SQL asset."""
-
 
 class CosmosMongoDBDatabaseNested(AssetNested):
     """CosmosMongoDBDatabase in nested API format for high-performance serialization."""
 
     attributes: Union[CosmosMongoDBDatabaseAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        CosmosMongoDBDatabaseRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        CosmosMongoDBDatabaseRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        CosmosMongoDBDatabaseRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[CosmosMongoDBDatabaseRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[CosmosMongoDBDatabaseRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[CosmosMongoDBDatabaseRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -819,15 +727,10 @@ _COSMOS_MONGO_DB_DATABASE_REL_FIELDS: List[str] = [
     "sql_insight_business_questions",
 ]
 
-
-def _populate_cosmos_mongo_db_database_attrs(
-    attrs: CosmosMongoDBDatabaseAttributes, obj: CosmosMongoDBDatabase
-) -> None:
+def _populate_cosmos_mongo_db_database_attrs(attrs: CosmosMongoDBDatabaseAttributes, obj: CosmosMongoDBDatabase) -> None:
     """Populate CosmosMongoDBDatabase-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.cosmos_mongo_db_account_qualified_name = (
-        obj.cosmos_mongo_db_account_qualified_name
-    )
+    attrs.cosmos_mongo_db_account_qualified_name = obj.cosmos_mongo_db_account_qualified_name
     attrs.no_sql_schema_definition = obj.no_sql_schema_definition
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.mongo_db_database_collection_count = obj.mongo_db_database_collection_count
@@ -852,29 +755,18 @@ def _populate_cosmos_mongo_db_database_attrs(
     attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
-    attrs.sql_ai_insights_popular_business_question_count = (
-        obj.sql_ai_insights_popular_business_question_count
-    )
+    attrs.sql_ai_insights_popular_business_question_count = obj.sql_ai_insights_popular_business_question_count
     attrs.sql_ai_insights_popular_join_count = obj.sql_ai_insights_popular_join_count
-    attrs.sql_ai_insights_popular_filter_count = (
-        obj.sql_ai_insights_popular_filter_count
-    )
+    attrs.sql_ai_insights_popular_filter_count = obj.sql_ai_insights_popular_filter_count
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
 
-
-def _extract_cosmos_mongo_db_database_attrs(
-    attrs: CosmosMongoDBDatabaseAttributes,
-) -> dict:
+def _extract_cosmos_mongo_db_database_attrs(attrs: CosmosMongoDBDatabaseAttributes) -> dict:
     """Extract all CosmosMongoDBDatabase attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["cosmos_mongo_db_account_qualified_name"] = (
-        attrs.cosmos_mongo_db_account_qualified_name
-    )
+    result["cosmos_mongo_db_account_qualified_name"] = attrs.cosmos_mongo_db_account_qualified_name
     result["no_sql_schema_definition"] = attrs.no_sql_schema_definition
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
-    result["mongo_db_database_collection_count"] = (
-        attrs.mongo_db_database_collection_count
-    )
+    result["mongo_db_database_collection_count"] = attrs.mongo_db_database_collection_count
     result["schema_count"] = attrs.schema_count
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
@@ -892,43 +784,28 @@ def _extract_cosmos_mongo_db_database_attrs(
     result["calculation_view_qualified_name"] = attrs.calculation_view_qualified_name
     result["is_profiled"] = attrs.is_profiled
     result["last_profiled_at"] = attrs.last_profiled_at
-    result["sql_ai_model_context_qualified_name"] = (
-        attrs.sql_ai_model_context_qualified_name
-    )
+    result["sql_ai_model_context_qualified_name"] = attrs.sql_ai_model_context_qualified_name
     result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
-    result["sql_ai_insights_popular_business_question_count"] = (
-        attrs.sql_ai_insights_popular_business_question_count
-    )
-    result["sql_ai_insights_popular_join_count"] = (
-        attrs.sql_ai_insights_popular_join_count
-    )
-    result["sql_ai_insights_popular_filter_count"] = (
-        attrs.sql_ai_insights_popular_filter_count
-    )
-    result["sql_ai_insights_relationship_count"] = (
-        attrs.sql_ai_insights_relationship_count
-    )
+    result["sql_ai_insights_popular_business_question_count"] = attrs.sql_ai_insights_popular_business_question_count
+    result["sql_ai_insights_popular_join_count"] = attrs.sql_ai_insights_popular_join_count
+    result["sql_ai_insights_popular_filter_count"] = attrs.sql_ai_insights_popular_filter_count
+    result["sql_ai_insights_relationship_count"] = attrs.sql_ai_insights_relationship_count
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _cosmos_mongo_db_database_to_nested(
-    cosmos_mongo_db_database: CosmosMongoDBDatabase,
-) -> CosmosMongoDBDatabaseNested:
+def _cosmos_mongo_db_database_to_nested(cosmos_mongo_db_database: CosmosMongoDBDatabase) -> CosmosMongoDBDatabaseNested:
     """Convert flat CosmosMongoDBDatabase to nested format."""
     attrs = CosmosMongoDBDatabaseAttributes()
     _populate_cosmos_mongo_db_database_attrs(attrs, cosmos_mongo_db_database)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        cosmos_mongo_db_database,
-        _COSMOS_MONGO_DB_DATABASE_REL_FIELDS,
-        CosmosMongoDBDatabaseRelationshipAttributes,
+        cosmos_mongo_db_database, _COSMOS_MONGO_DB_DATABASE_REL_FIELDS, CosmosMongoDBDatabaseRelationshipAttributes
     )
     return CosmosMongoDBDatabaseNested(
         guid=cosmos_mongo_db_database.guid,
@@ -956,23 +833,16 @@ def _cosmos_mongo_db_database_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _cosmos_mongo_db_database_from_nested(
-    nested: CosmosMongoDBDatabaseNested,
-) -> CosmosMongoDBDatabase:
+def _cosmos_mongo_db_database_from_nested(nested: CosmosMongoDBDatabaseNested) -> CosmosMongoDBDatabase:
     """Convert nested format to flat CosmosMongoDBDatabase."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else CosmosMongoDBDatabaseAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else CosmosMongoDBDatabaseAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _COSMOS_MONGO_DB_DATABASE_REL_FIELDS,
-        CosmosMongoDBDatabaseRelationshipAttributes,
+        CosmosMongoDBDatabaseRelationshipAttributes
     )
     return CosmosMongoDBDatabase(
         guid=nested.guid,
@@ -999,21 +869,15 @@ def _cosmos_mongo_db_database_from_nested(
         **merged_rels,
     )
 
-
-def _cosmos_mongo_db_database_to_nested_bytes(
-    cosmos_mongo_db_database: CosmosMongoDBDatabase, serde: Serde
-) -> bytes:
+def _cosmos_mongo_db_database_to_nested_bytes(cosmos_mongo_db_database: CosmosMongoDBDatabase, serde: Serde) -> bytes:
     """Convert flat CosmosMongoDBDatabase to nested JSON bytes."""
     return serde.encode(_cosmos_mongo_db_database_to_nested(cosmos_mongo_db_database))
 
 
-def _cosmos_mongo_db_database_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> CosmosMongoDBDatabase:
+def _cosmos_mongo_db_database_from_nested_bytes(data: bytes, serde: Serde) -> CosmosMongoDBDatabase:
     """Convert nested JSON bytes to flat CosmosMongoDBDatabase."""
     nested = serde.decode(data, CosmosMongoDBDatabaseNested)
     return _cosmos_mongo_db_database_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -1026,108 +890,51 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-CosmosMongoDBDatabase.COSMOS_MONGO_DB_ACCOUNT_QUALIFIED_NAME = KeywordTextField(
-    "cosmosMongoDBAccountQualifiedName",
-    "cosmosMongoDBAccountQualifiedName",
-    "cosmosMongoDBAccountQualifiedName.text",
-)
-CosmosMongoDBDatabase.NO_SQL_SCHEMA_DEFINITION = KeywordField(
-    "noSQLSchemaDefinition", "noSQLSchemaDefinition"
-)
-CosmosMongoDBDatabase.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
-CosmosMongoDBDatabase.MONGO_DB_DATABASE_COLLECTION_COUNT = NumericField(
-    "mongoDBDatabaseCollectionCount", "mongoDBDatabaseCollectionCount"
-)
+CosmosMongoDBDatabase.COSMOS_MONGO_DB_ACCOUNT_QUALIFIED_NAME = KeywordTextField("cosmosMongoDBAccountQualifiedName", "cosmosMongoDBAccountQualifiedName", "cosmosMongoDBAccountQualifiedName.text")
+CosmosMongoDBDatabase.NO_SQL_SCHEMA_DEFINITION = KeywordField("noSQLSchemaDefinition", "noSQLSchemaDefinition")
+CosmosMongoDBDatabase.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+CosmosMongoDBDatabase.MONGO_DB_DATABASE_COLLECTION_COUNT = NumericField("mongoDBDatabaseCollectionCount", "mongoDBDatabaseCollectionCount")
 CosmosMongoDBDatabase.SCHEMA_COUNT = NumericField("schemaCount", "schemaCount")
 CosmosMongoDBDatabase.QUERY_COUNT = NumericField("queryCount", "queryCount")
-CosmosMongoDBDatabase.QUERY_USER_COUNT = NumericField(
-    "queryUserCount", "queryUserCount"
-)
+CosmosMongoDBDatabase.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
 CosmosMongoDBDatabase.QUERY_USER_MAP = KeywordField("queryUserMap", "queryUserMap")
-CosmosMongoDBDatabase.QUERY_COUNT_UPDATED_AT = NumericField(
-    "queryCountUpdatedAt", "queryCountUpdatedAt"
-)
+CosmosMongoDBDatabase.QUERY_COUNT_UPDATED_AT = NumericField("queryCountUpdatedAt", "queryCountUpdatedAt")
 CosmosMongoDBDatabase.DATABASE_NAME = KeywordField("databaseName", "databaseName")
-CosmosMongoDBDatabase.DATABASE_QUALIFIED_NAME = KeywordField(
-    "databaseQualifiedName", "databaseQualifiedName"
-)
+CosmosMongoDBDatabase.DATABASE_QUALIFIED_NAME = KeywordField("databaseQualifiedName", "databaseQualifiedName")
 CosmosMongoDBDatabase.SCHEMA_NAME = KeywordField("schemaName", "schemaName")
-CosmosMongoDBDatabase.SCHEMA_QUALIFIED_NAME = KeywordField(
-    "schemaQualifiedName", "schemaQualifiedName"
-)
+CosmosMongoDBDatabase.SCHEMA_QUALIFIED_NAME = KeywordField("schemaQualifiedName", "schemaQualifiedName")
 CosmosMongoDBDatabase.TABLE_NAME = KeywordField("tableName", "tableName")
-CosmosMongoDBDatabase.TABLE_QUALIFIED_NAME = KeywordField(
-    "tableQualifiedName", "tableQualifiedName"
-)
+CosmosMongoDBDatabase.TABLE_QUALIFIED_NAME = KeywordField("tableQualifiedName", "tableQualifiedName")
 CosmosMongoDBDatabase.VIEW_NAME = KeywordField("viewName", "viewName")
-CosmosMongoDBDatabase.VIEW_QUALIFIED_NAME = KeywordField(
-    "viewQualifiedName", "viewQualifiedName"
-)
-CosmosMongoDBDatabase.CALCULATION_VIEW_NAME = KeywordField(
-    "calculationViewName", "calculationViewName"
-)
-CosmosMongoDBDatabase.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField(
-    "calculationViewQualifiedName", "calculationViewQualifiedName"
-)
+CosmosMongoDBDatabase.VIEW_QUALIFIED_NAME = KeywordField("viewQualifiedName", "viewQualifiedName")
+CosmosMongoDBDatabase.CALCULATION_VIEW_NAME = KeywordField("calculationViewName", "calculationViewName")
+CosmosMongoDBDatabase.CALCULATION_VIEW_QUALIFIED_NAME = KeywordField("calculationViewQualifiedName", "calculationViewQualifiedName")
 CosmosMongoDBDatabase.IS_PROFILED = BooleanField("isProfiled", "isProfiled")
-CosmosMongoDBDatabase.LAST_PROFILED_AT = NumericField(
-    "lastProfiledAt", "lastProfiledAt"
-)
-CosmosMongoDBDatabase.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
-    "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
-)
+CosmosMongoDBDatabase.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
+CosmosMongoDBDatabase.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField("sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName")
 CosmosMongoDBDatabase.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-CosmosMongoDBDatabase.SQL_HAS_AI_INSIGHTS = BooleanField(
-    "sqlHasAiInsights", "sqlHasAiInsights"
-)
-CosmosMongoDBDatabase.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
-    "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"
-)
-CosmosMongoDBDatabase.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField(
-    "sqlAiInsightsPopularBusinessQuestionCount",
-    "sqlAiInsightsPopularBusinessQuestionCount",
-)
-CosmosMongoDBDatabase.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField(
-    "sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount"
-)
-CosmosMongoDBDatabase.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
-    "sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount"
-)
-CosmosMongoDBDatabase.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
-    "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
-)
+CosmosMongoDBDatabase.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
+CosmosMongoDBDatabase.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField("sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt")
+CosmosMongoDBDatabase.SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT = NumericField("sqlAiInsightsPopularBusinessQuestionCount", "sqlAiInsightsPopularBusinessQuestionCount")
+CosmosMongoDBDatabase.SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT = NumericField("sqlAiInsightsPopularJoinCount", "sqlAiInsightsPopularJoinCount")
+CosmosMongoDBDatabase.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField("sqlAiInsightsPopularFilterCount", "sqlAiInsightsPopularFilterCount")
+CosmosMongoDBDatabase.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField("sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount")
 CosmosMongoDBDatabase.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-CosmosMongoDBDatabase.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
+CosmosMongoDBDatabase.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CosmosMongoDBDatabase.ANOMALO_CHECKS = RelationField("anomaloChecks")
 CosmosMongoDBDatabase.APPLICATION = RelationField("application")
 CosmosMongoDBDatabase.APPLICATION_FIELD = RelationField("applicationField")
 CosmosMongoDBDatabase.COSMOS_MONGO_DB_ACCOUNT = RelationField("cosmosMongoDBAccount")
-CosmosMongoDBDatabase.COSMOS_MONGO_DB_COLLECTIONS = RelationField(
-    "cosmosMongoDBCollections"
-)
+CosmosMongoDBDatabase.COSMOS_MONGO_DB_COLLECTIONS = RelationField("cosmosMongoDBCollections")
 CosmosMongoDBDatabase.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-CosmosMongoDBDatabase.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-CosmosMongoDBDatabase.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
+CosmosMongoDBDatabase.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+CosmosMongoDBDatabase.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 CosmosMongoDBDatabase.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-CosmosMongoDBDatabase.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-CosmosMongoDBDatabase.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+CosmosMongoDBDatabase.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+CosmosMongoDBDatabase.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 CosmosMongoDBDatabase.METRICS = RelationField("metrics")
 CosmosMongoDBDatabase.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-CosmosMongoDBDatabase.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
+CosmosMongoDBDatabase.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
 CosmosMongoDBDatabase.DBT_MODELS = RelationField("dbtModels")
 CosmosMongoDBDatabase.SQL_DBT_MODELS = RelationField("sqlDbtModels")
 CosmosMongoDBDatabase.DBT_TESTS = RelationField("dbtTests")
@@ -1135,9 +942,7 @@ CosmosMongoDBDatabase.DBT_SOURCES = RelationField("dbtSources")
 CosmosMongoDBDatabase.SQL_DBT_SOURCES = RelationField("sqlDBTSources")
 CosmosMongoDBDatabase.DBT_SEED_ASSETS = RelationField("dbtSeedAssets")
 CosmosMongoDBDatabase.FABRIC_WORKSPACE = RelationField("fabricWorkspace")
-CosmosMongoDBDatabase.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+CosmosMongoDBDatabase.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 CosmosMongoDBDatabase.MEANINGS = RelationField("meanings")
 CosmosMongoDBDatabase.MONGO_DB_COLLECTIONS = RelationField("mongoDBCollections")
 CosmosMongoDBDatabase.MC_MONITORS = RelationField("mcMonitors")
@@ -1147,26 +952,16 @@ CosmosMongoDBDatabase.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects
 CosmosMongoDBDatabase.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
 CosmosMongoDBDatabase.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
 CosmosMongoDBDatabase.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-CosmosMongoDBDatabase.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
+CosmosMongoDBDatabase.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
 CosmosMongoDBDatabase.FILES = RelationField("files")
 CosmosMongoDBDatabase.LINKS = RelationField("links")
 CosmosMongoDBDatabase.README = RelationField("readme")
 CosmosMongoDBDatabase.SCHEMAS = RelationField("schemas")
 CosmosMongoDBDatabase.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-CosmosMongoDBDatabase.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
-    "snowflakeSemanticLogicalTables"
-)
+CosmosMongoDBDatabase.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField("snowflakeSemanticLogicalTables")
 CosmosMongoDBDatabase.SODA_CHECKS = RelationField("sodaChecks")
 CosmosMongoDBDatabase.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
 CosmosMongoDBDatabase.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-CosmosMongoDBDatabase.SQL_INSIGHT_OUTGOING_JOINS = RelationField(
-    "sqlInsightOutgoingJoins"
-)
-CosmosMongoDBDatabase.SQL_INSIGHT_INCOMING_JOINS = RelationField(
-    "sqlInsightIncomingJoins"
-)
-CosmosMongoDBDatabase.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField(
-    "sqlInsightBusinessQuestions"
-)
+CosmosMongoDBDatabase.SQL_INSIGHT_OUTGOING_JOINS = RelationField("sqlInsightOutgoingJoins")
+CosmosMongoDBDatabase.SQL_INSIGHT_INCOMING_JOINS = RelationField("sqlInsightIncomingJoins")
+CosmosMongoDBDatabase.SQL_INSIGHT_BUSINESS_QUESTIONS = RelationField("sqlInsightBusinessQuestions")

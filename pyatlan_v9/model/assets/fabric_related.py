@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -58,7 +59,6 @@ class RelatedFabric(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Fabric"
 
-
 class RelatedFabricWorkspace(RelatedFabric):
     """
     Related entity reference for FabricWorkspace assets.
@@ -72,7 +72,6 @@ class RelatedFabricWorkspace(RelatedFabric):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricWorkspace"
-
 
 class RelatedFabricDashboard(RelatedFabric):
     """
@@ -88,7 +87,6 @@ class RelatedFabricDashboard(RelatedFabric):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricDashboard"
 
-
 class RelatedFabricDataflow(RelatedFabric):
     """
     Related entity reference for FabricDataflow assets.
@@ -102,7 +100,6 @@ class RelatedFabricDataflow(RelatedFabric):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricDataflow"
-
 
 class RelatedFabricDataflowEntityColumn(RelatedFabric):
     """
@@ -124,7 +121,6 @@ class RelatedFabricDataflowEntityColumn(RelatedFabric):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricDataflowEntityColumn"
 
-
 class RelatedFabricDataPipeline(RelatedFabric):
     """
     Related entity reference for FabricDataPipeline assets.
@@ -138,7 +134,6 @@ class RelatedFabricDataPipeline(RelatedFabric):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricDataPipeline"
-
 
 class RelatedFabricReport(RelatedFabric):
     """
@@ -154,7 +149,6 @@ class RelatedFabricReport(RelatedFabric):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricReport"
 
-
 class RelatedFabricSemanticModel(RelatedFabric):
     """
     Related entity reference for FabricSemanticModel assets.
@@ -168,7 +162,6 @@ class RelatedFabricSemanticModel(RelatedFabric):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricSemanticModel"
-
 
 class RelatedFabricSemanticModelTable(RelatedFabric):
     """
@@ -186,7 +179,6 @@ class RelatedFabricSemanticModelTable(RelatedFabric):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricSemanticModelTable"
-
 
 class RelatedFabricSemanticModelTableColumn(RelatedFabric):
     """
@@ -208,7 +200,6 @@ class RelatedFabricSemanticModelTableColumn(RelatedFabric):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricSemanticModelTableColumn"
 
-
 class RelatedFabricPage(RelatedFabric):
     """
     Related entity reference for FabricPage assets.
@@ -225,7 +216,6 @@ class RelatedFabricPage(RelatedFabric):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricPage"
-
 
 class RelatedFabricActivity(RelatedFabric):
     """
@@ -246,7 +236,6 @@ class RelatedFabricActivity(RelatedFabric):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "FabricActivity"
-
 
 class RelatedFabricVisual(RelatedFabric):
     """

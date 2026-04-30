@@ -14,27 +14,11 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Set, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
-from pyatlan.model.enums import (
-    AuthPolicyCategory,
-    AuthPolicyResourceCategory,
-    AuthPolicyType,
-    DataAction,
-    PurposeMetadataAction,
-)
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.core import AtlanTagName
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
-
-from .access_control_related import RelatedAuthPolicy
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -56,11 +40,19 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
+from pyatlan.model.enums import AuthPolicyCategory, AuthPolicyResourceCategory, AuthPolicyType, DataAction, PurposeMetadataAction
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.core import AtlanTagName
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.structs import SourceTagAttachment
+from pyatlan_v9.model.transform import register_asset
+from pyatlan_v9.utils import init_guid, validate_required_fields
+
+from .access_control_related import RelatedAuthPolicy
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class Purpose(Asset):
@@ -171,14 +163,10 @@ class Purpose(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -193,9 +181,7 @@ class Purpose(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -207,9 +193,7 @@ class Purpose(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -217,6 +201,8 @@ class Purpose(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Purpose"
+
+
 
     @property
     def purpose_atlan_tags(self) -> Union[list[AtlanTagName], None]:
@@ -450,7 +436,6 @@ class Purpose(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class PurposeAttributes(AssetAttributes):
     """Purpose-specific attributes for nested API format."""
 
@@ -490,7 +475,6 @@ class PurposeAttributes(AssetAttributes):
     is_access_control_enabled: Union[bool, None, UnsetType] = UNSET
     """TBC"""
 
-
 class PurposeRelationshipAttributes(AssetRelationshipAttributes):
     """Purpose-specific relationship attributes for nested API format."""
 
@@ -524,14 +508,10 @@ class PurposeRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -546,9 +526,7 @@ class PurposeRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -560,27 +538,19 @@ class PurposeRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
     """"""
-
 
 class PurposeNested(AssetNested):
     """Purpose in nested API format for high-performance serialization."""
 
     attributes: Union[PurposeAttributes, UnsetType] = UNSET
     relationship_attributes: Union[PurposeRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[PurposeRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[PurposeRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[PurposeRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[PurposeRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -612,7 +582,6 @@ _PURPOSE_REL_FIELDS: List[str] = [
     "soda_checks",
 ]
 
-
 def _populate_purpose_attrs(attrs: PurposeAttributes, obj: Purpose) -> None:
     """Populate Purpose-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -628,7 +597,6 @@ def _populate_purpose_attrs(attrs: PurposeAttributes, obj: Purpose) -> None:
     attrs.deny_sidebar_tabs = obj.deny_sidebar_tabs
     attrs.display_preferences = obj.display_preferences
     attrs.is_access_control_enabled = obj.is_access_control_enabled
-
 
 def _extract_purpose_attrs(attrs: PurposeAttributes) -> dict:
     """Extract all Purpose attributes from the attrs struct into a flat dict."""
@@ -646,7 +614,6 @@ def _extract_purpose_attrs(attrs: PurposeAttributes) -> dict:
     result["display_preferences"] = attrs.display_preferences
     result["is_access_control_enabled"] = attrs.is_access_control_enabled
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -687,7 +654,6 @@ def _purpose_to_nested(purpose: Purpose) -> PurposeNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _purpose_from_nested(nested: PurposeNested) -> Purpose:
     """Convert nested format to flat Purpose."""
     attrs = nested.attributes if nested.attributes is not UNSET else PurposeAttributes()
@@ -697,7 +663,7 @@ def _purpose_from_nested(nested: PurposeNested) -> Purpose:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _PURPOSE_REL_FIELDS,
-        PurposeRelationshipAttributes,
+        PurposeRelationshipAttributes
     )
     return Purpose(
         guid=nested.guid,
@@ -724,7 +690,6 @@ def _purpose_from_nested(nested: PurposeNested) -> Purpose:
         **merged_rels,
     )
 
-
 def _purpose_to_nested_bytes(purpose: Purpose, serde: Serde) -> bytes:
     """Convert flat Purpose to nested JSON bytes."""
     return serde.encode(_purpose_to_nested(purpose))
@@ -735,7 +700,6 @@ def _purpose_from_nested_bytes(data: bytes, serde: Serde) -> Purpose:
     nested = serde.decode(data, PurposeNested)
     return _purpose_from_nested(nested)
 
-
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
@@ -745,28 +709,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-Purpose.PURPOSE_CLASSIFICATIONS = KeywordField(
-    "purposeClassifications", "purposeClassifications"
-)
+Purpose.PURPOSE_CLASSIFICATIONS = KeywordField("purposeClassifications", "purposeClassifications")
 Purpose.CHANNEL_LINK = KeywordField("channelLink", "channelLink")
 Purpose.DEFAULT_NAVIGATION = KeywordField("defaultNavigation", "defaultNavigation")
 Purpose.DENY_ASSET_FILTERS = KeywordField("denyAssetFilters", "denyAssetFilters")
-Purpose.DENY_ASSET_METADATA_TYPES = KeywordField(
-    "denyAssetMetadataTypes", "denyAssetMetadataTypes"
-)
+Purpose.DENY_ASSET_METADATA_TYPES = KeywordField("denyAssetMetadataTypes", "denyAssetMetadataTypes")
 Purpose.DENY_ASSET_TABS = KeywordField("denyAssetTabs", "denyAssetTabs")
 Purpose.DENY_ASSET_TYPES = KeywordField("denyAssetTypes", "denyAssetTypes")
-Purpose.DENY_CUSTOM_METADATA_GUIDS = KeywordField(
-    "denyCustomMetadataGuids", "denyCustomMetadataGuids"
-)
-Purpose.DENY_NAVIGATION_PAGES = KeywordField(
-    "denyNavigationPages", "denyNavigationPages"
-)
+Purpose.DENY_CUSTOM_METADATA_GUIDS = KeywordField("denyCustomMetadataGuids", "denyCustomMetadataGuids")
+Purpose.DENY_NAVIGATION_PAGES = KeywordField("denyNavigationPages", "denyNavigationPages")
 Purpose.DENY_SIDEBAR_TABS = KeywordField("denySidebarTabs", "denySidebarTabs")
 Purpose.DISPLAY_PREFERENCES = KeywordField("displayPreferences", "displayPreferences")
-Purpose.IS_ACCESS_CONTROL_ENABLED = BooleanField(
-    "isAccessControlEnabled", "isAccessControlEnabled"
-)
+Purpose.IS_ACCESS_CONTROL_ENABLED = BooleanField("isAccessControlEnabled", "isAccessControlEnabled")
 Purpose.POLICIES = RelationField("policies")
 Purpose.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Purpose.APPLICATION = RelationField("application")
@@ -778,9 +732,7 @@ Purpose.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
 Purpose.METRICS = RelationField("metrics")
 Purpose.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 Purpose.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-Purpose.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+Purpose.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 Purpose.MEANINGS = RelationField("meanings")
 Purpose.MC_MONITORS = RelationField("mcMonitors")
 Purpose.MC_INCIDENTS = RelationField("mcIncidents")

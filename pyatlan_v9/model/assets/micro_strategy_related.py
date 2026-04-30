@@ -11,8 +11,9 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Dict, List, Union
+from typing import Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedBI
@@ -77,7 +78,6 @@ class RelatedMicroStrategy(RelatedBI):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategy"
 
-
 class RelatedMicroStrategyProject(RelatedMicroStrategy):
     """
     Related entity reference for MicroStrategyProject assets.
@@ -92,7 +92,6 @@ class RelatedMicroStrategyProject(RelatedMicroStrategy):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyProject"
 
-
 class RelatedMicroStrategyDocument(RelatedMicroStrategy):
     """
     Related entity reference for MicroStrategyDocument assets.
@@ -106,7 +105,6 @@ class RelatedMicroStrategyDocument(RelatedMicroStrategy):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyDocument"
-
 
 class RelatedMicroStrategyReport(RelatedMicroStrategy):
     """
@@ -124,7 +122,6 @@ class RelatedMicroStrategyReport(RelatedMicroStrategy):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyReport"
-
 
 class RelatedMicroStrategyCube(RelatedMicroStrategy):
     """
@@ -146,7 +143,6 @@ class RelatedMicroStrategyCube(RelatedMicroStrategy):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyCube"
 
-
 class RelatedMicroStrategyDossier(RelatedMicroStrategy):
     """
     Related entity reference for MicroStrategyDossier assets.
@@ -163,7 +159,6 @@ class RelatedMicroStrategyDossier(RelatedMicroStrategy):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyDossier"
-
 
 class RelatedMicroStrategyFact(RelatedMicroStrategy):
     """
@@ -182,7 +177,6 @@ class RelatedMicroStrategyFact(RelatedMicroStrategy):
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyFact"
 
-
 class RelatedMicroStrategyAttribute(RelatedMicroStrategy):
     """
     Related entity reference for MicroStrategyAttribute assets.
@@ -199,7 +193,6 @@ class RelatedMicroStrategyAttribute(RelatedMicroStrategy):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyAttribute"
-
 
 class RelatedMicroStrategyVisualization(RelatedMicroStrategy):
     """
@@ -223,7 +216,6 @@ class RelatedMicroStrategyVisualization(RelatedMicroStrategy):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyVisualization"
-
 
 class RelatedMicroStrategyMetric(RelatedMicroStrategy):
     """
@@ -250,9 +242,7 @@ class RelatedMicroStrategyMetric(RelatedMicroStrategy):
     micro_strategy_fact_names: Union[List[str], None, UnsetType] = UNSET
     """List of simple names of facts related to this metric."""
 
-    micro_strategy_metric_parent_qualified_names: Union[List[str], None, UnsetType] = (
-        UNSET
-    )
+    micro_strategy_metric_parent_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """List of unique names of parent metrics of this metric."""
 
     micro_strategy_metric_parent_names: Union[List[str], None, UnsetType] = UNSET
@@ -261,7 +251,6 @@ class RelatedMicroStrategyMetric(RelatedMicroStrategy):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "MicroStrategyMetric"
-
 
 class RelatedMicroStrategyColumn(RelatedMicroStrategy):
     """

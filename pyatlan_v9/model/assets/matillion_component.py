@@ -15,16 +15,10 @@ This module provides:
 from __future__ import annotations
 
 import re
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
+import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -43,7 +37,6 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .matillion_related import RelatedMatillionJob
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -53,11 +46,15 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .matillion_related import RelatedMatillionJob
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class MatillionComponent(Asset):
@@ -171,9 +168,7 @@ class MatillionComponent(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -182,14 +177,10 @@ class MatillionComponent(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -222,9 +213,7 @@ class MatillionComponent(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -236,9 +225,7 @@ class MatillionComponent(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -260,6 +247,7 @@ class MatillionComponent(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -290,9 +278,7 @@ class MatillionComponent(Asset):
         return _matillion_component_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> MatillionComponent:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> MatillionComponent:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -313,7 +299,6 @@ class MatillionComponent(Asset):
 # =============================================================================
 # NESTED FORMAT CLASSES
 # =============================================================================
-
 
 class MatillionComponentAttributes(AssetAttributes):
     """MatillionComponent-specific attributes for nested API format."""
@@ -348,7 +333,6 @@ class MatillionComponentAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     """MatillionComponent-specific relationship attributes for nested API format."""
 
@@ -382,9 +366,7 @@ class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -393,14 +375,10 @@ class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -433,9 +411,7 @@ class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -447,9 +423,7 @@ class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -461,21 +435,13 @@ class MatillionComponentRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class MatillionComponentNested(AssetNested):
     """MatillionComponent in nested API format for high-performance serialization."""
 
     attributes: Union[MatillionComponentAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        MatillionComponentRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        MatillionComponentRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        MatillionComponentRelationshipAttributes, UnsetType
-    ] = UNSET
-
+    relationship_attributes: Union[MatillionComponentRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[MatillionComponentRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[MatillionComponentRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -518,42 +484,28 @@ _MATILLION_COMPONENT_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
-def _populate_matillion_component_attrs(
-    attrs: MatillionComponentAttributes, obj: MatillionComponent
-) -> None:
+def _populate_matillion_component_attrs(attrs: MatillionComponentAttributes, obj: MatillionComponent) -> None:
     """Populate MatillionComponent-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.matillion_component_id = obj.matillion_component_id
-    attrs.matillion_component_implementation_id = (
-        obj.matillion_component_implementation_id
-    )
+    attrs.matillion_component_implementation_id = obj.matillion_component_implementation_id
     attrs.matillion_component_linked_job = obj.matillion_component_linked_job
     attrs.matillion_component_last_run_status = obj.matillion_component_last_run_status
-    attrs.matillion_component_last_five_run_status = (
-        obj.matillion_component_last_five_run_status
-    )
+    attrs.matillion_component_last_five_run_status = obj.matillion_component_last_five_run_status
     attrs.matillion_component_sqls = obj.matillion_component_sqls
     attrs.matillion_job_name = obj.matillion_job_name
     attrs.matillion_job_qualified_name = obj.matillion_job_qualified_name
     attrs.matillion_version = obj.matillion_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
-
 def _extract_matillion_component_attrs(attrs: MatillionComponentAttributes) -> dict:
     """Extract all MatillionComponent attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["matillion_component_id"] = attrs.matillion_component_id
-    result["matillion_component_implementation_id"] = (
-        attrs.matillion_component_implementation_id
-    )
+    result["matillion_component_implementation_id"] = attrs.matillion_component_implementation_id
     result["matillion_component_linked_job"] = attrs.matillion_component_linked_job
-    result["matillion_component_last_run_status"] = (
-        attrs.matillion_component_last_run_status
-    )
-    result["matillion_component_last_five_run_status"] = (
-        attrs.matillion_component_last_five_run_status
-    )
+    result["matillion_component_last_run_status"] = attrs.matillion_component_last_run_status
+    result["matillion_component_last_five_run_status"] = attrs.matillion_component_last_five_run_status
     result["matillion_component_sqls"] = attrs.matillion_component_sqls
     result["matillion_job_name"] = attrs.matillion_job_name
     result["matillion_job_qualified_name"] = attrs.matillion_job_qualified_name
@@ -561,23 +513,18 @@ def _extract_matillion_component_attrs(attrs: MatillionComponentAttributes) -> d
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
-
 # =============================================================================
 # CONVERSION FUNCTIONS
 # =============================================================================
 
 
-def _matillion_component_to_nested(
-    matillion_component: MatillionComponent,
-) -> MatillionComponentNested:
+def _matillion_component_to_nested(matillion_component: MatillionComponent) -> MatillionComponentNested:
     """Convert flat MatillionComponent to nested format."""
     attrs = MatillionComponentAttributes()
     _populate_matillion_component_attrs(attrs, matillion_component)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        matillion_component,
-        _MATILLION_COMPONENT_REL_FIELDS,
-        MatillionComponentRelationshipAttributes,
+        matillion_component, _MATILLION_COMPONENT_REL_FIELDS, MatillionComponentRelationshipAttributes
     )
     return MatillionComponentNested(
         guid=matillion_component.guid,
@@ -605,23 +552,16 @@ def _matillion_component_to_nested(
         remove_relationship_attributes=remove_rels,
     )
 
-
-def _matillion_component_from_nested(
-    nested: MatillionComponentNested,
-) -> MatillionComponent:
+def _matillion_component_from_nested(nested: MatillionComponentNested) -> MatillionComponent:
     """Convert nested format to flat MatillionComponent."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else MatillionComponentAttributes()
-    )
+    attrs = nested.attributes if nested.attributes is not UNSET else MatillionComponentAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _MATILLION_COMPONENT_REL_FIELDS,
-        MatillionComponentRelationshipAttributes,
+        MatillionComponentRelationshipAttributes
     )
     return MatillionComponent(
         guid=nested.guid,
@@ -648,21 +588,15 @@ def _matillion_component_from_nested(
         **merged_rels,
     )
 
-
-def _matillion_component_to_nested_bytes(
-    matillion_component: MatillionComponent, serde: Serde
-) -> bytes:
+def _matillion_component_to_nested_bytes(matillion_component: MatillionComponent, serde: Serde) -> bytes:
     """Convert flat MatillionComponent to nested JSON bytes."""
     return serde.encode(_matillion_component_to_nested(matillion_component))
 
 
-def _matillion_component_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> MatillionComponent:
+def _matillion_component_from_nested_bytes(data: bytes, serde: Serde) -> MatillionComponent:
     """Convert nested JSON bytes to flat MatillionComponent."""
     nested = serde.decode(data, MatillionComponentNested)
     return _matillion_component_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -673,61 +607,31 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-MatillionComponent.MATILLION_COMPONENT_ID = KeywordField(
-    "matillionComponentId", "matillionComponentId"
-)
-MatillionComponent.MATILLION_COMPONENT_IMPLEMENTATION_ID = KeywordField(
-    "matillionComponentImplementationId", "matillionComponentImplementationId"
-)
-MatillionComponent.MATILLION_COMPONENT_LINKED_JOB = KeywordField(
-    "matillionComponentLinkedJob", "matillionComponentLinkedJob"
-)
-MatillionComponent.MATILLION_COMPONENT_LAST_RUN_STATUS = KeywordField(
-    "matillionComponentLastRunStatus", "matillionComponentLastRunStatus"
-)
-MatillionComponent.MATILLION_COMPONENT_LAST_FIVE_RUN_STATUS = KeywordField(
-    "matillionComponentLastFiveRunStatus", "matillionComponentLastFiveRunStatus"
-)
-MatillionComponent.MATILLION_COMPONENT_SQLS = KeywordField(
-    "matillionComponentSqls", "matillionComponentSqls"
-)
-MatillionComponent.MATILLION_JOB_NAME = KeywordTextField(
-    "matillionJobName", "matillionJobName", "matillionJobName.text"
-)
-MatillionComponent.MATILLION_JOB_QUALIFIED_NAME = KeywordTextField(
-    "matillionJobQualifiedName",
-    "matillionJobQualifiedName",
-    "matillionJobQualifiedName.text",
-)
-MatillionComponent.MATILLION_VERSION = KeywordField(
-    "matillionVersion", "matillionVersion"
-)
-MatillionComponent.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
+MatillionComponent.MATILLION_COMPONENT_ID = KeywordField("matillionComponentId", "matillionComponentId")
+MatillionComponent.MATILLION_COMPONENT_IMPLEMENTATION_ID = KeywordField("matillionComponentImplementationId", "matillionComponentImplementationId")
+MatillionComponent.MATILLION_COMPONENT_LINKED_JOB = KeywordField("matillionComponentLinkedJob", "matillionComponentLinkedJob")
+MatillionComponent.MATILLION_COMPONENT_LAST_RUN_STATUS = KeywordField("matillionComponentLastRunStatus", "matillionComponentLastRunStatus")
+MatillionComponent.MATILLION_COMPONENT_LAST_FIVE_RUN_STATUS = KeywordField("matillionComponentLastFiveRunStatus", "matillionComponentLastFiveRunStatus")
+MatillionComponent.MATILLION_COMPONENT_SQLS = KeywordField("matillionComponentSqls", "matillionComponentSqls")
+MatillionComponent.MATILLION_JOB_NAME = KeywordTextField("matillionJobName", "matillionJobName", "matillionJobName.text")
+MatillionComponent.MATILLION_JOB_QUALIFIED_NAME = KeywordTextField("matillionJobQualifiedName", "matillionJobQualifiedName", "matillionJobQualifiedName.text")
+MatillionComponent.MATILLION_VERSION = KeywordField("matillionVersion", "matillionVersion")
+MatillionComponent.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 MatillionComponent.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MatillionComponent.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MatillionComponent.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MatillionComponent.APPLICATION = RelationField("application")
 MatillionComponent.APPLICATION_FIELD = RelationField("applicationField")
 MatillionComponent.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-MatillionComponent.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
+MatillionComponent.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 MatillionComponent.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
 MatillionComponent.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-MatillionComponent.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-MatillionComponent.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
+MatillionComponent.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+MatillionComponent.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
 MatillionComponent.METRICS = RelationField("metrics")
 MatillionComponent.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
 MatillionComponent.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-MatillionComponent.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+MatillionComponent.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 MatillionComponent.MEANINGS = RelationField("meanings")
 MatillionComponent.MATILLION_JOB = RelationField("matillionJob")
 MatillionComponent.MATILLION_PROCESS = RelationField("matillionProcess")

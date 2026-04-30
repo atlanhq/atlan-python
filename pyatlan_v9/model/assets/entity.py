@@ -18,6 +18,8 @@ from typing import Any, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from .related_entity import SaveSemantic
+
 
 class AtlasClassification(
     msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
@@ -173,3 +175,7 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
 
     home_id: Union[str, UnsetType] = UNSET
     """Home identifier for distributed Atlas systems."""
+
+    semantic: Union[SaveSemantic, None, UnsetType] = UNSET
+    """Save semantic for relationship operations (REPLACE, APPEND, REMOVE).
+    Not serialized to JSON - used internally by ref_by_guid/ref_by_qualified_name."""

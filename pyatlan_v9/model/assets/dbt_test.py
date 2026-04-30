@@ -14,17 +14,10 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, Dict, List, Set, Union
 
 import msgspec
 from msgspec import UNSET, UnsetType
-
-from pyatlan_v9.model.conversion_utils import (
-    categorize_relationships,
-    merge_relationships,
-)
-from pyatlan_v9.model.serde import Serde, get_serde
-from pyatlan_v9.model.transform import register_asset
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -41,7 +34,6 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .dbt_related import RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSource
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -54,11 +46,15 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 from .sql_related import RelatedSQL
+from pyatlan_v9.model.conversion_utils import categorize_relationships, merge_relationships
+from pyatlan_v9.model.serde import Serde, get_serde
+from pyatlan_v9.model.transform import register_asset
+
+from .dbt_related import RelatedDbtModel, RelatedDbtModelColumn, RelatedDbtSource
 
 # =============================================================================
 # FLAT ASSET CLASS
 # =============================================================================
-
 
 @register_asset
 class DbtTest(Asset):
@@ -141,14 +137,10 @@ class DbtTest(Asset):
     dbt_test_error: Union[str, None, UnsetType] = UNSET
     """Error message in the case of state being "error"."""
 
-    dbt_test_raw_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dbtTestRawSQL"
-    )
+    dbt_test_raw_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtTestRawSQL")
     """Raw SQL of the test."""
 
-    dbt_test_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dbtTestCompiledSQL"
-    )
+    dbt_test_compiled_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtTestCompiledSQL")
     """Compiled SQL of the test."""
 
     dbt_test_raw_code: Union[str, None, UnsetType] = UNSET
@@ -250,9 +242,7 @@ class DbtTest(Asset):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -261,9 +251,7 @@ class DbtTest(Asset):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -278,9 +266,7 @@ class DbtTest(Asset):
     sql_assets: Union[List[RelatedSQL], None, UnsetType] = UNSET
     """Assets related to this test."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -307,9 +293,7 @@ class DbtTest(Asset):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -321,9 +305,7 @@ class DbtTest(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -337,6 +319,8 @@ class DbtTest(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "DbtTest"
+
+
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -389,7 +373,6 @@ class DbtTest(Asset):
 # NESTED FORMAT CLASSES
 # =============================================================================
 
-
 class DbtTestAttributes(AssetAttributes):
     """DbtTest-specific attributes for nested API format."""
 
@@ -402,14 +385,10 @@ class DbtTestAttributes(AssetAttributes):
     dbt_test_error: Union[str, None, UnsetType] = UNSET
     """Error message in the case of state being "error"."""
 
-    dbt_test_raw_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dbtTestRawSQL"
-    )
+    dbt_test_raw_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtTestRawSQL")
     """Raw SQL of the test."""
 
-    dbt_test_compiled_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dbtTestCompiledSQL"
-    )
+    dbt_test_compiled_sql: Union[str, None, UnsetType] = msgspec.field(default=UNSET, name="dbtTestCompiledSQL")
     """Compiled SQL of the test."""
 
     dbt_test_raw_code: Union[str, None, UnsetType] = UNSET
@@ -481,7 +460,6 @@ class DbtTestAttributes(AssetAttributes):
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
-
 class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     """DbtTest-specific relationship attributes for nested API format."""
 
@@ -515,9 +493,7 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     model_implemented_entities: Union[List[RelatedModelEntity], None, UnsetType] = UNSET
     """Entities implemented by this asset."""
 
-    model_implemented_attributes: Union[
-        List[RelatedModelAttribute], None, UnsetType
-    ] = UNSET
+    model_implemented_attributes: Union[List[RelatedModelAttribute], None, UnsetType] = UNSET
     """Attributes implemented by this asset."""
 
     metrics: Union[List[RelatedMetric], None, UnsetType] = UNSET
@@ -526,9 +502,7 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     dq_base_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules that are applied on this dataset."""
 
-    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = (
-        UNSET
-    )
+    dq_reference_dataset_rules: Union[List[RelatedDataQualityRule], None, UnsetType] = UNSET
     """Rules where this dataset is referenced."""
 
     dbt_models: Union[List[RelatedDbtModel], None, UnsetType] = UNSET
@@ -543,9 +517,7 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     sql_assets: Union[List[RelatedSQL], None, UnsetType] = UNSET
     """Assets related to this test."""
 
-    gcp_dataplex_aspect_type_metadata_entities: Union[
-        List[RelatedGCPDataplexAspectType], None, UnsetType
-    ] = UNSET
+    gcp_dataplex_aspect_type_metadata_entities: Union[List[RelatedGCPDataplexAspectType], None, UnsetType] = UNSET
     """Dataplex entries (assets) that have aspects of this Aspect Type attached."""
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
@@ -572,9 +544,7 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
-    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = (
-        UNSET
-    )
+    user_def_relationship_from: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
@@ -586,9 +556,7 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
-    schema_registry_subjects: Union[
-        List[RelatedSchemaRegistrySubject], None, UnsetType
-    ] = UNSET
+    schema_registry_subjects: Union[List[RelatedSchemaRegistrySubject], None, UnsetType] = UNSET
     """Schema registry subjects associated with this asset."""
 
     soda_checks: Union[List[RelatedSodaCheck], None, UnsetType] = UNSET
@@ -600,19 +568,13 @@ class DbtTestRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-
 class DbtTestNested(AssetNested):
     """DbtTest in nested API format for high-performance serialization."""
 
     attributes: Union[DbtTestAttributes, UnsetType] = UNSET
     relationship_attributes: Union[DbtTestRelationshipAttributes, UnsetType] = UNSET
-    append_relationship_attributes: Union[DbtTestRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-    remove_relationship_attributes: Union[DbtTestRelationshipAttributes, UnsetType] = (
-        UNSET
-    )
-
+    append_relationship_attributes: Union[DbtTestRelationshipAttributes, UnsetType] = UNSET
+    remove_relationship_attributes: Union[DbtTestRelationshipAttributes, UnsetType] = UNSET
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
@@ -657,7 +619,6 @@ _DBT_TEST_REL_FIELDS: List[str] = [
     "output_from_spark_jobs",
 ]
 
-
 def _populate_dbt_test_attrs(attrs: DbtTestAttributes, obj: DbtTest) -> None:
     """Populate DbtTest-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
@@ -689,7 +650,6 @@ def _populate_dbt_test_attrs(attrs: DbtTestAttributes, obj: DbtTest) -> None:
     attrs.dbt_semantic_layer_proxy_url = obj.dbt_semantic_layer_proxy_url
     attrs.dbt_job_runs = obj.dbt_job_runs
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
-
 
 def _extract_dbt_test_attrs(attrs: DbtTestAttributes) -> dict:
     """Extract all DbtTest attributes from the attrs struct into a flat dict."""
@@ -723,7 +683,6 @@ def _extract_dbt_test_attrs(attrs: DbtTestAttributes) -> dict:
     result["dbt_job_runs"] = attrs.dbt_job_runs
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
-
 
 # =============================================================================
 # CONVERSION FUNCTIONS
@@ -764,7 +723,6 @@ def _dbt_test_to_nested(dbt_test: DbtTest) -> DbtTestNested:
         remove_relationship_attributes=remove_rels,
     )
 
-
 def _dbt_test_from_nested(nested: DbtTestNested) -> DbtTest:
     """Convert nested format to flat DbtTest."""
     attrs = nested.attributes if nested.attributes is not UNSET else DbtTestAttributes()
@@ -774,7 +732,7 @@ def _dbt_test_from_nested(nested: DbtTestNested) -> DbtTest:
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
         _DBT_TEST_REL_FIELDS,
-        DbtTestRelationshipAttributes,
+        DbtTestRelationshipAttributes
     )
     return DbtTest(
         guid=nested.guid,
@@ -801,7 +759,6 @@ def _dbt_test_from_nested(nested: DbtTestNested) -> DbtTest:
         **merged_rels,
     )
 
-
 def _dbt_test_to_nested_bytes(dbt_test: DbtTest, serde: Serde) -> bytes:
     """Convert flat DbtTest to nested JSON bytes."""
     return serde.encode(_dbt_test_to_nested(dbt_test))
@@ -811,7 +768,6 @@ def _dbt_test_from_nested_bytes(data: bytes, serde: Serde) -> DbtTest:
     """Convert nested JSON bytes to flat DbtTest."""
     nested = serde.decode(data, DbtTestNested)
     return _dbt_test_from_nested(nested)
-
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
@@ -828,9 +784,7 @@ DbtTest.DBT_TEST_ERROR = KeywordField("dbtTestError", "dbtTestError")
 DbtTest.DBT_TEST_RAW_SQL = KeywordField("dbtTestRawSQL", "dbtTestRawSQL")
 DbtTest.DBT_TEST_COMPILED_SQL = KeywordField("dbtTestCompiledSQL", "dbtTestCompiledSQL")
 DbtTest.DBT_TEST_RAW_CODE = KeywordField("dbtTestRawCode", "dbtTestRawCode")
-DbtTest.DBT_TEST_COMPILED_CODE = KeywordField(
-    "dbtTestCompiledCode", "dbtTestCompiledCode"
-)
+DbtTest.DBT_TEST_COMPILED_CODE = KeywordField("dbtTestCompiledCode", "dbtTestCompiledCode")
 DbtTest.DBT_TEST_LANGUAGE = KeywordField("dbtTestLanguage", "dbtTestLanguage")
 DbtTest.DBT_ALIAS = KeywordField("dbtAlias", "dbtAlias")
 DbtTest.DBT_META = KeywordField("dbtMeta", "dbtMeta")
@@ -841,25 +795,15 @@ DbtTest.DBT_PACKAGE_NAME = KeywordField("dbtPackageName", "dbtPackageName")
 DbtTest.DBT_JOB_NAME = KeywordField("dbtJobName", "dbtJobName")
 DbtTest.DBT_JOB_SCHEDULE = KeywordField("dbtJobSchedule", "dbtJobSchedule")
 DbtTest.DBT_JOB_STATUS = KeywordField("dbtJobStatus", "dbtJobStatus")
-DbtTest.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField(
-    "dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized"
-)
+DbtTest.DBT_JOB_SCHEDULE_CRON_HUMANIZED = KeywordField("dbtJobScheduleCronHumanized", "dbtJobScheduleCronHumanized")
 DbtTest.DBT_JOB_LAST_RUN = NumericField("dbtJobLastRun", "dbtJobLastRun")
 DbtTest.DBT_JOB_NEXT_RUN = NumericField("dbtJobNextRun", "dbtJobNextRun")
-DbtTest.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField(
-    "dbtJobNextRunHumanized", "dbtJobNextRunHumanized"
-)
+DbtTest.DBT_JOB_NEXT_RUN_HUMANIZED = KeywordField("dbtJobNextRunHumanized", "dbtJobNextRunHumanized")
 DbtTest.DBT_ENVIRONMENT_NAME = KeywordField("dbtEnvironmentName", "dbtEnvironmentName")
-DbtTest.DBT_ENVIRONMENT_DBT_VERSION = KeywordField(
-    "dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion"
-)
+DbtTest.DBT_ENVIRONMENT_DBT_VERSION = KeywordField("dbtEnvironmentDbtVersion", "dbtEnvironmentDbtVersion")
 DbtTest.DBT_TAGS = KeywordField("dbtTags", "dbtTags")
-DbtTest.DBT_CONNECTION_CONTEXT = KeywordField(
-    "dbtConnectionContext", "dbtConnectionContext"
-)
-DbtTest.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField(
-    "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
-)
+DbtTest.DBT_CONNECTION_CONTEXT = KeywordField("dbtConnectionContext", "dbtConnectionContext")
+DbtTest.DBT_SEMANTIC_LAYER_PROXY_URL = KeywordField("dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl")
 DbtTest.DBT_JOB_RUNS = KeywordField("dbtJobRuns", "dbtJobRuns")
 DbtTest.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 DbtTest.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
@@ -880,9 +824,7 @@ DbtTest.DBT_MODELS = RelationField("dbtModels")
 DbtTest.DBT_SOURCES = RelationField("dbtSources")
 DbtTest.DBT_MODEL_COLUMNS = RelationField("dbtModelColumns")
 DbtTest.SQL_ASSETS = RelationField("sqlAssets")
-DbtTest.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
-    "gcpDataplexAspectTypeMetadataEntities"
-)
+DbtTest.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField("gcpDataplexAspectTypeMetadataEntities")
 DbtTest.MEANINGS = RelationField("meanings")
 DbtTest.MC_MONITORS = RelationField("mcMonitors")
 DbtTest.MC_INCIDENTS = RelationField("mcIncidents")
