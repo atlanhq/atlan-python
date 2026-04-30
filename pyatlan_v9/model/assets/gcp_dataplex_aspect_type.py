@@ -112,8 +112,6 @@ class GCPDataplexAspectType(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "GCPDataplexAspectType"
-
     gcp_dataplex_aspect_type_resource_name: Union[str, None, UnsetType] = UNSET
     """Full GCP resource name of this Aspect Type (e.g. projects/{project}/locations/{location}/aspectTypes/{id}). Used to match against assetGCPDataplexAspectType on BigQuery entry assets."""
 
@@ -267,6 +265,66 @@ class GCPDataplexAspectType(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "GCPDataplexAspectType"
+
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this GCPDataplexAspectType instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"GCPDataplexAspectType validation failed: {errors}")
+
+    def minimize(self) -> "GCPDataplexAspectType":
+        """
+        Return a minimal copy of this GCPDataplexAspectType with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new GCPDataplexAspectType with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new GCPDataplexAspectType instance with only the minimum required fields.
+        """
+        self.validate()
+        return GCPDataplexAspectType(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedGCPDataplexAspectType":
+        """
+        Create a :class:`RelatedGCPDataplexAspectType` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedGCPDataplexAspectType reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedGCPDataplexAspectType(guid=self.guid)
+        return RelatedGCPDataplexAspectType(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -629,6 +687,9 @@ def _gcp_dataplex_aspect_type_to_nested(
         is_incomplete=gcp_dataplex_aspect_type.is_incomplete,
         provenance_type=gcp_dataplex_aspect_type.provenance_type,
         home_id=gcp_dataplex_aspect_type.home_id,
+        depth=gcp_dataplex_aspect_type.depth,
+        immediate_upstream=gcp_dataplex_aspect_type.immediate_upstream,
+        immediate_downstream=gcp_dataplex_aspect_type.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -672,6 +733,9 @@ def _gcp_dataplex_aspect_type_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_gcp_dataplex_aspect_type_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

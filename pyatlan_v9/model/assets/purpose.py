@@ -34,7 +34,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .access_control_related import RelatedAuthPolicy
+from .access_control_related import RelatedAuthPolicy, RelatedPurpose
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -102,8 +102,6 @@ class Purpose(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "Purpose"
 
     purpose_classifications: Union[List[str], None, UnsetType] = UNSET
     """TBC"""
@@ -217,6 +215,66 @@ class Purpose(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Purpose"
+
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this Purpose instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"Purpose validation failed: {errors}")
+
+    def minimize(self) -> "Purpose":
+        """
+        Return a minimal copy of this Purpose with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new Purpose with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new Purpose instance with only the minimum required fields.
+        """
+        self.validate()
+        return Purpose(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedPurpose":
+        """
+        Create a :class:`RelatedPurpose` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedPurpose reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedPurpose(guid=self.guid)
+        return RelatedPurpose(qualified_name=self.qualified_name)
 
     @property
     def purpose_atlan_tags(self) -> Union[list[AtlanTagName], None]:
@@ -681,6 +739,9 @@ def _purpose_to_nested(purpose: Purpose) -> PurposeNested:
         is_incomplete=purpose.is_incomplete,
         provenance_type=purpose.provenance_type,
         home_id=purpose.home_id,
+        depth=purpose.depth,
+        immediate_upstream=purpose.immediate_upstream,
+        immediate_downstream=purpose.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -718,6 +779,9 @@ def _purpose_from_nested(nested: PurposeNested) -> Purpose:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_purpose_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

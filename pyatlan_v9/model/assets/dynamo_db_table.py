@@ -51,6 +51,7 @@ from .dynamo_db_related import (
     RelatedDynamoDBAttribute,
     RelatedDynamoDBGlobalSecondaryIndex,
     RelatedDynamoDBLocalSecondaryIndex,
+    RelatedDynamoDBTable,
 )
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
@@ -87,8 +88,8 @@ class DynamoDBTable(Asset):
     Represents a DynamoDB table asset in Atlan.
     """
 
-    DYNAMO_DBGSI_COUNT: ClassVar[Any] = None
-    DYNAMO_DBLSI_COUNT: ClassVar[Any] = None
+    DYNAMO_DB_TABLE_GSI_COUNT: ClassVar[Any] = None
+    DYNAMO_DB_TABLE_LSI_COUNT: ClassVar[Any] = None
     DYNAMO_DB_STATUS: ClassVar[Any] = None
     DYNAMO_DB_PARTITION_KEY: ClassVar[Any] = None
     DYNAMO_DB_SORT_KEY: ClassVar[Any] = None
@@ -198,15 +199,13 @@ class DynamoDBTable(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "DynamoDBTable"
-
-    dynamo_dbgsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBGSICount"
+    dynamo_db_table_gsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBTableGSICount"
     )
     """Represents the number of global secondary indexes on the table."""
 
-    dynamo_dblsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBLSICount"
+    dynamo_db_table_lsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBTableLSICount"
     )
     """Represents the number of local secondary indexes on the table."""
 
@@ -578,6 +577,66 @@ class DynamoDBTable(Asset):
         self.type_name = "DynamoDBTable"
 
     # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this DynamoDBTable instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"DynamoDBTable validation failed: {errors}")
+
+    def minimize(self) -> "DynamoDBTable":
+        """
+        Return a minimal copy of this DynamoDBTable with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new DynamoDBTable with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new DynamoDBTable instance with only the minimum required fields.
+        """
+        self.validate()
+        return DynamoDBTable(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedDynamoDBTable":
+        """
+        Create a :class:`RelatedDynamoDBTable` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedDynamoDBTable reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedDynamoDBTable(guid=self.guid)
+        return RelatedDynamoDBTable(qualified_name=self.qualified_name)
+
+    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -632,13 +691,13 @@ class DynamoDBTable(Asset):
 class DynamoDBTableAttributes(AssetAttributes):
     """DynamoDBTable-specific attributes for nested API format."""
 
-    dynamo_dbgsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBGSICount"
+    dynamo_db_table_gsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBTableGSICount"
     )
     """Represents the number of global secondary indexes on the table."""
 
-    dynamo_dblsi_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="dynamoDBLSICount"
+    dynamo_db_table_lsi_count: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="dynamoDBTableLSICount"
     )
     """Represents the number of local secondary indexes on the table."""
 
@@ -1090,8 +1149,8 @@ def _populate_dynamo_db_table_attrs(
 ) -> None:
     """Populate DynamoDBTable-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.dynamo_dbgsi_count = obj.dynamo_dbgsi_count
-    attrs.dynamo_dblsi_count = obj.dynamo_dblsi_count
+    attrs.dynamo_db_table_gsi_count = obj.dynamo_db_table_gsi_count
+    attrs.dynamo_db_table_lsi_count = obj.dynamo_db_table_lsi_count
     attrs.dynamo_db_status = obj.dynamo_db_status
     attrs.dynamo_db_partition_key = obj.dynamo_db_partition_key
     attrs.dynamo_db_sort_key = obj.dynamo_db_sort_key
@@ -1159,8 +1218,8 @@ def _populate_dynamo_db_table_attrs(
 def _extract_dynamo_db_table_attrs(attrs: DynamoDBTableAttributes) -> dict:
     """Extract all DynamoDBTable attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["dynamo_dbgsi_count"] = attrs.dynamo_dbgsi_count
-    result["dynamo_dblsi_count"] = attrs.dynamo_dblsi_count
+    result["dynamo_db_table_gsi_count"] = attrs.dynamo_db_table_gsi_count
+    result["dynamo_db_table_lsi_count"] = attrs.dynamo_db_table_lsi_count
     result["dynamo_db_status"] = attrs.dynamo_db_status
     result["dynamo_db_partition_key"] = attrs.dynamo_db_partition_key
     result["dynamo_db_sort_key"] = attrs.dynamo_db_sort_key
@@ -1267,6 +1326,9 @@ def _dynamo_db_table_to_nested(dynamo_db_table: DynamoDBTable) -> DynamoDBTableN
         is_incomplete=dynamo_db_table.is_incomplete,
         provenance_type=dynamo_db_table.provenance_type,
         home_id=dynamo_db_table.home_id,
+        depth=dynamo_db_table.depth,
+        immediate_upstream=dynamo_db_table.immediate_upstream,
+        immediate_downstream=dynamo_db_table.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1308,6 +1370,9 @@ def _dynamo_db_table_from_nested(nested: DynamoDBTableNested) -> DynamoDBTable:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_dynamo_db_table_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1337,8 +1402,12 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-DynamoDBTable.DYNAMO_DBGSI_COUNT = NumericField("dynamoDBGSICount", "dynamoDBGSICount")
-DynamoDBTable.DYNAMO_DBLSI_COUNT = NumericField("dynamoDBLSICount", "dynamoDBLSICount")
+DynamoDBTable.DYNAMO_DB_TABLE_GSI_COUNT = NumericField(
+    "dynamoDBTableGSICount", "dynamoDBTableGSICount"
+)
+DynamoDBTable.DYNAMO_DB_TABLE_LSI_COUNT = NumericField(
+    "dynamoDBTableLSICount", "dynamoDBTableLSICount"
+)
 DynamoDBTable.DYNAMO_DB_STATUS = KeywordField("dynamoDBStatus", "dynamoDBStatus")
 DynamoDBTable.DYNAMO_DB_PARTITION_KEY = KeywordField(
     "dynamoDBPartitionKey", "dynamoDBPartitionKey"

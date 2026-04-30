@@ -78,19 +78,65 @@ class Referenceable(Entity):
         if self.type_name is UNSET:
             self.type_name = "Referenceable"
 
-    # DEFERRED: Referenceable.TYPE_NAME = InternalKeywordTextField("typeName", "__typeName.keyword", "__typeName", "__typeName")
-    # DEFERRED: Referenceable.GUID = InternalKeywordField("guid", "__guid", "__guid")
-    # DEFERRED: Referenceable.CREATED_BY = InternalKeywordField("createdBy", "__createdBy", "__createdBy")
-    # DEFERRED: Referenceable.UPDATED_BY = InternalKeywordField("updatedBy", "__modifiedBy", "__modifiedBy")
-    # DEFERRED: Referenceable.STATUS = InternalKeywordField("status", "__state", "__state")
-    # DEFERRED: Referenceable.ATLAN_TAGS = InternalKeywordTextField("classificationNames", "__traitNames", "__classificationsText", "__classificationNames")
-    # DEFERRED: Referenceable.PROPAGATED_ATLAN_TAGS = InternalKeywordTextField("classificationNames", "__propagatedTraitNames", "__classificationsText", "__propagatedClassificationNames")
-    # DEFERRED: Referenceable.ASSIGNED_TERMS = InternalKeywordTextField("meanings", "__meanings", "__meaningsText", "__meanings")
-    # DEFERRED: Referenceable.SUPER_TYPE_NAMES = InternalKeywordTextField("typeName", "__superTypeNames.keyword", "__superTypeNames", "__superTypeNames")
-    # DEFERRED: Referenceable.CREATE_TIME = InternalNumericField("createTime", "__timestamp", "__timestamp")
-    # DEFERRED: Referenceable.UPDATE_TIME = InternalNumericField("updateTime", "__modificationTimestamp", "__modificationTimestamp")
-    # DEFERRED: Referenceable.QUALIFIED_NAME = KeywordTextField("qualifiedName", "qualifiedName", "qualifiedName.text")
-    # DEFERRED: Referenceable.CUSTOM_ATTRIBUTES = TextField("customAttributes", "customAttributes")
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this Referenceable instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"Referenceable validation failed: {errors}")
+
+    def minimize(self) -> "Referenceable":
+        """
+        Return a minimal copy of this Referenceable with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new Referenceable with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new Referenceable instance with only the minimum required fields.
+        """
+        self.validate()
+        return Referenceable(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedReferenceable":
+        """
+        Create a :class:`RelatedReferenceable` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedReferenceable reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedReferenceable(guid=self.guid)
+        return RelatedReferenceable(qualified_name=self.qualified_name)
 
     # Entity-level field descriptor placeholders (assigned at module bottom)
     TYPE_NAME: ClassVar[Any] = None
@@ -260,6 +306,9 @@ class ReferenceableNested(
     is_incomplete: Union[Any, UnsetType] = UNSET
     provenance_type: Union[Any, UnsetType] = UNSET
     home_id: Union[Any, UnsetType] = UNSET
+    depth: Union[Any, UnsetType] = UNSET
+    immediate_upstream: Union[Any, UnsetType] = UNSET
+    immediate_downstream: Union[Any, UnsetType] = UNSET
 
     attributes: Union[ReferenceableAttributes, UnsetType] = UNSET
     relationship_attributes: Union[ReferenceableRelationshipAttributes, UnsetType] = (
@@ -335,6 +384,9 @@ def _referenceable_to_nested(referenceable: Referenceable) -> ReferenceableNeste
         is_incomplete=referenceable.is_incomplete,
         provenance_type=referenceable.provenance_type,
         home_id=referenceable.home_id,
+        depth=referenceable.depth,
+        immediate_upstream=referenceable.immediate_upstream,
+        immediate_downstream=referenceable.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -376,6 +428,9 @@ def _referenceable_from_nested(nested: ReferenceableNested) -> Referenceable:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_referenceable_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -444,5 +499,45 @@ Referenceable.CREATE_TIME = InternalNumericField(
 )
 Referenceable.UPDATE_TIME = InternalNumericField(
     "updateTime", "__modificationTimestamp", "__modificationTimestamp"
+)
+Referenceable.CUSTOM_ATTRIBUTES = TextField("customAttributes", "customAttributes")
+
+Referenceable.TYPE_NAME = InternalKeywordTextField(
+    "typeName", "__typeName.keyword", "__typeName", "__typeName"
+)
+Referenceable.GUID = InternalKeywordField("guid", "__guid", "__guid")
+Referenceable.CREATED_BY = InternalKeywordField(
+    "createdBy", "__createdBy", "__createdBy"
+)
+Referenceable.UPDATED_BY = InternalKeywordField(
+    "updatedBy", "__modifiedBy", "__modifiedBy"
+)
+Referenceable.STATUS = InternalKeywordField("status", "__state", "__state")
+Referenceable.ATLAN_TAGS = InternalKeywordTextField(
+    "classificationNames",
+    "__traitNames",
+    "__classificationsText",
+    "__classificationNames",
+)
+Referenceable.PROPAGATED_ATLAN_TAGS = InternalKeywordTextField(
+    "classificationNames",
+    "__propagatedTraitNames",
+    "__classificationsText",
+    "__propagatedClassificationNames",
+)
+Referenceable.ASSIGNED_TERMS = InternalKeywordTextField(
+    "meanings", "__meanings", "__meaningsText", "__meanings"
+)
+Referenceable.SUPER_TYPE_NAMES = InternalKeywordTextField(
+    "typeName", "__superTypeNames.keyword", "__superTypeNames", "__superTypeNames"
+)
+Referenceable.CREATE_TIME = InternalNumericField(
+    "createTime", "__timestamp", "__timestamp"
+)
+Referenceable.UPDATE_TIME = InternalNumericField(
+    "updateTime", "__modificationTimestamp", "__modificationTimestamp"
+)
+Referenceable.QUALIFIED_NAME = KeywordTextField(
+    "qualifiedName", "qualifiedName", "qualifiedName.text"
 )
 Referenceable.CUSTOM_ATTRIBUTES = TextField("customAttributes", "customAttributes")

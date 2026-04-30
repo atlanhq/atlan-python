@@ -43,7 +43,7 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .matillion_related import RelatedMatillionJob
+from .matillion_related import RelatedMatillionComponent, RelatedMatillionJob
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -108,8 +108,6 @@ class MatillionComponent(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "MatillionComponent"
 
     matillion_component_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the component in Matillion."""
@@ -260,6 +258,76 @@ class MatillionComponent(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this MatillionComponent instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.matillion_job is UNSET:
+                errors.append("matillion_job is required for creation")
+            if self.matillion_job_name is UNSET:
+                errors.append("matillion_job_name is required for creation")
+            if self.matillion_job_qualified_name is UNSET:
+                errors.append("matillion_job_qualified_name is required for creation")
+        if errors:
+            raise ValueError(f"MatillionComponent validation failed: {errors}")
+
+    def minimize(self) -> "MatillionComponent":
+        """
+        Return a minimal copy of this MatillionComponent with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new MatillionComponent with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new MatillionComponent instance with only the minimum required fields.
+        """
+        self.validate()
+        return MatillionComponent(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedMatillionComponent":
+        """
+        Create a :class:`RelatedMatillionComponent` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedMatillionComponent reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedMatillionComponent(guid=self.guid)
+        return RelatedMatillionComponent(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -599,6 +667,9 @@ def _matillion_component_to_nested(
         is_incomplete=matillion_component.is_incomplete,
         provenance_type=matillion_component.provenance_type,
         home_id=matillion_component.home_id,
+        depth=matillion_component.depth,
+        immediate_upstream=matillion_component.immediate_upstream,
+        immediate_downstream=matillion_component.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -642,6 +713,9 @@ def _matillion_component_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_matillion_component_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

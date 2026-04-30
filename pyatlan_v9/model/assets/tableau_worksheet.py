@@ -57,6 +57,7 @@ from .tableau_related import (
     RelatedTableauDashboard,
     RelatedTableauDatasourceField,
     RelatedTableauWorkbook,
+    RelatedTableauWorksheet,
     RelatedTableauWorksheetField,
 )
 
@@ -115,8 +116,6 @@ class TableauWorksheet(Asset):
     TABLEAU_WORKSHEET_FIELDS: ClassVar[Any] = None
     CALCULATED_FIELDS: ClassVar[Any] = None
     WORKBOOK: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "TableauWorksheet"
 
     site_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the site in which this worksheet exists."""
@@ -276,6 +275,78 @@ class TableauWorksheet(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+/[^/]+$"
     )
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this TableauWorksheet instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.workbook is UNSET:
+                errors.append("workbook is required for creation")
+            if self.workbook_qualified_name is UNSET:
+                errors.append("workbook_qualified_name is required for creation")
+            if self.project_qualified_name is UNSET:
+                errors.append("project_qualified_name is required for creation")
+            if self.site_qualified_name is UNSET:
+                errors.append("site_qualified_name is required for creation")
+        if errors:
+            raise ValueError(f"TableauWorksheet validation failed: {errors}")
+
+    def minimize(self) -> "TableauWorksheet":
+        """
+        Return a minimal copy of this TableauWorksheet with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new TableauWorksheet with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new TableauWorksheet instance with only the minimum required fields.
+        """
+        self.validate()
+        return TableauWorksheet(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedTableauWorksheet":
+        """
+        Create a :class:`RelatedTableauWorksheet` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedTableauWorksheet reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedTableauWorksheet(guid=self.guid)
+        return RelatedTableauWorksheet(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -617,6 +688,9 @@ def _tableau_worksheet_to_nested(
         is_incomplete=tableau_worksheet.is_incomplete,
         provenance_type=tableau_worksheet.provenance_type,
         home_id=tableau_worksheet.home_id,
+        depth=tableau_worksheet.depth,
+        immediate_upstream=tableau_worksheet.immediate_upstream,
+        immediate_downstream=tableau_worksheet.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -658,6 +732,9 @@ def _tableau_worksheet_from_nested(nested: TableauWorksheetNested) -> TableauWor
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_tableau_worksheet_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

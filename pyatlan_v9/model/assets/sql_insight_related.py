@@ -52,34 +52,36 @@ class RelatedSqlInsightJoin(RelatedSqlInsight):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SqlInsightJoin" so it serializes correctly
 
-    sql_insight_source_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_join_source_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the source dataset in this join pattern."""
 
-    sql_insight_joined_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_join_joined_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the joined dataset in this join pattern."""
 
-    sql_insight_type: Union[str, None, UnsetType] = UNSET
+    sql_insight_join_type: Union[str, None, UnsetType] = UNSET
     """Type of SQL join observed in this pattern."""
 
-    sql_insight_cardinality: Union[str, None, UnsetType] = UNSET
+    sql_insight_join_cardinality: Union[str, None, UnsetType] = UNSET
     """Observed cardinality of the join relationship."""
 
-    sql_insight_when_to_use: Union[str, None, UnsetType] = UNSET
+    sql_insight_join_when_to_use: Union[str, None, UnsetType] = UNSET
     """Guidance on when this join pattern should be used."""
 
-    sql_insight_column_pairs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    sql_insight_join_column_pairs: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
     """Column mappings in this join, pairing source columns to joined columns."""
 
-    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_join_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries that use this join pattern."""
 
-    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_join_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have used this join pattern."""
 
-    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_join_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this join pattern was last observed, in milliseconds."""
 
-    sql_insight_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    sql_insight_join_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """Example SQL queries that demonstrate this join pattern, with usage details."""
 
     def __post_init__(self) -> None:
@@ -97,36 +99,38 @@ class RelatedSqlInsightFilter(RelatedSqlInsight):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SqlInsightFilter" so it serializes correctly
 
-    sql_insight_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the dataset containing the filtered column."""
 
-    sql_insight_column_qualified_name: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the filtered column."""
 
-    sql_insight_common_values: Union[List[str], None, UnsetType] = UNSET
+    sql_insight_filter_common_values: Union[List[str], None, UnsetType] = UNSET
     """Common values observed for this filter."""
 
-    sql_insight_operator: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_operator: Union[str, None, UnsetType] = UNSET
     """SQL operator observed on this column, such as =, !=, IN, LIKE."""
 
-    sql_insight_predicate_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlInsightPredicateSQL"
+    sql_insight_filter_predicate_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlInsightFilterPredicateSQL"
     )
     """SQL predicate expression for this filter pattern."""
 
-    sql_insight_when_to_use: Union[str, None, UnsetType] = UNSET
+    sql_insight_filter_when_to_use: Union[str, None, UnsetType] = UNSET
     """Guidance on when this filter pattern should be used."""
 
-    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries that use this filter pattern."""
 
-    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have used this filter pattern."""
 
-    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_filter_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this filter pattern was last observed, in milliseconds."""
 
-    sql_insight_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    sql_insight_filter_example_queries: Union[List[Dict[str, Any]], None, UnsetType] = (
+        UNSET
+    )
     """Example SQL queries that demonstrate this filter pattern, with usage details."""
 
     def __post_init__(self) -> None:
@@ -144,21 +148,21 @@ class RelatedSqlInsightBusinessQuestion(RelatedSqlInsight):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SqlInsightBusinessQuestion" so it serializes correctly
 
-    sql_insight_text: Union[str, None, UnsetType] = UNSET
+    sql_insight_business_question_text: Union[str, None, UnsetType] = UNSET
     """Natural language text of the business question."""
 
-    sql_insight_canonical_sql: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlInsightCanonicalSQL"
+    sql_insight_business_question_canonical_sql: Union[str, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="sqlInsightBusinessQuestionCanonicalSQL")
     )
     """Canonical SQL query that answers this business question."""
 
-    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_business_question_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries associated with this business question."""
 
-    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_business_question_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have asked this question."""
 
-    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_business_question_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this question was last observed, in milliseconds."""
 
     def __post_init__(self) -> None:

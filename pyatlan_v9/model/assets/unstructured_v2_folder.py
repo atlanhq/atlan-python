@@ -112,8 +112,6 @@ class UnstructuredV2Folder(Asset):
     UNSTRUCTUREDV2_PARENT_FOLDER: ClassVar[Any] = None
     UNSTRUCTUREDV2_OBJECTS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "UnstructuredV2Folder"
-
     unstructuredv2_container_name: Union[str, None, UnsetType] = UNSET
     """Simple name of the container in which this folder exists."""
 
@@ -268,6 +266,72 @@ class UnstructuredV2Folder(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this UnstructuredV2Folder instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.unstructuredv2_container is UNSET:
+                errors.append("unstructuredv2_container is required for creation")
+        if errors:
+            raise ValueError(f"UnstructuredV2Folder validation failed: {errors}")
+
+    def minimize(self) -> "UnstructuredV2Folder":
+        """
+        Return a minimal copy of this UnstructuredV2Folder with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new UnstructuredV2Folder with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new UnstructuredV2Folder instance with only the minimum required fields.
+        """
+        self.validate()
+        return UnstructuredV2Folder(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedUnstructuredV2Folder":
+        """
+        Create a :class:`RelatedUnstructuredV2Folder` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedUnstructuredV2Folder reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedUnstructuredV2Folder(guid=self.guid)
+        return RelatedUnstructuredV2Folder(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -610,6 +674,9 @@ def _unstructured_v2_folder_to_nested(
         is_incomplete=unstructured_v2_folder.is_incomplete,
         provenance_type=unstructured_v2_folder.provenance_type,
         home_id=unstructured_v2_folder.home_id,
+        depth=unstructured_v2_folder.depth,
+        immediate_upstream=unstructured_v2_folder.immediate_upstream,
+        immediate_downstream=unstructured_v2_folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -653,6 +720,9 @@ def _unstructured_v2_folder_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_unstructured_v2_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

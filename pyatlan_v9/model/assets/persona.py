@@ -35,7 +35,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 from pyatlan_v9.utils import init_guid, validate_required_fields
 
-from .access_control_related import RelatedAuthPolicy
+from .access_control_related import RelatedAuthPolicy, RelatedPersona
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -105,8 +105,6 @@ class Persona(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "Persona"
 
     persona_groups: Union[List[str], None, UnsetType] = UNSET
     """TBC"""
@@ -226,6 +224,66 @@ class Persona(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Persona"
+
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this Persona instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"Persona validation failed: {errors}")
+
+    def minimize(self) -> "Persona":
+        """
+        Return a minimal copy of this Persona with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new Persona with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new Persona instance with only the minimum required fields.
+        """
+        self.validate()
+        return Persona(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedPersona":
+        """
+        Create a :class:`RelatedPersona` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedPersona reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedPersona(guid=self.guid)
+        return RelatedPersona(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -678,6 +736,9 @@ def _persona_to_nested(persona: Persona) -> PersonaNested:
         is_incomplete=persona.is_incomplete,
         provenance_type=persona.provenance_type,
         home_id=persona.home_id,
+        depth=persona.depth,
+        immediate_upstream=persona.immediate_upstream,
+        immediate_downstream=persona.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -715,6 +776,9 @@ def _persona_from_nested(nested: PersonaNested) -> Persona:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_persona_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

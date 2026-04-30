@@ -4,18 +4,17 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-QuickSightDataset asset model with flattened inheritance.
+KnowledgeFile asset model with flattened inheritance.
 
 This module provides:
-- QuickSightDataset: Flat asset class (easy to use)
-- QuickSightDatasetAttributes: Nested attributes struct (extends AssetAttributes)
-- QuickSightDatasetNested: Nested API format struct
+- KnowledgeFile: Flat asset class (easy to use)
+- KnowledgeFileAttributes: Nested attributes struct (extends AssetAttributes)
+- KnowledgeFileNested: Nested API format struct
 """
 
 from __future__ import annotations
 
-import re
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -25,7 +24,6 @@ from pyatlan_v9.model.conversion_utils import (
 )
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
-from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
@@ -39,20 +37,17 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .asset_related import RelatedAsset
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
+from .knowledge_related import RelatedKnowledgeFile, RelatedKnowledgeFolder
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .quick_sight_related import (
-    RelatedQuickSightDataset,
-    RelatedQuickSightDatasetField,
-    RelatedQuickSightFolder,
-)
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
@@ -65,17 +60,22 @@ from .spark_related import RelatedSparkJob
 
 
 @register_asset
-class QuickSightDataset(Asset):
+class KnowledgeFile(Asset):
     """
-    Instance of a QuickSight dataset in Atlan. These are an internal data model built to be used by analysis. In a dataset, data can be pulled from different sources, joined, filtered, and columns translated to more business-friendly names when preparing the data for visualizing in the analysis layer.
+    User-uploaded unstructured file that feeds Atlan enrichment agents and context pipelines.
     """
 
-    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[Any] = None
-    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[Any] = None
-    QUICK_SIGHT_ID: ClassVar[Any] = None
-    QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
-    QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
+    KNOWLEDGE_CONTENT_HASH: ClassVar[Any] = None
+    KNOWLEDGE_FOLDER_NAMES: ClassVar[Any] = None
+    KNOWLEDGE_CONTENT_VERSION_ID: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
+    FILE_TYPE: ClassVar[Any] = None
+    FILE_PATH: ClassVar[Any] = None
+    RESOURCE_FILE_SIZE: ClassVar[Any] = None
+    LINK: ClassVar[Any] = None
+    IS_GLOBAL: ClassVar[Any] = None
+    REFERENCE: ClassVar[Any] = None
+    RESOURCE_METADATA: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
@@ -92,17 +92,17 @@ class QuickSightDataset(Asset):
     DQ_REFERENCE_DATASET_RULES: ClassVar[Any] = None
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
+    KNOWLEDGE_FOLDERS: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
     MC_INCIDENTS: ClassVar[Any] = None
     PARTIAL_CHILD_FIELDS: ClassVar[Any] = None
     PARTIAL_CHILD_OBJECTS: ClassVar[Any] = None
     INPUT_TO_PROCESSES: ClassVar[Any] = None
     OUTPUT_FROM_PROCESSES: ClassVar[Any] = None
-    QUICK_SIGHT_DATASET_FOLDERS: ClassVar[Any] = None
-    QUICK_SIGHT_DATASET_FIELDS: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_TO: ClassVar[Any] = None
     USER_DEF_RELATIONSHIP_FROM: ClassVar[Any] = None
     FILES: ClassVar[Any] = None
+    FILE_ASSETS: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
@@ -110,23 +110,38 @@ class QuickSightDataset(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = UNSET
-    """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
+    knowledge_content_hash: Union[str, None, UnsetType] = UNSET
+    """SHA-256 hex digest of file content, used for deduplication."""
 
-    quick_sight_dataset_column_count: Union[int, None, UnsetType] = UNSET
-    """Number of columns present in this dataset."""
+    knowledge_folder_names: Union[List[str], None, UnsetType] = UNSET
+    """Display names of the knowledge folders containing this file."""
 
-    quick_sight_id: Union[str, None, UnsetType] = UNSET
-    """Unique identifier for the QuickSight asset."""
-
-    quick_sight_sheet_id: Union[str, None, UnsetType] = UNSET
-    """Unique identifier for the QuickSight sheet."""
-
-    quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
-    """Name of the QuickSight sheet."""
+    knowledge_content_version_id: Union[str, None, UnsetType] = UNSET
+    """Provider-specific version identifier for the active file content (e.g., S3 VersionId, GCS generation number). Use with filePath to retrieve exact bytes at a point in time."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
+    file_type: Union[str, None, UnsetType] = UNSET
+    """Type (extension) of the file."""
+
+    file_path: Union[str, None, UnsetType] = UNSET
+    """URL giving the online location where the file can be accessed."""
+
+    resource_file_size: Union[int, None, UnsetType] = UNSET
+    """Size of the file in bytes."""
+
+    link: Union[str, None, UnsetType] = UNSET
+    """URL to the resource."""
+
+    is_global: Union[bool, None, UnsetType] = UNSET
+    """Whether the resource is global (true) or not (false)."""
+
+    reference: Union[str, None, UnsetType] = UNSET
+    """Reference to the resource."""
+
+    resource_metadata: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Metadata of the resource."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -182,6 +197,9 @@ class QuickSightDataset(Asset):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_folders: Union[List[RelatedKnowledgeFolder], None, UnsetType] = UNSET
+    """Knowledge folders in which this file exists."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -200,16 +218,6 @@ class QuickSightDataset(Asset):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    quick_sight_dataset_folders: Union[
-        List[RelatedQuickSightFolder], None, UnsetType
-    ] = UNSET
-    """"""
-
-    quick_sight_dataset_fields: Union[
-        List[RelatedQuickSightDatasetField], None, UnsetType
-    ] = UNSET
-    """Fields that exist within this dataset."""
-
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
@@ -219,6 +227,9 @@ class QuickSightDataset(Asset):
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    file_assets: Union[RelatedAsset, None, UnsetType] = UNSET
     """"""
 
     links: Union[List[RelatedLink], None, UnsetType] = UNSET
@@ -242,17 +253,15 @@ class QuickSightDataset(Asset):
     """"""
 
     def __post_init__(self) -> None:
-        self.type_name = "QuickSightDataset"
+        self.type_name = "KnowledgeFile"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this QuickSightDataset instance.
+        Dry-run validation of this KnowledgeFile instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -274,97 +283,40 @@ class QuickSightDataset(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
         if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.quick_sight_dataset_folders is UNSET:
-                errors.append("quick_sight_dataset_folders is required for creation")
+            if self.file_type is UNSET:
+                errors.append("file_type is required for creation")
         if errors:
-            raise ValueError(f"QuickSightDataset validation failed: {errors}")
+            raise ValueError(f"KnowledgeFile validation failed: {errors}")
 
-    def minimize(self) -> "QuickSightDataset":
+    def minimize(self) -> "KnowledgeFile":
         """
-        Return a minimal copy of this QuickSightDataset with only updater-required fields.
+        Return a minimal copy of this KnowledgeFile with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new QuickSightDataset with only the fields needed for an update
+        returns a new KnowledgeFile with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new QuickSightDataset instance with only the minimum required fields.
+            A new KnowledgeFile instance with only the minimum required fields.
         """
         self.validate()
-        return QuickSightDataset(qualified_name=self.qualified_name, name=self.name)
+        return KnowledgeFile(qualified_name=self.qualified_name, name=self.name)
 
-    def relate(self) -> "RelatedQuickSightDataset":
+    def relate(self) -> "RelatedKnowledgeFile":
         """
-        Create a :class:`RelatedQuickSightDataset` reference from this instance.
+        Create a :class:`RelatedKnowledgeFile` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedQuickSightDataset reference to this asset.
+            A RelatedKnowledgeFile reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedQuickSightDataset(guid=self.guid)
-        return RelatedQuickSightDataset(qualified_name=self.qualified_name)
-
-    @classmethod
-    @init_guid
-    def creator(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        quick_sight_id: str,
-        quick_sight_dataset_import_mode: Union[str, None] = None,
-        quick_sight_dataset_folders: Union[list[str], None] = None,
-    ) -> "QuickSightDataset":
-        """Create a new QuickSightDataset asset."""
-        validate_required_fields(
-            ["name", "connection_qualified_name", "quick_sight_id"],
-            [name, connection_qualified_name, quick_sight_id],
-        )
-        fields = connection_qualified_name.split("/")
-        connector_name = fields[1] if len(fields) > 1 else None
-        folder_refs = (
-            [
-                RelatedQuickSightFolder(unique_attributes={"qualifiedName": folder_qn})
-                for folder_qn in quick_sight_dataset_folders
-            ]
-            if quick_sight_dataset_folders
-            else UNSET
-        )
-        return cls(
-            name=name,
-            quick_sight_id=quick_sight_id,
-            qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
-            connection_qualified_name=connection_qualified_name,
-            connector_name=connector_name,
-            quick_sight_dataset_import_mode=quick_sight_dataset_import_mode
-            if quick_sight_dataset_import_mode is not None
-            else UNSET,
-            quick_sight_dataset_folders=folder_refs,
-        )
-
-    @classmethod
-    def updater(cls, *, qualified_name: str, name: str) -> "QuickSightDataset":
-        """Create a QuickSightDataset instance for update operations."""
-        validate_required_fields(["qualified_name", "name"], [qualified_name, name])
-        return cls(qualified_name=qualified_name, name=name)
-
-    def trim_to_required(self) -> "QuickSightDataset":
-        """Return only fields required for update operations."""
-        return QuickSightDataset.updater(
-            qualified_name=self.qualified_name, name=self.name
-        )
+            return RelatedKnowledgeFile(guid=self.guid)
+        return RelatedKnowledgeFile(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -392,12 +344,10 @@ class QuickSightDataset(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _quick_sight_dataset_to_nested_bytes(self, serde)
+        return _knowledge_file_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> QuickSightDataset:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> KnowledgeFile:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -406,13 +356,13 @@ class QuickSightDataset(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            QuickSightDataset instance
+            KnowledgeFile instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _quick_sight_dataset_from_nested_bytes(json_data, serde)
+        return _knowledge_file_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -420,30 +370,45 @@ class QuickSightDataset(Asset):
 # =============================================================================
 
 
-class QuickSightDatasetAttributes(AssetAttributes):
-    """QuickSightDataset-specific attributes for nested API format."""
+class KnowledgeFileAttributes(AssetAttributes):
+    """KnowledgeFile-specific attributes for nested API format."""
 
-    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = UNSET
-    """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
+    knowledge_content_hash: Union[str, None, UnsetType] = UNSET
+    """SHA-256 hex digest of file content, used for deduplication."""
 
-    quick_sight_dataset_column_count: Union[int, None, UnsetType] = UNSET
-    """Number of columns present in this dataset."""
+    knowledge_folder_names: Union[List[str], None, UnsetType] = UNSET
+    """Display names of the knowledge folders containing this file."""
 
-    quick_sight_id: Union[str, None, UnsetType] = UNSET
-    """Unique identifier for the QuickSight asset."""
-
-    quick_sight_sheet_id: Union[str, None, UnsetType] = UNSET
-    """Unique identifier for the QuickSight sheet."""
-
-    quick_sight_sheet_name: Union[str, None, UnsetType] = UNSET
-    """Name of the QuickSight sheet."""
+    knowledge_content_version_id: Union[str, None, UnsetType] = UNSET
+    """Provider-specific version identifier for the active file content (e.g., S3 VersionId, GCS generation number). Use with filePath to retrieve exact bytes at a point in time."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
+    file_type: Union[str, None, UnsetType] = UNSET
+    """Type (extension) of the file."""
 
-class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
-    """QuickSightDataset-specific relationship attributes for nested API format."""
+    file_path: Union[str, None, UnsetType] = UNSET
+    """URL giving the online location where the file can be accessed."""
+
+    resource_file_size: Union[int, None, UnsetType] = UNSET
+    """Size of the file in bytes."""
+
+    link: Union[str, None, UnsetType] = UNSET
+    """URL to the resource."""
+
+    is_global: Union[bool, None, UnsetType] = UNSET
+    """Whether the resource is global (true) or not (false)."""
+
+    reference: Union[str, None, UnsetType] = UNSET
+    """Reference to the resource."""
+
+    resource_metadata: Union[Dict[str, str], None, UnsetType] = UNSET
+    """Metadata of the resource."""
+
+
+class KnowledgeFileRelationshipAttributes(AssetRelationshipAttributes):
+    """KnowledgeFile-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -499,6 +464,9 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
 
+    knowledge_folders: Union[List[RelatedKnowledgeFolder], None, UnsetType] = UNSET
+    """Knowledge folders in which this file exists."""
+
     mc_monitors: Union[List[RelatedMCMonitor], None, UnsetType] = UNSET
     """Monitors that observe this asset."""
 
@@ -517,16 +485,6 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     output_from_processes: Union[List[RelatedProcess], None, UnsetType] = UNSET
     """Processes from which this asset is produced as output."""
 
-    quick_sight_dataset_folders: Union[
-        List[RelatedQuickSightFolder], None, UnsetType
-    ] = UNSET
-    """"""
-
-    quick_sight_dataset_fields: Union[
-        List[RelatedQuickSightDatasetField], None, UnsetType
-    ] = UNSET
-    """Fields that exist within this dataset."""
-
     user_def_relationship_to: Union[List[RelatedReferenceable], None, UnsetType] = UNSET
     """"""
 
@@ -536,6 +494,9 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """"""
 
     files: Union[List[RelatedFile], None, UnsetType] = UNSET
+    """"""
+
+    file_assets: Union[RelatedAsset, None, UnsetType] = UNSET
     """"""
 
     links: Union[List[RelatedLink], None, UnsetType] = UNSET
@@ -559,18 +520,18 @@ class QuickSightDatasetRelationshipAttributes(AssetRelationshipAttributes):
     """"""
 
 
-class QuickSightDatasetNested(AssetNested):
-    """QuickSightDataset in nested API format for high-performance serialization."""
+class KnowledgeFileNested(AssetNested):
+    """KnowledgeFile in nested API format for high-performance serialization."""
 
-    attributes: Union[QuickSightDatasetAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        QuickSightDatasetRelationshipAttributes, UnsetType
-    ] = UNSET
+    attributes: Union[KnowledgeFileAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[KnowledgeFileRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
     append_relationship_attributes: Union[
-        QuickSightDatasetRelationshipAttributes, UnsetType
+        KnowledgeFileRelationshipAttributes, UnsetType
     ] = UNSET
     remove_relationship_attributes: Union[
-        QuickSightDatasetRelationshipAttributes, UnsetType
+        KnowledgeFileRelationshipAttributes, UnsetType
     ] = UNSET
 
 
@@ -578,7 +539,7 @@ class QuickSightDatasetNested(AssetNested):
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_QUICK_SIGHT_DATASET_REL_FIELDS: List[str] = [
+_KNOWLEDGE_FILE_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
@@ -596,17 +557,17 @@ _QUICK_SIGHT_DATASET_REL_FIELDS: List[str] = [
     "dq_reference_dataset_rules",
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
+    "knowledge_folders",
     "mc_monitors",
     "mc_incidents",
     "partial_child_fields",
     "partial_child_objects",
     "input_to_processes",
     "output_from_processes",
-    "quick_sight_dataset_folders",
-    "quick_sight_dataset_fields",
     "user_def_relationship_to",
     "user_def_relationship_from",
     "files",
+    "file_assets",
     "links",
     "readme",
     "schema_registry_subjects",
@@ -616,28 +577,38 @@ _QUICK_SIGHT_DATASET_REL_FIELDS: List[str] = [
 ]
 
 
-def _populate_quick_sight_dataset_attrs(
-    attrs: QuickSightDatasetAttributes, obj: QuickSightDataset
+def _populate_knowledge_file_attrs(
+    attrs: KnowledgeFileAttributes, obj: KnowledgeFile
 ) -> None:
-    """Populate QuickSightDataset-specific attributes on the attrs struct."""
+    """Populate KnowledgeFile-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_dataset_import_mode = obj.quick_sight_dataset_import_mode
-    attrs.quick_sight_dataset_column_count = obj.quick_sight_dataset_column_count
-    attrs.quick_sight_id = obj.quick_sight_id
-    attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
-    attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
+    attrs.knowledge_content_hash = obj.knowledge_content_hash
+    attrs.knowledge_folder_names = obj.knowledge_folder_names
+    attrs.knowledge_content_version_id = obj.knowledge_content_version_id
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
+    attrs.file_type = obj.file_type
+    attrs.file_path = obj.file_path
+    attrs.resource_file_size = obj.resource_file_size
+    attrs.link = obj.link
+    attrs.is_global = obj.is_global
+    attrs.reference = obj.reference
+    attrs.resource_metadata = obj.resource_metadata
 
 
-def _extract_quick_sight_dataset_attrs(attrs: QuickSightDatasetAttributes) -> dict:
-    """Extract all QuickSightDataset attributes from the attrs struct into a flat dict."""
+def _extract_knowledge_file_attrs(attrs: KnowledgeFileAttributes) -> dict:
+    """Extract all KnowledgeFile attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_dataset_import_mode"] = attrs.quick_sight_dataset_import_mode
-    result["quick_sight_dataset_column_count"] = attrs.quick_sight_dataset_column_count
-    result["quick_sight_id"] = attrs.quick_sight_id
-    result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
-    result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
+    result["knowledge_content_hash"] = attrs.knowledge_content_hash
+    result["knowledge_folder_names"] = attrs.knowledge_folder_names
+    result["knowledge_content_version_id"] = attrs.knowledge_content_version_id
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
+    result["file_type"] = attrs.file_type
+    result["file_path"] = attrs.file_path
+    result["resource_file_size"] = attrs.resource_file_size
+    result["link"] = attrs.link
+    result["is_global"] = attrs.is_global
+    result["reference"] = attrs.reference
+    result["resource_metadata"] = attrs.resource_metadata
     return result
 
 
@@ -646,41 +617,37 @@ def _extract_quick_sight_dataset_attrs(attrs: QuickSightDatasetAttributes) -> di
 # =============================================================================
 
 
-def _quick_sight_dataset_to_nested(
-    quick_sight_dataset: QuickSightDataset,
-) -> QuickSightDatasetNested:
-    """Convert flat QuickSightDataset to nested format."""
-    attrs = QuickSightDatasetAttributes()
-    _populate_quick_sight_dataset_attrs(attrs, quick_sight_dataset)
+def _knowledge_file_to_nested(knowledge_file: KnowledgeFile) -> KnowledgeFileNested:
+    """Convert flat KnowledgeFile to nested format."""
+    attrs = KnowledgeFileAttributes()
+    _populate_knowledge_file_attrs(attrs, knowledge_file)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        quick_sight_dataset,
-        _QUICK_SIGHT_DATASET_REL_FIELDS,
-        QuickSightDatasetRelationshipAttributes,
+        knowledge_file, _KNOWLEDGE_FILE_REL_FIELDS, KnowledgeFileRelationshipAttributes
     )
-    return QuickSightDatasetNested(
-        guid=quick_sight_dataset.guid,
-        type_name=quick_sight_dataset.type_name,
-        status=quick_sight_dataset.status,
-        version=quick_sight_dataset.version,
-        create_time=quick_sight_dataset.create_time,
-        update_time=quick_sight_dataset.update_time,
-        created_by=quick_sight_dataset.created_by,
-        updated_by=quick_sight_dataset.updated_by,
-        classifications=quick_sight_dataset.classifications,
-        classification_names=quick_sight_dataset.classification_names,
-        meanings=quick_sight_dataset.meanings,
-        labels=quick_sight_dataset.labels,
-        business_attributes=quick_sight_dataset.business_attributes,
-        custom_attributes=quick_sight_dataset.custom_attributes,
-        pending_tasks=quick_sight_dataset.pending_tasks,
-        proxy=quick_sight_dataset.proxy,
-        is_incomplete=quick_sight_dataset.is_incomplete,
-        provenance_type=quick_sight_dataset.provenance_type,
-        home_id=quick_sight_dataset.home_id,
-        depth=quick_sight_dataset.depth,
-        immediate_upstream=quick_sight_dataset.immediate_upstream,
-        immediate_downstream=quick_sight_dataset.immediate_downstream,
+    return KnowledgeFileNested(
+        guid=knowledge_file.guid,
+        type_name=knowledge_file.type_name,
+        status=knowledge_file.status,
+        version=knowledge_file.version,
+        create_time=knowledge_file.create_time,
+        update_time=knowledge_file.update_time,
+        created_by=knowledge_file.created_by,
+        updated_by=knowledge_file.updated_by,
+        classifications=knowledge_file.classifications,
+        classification_names=knowledge_file.classification_names,
+        meanings=knowledge_file.meanings,
+        labels=knowledge_file.labels,
+        business_attributes=knowledge_file.business_attributes,
+        custom_attributes=knowledge_file.custom_attributes,
+        pending_tasks=knowledge_file.pending_tasks,
+        proxy=knowledge_file.proxy,
+        is_incomplete=knowledge_file.is_incomplete,
+        provenance_type=knowledge_file.provenance_type,
+        home_id=knowledge_file.home_id,
+        depth=knowledge_file.depth,
+        immediate_upstream=knowledge_file.immediate_upstream,
+        immediate_downstream=knowledge_file.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -688,24 +655,22 @@ def _quick_sight_dataset_to_nested(
     )
 
 
-def _quick_sight_dataset_from_nested(
-    nested: QuickSightDatasetNested,
-) -> QuickSightDataset:
-    """Convert nested format to flat QuickSightDataset."""
+def _knowledge_file_from_nested(nested: KnowledgeFileNested) -> KnowledgeFile:
+    """Convert nested format to flat KnowledgeFile."""
     attrs = (
         nested.attributes
         if nested.attributes is not UNSET
-        else QuickSightDatasetAttributes()
+        else KnowledgeFileAttributes()
     )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _QUICK_SIGHT_DATASET_REL_FIELDS,
-        QuickSightDatasetRelationshipAttributes,
+        _KNOWLEDGE_FILE_REL_FIELDS,
+        KnowledgeFileRelationshipAttributes,
     )
-    return QuickSightDataset(
+    return KnowledgeFile(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -727,91 +692,88 @@ def _quick_sight_dataset_from_nested(
         depth=nested.depth,
         immediate_upstream=nested.immediate_upstream,
         immediate_downstream=nested.immediate_downstream,
-        **_extract_quick_sight_dataset_attrs(attrs),
+        **_extract_knowledge_file_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
 
-def _quick_sight_dataset_to_nested_bytes(
-    quick_sight_dataset: QuickSightDataset, serde: Serde
+def _knowledge_file_to_nested_bytes(
+    knowledge_file: KnowledgeFile, serde: Serde
 ) -> bytes:
-    """Convert flat QuickSightDataset to nested JSON bytes."""
-    return serde.encode(_quick_sight_dataset_to_nested(quick_sight_dataset))
+    """Convert flat KnowledgeFile to nested JSON bytes."""
+    return serde.encode(_knowledge_file_to_nested(knowledge_file))
 
 
-def _quick_sight_dataset_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> QuickSightDataset:
-    """Convert nested JSON bytes to flat QuickSightDataset."""
-    nested = serde.decode(data, QuickSightDatasetNested)
-    return _quick_sight_dataset_from_nested(nested)
+def _knowledge_file_from_nested_bytes(data: bytes, serde: Serde) -> KnowledgeFile:
+    """Convert nested JSON bytes to flat KnowledgeFile."""
+    nested = serde.decode(data, KnowledgeFileNested)
+    return _knowledge_file_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
     KeywordField,
-    KeywordTextField,
     NumericField,
     RelationField,
 )
 
-QuickSightDataset.QUICK_SIGHT_DATASET_IMPORT_MODE = KeywordField(
-    "quickSightDatasetImportMode", "quickSightDatasetImportMode"
+KnowledgeFile.KNOWLEDGE_CONTENT_HASH = KeywordField(
+    "knowledgeContentHash", "knowledgeContentHash"
 )
-QuickSightDataset.QUICK_SIGHT_DATASET_COLUMN_COUNT = NumericField(
-    "quickSightDatasetColumnCount", "quickSightDatasetColumnCount"
+KnowledgeFile.KNOWLEDGE_FOLDER_NAMES = KeywordField(
+    "knowledgeFolderNames", "knowledgeFolderNames"
 )
-QuickSightDataset.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
-QuickSightDataset.QUICK_SIGHT_SHEET_ID = KeywordField(
-    "quickSightSheetId", "quickSightSheetId"
+KnowledgeFile.KNOWLEDGE_CONTENT_VERSION_ID = KeywordField(
+    "knowledgeContentVersionId", "knowledgeContentVersionId"
 )
-QuickSightDataset.QUICK_SIGHT_SHEET_NAME = KeywordTextField(
-    "quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text"
-)
-QuickSightDataset.CATALOG_DATASET_GUID = KeywordField(
+KnowledgeFile.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
-QuickSightDataset.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-QuickSightDataset.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
-QuickSightDataset.ANOMALO_CHECKS = RelationField("anomaloChecks")
-QuickSightDataset.APPLICATION = RelationField("application")
-QuickSightDataset.APPLICATION_FIELD = RelationField("applicationField")
-QuickSightDataset.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-QuickSightDataset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+KnowledgeFile.FILE_TYPE = KeywordField("fileType", "fileType")
+KnowledgeFile.FILE_PATH = KeywordField("filePath", "filePath")
+KnowledgeFile.RESOURCE_FILE_SIZE = NumericField("resourceFileSize", "resourceFileSize")
+KnowledgeFile.LINK = KeywordField("link", "link")
+KnowledgeFile.IS_GLOBAL = BooleanField("isGlobal", "isGlobal")
+KnowledgeFile.REFERENCE = KeywordField("reference", "reference")
+KnowledgeFile.RESOURCE_METADATA = KeywordField("resourceMetadata", "resourceMetadata")
+KnowledgeFile.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+KnowledgeFile.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+KnowledgeFile.ANOMALO_CHECKS = RelationField("anomaloChecks")
+KnowledgeFile.APPLICATION = RelationField("application")
+KnowledgeFile.APPLICATION_FIELD = RelationField("applicationField")
+KnowledgeFile.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+KnowledgeFile.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
 )
-QuickSightDataset.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-QuickSightDataset.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-QuickSightDataset.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
-QuickSightDataset.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
-QuickSightDataset.METRICS = RelationField("metrics")
-QuickSightDataset.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-QuickSightDataset.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
-QuickSightDataset.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+KnowledgeFile.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+KnowledgeFile.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+KnowledgeFile.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+KnowledgeFile.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+KnowledgeFile.METRICS = RelationField("metrics")
+KnowledgeFile.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+KnowledgeFile.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+KnowledgeFile.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
-QuickSightDataset.MEANINGS = RelationField("meanings")
-QuickSightDataset.MC_MONITORS = RelationField("mcMonitors")
-QuickSightDataset.MC_INCIDENTS = RelationField("mcIncidents")
-QuickSightDataset.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-QuickSightDataset.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-QuickSightDataset.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-QuickSightDataset.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-QuickSightDataset.QUICK_SIGHT_DATASET_FOLDERS = RelationField(
-    "quickSightDatasetFolders"
-)
-QuickSightDataset.QUICK_SIGHT_DATASET_FIELDS = RelationField("quickSightDatasetFields")
-QuickSightDataset.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-QuickSightDataset.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
-QuickSightDataset.FILES = RelationField("files")
-QuickSightDataset.LINKS = RelationField("links")
-QuickSightDataset.README = RelationField("readme")
-QuickSightDataset.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-QuickSightDataset.SODA_CHECKS = RelationField("sodaChecks")
-QuickSightDataset.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-QuickSightDataset.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+KnowledgeFile.MEANINGS = RelationField("meanings")
+KnowledgeFile.KNOWLEDGE_FOLDERS = RelationField("knowledgeFolders")
+KnowledgeFile.MC_MONITORS = RelationField("mcMonitors")
+KnowledgeFile.MC_INCIDENTS = RelationField("mcIncidents")
+KnowledgeFile.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+KnowledgeFile.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+KnowledgeFile.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+KnowledgeFile.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+KnowledgeFile.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+KnowledgeFile.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+KnowledgeFile.FILES = RelationField("files")
+KnowledgeFile.FILE_ASSETS = RelationField("fileAssets")
+KnowledgeFile.LINKS = RelationField("links")
+KnowledgeFile.README = RelationField("readme")
+KnowledgeFile.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+KnowledgeFile.SODA_CHECKS = RelationField("sodaChecks")
+KnowledgeFile.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+KnowledgeFile.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

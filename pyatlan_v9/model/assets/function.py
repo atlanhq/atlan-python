@@ -64,7 +64,7 @@ from .sql_insight_related import (
     RelatedSqlInsightBusinessQuestion,
     RelatedSqlInsightJoin,
 )
-from .sql_related import RelatedSchema
+from .sql_related import RelatedFunction, RelatedSchema
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -78,19 +78,19 @@ class Function(Asset):
     """
 
     FUNCTION_DEFINITION: ClassVar[Any] = None
-    SQL_RETURN_TYPE: ClassVar[Any] = None
-    SQL_ARGUMENTS: ClassVar[Any] = None
-    SQL_LANGUAGE: ClassVar[Any] = None
-    SQL_TYPE: ClassVar[Any] = None
-    SQL_IS_EXTERNAL: ClassVar[Any] = None
-    SQL_IS_DMF: ClassVar[Any] = None
-    SQL_IS_SECURE: ClassVar[Any] = None
-    SQL_IS_MEMOIZABLE: ClassVar[Any] = None
-    SQL_RUNTIME_VERSION: ClassVar[Any] = None
-    SQL_EXTERNAL_ACCESS_INTEGRATIONS: ClassVar[Any] = None
-    SQL_SECRETS: ClassVar[Any] = None
-    SQL_PACKAGES: ClassVar[Any] = None
-    SQL_INSTALLED_PACKAGES: ClassVar[Any] = None
+    FUNCTION_RETURN_TYPE: ClassVar[Any] = None
+    FUNCTION_ARGUMENTS: ClassVar[Any] = None
+    FUNCTION_LANGUAGE: ClassVar[Any] = None
+    FUNCTION_TYPE: ClassVar[Any] = None
+    FUNCTION_IS_EXTERNAL: ClassVar[Any] = None
+    FUNCTION_IS_DMF: ClassVar[Any] = None
+    FUNCTION_IS_SECURE: ClassVar[Any] = None
+    FUNCTION_IS_MEMOIZABLE: ClassVar[Any] = None
+    FUNCTION_RUNTIME_VERSION: ClassVar[Any] = None
+    FUNCTION_EXTERNAL_ACCESS_INTEGRATIONS: ClassVar[Any] = None
+    FUNCTION_SECRETS: ClassVar[Any] = None
+    FUNCTION_PACKAGES: ClassVar[Any] = None
+    FUNCTION_INSTALLED_PACKAGES: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -108,6 +108,7 @@ class Function(Asset):
     IS_PROFILED: ClassVar[Any] = None
     LAST_PROFILED_AT: ClassVar[Any] = None
     SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME: ClassVar[Any] = None
+    SQL_IS_SECURE: ClassVar[Any] = None
     SQL_HAS_AI_INSIGHTS: ClassVar[Any] = None
     SQL_AI_INSIGHTS_LAST_ANALYZED_AT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_POPULAR_BUSINESS_QUESTION_COUNT: ClassVar[Any] = None
@@ -159,50 +160,48 @@ class Function(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "Function"
-
     function_definition: Union[str, None, UnsetType] = UNSET
     """Code or set of statements that determine the output of the function."""
 
-    sql_return_type: Union[str, None, UnsetType] = UNSET
+    function_return_type: Union[str, None, UnsetType] = UNSET
     """Data type of the value returned by the function."""
 
-    sql_arguments: Union[List[str], None, UnsetType] = UNSET
+    function_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the function."""
 
-    sql_language: Union[str, None, UnsetType] = UNSET
+    function_language: Union[str, None, UnsetType] = UNSET
     """Programming language in which the function is written."""
 
-    sql_type: Union[str, None, UnsetType] = UNSET
+    function_type: Union[str, None, UnsetType] = UNSET
     """Type of function."""
 
-    sql_is_external: Union[bool, None, UnsetType] = UNSET
+    function_is_external: Union[bool, None, UnsetType] = UNSET
     """Whether the function is stored or executed externally (true) or internally (false)."""
 
-    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlIsDMF"
+    function_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="functionIsDMF"
     )
     """Whether the function is a data metric function."""
 
-    sql_is_secure: Union[bool, None, UnsetType] = UNSET
-    """Whether this asset is secure (true) or not (false)."""
+    function_is_secure: Union[bool, None, UnsetType] = UNSET
+    """Whether sensitive information of the function is omitted for unauthorized users (true) or not (false)."""
 
-    sql_is_memoizable: Union[bool, None, UnsetType] = UNSET
+    function_is_memoizable: Union[bool, None, UnsetType] = UNSET
     """Whether the function must re-compute if there are no underlying changes in the values (false) or not (true)."""
 
-    sql_runtime_version: Union[str, None, UnsetType] = UNSET
+    function_runtime_version: Union[str, None, UnsetType] = UNSET
     """Version of the language runtime used by the function."""
 
-    sql_external_access_integrations: Union[str, None, UnsetType] = UNSET
+    function_external_access_integrations: Union[str, None, UnsetType] = UNSET
     """Names of external access integrations used by the function."""
 
-    sql_secrets: Union[str, None, UnsetType] = UNSET
+    function_secrets: Union[str, None, UnsetType] = UNSET
     """Secret variables used by the function."""
 
-    sql_packages: Union[str, None, UnsetType] = UNSET
+    function_packages: Union[str, None, UnsetType] = UNSET
     """Packages requested by the function."""
 
-    sql_installed_packages: Union[str, None, UnsetType] = UNSET
+    function_installed_packages: Union[str, None, UnsetType] = UNSET
     """Packages actually installed for the function."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -257,6 +256,9 @@ class Function(Asset):
         default=UNSET, name="sqlAIModelContextQualifiedName"
     )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
+
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset is secure (true) or not (false)."""
 
     sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has any AI insights data available."""
@@ -439,6 +441,80 @@ class Function(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
 
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this Function instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.function_schema is UNSET:
+                errors.append("function_schema is required for creation")
+            if self.schema_name is UNSET:
+                errors.append("schema_name is required for creation")
+            if self.schema_qualified_name is UNSET:
+                errors.append("schema_qualified_name is required for creation")
+            if self.database_name is UNSET:
+                errors.append("database_name is required for creation")
+            if self.database_qualified_name is UNSET:
+                errors.append("database_qualified_name is required for creation")
+        if errors:
+            raise ValueError(f"Function validation failed: {errors}")
+
+    def minimize(self) -> "Function":
+        """
+        Return a minimal copy of this Function with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new Function with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new Function instance with only the minimum required fields.
+        """
+        self.validate()
+        return Function(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedFunction":
+        """
+        Create a :class:`RelatedFunction` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedFunction reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedFunction(guid=self.guid)
+        return RelatedFunction(qualified_name=self.qualified_name)
+
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -497,45 +573,45 @@ class FunctionAttributes(AssetAttributes):
     function_definition: Union[str, None, UnsetType] = UNSET
     """Code or set of statements that determine the output of the function."""
 
-    sql_return_type: Union[str, None, UnsetType] = UNSET
+    function_return_type: Union[str, None, UnsetType] = UNSET
     """Data type of the value returned by the function."""
 
-    sql_arguments: Union[List[str], None, UnsetType] = UNSET
+    function_arguments: Union[List[str], None, UnsetType] = UNSET
     """Arguments that are passed in to the function."""
 
-    sql_language: Union[str, None, UnsetType] = UNSET
+    function_language: Union[str, None, UnsetType] = UNSET
     """Programming language in which the function is written."""
 
-    sql_type: Union[str, None, UnsetType] = UNSET
+    function_type: Union[str, None, UnsetType] = UNSET
     """Type of function."""
 
-    sql_is_external: Union[bool, None, UnsetType] = UNSET
+    function_is_external: Union[bool, None, UnsetType] = UNSET
     """Whether the function is stored or executed externally (true) or internally (false)."""
 
-    sql_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="sqlIsDMF"
+    function_is_dmf: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="functionIsDMF"
     )
     """Whether the function is a data metric function."""
 
-    sql_is_secure: Union[bool, None, UnsetType] = UNSET
-    """Whether this asset is secure (true) or not (false)."""
+    function_is_secure: Union[bool, None, UnsetType] = UNSET
+    """Whether sensitive information of the function is omitted for unauthorized users (true) or not (false)."""
 
-    sql_is_memoizable: Union[bool, None, UnsetType] = UNSET
+    function_is_memoizable: Union[bool, None, UnsetType] = UNSET
     """Whether the function must re-compute if there are no underlying changes in the values (false) or not (true)."""
 
-    sql_runtime_version: Union[str, None, UnsetType] = UNSET
+    function_runtime_version: Union[str, None, UnsetType] = UNSET
     """Version of the language runtime used by the function."""
 
-    sql_external_access_integrations: Union[str, None, UnsetType] = UNSET
+    function_external_access_integrations: Union[str, None, UnsetType] = UNSET
     """Names of external access integrations used by the function."""
 
-    sql_secrets: Union[str, None, UnsetType] = UNSET
+    function_secrets: Union[str, None, UnsetType] = UNSET
     """Secret variables used by the function."""
 
-    sql_packages: Union[str, None, UnsetType] = UNSET
+    function_packages: Union[str, None, UnsetType] = UNSET
     """Packages requested by the function."""
 
-    sql_installed_packages: Union[str, None, UnsetType] = UNSET
+    function_installed_packages: Union[str, None, UnsetType] = UNSET
     """Packages actually installed for the function."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -590,6 +666,9 @@ class FunctionAttributes(AssetAttributes):
         default=UNSET, name="sqlAIModelContextQualifiedName"
     )
     """Unique name of the context in which the model versions exist, or empty if it does not exist within an AI model context."""
+
+    sql_is_secure: Union[bool, None, UnsetType] = UNSET
+    """Whether this asset is secure (true) or not (false)."""
 
     sql_has_ai_insights: Union[bool, None, UnsetType] = UNSET
     """Whether this asset has any AI insights data available."""
@@ -835,19 +914,21 @@ def _populate_function_attrs(attrs: FunctionAttributes, obj: Function) -> None:
     """Populate Function-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.function_definition = obj.function_definition
-    attrs.sql_return_type = obj.sql_return_type
-    attrs.sql_arguments = obj.sql_arguments
-    attrs.sql_language = obj.sql_language
-    attrs.sql_type = obj.sql_type
-    attrs.sql_is_external = obj.sql_is_external
-    attrs.sql_is_dmf = obj.sql_is_dmf
-    attrs.sql_is_secure = obj.sql_is_secure
-    attrs.sql_is_memoizable = obj.sql_is_memoizable
-    attrs.sql_runtime_version = obj.sql_runtime_version
-    attrs.sql_external_access_integrations = obj.sql_external_access_integrations
-    attrs.sql_secrets = obj.sql_secrets
-    attrs.sql_packages = obj.sql_packages
-    attrs.sql_installed_packages = obj.sql_installed_packages
+    attrs.function_return_type = obj.function_return_type
+    attrs.function_arguments = obj.function_arguments
+    attrs.function_language = obj.function_language
+    attrs.function_type = obj.function_type
+    attrs.function_is_external = obj.function_is_external
+    attrs.function_is_dmf = obj.function_is_dmf
+    attrs.function_is_secure = obj.function_is_secure
+    attrs.function_is_memoizable = obj.function_is_memoizable
+    attrs.function_runtime_version = obj.function_runtime_version
+    attrs.function_external_access_integrations = (
+        obj.function_external_access_integrations
+    )
+    attrs.function_secrets = obj.function_secrets
+    attrs.function_packages = obj.function_packages
+    attrs.function_installed_packages = obj.function_installed_packages
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -865,6 +946,7 @@ def _populate_function_attrs(attrs: FunctionAttributes, obj: Function) -> None:
     attrs.is_profiled = obj.is_profiled
     attrs.last_profiled_at = obj.last_profiled_at
     attrs.sql_ai_model_context_qualified_name = obj.sql_ai_model_context_qualified_name
+    attrs.sql_is_secure = obj.sql_is_secure
     attrs.sql_has_ai_insights = obj.sql_has_ai_insights
     attrs.sql_ai_insights_last_analyzed_at = obj.sql_ai_insights_last_analyzed_at
     attrs.sql_ai_insights_popular_business_question_count = (
@@ -882,19 +964,21 @@ def _extract_function_attrs(attrs: FunctionAttributes) -> dict:
     """Extract all Function attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["function_definition"] = attrs.function_definition
-    result["sql_return_type"] = attrs.sql_return_type
-    result["sql_arguments"] = attrs.sql_arguments
-    result["sql_language"] = attrs.sql_language
-    result["sql_type"] = attrs.sql_type
-    result["sql_is_external"] = attrs.sql_is_external
-    result["sql_is_dmf"] = attrs.sql_is_dmf
-    result["sql_is_secure"] = attrs.sql_is_secure
-    result["sql_is_memoizable"] = attrs.sql_is_memoizable
-    result["sql_runtime_version"] = attrs.sql_runtime_version
-    result["sql_external_access_integrations"] = attrs.sql_external_access_integrations
-    result["sql_secrets"] = attrs.sql_secrets
-    result["sql_packages"] = attrs.sql_packages
-    result["sql_installed_packages"] = attrs.sql_installed_packages
+    result["function_return_type"] = attrs.function_return_type
+    result["function_arguments"] = attrs.function_arguments
+    result["function_language"] = attrs.function_language
+    result["function_type"] = attrs.function_type
+    result["function_is_external"] = attrs.function_is_external
+    result["function_is_dmf"] = attrs.function_is_dmf
+    result["function_is_secure"] = attrs.function_is_secure
+    result["function_is_memoizable"] = attrs.function_is_memoizable
+    result["function_runtime_version"] = attrs.function_runtime_version
+    result["function_external_access_integrations"] = (
+        attrs.function_external_access_integrations
+    )
+    result["function_secrets"] = attrs.function_secrets
+    result["function_packages"] = attrs.function_packages
+    result["function_installed_packages"] = attrs.function_installed_packages
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -914,6 +998,7 @@ def _extract_function_attrs(attrs: FunctionAttributes) -> dict:
     result["sql_ai_model_context_qualified_name"] = (
         attrs.sql_ai_model_context_qualified_name
     )
+    result["sql_is_secure"] = attrs.sql_is_secure
     result["sql_has_ai_insights"] = attrs.sql_has_ai_insights
     result["sql_ai_insights_last_analyzed_at"] = attrs.sql_ai_insights_last_analyzed_at
     result["sql_ai_insights_popular_business_question_count"] = (
@@ -965,6 +1050,9 @@ def _function_to_nested(function: Function) -> FunctionNested:
         is_incomplete=function.is_incomplete,
         provenance_type=function.provenance_type,
         home_id=function.home_id,
+        depth=function.depth,
+        immediate_upstream=function.immediate_upstream,
+        immediate_downstream=function.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1004,6 +1092,9 @@ def _function_from_nested(nested: FunctionNested) -> Function:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_function_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1033,24 +1124,26 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Function.FUNCTION_DEFINITION = KeywordField("functionDefinition", "functionDefinition")
-Function.SQL_RETURN_TYPE = KeywordField("sqlReturnType", "sqlReturnType")
-Function.SQL_ARGUMENTS = KeywordField("sqlArguments", "sqlArguments")
-Function.SQL_LANGUAGE = KeywordField("sqlLanguage", "sqlLanguage")
-Function.SQL_TYPE = KeywordField("sqlType", "sqlType")
-Function.SQL_IS_EXTERNAL = BooleanField("sqlIsExternal", "sqlIsExternal")
-Function.SQL_IS_DMF = BooleanField("sqlIsDMF", "sqlIsDMF")
-Function.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
-Function.SQL_IS_MEMOIZABLE = BooleanField("sqlIsMemoizable", "sqlIsMemoizable")
-Function.SQL_RUNTIME_VERSION = KeywordTextField(
-    "sqlRuntimeVersion", "sqlRuntimeVersion", "sqlRuntimeVersion.text"
+Function.FUNCTION_RETURN_TYPE = KeywordField("functionReturnType", "functionReturnType")
+Function.FUNCTION_ARGUMENTS = KeywordField("functionArguments", "functionArguments")
+Function.FUNCTION_LANGUAGE = KeywordField("functionLanguage", "functionLanguage")
+Function.FUNCTION_TYPE = KeywordField("functionType", "functionType")
+Function.FUNCTION_IS_EXTERNAL = BooleanField("functionIsExternal", "functionIsExternal")
+Function.FUNCTION_IS_DMF = BooleanField("functionIsDMF", "functionIsDMF")
+Function.FUNCTION_IS_SECURE = BooleanField("functionIsSecure", "functionIsSecure")
+Function.FUNCTION_IS_MEMOIZABLE = BooleanField(
+    "functionIsMemoizable", "functionIsMemoizable"
 )
-Function.SQL_EXTERNAL_ACCESS_INTEGRATIONS = KeywordField(
-    "sqlExternalAccessIntegrations", "sqlExternalAccessIntegrations"
+Function.FUNCTION_RUNTIME_VERSION = KeywordTextField(
+    "functionRuntimeVersion", "functionRuntimeVersion", "functionRuntimeVersion.text"
 )
-Function.SQL_SECRETS = KeywordField("sqlSecrets", "sqlSecrets")
-Function.SQL_PACKAGES = KeywordField("sqlPackages", "sqlPackages")
-Function.SQL_INSTALLED_PACKAGES = KeywordField(
-    "sqlInstalledPackages", "sqlInstalledPackages"
+Function.FUNCTION_EXTERNAL_ACCESS_INTEGRATIONS = KeywordField(
+    "functionExternalAccessIntegrations", "functionExternalAccessIntegrations"
+)
+Function.FUNCTION_SECRETS = KeywordField("functionSecrets", "functionSecrets")
+Function.FUNCTION_PACKAGES = KeywordField("functionPackages", "functionPackages")
+Function.FUNCTION_INSTALLED_PACKAGES = KeywordField(
+    "functionInstalledPackages", "functionInstalledPackages"
 )
 Function.QUERY_COUNT = NumericField("queryCount", "queryCount")
 Function.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
@@ -1081,6 +1174,7 @@ Function.LAST_PROFILED_AT = NumericField("lastProfiledAt", "lastProfiledAt")
 Function.SQL_AI_MODEL_CONTEXT_QUALIFIED_NAME = KeywordField(
     "sqlAIModelContextQualifiedName", "sqlAIModelContextQualifiedName"
 )
+Function.SQL_IS_SECURE = BooleanField("sqlIsSecure", "sqlIsSecure")
 Function.SQL_HAS_AI_INSIGHTS = BooleanField("sqlHasAiInsights", "sqlHasAiInsights")
 Function.SQL_AI_INSIGHTS_LAST_ANALYZED_AT = NumericField(
     "sqlAiInsightsLastAnalyzedAt", "sqlAiInsightsLastAnalyzedAt"

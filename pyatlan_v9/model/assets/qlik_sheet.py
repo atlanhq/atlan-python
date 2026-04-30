@@ -48,7 +48,12 @@ from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
-from .qlik_related import RelatedQlikApp, RelatedQlikChart, RelatedQlikColumn
+from .qlik_related import (
+    RelatedQlikApp,
+    RelatedQlikChart,
+    RelatedQlikColumn,
+    RelatedQlikSheet,
+)
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
@@ -66,7 +71,7 @@ class QlikSheet(Asset):
     Instance of a Qlik sheet in Atlan.
     """
 
-    QLIK_IS_APPROVED: ClassVar[Any] = None
+    QLIK_SHEET_IS_APPROVED: ClassVar[Any] = None
     QLIK_ID: ClassVar[Any] = None
     QLIK_QRI: ClassVar[Any] = None
     QLIK_SPACE_ID: ClassVar[Any] = None
@@ -111,9 +116,7 @@ class QlikSheet(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "QlikSheet"
-
-    qlik_is_approved: Union[bool, None, UnsetType] = UNSET
+    qlik_sheet_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -266,6 +269,76 @@ class QlikSheet(Asset):
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
 
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this QlikSheet instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.qlik_app is UNSET:
+                errors.append("qlik_app is required for creation")
+            if self.qlik_app_qualified_name is UNSET:
+                errors.append("qlik_app_qualified_name is required for creation")
+            if self.qlik_space_qualified_name is UNSET:
+                errors.append("qlik_space_qualified_name is required for creation")
+        if errors:
+            raise ValueError(f"QlikSheet validation failed: {errors}")
+
+    def minimize(self) -> "QlikSheet":
+        """
+        Return a minimal copy of this QlikSheet with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new QlikSheet with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new QlikSheet instance with only the minimum required fields.
+        """
+        self.validate()
+        return QlikSheet(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedQlikSheet":
+        """
+        Create a :class:`RelatedQlikSheet` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedQlikSheet reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedQlikSheet(guid=self.guid)
+        return RelatedQlikSheet(qualified_name=self.qualified_name)
+
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -321,7 +394,7 @@ class QlikSheet(Asset):
 class QlikSheetAttributes(AssetAttributes):
     """QlikSheet-specific attributes for nested API format."""
 
-    qlik_is_approved: Union[bool, None, UnsetType] = UNSET
+    qlik_sheet_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
 
     qlik_id: Union[str, None, UnsetType] = UNSET
@@ -527,7 +600,7 @@ _QLIK_SHEET_REL_FIELDS: List[str] = [
 def _populate_qlik_sheet_attrs(attrs: QlikSheetAttributes, obj: QlikSheet) -> None:
     """Populate QlikSheet-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.qlik_is_approved = obj.qlik_is_approved
+    attrs.qlik_sheet_is_approved = obj.qlik_sheet_is_approved
     attrs.qlik_id = obj.qlik_id
     attrs.qlik_qri = obj.qlik_qri
     attrs.qlik_space_id = obj.qlik_space_id
@@ -542,7 +615,7 @@ def _populate_qlik_sheet_attrs(attrs: QlikSheetAttributes, obj: QlikSheet) -> No
 def _extract_qlik_sheet_attrs(attrs: QlikSheetAttributes) -> dict:
     """Extract all QlikSheet attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["qlik_is_approved"] = attrs.qlik_is_approved
+    result["qlik_sheet_is_approved"] = attrs.qlik_sheet_is_approved
     result["qlik_id"] = attrs.qlik_id
     result["qlik_qri"] = attrs.qlik_qri
     result["qlik_space_id"] = attrs.qlik_space_id
@@ -588,6 +661,9 @@ def _qlik_sheet_to_nested(qlik_sheet: QlikSheet) -> QlikSheetNested:
         is_incomplete=qlik_sheet.is_incomplete,
         provenance_type=qlik_sheet.provenance_type,
         home_id=qlik_sheet.home_id,
+        depth=qlik_sheet.depth,
+        immediate_upstream=qlik_sheet.immediate_upstream,
+        immediate_downstream=qlik_sheet.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -627,6 +703,9 @@ def _qlik_sheet_from_nested(nested: QlikSheetNested) -> QlikSheet:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_qlik_sheet_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -654,7 +733,9 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QlikSheet.QLIK_IS_APPROVED = BooleanField("qlikIsApproved", "qlikIsApproved")
+QlikSheet.QLIK_SHEET_IS_APPROVED = BooleanField(
+    "qlikSheetIsApproved", "qlikSheetIsApproved"
+)
 QlikSheet.QLIK_ID = KeywordField("qlikId", "qlikId")
 QlikSheet.QLIK_QRI = KeywordTextField("qlikQRI", "qlikQRI", "qlikQRI.text")
 QlikSheet.QLIK_SPACE_ID = KeywordField("qlikSpaceId", "qlikSpaceId")

@@ -8,7 +8,7 @@
         name: str,
         connection_qualified_name: str,
         quick_sight_id: str,
-        quick_sight_import_mode: Union[str, None] = None,
+        quick_sight_dataset_import_mode: Union[str, None] = None,
         quick_sight_dataset_folders: Union[list[str], None] = None,
     ) -> "QuickSightDataset":
         """Create a new QuickSightDataset asset."""
@@ -32,8 +32,8 @@
             qualified_name=f"{connection_qualified_name}/{quick_sight_id}",
             connection_qualified_name=connection_qualified_name,
             connector_name=connector_name,
-            quick_sight_import_mode=quick_sight_import_mode
-            if quick_sight_import_mode is not None
+            quick_sight_dataset_import_mode=quick_sight_dataset_import_mode
+            if quick_sight_dataset_import_mode is not None
             else UNSET,
             quick_sight_dataset_folders=folder_refs,
         )

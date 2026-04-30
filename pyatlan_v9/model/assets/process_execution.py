@@ -27,6 +27,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
+from .asset_related import RelatedProcessExecution
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -277,8 +278,6 @@ class ProcessExecution(Referenceable):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "ProcessExecution"
 
     name: Union[str, None, UnsetType] = UNSET
     """Name of this asset. Fallback for display purposes, if displayName is empty."""
@@ -1066,6 +1065,66 @@ class ProcessExecution(Referenceable):
 
     def __post_init__(self) -> None:
         self.type_name = "ProcessExecution"
+
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this ProcessExecution instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"ProcessExecution validation failed: {errors}")
+
+    def minimize(self) -> "ProcessExecution":
+        """
+        Return a minimal copy of this ProcessExecution with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new ProcessExecution with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new ProcessExecution instance with only the minimum required fields.
+        """
+        self.validate()
+        return ProcessExecution(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedProcessExecution":
+        """
+        Create a :class:`RelatedProcessExecution` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedProcessExecution reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedProcessExecution(guid=self.guid)
+        return RelatedProcessExecution(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -2556,6 +2615,9 @@ def _process_execution_to_nested(
         is_incomplete=process_execution.is_incomplete,
         provenance_type=process_execution.provenance_type,
         home_id=process_execution.home_id,
+        depth=process_execution.depth,
+        immediate_upstream=process_execution.immediate_upstream,
+        immediate_downstream=process_execution.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -2597,6 +2659,9 @@ def _process_execution_from_nested(nested: ProcessExecutionNested) -> ProcessExe
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_process_execution_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

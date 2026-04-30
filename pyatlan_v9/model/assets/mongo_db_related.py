@@ -76,8 +76,8 @@ class RelatedMongoDBCollection(RelatedMongoDB):
     )
     """Subtype of a MongoDB collection, for example: Capped, Time Series, etc."""
 
-    mongo_db_is_capped: Union[bool, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBIsCapped"
+    mongo_db_collection_is_capped: Union[bool, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionIsCapped"
     )
     """Whether the collection is capped (true) or not (false)."""
 
@@ -86,43 +86,43 @@ class RelatedMongoDBCollection(RelatedMongoDB):
     )
     """Name of the field containing the date in each time series document."""
 
-    mongo_db_time_granularity: Union[str, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTimeGranularity"
+    mongo_db_collection_time_granularity: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionTimeGranularity"
     )
     """Closest match to the time span between consecutive incoming measurements."""
 
-    mongo_db_expire_after_seconds: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBExpireAfterSeconds"
+    mongo_db_collection_expire_after_seconds: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionExpireAfterSeconds")
     )
     """Seconds after which documents in a time series collection or clustered collection expire."""
 
-    mongo_db_maximum_document_count: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaximumDocumentCount"
+    mongo_db_collection_maximum_document_count: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionMaximumDocumentCount")
     )
     """Maximum number of documents allowed in a capped collection."""
 
-    mongo_db_max_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBMaxSize"
+    mongo_db_collection_max_size: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionMaxSize"
     )
     """Maximum size allowed in a capped collection."""
 
-    mongo_db_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumOrphanDocs"
+    mongo_db_collection_num_orphan_docs: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionNumOrphanDocs"
     )
     """Number of orphaned documents in the collection."""
 
-    mongo_db_num_indexes: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBNumIndexes"
+    mongo_db_collection_num_indexes: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionNumIndexes"
     )
     """Number of indexes on the collection."""
 
-    mongo_db_total_index_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBTotalIndexSize"
+    mongo_db_collection_total_index_size: Union[int, None, UnsetType] = msgspec.field(
+        default=UNSET, name="mongoDBCollectionTotalIndexSize"
     )
     """Total size of all indexes."""
 
-    mongo_db_average_object_size: Union[int, None, UnsetType] = msgspec.field(
-        default=UNSET, name="mongoDBAverageObjectSize"
+    mongo_db_collection_average_object_size: Union[int, None, UnsetType] = (
+        msgspec.field(default=UNSET, name="mongoDBCollectionAverageObjectSize")
     )
     """Average size of an object in the collection."""
 

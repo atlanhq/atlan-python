@@ -72,13 +72,13 @@ def test_overload_creator():
         name=QUICK_SIGHT_NAME,
         connection_qualified_name=QUICK_SIGHT_CONNECTION_QUALIFIED_NAME,
         quick_sight_id=QUICK_SIGHT_ID,
-        quick_sight_type=QuickSightFolderType.SHARED,
+        quick_sight_folder_type=QuickSightFolderType.SHARED,
     )
 
     assert sut.name == QUICK_SIGHT_NAME
     assert sut.connection_qualified_name == QUICK_SIGHT_CONNECTION_QUALIFIED_NAME
     assert sut.quick_sight_id == QUICK_SIGHT_ID
-    assert sut.quick_sight_type == QuickSightFolderType.SHARED
+    assert sut.quick_sight_folder_type == QuickSightFolderType.SHARED
     assert sut.qualified_name == QUICK_SIGHT_QUALIFIED_NAME
     assert sut.connector_name == QUICK_SIGHT_CONNECTOR_TYPE
 

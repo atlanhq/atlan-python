@@ -48,7 +48,11 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSapErpAbapProgram, RelatedSapErpComponent
+from .sap_related import (
+    RelatedSapErpAbapProgram,
+    RelatedSapErpComponent,
+    RelatedSapErpFunctionModule,
+)
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -64,11 +68,11 @@ class SapErpFunctionModule(Asset):
     Instance of a SAP Function in Atlan.
     """
 
-    SAP_GROUP: ClassVar[Any] = None
+    SAP_ERP_FUNCTION_MODULE_GROUP: ClassVar[Any] = None
     SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS: ClassVar[Any] = None
-    SAP_IMPORT_PARAMS_COUNT: ClassVar[Any] = None
+    SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS_COUNT: ClassVar[Any] = None
     SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS: ClassVar[Any] = None
-    SAP_EXPORT_PARAMS_COUNT: ClassVar[Any] = None
+    SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS_COUNT: ClassVar[Any] = None
     SAP_ERP_FUNCTION_EXCEPTION_LIST: ClassVar[Any] = None
     SAP_ERP_FUNCTION_EXCEPTION_LIST_COUNT: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
@@ -113,9 +117,7 @@ class SapErpFunctionModule(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    type_name: Union[str, UnsetType] = "SapErpFunctionModule"
-
-    sap_group: Union[str, None, UnsetType] = UNSET
+    sap_erp_function_module_group: Union[str, None, UnsetType] = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
     sap_erp_function_module_import_params: Union[
@@ -123,7 +125,7 @@ class SapErpFunctionModule(Asset):
     ] = UNSET
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_import_params_count: Union[int, None, UnsetType] = UNSET
+    sap_erp_function_module_import_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_module_export_params: Union[
@@ -131,7 +133,7 @@ class SapErpFunctionModule(Asset):
     ] = UNSET
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_export_params_count: Union[int, None, UnsetType] = UNSET
+    sap_erp_function_module_export_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Export Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_exception_list: Union[List[Dict[str, str]], None, UnsetType] = (
@@ -279,6 +281,66 @@ class SapErpFunctionModule(Asset):
         self.type_name = "SapErpFunctionModule"
 
     # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this SapErpFunctionModule instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"SapErpFunctionModule validation failed: {errors}")
+
+    def minimize(self) -> "SapErpFunctionModule":
+        """
+        Return a minimal copy of this SapErpFunctionModule with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new SapErpFunctionModule with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new SapErpFunctionModule instance with only the minimum required fields.
+        """
+        self.validate()
+        return SapErpFunctionModule(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedSapErpFunctionModule":
+        """
+        Create a :class:`RelatedSapErpFunctionModule` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedSapErpFunctionModule reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedSapErpFunctionModule(guid=self.guid)
+        return RelatedSapErpFunctionModule(qualified_name=self.qualified_name)
+
+    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -335,7 +397,7 @@ class SapErpFunctionModule(Asset):
 class SapErpFunctionModuleAttributes(AssetAttributes):
     """SapErpFunctionModule-specific attributes for nested API format."""
 
-    sap_group: Union[str, None, UnsetType] = UNSET
+    sap_erp_function_module_group: Union[str, None, UnsetType] = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
     sap_erp_function_module_import_params: Union[
@@ -343,7 +405,7 @@ class SapErpFunctionModuleAttributes(AssetAttributes):
     ] = UNSET
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_import_params_count: Union[int, None, UnsetType] = UNSET
+    sap_erp_function_module_import_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_module_export_params: Union[
@@ -351,7 +413,7 @@ class SapErpFunctionModuleAttributes(AssetAttributes):
     ] = UNSET
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_export_params_count: Union[int, None, UnsetType] = UNSET
+    sap_erp_function_module_export_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Export Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_exception_list: Union[List[Dict[str, str]], None, UnsetType] = (
@@ -562,15 +624,19 @@ def _populate_sap_erp_function_module_attrs(
 ) -> None:
     """Populate SapErpFunctionModule-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_group = obj.sap_group
+    attrs.sap_erp_function_module_group = obj.sap_erp_function_module_group
     attrs.sap_erp_function_module_import_params = (
         obj.sap_erp_function_module_import_params
     )
-    attrs.sap_import_params_count = obj.sap_import_params_count
+    attrs.sap_erp_function_module_import_params_count = (
+        obj.sap_erp_function_module_import_params_count
+    )
     attrs.sap_erp_function_module_export_params = (
         obj.sap_erp_function_module_export_params
     )
-    attrs.sap_export_params_count = obj.sap_export_params_count
+    attrs.sap_erp_function_module_export_params_count = (
+        obj.sap_erp_function_module_export_params_count
+    )
     attrs.sap_erp_function_exception_list = obj.sap_erp_function_exception_list
     attrs.sap_erp_function_exception_list_count = (
         obj.sap_erp_function_exception_list_count
@@ -590,15 +656,19 @@ def _extract_sap_erp_function_module_attrs(
 ) -> dict:
     """Extract all SapErpFunctionModule attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_group"] = attrs.sap_group
+    result["sap_erp_function_module_group"] = attrs.sap_erp_function_module_group
     result["sap_erp_function_module_import_params"] = (
         attrs.sap_erp_function_module_import_params
     )
-    result["sap_import_params_count"] = attrs.sap_import_params_count
+    result["sap_erp_function_module_import_params_count"] = (
+        attrs.sap_erp_function_module_import_params_count
+    )
     result["sap_erp_function_module_export_params"] = (
         attrs.sap_erp_function_module_export_params
     )
-    result["sap_export_params_count"] = attrs.sap_export_params_count
+    result["sap_erp_function_module_export_params_count"] = (
+        attrs.sap_erp_function_module_export_params_count
+    )
     result["sap_erp_function_exception_list"] = attrs.sap_erp_function_exception_list
     result["sap_erp_function_exception_list_count"] = (
         attrs.sap_erp_function_exception_list_count
@@ -651,6 +721,9 @@ def _sap_erp_function_module_to_nested(
         is_incomplete=sap_erp_function_module.is_incomplete,
         provenance_type=sap_erp_function_module.provenance_type,
         home_id=sap_erp_function_module.home_id,
+        depth=sap_erp_function_module.depth,
+        immediate_upstream=sap_erp_function_module.immediate_upstream,
+        immediate_downstream=sap_erp_function_module.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -694,6 +767,9 @@ def _sap_erp_function_module_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_function_module_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -724,18 +800,20 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpFunctionModule.SAP_GROUP = KeywordField("sapGroup", "sapGroup")
+SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_GROUP = KeywordField(
+    "sapErpFunctionModuleGroup", "sapErpFunctionModuleGroup"
+)
 SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS = KeywordField(
     "sapErpFunctionModuleImportParams", "sapErpFunctionModuleImportParams"
 )
-SapErpFunctionModule.SAP_IMPORT_PARAMS_COUNT = NumericField(
-    "sapImportParamsCount", "sapImportParamsCount"
+SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_IMPORT_PARAMS_COUNT = NumericField(
+    "sapErpFunctionModuleImportParamsCount", "sapErpFunctionModuleImportParamsCount"
 )
 SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS = KeywordField(
     "sapErpFunctionModuleExportParams", "sapErpFunctionModuleExportParams"
 )
-SapErpFunctionModule.SAP_EXPORT_PARAMS_COUNT = NumericField(
-    "sapExportParamsCount", "sapExportParamsCount"
+SapErpFunctionModule.SAP_ERP_FUNCTION_MODULE_EXPORT_PARAMS_COUNT = NumericField(
+    "sapErpFunctionModuleExportParamsCount", "sapErpFunctionModuleExportParamsCount"
 )
 SapErpFunctionModule.SAP_ERP_FUNCTION_EXCEPTION_LIST = KeywordField(
     "sapErpFunctionExceptionList", "sapErpFunctionExceptionList"

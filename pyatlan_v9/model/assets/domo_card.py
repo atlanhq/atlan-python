@@ -41,7 +41,7 @@ from .asset import (
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .domo_related import RelatedDomoDashboard, RelatedDomoDataset
+from .domo_related import RelatedDomoCard, RelatedDomoDashboard, RelatedDomoDataset
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .model_related import RelatedModelAttribute, RelatedModelEntity
@@ -104,8 +104,6 @@ class DomoCard(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "DomoCard"
 
     domo_card_type: Union[str, None, UnsetType] = UNSET
     """Type of the Domo Card."""
@@ -242,6 +240,72 @@ class DomoCard(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this DomoCard instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.domo_dataset is UNSET:
+                errors.append("domo_dataset is required for creation")
+        if errors:
+            raise ValueError(f"DomoCard validation failed: {errors}")
+
+    def minimize(self) -> "DomoCard":
+        """
+        Return a minimal copy of this DomoCard with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new DomoCard with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new DomoCard instance with only the minimum required fields.
+        """
+        self.validate()
+        return DomoCard(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedDomoCard":
+        """
+        Create a :class:`RelatedDomoCard` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedDomoCard reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedDomoCard(guid=self.guid)
+        return RelatedDomoCard(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -541,6 +605,9 @@ def _domo_card_to_nested(domo_card: DomoCard) -> DomoCardNested:
         is_incomplete=domo_card.is_incomplete,
         provenance_type=domo_card.provenance_type,
         home_id=domo_card.home_id,
+        depth=domo_card.depth,
+        immediate_upstream=domo_card.immediate_upstream,
+        immediate_downstream=domo_card.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -580,6 +647,9 @@ def _domo_card_from_nested(nested: DomoCardNested) -> DomoCard:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_domo_card_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

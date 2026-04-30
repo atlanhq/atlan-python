@@ -8,7 +8,7 @@
         name: str,
         quick_sight_dataset_qualified_name: str,
         quick_sight_id: str,
-        quick_sight_type: Union[str, None] = None,
+        quick_sight_dataset_field_type: Union[str, None] = None,
         connection_qualified_name: Union[str, None] = None,
     ) -> "QuickSightDatasetField":
         """Create a new QuickSightDatasetField asset."""
@@ -35,8 +35,8 @@
             qualified_name=f"{quick_sight_dataset_qualified_name}/{quick_sight_id}",
             connection_qualified_name=connection_qualified_name,
             connector_name=connector_name,
-            quick_sight_type=quick_sight_type
-            if quick_sight_type is not None
+            quick_sight_dataset_field_type=quick_sight_dataset_field_type
+            if quick_sight_dataset_field_type is not None
             else UNSET,
             quick_sight_dataset=RelatedQuickSightDataset(
                 unique_attributes={"qualifiedName": quick_sight_dataset_qualified_name}

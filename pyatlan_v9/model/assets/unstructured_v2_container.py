@@ -51,7 +51,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .unstructured_v2_related import RelatedUnstructuredV2Folder
+from .unstructured_v2_related import (
+    RelatedUnstructuredV2Container,
+    RelatedUnstructuredV2Folder,
+)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -101,8 +104,6 @@ class UnstructuredV2Container(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     UNSTRUCTUREDV2_FOLDERS: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "UnstructuredV2Container"
 
     unstructuredv2_object_count: Union[int, None, UnsetType] = UNSET
     """Number of objects within the container."""
@@ -231,6 +232,68 @@ class UnstructuredV2Container(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "UnstructuredV2Container"
+
+    # =========================================================================
+    # SDK Methods
+    # =========================================================================
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this UnstructuredV2Container instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        if errors:
+            raise ValueError(f"UnstructuredV2Container validation failed: {errors}")
+
+    def minimize(self) -> "UnstructuredV2Container":
+        """
+        Return a minimal copy of this UnstructuredV2Container with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new UnstructuredV2Container with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new UnstructuredV2Container instance with only the minimum required fields.
+        """
+        self.validate()
+        return UnstructuredV2Container(
+            qualified_name=self.qualified_name, name=self.name
+        )
+
+    def relate(self) -> "RelatedUnstructuredV2Container":
+        """
+        Create a :class:`RelatedUnstructuredV2Container` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedUnstructuredV2Container reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedUnstructuredV2Container(guid=self.guid)
+        return RelatedUnstructuredV2Container(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -541,6 +604,9 @@ def _unstructured_v2_container_to_nested(
         is_incomplete=unstructured_v2_container.is_incomplete,
         provenance_type=unstructured_v2_container.provenance_type,
         home_id=unstructured_v2_container.home_id,
+        depth=unstructured_v2_container.depth,
+        immediate_upstream=unstructured_v2_container.immediate_upstream,
+        immediate_downstream=unstructured_v2_container.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -584,6 +650,9 @@ def _unstructured_v2_container_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_unstructured_v2_container_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -188,9 +188,17 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     home_id: Union[str, UnsetType] = UNSET
     """Home identifier for distributed Atlas systems."""
 
-    depth: Union[int, UnsetType] = UNSET
-    """Lineage depth at which this entity appears (populated in lineage list responses)."""
+    # Lineage-specific fields (only populated in lineage API responses)
+    depth: Union[int, None, UnsetType] = UNSET
+    """Depth of this asset within lineage. Only available in assets retrieved via lineage."""
 
+    immediate_upstream: Union[List[Any], None, UnsetType] = UNSET
+    """Assets immediately upstream of this asset within lineage."""
+
+    immediate_downstream: Union[List[Any], None, UnsetType] = UNSET
+    """Assets immediately downstream of this asset within lineage."""
+
+    # Internal SDK fields (not sent to API)
     semantic: Union[SaveSemantic, None, UnsetType] = UNSET
     """Save semantic for relationship operations (REPLACE, APPEND, REMOVE).
     Not serialized to JSON - used internally by ref_by_guid/ref_by_qualified_name."""

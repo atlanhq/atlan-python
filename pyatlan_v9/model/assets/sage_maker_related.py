@@ -56,19 +56,19 @@ class RelatedSageMakerFeatureGroup(RelatedSageMaker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerFeatureGroup" so it serializes correctly
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Feature Group (e.g., Created, Creating, Failed)."""
 
-    sage_maker_record_id_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_record_id_name: Union[str, None, UnsetType] = UNSET
     """Name of the feature that serves as the record identifier."""
 
-    sage_maker_glue_database_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_glue_database_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue database name associated with this Feature Group."""
 
-    sage_maker_glue_table_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_glue_table_name: Union[str, None, UnsetType] = UNSET
     """AWS Glue table name associated with this Feature Group."""
 
-    sage_maker_feature_count: Union[int, None, UnsetType] = UNSET
+    sage_maker_feature_group_feature_count: Union[int, None, UnsetType] = UNSET
     """Number of features in this Feature Group."""
 
     def __post_init__(self) -> None:
@@ -86,16 +86,16 @@ class RelatedSageMakerFeature(RelatedSageMaker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerFeature" so it serializes correctly
 
-    sage_maker_group_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_name: Union[str, None, UnsetType] = UNSET
     """Name of the Feature Group that contains this feature."""
 
-    sage_maker_group_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_group_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Feature Group that contains this feature."""
 
-    sage_maker_data_type: Union[str, None, UnsetType] = UNSET
+    sage_maker_feature_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of the feature (e.g., String, Integral, Fractional)."""
 
-    sage_maker_is_record_identifier: Union[bool, None, UnsetType] = UNSET
+    sage_maker_feature_is_record_identifier: Union[bool, None, UnsetType] = UNSET
     """Whether this feature serves as the record identifier for the Feature Group."""
 
     def __post_init__(self) -> None:
@@ -113,22 +113,22 @@ class RelatedSageMakerModel(RelatedSageMaker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerModel" so it serializes correctly
 
-    sage_maker_container_image: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_container_image: Union[str, None, UnsetType] = UNSET
     """Docker container image used for the model."""
 
-    sage_maker_execution_role_arn: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_execution_role_arn: Union[str, None, UnsetType] = UNSET
     """ARN of the IAM role used by the model for accessing AWS resources."""
 
-    sage_maker_model_group_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_model_group_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent Model Group."""
 
-    sage_maker_model_group_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_model_group_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the parent Model Group."""
 
-    sage_maker_version: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_version: Union[str, None, UnsetType] = UNSET
     """Version of the SageMaker Model Package."""
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_status: Union[str, None, UnsetType] = UNSET
     """Status of the SageMaker Model Package (ACTIVE or INACTIVE)."""
 
     def __post_init__(self) -> None:
@@ -146,7 +146,7 @@ class RelatedSageMakerModelGroup(RelatedSageMaker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerModelGroup" so it serializes correctly
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_group_status: Union[str, None, UnsetType] = UNSET
     """Current status of the Model Package Group."""
 
     def __post_init__(self) -> None:
@@ -164,16 +164,20 @@ class RelatedSageMakerModelDeployment(RelatedSageMaker):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SageMakerModelDeployment" so it serializes correctly
 
-    sage_maker_status: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_status: Union[str, None, UnsetType] = UNSET
     """Current status of the endpoint (e.g., InService, OutOfService, Creating, Failed)."""
 
-    sage_maker_endpoint_config_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_endpoint_config_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Name of the endpoint configuration used by this deployment."""
 
-    sage_maker_model_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_model_name: Union[str, None, UnsetType] = UNSET
     """Name of the parent Model."""
 
-    sage_maker_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_model_deployment_model_qualified_name: Union[str, None, UnsetType] = (
+        UNSET
+    )
     """Qualified name of the parent Model."""
 
     def __post_init__(self) -> None:

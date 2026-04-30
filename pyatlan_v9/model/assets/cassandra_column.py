@@ -39,7 +39,11 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cassandra_related import RelatedCassandraTable, RelatedCassandraView
+from .cassandra_related import (
+    RelatedCassandraColumn,
+    RelatedCassandraTable,
+    RelatedCassandraView,
+)
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -113,8 +117,6 @@ class CassandraColumn(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "CassandraColumn"
 
     cassandra_column_clustering_order: Union[str, None, UnsetType] = UNSET
     """Clustering order of the CassandraColumn."""
@@ -279,6 +281,78 @@ class CassandraColumn(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this CassandraColumn instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.cassandra_table is UNSET:
+                errors.append("cassandra_table is required for creation")
+            if self.cassandra_table_name is UNSET:
+                errors.append("cassandra_table_name is required for creation")
+            if self.cassandra_table_qualified_name is UNSET:
+                errors.append("cassandra_table_qualified_name is required for creation")
+            if self.cassandra_keyspace_name is UNSET:
+                errors.append("cassandra_keyspace_name is required for creation")
+        if errors:
+            raise ValueError(f"CassandraColumn validation failed: {errors}")
+
+    def minimize(self) -> "CassandraColumn":
+        """
+        Return a minimal copy of this CassandraColumn with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new CassandraColumn with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new CassandraColumn instance with only the minimum required fields.
+        """
+        self.validate()
+        return CassandraColumn(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedCassandraColumn":
+        """
+        Create a :class:`RelatedCassandraColumn` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedCassandraColumn reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedCassandraColumn(guid=self.guid)
+        return RelatedCassandraColumn(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -636,6 +710,9 @@ def _cassandra_column_to_nested(
         is_incomplete=cassandra_column.is_incomplete,
         provenance_type=cassandra_column.provenance_type,
         home_id=cassandra_column.home_id,
+        depth=cassandra_column.depth,
+        immediate_upstream=cassandra_column.immediate_upstream,
+        immediate_downstream=cassandra_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -677,6 +754,9 @@ def _cassandra_column_from_nested(nested: CassandraColumnNested) -> CassandraCol
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_cassandra_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -52,7 +52,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .s3_related import RelatedS3Bucket, RelatedS3Prefix
+from .s3_related import RelatedS3Bucket, RelatedS3Object, RelatedS3Prefix
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -128,8 +128,6 @@ class S3Object(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
-
-    type_name: Union[str, UnsetType] = "S3Object"
 
     s3_object_last_modified_time: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this object was last updated, in milliseconds, or when it was created if it has never been modified."""
@@ -329,6 +327,76 @@ class S3Object(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
+
+    def validate(self, for_creation: bool = False) -> None:
+        """
+        Dry-run validation of this S3Object instance.
+
+        Checks that required fields (type_name, name, qualified_name) are set.
+        When ``for_creation=True``, also checks hierarchy-specific fields
+        (parent references, denormalized attributes) needed to create this asset.
+
+        This is purely opt-in and is NOT called by any serde path — only by
+        explicit user invocation (e.g., validating JSONL before sending to Atlan).
+
+        Args:
+            for_creation: If True, also validate fields required for asset creation.
+
+        Raises:
+            ValueError: If any required fields are missing or invalid.
+        """
+        errors: list[str] = []
+        if self.type_name is UNSET:
+            errors.append("type_name is required")
+        if self.name is UNSET:
+            errors.append("name is required")
+        if self.qualified_name is UNSET or self.qualified_name is None:
+            errors.append("qualified_name is required")
+        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
+            errors.append(
+                f"qualified_name '{self.qualified_name}' does not match expected "
+                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
+            )
+        if for_creation:
+            if self.connection_qualified_name is UNSET:
+                errors.append("connection_qualified_name is required for creation")
+            if self.bucket is UNSET:
+                errors.append("bucket is required for creation")
+            if self.s3_bucket_name is UNSET:
+                errors.append("s3_bucket_name is required for creation")
+            if self.s3_bucket_qualified_name is UNSET:
+                errors.append("s3_bucket_qualified_name is required for creation")
+        if errors:
+            raise ValueError(f"S3Object validation failed: {errors}")
+
+    def minimize(self) -> "S3Object":
+        """
+        Return a minimal copy of this S3Object with only updater-required fields.
+
+        Calls :meth:`validate` first to ensure the instance is valid, then
+        returns a new S3Object with only the fields needed for an update
+        (qualified_name, name, and any type-specific additional fields).
+
+        Returns:
+            A new S3Object instance with only the minimum required fields.
+        """
+        self.validate()
+        return S3Object(qualified_name=self.qualified_name, name=self.name)
+
+    def relate(self) -> "RelatedS3Object":
+        """
+        Create a :class:`RelatedS3Object` reference from this instance.
+
+        Returns a lightweight reference suitable for use in relationship
+        attributes. Prefers ``guid`` if set, otherwise falls back to
+        ``qualified_name``.
+
+        Returns:
+            A RelatedS3Object reference to this asset.
+        """
+        if self.guid is not UNSET:
+            return RelatedS3Object(guid=self.guid)
+        return RelatedS3Object(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -885,6 +953,9 @@ def _s3_object_to_nested(s3_object: S3Object) -> S3ObjectNested:
         is_incomplete=s3_object.is_incomplete,
         provenance_type=s3_object.provenance_type,
         home_id=s3_object.home_id,
+        depth=s3_object.depth,
+        immediate_upstream=s3_object.immediate_upstream,
+        immediate_downstream=s3_object.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -924,6 +995,9 @@ def _s3_object_from_nested(nested: S3ObjectNested) -> S3Object:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
+        depth=nested.depth,
+        immediate_upstream=nested.immediate_upstream,
+        immediate_downstream=nested.immediate_downstream,
         **_extract_s3_object_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
