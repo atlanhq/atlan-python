@@ -439,8 +439,8 @@ class Purpose(Asset):
 class PurposeAttributes(AssetAttributes):
     """Purpose-specific attributes for nested API format."""
 
-    purpose_classifications: Union[List[str], None, UnsetType] = UNSET
-    """TBC"""
+    purpose_classifications: Union[List[Any], None, UnsetType] = UNSET
+    """TBC — accepts both str and AtlanTagName after translation."""
 
     channel_link: Union[str, None, UnsetType] = UNSET
     """TBC"""

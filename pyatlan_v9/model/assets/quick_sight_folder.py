@@ -62,7 +62,7 @@ class QuickSightFolder(Asset):
     Instance of a QuickSight folder in Atlan.
     """
 
-    QUICK_SIGHT_TYPE: ClassVar[Any] = None
+    QUICK_SIGHT_FOLDER_TYPE: ClassVar[Any] = None
     QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
@@ -105,7 +105,7 @@ class QuickSightFolder(Asset):
 
     type_name: Union[str, UnsetType] = "QuickSightFolder"
 
-    quick_sight_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_folder_type: Union[str, None, UnsetType] = UNSET
     """Type of this folder, for example: SHARED or RESTRICTED."""
 
     quick_sight_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
@@ -324,7 +324,7 @@ class QuickSightFolder(Asset):
 class QuickSightFolderAttributes(AssetAttributes):
     """QuickSightFolder-specific attributes for nested API format."""
 
-    quick_sight_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_folder_type: Union[str, None, UnsetType] = UNSET
     """Type of this folder, for example: SHARED or RESTRICTED."""
 
     quick_sight_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
@@ -500,7 +500,7 @@ _QUICK_SIGHT_FOLDER_REL_FIELDS: List[str] = [
 def _populate_quick_sight_folder_attrs(attrs: QuickSightFolderAttributes, obj: QuickSightFolder) -> None:
     """Populate QuickSightFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_type = obj.quick_sight_type
+    attrs.quick_sight_folder_type = obj.quick_sight_folder_type
     attrs.quick_sight_folder_hierarchy = obj.quick_sight_folder_hierarchy
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
@@ -510,7 +510,7 @@ def _populate_quick_sight_folder_attrs(attrs: QuickSightFolderAttributes, obj: Q
 def _extract_quick_sight_folder_attrs(attrs: QuickSightFolderAttributes) -> dict:
     """Extract all QuickSightFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_type"] = attrs.quick_sight_type
+    result["quick_sight_folder_type"] = attrs.quick_sight_folder_type
     result["quick_sight_folder_hierarchy"] = attrs.quick_sight_folder_hierarchy
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
@@ -612,7 +612,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightFolder.QUICK_SIGHT_TYPE = KeywordField("quickSightType", "quickSightType")
+QuickSightFolder.QUICK_SIGHT_FOLDER_TYPE = KeywordField("quickSightFolderType", "quickSightFolderType")
 QuickSightFolder.QUICK_SIGHT_FOLDER_HIERARCHY = KeywordField("quickSightFolderHierarchy", "quickSightFolderHierarchy")
 QuickSightFolder.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
 QuickSightFolder.QUICK_SIGHT_SHEET_ID = KeywordField("quickSightSheetId", "quickSightSheetId")

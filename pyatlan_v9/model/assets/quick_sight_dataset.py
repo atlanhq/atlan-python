@@ -63,8 +63,8 @@ class QuickSightDataset(Asset):
     Instance of a QuickSight dataset in Atlan. These are an internal data model built to be used by analysis. In a dataset, data can be pulled from different sources, joined, filtered, and columns translated to more business-friendly names when preparing the data for visualizing in the analysis layer.
     """
 
-    QUICK_SIGHT_IMPORT_MODE: ClassVar[Any] = None
-    QUICK_SIGHT_COLUMN_COUNT: ClassVar[Any] = None
+    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[Any] = None
+    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_NAME: ClassVar[Any] = None
@@ -105,10 +105,10 @@ class QuickSightDataset(Asset):
 
     type_name: Union[str, UnsetType] = "QuickSightDataset"
 
-    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = UNSET
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
-    quick_sight_column_count: Union[int, None, UnsetType] = UNSET
+    quick_sight_dataset_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this dataset."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -338,10 +338,10 @@ class QuickSightDataset(Asset):
 class QuickSightDatasetAttributes(AssetAttributes):
     """QuickSightDataset-specific attributes for nested API format."""
 
-    quick_sight_import_mode: Union[str, None, UnsetType] = UNSET
+    quick_sight_dataset_import_mode: Union[str, None, UnsetType] = UNSET
     """Import mode for this dataset, for example: SPICE or DIRECT_QUERY."""
 
-    quick_sight_column_count: Union[int, None, UnsetType] = UNSET
+    quick_sight_dataset_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns present in this dataset."""
 
     quick_sight_id: Union[str, None, UnsetType] = UNSET
@@ -510,8 +510,8 @@ _QUICK_SIGHT_DATASET_REL_FIELDS: List[str] = [
 def _populate_quick_sight_dataset_attrs(attrs: QuickSightDatasetAttributes, obj: QuickSightDataset) -> None:
     """Populate QuickSightDataset-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_import_mode = obj.quick_sight_import_mode
-    attrs.quick_sight_column_count = obj.quick_sight_column_count
+    attrs.quick_sight_dataset_import_mode = obj.quick_sight_dataset_import_mode
+    attrs.quick_sight_dataset_column_count = obj.quick_sight_dataset_column_count
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
     attrs.quick_sight_sheet_name = obj.quick_sight_sheet_name
@@ -520,8 +520,8 @@ def _populate_quick_sight_dataset_attrs(attrs: QuickSightDatasetAttributes, obj:
 def _extract_quick_sight_dataset_attrs(attrs: QuickSightDatasetAttributes) -> dict:
     """Extract all QuickSightDataset attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_import_mode"] = attrs.quick_sight_import_mode
-    result["quick_sight_column_count"] = attrs.quick_sight_column_count
+    result["quick_sight_dataset_import_mode"] = attrs.quick_sight_dataset_import_mode
+    result["quick_sight_dataset_column_count"] = attrs.quick_sight_dataset_column_count
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
     result["quick_sight_sheet_name"] = attrs.quick_sight_sheet_name
@@ -623,8 +623,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightDataset.QUICK_SIGHT_IMPORT_MODE = KeywordField("quickSightImportMode", "quickSightImportMode")
-QuickSightDataset.QUICK_SIGHT_COLUMN_COUNT = NumericField("quickSightColumnCount", "quickSightColumnCount")
+QuickSightDataset.QUICK_SIGHT_DATASET_IMPORT_MODE = KeywordField("quickSightDatasetImportMode", "quickSightDatasetImportMode")
+QuickSightDataset.QUICK_SIGHT_DATASET_COLUMN_COUNT = NumericField("quickSightDatasetColumnCount", "quickSightDatasetColumnCount")
 QuickSightDataset.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
 QuickSightDataset.QUICK_SIGHT_SHEET_ID = KeywordField("quickSightSheetId", "quickSightSheetId")
 QuickSightDataset.QUICK_SIGHT_SHEET_NAME = KeywordTextField("quickSightSheetName", "quickSightSheetName", "quickSightSheetName.text")

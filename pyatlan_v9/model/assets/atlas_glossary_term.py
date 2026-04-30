@@ -466,6 +466,9 @@ class AtlasGlossaryTermAttributes(AssetAttributes):
     term_type: Union[str, None, UnsetType] = UNSET
     """"""
 
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    """Glossary in which this term is contained."""
+
 class AtlasGlossaryTermRelationshipAttributes(AssetRelationshipAttributes):
     """AtlasGlossaryTerm-specific relationship attributes for nested API format."""
 
@@ -507,9 +510,6 @@ class AtlasGlossaryTermRelationshipAttributes(AssetRelationshipAttributes):
 
     meanings: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Glossary terms that are linked to this asset."""
-
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this term is contained."""
 
     categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = UNSET
     """Categories within which this term is organized."""
@@ -607,7 +607,6 @@ _ATLAS_GLOSSARY_TERM_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "assigned_entities",
     "meanings",
-    "anchor",
     "categories",
     "see_also",
     "synonyms",
@@ -643,6 +642,7 @@ def _populate_atlas_glossary_term_attrs(attrs: AtlasGlossaryTermAttributes, obj:
     attrs.usage = obj.usage
     attrs.additional_attributes = obj.additional_attributes
     attrs.term_type = obj.term_type
+    attrs.anchor = obj.anchor
 
 def _extract_atlas_glossary_term_attrs(attrs: AtlasGlossaryTermAttributes) -> dict:
     """Extract all AtlasGlossaryTerm attributes from the attrs struct into a flat dict."""
@@ -654,6 +654,7 @@ def _extract_atlas_glossary_term_attrs(attrs: AtlasGlossaryTermAttributes) -> di
     result["usage"] = attrs.usage
     result["additional_attributes"] = attrs.additional_attributes
     result["term_type"] = attrs.term_type
+    result["anchor"] = attrs.anchor
     return result
 
 # =============================================================================

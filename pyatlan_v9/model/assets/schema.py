@@ -417,6 +417,16 @@ class Schema(Asset):
     def __post_init__(self) -> None:
         self.type_name = "Schema"
 
+    @property
+    def schema_external_location(self):
+        """Alias for sql_external_location for backwards compatibility."""
+        return self.sql_external_location
+
+    @schema_external_location.setter
+    def schema_external_location(self, value):
+        """Alias for sql_external_location for backwards compatibility."""
+        self.sql_external_location = value
+
     # =========================================================================
     # SDK Methods
     # =========================================================================

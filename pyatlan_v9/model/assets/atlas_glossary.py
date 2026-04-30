@@ -473,6 +473,14 @@ def _atlas_glossary_from_nested(nested: AtlasGlossaryNested) -> AtlasGlossary:
         _ATLAS_GLOSSARY_REL_FIELDS,
         AtlasGlossaryRelationshipAttributes
     )
+    # `meanings` appears in both the entity-level top-level fields (nested.meanings,
+    # which holds TermAssignment objects) and in the relationship attributes
+    # (_ATLAS_GLOSSARY_REL_FIELDS, which holds RelatedAtlasGlossaryTerm objects).
+    # Since AtlasGlossary.meanings is typed as List[RelatedAtlasGlossaryTerm]
+    # (the relationship version), we must not pass nested.meanings separately when
+    # merged_rels already contains a 'meanings' key — that would cause a duplicate
+    # keyword argument error. Drop nested.meanings from the explicit kwargs and let
+    # merged_rels provide the relationship meanings.
     return AtlasGlossary(
         guid=nested.guid,
         type_name=nested.type_name,
@@ -484,7 +492,6 @@ def _atlas_glossary_from_nested(nested: AtlasGlossaryNested) -> AtlasGlossary:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
-        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -494,7 +501,7 @@ def _atlas_glossary_from_nested(nested: AtlasGlossaryNested) -> AtlasGlossary:
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
         **_extract_atlas_glossary_attrs(attrs),
-        # Merged relationship attributes
+        # Merged relationship attributes (includes `meanings` as RelatedAtlasGlossaryTerm)
         **merged_rels,
     )
 

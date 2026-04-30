@@ -63,7 +63,7 @@ class QuickSightDatasetField(Asset):
     Instance of a QuickSight dataset field in Atlan.
     """
 
-    QUICK_SIGHT_TYPE: ClassVar[Any] = None
+    QUICK_SIGHT_DATASET_FIELD_TYPE: ClassVar[Any] = None
     QUICK_SIGHT_DATASET_QUALIFIED_NAME: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
@@ -104,7 +104,7 @@ class QuickSightDatasetField(Asset):
 
     type_name: Union[str, UnsetType] = "QuickSightDatasetField"
 
-    quick_sight_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_dataset_field_type: Union[str, None, UnsetType] = UNSET
     """Datatype of this field, for example: STRING, INTEGER, etc."""
 
     quick_sight_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -339,7 +339,7 @@ class QuickSightDatasetField(Asset):
 class QuickSightDatasetFieldAttributes(AssetAttributes):
     """QuickSightDatasetField-specific attributes for nested API format."""
 
-    quick_sight_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_dataset_field_type: Union[str, None, UnsetType] = UNSET
     """Datatype of this field, for example: STRING, INTEGER, etc."""
 
     quick_sight_dataset_qualified_name: Union[str, None, UnsetType] = UNSET
@@ -507,7 +507,7 @@ _QUICK_SIGHT_DATASET_FIELD_REL_FIELDS: List[str] = [
 def _populate_quick_sight_dataset_field_attrs(attrs: QuickSightDatasetFieldAttributes, obj: QuickSightDatasetField) -> None:
     """Populate QuickSightDatasetField-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_type = obj.quick_sight_type
+    attrs.quick_sight_dataset_field_type = obj.quick_sight_dataset_field_type
     attrs.quick_sight_dataset_qualified_name = obj.quick_sight_dataset_qualified_name
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
@@ -517,7 +517,7 @@ def _populate_quick_sight_dataset_field_attrs(attrs: QuickSightDatasetFieldAttri
 def _extract_quick_sight_dataset_field_attrs(attrs: QuickSightDatasetFieldAttributes) -> dict:
     """Extract all QuickSightDatasetField attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_type"] = attrs.quick_sight_type
+    result["quick_sight_dataset_field_type"] = attrs.quick_sight_dataset_field_type
     result["quick_sight_dataset_qualified_name"] = attrs.quick_sight_dataset_qualified_name
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
@@ -619,7 +619,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightDatasetField.QUICK_SIGHT_TYPE = KeywordField("quickSightType", "quickSightType")
+QuickSightDatasetField.QUICK_SIGHT_DATASET_FIELD_TYPE = KeywordField("quickSightDatasetFieldType", "quickSightDatasetFieldType")
 QuickSightDatasetField.QUICK_SIGHT_DATASET_QUALIFIED_NAME = KeywordTextField("quickSightDatasetQualifiedName", "quickSightDatasetQualifiedName", "quickSightDatasetQualifiedName.text")
 QuickSightDatasetField.QUICK_SIGHT_ID = KeywordField("quickSightId", "quickSightId")
 QuickSightDatasetField.QUICK_SIGHT_SHEET_ID = KeywordField("quickSightSheetId", "quickSightSheetId")
