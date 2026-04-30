@@ -1,3 +1,18 @@
+## 9.7.0 (April 30, 2026)
+
+### New Features
+
+- **`GENERIC_OPENLINEAGE` connector type**: Added `AtlanConnectorType.GENERIC_OPENLINEAGE = ("generic-openlineage", AtlanConnectionCategory.ELT)` so the SDK can target the marketplace `generic-openlineage` (GOLC) ingestion endpoint at `/events/openlineage/generic-openlineage/api/v1/lineage`. Mirrored in `pyatlan_v9`.
+- **`OpenLineageEvent.emit()` accepts `connector_type`**: `emit()` and `emit_async()` now take an optional `connector_type` kwarg (defaulting to `SPARK`), matching the pattern already used by `emit_raw()` / `emit_raw_async()`. Removes the previous hardcoded SPARK assumption so callers can route events to any OpenLineage-compatible connector.
+
+### Bug Fixes
+
+- **`DbtMeasure` extends `SemanticMeasure`, not `Dbt`**: The Atlas type hierarchy is `DbtMeasure → SemanticMeasure → Semantic`, but the generator picked `Dbt` as the Python parent because the typedef lists `superTypes=["Dbt", "SemanticMeasure"]` (Dbt first). This broke `atlan-publish-app`'s ordering graph — `DbtSemanticModel → DbtMeasure` edges were never created via the `semantic_measures` relationship, causing publish to fail with ATLAS-404 on `semanticModel` lookup. Sibling types (`DbtDimension(SemanticDimension)`, `DbtEntity(SemanticEntity)`) already follow this pattern. Fix changes the parent class in `dbt_measure.py` and adds `_SUPERCLASS_OVERRIDES` to `class_generator.py` + a Jinja template change so future regenerations preserve the fix. Includes 7 regression tests.
+
+### Experimental: `pyatlan_v9`
+
+- Generated latest typedef models.
+
 ## 9.6.0 (April 27, 2026)
 
 ### New Features
