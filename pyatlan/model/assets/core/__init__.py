@@ -400,3 +400,55 @@ BigqueryRoutine.Attributes.update_forward_refs(**localns)
 DatabricksVolume.Attributes.update_forward_refs(**localns)
 DatabricksVolumePath.Attributes.update_forward_refs(**localns)
 GCPDataplexAspectType.Attributes.update_forward_refs(**localns)
+
+# typing.get_type_hints() compatibility shim
+#
+# Some Attributes classes reference cross-module relationship types whose
+# imports must stay under TYPE_CHECKING to avoid circular imports at module
+# load time. Pydantic v1 resolves these forward refs via update_forward_refs()
+# above, but typing.get_type_hints() does its own resolution against each
+# class's defining module __dict__ — which doesn't see TYPE_CHECKING-only
+# names. Inject the resolved classes back into the affected modules now that
+# all assets have loaded so downstream tooling (e.g. atlan-publish-app's
+# ordering graph) can call typing.get_type_hints() without a custom localns.
+from . import data_product as _data_product_module
+from . import data_quality_rule as _data_quality_rule_module
+from . import process as _process_module
+from . import s_q_l as _s_q_l_module
+from . import schema as _schema_module
+
+_data_product_module.StarburstDataset = StarburstDataset  # type: ignore[misc]
+_data_quality_rule_module.Column = Column  # type: ignore[misc]
+_process_module.Procedure = Procedure  # type: ignore[misc]
+_process_module.BigqueryRoutine = BigqueryRoutine  # type: ignore[misc]
+_process_module.FabricActivity = FabricActivity  # type: ignore[misc]
+_process_module.Function = Function  # type: ignore[misc]
+_s_q_l_module.DbtTest = DbtTest  # type: ignore[misc]
+_schema_module.SnowflakeDynamicTable = SnowflakeDynamicTable  # type: ignore[misc]
+_schema_module.Table = Table  # type: ignore[misc]
+
+# typing.get_type_hints() compatibility shim
+#
+# Some Attributes classes reference cross-module relationship types whose
+# imports must stay under TYPE_CHECKING to avoid circular imports at module
+# load time. Pydantic v1 resolves these forward refs via update_forward_refs()
+# above, but typing.get_type_hints() does its own resolution against each
+# class's defining module __dict__ — which doesn't see TYPE_CHECKING-only
+# names. Inject the resolved classes back into the affected modules now that
+# all assets have loaded so downstream tooling (e.g. atlan-publish-app's
+# ordering graph) can call typing.get_type_hints() without a custom localns.
+from . import data_product as _data_product_module
+from . import data_quality_rule as _data_quality_rule_module
+from . import process as _process_module
+from . import s_q_l as _s_q_l_module
+from . import schema as _schema_module
+
+_data_product_module.StarburstDataset = StarburstDataset  # type: ignore[misc]
+_data_quality_rule_module.Column = Column  # type: ignore[misc]
+_process_module.Procedure = Procedure  # type: ignore[misc]
+_process_module.BigqueryRoutine = BigqueryRoutine  # type: ignore[misc]
+_process_module.FabricActivity = FabricActivity  # type: ignore[misc]
+_process_module.Function = Function  # type: ignore[misc]
+_s_q_l_module.DbtTest = DbtTest  # type: ignore[misc]
+_schema_module.SnowflakeDynamicTable = SnowflakeDynamicTable  # type: ignore[misc]
+_schema_module.Table = Table  # type: ignore[misc]

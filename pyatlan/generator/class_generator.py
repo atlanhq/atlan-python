@@ -99,8 +99,68 @@ TEMPLATES_DIR = PARENT / "templates"
 # applies when the named supertype is actually present in the typedef,
 # so a typedef change that drops it won't silently break.
 _SUPERCLASS_OVERRIDES: Dict[str, str] = {
+    # SHA-887: dbt-semantic types — Atlas typedef lists ``Dbt`` first but the
+    # publish-app ordering graph (and the asset's true type hierarchy) needs
+    # the semantic-family parent.
     "DbtMeasure": "SemanticMeasure",
+    # SHA-887 follow-up: dbt-process types — Atlas lists ``Dbt`` first but the
+    # publish-app's ``issubclass(cls, Process)`` / ``issubclass(cls,
+    # ColumnProcess)`` checks (used to identify "lineage types" that must
+    # publish *after* the entities they reference) need the process-family
+    # parent. Mis-ordering causes ATLAS-404 on dbt and SAP BW connectors.
+    "DbtProcess": "Process",
+    "DbtColumnProcess": "ColumnProcess",
 }
+
+# Per-module runtime injection overrides for typing.get_type_hints()
+# compatibility. Keyed by core asset module name; each value is the list of
+# class names whose imports are gated under ``if TYPE_CHECKING:`` in that
+# module's source (to break circular imports). After all assets load,
+# ``core/__init__.py`` writes these names back into each module's __dict__
+# so downstream tools (e.g. atlan-publish-app's ordering graph) can resolve
+# the field annotations without supplying a custom ``localns``. Keep this in
+# sync with the ``if TYPE_CHECKING:`` blocks in ``templates/module.jinja2``.
+_RUNTIME_INJECTION_OVERRIDES: Dict[str, List[str]] = {
+    "data_product": ["StarburstDataset"],
+    "data_quality_rule": ["Column"],
+    "process": ["Procedure", "BigqueryRoutine", "FabricActivity", "Function"],
+    "s_q_l": ["DbtTest"],
+    "schema": ["SnowflakeDynamicTable", "Table"],
+}
+
+
+def _build_runtime_injection_block(overrides: Dict[str, List[str]]) -> str:
+    """Render the typing.get_type_hints() compatibility shim for ``core/__init__.py``.
+
+    Built in Python (rather than Jinja loops) so newline handling stays
+    predictable. Returns an empty string when ``overrides`` is empty so the
+    template emits no shim section.
+    """
+    if not overrides:
+        return ""
+    lines = [
+        "",
+        "# typing.get_type_hints() compatibility shim",
+        "#",
+        "# Some Attributes classes reference cross-module relationship types whose",
+        "# imports must stay under TYPE_CHECKING to avoid circular imports at module",
+        "# load time. Pydantic v1 resolves these forward refs via update_forward_refs()",
+        "# above, but typing.get_type_hints() does its own resolution against each",
+        "# class's defining module __dict__ — which doesn't see TYPE_CHECKING-only",
+        "# names. Inject the resolved classes back into the affected modules now that",
+        "# all assets have loaded so downstream tooling (e.g. atlan-publish-app's",
+        "# ordering graph) can call typing.get_type_hints() without a custom localns.",
+    ]
+    for module_name in sorted(overrides):
+        lines.append(f"from . import {module_name} as _{module_name}_module")
+    lines.append("")
+    for module_name in sorted(overrides):
+        for class_name in overrides[module_name]:
+            lines.append(
+                f"_{module_name}_module.{class_name} = {class_name}  "
+                "# type: ignore[misc]"
+            )
+    return "\n".join(lines)
 
 
 def get_type(type_: str):
@@ -935,9 +995,19 @@ class Generator:
                 import_line += "  # isort: skip"
             asset_imports.append(import_line)
 
+        # Build the typing.get_type_hints() compatibility shim block as a
+        # single string — easier to control whitespace than nested Jinja loops.
+        runtime_injection_block = _build_runtime_injection_block(
+            _RUNTIME_INJECTION_OVERRIDES
+        )
+
         template = self.environment.get_template("core/init.jinja2")
         content = template.render(
-            {"asset_imports": asset_imports, "asset_names": asset_names}
+            {
+                "asset_imports": asset_imports,
+                "asset_names": asset_names,
+                "runtime_injection_block": runtime_injection_block,
+            }
         )
 
         init_path = CORE_ASSETS_DIR / "__init__.py"
