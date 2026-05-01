@@ -1,3 +1,9 @@
+## 9.7.1 (May 1, 2026)
+
+### Bug Fixes
+
+- **`DbtProcess` and `DbtColumnProcess` now extend the correct process parent**: Atlas typedefs list `Dbt` first in `superTypes`, causing the class generator to pick `Dbt` over `Process`/`ColumnProcess` as the Python superclass. This made `issubclass(cls, Process)` return `False`, so `atlan-publish-app` placed dbt-process types in Batch 1 alongside their upstream entities, producing ATLAS-404 errors on every `inputs`/`outputs` lookup (~35 publish failures per live dbt run). Fixed via `_SUPERCLASS_OVERRIDES` — the same mechanism used for `DbtMeasure` in 9.7.0. (PR #923)
+
 ## 9.7.0 (April 30, 2026)
 
 ### New Features
