@@ -20,10 +20,10 @@ from pyatlan.model.fields.atlan_fields import (
 )
 from pyatlan.model.structs import DbtInputContext, DbtJobRun
 
-from .core.dbt import Dbt
+from .core.process import Process
 
 
-class DbtProcess(Dbt):
+class DbtProcess(Process):
     """Description"""
 
     type_name: str = Field(default="DbtProcess", allow_mutation=False)
@@ -773,7 +773,7 @@ class DbtProcess(Dbt):
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
-    class Attributes(Dbt.Attributes):
+    class Attributes(Process.Attributes):
         dbt_process_job_status: Optional[str] = Field(default=None, description="")
         dbt_upstream_contexts: Optional[List[DbtInputContext]] = Field(
             default=None, description=""
