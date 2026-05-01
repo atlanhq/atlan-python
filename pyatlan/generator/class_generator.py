@@ -99,7 +99,17 @@ TEMPLATES_DIR = PARENT / "templates"
 # applies when the named supertype is actually present in the typedef,
 # so a typedef change that drops it won't silently break.
 _SUPERCLASS_OVERRIDES: Dict[str, str] = {
+    # SHA-887: dbt-semantic types — Atlas typedef lists ``Dbt`` first but
+    # the publish-app ordering graph (and the asset's true type hierarchy)
+    # needs the semantic-family parent.
     "DbtMeasure": "SemanticMeasure",
+    # SHA-887 follow-up: dbt-process types — Atlas lists ``Dbt`` first but
+    # publish-app's ``issubclass(cls, Process)`` / ``issubclass(cls,
+    # ColumnProcess)`` checks (used to identify "lineage types" that must
+    # publish *after* the entities they reference) need the process-family
+    # parent. Mis-ordering causes ATLAS-404 on dbt and SAP BW connectors.
+    "DbtProcess": "Process",
+    "DbtColumnProcess": "ColumnProcess",
 }
 
 
