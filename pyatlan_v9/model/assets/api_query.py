@@ -28,7 +28,7 @@ from pyatlan_v9.utils import init_guid, validate_required_fields
 
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
-from .api_related import RelatedAPIField, RelatedAPIQuery
+from .api_related import RelatedAPIField
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
     _ASSET_REL_FIELDS,
@@ -109,6 +109,8 @@ class APIQuery(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "APIQuery"
 
     api_input_field_count: Union[int, None, UnsetType] = UNSET
     """Count of the APIField of this query that are input to it."""
@@ -254,66 +256,6 @@ class APIQuery(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "APIQuery"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this APIQuery instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"APIQuery validation failed: {errors}")
-
-    def minimize(self) -> "APIQuery":
-        """
-        Return a minimal copy of this APIQuery with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new APIQuery with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new APIQuery instance with only the minimum required fields.
-        """
-        self.validate()
-        return APIQuery(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAPIQuery":
-        """
-        Create a :class:`RelatedAPIQuery` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedAPIQuery reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedAPIQuery(guid=self.guid)
-        return RelatedAPIQuery(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -699,9 +641,6 @@ def _api_query_to_nested(api_query: APIQuery) -> APIQueryNested:
         is_incomplete=api_query.is_incomplete,
         provenance_type=api_query.provenance_type,
         home_id=api_query.home_id,
-        depth=api_query.depth,
-        immediate_upstream=api_query.immediate_upstream,
-        immediate_downstream=api_query.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -733,6 +672,7 @@ def _api_query_from_nested(nested: APIQueryNested) -> APIQuery:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -741,9 +681,6 @@ def _api_query_from_nested(nested: APIQueryNested) -> APIQuery:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_api_query_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
