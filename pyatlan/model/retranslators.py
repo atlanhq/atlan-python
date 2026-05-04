@@ -70,7 +70,7 @@ class AtlanTagRetranslator(BaseRetranslator):
 
         # Convert classification human-readable name → hash ID
         for key in self._CLASSIFICATION_NAMES:
-            if key in data:
+            if key in data and data[key] is not None:
                 data[key] = [
                     self.client.atlan_tag_cache.get_id_for_name(str(name)) or DELETED_
                     for name in data[key]
@@ -78,7 +78,7 @@ class AtlanTagRetranslator(BaseRetranslator):
 
         # Convert classification objects human-readable name typeName → hash ID
         for key in self._CLASSIFICATION_KEYS:
-            if key in data:
+            if key in data and data[key] is not None:
                 for classification in data[key]:
                     tag_name = str(classification.get(self._TYPE_NAME))
                     if tag_name:
