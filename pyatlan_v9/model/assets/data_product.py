@@ -87,7 +87,7 @@ class DataProduct(Asset):
     DATA_PRODUCT_ASSETS_DSL: ClassVar[Any] = None
     DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER: ClassVar[Any] = None
     DATA_PRODUCT_SCORE_VALUE: ClassVar[Any] = None
-    DATA_PRODUCT_SCORE_UPDATED_AT: ClassVar[Any] = None
+    DATA_MESH_SCORE_UPDATED_AT: ClassVar[Any] = None
     DAAP_VISIBILITY_USERS: ClassVar[Any] = None
     DAAP_VISIBILITY_GROUPS: ClassVar[Any] = None
     DAAP_OUTPUT_PORT_GUIDS: ClassVar[Any] = None
@@ -133,6 +133,8 @@ class DataProduct(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     STARBURST_DATASETS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "DataProduct"
+
     data_product_status: Union[str, None, UnsetType] = UNSET
     """Status of this data product."""
 
@@ -168,7 +170,7 @@ class DataProduct(Asset):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
@@ -321,70 +323,6 @@ class DataProduct(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/product/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this DataProduct instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.data_domain is UNSET:
-                errors.append("data_domain is required for creation")
-        if errors:
-            raise ValueError(f"DataProduct validation failed: {errors}")
-
-    def minimize(self) -> "DataProduct":
-        """
-        Return a minimal copy of this DataProduct with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new DataProduct with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new DataProduct instance with only the minimum required fields.
-        """
-        self.validate()
-        return DataProduct(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDataProduct":
-        """
-        Create a :class:`RelatedDataProduct` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDataProduct reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDataProduct(guid=self.guid)
-        return RelatedDataProduct(qualified_name=self.qualified_name)
 
     @classmethod
     def _get_super_domain_qualified_name(
@@ -556,7 +494,7 @@ class DataProductAttributes(AssetAttributes):
     data_product_score_value: Union[float, None, UnsetType] = UNSET
     """Score of this data product."""
 
-    data_product_score_updated_at: Union[int, None, UnsetType] = UNSET
+    data_mesh_score_updated_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the score of this data product was last updated."""
 
     daap_visibility_users: Union[List[str], None, UnsetType] = UNSET
@@ -780,7 +718,7 @@ def _populate_data_product_attrs(
     attrs.data_product_assets_dsl = obj.data_product_assets_dsl
     attrs.data_product_assets_playbook_filter = obj.data_product_assets_playbook_filter
     attrs.data_product_score_value = obj.data_product_score_value
-    attrs.data_product_score_updated_at = obj.data_product_score_updated_at
+    attrs.data_mesh_score_updated_at = obj.data_mesh_score_updated_at
     attrs.daap_visibility_users = obj.daap_visibility_users
     attrs.daap_visibility_groups = obj.daap_visibility_groups
     attrs.daap_output_port_guids = obj.daap_output_port_guids
@@ -807,7 +745,7 @@ def _extract_data_product_attrs(attrs: DataProductAttributes) -> dict:
         attrs.data_product_assets_playbook_filter
     )
     result["data_product_score_value"] = attrs.data_product_score_value
-    result["data_product_score_updated_at"] = attrs.data_product_score_updated_at
+    result["data_mesh_score_updated_at"] = attrs.data_mesh_score_updated_at
     result["daap_visibility_users"] = attrs.daap_visibility_users
     result["daap_visibility_groups"] = attrs.daap_visibility_groups
     result["daap_output_port_guids"] = attrs.daap_output_port_guids
@@ -852,9 +790,6 @@ def _data_product_to_nested(data_product: DataProduct) -> DataProductNested:
         is_incomplete=data_product.is_incomplete,
         provenance_type=data_product.provenance_type,
         home_id=data_product.home_id,
-        depth=data_product.depth,
-        immediate_upstream=data_product.immediate_upstream,
-        immediate_downstream=data_product.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -886,6 +821,7 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -894,9 +830,6 @@ def _data_product_from_nested(nested: DataProductNested) -> DataProduct:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_data_product_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -947,8 +880,8 @@ DataProduct.DATA_PRODUCT_ASSETS_PLAYBOOK_FILTER = KeywordField(
 DataProduct.DATA_PRODUCT_SCORE_VALUE = NumericField(
     "dataProductScoreValue", "dataProductScoreValue"
 )
-DataProduct.DATA_PRODUCT_SCORE_UPDATED_AT = NumericField(
-    "dataProductScoreUpdatedAt", "dataProductScoreUpdatedAt"
+DataProduct.DATA_MESH_SCORE_UPDATED_AT = NumericField(
+    "dataMeshScoreUpdatedAt", "dataMeshScoreUpdatedAt"
 )
 DataProduct.DAAP_VISIBILITY_USERS = KeywordField(
     "daapVisibilityUsers", "daapVisibilityUsers"
