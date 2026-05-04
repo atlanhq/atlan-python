@@ -46,7 +46,6 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
-from .workflow_related import RelatedWorkflow
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -89,6 +88,8 @@ class Workflow(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Workflow"
 
     workflow_template_guid: Union[str, None, UnsetType] = UNSET
     """GUID of the workflow template from which this workflow was created."""
@@ -190,66 +191,6 @@ class Workflow(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "Workflow"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Workflow instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Workflow validation failed: {errors}")
-
-    def minimize(self) -> "Workflow":
-        """
-        Return a minimal copy of this Workflow with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Workflow with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Workflow instance with only the minimum required fields.
-        """
-        self.validate()
-        return Workflow(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedWorkflow":
-        """
-        Create a :class:`RelatedWorkflow` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedWorkflow reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedWorkflow(guid=self.guid)
-        return RelatedWorkflow(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -514,9 +455,6 @@ def _workflow_to_nested(workflow: Workflow) -> WorkflowNested:
         is_incomplete=workflow.is_incomplete,
         provenance_type=workflow.provenance_type,
         home_id=workflow.home_id,
-        depth=workflow.depth,
-        immediate_upstream=workflow.immediate_upstream,
-        immediate_downstream=workflow.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -548,6 +486,7 @@ def _workflow_from_nested(nested: WorkflowNested) -> Workflow:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -556,9 +495,6 @@ def _workflow_from_nested(nested: WorkflowNested) -> Workflow:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_workflow_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,

@@ -25,7 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .access_control_related import RelatedAccessControl, RelatedAuthPolicy
+from .access_control_related import RelatedAuthPolicy
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset import (
@@ -92,6 +92,8 @@ class AccessControl(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "AccessControl"
 
     channel_link: Union[str, None, UnsetType] = UNSET
     """TBC"""
@@ -202,66 +204,6 @@ class AccessControl(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AccessControl"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this AccessControl instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"AccessControl validation failed: {errors}")
-
-    def minimize(self) -> "AccessControl":
-        """
-        Return a minimal copy of this AccessControl with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new AccessControl with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new AccessControl instance with only the minimum required fields.
-        """
-        self.validate()
-        return AccessControl(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAccessControl":
-        """
-        Create a :class:`RelatedAccessControl` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedAccessControl reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedAccessControl(guid=self.guid)
-        return RelatedAccessControl(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -544,9 +486,6 @@ def _access_control_to_nested(access_control: AccessControl) -> AccessControlNes
         is_incomplete=access_control.is_incomplete,
         provenance_type=access_control.provenance_type,
         home_id=access_control.home_id,
-        depth=access_control.depth,
-        immediate_upstream=access_control.immediate_upstream,
-        immediate_downstream=access_control.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -580,6 +519,7 @@ def _access_control_from_nested(nested: AccessControlNested) -> AccessControl:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -588,9 +528,6 @@ def _access_control_from_nested(nested: AccessControlNested) -> AccessControl:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_access_control_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
