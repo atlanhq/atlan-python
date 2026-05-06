@@ -332,6 +332,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     SODA = ("soda", AtlanConnectionCategory.DATA_QUALITY)
     MATILLION = ("matillion", AtlanConnectionCategory.ELT)
     AIVEN_KAFKA = ("aiven-kafka", AtlanConnectionCategory.EVENT_BUS)
+    AMAZON_MSK = ("amazon-msk", AtlanConnectionCategory.EVENT_BUS)
     APACHE_KAFKA = ("apache-kafka", AtlanConnectionCategory.EVENT_BUS)
     AZURE_EVENT_HUB = ("azure-event-hub", AtlanConnectionCategory.EVENT_BUS)
     CONFLUENT_KAFKA = ("confluent-kafka", AtlanConnectionCategory.EVENT_BUS)
