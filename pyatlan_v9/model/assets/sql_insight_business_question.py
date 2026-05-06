@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -53,7 +54,6 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .sql_insight_related import RelatedSqlInsightBusinessQuestion
 from .sql_related import RelatedSQL
 
 # =============================================================================
@@ -67,17 +67,18 @@ class SqlInsightBusinessQuestion(Asset):
     A generalized business question pattern observed from real query traffic.
     """
 
-    SQL_INSIGHT_BUSINESS_QUESTION_TEXT: ClassVar[Any] = None
-    SQL_INSIGHT_BUSINESS_QUESTION_CANONICAL_SQL: ClassVar[Any] = None
-    SQL_INSIGHT_BUSINESS_QUESTION_QUERY_COUNT: ClassVar[Any] = None
-    SQL_INSIGHT_BUSINESS_QUESTION_UNIQUE_USERS: ClassVar[Any] = None
-    SQL_INSIGHT_BUSINESS_QUESTION_LAST_SEEN_AT: ClassVar[Any] = None
+    SQL_INSIGHT_TEXT: ClassVar[Any] = None
+    SQL_INSIGHT_CANONICAL_SQL: ClassVar[Any] = None
+    SQL_INSIGHT_QUERY_COUNT: ClassVar[Any] = None
+    SQL_INSIGHT_UNIQUE_USERS: ClassVar[Any] = None
+    SQL_INSIGHT_LAST_SEEN_AT: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -106,21 +107,23 @@ class SqlInsightBusinessQuestion(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SQL_INSIGHT_DATASET: ClassVar[Any] = None
 
-    sql_insight_business_question_text: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SqlInsightBusinessQuestion"
+
+    sql_insight_text: Union[str, None, UnsetType] = UNSET
     """Natural language text of the business question."""
 
-    sql_insight_business_question_canonical_sql: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="sqlInsightBusinessQuestionCanonicalSQL")
+    sql_insight_canonical_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlInsightCanonicalSQL"
     )
     """Canonical SQL query that answers this business question."""
 
-    sql_insight_business_question_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries associated with this business question."""
 
-    sql_insight_business_question_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have asked this question."""
 
-    sql_insight_business_question_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this question was last observed, in milliseconds."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -140,6 +143,9 @@ class SqlInsightBusinessQuestion(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -241,72 +247,6 @@ class SqlInsightBusinessQuestion(Asset):
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SqlInsightBusinessQuestion instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"SqlInsightBusinessQuestion validation failed: {errors}")
-
-    def minimize(self) -> "SqlInsightBusinessQuestion":
-        """
-        Return a minimal copy of this SqlInsightBusinessQuestion with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SqlInsightBusinessQuestion with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SqlInsightBusinessQuestion instance with only the minimum required fields.
-        """
-        self.validate()
-        return SqlInsightBusinessQuestion(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedSqlInsightBusinessQuestion":
-        """
-        Create a :class:`RelatedSqlInsightBusinessQuestion` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSqlInsightBusinessQuestion reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSqlInsightBusinessQuestion(guid=self.guid)
-        return RelatedSqlInsightBusinessQuestion(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -364,21 +304,21 @@ class SqlInsightBusinessQuestion(Asset):
 class SqlInsightBusinessQuestionAttributes(AssetAttributes):
     """SqlInsightBusinessQuestion-specific attributes for nested API format."""
 
-    sql_insight_business_question_text: Union[str, None, UnsetType] = UNSET
+    sql_insight_text: Union[str, None, UnsetType] = UNSET
     """Natural language text of the business question."""
 
-    sql_insight_business_question_canonical_sql: Union[str, None, UnsetType] = (
-        msgspec.field(default=UNSET, name="sqlInsightBusinessQuestionCanonicalSQL")
+    sql_insight_canonical_sql: Union[str, None, UnsetType] = msgspec.field(
+        default=UNSET, name="sqlInsightCanonicalSQL"
     )
     """Canonical SQL query that answers this business question."""
 
-    sql_insight_business_question_query_count: Union[int, None, UnsetType] = UNSET
+    sql_insight_query_count: Union[int, None, UnsetType] = UNSET
     """Number of queries associated with this business question."""
 
-    sql_insight_business_question_unique_users: Union[int, None, UnsetType] = UNSET
+    sql_insight_unique_users: Union[int, None, UnsetType] = UNSET
     """Number of unique users who have asked this question."""
 
-    sql_insight_business_question_last_seen_at: Union[int, None, UnsetType] = UNSET
+    sql_insight_last_seen_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which this question was last observed, in milliseconds."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
@@ -402,6 +342,9 @@ class SqlInsightBusinessQuestionRelationshipAttributes(AssetRelationshipAttribut
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -521,6 +464,7 @@ _SQL_INSIGHT_BUSINESS_QUESTION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -556,19 +500,11 @@ def _populate_sql_insight_business_question_attrs(
 ) -> None:
     """Populate SqlInsightBusinessQuestion-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sql_insight_business_question_text = obj.sql_insight_business_question_text
-    attrs.sql_insight_business_question_canonical_sql = (
-        obj.sql_insight_business_question_canonical_sql
-    )
-    attrs.sql_insight_business_question_query_count = (
-        obj.sql_insight_business_question_query_count
-    )
-    attrs.sql_insight_business_question_unique_users = (
-        obj.sql_insight_business_question_unique_users
-    )
-    attrs.sql_insight_business_question_last_seen_at = (
-        obj.sql_insight_business_question_last_seen_at
-    )
+    attrs.sql_insight_text = obj.sql_insight_text
+    attrs.sql_insight_canonical_sql = obj.sql_insight_canonical_sql
+    attrs.sql_insight_query_count = obj.sql_insight_query_count
+    attrs.sql_insight_unique_users = obj.sql_insight_unique_users
+    attrs.sql_insight_last_seen_at = obj.sql_insight_last_seen_at
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -577,21 +513,11 @@ def _extract_sql_insight_business_question_attrs(
 ) -> dict:
     """Extract all SqlInsightBusinessQuestion attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sql_insight_business_question_text"] = (
-        attrs.sql_insight_business_question_text
-    )
-    result["sql_insight_business_question_canonical_sql"] = (
-        attrs.sql_insight_business_question_canonical_sql
-    )
-    result["sql_insight_business_question_query_count"] = (
-        attrs.sql_insight_business_question_query_count
-    )
-    result["sql_insight_business_question_unique_users"] = (
-        attrs.sql_insight_business_question_unique_users
-    )
-    result["sql_insight_business_question_last_seen_at"] = (
-        attrs.sql_insight_business_question_last_seen_at
-    )
+    result["sql_insight_text"] = attrs.sql_insight_text
+    result["sql_insight_canonical_sql"] = attrs.sql_insight_canonical_sql
+    result["sql_insight_query_count"] = attrs.sql_insight_query_count
+    result["sql_insight_unique_users"] = attrs.sql_insight_unique_users
+    result["sql_insight_last_seen_at"] = attrs.sql_insight_last_seen_at
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -633,9 +559,6 @@ def _sql_insight_business_question_to_nested(
         is_incomplete=sql_insight_business_question.is_incomplete,
         provenance_type=sql_insight_business_question.provenance_type,
         home_id=sql_insight_business_question.home_id,
-        depth=sql_insight_business_question.depth,
-        immediate_upstream=sql_insight_business_question.immediate_upstream,
-        immediate_downstream=sql_insight_business_question.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -671,6 +594,7 @@ def _sql_insight_business_question_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -679,9 +603,6 @@ def _sql_insight_business_question_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sql_insight_business_question_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -714,20 +635,20 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_TEXT = KeywordField(
-    "sqlInsightBusinessQuestionText", "sqlInsightBusinessQuestionText"
+SqlInsightBusinessQuestion.SQL_INSIGHT_TEXT = KeywordField(
+    "sqlInsightText", "sqlInsightText"
 )
-SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_CANONICAL_SQL = KeywordField(
-    "sqlInsightBusinessQuestionCanonicalSQL", "sqlInsightBusinessQuestionCanonicalSQL"
+SqlInsightBusinessQuestion.SQL_INSIGHT_CANONICAL_SQL = KeywordField(
+    "sqlInsightCanonicalSQL", "sqlInsightCanonicalSQL"
 )
-SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_QUERY_COUNT = NumericField(
-    "sqlInsightBusinessQuestionQueryCount", "sqlInsightBusinessQuestionQueryCount"
+SqlInsightBusinessQuestion.SQL_INSIGHT_QUERY_COUNT = NumericField(
+    "sqlInsightQueryCount", "sqlInsightQueryCount"
 )
-SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_UNIQUE_USERS = NumericField(
-    "sqlInsightBusinessQuestionUniqueUsers", "sqlInsightBusinessQuestionUniqueUsers"
+SqlInsightBusinessQuestion.SQL_INSIGHT_UNIQUE_USERS = NumericField(
+    "sqlInsightUniqueUsers", "sqlInsightUniqueUsers"
 )
-SqlInsightBusinessQuestion.SQL_INSIGHT_BUSINESS_QUESTION_LAST_SEEN_AT = NumericField(
-    "sqlInsightBusinessQuestionLastSeenAt", "sqlInsightBusinessQuestionLastSeenAt"
+SqlInsightBusinessQuestion.SQL_INSIGHT_LAST_SEEN_AT = NumericField(
+    "sqlInsightLastSeenAt", "sqlInsightLastSeenAt"
 )
 SqlInsightBusinessQuestion.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
@@ -739,6 +660,7 @@ SqlInsightBusinessQuestion.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 SqlInsightBusinessQuestion.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SqlInsightBusinessQuestion.APPLICATION = RelationField("application")
 SqlInsightBusinessQuestion.APPLICATION_FIELD = RelationField("applicationField")
+SqlInsightBusinessQuestion.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SqlInsightBusinessQuestion.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SqlInsightBusinessQuestion.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -50,7 +51,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sage_maker_related import RelatedSageMakerFeature, RelatedSageMakerFeatureGroup
+from .sage_maker_related import RelatedSageMakerFeatureGroup
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -66,10 +67,10 @@ class SageMakerFeature(Asset):
     Instance of a SageMaker Feature in Atlan. Represents an individual feature within a Feature Group, including its data type and metadata.
     """
 
-    SAGE_MAKER_FEATURE_GROUP_NAME: ClassVar[Any] = None
-    SAGE_MAKER_FEATURE_GROUP_QUALIFIED_NAME: ClassVar[Any] = None
-    SAGE_MAKER_FEATURE_DATA_TYPE: ClassVar[Any] = None
-    SAGE_MAKER_FEATURE_IS_RECORD_IDENTIFIER: ClassVar[Any] = None
+    SAGE_MAKER_GROUP_NAME: ClassVar[Any] = None
+    SAGE_MAKER_GROUP_QUALIFIED_NAME: ClassVar[Any] = None
+    SAGE_MAKER_DATA_TYPE: ClassVar[Any] = None
+    SAGE_MAKER_IS_RECORD_IDENTIFIER: ClassVar[Any] = None
     SAGE_MAKER_S3_URI: ClassVar[Any] = None
     ETHICAL_AI_PRIVACY_CONFIG: ClassVar[Any] = None
     ETHICAL_AI_FAIRNESS_CONFIG: ClassVar[Any] = None
@@ -94,6 +95,7 @@ class SageMakerFeature(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -122,16 +124,18 @@ class SageMakerFeature(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sage_maker_feature_group_name: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SageMakerFeature"
+
+    sage_maker_group_name: Union[str, None, UnsetType] = UNSET
     """Name of the Feature Group that contains this feature."""
 
-    sage_maker_feature_group_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_group_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Feature Group that contains this feature."""
 
-    sage_maker_feature_data_type: Union[str, None, UnsetType] = UNSET
+    sage_maker_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of the feature (e.g., String, Integral, Fractional)."""
 
-    sage_maker_feature_is_record_identifier: Union[bool, None, UnsetType] = UNSET
+    sage_maker_is_record_identifier: Union[bool, None, UnsetType] = UNSET
     """Whether this feature serves as the record identifier for the Feature Group."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -219,6 +223,9 @@ class SageMakerFeature(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -322,72 +329,6 @@ class SageMakerFeature(Asset):
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SageMakerFeature instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.sage_maker_feature_group is UNSET:
-                errors.append("sage_maker_feature_group is required for creation")
-        if errors:
-            raise ValueError(f"SageMakerFeature validation failed: {errors}")
-
-    def minimize(self) -> "SageMakerFeature":
-        """
-        Return a minimal copy of this SageMakerFeature with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SageMakerFeature with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SageMakerFeature instance with only the minimum required fields.
-        """
-        self.validate()
-        return SageMakerFeature(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSageMakerFeature":
-        """
-        Create a :class:`RelatedSageMakerFeature` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSageMakerFeature reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSageMakerFeature(guid=self.guid)
-        return RelatedSageMakerFeature(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -445,16 +386,16 @@ class SageMakerFeature(Asset):
 class SageMakerFeatureAttributes(AssetAttributes):
     """SageMakerFeature-specific attributes for nested API format."""
 
-    sage_maker_feature_group_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_group_name: Union[str, None, UnsetType] = UNSET
     """Name of the Feature Group that contains this feature."""
 
-    sage_maker_feature_group_qualified_name: Union[str, None, UnsetType] = UNSET
+    sage_maker_group_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the Feature Group that contains this feature."""
 
-    sage_maker_feature_data_type: Union[str, None, UnsetType] = UNSET
+    sage_maker_data_type: Union[str, None, UnsetType] = UNSET
     """Data type of the feature (e.g., String, Integral, Fractional)."""
 
-    sage_maker_feature_is_record_identifier: Union[bool, None, UnsetType] = UNSET
+    sage_maker_is_record_identifier: Union[bool, None, UnsetType] = UNSET
     """Whether this feature serves as the record identifier for the Feature Group."""
 
     sage_maker_s3_uri: Union[str, None, UnsetType] = UNSET
@@ -546,6 +487,9 @@ class SageMakerFeatureRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -667,6 +611,7 @@ _SAGE_MAKER_FEATURE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -702,14 +647,10 @@ def _populate_sage_maker_feature_attrs(
 ) -> None:
     """Populate SageMakerFeature-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sage_maker_feature_group_name = obj.sage_maker_feature_group_name
-    attrs.sage_maker_feature_group_qualified_name = (
-        obj.sage_maker_feature_group_qualified_name
-    )
-    attrs.sage_maker_feature_data_type = obj.sage_maker_feature_data_type
-    attrs.sage_maker_feature_is_record_identifier = (
-        obj.sage_maker_feature_is_record_identifier
-    )
+    attrs.sage_maker_group_name = obj.sage_maker_group_name
+    attrs.sage_maker_group_qualified_name = obj.sage_maker_group_qualified_name
+    attrs.sage_maker_data_type = obj.sage_maker_data_type
+    attrs.sage_maker_is_record_identifier = obj.sage_maker_is_record_identifier
     attrs.sage_maker_s3_uri = obj.sage_maker_s3_uri
     attrs.ethical_ai_privacy_config = obj.ethical_ai_privacy_config
     attrs.ethical_ai_fairness_config = obj.ethical_ai_fairness_config
@@ -738,14 +679,10 @@ def _populate_sage_maker_feature_attrs(
 def _extract_sage_maker_feature_attrs(attrs: SageMakerFeatureAttributes) -> dict:
     """Extract all SageMakerFeature attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sage_maker_feature_group_name"] = attrs.sage_maker_feature_group_name
-    result["sage_maker_feature_group_qualified_name"] = (
-        attrs.sage_maker_feature_group_qualified_name
-    )
-    result["sage_maker_feature_data_type"] = attrs.sage_maker_feature_data_type
-    result["sage_maker_feature_is_record_identifier"] = (
-        attrs.sage_maker_feature_is_record_identifier
-    )
+    result["sage_maker_group_name"] = attrs.sage_maker_group_name
+    result["sage_maker_group_qualified_name"] = attrs.sage_maker_group_qualified_name
+    result["sage_maker_data_type"] = attrs.sage_maker_data_type
+    result["sage_maker_is_record_identifier"] = attrs.sage_maker_is_record_identifier
     result["sage_maker_s3_uri"] = attrs.sage_maker_s3_uri
     result["ethical_ai_privacy_config"] = attrs.ethical_ai_privacy_config
     result["ethical_ai_fairness_config"] = attrs.ethical_ai_fairness_config
@@ -811,9 +748,6 @@ def _sage_maker_feature_to_nested(
         is_incomplete=sage_maker_feature.is_incomplete,
         provenance_type=sage_maker_feature.provenance_type,
         home_id=sage_maker_feature.home_id,
-        depth=sage_maker_feature.depth,
-        immediate_upstream=sage_maker_feature.immediate_upstream,
-        immediate_downstream=sage_maker_feature.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -847,6 +781,7 @@ def _sage_maker_feature_from_nested(nested: SageMakerFeatureNested) -> SageMaker
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -855,9 +790,6 @@ def _sage_maker_feature_from_nested(nested: SageMakerFeatureNested) -> SageMaker
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sage_maker_feature_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -889,17 +821,17 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SageMakerFeature.SAGE_MAKER_FEATURE_GROUP_NAME = KeywordField(
-    "sageMakerFeatureGroupName", "sageMakerFeatureGroupName"
+SageMakerFeature.SAGE_MAKER_GROUP_NAME = KeywordField(
+    "sageMakerGroupName", "sageMakerGroupName"
 )
-SageMakerFeature.SAGE_MAKER_FEATURE_GROUP_QUALIFIED_NAME = KeywordField(
-    "sageMakerFeatureGroupQualifiedName", "sageMakerFeatureGroupQualifiedName"
+SageMakerFeature.SAGE_MAKER_GROUP_QUALIFIED_NAME = KeywordField(
+    "sageMakerGroupQualifiedName", "sageMakerGroupQualifiedName"
 )
-SageMakerFeature.SAGE_MAKER_FEATURE_DATA_TYPE = KeywordField(
-    "sageMakerFeatureDataType", "sageMakerFeatureDataType"
+SageMakerFeature.SAGE_MAKER_DATA_TYPE = KeywordField(
+    "sageMakerDataType", "sageMakerDataType"
 )
-SageMakerFeature.SAGE_MAKER_FEATURE_IS_RECORD_IDENTIFIER = BooleanField(
-    "sageMakerFeatureIsRecordIdentifier", "sageMakerFeatureIsRecordIdentifier"
+SageMakerFeature.SAGE_MAKER_IS_RECORD_IDENTIFIER = BooleanField(
+    "sageMakerIsRecordIdentifier", "sageMakerIsRecordIdentifier"
 )
 SageMakerFeature.SAGE_MAKER_S3_URI = KeywordField("sageMakerS3Uri", "sageMakerS3Uri")
 SageMakerFeature.ETHICAL_AI_PRIVACY_CONFIG = KeywordField(
@@ -946,6 +878,7 @@ SageMakerFeature.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTas
 SageMakerFeature.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SageMakerFeature.APPLICATION = RelationField("application")
 SageMakerFeature.APPLICATION_FIELD = RelationField("applicationField")
+SageMakerFeature.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SageMakerFeature.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SageMakerFeature.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

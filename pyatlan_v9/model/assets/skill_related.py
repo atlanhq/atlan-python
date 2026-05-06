@@ -36,6 +36,9 @@ class RelatedSkill(RelatedAgentic):
     skill_version: Union[str, None, UnsetType] = UNSET
     """Version identifier for this skill."""
 
+    skill_type: Union[str, None, UnsetType] = UNSET
+    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Skill"

@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -68,10 +69,10 @@ class AtlasGlossaryCategory(Asset):
     LONG_DESCRIPTION: ClassVar[Any] = None
     ADDITIONAL_ATTRIBUTES: ClassVar[Any] = None
     CATEGORY_TYPE: ClassVar[Any] = None
-    ANCHOR: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -82,6 +83,7 @@ class AtlasGlossaryCategory(Asset):
     GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES: ClassVar[Any] = None
     MEANINGS: ClassVar[Any] = None
     TERMS: ClassVar[Any] = None
+    ANCHOR: ClassVar[Any] = None
     CHILDREN_CATEGORIES: ClassVar[Any] = None
     PARENT_CATEGORY: ClassVar[Any] = None
     MC_MONITORS: ClassVar[Any] = None
@@ -93,6 +95,8 @@ class AtlasGlossaryCategory(Asset):
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "AtlasGlossaryCategory"
 
     short_description: Union[str, None, UnsetType] = UNSET
     """Unused. Brief summary of the category. See 'description' and 'userDescription' instead."""
@@ -106,9 +110,6 @@ class AtlasGlossaryCategory(Asset):
     category_type: Union[str, None, UnsetType] = UNSET
     """"""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this category is contained."""
-
     anomalo_checks: Union[List[RelatedAnomaloCheck], None, UnsetType] = UNSET
     """Checks that run on this asset."""
 
@@ -117,6 +118,9 @@ class AtlasGlossaryCategory(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -151,6 +155,9 @@ class AtlasGlossaryCategory(Asset):
 
     terms: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Terms organized within this category."""
+
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    """Glossary in which this category is contained."""
 
     children_categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = (
         UNSET
@@ -193,71 +200,6 @@ class AtlasGlossaryCategory(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "AtlasGlossaryCategory"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this AtlasGlossaryCategory instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if for_creation:
-            if self.anchor is UNSET:
-                errors.append("anchor is required for creation")
-        if errors:
-            raise ValueError(f"AtlasGlossaryCategory validation failed: {errors}")
-
-    def minimize(self) -> "AtlasGlossaryCategory":
-        """
-        Return a minimal copy of this AtlasGlossaryCategory with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new AtlasGlossaryCategory with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new AtlasGlossaryCategory instance with only the minimum required fields.
-        """
-        self.validate()
-        return AtlasGlossaryCategory(
-            qualified_name=self.qualified_name, name=self.name, anchor=self.anchor
-        )
-
-    def relate(self) -> "RelatedAtlasGlossaryCategory":
-        """
-        Create a :class:`RelatedAtlasGlossaryCategory` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedAtlasGlossaryCategory reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedAtlasGlossaryCategory(guid=self.guid)
-        return RelatedAtlasGlossaryCategory(qualified_name=self.qualified_name)
 
     @classmethod
     def can_be_archived(cls) -> bool:
@@ -494,9 +436,6 @@ class AtlasGlossaryCategoryAttributes(AssetAttributes):
     category_type: Union[str, None, UnsetType] = UNSET
     """"""
 
-    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
-    """Glossary in which this category is contained."""
-
 
 class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
     """AtlasGlossaryCategory-specific relationship attributes for nested API format."""
@@ -509,6 +448,9 @@ class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -543,6 +485,9 @@ class AtlasGlossaryCategoryRelationshipAttributes(AssetRelationshipAttributes):
 
     terms: Union[List[RelatedAtlasGlossaryTerm], None, UnsetType] = UNSET
     """Terms organized within this category."""
+
+    anchor: Union[RelatedAtlasGlossary, None, UnsetType] = UNSET
+    """Glossary in which this category is contained."""
 
     children_categories: Union[List[RelatedAtlasGlossaryCategory], None, UnsetType] = (
         UNSET
@@ -608,6 +553,7 @@ _ATLAS_GLOSSARY_CATEGORY_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -618,6 +564,7 @@ _ATLAS_GLOSSARY_CATEGORY_REL_FIELDS: List[str] = [
     "gcp_dataplex_aspect_type_metadata_entities",
     "meanings",
     "terms",
+    "anchor",
     "children_categories",
     "parent_category",
     "mc_monitors",
@@ -641,7 +588,6 @@ def _populate_atlas_glossary_category_attrs(
     attrs.long_description = obj.long_description
     attrs.additional_attributes = obj.additional_attributes
     attrs.category_type = obj.category_type
-    attrs.anchor = obj.anchor
 
 
 def _extract_atlas_glossary_category_attrs(
@@ -653,7 +599,6 @@ def _extract_atlas_glossary_category_attrs(
     result["long_description"] = attrs.long_description
     result["additional_attributes"] = attrs.additional_attributes
     result["category_type"] = attrs.category_type
-    result["anchor"] = attrs.anchor
     return result
 
 
@@ -694,9 +639,6 @@ def _atlas_glossary_category_to_nested(
         is_incomplete=atlas_glossary_category.is_incomplete,
         provenance_type=atlas_glossary_category.provenance_type,
         home_id=atlas_glossary_category.home_id,
-        depth=atlas_glossary_category.depth,
-        immediate_upstream=atlas_glossary_category.immediate_upstream,
-        immediate_downstream=atlas_glossary_category.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -732,6 +674,7 @@ def _atlas_glossary_category_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -740,9 +683,6 @@ def _atlas_glossary_category_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_atlas_glossary_category_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -779,10 +719,10 @@ AtlasGlossaryCategory.ADDITIONAL_ATTRIBUTES = KeywordField(
     "additionalAttributes", "additionalAttributes"
 )
 AtlasGlossaryCategory.CATEGORY_TYPE = KeywordField("categoryType", "categoryType")
-AtlasGlossaryCategory.ANCHOR = KeywordField("anchor", "anchor")
 AtlasGlossaryCategory.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AtlasGlossaryCategory.APPLICATION = RelationField("application")
 AtlasGlossaryCategory.APPLICATION_FIELD = RelationField("applicationField")
+AtlasGlossaryCategory.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 AtlasGlossaryCategory.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 AtlasGlossaryCategory.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
@@ -801,6 +741,7 @@ AtlasGlossaryCategory.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField
 )
 AtlasGlossaryCategory.MEANINGS = RelationField("meanings")
 AtlasGlossaryCategory.TERMS = RelationField("terms")
+AtlasGlossaryCategory.ANCHOR = RelationField("anchor")
 AtlasGlossaryCategory.CHILDREN_CATEGORIES = RelationField("childrenCategories")
 AtlasGlossaryCategory.PARENT_CATEGORY = RelationField("parentCategory")
 AtlasGlossaryCategory.MC_MONITORS = RelationField("mcMonitors")

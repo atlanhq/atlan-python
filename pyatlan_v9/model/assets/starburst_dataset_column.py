@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .cosmos_mongo_db_related import RelatedCosmosMongoDBCollection
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -81,7 +82,7 @@ from .sql_related import (
     RelatedTablePartition,
     RelatedView,
 )
-from .starburst_related import RelatedStarburstDataset, RelatedStarburstDatasetColumn
+from .starburst_related import RelatedStarburstDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -202,6 +203,7 @@ class StarburstDatasetColumn(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     COSMOS_MONGO_DB_COLLECTION: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -260,6 +262,8 @@ class StarburstDatasetColumn(Asset):
     SQL_INSIGHT_FILTERS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
     STARBURST_DATASET: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "StarburstDatasetColumn"
 
     starburst_sql_column_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the corresponding SQL Column. Enables cross-stream lookup between the Data Product perspective and the SQL perspective of the same underlying column."""
@@ -589,6 +593,9 @@ class StarburstDatasetColumn(Asset):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     cosmos_mongo_db_collection: Union[
         RelatedCosmosMongoDBCollection, None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
@@ -803,82 +810,6 @@ class StarburstDatasetColumn(Asset):
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
         r"^.+/[^/]+/[^/]+/[^/]+$"
     )
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this StarburstDatasetColumn instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.starburst_dataset is UNSET:
-                errors.append("starburst_dataset is required for creation")
-            if self.starburst_dataset_name is UNSET:
-                errors.append("starburst_dataset_name is required for creation")
-            if self.starburst_dataset_qualified_name is UNSET:
-                errors.append(
-                    "starburst_dataset_qualified_name is required for creation"
-                )
-            if self.order is UNSET:
-                errors.append("order is required for creation")
-        if errors:
-            raise ValueError(f"StarburstDatasetColumn validation failed: {errors}")
-
-    def minimize(self) -> "StarburstDatasetColumn":
-        """
-        Return a minimal copy of this StarburstDatasetColumn with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new StarburstDatasetColumn with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new StarburstDatasetColumn instance with only the minimum required fields.
-        """
-        self.validate()
-        return StarburstDatasetColumn(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    def relate(self) -> "RelatedStarburstDatasetColumn":
-        """
-        Create a :class:`RelatedStarburstDatasetColumn` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedStarburstDatasetColumn reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedStarburstDatasetColumn(guid=self.guid)
-        return RelatedStarburstDatasetColumn(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -1269,6 +1200,9 @@ class StarburstDatasetColumnRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     cosmos_mongo_db_collection: Union[
         RelatedCosmosMongoDBCollection, None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBCollection")
@@ -1500,6 +1434,7 @@ _STARBURST_DATASET_COLUMN_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "cosmos_mongo_db_collection",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -1847,9 +1782,6 @@ def _starburst_dataset_column_to_nested(
         is_incomplete=starburst_dataset_column.is_incomplete,
         provenance_type=starburst_dataset_column.provenance_type,
         home_id=starburst_dataset_column.home_id,
-        depth=starburst_dataset_column.depth,
-        immediate_upstream=starburst_dataset_column.immediate_upstream,
-        immediate_downstream=starburst_dataset_column.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1885,6 +1817,7 @@ def _starburst_dataset_column_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1893,9 +1826,6 @@ def _starburst_dataset_column_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_starburst_dataset_column_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -2182,6 +2112,7 @@ StarburstDatasetColumn.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 StarburstDatasetColumn.ANOMALO_CHECKS = RelationField("anomaloChecks")
 StarburstDatasetColumn.APPLICATION = RelationField("application")
 StarburstDatasetColumn.APPLICATION_FIELD = RelationField("applicationField")
+StarburstDatasetColumn.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 StarburstDatasetColumn.COSMOS_MONGO_DB_COLLECTION = RelationField(
     "cosmosMongoDBCollection"
 )
