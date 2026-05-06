@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -53,11 +54,7 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .superset_related import (
-    RelatedSupersetChart,
-    RelatedSupersetDashboard,
-    RelatedSupersetDataset,
-)
+from .superset_related import RelatedSupersetChart, RelatedSupersetDataset
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -84,6 +81,7 @@ class SupersetDashboard(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -112,6 +110,8 @@ class SupersetDashboard(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
     SUPERSET_CHARTS: ClassVar[Any] = None
     SUPERSET_DATASETS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SupersetDashboard"
 
     superset_dashboard_changed_by_name: Union[str, None, UnsetType] = UNSET
     """Name of the user who changed the dashboard."""
@@ -158,6 +158,9 @@ class SupersetDashboard(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -255,66 +258,6 @@ class SupersetDashboard(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SupersetDashboard"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SupersetDashboard instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SupersetDashboard validation failed: {errors}")
-
-    def minimize(self) -> "SupersetDashboard":
-        """
-        Return a minimal copy of this SupersetDashboard with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SupersetDashboard with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SupersetDashboard instance with only the minimum required fields.
-        """
-        self.validate()
-        return SupersetDashboard(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSupersetDashboard":
-        """
-        Create a :class:`RelatedSupersetDashboard` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSupersetDashboard reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSupersetDashboard(guid=self.guid)
-        return RelatedSupersetDashboard(qualified_name=self.qualified_name)
 
     @classmethod
     @init_guid
@@ -453,6 +396,9 @@ class SupersetDashboardRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -574,6 +520,7 @@ _SUPERSET_DASHBOARD_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -683,9 +630,6 @@ def _superset_dashboard_to_nested(
         is_incomplete=superset_dashboard.is_incomplete,
         provenance_type=superset_dashboard.provenance_type,
         home_id=superset_dashboard.home_id,
-        depth=superset_dashboard.depth,
-        immediate_upstream=superset_dashboard.immediate_upstream,
-        immediate_downstream=superset_dashboard.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -721,6 +665,7 @@ def _superset_dashboard_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -729,9 +674,6 @@ def _superset_dashboard_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_superset_dashboard_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -798,6 +740,7 @@ SupersetDashboard.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTa
 SupersetDashboard.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SupersetDashboard.APPLICATION = RelationField("application")
 SupersetDashboard.APPLICATION_FIELD = RelationField("applicationField")
+SupersetDashboard.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SupersetDashboard.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SupersetDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

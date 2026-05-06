@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -51,7 +52,6 @@ from .quick_sight_related import (
     RelatedQuickSightAnalysis,
     RelatedQuickSightDashboard,
     RelatedQuickSightDataset,
-    RelatedQuickSightFolder,
 )
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
@@ -70,7 +70,7 @@ class QuickSightFolder(Asset):
     Instance of a QuickSight folder in Atlan.
     """
 
-    QUICK_SIGHT_FOLDER_TYPE: ClassVar[Any] = None
+    QUICK_SIGHT_TYPE: ClassVar[Any] = None
     QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[Any] = None
     QUICK_SIGHT_ID: ClassVar[Any] = None
     QUICK_SIGHT_SHEET_ID: ClassVar[Any] = None
@@ -81,6 +81,7 @@ class QuickSightFolder(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -111,7 +112,9 @@ class QuickSightFolder(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    quick_sight_folder_type: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "QuickSightFolder"
+
+    quick_sight_type: Union[str, None, UnsetType] = UNSET
     """Type of this folder, for example: SHARED or RESTRICTED."""
 
     quick_sight_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
@@ -143,6 +146,9 @@ class QuickSightFolder(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -248,66 +254,6 @@ class QuickSightFolder(Asset):
     def __post_init__(self) -> None:
         self.type_name = "QuickSightFolder"
 
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this QuickSightFolder instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"QuickSightFolder validation failed: {errors}")
-
-    def minimize(self) -> "QuickSightFolder":
-        """
-        Return a minimal copy of this QuickSightFolder with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new QuickSightFolder with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new QuickSightFolder instance with only the minimum required fields.
-        """
-        self.validate()
-        return QuickSightFolder(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedQuickSightFolder":
-        """
-        Create a :class:`RelatedQuickSightFolder` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedQuickSightFolder reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedQuickSightFolder(guid=self.guid)
-        return RelatedQuickSightFolder(qualified_name=self.qualified_name)
-
     @classmethod
     @init_guid
     def creator(
@@ -405,7 +351,7 @@ class QuickSightFolder(Asset):
 class QuickSightFolderAttributes(AssetAttributes):
     """QuickSightFolder-specific attributes for nested API format."""
 
-    quick_sight_folder_type: Union[str, None, UnsetType] = UNSET
+    quick_sight_type: Union[str, None, UnsetType] = UNSET
     """Type of this folder, for example: SHARED or RESTRICTED."""
 
     quick_sight_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
@@ -441,6 +387,9 @@ class QuickSightFolderRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -570,6 +519,7 @@ _QUICK_SIGHT_FOLDER_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -607,7 +557,7 @@ def _populate_quick_sight_folder_attrs(
 ) -> None:
     """Populate QuickSightFolder-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.quick_sight_folder_type = obj.quick_sight_folder_type
+    attrs.quick_sight_type = obj.quick_sight_type
     attrs.quick_sight_folder_hierarchy = obj.quick_sight_folder_hierarchy
     attrs.quick_sight_id = obj.quick_sight_id
     attrs.quick_sight_sheet_id = obj.quick_sight_sheet_id
@@ -618,7 +568,7 @@ def _populate_quick_sight_folder_attrs(
 def _extract_quick_sight_folder_attrs(attrs: QuickSightFolderAttributes) -> dict:
     """Extract all QuickSightFolder attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["quick_sight_folder_type"] = attrs.quick_sight_folder_type
+    result["quick_sight_type"] = attrs.quick_sight_type
     result["quick_sight_folder_hierarchy"] = attrs.quick_sight_folder_hierarchy
     result["quick_sight_id"] = attrs.quick_sight_id
     result["quick_sight_sheet_id"] = attrs.quick_sight_sheet_id
@@ -664,9 +614,6 @@ def _quick_sight_folder_to_nested(
         is_incomplete=quick_sight_folder.is_incomplete,
         provenance_type=quick_sight_folder.provenance_type,
         home_id=quick_sight_folder.home_id,
-        depth=quick_sight_folder.depth,
-        immediate_upstream=quick_sight_folder.immediate_upstream,
-        immediate_downstream=quick_sight_folder.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -700,6 +647,7 @@ def _quick_sight_folder_from_nested(nested: QuickSightFolderNested) -> QuickSigh
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -708,9 +656,6 @@ def _quick_sight_folder_from_nested(nested: QuickSightFolderNested) -> QuickSigh
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_quick_sight_folder_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -741,9 +686,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-QuickSightFolder.QUICK_SIGHT_FOLDER_TYPE = KeywordField(
-    "quickSightFolderType", "quickSightFolderType"
-)
+QuickSightFolder.QUICK_SIGHT_TYPE = KeywordField("quickSightType", "quickSightType")
 QuickSightFolder.QUICK_SIGHT_FOLDER_HIERARCHY = KeywordField(
     "quickSightFolderHierarchy", "quickSightFolderHierarchy"
 )
@@ -762,6 +705,7 @@ QuickSightFolder.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTas
 QuickSightFolder.ANOMALO_CHECKS = RelationField("anomaloChecks")
 QuickSightFolder.APPLICATION = RelationField("application")
 QuickSightFolder.APPLICATION_FIELD = RelationField("applicationField")
+QuickSightFolder.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 QuickSightFolder.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 QuickSightFolder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

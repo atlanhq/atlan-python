@@ -38,11 +38,8 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .cassandra_related import (
-    RelatedCassandraKeyspace,
-    RelatedCassandraTable,
-    RelatedCassandraView,
-)
+from .cassandra_related import RelatedCassandraTable, RelatedCassandraView
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -87,6 +84,7 @@ class CassandraKeyspace(Asset):
     APPLICATION_FIELD: ClassVar[Any] = None
     CASSANDRA_TABLES: ClassVar[Any] = None
     CASSANDRA_VIEWS: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -113,6 +111,8 @@ class CassandraKeyspace(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "CassandraKeyspace"
 
     cassandra_keyspace_durable_writes: Union[bool, None, UnsetType] = UNSET
     """Indicates whether durable writes are enabled for the CassandraKeyspace."""
@@ -169,6 +169,9 @@ class CassandraKeyspace(Asset):
 
     cassandra_views: Union[List[RelatedCassandraView], None, UnsetType] = UNSET
     """Individual views contained in the keyspace."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -260,66 +263,6 @@ class CassandraKeyspace(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "CassandraKeyspace"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this CassandraKeyspace instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"CassandraKeyspace validation failed: {errors}")
-
-    def minimize(self) -> "CassandraKeyspace":
-        """
-        Return a minimal copy of this CassandraKeyspace with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new CassandraKeyspace with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new CassandraKeyspace instance with only the minimum required fields.
-        """
-        self.validate()
-        return CassandraKeyspace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCassandraKeyspace":
-        """
-        Create a :class:`RelatedCassandraKeyspace` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedCassandraKeyspace reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedCassandraKeyspace(guid=self.guid)
-        return RelatedCassandraKeyspace(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -438,6 +381,9 @@ class CassandraKeyspaceRelationshipAttributes(AssetRelationshipAttributes):
     cassandra_views: Union[List[RelatedCassandraView], None, UnsetType] = UNSET
     """Individual views contained in the keyspace."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -555,6 +501,7 @@ _CASSANDRA_KEYSPACE_REL_FIELDS: List[str] = [
     "application_field",
     "cassandra_tables",
     "cassandra_views",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -658,9 +605,6 @@ def _cassandra_keyspace_to_nested(
         is_incomplete=cassandra_keyspace.is_incomplete,
         provenance_type=cassandra_keyspace.provenance_type,
         home_id=cassandra_keyspace.home_id,
-        depth=cassandra_keyspace.depth,
-        immediate_upstream=cassandra_keyspace.immediate_upstream,
-        immediate_downstream=cassandra_keyspace.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -696,6 +640,7 @@ def _cassandra_keyspace_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -704,9 +649,6 @@ def _cassandra_keyspace_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_cassandra_keyspace_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -777,6 +719,7 @@ CassandraKeyspace.APPLICATION = RelationField("application")
 CassandraKeyspace.APPLICATION_FIELD = RelationField("applicationField")
 CassandraKeyspace.CASSANDRA_TABLES = RelationField("cassandraTables")
 CassandraKeyspace.CASSANDRA_VIEWS = RelationField("cassandraViews")
+CassandraKeyspace.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CassandraKeyspace.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CassandraKeyspace.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
