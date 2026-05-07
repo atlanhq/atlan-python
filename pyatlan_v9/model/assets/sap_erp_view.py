@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -48,7 +49,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
-from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent, RelatedSapErpView
+from .sap_related import RelatedSapErpColumn, RelatedSapErpComponent
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -64,8 +65,8 @@ class SapErpView(Asset):
     Instance of a SAP table in Atlan.
     """
 
-    SAP_ERP_VIEW_TYPE: ClassVar[Any] = None
-    SAP_ERP_VIEW_DEFINITION: ClassVar[Any] = None
+    SAP_TYPE: ClassVar[Any] = None
+    SAP_DEFINITION: ClassVar[Any] = None
     SAP_TECHNICAL_NAME: ClassVar[Any] = None
     SAP_LOGICAL_NAME: ClassVar[Any] = None
     SAP_PACKAGE_NAME: ClassVar[Any] = None
@@ -79,6 +80,7 @@ class SapErpView(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -108,10 +110,12 @@ class SapErpView(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
-    sap_erp_view_type: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SapErpView"
+
+    sap_type: Union[str, None, UnsetType] = UNSET
     """Type of the SAP ERP View."""
 
-    sap_erp_view_definition: Union[str, None, UnsetType] = UNSET
+    sap_definition: Union[str, None, UnsetType] = UNSET
     """Specifies the definition of the SAP ERP View"""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -152,6 +156,9 @@ class SapErpView(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -251,66 +258,6 @@ class SapErpView(Asset):
         self.type_name = "SapErpView"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SapErpView instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpView validation failed: {errors}")
-
-    def minimize(self) -> "SapErpView":
-        """
-        Return a minimal copy of this SapErpView with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SapErpView with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SapErpView instance with only the minimum required fields.
-        """
-        self.validate()
-        return SapErpView(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpView":
-        """
-        Create a :class:`RelatedSapErpView` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSapErpView reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSapErpView(guid=self.guid)
-        return RelatedSapErpView(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -365,10 +312,10 @@ class SapErpView(Asset):
 class SapErpViewAttributes(AssetAttributes):
     """SapErpView-specific attributes for nested API format."""
 
-    sap_erp_view_type: Union[str, None, UnsetType] = UNSET
+    sap_type: Union[str, None, UnsetType] = UNSET
     """Type of the SAP ERP View."""
 
-    sap_erp_view_definition: Union[str, None, UnsetType] = UNSET
+    sap_definition: Union[str, None, UnsetType] = UNSET
     """Specifies the definition of the SAP ERP View"""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
@@ -413,6 +360,9 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -533,6 +483,7 @@ _SAP_ERP_VIEW_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -567,8 +518,8 @@ _SAP_ERP_VIEW_REL_FIELDS: List[str] = [
 def _populate_sap_erp_view_attrs(attrs: SapErpViewAttributes, obj: SapErpView) -> None:
     """Populate SapErpView-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.sap_erp_view_type = obj.sap_erp_view_type
-    attrs.sap_erp_view_definition = obj.sap_erp_view_definition
+    attrs.sap_type = obj.sap_type
+    attrs.sap_definition = obj.sap_definition
     attrs.sap_technical_name = obj.sap_technical_name
     attrs.sap_logical_name = obj.sap_logical_name
     attrs.sap_package_name = obj.sap_package_name
@@ -582,8 +533,8 @@ def _populate_sap_erp_view_attrs(attrs: SapErpViewAttributes, obj: SapErpView) -
 def _extract_sap_erp_view_attrs(attrs: SapErpViewAttributes) -> dict:
     """Extract all SapErpView attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["sap_erp_view_type"] = attrs.sap_erp_view_type
-    result["sap_erp_view_definition"] = attrs.sap_erp_view_definition
+    result["sap_type"] = attrs.sap_type
+    result["sap_definition"] = attrs.sap_definition
     result["sap_technical_name"] = attrs.sap_technical_name
     result["sap_logical_name"] = attrs.sap_logical_name
     result["sap_package_name"] = attrs.sap_package_name
@@ -628,9 +579,6 @@ def _sap_erp_view_to_nested(sap_erp_view: SapErpView) -> SapErpViewNested:
         is_incomplete=sap_erp_view.is_incomplete,
         provenance_type=sap_erp_view.provenance_type,
         home_id=sap_erp_view.home_id,
-        depth=sap_erp_view.depth,
-        immediate_upstream=sap_erp_view.immediate_upstream,
-        immediate_downstream=sap_erp_view.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -662,6 +610,7 @@ def _sap_erp_view_from_nested(nested: SapErpViewNested) -> SapErpView:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -670,9 +619,6 @@ def _sap_erp_view_from_nested(nested: SapErpViewNested) -> SapErpView:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_view_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -699,10 +645,8 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SapErpView.SAP_ERP_VIEW_TYPE = KeywordField("sapErpViewType", "sapErpViewType")
-SapErpView.SAP_ERP_VIEW_DEFINITION = KeywordField(
-    "sapErpViewDefinition", "sapErpViewDefinition"
-)
+SapErpView.SAP_TYPE = KeywordField("sapType", "sapType")
+SapErpView.SAP_DEFINITION = KeywordField("sapDefinition", "sapDefinition")
 SapErpView.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
 SapErpView.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
 SapErpView.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
@@ -718,6 +662,7 @@ SapErpView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SapErpView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpView.APPLICATION = RelationField("application")
 SapErpView.APPLICATION_FIELD = RelationField("applicationField")
+SapErpView.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SapErpView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SapErpView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 SapErpView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
