@@ -74,7 +74,7 @@ class AtlanTagTranslator(BaseTranslator):
 
         # Convert classification hash ID → human-readable name
         for key in self._CLASSIFICATION_NAMES:
-            if key in raw_json:
+            if key in raw_json and raw_json[key] is not None:
                 raw_json[key] = [
                     self.client.atlan_tag_cache.get_name_for_id(tag_id) or DELETED_
                     for tag_id in raw_json[key]
@@ -82,7 +82,7 @@ class AtlanTagTranslator(BaseTranslator):
 
         # Convert classification objects typeName hash ID → human-readable name
         for key in self._CLASSIFICATION_KEYS:
-            if key in raw_json:
+            if key in raw_json and raw_json[key] is not None:
                 for classification in raw_json[key]:
                     tag_id = classification.get(self._TYPE_NAME)
                     if tag_id:
