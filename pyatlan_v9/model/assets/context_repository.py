@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .asset_related import RelatedAsset
 from .context_related import RelatedContextArtifact, RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -50,6 +51,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .skill_related import RelatedSkill
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -75,6 +77,9 @@ class ContextRepository(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     CONTEXT_ARTIFACTS: ClassVar[Any] = None
+    CONTEXT_OUTPUT_SKILL: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
+    CONTEXT_INPUT_ASSETS: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -101,6 +106,8 @@ class ContextRepository(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "ContextRepository"
 
     context_repository_lifecycle_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of the context repository."""
@@ -136,6 +143,15 @@ class ContextRepository(Asset):
 
     context_artifacts: Union[List[RelatedContextArtifact], None, UnsetType] = UNSET
     """Context artifacts produced by this repository."""
+
+    context_output_skill: Union[RelatedSkill, None, UnsetType] = UNSET
+    """Skill produced by this context repository."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
+    context_input_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
+    """Assets that serve as input context for this repository."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -227,66 +243,6 @@ class ContextRepository(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "ContextRepository"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this ContextRepository instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"ContextRepository validation failed: {errors}")
-
-    def minimize(self) -> "ContextRepository":
-        """
-        Return a minimal copy of this ContextRepository with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new ContextRepository with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new ContextRepository instance with only the minimum required fields.
-        """
-        self.validate()
-        return ContextRepository(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedContextRepository":
-        """
-        Create a :class:`RelatedContextRepository` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedContextRepository reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedContextRepository(guid=self.guid)
-        return RelatedContextRepository(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -383,6 +339,15 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
 
     context_artifacts: Union[List[RelatedContextArtifact], None, UnsetType] = UNSET
     """Context artifacts produced by this repository."""
+
+    context_output_skill: Union[RelatedSkill, None, UnsetType] = UNSET
+    """Skill produced by this context repository."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
+    context_input_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
+    """Assets that serve as input context for this repository."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -500,6 +465,9 @@ _CONTEXT_REPOSITORY_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "context_artifacts",
+    "context_output_skill",
+    "context_repositories",
+    "context_input_assets",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -601,9 +569,6 @@ def _context_repository_to_nested(
         is_incomplete=context_repository.is_incomplete,
         provenance_type=context_repository.provenance_type,
         home_id=context_repository.home_id,
-        depth=context_repository.depth,
-        immediate_upstream=context_repository.immediate_upstream,
-        immediate_downstream=context_repository.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -639,6 +604,7 @@ def _context_repository_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -647,9 +613,6 @@ def _context_repository_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_context_repository_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -702,6 +665,9 @@ ContextRepository.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ContextRepository.APPLICATION = RelationField("application")
 ContextRepository.APPLICATION_FIELD = RelationField("applicationField")
 ContextRepository.CONTEXT_ARTIFACTS = RelationField("contextArtifacts")
+ContextRepository.CONTEXT_OUTPUT_SKILL = RelationField("contextOutputSkill")
+ContextRepository.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+ContextRepository.CONTEXT_INPUT_ASSETS = RelationField("contextInputAssets")
 ContextRepository.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 ContextRepository.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
