@@ -25,6 +25,7 @@ from pyatlan_v9.model.conversion_utils import (
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
+from .agent_related import RelatedAgent
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -37,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -50,7 +52,6 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .skill_artifact_related import RelatedSkillArtifact
-from .skill_related import RelatedSkill
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -66,12 +67,21 @@ class Skill(Asset):
     """
 
     SKILL_VERSION: ClassVar[Any] = None
+    SKILL_SLUG: ClassVar[Any] = None
+    SKILL_TYPE: ClassVar[Any] = None
+    SKILL_STATUS: ClassVar[Any] = None
+    SKILL_ARTIFACT_PATHS: ClassVar[Any] = None
+    SKILL_ARTIFACT_FILE_QUALIFIED_NAMES: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
+    AGENT_AGENTS: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_SOURCE_REPOSITORY: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -100,11 +110,34 @@ class Skill(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Skill"
+
     skill_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this skill."""
+    """String version identifier for this skill. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
+
+    skill_slug: Union[str, None, UnsetType] = UNSET
+    """URL-safe unique identifier for this skill (for example, my-sql-skill)."""
+
+    skill_type: Union[str, None, UnsetType] = UNSET
+    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+
+    skill_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of this skill version (draft or published)."""
+
+    skill_artifact_paths: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of file paths of the SkillArtifact entities belonging to this skill version."""
+
+    skill_artifact_file_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of qualifiedNames of the SkillArtifact entities belonging to this skill version."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
+
+    agent_agents: Union[List[RelatedAgent], None, UnsetType] = UNSET
+    """Agents that use this skill."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -120,6 +153,12 @@ class Skill(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_source_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
+    """Context repository that produced this skill."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -216,66 +255,6 @@ class Skill(Asset):
         self.type_name = "Skill"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Skill instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Skill validation failed: {errors}")
-
-    def minimize(self) -> "Skill":
-        """
-        Return a minimal copy of this Skill with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Skill with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Skill instance with only the minimum required fields.
-        """
-        self.validate()
-        return Skill(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSkill":
-        """
-        Create a :class:`RelatedSkill` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSkill reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSkill(guid=self.guid)
-        return RelatedSkill(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -331,7 +310,25 @@ class SkillAttributes(AssetAttributes):
     """Skill-specific attributes for nested API format."""
 
     skill_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this skill."""
+    """String version identifier for this skill. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
+
+    skill_slug: Union[str, None, UnsetType] = UNSET
+    """URL-safe unique identifier for this skill (for example, my-sql-skill)."""
+
+    skill_type: Union[str, None, UnsetType] = UNSET
+    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+
+    skill_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of this skill version (draft or published)."""
+
+    skill_artifact_paths: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of file paths of the SkillArtifact entities belonging to this skill version."""
+
+    skill_artifact_file_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of qualifiedNames of the SkillArtifact entities belonging to this skill version."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -339,6 +336,9 @@ class SkillAttributes(AssetAttributes):
 
 class SkillRelationshipAttributes(AssetRelationshipAttributes):
     """Skill-specific relationship attributes for nested API format."""
+
+    agent_agents: Union[List[RelatedAgent], None, UnsetType] = UNSET
+    """Agents that use this skill."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -354,6 +354,12 @@ class SkillRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_source_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
+    """Context repository that produced this skill."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -466,11 +472,14 @@ class SkillNested(AssetNested):
 
 _SKILL_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
+    "agent_agents",
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
     "anomalo_checks",
     "application",
     "application_field",
+    "context_source_repository",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -505,6 +514,12 @@ def _populate_skill_attrs(attrs: SkillAttributes, obj: Skill) -> None:
     """Populate Skill-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.skill_version = obj.skill_version
+    attrs.skill_slug = obj.skill_slug
+    attrs.skill_type = obj.skill_type
+    attrs.skill_status = obj.skill_status
+    attrs.skill_artifact_paths = obj.skill_artifact_paths
+    attrs.skill_artifact_file_qualified_names = obj.skill_artifact_file_qualified_names
+    attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -512,6 +527,14 @@ def _extract_skill_attrs(attrs: SkillAttributes) -> dict:
     """Extract all Skill attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["skill_version"] = attrs.skill_version
+    result["skill_slug"] = attrs.skill_slug
+    result["skill_type"] = attrs.skill_type
+    result["skill_status"] = attrs.skill_status
+    result["skill_artifact_paths"] = attrs.skill_artifact_paths
+    result["skill_artifact_file_qualified_names"] = (
+        attrs.skill_artifact_file_qualified_names
+    )
+    result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -549,9 +572,6 @@ def _skill_to_nested(skill: Skill) -> SkillNested:
         is_incomplete=skill.is_incomplete,
         provenance_type=skill.provenance_type,
         home_id=skill.home_id,
-        depth=skill.depth,
-        immediate_upstream=skill.immediate_upstream,
-        immediate_downstream=skill.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -581,6 +601,7 @@ def _skill_from_nested(nested: SkillNested) -> Skill:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -589,9 +610,6 @@ def _skill_from_nested(nested: SkillNested) -> Skill:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_skill_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -612,15 +630,30 @@ def _skill_from_nested_bytes(data: bytes, serde: Serde) -> Skill:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    NumericField,
+    RelationField,
+)
 
 Skill.SKILL_VERSION = KeywordField("skillVersion", "skillVersion")
+Skill.SKILL_SLUG = KeywordField("skillSlug", "skillSlug")
+Skill.SKILL_TYPE = KeywordField("skillType", "skillType")
+Skill.SKILL_STATUS = KeywordField("skillStatus", "skillStatus")
+Skill.SKILL_ARTIFACT_PATHS = KeywordField("skillArtifactPaths", "skillArtifactPaths")
+Skill.SKILL_ARTIFACT_FILE_QUALIFIED_NAMES = KeywordField(
+    "skillArtifactFileQualifiedNames", "skillArtifactFileQualifiedNames"
+)
+Skill.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 Skill.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+Skill.AGENT_AGENTS = RelationField("agentAgents")
 Skill.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Skill.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Skill.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Skill.APPLICATION = RelationField("application")
 Skill.APPLICATION_FIELD = RelationField("applicationField")
+Skill.CONTEXT_SOURCE_REPOSITORY = RelationField("contextSourceRepository")
+Skill.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 Skill.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 Skill.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Skill.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
