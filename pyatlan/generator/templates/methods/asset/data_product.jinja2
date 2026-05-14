@@ -7,11 +7,21 @@
         name: StrictStr,
         domain_qualified_name: StrictStr,
         asset_selection: IndexSearchRequest,
+        daap_visibility: Optional[DataProductVisibility] = None,
+        daap_visibility_users: Optional[Set[str]] = None,
+        daap_visibility_groups: Optional[Set[str]] = None,
+        owner_users: Optional[Set[str]] = None,
+        owner_groups: Optional[Set[str]] = None,
     ) -> DataProduct:
         attributes = DataProduct.Attributes.create(
             name=name,
             domain_qualified_name=domain_qualified_name,
             asset_selection=asset_selection,
+            daap_visibility=daap_visibility,
+            daap_visibility_users=daap_visibility_users,
+            daap_visibility_groups=daap_visibility_groups,
+            owner_users=owner_users,
+            owner_groups=owner_groups,
         )
         return cls(attributes=attributes)
 
@@ -23,6 +33,11 @@
         name: StrictStr,
         domain_qualified_name: StrictStr,
         asset_selection: IndexSearchRequest,
+        daap_visibility: Optional[DataProductVisibility] = None,
+        daap_visibility_users: Optional[Set[str]] = None,
+        daap_visibility_groups: Optional[Set[str]] = None,
+        owner_users: Optional[Set[str]] = None,
+        owner_groups: Optional[Set[str]] = None,
     ) -> DataProduct:
         warn(
             (
@@ -36,6 +51,11 @@
             name=name,
             domain_qualified_name=domain_qualified_name,
             asset_selection=asset_selection,
+            daap_visibility=daap_visibility,
+            daap_visibility_users=daap_visibility_users,
+            daap_visibility_groups=daap_visibility_groups,
+            owner_users=owner_users,
+            owner_groups=owner_groups,
         )
 
     @classmethod

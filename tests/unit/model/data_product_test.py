@@ -6,7 +6,11 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import AtlasGlossary, DataProduct
-from pyatlan.model.enums import CertificateStatus, DataProductStatus
+from pyatlan.model.enums import (
+    CertificateStatus,
+    DataProductStatus,
+    DataProductVisibility,
+)
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import IndexSearchRequest
 from tests.unit.model.constants import (
@@ -121,7 +125,29 @@ def test_create(
     expected_asset_dsl = dumps(data_product_assets_dsl_json, sort_keys=True)
     assert test_asset_dsl == expected_asset_dsl
     assert test_product.data_product_assets_playbook_filter == ASSETS_PLAYBOOK_FILTER
+    assert test_product.daap_status == DataProductStatus.ACTIVE
+    assert test_product.daap_visibility == DataProductVisibility.PRIVATE
     _assert_product(test_product)
+
+
+def test_create_with_overrides(
+    data_product_asset_selection: IndexSearchRequest,
+):
+    test_product = DataProduct.create(
+        name=DATA_PRODUCT_NAME,
+        asset_selection=data_product_asset_selection,
+        domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
+        daap_visibility=DataProductVisibility.PUBLIC,
+        daap_visibility_users={"user1"},
+        daap_visibility_groups={"group1"},
+        owner_users={"owner1"},
+        owner_groups={"owner_group1"},
+    )
+    assert test_product.daap_visibility == DataProductVisibility.PUBLIC
+    assert test_product.daap_visibility_users == {"user1"}
+    assert test_product.daap_visibility_groups == {"group1"}
+    assert test_product.owner_users == {"owner1"}
+    assert test_product.owner_groups == {"owner_group1"}
 
 
 def test_create_under_sub_domain(
@@ -147,6 +173,7 @@ def test_create_under_sub_domain(
         test_product, qualified_name=DATA_PRODUCT_UNDER_SUB_DOMAIN_QUALIFIED_NAME
     )
     assert test_product.daap_status == DataProductStatus.ACTIVE
+    assert test_product.daap_visibility == DataProductVisibility.PRIVATE
 
 
 def test_create_for_modification():
