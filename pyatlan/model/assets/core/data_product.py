@@ -48,12 +48,19 @@ class DataProduct(DataMesh):
         name: StrictStr,
         domain_qualified_name: StrictStr,
         asset_selection: IndexSearchRequest,
+        client: Optional[AtlanClient] = None,
         daap_visibility: Optional[DataProductVisibility] = None,
         daap_visibility_users: Optional[Set[str]] = None,
         daap_visibility_groups: Optional[Set[str]] = None,
         owner_users: Optional[Set[str]] = None,
         owner_groups: Optional[Set[str]] = None,
     ) -> DataProduct:
+        # Mirror UI default: when a client is provided and no owners are
+        # specified, seed owner_users with the calling user.
+        if client is not None and owner_users is None:
+            current_username = client.user.get_current().username
+            if current_username:
+                owner_users = {current_username}
         attributes = DataProduct.Attributes.create(
             name=name,
             domain_qualified_name=domain_qualified_name,
@@ -74,6 +81,7 @@ class DataProduct(DataMesh):
         name: StrictStr,
         domain_qualified_name: StrictStr,
         asset_selection: IndexSearchRequest,
+        client: Optional[AtlanClient] = None,
         daap_visibility: Optional[DataProductVisibility] = None,
         daap_visibility_users: Optional[Set[str]] = None,
         daap_visibility_groups: Optional[Set[str]] = None,
@@ -92,6 +100,7 @@ class DataProduct(DataMesh):
             name=name,
             domain_qualified_name=domain_qualified_name,
             asset_selection=asset_selection,
+            client=client,
             daap_visibility=daap_visibility,
             daap_visibility_users=daap_visibility_users,
             daap_visibility_groups=daap_visibility_groups,

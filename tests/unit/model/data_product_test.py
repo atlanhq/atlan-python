@@ -1,5 +1,6 @@
 from json import dumps, load, loads
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -128,6 +129,39 @@ def test_create(
     assert test_product.daap_status == DataProductStatus.ACTIVE
     assert test_product.daap_visibility == DataProductVisibility.PRIVATE
     _assert_product(test_product)
+
+
+def test_create_defaults_owner_users_to_current_user_when_client_provided(
+    data_product_asset_selection: IndexSearchRequest,
+):
+    mock_client = MagicMock(spec=AtlanClient)
+    mock_client.user.get_current.return_value = MagicMock(username="calling-user")
+
+    test_product = DataProduct.creator(
+        name=DATA_PRODUCT_NAME,
+        asset_selection=data_product_asset_selection,
+        domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
+        client=mock_client,
+    )
+    assert test_product.owner_users == {"calling-user"}
+    assert test_product.daap_visibility == DataProductVisibility.PRIVATE
+
+
+def test_create_explicit_owner_users_takes_precedence_over_client(
+    data_product_asset_selection: IndexSearchRequest,
+):
+    mock_client = MagicMock(spec=AtlanClient)
+    mock_client.user.get_current.return_value = MagicMock(username="calling-user")
+
+    test_product = DataProduct.creator(
+        name=DATA_PRODUCT_NAME,
+        asset_selection=data_product_asset_selection,
+        domain_qualified_name=DATA_DOMAIN_QUALIFIED_NAME,
+        client=mock_client,
+        owner_users={"explicit-owner"},
+    )
+    assert test_product.owner_users == {"explicit-owner"}
+    mock_client.user.get_current.assert_not_called()
 
 
 def test_create_with_overrides(
