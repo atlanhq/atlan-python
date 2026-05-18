@@ -96,3 +96,23 @@ def test_type_name_is_immutable():
     )
     with pytest.raises(TypeError):
         sut.type_name = "NotSkillArtifact"
+
+
+def test_skill_artifact_content_defaults_to_none():
+    sut = SkillArtifact.creator(
+        name=SKILL_ARTIFACT_NAME,
+        skill_qualified_name=SKILL_QUALIFIED_NAME,
+        file_type=FileType.TXT,
+    )
+    assert sut.skill_artifact_content is None
+
+
+def test_skill_artifact_content_roundtrip():
+    sut = SkillArtifact.creator(
+        name=SKILL_ARTIFACT_NAME,
+        skill_qualified_name=SKILL_QUALIFIED_NAME,
+        file_type=FileType.TXT,
+    )
+    content = "# My Skill\nThis skill does X when Y."
+    sut.skill_artifact_content = content
+    assert sut.skill_artifact_content == content

@@ -10,7 +10,7 @@ from nanoid import generate as generate_nanoid  # type: ignore
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import FileType
-from pyatlan.model.fields.atlan_fields import RelationField
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .artifact import Artifact
@@ -49,14 +49,36 @@ class SkillArtifact(Artifact):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    SKILL_ARTIFACT_CONTENT: ClassVar[KeywordField] = KeywordField(
+        "skillArtifactContent", "skillArtifactContent"
+    )
+    """
+    Content of the skill artifact (e.g. the body of a skill .md file).
+    """
+
     SKILL_SOURCE: ClassVar[RelationField] = RelationField("skillSource")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[List[str]] = [
+        "skill_artifact_content",
         "skill_source",
     ]
+
+    @property
+    def skill_artifact_content(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.skill_artifact_content
+        )
+
+    @skill_artifact_content.setter
+    def skill_artifact_content(self, skill_artifact_content: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.skill_artifact_content = skill_artifact_content
 
     @property
     def skill_source(self) -> Optional[Skill]:
@@ -69,6 +91,9 @@ class SkillArtifact(Artifact):
         self.attributes.skill_source = skill_source
 
     class Attributes(Artifact.Attributes):
+        skill_artifact_content: Optional[str] = Field(
+            default=None, description=""
+        )
         skill_source: Optional[Skill] = Field(
             default=None, description=""
         )  # relationship
