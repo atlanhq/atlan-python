@@ -39,10 +39,10 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .cosmos_mongo_db_related import (
     RelatedCosmosMongoDBAccount,
     RelatedCosmosMongoDBCollection,
-    RelatedCosmosMongoDBDatabase,
 )
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -113,11 +113,20 @@ class CosmosMongoDBDatabase(Asset):
     SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_NODE_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[Any] = None
+    SQL_COALESCE_NODE_TYPE: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     COSMOS_MONGO_DB_ACCOUNT: ClassVar[Any] = None
     COSMOS_MONGO_DB_COLLECTIONS: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
@@ -159,6 +168,8 @@ class CosmosMongoDBDatabase(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "CosmosMongoDBDatabase"
 
     cosmos_mongo_db_account_qualified_name: Union[str, None, UnsetType] = msgspec.field(
         default=UNSET, name="cosmosMongoDBAccountQualifiedName"
@@ -255,6 +266,30 @@ class CosmosMongoDBDatabase(Asset):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -269,6 +304,9 @@ class CosmosMongoDBDatabase(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     cosmos_mongo_db_account: Union[RelatedCosmosMongoDBAccount, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccount")
@@ -428,76 +466,6 @@ class CosmosMongoDBDatabase(Asset):
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this CosmosMongoDBDatabase instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.cosmos_mongo_db_account is UNSET:
-                errors.append("cosmos_mongo_db_account is required for creation")
-            if self.cosmos_mongo_db_account_qualified_name is UNSET:
-                errors.append(
-                    "cosmos_mongo_db_account_qualified_name is required for creation"
-                )
-        if errors:
-            raise ValueError(f"CosmosMongoDBDatabase validation failed: {errors}")
-
-    def minimize(self) -> "CosmosMongoDBDatabase":
-        """
-        Return a minimal copy of this CosmosMongoDBDatabase with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new CosmosMongoDBDatabase with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new CosmosMongoDBDatabase instance with only the minimum required fields.
-        """
-        self.validate()
-        return CosmosMongoDBDatabase(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedCosmosMongoDBDatabase":
-        """
-        Create a :class:`RelatedCosmosMongoDBDatabase` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedCosmosMongoDBDatabase reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedCosmosMongoDBDatabase(guid=self.guid)
-        return RelatedCosmosMongoDBDatabase(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -650,6 +618,30 @@ class CosmosMongoDBDatabaseAttributes(AssetAttributes):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
 
 class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
     """CosmosMongoDBDatabase-specific relationship attributes for nested API format."""
@@ -668,6 +660,9 @@ class CosmosMongoDBDatabaseRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     cosmos_mongo_db_account: Union[RelatedCosmosMongoDBAccount, None, UnsetType] = (
         msgspec.field(default=UNSET, name="cosmosMongoDBAccount")
@@ -845,6 +840,7 @@ _COSMOS_MONGO_DB_DATABASE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "cosmos_mongo_db_account",
     "cosmos_mongo_db_collections",
     "data_contract_latest",
@@ -929,6 +925,14 @@ def _populate_cosmos_mongo_db_database_attrs(
         obj.sql_ai_insights_popular_filter_count
     )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
+    attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
+    attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
+    attrs.sql_coalesce_last_run_at = obj.sql_coalesce_last_run_at
+    attrs.sql_coalesce_node_type = obj.sql_coalesce_node_type
+    attrs.sql_coalesce_environment_id = obj.sql_coalesce_environment_id
+    attrs.sql_coalesce_environment_name = obj.sql_coalesce_environment_name
+    attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
+    attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
 
 
 def _extract_cosmos_mongo_db_database_attrs(
@@ -979,6 +983,14 @@ def _extract_cosmos_mongo_db_database_attrs(
     result["sql_ai_insights_relationship_count"] = (
         attrs.sql_ai_insights_relationship_count
     )
+    result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
+    result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
+    result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
+    result["sql_coalesce_node_type"] = attrs.sql_coalesce_node_type
+    result["sql_coalesce_environment_id"] = attrs.sql_coalesce_environment_id
+    result["sql_coalesce_environment_name"] = attrs.sql_coalesce_environment_name
+    result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
+    result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
     return result
 
 
@@ -1019,9 +1031,6 @@ def _cosmos_mongo_db_database_to_nested(
         is_incomplete=cosmos_mongo_db_database.is_incomplete,
         provenance_type=cosmos_mongo_db_database.provenance_type,
         home_id=cosmos_mongo_db_database.home_id,
-        depth=cosmos_mongo_db_database.depth,
-        immediate_upstream=cosmos_mongo_db_database.immediate_upstream,
-        immediate_downstream=cosmos_mongo_db_database.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1057,6 +1066,7 @@ def _cosmos_mongo_db_database_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1065,9 +1075,6 @@ def _cosmos_mongo_db_database_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_cosmos_mongo_db_database_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1172,6 +1179,32 @@ CosmosMongoDBDatabase.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
 CosmosMongoDBDatabase.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
     "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
 )
+CosmosMongoDBDatabase.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+CosmosMongoDBDatabase.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+CosmosMongoDBDatabase.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+CosmosMongoDBDatabase.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+CosmosMongoDBDatabase.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+CosmosMongoDBDatabase.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+CosmosMongoDBDatabase.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+CosmosMongoDBDatabase.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
 CosmosMongoDBDatabase.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 CosmosMongoDBDatabase.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
     "outputFromAirflowTasks"
@@ -1179,6 +1212,7 @@ CosmosMongoDBDatabase.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 CosmosMongoDBDatabase.ANOMALO_CHECKS = RelationField("anomaloChecks")
 CosmosMongoDBDatabase.APPLICATION = RelationField("application")
 CosmosMongoDBDatabase.APPLICATION_FIELD = RelationField("applicationField")
+CosmosMongoDBDatabase.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CosmosMongoDBDatabase.COSMOS_MONGO_DB_ACCOUNT = RelationField("cosmosMongoDBAccount")
 CosmosMongoDBDatabase.COSMOS_MONGO_DB_COLLECTIONS = RelationField(
     "cosmosMongoDBCollections"

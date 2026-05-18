@@ -41,16 +41,13 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .catalog_related import RelatedCatalog
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .fabric_related import RelatedFabricActivity
 from .fivetran_related import RelatedFivetranConnector
-from .flow_related import (
-    RelatedFlowControlOperation,
-    RelatedFlowDatasetOperation,
-    RelatedFlowReusableUnit,
-)
+from .flow_related import RelatedFlowControlOperation, RelatedFlowReusableUnit
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
 from .matillion_related import RelatedMatillionComponent
@@ -101,6 +98,7 @@ class FlowDatasetOperation(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -131,6 +129,8 @@ class FlowDatasetOperation(Asset):
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "FlowDatasetOperation"
 
     flow_started_at: Union[int, None, UnsetType] = UNSET
     """Date and time at which this point in the data processing or orchestration started."""
@@ -209,6 +209,9 @@ class FlowDatasetOperation(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -318,78 +321,6 @@ class FlowDatasetOperation(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this FlowDatasetOperation instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.flow_reusable_unit is UNSET:
-                errors.append("flow_reusable_unit is required for creation")
-            if self.flow_reusable_unit_name is UNSET:
-                errors.append("flow_reusable_unit_name is required for creation")
-            if self.flow_reusable_unit_qualified_name is UNSET:
-                errors.append(
-                    "flow_reusable_unit_qualified_name is required for creation"
-                )
-        if errors:
-            raise ValueError(f"FlowDatasetOperation validation failed: {errors}")
-
-    def minimize(self) -> "FlowDatasetOperation":
-        """
-        Return a minimal copy of this FlowDatasetOperation with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new FlowDatasetOperation with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new FlowDatasetOperation instance with only the minimum required fields.
-        """
-        self.validate()
-        return FlowDatasetOperation(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedFlowDatasetOperation":
-        """
-        Create a :class:`RelatedFlowDatasetOperation` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedFlowDatasetOperation reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedFlowDatasetOperation(guid=self.guid)
-        return RelatedFlowDatasetOperation(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -530,6 +461,9 @@ class FlowDatasetOperationRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -657,6 +591,7 @@ _FLOW_DATASET_OPERATION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -790,9 +725,6 @@ def _flow_dataset_operation_to_nested(
         is_incomplete=flow_dataset_operation.is_incomplete,
         provenance_type=flow_dataset_operation.provenance_type,
         home_id=flow_dataset_operation.home_id,
-        depth=flow_dataset_operation.depth,
-        immediate_upstream=flow_dataset_operation.immediate_upstream,
-        immediate_downstream=flow_dataset_operation.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -828,6 +760,7 @@ def _flow_dataset_operation_from_nested(
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -836,9 +769,6 @@ def _flow_dataset_operation_from_nested(
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_flow_dataset_operation_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -917,6 +847,7 @@ FlowDatasetOperation.AIRFLOW_TASKS = RelationField("airflowTasks")
 FlowDatasetOperation.ANOMALO_CHECKS = RelationField("anomaloChecks")
 FlowDatasetOperation.APPLICATION = RelationField("application")
 FlowDatasetOperation.APPLICATION_FIELD = RelationField("applicationField")
+FlowDatasetOperation.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 FlowDatasetOperation.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 FlowDatasetOperation.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

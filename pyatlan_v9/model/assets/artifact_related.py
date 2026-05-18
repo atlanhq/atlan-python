@@ -34,7 +34,7 @@ class RelatedArtifact(RelatedAgentic):
     # __post_init__ sets it to "Artifact" so it serializes correctly
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

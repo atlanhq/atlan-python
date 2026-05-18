@@ -38,7 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .context_related import RelatedContextArtifact, RelatedContextRepository
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -66,6 +66,7 @@ class ContextArtifact(Asset):
     """
 
     CONTEXT_REPOSITORY_QUALIFIED_NAME: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     ARTIFACT_VERSION: ClassVar[Any] = None
     FILE_TYPE: ClassVar[Any] = None
@@ -81,6 +82,7 @@ class ContextArtifact(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     CONTEXT_REPOSITORY: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -108,14 +110,19 @@ class ContextArtifact(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "ContextArtifact"
+
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 
     file_type: Union[str, None, UnsetType] = UNSET
     """Type (extension) of the file."""
@@ -155,6 +162,9 @@ class ContextArtifact(Asset):
 
     context_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
     """Context repository that produced this artifact."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -253,78 +263,6 @@ class ContextArtifact(Asset):
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this ContextArtifact instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.context_repository is UNSET:
-                errors.append("context_repository is required for creation")
-            if self.context_repository_qualified_name is UNSET:
-                errors.append(
-                    "context_repository_qualified_name is required for creation"
-                )
-            if self.file_type is UNSET:
-                errors.append("file_type is required for creation")
-        if errors:
-            raise ValueError(f"ContextArtifact validation failed: {errors}")
-
-    def minimize(self) -> "ContextArtifact":
-        """
-        Return a minimal copy of this ContextArtifact with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new ContextArtifact with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new ContextArtifact instance with only the minimum required fields.
-        """
-        self.validate()
-        return ContextArtifact(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedContextArtifact":
-        """
-        Create a :class:`RelatedContextArtifact` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedContextArtifact reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedContextArtifact(guid=self.guid)
-        return RelatedContextArtifact(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -385,11 +323,14 @@ class ContextArtifactAttributes(AssetAttributes):
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 
     file_type: Union[str, None, UnsetType] = UNSET
     """Type (extension) of the file."""
@@ -433,6 +374,9 @@ class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
 
     context_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
     """Context repository that produced this artifact."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -550,6 +494,7 @@ _CONTEXT_ARTIFACT_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "context_repository",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -585,6 +530,7 @@ def _populate_context_artifact_attrs(
     """Populate ContextArtifact-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.context_repository_qualified_name = obj.context_repository_qualified_name
+    attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.artifact_version = obj.artifact_version
     attrs.file_type = obj.file_type
@@ -602,6 +548,7 @@ def _extract_context_artifact_attrs(attrs: ContextArtifactAttributes) -> dict:
     result["context_repository_qualified_name"] = (
         attrs.context_repository_qualified_name
     )
+    result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["artifact_version"] = attrs.artifact_version
     result["file_type"] = attrs.file_type
@@ -651,9 +598,6 @@ def _context_artifact_to_nested(
         is_incomplete=context_artifact.is_incomplete,
         provenance_type=context_artifact.provenance_type,
         home_id=context_artifact.home_id,
-        depth=context_artifact.depth,
-        immediate_upstream=context_artifact.immediate_upstream,
-        immediate_downstream=context_artifact.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -687,6 +631,7 @@ def _context_artifact_from_nested(nested: ContextArtifactNested) -> ContextArtif
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -695,9 +640,6 @@ def _context_artifact_from_nested(nested: ContextArtifactNested) -> ContextArtif
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_context_artifact_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -730,6 +672,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 ContextArtifact.CONTEXT_REPOSITORY_QUALIFIED_NAME = KeywordField(
     "contextRepositoryQualifiedName", "contextRepositoryQualifiedName"
 )
+ContextArtifact.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 ContextArtifact.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -749,6 +692,7 @@ ContextArtifact.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ContextArtifact.APPLICATION = RelationField("application")
 ContextArtifact.APPLICATION_FIELD = RelationField("applicationField")
 ContextArtifact.CONTEXT_REPOSITORY = RelationField("contextRepository")
+ContextArtifact.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 ContextArtifact.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 ContextArtifact.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
