@@ -1,3 +1,14 @@
+## 9.7.2 (May 18, 2026)
+
+### New Features
+
+- **Add `AMAZON_MSK` to `AtlanConnectorType`**: New `AMAZON_MSK = ("amazon-msk", AtlanConnectionCategory.EVENT_BUS)` enum entry, matching the Java SDK. Removes the need for the `extend_enum` workaround. (PR #928)
+
+### Bug Fixes
+
+- **`DataProduct.creator` now defaults `daap_visibility` to `PRIVATE`**: Mirrors the Atlan UI default. Fixes the marketplace **Overview Assets** tile rendering blank for products created via the SDK because the UI required both `daapStatus` and `daapVisibility` to be non-null. The earlier partial fix in PR #508 only set `daap_status`. New optional overrides also exposed on `creator()` / `create()`: `daap_visibility`, `daap_visibility_users`, `daap_visibility_groups`, `owner_users`, `owner_groups`. (PR #932)
+- **`DataProduct.creator` defaults `owner_users` to the calling user**: When a client is passed, the creating user's username is used as the default owner, matching UI behavior. (PR #932)
+
 ## 9.7.1 (May 1, 2026)
 
 ### Bug Fixes
