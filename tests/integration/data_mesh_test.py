@@ -25,6 +25,7 @@ from pyatlan.model.enums import (
     CertificateStatus,
     DataContractStatus,
     DataProductStatus,
+    DataProductVisibility,
     EntityStatus,
 )
 from pyatlan.model.fluent_search import FluentSearch
@@ -266,6 +267,7 @@ def product(
         name=DATA_PRODUCT_NAME,
         asset_selection=assets,
         domain_qualified_name=domain.qualified_name,
+        client=client,
     )
     product.output_ports = [table]
     response = client.asset.save(product)
@@ -288,6 +290,14 @@ def test_product(client: AtlanClient, product: DataProduct):
     assert re.search(DATA_PRODUCT_QN_REGEX, product.qualified_name)
     assert re.search(DATA_DOMAIN_QN_REGEX, product.parent_domain_qualified_name)
     assert re.search(DATA_DOMAIN_QN_REGEX, product.super_domain_qualified_name)
+    # BLDX-1252: default-path visibility must be PRIVATE and status ACTIVE so
+    # the marketplace Overview "Assets" tile renders.
+    assert product.daap_visibility == DataProductVisibility.PRIVATE
+    assert product.daap_status == DataProductStatus.ACTIVE
+    # BLDX-1252: when client is passed, owner_users defaults to the calling user.
+    current_username = client.user.get_current().username
+    assert current_username
+    assert product.owner_users == {current_username}
 
 
 @pytest.fixture(scope="module")
@@ -457,6 +467,10 @@ def test_retrieve_product(client: AtlanClient, product: DataProduct):
     assert test_product.name == product.name
     assert test_product.certificate_status == CERTIFICATE_STATUS
     assert test_product.certificate_status_message == CERTIFICATE_MESSAGE
+    # BLDX-1252: server must persist the default daap_visibility/daap_status.
+    # test_update_product does not touch either field.
+    assert test_product.daap_visibility == DataProductVisibility.PRIVATE
+    assert test_product.daap_status == DataProductStatus.ACTIVE
 
 
 @pytest.mark.order(after="test_update_contract")

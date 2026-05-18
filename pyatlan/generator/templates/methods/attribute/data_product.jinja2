@@ -7,6 +7,11 @@
             name: StrictStr,
             domain_qualified_name: StrictStr,
             asset_selection: IndexSearchRequest,
+            daap_visibility: Optional[DataProductVisibility] = None,
+            daap_visibility_users: Optional[Set[str]] = None,
+            daap_visibility_groups: Optional[Set[str]] = None,
+            owner_users: Optional[Set[str]] = None,
+            owner_groups: Optional[Set[str]] = None,
         ) -> DataProduct.Attributes:
             validate_required_fields(
                 ["name", "domain_qualified_name", "asset_selection"],
@@ -28,4 +33,9 @@
                     domain_qualified_name
                 ),
                 daap_status=DataProductStatus.ACTIVE,
+                daap_visibility=daap_visibility or DataProductVisibility.PRIVATE,
+                daap_visibility_users=daap_visibility_users,
+                daap_visibility_groups=daap_visibility_groups,
+                owner_users=owner_users,
+                owner_groups=owner_groups,
             )
