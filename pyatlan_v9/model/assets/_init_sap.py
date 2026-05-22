@@ -9,6 +9,7 @@ This module provides convenient imports for all SAP types and their Related vari
 """
 
 from .sap import SAP
+from .sap_column_process import SAPColumnProcess
 from .sap_erp_abap_program import SapErpAbapProgram
 from .sap_erp_cds_view import SapErpCdsView
 from .sap_erp_column import SapErpColumn
@@ -17,8 +18,10 @@ from .sap_erp_function_module import SapErpFunctionModule
 from .sap_erp_table import SapErpTable
 from .sap_erp_transaction_code import SapErpTransactionCode
 from .sap_erp_view import SapErpView
+from .sap_process import SAPProcess
 from .sap_related import (
     RelatedSAP,
+    RelatedSAPColumnProcess,
     RelatedSapErpAbapProgram,
     RelatedSapErpCdsView,
     RelatedSapErpColumn,
@@ -27,10 +30,13 @@ from .sap_related import (
     RelatedSapErpTable,
     RelatedSapErpTransactionCode,
     RelatedSapErpView,
+    RelatedSAPProcess,
 )
 
 __all__ = [
     "RelatedSAP",
+    "RelatedSAPColumnProcess",
+    "RelatedSAPProcess",
     "RelatedSapErpAbapProgram",
     "RelatedSapErpCdsView",
     "RelatedSapErpColumn",
@@ -40,6 +46,8 @@ __all__ = [
     "RelatedSapErpTransactionCode",
     "RelatedSapErpView",
     "SAP",
+    "SAPColumnProcess",
+    "SAPProcess",
     "SapErpAbapProgram",
     "SapErpCdsView",
     "SapErpColumn",
