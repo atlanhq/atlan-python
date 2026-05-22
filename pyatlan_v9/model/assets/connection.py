@@ -20,6 +20,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+from pyatlan.model.assets.connection import _validate_connector_type_value
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
@@ -439,6 +440,7 @@ class Connection(Asset):
         validate_required_fields(
             ["client", "name", "connector_type"], [client, name, connector_type]
         )
+        _validate_connector_type_value(connector_type)
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
@@ -493,6 +495,7 @@ class Connection(Asset):
         validate_required_fields(
             ["client", "name", "connector_type"], [client, name, connector_type]
         )
+        _validate_connector_type_value(connector_type)
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"

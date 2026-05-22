@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from typing import TYPE_CHECKING, ClassVar, Dict, List, Optional, Set
 from warnings import warn
@@ -31,6 +32,42 @@ if TYPE_CHECKING:
     from pyatlan.client.atlan import AtlanClient
 
 
+#: Allowed characters for the connector-type slug embedded in
+#: ``connectionQualifiedName`` (the ``{slug}`` in
+#: ``default/{slug}/{epoch}``). Lower-case alphanumerics and hyphens
+#: only — mirrors the Java SDK constraint and the Atlan platform's
+#: server-side ``RAB`` (Reading Asset Bulk) / asset-import validation.
+#: Tightening pyatlan to this pattern at creation time (BLDX-1294)
+#: closes a gap where users could create connections with underscores
+#: (or other characters) via pyatlan only to discover them rejected
+#: by RAB at import time — leaving phantom Connection rows in Atlas.
+_CONNECTOR_TYPE_VALUE_PATTERN: re.Pattern = re.compile(r"^[a-z0-9-]+$")
+
+
+def _validate_connector_type_value(connector_type: AtlanConnectorType) -> None:
+    """Reject ``connector_type`` values that wouldn't survive RAB / asset-import
+    validation server-side. See ``_CONNECTOR_TYPE_VALUE_PATTERN``.
+
+    Built-in :class:`AtlanConnectorType` members are all kebab-case and
+    therefore always pass; this guard exists for custom types created
+    via :meth:`AtlanConnectorType.CREATE_CUSTOM` where the caller-
+    supplied ``value`` could otherwise contain underscores, dots,
+    uppercase letters, or other characters that the platform rejects
+    later in the pipeline.
+    """
+    value = connector_type.value
+    if not _CONNECTOR_TYPE_VALUE_PATTERN.match(value):
+        raise ValueError(
+            f"Invalid connector_type value {value!r}: must match pattern "
+            f"'^[a-z0-9-]+$' (lower-case alphanumerics and hyphens only). "
+            f"Underscores, dots, uppercase letters, and other characters "
+            f"are not permitted because the Atlan platform's asset-import "
+            f"path rejects them at ingestion time, leaving phantom "
+            f"Connection rows in Atlas. Replace any underscores with "
+            f"hyphens (e.g. 'dev_cmdr' -> 'dev-cmdr')."
+        )
+
+
 class Connection(Asset, type_name="Connection"):
     """Description"""
 
@@ -51,6 +88,7 @@ class Connection(Asset, type_name="Connection"):
         validate_required_fields(
             ["client", "name", "connector_type"], [client, name, connector_type]
         )
+        _validate_connector_type_value(connector_type)
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
@@ -102,6 +140,7 @@ class Connection(Asset, type_name="Connection"):
         validate_required_fields(
             ["client", "name", "connector_type"], [client, name, connector_type]
         )
+        _validate_connector_type_value(connector_type)
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
