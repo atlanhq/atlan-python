@@ -5,6 +5,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.token import TokenClient
+from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectionCategory, AtlanConnectorType
 from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAME
@@ -321,3 +322,127 @@ def test_validation_of_admin_not_done_when_constructed_from_json(
     mock_role_cache.validate_idstrs.assert_not_called()
     mock_group_cache.validate_aliases.assert_not_called()
     mock_user_cache.validate_names.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# BLDX-1294 — connector-type value regex validation in Connection.creator
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "bad_value",
+    [
+        "dev_cmdr",  # underscore — the original reported case
+        "dev.cmdr",  # dot
+        "dev cmdr",  # whitespace
+        "dev/cmdr",  # slash
+        "dev@cmdr",  # special char
+        "dev_",  # trailing underscore
+    ],
+)
+def test_creator_rejects_invalid_connector_type_value(
+    client: AtlanClient,
+    bad_value: str,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+):
+    """BLDX-1294: Connection.creator() must reject custom connector_type values
+    whose slug doesn't match the platform's [a-z0-9-]+ pattern. Without this,
+    callers create Connections via pyatlan that the server-side asset-import
+    path later rejects, leaving phantom Connection rows in Atlas."""
+    custom = AtlanConnectorType.CREATE_CUSTOM(
+        name=bad_value.upper().replace("-", "_") or "EMPTY",
+        value=bad_value,
+        category=AtlanConnectionCategory.CUSTOM,
+    )
+
+    with pytest.raises(InvalidRequestError) as exc_info:
+        Connection.creator(
+            client=client,
+            name=CONNECTION_NAME,
+            connector_type=custom,
+            admin_users=["ernest"],
+        )
+    # Match the Java SDK convention — typed error with code
+    # ATLAN-PYTHON-400-079 (INVALID_CONNECTION_QN) and the bad slug
+    # surfaced in the message.
+    assert "ATLAN-PYTHON-400-079" in str(exc_info.value)
+    assert bad_value in str(exc_info.value)
+
+
+@pytest.mark.parametrize(
+    "good_value",
+    [
+        "dev-cmdr",  # hyphen — the recommended replacement
+        "snowflake",  # built-in-like slug
+        "amazon-msk",  # hyphenated multi-word
+        "a",  # single-char
+        "abc123",  # alphanumerics
+        "123-abc-456",  # mixed digit + alpha + hyphen
+    ],
+)
+def test_creator_accepts_valid_connector_type_value(
+    client: AtlanClient,
+    good_value: str,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+):
+    """Valid lowercase-alphanumeric-and-hyphen slugs continue to work."""
+    custom = AtlanConnectorType.CREATE_CUSTOM(
+        name="CUSTOM",
+        value=good_value,
+        category=AtlanConnectionCategory.CUSTOM,
+    )
+
+    sut = Connection.creator(
+        client=client,
+        name=CONNECTION_NAME,
+        connector_type=custom,
+        admin_users=["ernest"],
+    )
+    assert sut.name == CONNECTION_NAME
+    assert sut.qualified_name.startswith(f"default/{good_value}/")
+
+
+def test_creator_accepts_builtin_connector_types(
+    client: AtlanClient,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+):
+    """Built-in AtlanConnectorType members have always-valid slugs.
+    Regression pin — the new BLDX-1294 validator must not break them."""
+    sut = Connection.creator(
+        client=client,
+        name=CONNECTION_NAME,
+        connector_type=AtlanConnectorType.SNOWFLAKE,
+        admin_users=["ernest"],
+    )
+    assert sut.qualified_name.startswith("default/snowflake/")
+
+
+@pytest.mark.asyncio
+async def test_creator_async_rejects_invalid_connector_type_value(
+    client: AtlanClient,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+):
+    """Same validation must apply to the async creator path."""
+    bad = AtlanConnectorType.CREATE_CUSTOM(
+        name="DEV_CMDR",
+        value="dev_cmdr",
+        category=AtlanConnectionCategory.CUSTOM,
+    )
+
+    with pytest.raises(InvalidRequestError) as exc_info:
+        await Connection.creator_async(
+            client=client,
+            name=CONNECTION_NAME,
+            connector_type=bad,
+            admin_users=["ernest"],
+        )
+    assert "ATLAN-PYTHON-400-079" in str(exc_info.value)
+    assert "dev_cmdr" in str(exc_info.value)

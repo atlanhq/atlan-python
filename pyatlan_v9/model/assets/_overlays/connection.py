@@ -1,5 +1,6 @@
 # STDLIB_IMPORT: from typing import TYPE_CHECKING, List, Optional
 # IMPORT: from pyatlan.model.enums import AtlanConnectorType
+# INTERNAL_IMPORT: from pyatlan.model.assets.connection import _validate_connector_type_value
 # INTERNAL_IMPORT: from pyatlan.utils import init_guid, validate_required_fields
 
     @classmethod
@@ -38,6 +39,7 @@
         validate_required_fields(
             ["client", "name", "connector_type"], [client, name, connector_type]
         )
+        _validate_connector_type_value(connector_type)
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
@@ -92,6 +94,7 @@
         validate_required_fields(
             ["client", "name", "connector_type"], [client, name, connector_type]
         )
+        _validate_connector_type_value(connector_type)
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"

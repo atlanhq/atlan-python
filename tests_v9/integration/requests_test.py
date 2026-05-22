@@ -26,7 +26,14 @@ def delete_token(token_client: AtlanClient, token: Optional[ApiToken] = None):
         delete_tokens = [
             token
             for token in tokens
-            if token.display_name and "psdkv9_Requests" in token.display_name
+            # Match both pre-BLDX-1294 (``psdkv9_Requests``) and current
+            # (``psdkv9-requests``) display-name shapes so cleanup works
+            # across runs.
+            if token.display_name
+            and (
+                "psdkv9_Requests" in token.display_name
+                or "psdkv9-requests" in token.display_name
+            )
         ]
         for token in delete_tokens:
             assert token and token.guid

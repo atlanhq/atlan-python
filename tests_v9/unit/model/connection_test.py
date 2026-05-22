@@ -9,6 +9,7 @@ from typing import List, Optional
 import pytest
 from msgspec import UNSET
 
+from pyatlan.errors import InvalidRequestError
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model import Connection
 from pyatlan_v9.model.enums import AtlanConnectionCategory, AtlanConnectorType
@@ -390,3 +391,68 @@ def test_type_name_defaults():
     """Test that type_name defaults to 'Connection'."""
     conn = Connection(name=CONNECTION_NAME, qualified_name=CONNECTION_QUALIFIED_NAME)
     assert conn.type_name == "Connection"
+
+
+# ---------------------------------------------------------------------------
+# BLDX-1294 — connector-type value regex validation (mirrors pyatlan)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "bad_value",
+    [
+        "dev_cmdr",  # underscore — the original reported case
+        "dev.cmdr",  # dot
+        "dev cmdr",  # whitespace
+        "dev/cmdr",  # slash
+        "dev@cmdr",  # special char
+        "dev_",  # trailing underscore
+    ],
+)
+def test_creator_rejects_invalid_connector_type_value_v9(
+    client: AtlanClient,
+    bad_value: str,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+):
+    """BLDX-1294: pyatlan_v9 Connection.creator() must enforce the same
+    [a-z0-9-]+ slug rule as pyatlan to keep parity with the platform's
+    asset-import / RAB validation."""
+    custom = AtlanConnectorType.CREATE_CUSTOM(
+        name=bad_value.upper().replace("-", "_") or "BADNAME",
+        value=bad_value,
+        category=AtlanConnectionCategory.CUSTOM,
+    )
+
+    with pytest.raises(InvalidRequestError) as exc_info:
+        Connection.creator(
+            client=client,
+            name=CONNECTION_NAME,
+            connector_type=custom,
+            admin_users=["ernest"],
+        )
+    assert "ATLAN-PYTHON-400-079" in str(exc_info.value)
+    assert bad_value in str(exc_info.value)
+
+
+def test_creator_accepts_valid_connector_type_value_v9(
+    client: AtlanClient,
+    mock_role_cache,
+    mock_user_cache,
+    mock_group_cache,
+):
+    """Valid slugs (hyphen-only) continue to work in v9."""
+    custom = AtlanConnectorType.CREATE_CUSTOM(
+        name="DEV_CMDR",
+        value="dev-cmdr",
+        category=AtlanConnectionCategory.CUSTOM,
+    )
+
+    sut = Connection.creator(
+        client=client,
+        name=CONNECTION_NAME,
+        connector_type=custom,
+        admin_users=["ernest"],
+    )
+    assert sut.qualified_name.startswith("default/dev-cmdr/")

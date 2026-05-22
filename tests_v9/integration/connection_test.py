@@ -33,7 +33,7 @@ def create_connection(
 def custom_connection(client: AtlanClient) -> Generator[Connection, None, None]:
     CUSTOM_CONNECTOR_TYPE = AtlanConnectorType.CREATE_CUSTOM(
         name=f"{MODULE_NAME}_NAME",
-        value=f"{MODULE_NAME}_type",
+        value=f"{MODULE_NAME}-type",
         category=AtlanConnectionCategory.API,
     )
     result = create_connection(
@@ -46,11 +46,11 @@ def custom_connection(client: AtlanClient) -> Generator[Connection, None, None]:
 
 def test_custom_connection(custom_connection: Connection):
     assert custom_connection.name == MODULE_NAME
-    assert custom_connection.connector_name == f"{MODULE_NAME.lower()}_type"
+    assert custom_connection.connector_name == f"{MODULE_NAME.lower()}-type"
     assert custom_connection.qualified_name
-    assert f"default/{MODULE_NAME.lower()}_type" in custom_connection.qualified_name
+    assert f"default/{MODULE_NAME.lower()}-type" in custom_connection.qualified_name
     assert (
-        AtlanConnectorType[f"{MODULE_NAME}_NAME"].value == f"{MODULE_NAME.lower()}_type"
+        AtlanConnectorType[f"{MODULE_NAME}_NAME"].value == f"{MODULE_NAME.lower()}-type"
     )
 
 

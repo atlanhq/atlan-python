@@ -404,8 +404,12 @@ async def _assert_search_results(
 @patch.object(LOGGER, "debug")
 async def test_search_pagination(mock_logger, client: AsyncAtlanClient):
     # Avoid testing on integration tests objects
+    # Match both legacy ``psdk_*`` (pre-BLDX-1294, underscore separator)
+    # and current ``psdk-*`` (slug-safe hyphen separator) test-asset
+    # names so older runs' artifacts aren't accidentally pulled in.
     exclude_sdk_terms = [
         Asset.NAME.wildcard("psdk_*"),
+        Asset.NAME.wildcard("psdk-*"),
         Asset.NAME.wildcard("jsdk_*"),
         Asset.NAME.wildcard("gsdk_*"),
     ]

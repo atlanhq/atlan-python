@@ -4,12 +4,14 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from typing import TYPE_CHECKING, ClassVar, Dict, List, Optional, Set
 from warnings import warn
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import (
     AtlanConnectorType,
     ConnectionDQEnvironmentSetupStatus,
@@ -29,6 +31,41 @@ from .core.asset import Asset
 if TYPE_CHECKING:
     from pyatlan.client.aio.client import AsyncAtlanClient
     from pyatlan.client.atlan import AtlanClient
+
+
+#: Allowed characters for the connector-type slug embedded in
+#: ``connectionQualifiedName`` (the ``{slug}`` in
+#: ``default/{slug}/{epoch}``). Lower-case alphanumerics and hyphens
+#: only — mirrors the Java SDK constraint and the Atlan platform's
+#: server-side ``RAB`` (Reading Asset Bulk) / asset-import validation.
+#: Tightening pyatlan to this pattern at creation time (BLDX-1294)
+#: closes a gap where users could create connections with underscores
+#: (or other characters) via pyatlan only to discover them rejected
+#: by RAB at import time — leaving phantom Connection rows in Atlas.
+_CONNECTOR_TYPE_VALUE_PATTERN: re.Pattern = re.compile(r"^[a-z0-9-]+$")
+
+
+def _validate_connector_type_value(connector_type: AtlanConnectorType) -> None:
+    """Reject ``connector_type`` values that wouldn't survive RAB / asset-import
+    validation server-side. See ``_CONNECTOR_TYPE_VALUE_PATTERN``.
+
+    Built-in :class:`AtlanConnectorType` members are all kebab-case and
+    therefore always pass; this guard exists for custom types created
+    via :meth:`AtlanConnectorType.CREATE_CUSTOM` where the caller-
+    supplied ``value`` could otherwise contain underscores, dots,
+    uppercase letters, or other characters that the platform rejects
+    later in the pipeline.
+
+    Raises:
+        InvalidRequestError: With error code
+            ``ATLAN-PYTHON-400-079`` (``INVALID_CONNECTION_QN``) when the
+            slug fails the pattern check. Mirrors the Java SDK's
+            ``ErrorCode.INVALID_CONNECTION_QN`` so cross-SDK error
+            reporting stays consistent.
+    """
+    value = connector_type.value
+    if not _CONNECTOR_TYPE_VALUE_PATTERN.match(value):
+        raise ErrorCode.INVALID_CONNECTION_QN.exception_with_parameters(value)
 
 
 class Connection(Asset, type_name="Connection"):
@@ -51,6 +88,7 @@ class Connection(Asset, type_name="Connection"):
         validate_required_fields(
             ["client", "name", "connector_type"], [client, name, connector_type]
         )
+        _validate_connector_type_value(connector_type)
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
@@ -102,6 +140,7 @@ class Connection(Asset, type_name="Connection"):
         validate_required_fields(
             ["client", "name", "connector_type"], [client, name, connector_type]
         )
+        _validate_connector_type_value(connector_type)
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
