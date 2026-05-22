@@ -386,6 +386,7 @@ def test_search_pagination(mock_logger, client: AtlanClient):
     # Avoid testing on integration tests objects
     exclude_sdk_terms = [
         Asset.NAME.wildcard("psdkv9_*"),
+        Asset.NAME.wildcard("psdkv9-*"),
         Asset.NAME.wildcard("jsdk_*"),
         Asset.NAME.wildcard("gsdk_*"),
     ]

@@ -32,14 +32,36 @@ LOGGER = logging.getLogger(__name__)
 
 
 class TestId:
+    # Slug-safe alphabet (lower-case alphanumerics only). Together with
+    # the hyphen separators in ``make_unique``, this guarantees every
+    # generated id matches ``^[a-z0-9-]+$`` — the same pattern the
+    # platform's asset-import (RAB) validator enforces for the
+    # connectorType segment of ``connectionQualifiedName``. Tests can
+    # therefore feed ``TestId.make_unique(...)`` directly into
+    # ``AtlanConnectorType.CREATE_CUSTOM(value=...)`` without tripping
+    # ``ErrorCode.INVALID_CONNECTION_QN`` (ATLAN-PYTHON-400-079, see
+    # BLDX-1294). The previous mixed-case + underscore-separated form
+    # caused every integration test that built a custom connector slug
+    # from ``MODULE_NAME`` to fail at fixture setup.
     session_id = generate_nanoid(
-        alphabet="1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        alphabet="1234567890abcdefghijklmnopqrstuvwxyz",
         size=5,
     )
 
     @classmethod
     def make_unique(cls, input: str):
-        return f"psdk_{input}_{cls.session_id}"
+        """Return a slug-safe, run-unique id of the form
+        ``psdk-<input>-<session>`` where every segment matches
+        ``^[a-z0-9-]+$``.
+
+        Input is lower-cased and any underscores are converted to
+        hyphens, so callers don't need to remember to slug-format the
+        input themselves. Backward-compat note for searches keyed on
+        the old ``psdk_`` prefix: switch to ``psdk-`` or strip the
+        separator entirely.
+        """
+        slug = input.lower().replace("_", "-")
+        return f"psdk-{slug}-{cls.session_id}"
 
 
 def get_random_connector():
@@ -57,7 +79,14 @@ def delete_token(client: AtlanClient, token: Optional[ApiToken] = None):
         delete_tokens = [
             token
             for token in tokens
-            if token.display_name and "psdk_Requests" in token.display_name
+            # Match both pre-BLDX-1294 (``psdk_Requests``) and current
+            # (``psdk-requests``) display-name shapes so cleanup works
+            # across runs.
+            if token.display_name
+            and (
+                "psdk_Requests" in token.display_name
+                or "psdk-requests" in token.display_name
+            )
         ]
         for token in delete_tokens:
             assert token and token.guid  # noqa: S101

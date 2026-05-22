@@ -40,7 +40,13 @@ async def delete_token_async(
         delete_tokens = [
             token
             for token in tokens
-            if token.display_name and "psdk_async" in token.display_name
+            # Match both pre-BLDX-1294 (``psdk_async``) and current
+            # (``psdk-async``) display-name shapes so cleanup works
+            # across runs.
+            if token.display_name
+            and (
+                "psdk_async" in token.display_name or "psdk-async" in token.display_name
+            )
         ]
         for token in delete_tokens:
             assert token and token.guid

@@ -26,7 +26,16 @@ def delete_token(token_client: AtlanClient, token: Optional[ApiToken] = None):
         delete_tokens = [
             token
             for token in tokens
-            if token.display_name and "psdk_Requests" in token.display_name
+            # Match both pre-BLDX-1294 (``psdk_Requests``, mixed-case
+            # underscore-separated) and current (``psdk-requests``,
+            # lower-case hyphen-separated) display-name shapes — so a
+            # cleanup that catches partial failures from older sessions
+            # still works.
+            if token.display_name
+            and (
+                "psdk_Requests" in token.display_name
+                or "psdk-requests" in token.display_name
+            )
         ]
         for token in delete_tokens:
             assert token and token.guid

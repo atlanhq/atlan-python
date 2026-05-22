@@ -13,16 +13,23 @@ LOGGER = logging.getLogger(__name__)
 
 
 class TestId:
+    # Mirrors :class:`pyatlan.test_utils.TestId` — kept in sync so a
+    # value passed to ``AtlanConnectorType.CREATE_CUSTOM`` matches the
+    # platform's ``^[a-z0-9-]+$`` connectorType slug rule (BLDX-1294 /
+    # ATLAN-PYTHON-400-079). Lowercase alphanumeric session_id + hyphen
+    # separators + lowercased+hyphenated input.
     from nanoid import generate as generate_nanoid  # type: ignore
 
     session_id = generate_nanoid(
-        alphabet="1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        alphabet="1234567890abcdefghijklmnopqrstuvwxyz",
         size=5,
     )
 
     @classmethod
     def make_unique(cls, input: str):
-        return f"psdk_{input}_{cls.session_id}"
+        """See :meth:`pyatlan.test_utils.TestId.make_unique`."""
+        slug = input.lower().replace("_", "-")
+        return f"psdk-{slug}-{cls.session_id}"
 
 
 @pytest.fixture(scope="module")
