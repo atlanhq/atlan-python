@@ -9,6 +9,7 @@ from typing import List, Optional
 import pytest
 from msgspec import UNSET
 
+from pyatlan.errors import InvalidRequestError
 from pyatlan_v9.client.atlan import AtlanClient
 from pyatlan_v9.model import Connection
 from pyatlan_v9.model.enums import AtlanConnectionCategory, AtlanConnectorType
@@ -424,13 +425,15 @@ def test_creator_rejects_invalid_connector_type_value_v9(
         category=AtlanConnectionCategory.CUSTOM,
     )
 
-    with pytest.raises(ValueError, match="Invalid connector_type value"):
+    with pytest.raises(InvalidRequestError) as exc_info:
         Connection.creator(
             client=client,
             name=CONNECTION_NAME,
             connector_type=custom,
             admin_users=["ernest"],
         )
+    assert "ATLAN-PYTHON-400-079" in str(exc_info.value)
+    assert bad_value in str(exc_info.value)
 
 
 def test_creator_accepts_valid_connector_type_value_v9(

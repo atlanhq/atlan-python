@@ -11,6 +11,7 @@ from warnings import warn
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import (
     AtlanConnectorType,
     ConnectionDQEnvironmentSetupStatus,
@@ -54,18 +55,17 @@ def _validate_connector_type_value(connector_type: AtlanConnectorType) -> None:
     supplied ``value`` could otherwise contain underscores, dots,
     uppercase letters, or other characters that the platform rejects
     later in the pipeline.
+
+    Raises:
+        InvalidRequestError: With error code
+            ``ATLAN-PYTHON-400-079`` (``INVALID_CONNECTION_QN``) when the
+            slug fails the pattern check. Mirrors the Java SDK's
+            ``ErrorCode.INVALID_CONNECTION_QN`` so cross-SDK error
+            reporting stays consistent.
     """
     value = connector_type.value
     if not _CONNECTOR_TYPE_VALUE_PATTERN.match(value):
-        raise ValueError(
-            f"Invalid connector_type value {value!r}: must match pattern "
-            f"'^[a-z0-9-]+$' (lower-case alphanumerics and hyphens only). "
-            f"Underscores, dots, uppercase letters, and other characters "
-            f"are not permitted because the Atlan platform's asset-import "
-            f"path rejects them at ingestion time, leaving phantom "
-            f"Connection rows in Atlas. Replace any underscores with "
-            f"hyphens (e.g. 'dev_cmdr' -> 'dev-cmdr')."
-        )
+        raise ErrorCode.INVALID_CONNECTION_QN.exception_with_parameters(value)
 
 
 class Connection(Asset, type_name="Connection"):

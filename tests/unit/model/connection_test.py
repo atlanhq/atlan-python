@@ -5,6 +5,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.token import TokenClient
+from pyatlan.errors import InvalidRequestError
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectionCategory, AtlanConnectorType
 from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAME
@@ -356,13 +357,18 @@ def test_creator_rejects_invalid_connector_type_value(
         category=AtlanConnectionCategory.CUSTOM,
     )
 
-    with pytest.raises(ValueError, match="Invalid connector_type value"):
+    with pytest.raises(InvalidRequestError) as exc_info:
         Connection.creator(
             client=client,
             name=CONNECTION_NAME,
             connector_type=custom,
             admin_users=["ernest"],
         )
+    # Match the Java SDK convention — typed error with code
+    # ATLAN-PYTHON-400-079 (INVALID_CONNECTION_QN) and the bad slug
+    # surfaced in the message.
+    assert "ATLAN-PYTHON-400-079" in str(exc_info.value)
+    assert bad_value in str(exc_info.value)
 
 
 @pytest.mark.parametrize(
@@ -431,10 +437,12 @@ async def test_creator_async_rejects_invalid_connector_type_value(
         category=AtlanConnectionCategory.CUSTOM,
     )
 
-    with pytest.raises(ValueError, match="Invalid connector_type value"):
+    with pytest.raises(InvalidRequestError) as exc_info:
         await Connection.creator_async(
             client=client,
             name=CONNECTION_NAME,
             connector_type=bad,
             admin_users=["ernest"],
         )
+    assert "ATLAN-PYTHON-400-079" in str(exc_info.value)
+    assert "dev_cmdr" in str(exc_info.value)

@@ -689,6 +689,13 @@ class ErrorCode(Enum):
         "Ensure the file path does not point to a blocked location (system files, credential directories, or paths defined in PYATLAN_UPLOAD_FILE_BLOCKED_PATHS).",
         InvalidRequestError,
     )
+    INVALID_CONNECTION_QN = (
+        400,
+        "ATLAN-PYTHON-400-079",
+        "Invalid connectorType slug '{0}' for connection qualifiedName: must match pattern '^[a-z0-9-]+$' (lower-case alphanumerics and hyphens only).",
+        "Replace any underscores with hyphens (e.g. 'dev_cmdr' -> 'dev-cmdr'). Underscores, dots, uppercase letters, whitespace, and other characters are not permitted because the Atlan platform's asset-import path rejects them at ingestion time, leaving phantom Connection rows in Atlas. Mirrors the Java SDK constraint (atlan-java ErrorCode.INVALID_CONNECTION_QN).",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
