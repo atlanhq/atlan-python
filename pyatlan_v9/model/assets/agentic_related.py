@@ -11,6 +11,10 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
+from msgspec import UNSET, UnsetType
+
 from .catalog_related import RelatedCatalog
 from .referenceable_related import RelatedReferenceable
 
@@ -28,6 +32,9 @@ class RelatedAgentic(RelatedCatalog):
 
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Agentic" so it serializes correctly
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
