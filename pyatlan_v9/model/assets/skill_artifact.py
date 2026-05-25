@@ -102,6 +102,7 @@ class SkillArtifact(Asset):
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
+    SKILL_ARTIFACT_CONTENT: ClassVar[Any] = None
     SKILL_SOURCE: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
@@ -133,6 +134,9 @@ class SkillArtifact(Asset):
 
     resource_metadata: Union[Dict[str, str], None, UnsetType] = UNSET
     """Metadata of the resource."""
+
+    skill_artifact_content: Union[str, None, UnsetType] = UNSET
+    """Content of the skill artifact (e.g. the body of a skill .md file)."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -388,6 +392,9 @@ class SkillArtifactAttributes(AssetAttributes):
     resource_metadata: Union[Dict[str, str], None, UnsetType] = UNSET
     """Metadata of the resource."""
 
+    skill_artifact_content: Union[str, None, UnsetType] = UNSET
+    """Content of the skill artifact (e.g. the body of a skill .md file)."""
+
 
 class SkillArtifactRelationshipAttributes(AssetRelationshipAttributes):
     """SkillArtifact-specific relationship attributes for nested API format."""
@@ -569,6 +576,7 @@ def _populate_skill_artifact_attrs(
     attrs.is_global = obj.is_global
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
+    attrs.skill_artifact_content = obj.skill_artifact_content
 
 
 def _extract_skill_artifact_attrs(attrs: SkillArtifactAttributes) -> dict:
@@ -583,6 +591,7 @@ def _extract_skill_artifact_attrs(attrs: SkillArtifactAttributes) -> dict:
     result["is_global"] = attrs.is_global
     result["reference"] = attrs.reference
     result["resource_metadata"] = attrs.resource_metadata
+    result["skill_artifact_content"] = attrs.skill_artifact_content
     return result
 
 
@@ -738,6 +747,9 @@ SkillArtifact.FILES = RelationField("files")
 SkillArtifact.LINKS = RelationField("links")
 SkillArtifact.README = RelationField("readme")
 SkillArtifact.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SkillArtifact.SKILL_ARTIFACT_CONTENT = KeywordField(
+    "skillArtifactContent", "skillArtifactContent"
+)
 SkillArtifact.SKILL_SOURCE = RelationField("skillSource")
 SkillArtifact.SODA_CHECKS = RelationField("sodaChecks")
 SkillArtifact.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
