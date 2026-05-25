@@ -480,15 +480,6 @@ class RelatedAsset(RelatedReferenceable):
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
-    asset_summary_v2_provider: Union[Dict[str, str], None, UnsetType] = UNSET
-    """Provider metadata for the summary stored in assetSummaryV2, as a string map. Required key: 'name' (e.g., 'bigid', 'collibra') — frontend uses this to pick the renderer and icon. Optional key: 'summary_source_url' — deep link to the asset's summary in the provider's UI, surfaced as a 'Show in {name}' button."""
-
-    asset_summary_v2: Union[str, None, UnsetType] = UNSET
-    """Provider-defined summary as a JSON-stringified object. Shape varies by provider — frontend reads assetSummaryV2Provider.name to know how to render. For BigID: { classifier_counts, attribute_counts, policy_violation_counts }."""
-
-    asset_summary_v2_filter_tokens: Union[List[str], None, UnsetType] = UNSET
-    """Wildcard-searchable tokens for side-panel summary filters. Format: '<dimension>|||<value>|||<count>' (extra parts allowed for richer dimensions). Dimensions are provider-defined; v2 dimension used by BigID: 'classification'."""
-
     asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="assetExternalDQScoreValue"
     )
@@ -810,7 +801,7 @@ class RelatedIncident(RelatedAsset):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "Incident" so it serializes correctly
 
-    incident_severity: Union[str, None, UnsetType] = UNSET
+    asset_severity: Union[str, None, UnsetType] = UNSET
     """Status of this asset's severity."""
 
     def __post_init__(self) -> None:
