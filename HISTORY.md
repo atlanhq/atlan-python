@@ -1,3 +1,13 @@
+## 9.7.3 (May 25, 2026)
+
+### New Features
+
+- **`skillArtifactContent` attribute on `SkillArtifact`**: Adds the `skill_artifact_content` (`skillArtifactContent`) field to `SkillArtifact` in both `pyatlan` and `pyatlan_v9`. The Atlas API returns this attribute on SkillArtifact entities but PyAtlan was silently dropping it. This unblocks surfacing skill `.md` body content via `get_asset` / `search_assets` without needing a raw HTTP fallback. (#937)
+
+### Bug Fixes
+
+- **`Connection.creator` validates connector_type slug (BLDX-1294)**: `Connection.creator` and `Connection.creator_async` (both pyatlan and pyatlan_v9) now validate `connector_type.value` against `^[a-z0-9-]+$` — the same pattern the Atlan platform's server-side asset-import (RAB) path enforces. Raises `InvalidRequestError` (`ATLAN-PYTHON-400-079`) on violation. Mirrors the Java SDK constraint. Root cause: a customer-created `dev_cmdr` connection (underscore in slug) caused RAB to reject every asset-import referencing it, leaving phantom `Connection` rows in Atlas. (#939)
+
 ## 9.7.2 (May 18, 2026)
 
 ### New Features
