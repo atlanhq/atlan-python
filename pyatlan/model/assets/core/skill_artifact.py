@@ -69,9 +69,7 @@ class SkillArtifact(Artifact):
     @property
     def skill_artifact_content(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.skill_artifact_content
+            None if self.attributes is None else self.attributes.skill_artifact_content
         )
 
     @skill_artifact_content.setter
@@ -91,9 +89,7 @@ class SkillArtifact(Artifact):
         self.attributes.skill_source = skill_source
 
     class Attributes(Artifact.Attributes):
-        skill_artifact_content: Optional[str] = Field(
-            default=None, description=""
-        )
+        skill_artifact_content: Optional[str] = Field(default=None, description="")
         skill_source: Optional[Skill] = Field(
             default=None, description=""
         )  # relationship
