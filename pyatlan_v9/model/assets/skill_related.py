@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
+from typing import List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -34,7 +34,22 @@ class RelatedSkill(RelatedAgentic):
     # __post_init__ sets it to "Skill" so it serializes correctly
 
     skill_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this skill."""
+    """String version identifier for this skill. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
+
+    skill_slug: Union[str, None, UnsetType] = UNSET
+    """URL-safe unique identifier for this skill (for example, my-sql-skill)."""
+
+    skill_type: Union[str, None, UnsetType] = UNSET
+    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+
+    skill_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of this skill version (draft or published)."""
+
+    skill_artifact_paths: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of file paths of the SkillArtifact entities belonging to this skill version."""
+
+    skill_artifact_file_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Denormalized list of qualifiedNames of the SkillArtifact entities belonging to this skill version."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

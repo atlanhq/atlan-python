@@ -96,7 +96,7 @@ class RelatedSigmaDataElementField(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaDataElementField" so it serializes correctly
 
-    sigma_data_element_field_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sigma_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this field is hidden (true) or not (false)."""
 
     sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
@@ -117,7 +117,7 @@ class RelatedSigmaDataset(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaDataset" so it serializes correctly
 
-    sigma_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this dataset."""
 
     def __post_init__(self) -> None:
