@@ -20,8 +20,9 @@ from typing import Any, ClassVar, Dict, List, Optional, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
+# Hand-patched: renderer (atlanhq/models#1960) mis-rewrites this v8 helper as a self-import. Revert when fixed upstream.
+from pyatlan.model.assets.connection import _validate_connector_type_value
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan_v9.model.assets.connection import _validate_connector_type_value
 from pyatlan_v9.model.conversion_utils import (
     categorize_relationships,
     merge_relationships,
