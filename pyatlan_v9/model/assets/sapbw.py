@@ -4,17 +4,17 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-UnstructuredV2Container asset model with flattened inheritance.
+SAPBW asset model with flattened inheritance.
 
 This module provides:
-- UnstructuredV2Container: Flat asset class (easy to use)
-- UnstructuredV2ContainerAttributes: Nested attributes struct (extends AssetAttributes)
-- UnstructuredV2ContainerNested: Nested API format struct
+- SAPBW: Flat asset class (easy to use)
+- SAPBWAttributes: Nested attributes struct (extends AssetAttributes)
+- SAPBWNested: Nested API format struct
 """
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Union
+from typing import Any, ClassVar, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -48,13 +49,10 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sapbw_related import RelatedSAPBW
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .unstructured_v2_related import (
-    RelatedUnstructuredV2Container,
-    RelatedUnstructuredV2Folder,
-)
 
 # =============================================================================
 # FLAT ASSET CLASS
@@ -62,21 +60,31 @@ from .unstructured_v2_related import (
 
 
 @register_asset
-class UnstructuredV2Container(Asset):
+class SAPBW(Asset):
     """
-    Instance of a data container (top-level storage unit) in Atlan, such as a SharePoint site, NAS share, or cloud storage bucket.
+    Base class for SAP BW/4HANA assets. Inherits SAP-wide attributes (technicalName, logicalName, packageName, componentName, dataType, fieldCount, fieldOrder) so cross-SAP queries can traverse both SAP ERP and SAP BW assets. SAP BW maps componentName from RSDS.APPLNM / RSKSNEW.APPLNM.
     """
 
-    UNSTRUCTUREDV2_OBJECT_COUNT: ClassVar[Any] = None
-    UNSTRUCTUREDV2_FOLDER_COUNT: ClassVar[Any] = None
-    UNSTRUCTUREDV2_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
-    UNSTRUCTUREDV2_FOLDER_HIERARCHY: ClassVar[Any] = None
+    SAP_BW_OBJECT_STATUS: ClassVar[Any] = None
+    SAP_BW_PARENT_NAME: ClassVar[Any] = None
+    SAP_BW_PARENT_QUALIFIED_NAME: ClassVar[Any] = None
+    SAP_BW_INFO_OBJECT_NAME: ClassVar[Any] = None
+    SAP_BW_INFO_OBJECT_QUALIFIED_NAME: ClassVar[Any] = None
+    SAP_BW_LENGTH: ClassVar[Any] = None
+    SAP_TECHNICAL_NAME: ClassVar[Any] = None
+    SAP_LOGICAL_NAME: ClassVar[Any] = None
+    SAP_PACKAGE_NAME: ClassVar[Any] = None
+    SAP_COMPONENT_NAME: ClassVar[Any] = None
+    SAP_DATA_TYPE: ClassVar[Any] = None
+    SAP_FIELD_COUNT: ClassVar[Any] = None
+    SAP_FIELD_ORDER: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -103,21 +111,45 @@ class UnstructuredV2Container(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
-    UNSTRUCTUREDV2_FOLDERS: ClassVar[Any] = None
 
-    unstructuredv2_object_count: Union[int, None, UnsetType] = UNSET
-    """Number of objects within the container."""
+    sap_bw_object_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of the object in SAP BW such as active, inactive, or modified (e.g. RSDAREA.OBJSTAT, RSKSNEW.OBJSTAT)."""
 
-    unstructuredv2_folder_count: Union[int, None, UnsetType] = UNSET
-    """Number of folders immediately contained within the container."""
+    sap_bw_parent_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the SAP BW parent asset in which this asset exists."""
 
-    unstructuredv2_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the immediate parent folder in which this asset exists."""
+    sap_bw_parent_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the SAP BW parent asset in which this asset exists."""
 
-    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = (
-        UNSET
-    )
-    """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
+    sap_bw_info_object_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the SAP BW InfoObject asset related to this asset."""
+
+    sap_bw_info_object_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the SAP BW InfoObject asset related to this asset."""
+
+    sap_bw_length: Union[int, None, UnsetType] = UNSET
+    """Length of the field in characters or bytes (e.g. RSDSSEGFD.LENG, RSKSFIELDNEW.LENG)."""
+
+    sap_technical_name: Union[str, None, UnsetType] = UNSET
+    """Technical identifier for SAP data objects, used for integration and internal reference."""
+
+    sap_logical_name: Union[str, None, UnsetType] = UNSET
+    """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
+
+    sap_package_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SAP package, representing a logical grouping of related SAP data objects."""
+
+    sap_component_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SAP component, representing a specific functional area in SAP."""
+
+    sap_data_type: Union[str, None, UnsetType] = UNSET
+    """SAP-specific data types."""
+
+    sap_field_count: Union[int, None, UnsetType] = UNSET
+    """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
+
+    sap_field_order: Union[int, None, UnsetType] = UNSET
+    """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -136,6 +168,9 @@ class UnstructuredV2Container(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -225,13 +260,8 @@ class UnstructuredV2Container(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    unstructuredv2_folders: Union[
-        List[RelatedUnstructuredV2Folder], None, UnsetType
-    ] = UNSET
-    """Folders contained in this data container."""
-
     def __post_init__(self) -> None:
-        self.type_name = "UnstructuredV2Container"
+        self.type_name = "SAPBW"
 
     # =========================================================================
     # SDK Methods
@@ -239,7 +269,7 @@ class UnstructuredV2Container(Asset):
 
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this UnstructuredV2Container instance.
+        Dry-run validation of this SAPBW instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -262,38 +292,36 @@ class UnstructuredV2Container(Asset):
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
         if errors:
-            raise ValueError(f"UnstructuredV2Container validation failed: {errors}")
+            raise ValueError(f"SAPBW validation failed: {errors}")
 
-    def minimize(self) -> "UnstructuredV2Container":
+    def minimize(self) -> "SAPBW":
         """
-        Return a minimal copy of this UnstructuredV2Container with only updater-required fields.
+        Return a minimal copy of this SAPBW with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new UnstructuredV2Container with only the fields needed for an update
+        returns a new SAPBW with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new UnstructuredV2Container instance with only the minimum required fields.
+            A new SAPBW instance with only the minimum required fields.
         """
         self.validate()
-        return UnstructuredV2Container(
-            qualified_name=self.qualified_name, name=self.name
-        )
+        return SAPBW(qualified_name=self.qualified_name, name=self.name)
 
-    def relate(self) -> "RelatedUnstructuredV2Container":
+    def relate(self) -> "RelatedSAPBW":
         """
-        Create a :class:`RelatedUnstructuredV2Container` reference from this instance.
+        Create a :class:`RelatedSAPBW` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedUnstructuredV2Container reference to this asset.
+            A RelatedSAPBW reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedUnstructuredV2Container(guid=self.guid)
-        return RelatedUnstructuredV2Container(qualified_name=self.qualified_name)
+            return RelatedSAPBW(guid=self.guid)
+        return RelatedSAPBW(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -321,12 +349,10 @@ class UnstructuredV2Container(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _unstructured_v2_container_to_nested_bytes(self, serde)
+        return _sapbw_to_nested_bytes(self, serde)
 
     @staticmethod
-    def from_json(
-        json_data: str | bytes, serde: Serde | None = None
-    ) -> UnstructuredV2Container:
+    def from_json(json_data: str | bytes, serde: Serde | None = None) -> SAPBW:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -335,13 +361,13 @@ class UnstructuredV2Container(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            UnstructuredV2Container instance
+            SAPBW instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _unstructured_v2_container_from_nested_bytes(json_data, serde)
+        return _sapbw_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -349,29 +375,54 @@ class UnstructuredV2Container(Asset):
 # =============================================================================
 
 
-class UnstructuredV2ContainerAttributes(AssetAttributes):
-    """UnstructuredV2Container-specific attributes for nested API format."""
+class SAPBWAttributes(AssetAttributes):
+    """SAPBW-specific attributes for nested API format."""
 
-    unstructuredv2_object_count: Union[int, None, UnsetType] = UNSET
-    """Number of objects within the container."""
+    sap_bw_object_status: Union[str, None, UnsetType] = UNSET
+    """Lifecycle status of the object in SAP BW such as active, inactive, or modified (e.g. RSDAREA.OBJSTAT, RSKSNEW.OBJSTAT)."""
 
-    unstructuredv2_folder_count: Union[int, None, UnsetType] = UNSET
-    """Number of folders immediately contained within the container."""
+    sap_bw_parent_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the SAP BW parent asset in which this asset exists."""
 
-    unstructuredv2_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the immediate parent folder in which this asset exists."""
+    sap_bw_parent_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the SAP BW parent asset in which this asset exists."""
 
-    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = (
-        UNSET
-    )
-    """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
+    sap_bw_info_object_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the SAP BW InfoObject asset related to this asset."""
+
+    sap_bw_info_object_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the SAP BW InfoObject asset related to this asset."""
+
+    sap_bw_length: Union[int, None, UnsetType] = UNSET
+    """Length of the field in characters or bytes (e.g. RSDSSEGFD.LENG, RSKSFIELDNEW.LENG)."""
+
+    sap_technical_name: Union[str, None, UnsetType] = UNSET
+    """Technical identifier for SAP data objects, used for integration and internal reference."""
+
+    sap_logical_name: Union[str, None, UnsetType] = UNSET
+    """Logical, business-friendly identifier for SAP data objects, aligned with business terminology and concepts."""
+
+    sap_package_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SAP package, representing a logical grouping of related SAP data objects."""
+
+    sap_component_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SAP component, representing a specific functional area in SAP."""
+
+    sap_data_type: Union[str, None, UnsetType] = UNSET
+    """SAP-specific data types."""
+
+    sap_field_count: Union[int, None, UnsetType] = UNSET
+    """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
+
+    sap_field_order: Union[int, None, UnsetType] = UNSET
+    """Indicates the sequential position of a field, column, or child asset within its parent SAP asset, starting from 1."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
 
-class UnstructuredV2ContainerRelationshipAttributes(AssetRelationshipAttributes):
-    """UnstructuredV2Container-specific relationship attributes for nested API format."""
+class SAPBWRelationshipAttributes(AssetRelationshipAttributes):
+    """SAPBW-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -387,6 +438,9 @@ class UnstructuredV2ContainerRelationshipAttributes(AssetRelationshipAttributes)
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -476,38 +530,32 @@ class UnstructuredV2ContainerRelationshipAttributes(AssetRelationshipAttributes)
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    unstructuredv2_folders: Union[
-        List[RelatedUnstructuredV2Folder], None, UnsetType
-    ] = UNSET
-    """Folders contained in this data container."""
 
+class SAPBWNested(AssetNested):
+    """SAPBW in nested API format for high-performance serialization."""
 
-class UnstructuredV2ContainerNested(AssetNested):
-    """UnstructuredV2Container in nested API format for high-performance serialization."""
-
-    attributes: Union[UnstructuredV2ContainerAttributes, UnsetType] = UNSET
-    relationship_attributes: Union[
-        UnstructuredV2ContainerRelationshipAttributes, UnsetType
-    ] = UNSET
-    append_relationship_attributes: Union[
-        UnstructuredV2ContainerRelationshipAttributes, UnsetType
-    ] = UNSET
-    remove_relationship_attributes: Union[
-        UnstructuredV2ContainerRelationshipAttributes, UnsetType
-    ] = UNSET
+    attributes: Union[SAPBWAttributes, UnsetType] = UNSET
+    relationship_attributes: Union[SAPBWRelationshipAttributes, UnsetType] = UNSET
+    append_relationship_attributes: Union[SAPBWRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
+    remove_relationship_attributes: Union[SAPBWRelationshipAttributes, UnsetType] = (
+        UNSET
+    )
 
 
 # =============================================================================
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_UNSTRUCTURED_V2_CONTAINER_REL_FIELDS: List[str] = [
+_SAPBW_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -534,35 +582,46 @@ _UNSTRUCTURED_V2_CONTAINER_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
-    "unstructuredv2_folders",
 ]
 
 
-def _populate_unstructured_v2_container_attrs(
-    attrs: UnstructuredV2ContainerAttributes, obj: UnstructuredV2Container
-) -> None:
-    """Populate UnstructuredV2Container-specific attributes on the attrs struct."""
+def _populate_sapbw_attrs(attrs: SAPBWAttributes, obj: SAPBW) -> None:
+    """Populate SAPBW-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.unstructuredv2_object_count = obj.unstructuredv2_object_count
-    attrs.unstructuredv2_folder_count = obj.unstructuredv2_folder_count
-    attrs.unstructuredv2_parent_folder_qualified_name = (
-        obj.unstructuredv2_parent_folder_qualified_name
-    )
-    attrs.unstructuredv2_folder_hierarchy = obj.unstructuredv2_folder_hierarchy
+    attrs.sap_bw_object_status = obj.sap_bw_object_status
+    attrs.sap_bw_parent_name = obj.sap_bw_parent_name
+    attrs.sap_bw_parent_qualified_name = obj.sap_bw_parent_qualified_name
+    attrs.sap_bw_info_object_name = obj.sap_bw_info_object_name
+    attrs.sap_bw_info_object_qualified_name = obj.sap_bw_info_object_qualified_name
+    attrs.sap_bw_length = obj.sap_bw_length
+    attrs.sap_technical_name = obj.sap_technical_name
+    attrs.sap_logical_name = obj.sap_logical_name
+    attrs.sap_package_name = obj.sap_package_name
+    attrs.sap_component_name = obj.sap_component_name
+    attrs.sap_data_type = obj.sap_data_type
+    attrs.sap_field_count = obj.sap_field_count
+    attrs.sap_field_order = obj.sap_field_order
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
-def _extract_unstructured_v2_container_attrs(
-    attrs: UnstructuredV2ContainerAttributes,
-) -> dict:
-    """Extract all UnstructuredV2Container attributes from the attrs struct into a flat dict."""
+def _extract_sapbw_attrs(attrs: SAPBWAttributes) -> dict:
+    """Extract all SAPBW attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["unstructuredv2_object_count"] = attrs.unstructuredv2_object_count
-    result["unstructuredv2_folder_count"] = attrs.unstructuredv2_folder_count
-    result["unstructuredv2_parent_folder_qualified_name"] = (
-        attrs.unstructuredv2_parent_folder_qualified_name
+    result["sap_bw_object_status"] = attrs.sap_bw_object_status
+    result["sap_bw_parent_name"] = attrs.sap_bw_parent_name
+    result["sap_bw_parent_qualified_name"] = attrs.sap_bw_parent_qualified_name
+    result["sap_bw_info_object_name"] = attrs.sap_bw_info_object_name
+    result["sap_bw_info_object_qualified_name"] = (
+        attrs.sap_bw_info_object_qualified_name
     )
-    result["unstructuredv2_folder_hierarchy"] = attrs.unstructuredv2_folder_hierarchy
+    result["sap_bw_length"] = attrs.sap_bw_length
+    result["sap_technical_name"] = attrs.sap_technical_name
+    result["sap_logical_name"] = attrs.sap_logical_name
+    result["sap_package_name"] = attrs.sap_package_name
+    result["sap_component_name"] = attrs.sap_component_name
+    result["sap_data_type"] = attrs.sap_data_type
+    result["sap_field_count"] = attrs.sap_field_count
+    result["sap_field_order"] = attrs.sap_field_order
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -572,41 +631,37 @@ def _extract_unstructured_v2_container_attrs(
 # =============================================================================
 
 
-def _unstructured_v2_container_to_nested(
-    unstructured_v2_container: UnstructuredV2Container,
-) -> UnstructuredV2ContainerNested:
-    """Convert flat UnstructuredV2Container to nested format."""
-    attrs = UnstructuredV2ContainerAttributes()
-    _populate_unstructured_v2_container_attrs(attrs, unstructured_v2_container)
+def _sapbw_to_nested(sapbw: SAPBW) -> SAPBWNested:
+    """Convert flat SAPBW to nested format."""
+    attrs = SAPBWAttributes()
+    _populate_sapbw_attrs(attrs, sapbw)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        unstructured_v2_container,
-        _UNSTRUCTURED_V2_CONTAINER_REL_FIELDS,
-        UnstructuredV2ContainerRelationshipAttributes,
+        sapbw, _SAPBW_REL_FIELDS, SAPBWRelationshipAttributes
     )
-    return UnstructuredV2ContainerNested(
-        guid=unstructured_v2_container.guid,
-        type_name=unstructured_v2_container.type_name,
-        status=unstructured_v2_container.status,
-        version=unstructured_v2_container.version,
-        create_time=unstructured_v2_container.create_time,
-        update_time=unstructured_v2_container.update_time,
-        created_by=unstructured_v2_container.created_by,
-        updated_by=unstructured_v2_container.updated_by,
-        classifications=unstructured_v2_container.classifications,
-        classification_names=unstructured_v2_container.classification_names,
-        meanings=unstructured_v2_container.meanings,
-        labels=unstructured_v2_container.labels,
-        business_attributes=unstructured_v2_container.business_attributes,
-        custom_attributes=unstructured_v2_container.custom_attributes,
-        pending_tasks=unstructured_v2_container.pending_tasks,
-        proxy=unstructured_v2_container.proxy,
-        is_incomplete=unstructured_v2_container.is_incomplete,
-        provenance_type=unstructured_v2_container.provenance_type,
-        home_id=unstructured_v2_container.home_id,
-        depth=unstructured_v2_container.depth,
-        immediate_upstream=unstructured_v2_container.immediate_upstream,
-        immediate_downstream=unstructured_v2_container.immediate_downstream,
+    return SAPBWNested(
+        guid=sapbw.guid,
+        type_name=sapbw.type_name,
+        status=sapbw.status,
+        version=sapbw.version,
+        create_time=sapbw.create_time,
+        update_time=sapbw.update_time,
+        created_by=sapbw.created_by,
+        updated_by=sapbw.updated_by,
+        classifications=sapbw.classifications,
+        classification_names=sapbw.classification_names,
+        meanings=sapbw.meanings,
+        labels=sapbw.labels,
+        business_attributes=sapbw.business_attributes,
+        custom_attributes=sapbw.custom_attributes,
+        pending_tasks=sapbw.pending_tasks,
+        proxy=sapbw.proxy,
+        is_incomplete=sapbw.is_incomplete,
+        provenance_type=sapbw.provenance_type,
+        home_id=sapbw.home_id,
+        depth=sapbw.depth,
+        immediate_upstream=sapbw.immediate_upstream,
+        immediate_downstream=sapbw.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -614,24 +669,18 @@ def _unstructured_v2_container_to_nested(
     )
 
 
-def _unstructured_v2_container_from_nested(
-    nested: UnstructuredV2ContainerNested,
-) -> UnstructuredV2Container:
-    """Convert nested format to flat UnstructuredV2Container."""
-    attrs = (
-        nested.attributes
-        if nested.attributes is not UNSET
-        else UnstructuredV2ContainerAttributes()
-    )
+def _sapbw_from_nested(nested: SAPBWNested) -> SAPBW:
+    """Convert nested format to flat SAPBW."""
+    attrs = nested.attributes if nested.attributes is not UNSET else SAPBWAttributes()
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _UNSTRUCTURED_V2_CONTAINER_REL_FIELDS,
-        UnstructuredV2ContainerRelationshipAttributes,
+        _SAPBW_REL_FIELDS,
+        SAPBWRelationshipAttributes,
     )
-    return UnstructuredV2Container(
+    return SAPBW(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -653,25 +702,21 @@ def _unstructured_v2_container_from_nested(
         depth=nested.depth,
         immediate_upstream=nested.immediate_upstream,
         immediate_downstream=nested.immediate_downstream,
-        **_extract_unstructured_v2_container_attrs(attrs),
+        **_extract_sapbw_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
 
-def _unstructured_v2_container_to_nested_bytes(
-    unstructured_v2_container: UnstructuredV2Container, serde: Serde
-) -> bytes:
-    """Convert flat UnstructuredV2Container to nested JSON bytes."""
-    return serde.encode(_unstructured_v2_container_to_nested(unstructured_v2_container))
+def _sapbw_to_nested_bytes(sapbw: SAPBW, serde: Serde) -> bytes:
+    """Convert flat SAPBW to nested JSON bytes."""
+    return serde.encode(_sapbw_to_nested(sapbw))
 
 
-def _unstructured_v2_container_from_nested_bytes(
-    data: bytes, serde: Serde
-) -> UnstructuredV2Container:
-    """Convert nested JSON bytes to flat UnstructuredV2Container."""
-    nested = serde.decode(data, UnstructuredV2ContainerNested)
-    return _unstructured_v2_container_from_nested(nested)
+def _sapbw_from_nested_bytes(data: bytes, serde: Serde) -> SAPBW:
+    """Convert nested JSON bytes to flat SAPBW."""
+    nested = serde.decode(data, SAPBWNested)
+    return _sapbw_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
@@ -683,72 +728,57 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-UnstructuredV2Container.UNSTRUCTUREDV2_OBJECT_COUNT = NumericField(
-    "unstructuredv2ObjectCount", "unstructuredv2ObjectCount"
+SAPBW.SAP_BW_OBJECT_STATUS = KeywordField("sapBwObjectStatus", "sapBwObjectStatus")
+SAPBW.SAP_BW_PARENT_NAME = KeywordField("sapBwParentName", "sapBwParentName")
+SAPBW.SAP_BW_PARENT_QUALIFIED_NAME = KeywordField(
+    "sapBwParentQualifiedName", "sapBwParentQualifiedName"
 )
-UnstructuredV2Container.UNSTRUCTUREDV2_FOLDER_COUNT = NumericField(
-    "unstructuredv2FolderCount", "unstructuredv2FolderCount"
+SAPBW.SAP_BW_INFO_OBJECT_NAME = KeywordField(
+    "sapBwInfoObjectName", "sapBwInfoObjectName"
 )
-UnstructuredV2Container.UNSTRUCTUREDV2_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
-    "unstructuredv2ParentFolderQualifiedName", "unstructuredv2ParentFolderQualifiedName"
+SAPBW.SAP_BW_INFO_OBJECT_QUALIFIED_NAME = KeywordField(
+    "sapBwInfoObjectQualifiedName", "sapBwInfoObjectQualifiedName"
 )
-UnstructuredV2Container.UNSTRUCTUREDV2_FOLDER_HIERARCHY = KeywordField(
-    "unstructuredv2FolderHierarchy", "unstructuredv2FolderHierarchy"
-)
-UnstructuredV2Container.CATALOG_DATASET_GUID = KeywordField(
-    "catalogDatasetGuid", "catalogDatasetGuid"
-)
-UnstructuredV2Container.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-UnstructuredV2Container.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
-    "outputFromAirflowTasks"
-)
-UnstructuredV2Container.ANOMALO_CHECKS = RelationField("anomaloChecks")
-UnstructuredV2Container.APPLICATION = RelationField("application")
-UnstructuredV2Container.APPLICATION_FIELD = RelationField("applicationField")
-UnstructuredV2Container.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-UnstructuredV2Container.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
-    "dataContractLatestCertified"
-)
-UnstructuredV2Container.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
-    "outputPortDataProducts"
-)
-UnstructuredV2Container.INPUT_PORT_DATA_PRODUCTS = RelationField(
-    "inputPortDataProducts"
-)
-UnstructuredV2Container.MODEL_IMPLEMENTED_ENTITIES = RelationField(
-    "modelImplementedEntities"
-)
-UnstructuredV2Container.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
-    "modelImplementedAttributes"
-)
-UnstructuredV2Container.METRICS = RelationField("metrics")
-UnstructuredV2Container.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-UnstructuredV2Container.DQ_REFERENCE_DATASET_RULES = RelationField(
-    "dqReferenceDatasetRules"
-)
-UnstructuredV2Container.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+SAPBW.SAP_BW_LENGTH = NumericField("sapBwLength", "sapBwLength")
+SAPBW.SAP_TECHNICAL_NAME = KeywordField("sapTechnicalName", "sapTechnicalName")
+SAPBW.SAP_LOGICAL_NAME = KeywordField("sapLogicalName", "sapLogicalName")
+SAPBW.SAP_PACKAGE_NAME = KeywordField("sapPackageName", "sapPackageName")
+SAPBW.SAP_COMPONENT_NAME = KeywordField("sapComponentName", "sapComponentName")
+SAPBW.SAP_DATA_TYPE = KeywordField("sapDataType", "sapDataType")
+SAPBW.SAP_FIELD_COUNT = NumericField("sapFieldCount", "sapFieldCount")
+SAPBW.SAP_FIELD_ORDER = NumericField("sapFieldOrder", "sapFieldOrder")
+SAPBW.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
+SAPBW.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+SAPBW.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
+SAPBW.ANOMALO_CHECKS = RelationField("anomaloChecks")
+SAPBW.APPLICATION = RelationField("application")
+SAPBW.APPLICATION_FIELD = RelationField("applicationField")
+SAPBW.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+SAPBW.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+SAPBW.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
+SAPBW.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
+SAPBW.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+SAPBW.MODEL_IMPLEMENTED_ENTITIES = RelationField("modelImplementedEntities")
+SAPBW.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField("modelImplementedAttributes")
+SAPBW.METRICS = RelationField("metrics")
+SAPBW.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+SAPBW.DQ_REFERENCE_DATASET_RULES = RelationField("dqReferenceDatasetRules")
+SAPBW.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
-UnstructuredV2Container.MEANINGS = RelationField("meanings")
-UnstructuredV2Container.MC_MONITORS = RelationField("mcMonitors")
-UnstructuredV2Container.MC_INCIDENTS = RelationField("mcIncidents")
-UnstructuredV2Container.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-UnstructuredV2Container.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-UnstructuredV2Container.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-UnstructuredV2Container.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-UnstructuredV2Container.USER_DEF_RELATIONSHIP_TO = RelationField(
-    "userDefRelationshipTo"
-)
-UnstructuredV2Container.USER_DEF_RELATIONSHIP_FROM = RelationField(
-    "userDefRelationshipFrom"
-)
-UnstructuredV2Container.FILES = RelationField("files")
-UnstructuredV2Container.LINKS = RelationField("links")
-UnstructuredV2Container.README = RelationField("readme")
-UnstructuredV2Container.SCHEMA_REGISTRY_SUBJECTS = RelationField(
-    "schemaRegistrySubjects"
-)
-UnstructuredV2Container.SODA_CHECKS = RelationField("sodaChecks")
-UnstructuredV2Container.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-UnstructuredV2Container.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-UnstructuredV2Container.UNSTRUCTUREDV2_FOLDERS = RelationField("unstructuredv2Folders")
+SAPBW.MEANINGS = RelationField("meanings")
+SAPBW.MC_MONITORS = RelationField("mcMonitors")
+SAPBW.MC_INCIDENTS = RelationField("mcIncidents")
+SAPBW.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+SAPBW.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+SAPBW.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+SAPBW.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+SAPBW.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+SAPBW.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationshipFrom")
+SAPBW.FILES = RelationField("files")
+SAPBW.LINKS = RelationField("links")
+SAPBW.README = RelationField("readme")
+SAPBW.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+SAPBW.SODA_CHECKS = RelationField("sodaChecks")
+SAPBW.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+SAPBW.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")

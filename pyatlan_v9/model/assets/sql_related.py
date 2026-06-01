@@ -119,6 +119,33 @@ class RelatedSQL(RelatedCatalog):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SQL"
@@ -405,6 +432,12 @@ class RelatedDatabase(RelatedSQL):
 
     schema_count: Union[int, None, UnsetType] = UNSET
     """Number of schemas in this database."""
+
+    sql_is_imported_via_data_share: Union[bool, None, UnsetType] = UNSET
+    """Whether this database was imported via a data share (true) or not (false)."""
+
+    sql_origin_account_guid: Union[str, None, UnsetType] = UNSET
+    """Source-system identifier of the account that produced this imported database."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

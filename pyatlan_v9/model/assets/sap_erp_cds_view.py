@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -84,6 +85,7 @@ class SapErpCdsView(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -135,7 +137,7 @@ class SapErpCdsView(Asset):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -160,6 +162,9 @@ class SapErpCdsView(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -395,7 +400,7 @@ class SapErpCdsViewAttributes(AssetAttributes):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -424,6 +429,9 @@ class SapErpCdsViewRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -546,6 +554,7 @@ _SAP_ERP_CDS_VIEW_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -746,6 +755,7 @@ SapErpCdsView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks"
 SapErpCdsView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpCdsView.APPLICATION = RelationField("application")
 SapErpCdsView.APPLICATION_FIELD = RelationField("applicationField")
+SapErpCdsView.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SapErpCdsView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SapErpCdsView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

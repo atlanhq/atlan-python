@@ -39,6 +39,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -74,6 +75,7 @@ class Application(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     APPLICATION_CHILD_FIELDS: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -129,6 +131,9 @@ class Application(Asset):
         UNSET
     )
     """ApplicationFields owned by the Application."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -403,6 +408,9 @@ class ApplicationRelationshipAttributes(AssetRelationshipAttributes):
     )
     """ApplicationFields owned by the Application."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -518,6 +526,7 @@ _APPLICATION_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "application_child_fields",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -673,6 +682,7 @@ Application.APPLICATION_OWNED_ASSETS = RelationField("applicationOwnedAssets")
 Application.APPLICATION = RelationField("application")
 Application.APPLICATION_FIELD = RelationField("applicationField")
 Application.APPLICATION_CHILD_FIELDS = RelationField("applicationChildFields")
+Application.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 Application.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 Application.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

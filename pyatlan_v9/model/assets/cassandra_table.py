@@ -45,6 +45,7 @@ from .cassandra_related import (
     RelatedCassandraKeyspace,
     RelatedCassandraTable,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -104,6 +105,7 @@ class CassandraTable(Asset):
     CASSANDRA_COLUMNS: ClassVar[Any] = None
     CASSANDRA_INDEXES: ClassVar[Any] = None
     CASSANDRA_KEYSPACE: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -241,6 +243,9 @@ class CassandraTable(Asset):
 
     cassandra_keyspace: Union[RelatedCassandraKeyspace, None, UnsetType] = UNSET
     """Keyspace containing the table."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -577,6 +582,9 @@ class CassandraTableRelationshipAttributes(AssetRelationshipAttributes):
     cassandra_keyspace: Union[RelatedCassandraKeyspace, None, UnsetType] = UNSET
     """Keyspace containing the table."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -695,6 +703,7 @@ _CASSANDRA_TABLE_REL_FIELDS: List[str] = [
     "cassandra_columns",
     "cassandra_indexes",
     "cassandra_keyspace",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -999,6 +1008,7 @@ CassandraTable.APPLICATION_FIELD = RelationField("applicationField")
 CassandraTable.CASSANDRA_COLUMNS = RelationField("cassandraColumns")
 CassandraTable.CASSANDRA_INDEXES = RelationField("cassandraIndexes")
 CassandraTable.CASSANDRA_KEYSPACE = RelationField("cassandraKeyspace")
+CassandraTable.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CassandraTable.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CassandraTable.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

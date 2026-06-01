@@ -38,6 +38,8 @@ __all__ = [
     "RelatedADLSAccount",
     "RelatedADLSContainer",
     "RelatedADLSObject",
+    "Agent",
+    "RelatedAgent",
     "Agentic",
     "RelatedAgentic",
     "AI",
@@ -735,23 +737,59 @@ __all__ = [
     "SalesforceOrganization",
     "SalesforceReport",
     "RelatedSAP",
+    "RelatedSAPColumnProcess",
+    "RelatedSAPProcess",
     "RelatedSapErpAbapProgram",
     "RelatedSapErpCdsView",
     "RelatedSapErpColumn",
     "RelatedSapErpComponent",
+    "RelatedSapErpFioriApp",
     "RelatedSapErpFunctionModule",
     "RelatedSapErpTable",
     "RelatedSapErpTransactionCode",
     "RelatedSapErpView",
     "SAP",
+    "SAPColumnProcess",
+    "SAPProcess",
     "SapErpAbapProgram",
     "SapErpCdsView",
     "SapErpColumn",
     "SapErpComponent",
+    "SapErpFioriApp",
     "SapErpFunctionModule",
     "SapErpTable",
     "SapErpTransactionCode",
     "SapErpView",
+    "RelatedSAPBW",
+    "RelatedSAPBWADSO",
+    "RelatedSAPBWADSOField",
+    "RelatedSAPBWCompositeProvider",
+    "RelatedSAPBWCompositeProviderField",
+    "RelatedSAPBWDTP",
+    "RelatedSAPBWDataSource",
+    "RelatedSAPBWDataSourceField",
+    "RelatedSAPBWInfoArea",
+    "RelatedSAPBWInfoObject",
+    "RelatedSAPBWInfoSource",
+    "RelatedSAPBWInfoSourceField",
+    "RelatedSAPBWQuery",
+    "RelatedSAPBWQueryElement",
+    "RelatedSAPBWTransformation",
+    "SAPBW",
+    "SAPBWADSO",
+    "SAPBWADSOField",
+    "SAPBWCompositeProvider",
+    "SAPBWCompositeProviderField",
+    "SAPBWDTP",
+    "SAPBWDataSource",
+    "SAPBWDataSourceField",
+    "SAPBWInfoArea",
+    "SAPBWInfoObject",
+    "SAPBWInfoSource",
+    "SAPBWInfoSourceField",
+    "SAPBWQuery",
+    "SAPBWQueryElement",
+    "SAPBWTransformation",
     "RelatedSchemaRegistry",
     "RelatedSchemaRegistrySubject",
     "RelatedSchemaRegistryVersion",
@@ -804,23 +842,27 @@ __all__ = [
     "RelatedSnowflakeAIModelContext",
     "RelatedSnowflakeAIModelVersion",
     "RelatedSnowflakeDynamicTable",
+    "RelatedSnowflakeListing",
     "RelatedSnowflakePipe",
     "RelatedSnowflakeSemanticDimension",
     "RelatedSnowflakeSemanticFact",
     "RelatedSnowflakeSemanticLogicalTable",
     "RelatedSnowflakeSemanticMetric",
     "RelatedSnowflakeSemanticView",
+    "RelatedSnowflakeShare",
     "RelatedSnowflakeStage",
     "RelatedSnowflakeStream",
     "RelatedSnowflakeTag",
     "Snowflake",
     "SnowflakeAIModelContext",
     "SnowflakeAIModelVersion",
+    "SnowflakeListing",
     "SnowflakeSemanticDimension",
     "SnowflakeSemanticFact",
     "SnowflakeSemanticLogicalTable",
     "SnowflakeSemanticMetric",
     "SnowflakeSemanticView",
+    "SnowflakeShare",
     "RelatedSoda",
     "RelatedSodaCheck",
     "Soda",
@@ -924,14 +966,14 @@ __all__ = [
     "ThoughtspotTable",
     "ThoughtspotView",
     "ThoughtspotWorksheet",
-    "RelatedUnstructuredV2",
-    "RelatedUnstructuredV2Container",
-    "RelatedUnstructuredV2Folder",
-    "RelatedUnstructuredV2Object",
-    "UnstructuredV2",
-    "UnstructuredV2Container",
-    "UnstructuredV2Folder",
-    "UnstructuredV2Object",
+    "RelatedUnstructured",
+    "RelatedUnstructuredContainer",
+    "RelatedUnstructuredFolder",
+    "RelatedUnstructuredObject",
+    "Unstructured",
+    "UnstructuredContainer",
+    "UnstructuredFolder",
+    "UnstructuredObject",
     "RelatedWorkflow",
     "RelatedWorkflowRun",
     "Workflow",
@@ -963,6 +1005,8 @@ from .adls_related import RelatedADLS as RelatedADLS
 from .adls_related import RelatedADLSAccount as RelatedADLSAccount
 from .adls_related import RelatedADLSContainer as RelatedADLSContainer
 from .adls_related import RelatedADLSObject as RelatedADLSObject
+from .agent import Agent as Agent
+from .agent_related import RelatedAgent as RelatedAgent
 from .agentic import Agentic as Agentic
 from .agentic_related import RelatedAgentic as RelatedAgentic
 from .ai import AI as AI
@@ -1819,23 +1863,65 @@ from .salesforce_related import (
 from .salesforce_related import RelatedSalesforceReport as RelatedSalesforceReport
 from .salesforce_report import SalesforceReport as SalesforceReport
 from .sap import SAP as SAP
+from .sap_column_process import SAPColumnProcess as SAPColumnProcess
 from .sap_erp_abap_program import SapErpAbapProgram as SapErpAbapProgram
 from .sap_erp_cds_view import SapErpCdsView as SapErpCdsView
 from .sap_erp_column import SapErpColumn as SapErpColumn
 from .sap_erp_component import SapErpComponent as SapErpComponent
+from .sap_erp_fiori_app import SapErpFioriApp as SapErpFioriApp
 from .sap_erp_function_module import SapErpFunctionModule as SapErpFunctionModule
 from .sap_erp_table import SapErpTable as SapErpTable
 from .sap_erp_transaction_code import SapErpTransactionCode as SapErpTransactionCode
 from .sap_erp_view import SapErpView as SapErpView
+from .sap_process import SAPProcess as SAPProcess
 from .sap_related import RelatedSAP as RelatedSAP
+from .sap_related import RelatedSAPColumnProcess as RelatedSAPColumnProcess
 from .sap_related import RelatedSapErpAbapProgram as RelatedSapErpAbapProgram
 from .sap_related import RelatedSapErpCdsView as RelatedSapErpCdsView
 from .sap_related import RelatedSapErpColumn as RelatedSapErpColumn
 from .sap_related import RelatedSapErpComponent as RelatedSapErpComponent
+from .sap_related import RelatedSapErpFioriApp as RelatedSapErpFioriApp
 from .sap_related import RelatedSapErpFunctionModule as RelatedSapErpFunctionModule
 from .sap_related import RelatedSapErpTable as RelatedSapErpTable
 from .sap_related import RelatedSapErpTransactionCode as RelatedSapErpTransactionCode
 from .sap_related import RelatedSapErpView as RelatedSapErpView
+from .sap_related import RelatedSAPProcess as RelatedSAPProcess
+from .sapbw import SAPBW as SAPBW
+from .sapbw_composite_provider import SAPBWCompositeProvider as SAPBWCompositeProvider
+from .sapbw_composite_provider_field import (
+    SAPBWCompositeProviderField as SAPBWCompositeProviderField,
+)
+from .sapbw_data_source import SAPBWDataSource as SAPBWDataSource
+from .sapbw_data_source_field import SAPBWDataSourceField as SAPBWDataSourceField
+from .sapbw_info_area import SAPBWInfoArea as SAPBWInfoArea
+from .sapbw_info_object import SAPBWInfoObject as SAPBWInfoObject
+from .sapbw_info_source import SAPBWInfoSource as SAPBWInfoSource
+from .sapbw_info_source_field import SAPBWInfoSourceField as SAPBWInfoSourceField
+from .sapbw_query import SAPBWQuery as SAPBWQuery
+from .sapbw_query_element import SAPBWQueryElement as SAPBWQueryElement
+from .sapbw_related import RelatedSAPBW as RelatedSAPBW
+from .sapbw_related import RelatedSAPBWADSO as RelatedSAPBWADSO
+from .sapbw_related import RelatedSAPBWADSOField as RelatedSAPBWADSOField
+from .sapbw_related import (
+    RelatedSAPBWCompositeProvider as RelatedSAPBWCompositeProvider,
+)
+from .sapbw_related import (
+    RelatedSAPBWCompositeProviderField as RelatedSAPBWCompositeProviderField,
+)
+from .sapbw_related import RelatedSAPBWDataSource as RelatedSAPBWDataSource
+from .sapbw_related import RelatedSAPBWDataSourceField as RelatedSAPBWDataSourceField
+from .sapbw_related import RelatedSAPBWDTP as RelatedSAPBWDTP
+from .sapbw_related import RelatedSAPBWInfoArea as RelatedSAPBWInfoArea
+from .sapbw_related import RelatedSAPBWInfoObject as RelatedSAPBWInfoObject
+from .sapbw_related import RelatedSAPBWInfoSource as RelatedSAPBWInfoSource
+from .sapbw_related import RelatedSAPBWInfoSourceField as RelatedSAPBWInfoSourceField
+from .sapbw_related import RelatedSAPBWQuery as RelatedSAPBWQuery
+from .sapbw_related import RelatedSAPBWQueryElement as RelatedSAPBWQueryElement
+from .sapbw_related import RelatedSAPBWTransformation as RelatedSAPBWTransformation
+from .sapbw_transformation import SAPBWTransformation as SAPBWTransformation
+from .sapbwadso import SAPBWADSO as SAPBWADSO
+from .sapbwadso_field import SAPBWADSOField as SAPBWADSOField
+from .sapbwdtp import SAPBWDTP as SAPBWDTP
 from .schema import Schema as Schema
 from .schema_registry import SchemaRegistry as SchemaRegistry
 from .schema_registry_related import RelatedSchemaRegistry as RelatedSchemaRegistry
@@ -1899,6 +1985,7 @@ from .snowflake_ai_model_version import (
     SnowflakeAIModelVersion as SnowflakeAIModelVersion,
 )
 from .snowflake_dynamic_table import SnowflakeDynamicTable as SnowflakeDynamicTable
+from .snowflake_listing import SnowflakeListing as SnowflakeListing
 from .snowflake_related import RelatedSnowflake as RelatedSnowflake
 from .snowflake_related import (
     RelatedSnowflakeAIModelContext as RelatedSnowflakeAIModelContext,
@@ -1909,6 +1996,7 @@ from .snowflake_related import (
 from .snowflake_related import (
     RelatedSnowflakeDynamicTable as RelatedSnowflakeDynamicTable,
 )
+from .snowflake_related import RelatedSnowflakeListing as RelatedSnowflakeListing
 from .snowflake_related import RelatedSnowflakePipe as RelatedSnowflakePipe
 from .snowflake_related import (
     RelatedSnowflakeSemanticDimension as RelatedSnowflakeSemanticDimension,
@@ -1925,6 +2013,7 @@ from .snowflake_related import (
 from .snowflake_related import (
     RelatedSnowflakeSemanticView as RelatedSnowflakeSemanticView,
 )
+from .snowflake_related import RelatedSnowflakeShare as RelatedSnowflakeShare
 from .snowflake_related import RelatedSnowflakeStage as RelatedSnowflakeStage
 from .snowflake_related import RelatedSnowflakeStream as RelatedSnowflakeStream
 from .snowflake_related import RelatedSnowflakeTag as RelatedSnowflakeTag
@@ -1939,6 +2028,7 @@ from .snowflake_semantic_metric import (
     SnowflakeSemanticMetric as SnowflakeSemanticMetric,
 )
 from .snowflake_semantic_view import SnowflakeSemanticView as SnowflakeSemanticView
+from .snowflake_share import SnowflakeShare as SnowflakeShare
 from .soda import Soda as Soda
 from .soda_check import SodaCheck as SodaCheck
 from .soda_related import RelatedSoda as RelatedSoda
@@ -2051,22 +2141,16 @@ from .thoughtspot_related import (
 from .thoughtspot_table import ThoughtspotTable as ThoughtspotTable
 from .thoughtspot_view import ThoughtspotView as ThoughtspotView
 from .thoughtspot_worksheet import ThoughtspotWorksheet as ThoughtspotWorksheet
-from .unstructured_v2 import UnstructuredV2 as UnstructuredV2
-from .unstructured_v2_container import (
-    UnstructuredV2Container as UnstructuredV2Container,
+from .unstructured import Unstructured as Unstructured
+from .unstructured_container import UnstructuredContainer as UnstructuredContainer
+from .unstructured_folder import UnstructuredFolder as UnstructuredFolder
+from .unstructured_object import UnstructuredObject as UnstructuredObject
+from .unstructured_related import RelatedUnstructured as RelatedUnstructured
+from .unstructured_related import (
+    RelatedUnstructuredContainer as RelatedUnstructuredContainer,
 )
-from .unstructured_v2_folder import UnstructuredV2Folder as UnstructuredV2Folder
-from .unstructured_v2_object import UnstructuredV2Object as UnstructuredV2Object
-from .unstructured_v2_related import RelatedUnstructuredV2 as RelatedUnstructuredV2
-from .unstructured_v2_related import (
-    RelatedUnstructuredV2Container as RelatedUnstructuredV2Container,
-)
-from .unstructured_v2_related import (
-    RelatedUnstructuredV2Folder as RelatedUnstructuredV2Folder,
-)
-from .unstructured_v2_related import (
-    RelatedUnstructuredV2Object as RelatedUnstructuredV2Object,
-)
+from .unstructured_related import RelatedUnstructuredFolder as RelatedUnstructuredFolder
+from .unstructured_related import RelatedUnstructuredObject as RelatedUnstructuredObject
 from .view import View as View
 from .workflow import Workflow as Workflow
 from .workflow_related import RelatedWorkflow as RelatedWorkflow

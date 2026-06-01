@@ -480,14 +480,14 @@ class RelatedAsset(RelatedReferenceable):
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
-    asset_summary_v2_provider: Union[Dict[str, str], None, UnsetType] = UNSET
-    """Provider metadata for the summary stored in assetSummaryV2, as a string map. Required key: 'name' (e.g., 'bigid', 'collibra') — frontend uses this to pick the renderer and icon. Optional key: 'summary_source_url' — deep link to the asset's summary in the provider's UI, surfaced as a 'Show in {name}' button."""
+    asset_summary_provider: Union[Dict[str, Any], None, UnsetType] = UNSET
+    """Metadata about the provider of this asset's summary."""
 
-    asset_summary_v2: Union[str, None, UnsetType] = UNSET
-    """Provider-defined summary as a JSON-stringified object. Shape varies by provider — frontend reads assetSummaryV2Provider.name to know how to render. For BigID: { classifier_counts, attribute_counts, policy_violation_counts }."""
+    asset_summary: Union[str, None, UnsetType] = UNSET
+    """Provider-defined summary of this asset as a JSON-stringified object. Display-only; the rendered shape is provider-specific."""
 
-    asset_summary_v2_filter_tokens: Union[List[str], None, UnsetType] = UNSET
-    """Wildcard-searchable tokens for side-panel summary filters. Format: '<dimension>|||<value>|||<count>' (extra parts allowed for richer dimensions). Dimensions are provider-defined; v2 dimension used by BigID: 'classification'."""
+    asset_summary_filter_tokens: Union[List[str], None, UnsetType] = UNSET
+    """Flattened tokens for section-scoped filtering on assetSummary. Each token is shaped as '<section>|||<name>|||<count>'."""
 
     asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="assetExternalDQScoreValue"

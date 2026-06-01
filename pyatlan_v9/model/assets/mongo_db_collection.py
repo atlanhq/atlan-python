@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -149,11 +150,21 @@ class MongoDBCollection(Asset):
     SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_NODE_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[Any] = None
+    SQL_COALESCE_NODE_TYPE: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
+    SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -422,6 +433,33 @@ class MongoDBCollection(Asset):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -436,6 +474,9 @@ class MongoDBCollection(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -952,6 +993,33 @@ class MongoDBCollectionAttributes(AssetAttributes):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
 
 class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
     """MongoDBCollection-specific relationship attributes for nested API format."""
@@ -970,6 +1038,9 @@ class MongoDBCollectionRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -1154,6 +1225,7 @@ _MONGO_DB_COLLECTION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -1287,6 +1359,15 @@ def _populate_mongo_db_collection_attrs(
         obj.sql_ai_insights_popular_filter_count
     )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
+    attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
+    attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
+    attrs.sql_coalesce_last_run_at = obj.sql_coalesce_last_run_at
+    attrs.sql_coalesce_node_type = obj.sql_coalesce_node_type
+    attrs.sql_coalesce_environment_id = obj.sql_coalesce_environment_id
+    attrs.sql_coalesce_environment_name = obj.sql_coalesce_environment_name
+    attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
+    attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
+    attrs.sql_share_qualified_names = obj.sql_share_qualified_names
 
 
 def _extract_mongo_db_collection_attrs(attrs: MongoDBCollectionAttributes) -> dict:
@@ -1381,6 +1462,15 @@ def _extract_mongo_db_collection_attrs(attrs: MongoDBCollectionAttributes) -> di
     result["sql_ai_insights_relationship_count"] = (
         attrs.sql_ai_insights_relationship_count
     )
+    result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
+    result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
+    result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
+    result["sql_coalesce_node_type"] = attrs.sql_coalesce_node_type
+    result["sql_coalesce_environment_id"] = attrs.sql_coalesce_environment_id
+    result["sql_coalesce_environment_name"] = attrs.sql_coalesce_environment_name
+    result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
+    result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
+    result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     return result
 
 
@@ -1656,11 +1746,41 @@ MongoDBCollection.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
 MongoDBCollection.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
     "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
 )
+MongoDBCollection.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+MongoDBCollection.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+MongoDBCollection.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+MongoDBCollection.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+MongoDBCollection.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+MongoDBCollection.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+MongoDBCollection.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+MongoDBCollection.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+MongoDBCollection.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
 MongoDBCollection.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 MongoDBCollection.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 MongoDBCollection.ANOMALO_CHECKS = RelationField("anomaloChecks")
 MongoDBCollection.APPLICATION = RelationField("application")
 MongoDBCollection.APPLICATION_FIELD = RelationField("applicationField")
+MongoDBCollection.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 MongoDBCollection.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 MongoDBCollection.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

@@ -39,6 +39,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .cognite_related import RelatedCogniteAsset, RelatedCogniteSequence
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -72,6 +73,7 @@ class CogniteSequence(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     COGNITE_ASSET: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -119,6 +121,9 @@ class CogniteSequence(Asset):
 
     cognite_asset: Union[RelatedCogniteAsset, None, UnsetType] = UNSET
     """Asset in which this sequence exists."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -365,6 +370,9 @@ class CogniteSequenceRelationshipAttributes(AssetRelationshipAttributes):
     cognite_asset: Union[RelatedCogniteAsset, None, UnsetType] = UNSET
     """Asset in which this sequence exists."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -481,6 +489,7 @@ _COGNITE_SEQUENCE_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "cognite_asset",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -642,6 +651,7 @@ CogniteSequence.ANOMALO_CHECKS = RelationField("anomaloChecks")
 CogniteSequence.APPLICATION = RelationField("application")
 CogniteSequence.APPLICATION_FIELD = RelationField("applicationField")
 CogniteSequence.COGNITE_ASSET = RelationField("cogniteAsset")
+CogniteSequence.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CogniteSequence.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CogniteSequence.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

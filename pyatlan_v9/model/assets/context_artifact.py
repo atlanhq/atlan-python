@@ -66,6 +66,7 @@ class ContextArtifact(Asset):
     """
 
     CONTEXT_REPOSITORY_QUALIFIED_NAME: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     ARTIFACT_VERSION: ClassVar[Any] = None
     FILE_TYPE: ClassVar[Any] = None
@@ -81,6 +82,7 @@ class ContextArtifact(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     CONTEXT_REPOSITORY: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -111,11 +113,14 @@ class ContextArtifact(Asset):
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 
     file_type: Union[str, None, UnsetType] = UNSET
     """Type (extension) of the file."""
@@ -155,6 +160,9 @@ class ContextArtifact(Asset):
 
     context_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
     """Context repository that produced this artifact."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -385,11 +393,14 @@ class ContextArtifactAttributes(AssetAttributes):
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 
     file_type: Union[str, None, UnsetType] = UNSET
     """Type (extension) of the file."""
@@ -433,6 +444,9 @@ class ContextArtifactRelationshipAttributes(AssetRelationshipAttributes):
 
     context_repository: Union[RelatedContextRepository, None, UnsetType] = UNSET
     """Context repository that produced this artifact."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -550,6 +564,7 @@ _CONTEXT_ARTIFACT_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "context_repository",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -585,6 +600,7 @@ def _populate_context_artifact_attrs(
     """Populate ContextArtifact-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.context_repository_qualified_name = obj.context_repository_qualified_name
+    attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.artifact_version = obj.artifact_version
     attrs.file_type = obj.file_type
@@ -602,6 +618,7 @@ def _extract_context_artifact_attrs(attrs: ContextArtifactAttributes) -> dict:
     result["context_repository_qualified_name"] = (
         attrs.context_repository_qualified_name
     )
+    result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["artifact_version"] = attrs.artifact_version
     result["file_type"] = attrs.file_type
@@ -730,6 +747,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 ContextArtifact.CONTEXT_REPOSITORY_QUALIFIED_NAME = KeywordField(
     "contextRepositoryQualifiedName", "contextRepositoryQualifiedName"
 )
+ContextArtifact.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 ContextArtifact.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -749,6 +767,7 @@ ContextArtifact.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ContextArtifact.APPLICATION = RelationField("application")
 ContextArtifact.APPLICATION_FIELD = RelationField("applicationField")
 ContextArtifact.CONTEXT_REPOSITORY = RelationField("contextRepository")
+ContextArtifact.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 ContextArtifact.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 ContextArtifact.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

@@ -43,6 +43,7 @@ from .atlan_app_related import (
     RelatedAtlanAppTool,
     RelatedAtlanAppWorkflow,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -87,6 +88,7 @@ class AtlanAppDeployment(Asset):
     APPLICATION_FIELD: ClassVar[Any] = None
     ATLAN_APP_TOOLS: ClassVar[Any] = None
     ATLAN_APP_WORKFLOWS: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -169,6 +171,9 @@ class AtlanAppDeployment(Asset):
 
     atlan_app_workflows: Union[List[RelatedAtlanAppWorkflow], None, UnsetType] = UNSET
     """Workflows that exist within this Atlan application."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -438,6 +443,9 @@ class AtlanAppDeploymentRelationshipAttributes(AssetRelationshipAttributes):
     atlan_app_workflows: Union[List[RelatedAtlanAppWorkflow], None, UnsetType] = UNSET
     """Workflows that exist within this Atlan application."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -555,6 +563,7 @@ _ATLAN_APP_DEPLOYMENT_REL_FIELDS: List[str] = [
     "application_field",
     "atlan_app_tools",
     "atlan_app_workflows",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -770,6 +779,7 @@ AtlanAppDeployment.APPLICATION = RelationField("application")
 AtlanAppDeployment.APPLICATION_FIELD = RelationField("applicationField")
 AtlanAppDeployment.ATLAN_APP_TOOLS = RelationField("atlanAppTools")
 AtlanAppDeployment.ATLAN_APP_WORKFLOWS = RelationField("atlanAppWorkflows")
+AtlanAppDeployment.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 AtlanAppDeployment.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 AtlanAppDeployment.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

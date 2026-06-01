@@ -41,6 +41,7 @@ from .azure_service_bus_related import (
     RelatedAzureServiceBusSchema,
     RelatedAzureServiceBusTopic,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -77,6 +78,7 @@ class AzureServiceBusSchema(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     AZURE_SERVICE_BUS_TOPICS: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -135,6 +137,9 @@ class AzureServiceBusSchema(Asset):
         List[RelatedAzureServiceBusTopic], None, UnsetType
     ] = UNSET
     """AzureServiceBusTopic assets containing this AzureServiceBusSchema."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -380,6 +385,9 @@ class AzureServiceBusSchemaRelationshipAttributes(AssetRelationshipAttributes):
     ] = UNSET
     """AzureServiceBusTopic assets containing this AzureServiceBusSchema."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -496,6 +504,7 @@ _AZURE_SERVICE_BUS_SCHEMA_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "azure_service_bus_topics",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -694,6 +703,7 @@ AzureServiceBusSchema.ANOMALO_CHECKS = RelationField("anomaloChecks")
 AzureServiceBusSchema.APPLICATION = RelationField("application")
 AzureServiceBusSchema.APPLICATION_FIELD = RelationField("applicationField")
 AzureServiceBusSchema.AZURE_SERVICE_BUS_TOPICS = RelationField("azureServiceBusTopics")
+AzureServiceBusSchema.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 AzureServiceBusSchema.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 AzureServiceBusSchema.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

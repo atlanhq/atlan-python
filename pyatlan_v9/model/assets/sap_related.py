@@ -20,6 +20,8 @@ from .referenceable_related import RelatedReferenceable
 
 __all__ = [
     "RelatedSAP",
+    "RelatedSAPProcess",
+    "RelatedSAPColumnProcess",
     "RelatedSapErpTransactionCode",
     "RelatedSapErpView",
     "RelatedSapErpCdsView",
@@ -28,6 +30,7 @@ __all__ = [
     "RelatedSapErpFunctionModule",
     "RelatedSapErpTable",
     "RelatedSapErpAbapProgram",
+    "RelatedSapErpFioriApp",
 ]
 
 
@@ -54,7 +57,7 @@ class RelatedSAP(RelatedCatalog):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -65,6 +68,36 @@ class RelatedSAP(RelatedCatalog):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SAP"
+
+
+class RelatedSAPProcess(RelatedSAP):
+    """
+    Related entity reference for SAPProcess assets.
+
+    Extends RelatedSAP with SAPProcess-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SAPProcess" so it serializes correctly
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SAPProcess"
+
+
+class RelatedSAPColumnProcess(RelatedSAP):
+    """
+    Related entity reference for SAPColumnProcess assets.
+
+    Extends RelatedSAP with SAPColumnProcess-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SAPColumnProcess" so it serializes correctly
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SAPColumnProcess"
 
 
 class RelatedSapErpTransactionCode(RelatedSAP):
@@ -96,7 +129,7 @@ class RelatedSapErpView(RelatedSAP):
     """Type of the SAP ERP View."""
 
     sap_erp_view_definition: Union[str, None, UnsetType] = UNSET
-    """Specifies the definition of the SAP ERP View"""
+    """Specifies the definition of the SAP ERP View."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
@@ -141,7 +174,7 @@ class RelatedSapErpColumn(RelatedSAP):
     """Represents the SAP ERP data element, providing semantic information about the column."""
 
     sap_erp_column_logical_data_type: Union[str, None, UnsetType] = UNSET
-    """Specifies the logical data type of values in this SAP ERP column"""
+    """Specifies the logical data type of values in this SAP ERP column."""
 
     sap_erp_column_length: Union[str, None, UnsetType] = UNSET
     """Indicates the maximum length of the values that the SAP ERP column can store."""
@@ -281,3 +314,39 @@ class RelatedSapErpAbapProgram(RelatedSAP):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpAbapProgram"
+
+
+class RelatedSapErpFioriApp(RelatedSAP):
+    """
+    Related entity reference for SapErpFioriApp assets.
+
+    Extends RelatedSAP with SapErpFioriApp-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SapErpFioriApp" so it serializes correctly
+
+    sap_erp_fiori_app_type: Union[str, None, UnsetType] = UNSET
+    """Application type of the Fiori App from sap.app.type in the manifest, such as application, transactional, or factsheet."""
+
+    sap_erp_fiori_app_arche_type: Union[str, None, UnsetType] = UNSET
+    """Fiori archetype from sap.fiori.archeType in the manifest, such as transactional."""
+
+    sap_erp_fiori_app_is_custom: Union[bool, None, UnsetType] = UNSET
+    """When true, the Fiori App has no sap.fiori.registrationIds in its manifest and is treated as a customer (Z-app) build."""
+
+    sap_erp_fiori_app_bsp_application: Union[str, None, UnsetType] = UNSET
+    """BSP container name for the Fiori App as registered in O2APPL (e.g. ATP_ABOPVARS1)."""
+
+    sap_erp_fiori_app_odata_service_name: Union[str, None, UnsetType] = UNSET
+    """Resolved OData service name extracted from the manifest mainService URI (e.g. UI_ABOPVARIANT_CONFIGURE or C_SUPPLIEREVALUATION_CDS)."""
+
+    sap_erp_fiori_app_odata_service_uri: Union[str, None, UnsetType] = UNSET
+    """Full OData service URI from sap.app.dataSources.mainService.uri in the manifest."""
+
+    sap_erp_fiori_app_odata_version: Union[str, None, UnsetType] = UNSET
+    """OData protocol version of the Fiori App's main data source, such as 2.0 or 4.0."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SapErpFioriApp"

@@ -40,6 +40,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -112,6 +113,15 @@ class SnowflakeSemanticMetric(Asset):
     SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_NODE_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[Any] = None
+    SQL_COALESCE_NODE_TYPE: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
+    SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     METRIC_TYPE: ClassVar[Any] = None
     METRIC_SQL: ClassVar[Any] = None
@@ -123,6 +133,7 @@ class SnowflakeSemanticMetric(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -259,6 +270,33 @@ class SnowflakeSemanticMetric(Asset):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -293,6 +331,9 @@ class SnowflakeSemanticMetric(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -683,6 +724,33 @@ class SnowflakeSemanticMetricAttributes(AssetAttributes):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -721,6 +789,9 @@ class SnowflakeSemanticMetricRelationshipAttributes(AssetRelationshipAttributes)
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -891,6 +962,7 @@ _SNOWFLAKE_SEMANTIC_METRIC_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -984,6 +1056,15 @@ def _populate_snowflake_semantic_metric_attrs(
         obj.sql_ai_insights_popular_filter_count
     )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
+    attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
+    attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
+    attrs.sql_coalesce_last_run_at = obj.sql_coalesce_last_run_at
+    attrs.sql_coalesce_node_type = obj.sql_coalesce_node_type
+    attrs.sql_coalesce_environment_id = obj.sql_coalesce_environment_id
+    attrs.sql_coalesce_environment_name = obj.sql_coalesce_environment_name
+    attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
+    attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
+    attrs.sql_share_qualified_names = obj.sql_share_qualified_names
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.metric_type = obj.metric_type
     attrs.metric_sql = obj.metric_sql
@@ -1048,6 +1129,15 @@ def _extract_snowflake_semantic_metric_attrs(
     result["sql_ai_insights_relationship_count"] = (
         attrs.sql_ai_insights_relationship_count
     )
+    result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
+    result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
+    result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
+    result["sql_coalesce_node_type"] = attrs.sql_coalesce_node_type
+    result["sql_coalesce_environment_id"] = attrs.sql_coalesce_environment_id
+    result["sql_coalesce_environment_name"] = attrs.sql_coalesce_environment_name
+    result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
+    result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
+    result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["metric_type"] = attrs.metric_type
     result["metric_sql"] = attrs.metric_sql
@@ -1170,6 +1260,7 @@ def _snowflake_semantic_metric_from_nested_bytes(
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     BooleanField,
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
 )
@@ -1252,6 +1343,35 @@ SnowflakeSemanticMetric.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
 SnowflakeSemanticMetric.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
     "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
 )
+SnowflakeSemanticMetric.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+SnowflakeSemanticMetric.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+SnowflakeSemanticMetric.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+SnowflakeSemanticMetric.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+SnowflakeSemanticMetric.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+SnowflakeSemanticMetric.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+SnowflakeSemanticMetric.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+SnowflakeSemanticMetric.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+SnowflakeSemanticMetric.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
 SnowflakeSemanticMetric.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -1271,6 +1391,7 @@ SnowflakeSemanticMetric.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 SnowflakeSemanticMetric.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SnowflakeSemanticMetric.APPLICATION = RelationField("application")
 SnowflakeSemanticMetric.APPLICATION_FIELD = RelationField("applicationField")
+SnowflakeSemanticMetric.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SnowflakeSemanticMetric.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SnowflakeSemanticMetric.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

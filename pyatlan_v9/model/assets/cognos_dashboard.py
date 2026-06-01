@@ -43,6 +43,7 @@ from .cognos_related import (
     RelatedCognosDashboard,
     RelatedCognosFolder,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -86,6 +87,7 @@ class CognosDashboard(Asset):
     APPLICATION_FIELD: ClassVar[Any] = None
     COGNOS_FOLDER: ClassVar[Any] = None
     COGNOS_COLUMNS: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -163,6 +165,9 @@ class CognosDashboard(Asset):
 
     cognos_columns: Union[List[RelatedCognosColumn], None, UnsetType] = UNSET
     """Columns contained in the dashboard."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -441,6 +446,9 @@ class CognosDashboardRelationshipAttributes(AssetRelationshipAttributes):
     cognos_columns: Union[List[RelatedCognosColumn], None, UnsetType] = UNSET
     """Columns contained in the dashboard."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -558,6 +566,7 @@ _COGNOS_DASHBOARD_REL_FIELDS: List[str] = [
     "application_field",
     "cognos_folder",
     "cognos_columns",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -760,6 +769,7 @@ CognosDashboard.APPLICATION = RelationField("application")
 CognosDashboard.APPLICATION_FIELD = RelationField("applicationField")
 CognosDashboard.COGNOS_FOLDER = RelationField("cognosFolder")
 CognosDashboard.COGNOS_COLUMNS = RelationField("cognosColumns")
+CognosDashboard.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CognosDashboard.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CognosDashboard.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

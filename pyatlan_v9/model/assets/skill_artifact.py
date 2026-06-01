@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -66,6 +67,7 @@ class SkillArtifact(Asset):
     """
 
     ARTIFACT_VERSION: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     FILE_TYPE: ClassVar[Any] = None
     FILE_PATH: ClassVar[Any] = None
@@ -79,6 +81,7 @@ class SkillArtifact(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -102,14 +105,16 @@ class SkillArtifact(Asset):
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
-    SKILL_ARTIFACT_CONTENT: ClassVar[Any] = None
     SKILL_SOURCE: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -135,9 +140,6 @@ class SkillArtifact(Asset):
     resource_metadata: Union[Dict[str, str], None, UnsetType] = UNSET
     """Metadata of the resource."""
 
-    skill_artifact_content: Union[str, None, UnsetType] = UNSET
-    """Content of the skill artifact (e.g. the body of a skill .md file)."""
-
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
 
@@ -152,6 +154,9 @@ class SkillArtifact(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -366,7 +371,10 @@ class SkillArtifactAttributes(AssetAttributes):
     """SkillArtifact-specific attributes for nested API format."""
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -392,9 +400,6 @@ class SkillArtifactAttributes(AssetAttributes):
     resource_metadata: Union[Dict[str, str], None, UnsetType] = UNSET
     """Metadata of the resource."""
 
-    skill_artifact_content: Union[str, None, UnsetType] = UNSET
-    """Content of the skill artifact (e.g. the body of a skill .md file)."""
-
 
 class SkillArtifactRelationshipAttributes(AssetRelationshipAttributes):
     """SkillArtifact-specific relationship attributes for nested API format."""
@@ -413,6 +418,9 @@ class SkillArtifactRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -532,6 +540,7 @@ _SKILL_ARTIFACT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -568,6 +577,7 @@ def _populate_skill_artifact_attrs(
     """Populate SkillArtifact-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.artifact_version = obj.artifact_version
+    attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.file_type = obj.file_type
     attrs.file_path = obj.file_path
@@ -576,13 +586,13 @@ def _populate_skill_artifact_attrs(
     attrs.is_global = obj.is_global
     attrs.reference = obj.reference
     attrs.resource_metadata = obj.resource_metadata
-    attrs.skill_artifact_content = obj.skill_artifact_content
 
 
 def _extract_skill_artifact_attrs(attrs: SkillArtifactAttributes) -> dict:
     """Extract all SkillArtifact attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["artifact_version"] = attrs.artifact_version
+    result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["file_type"] = attrs.file_type
     result["file_path"] = attrs.file_path
@@ -591,7 +601,6 @@ def _extract_skill_artifact_attrs(attrs: SkillArtifactAttributes) -> dict:
     result["is_global"] = attrs.is_global
     result["reference"] = attrs.reference
     result["resource_metadata"] = attrs.resource_metadata
-    result["skill_artifact_content"] = attrs.skill_artifact_content
     return result
 
 
@@ -705,6 +714,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 SkillArtifact.ARTIFACT_VERSION = KeywordField("artifactVersion", "artifactVersion")
+SkillArtifact.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 SkillArtifact.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -720,6 +730,7 @@ SkillArtifact.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks"
 SkillArtifact.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SkillArtifact.APPLICATION = RelationField("application")
 SkillArtifact.APPLICATION_FIELD = RelationField("applicationField")
+SkillArtifact.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SkillArtifact.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SkillArtifact.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
@@ -747,9 +758,6 @@ SkillArtifact.FILES = RelationField("files")
 SkillArtifact.LINKS = RelationField("links")
 SkillArtifact.README = RelationField("readme")
 SkillArtifact.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-SkillArtifact.SKILL_ARTIFACT_CONTENT = KeywordField(
-    "skillArtifactContent", "skillArtifactContent"
-)
 SkillArtifact.SKILL_SOURCE = RelationField("skillSource")
 SkillArtifact.SODA_CHECKS = RelationField("sodaChecks")
 SkillArtifact.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")

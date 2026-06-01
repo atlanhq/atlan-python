@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -79,6 +80,7 @@ class SapErpView(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -112,7 +114,7 @@ class SapErpView(Asset):
     """Type of the SAP ERP View."""
 
     sap_erp_view_definition: Union[str, None, UnsetType] = UNSET
-    """Specifies the definition of the SAP ERP View"""
+    """Specifies the definition of the SAP ERP View."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
@@ -127,7 +129,7 @@ class SapErpView(Asset):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -152,6 +154,9 @@ class SapErpView(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -369,7 +374,7 @@ class SapErpViewAttributes(AssetAttributes):
     """Type of the SAP ERP View."""
 
     sap_erp_view_definition: Union[str, None, UnsetType] = UNSET
-    """Specifies the definition of the SAP ERP View"""
+    """Specifies the definition of the SAP ERP View."""
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
@@ -384,7 +389,7 @@ class SapErpViewAttributes(AssetAttributes):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -413,6 +418,9 @@ class SapErpViewRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -533,6 +541,7 @@ _SAP_ERP_VIEW_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -718,6 +727,7 @@ SapErpView.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 SapErpView.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpView.APPLICATION = RelationField("application")
 SapErpView.APPLICATION_FIELD = RelationField("applicationField")
+SapErpView.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SapErpView.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SapErpView.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 SapErpView.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")

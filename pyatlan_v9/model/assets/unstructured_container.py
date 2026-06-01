@@ -4,17 +4,16 @@
 # Copyright 2024 Atlan Pte. Ltd.
 
 """
-UnstructuredV2Object asset model with flattened inheritance.
+UnstructuredContainer asset model with flattened inheritance.
 
 This module provides:
-- UnstructuredV2Object: Flat asset class (easy to use)
-- UnstructuredV2ObjectAttributes: Nested attributes struct (extends AssetAttributes)
-- UnstructuredV2ObjectNested: Nested API format struct
+- UnstructuredContainer: Flat asset class (easy to use)
+- UnstructuredContainerAttributes: Nested attributes struct (extends AssetAttributes)
+- UnstructuredContainerNested: Nested API format struct
 """
 
 from __future__ import annotations
 
-import re
 from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
@@ -38,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -52,9 +52,10 @@ from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
-from .unstructured_v2_related import (
-    RelatedUnstructuredV2Folder,
-    RelatedUnstructuredV2Object,
+from .unstructured_related import (
+    RelatedUnstructuredContainer,
+    RelatedUnstructuredFolder,
+    RelatedUnstructuredObject,
 )
 
 # =============================================================================
@@ -63,27 +64,24 @@ from .unstructured_v2_related import (
 
 
 @register_asset
-class UnstructuredV2Object(Asset):
+class UnstructuredContainer(Asset):
     """
-    Instance of a data object (file, document, blob) in Atlan, representing an unstructured entity within a folder, such as a SharePoint document, NAS file, or cloud storage object.
+    Top-level storage unit within an unstructured datasource — for example a SharePoint site, NAS share, or cloud storage bucket. Directly holds folders and may also hold objects at its root with no intermediate folder.
     """
 
-    UNSTRUCTUREDV2_CONTAINER_NAME: ClassVar[Any] = None
-    UNSTRUCTUREDV2_CONTAINER_QUALIFIED_NAME: ClassVar[Any] = None
-    UNSTRUCTUREDV2_PARENT_FOLDER_NAME: ClassVar[Any] = None
-    UNSTRUCTUREDV2_OBJECT_KEY: ClassVar[Any] = None
-    UNSTRUCTUREDV2_OBJECT_SIZE: ClassVar[Any] = None
-    UNSTRUCTUREDV2_OBJECT_EXTENSION: ClassVar[Any] = None
-    UNSTRUCTUREDV2_OBJECT_MIME_TYPE: ClassVar[Any] = None
-    UNSTRUCTUREDV2_OBJECT_CONTENT_LANGUAGE: ClassVar[Any] = None
-    UNSTRUCTUREDV2_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
-    UNSTRUCTUREDV2_FOLDER_HIERARCHY: ClassVar[Any] = None
+    UNSTRUCTURED_OBJECT_COUNT: ClassVar[Any] = None
+    UNSTRUCTURED_FOLDER_COUNT: ClassVar[Any] = None
+    UNSTRUCTURED_CONTAINER_NAME: ClassVar[Any] = None
+    UNSTRUCTURED_CONTAINER_QUALIFIED_NAME: ClassVar[Any] = None
+    UNSTRUCTURED_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[Any] = None
+    UNSTRUCTURED_FOLDER_HIERARCHY: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -110,39 +108,26 @@ class UnstructuredV2Object(Asset):
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
-    UNSTRUCTUREDV2_PARENT_FOLDER: ClassVar[Any] = None
+    UNSTRUCTURED_FOLDERS: ClassVar[Any] = None
+    UNSTRUCTURED_OBJECTS: ClassVar[Any] = None
 
-    unstructuredv2_container_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the container in which this object exists."""
+    unstructured_object_count: Union[int, None, UnsetType] = UNSET
+    """Total count of objects within this container, including those nested under folders at any depth."""
 
-    unstructuredv2_container_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the container in which this object exists."""
+    unstructured_folder_count: Union[int, None, UnsetType] = UNSET
+    """Total count of folders within this container, including nested sub-folders at any depth."""
 
-    unstructuredv2_parent_folder_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the immediate parent folder in which this object exists."""
+    unstructured_container_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the data container that holds this asset."""
 
-    unstructuredv2_object_key: Union[str, None, UnsetType] = UNSET
-    """Unique identity of this object within its container. Usually the concatenation of any folder path with the name of the object itself."""
+    unstructured_container_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the data container that holds this asset."""
 
-    unstructuredv2_object_size: Union[int, None, UnsetType] = UNSET
-    """Object size in bytes."""
+    unstructured_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the immediate parent folder containing this asset."""
 
-    unstructuredv2_object_extension: Union[str, None, UnsetType] = UNSET
-    """File extension of this object without the leading dot, for example: pdf, docx, csv."""
-
-    unstructuredv2_object_mime_type: Union[str, None, UnsetType] = UNSET
-    """MIME type of this object's content, for example: text/plain, application/json, application/pdf."""
-
-    unstructuredv2_object_content_language: Union[str, None, UnsetType] = UNSET
-    """Natural (human) language of this object's content, as detected at the source. For example: English, Spanish, French. This is the language the file is written in — not a programming language."""
-
-    unstructuredv2_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the immediate parent folder in which this asset exists."""
-
-    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = (
-        UNSET
-    )
-    """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
+    unstructured_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    """Ordered list of ancestor folders for this asset, from immediate parent (index 0) up to the top-level folder under the container (last index). Each entry is a `{qualifiedName, name}` pair."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -161,6 +146,9 @@ class UnstructuredV2Object(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -250,25 +238,26 @@ class UnstructuredV2Object(Asset):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    unstructuredv2_parent_folder: Union[
-        RelatedUnstructuredV2Folder, None, UnsetType
-    ] = UNSET
-    """Immediate parent folder containing this object."""
+    unstructured_folders: Union[List[RelatedUnstructuredFolder], None, UnsetType] = (
+        UNSET
+    )
+    """Top-level folders contained directly within this data container."""
+
+    unstructured_objects: Union[List[RelatedUnstructuredObject], None, UnsetType] = (
+        UNSET
+    )
+    """Objects contained directly within this data container with no intermediate folder."""
 
     def __post_init__(self) -> None:
-        self.type_name = "UnstructuredV2Object"
+        self.type_name = "UnstructuredContainer"
 
     # =========================================================================
     # SDK Methods
     # =========================================================================
 
-    _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(
-        r"^.+/[^/]+/[^/]+/[^/]+$"
-    )
-
     def validate(self, for_creation: bool = False) -> None:
         """
-        Dry-run validation of this UnstructuredV2Object instance.
+        Dry-run validation of this UnstructuredContainer instance.
 
         Checks that required fields (type_name, name, qualified_name) are set.
         When ``for_creation=True``, also checks hierarchy-specific fields
@@ -290,47 +279,37 @@ class UnstructuredV2Object(Asset):
             errors.append("name is required")
         if self.qualified_name is UNSET or self.qualified_name is None:
             errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.unstructuredv2_parent_folder is UNSET:
-                errors.append("unstructuredv2_parent_folder is required for creation")
         if errors:
-            raise ValueError(f"UnstructuredV2Object validation failed: {errors}")
+            raise ValueError(f"UnstructuredContainer validation failed: {errors}")
 
-    def minimize(self) -> "UnstructuredV2Object":
+    def minimize(self) -> "UnstructuredContainer":
         """
-        Return a minimal copy of this UnstructuredV2Object with only updater-required fields.
+        Return a minimal copy of this UnstructuredContainer with only updater-required fields.
 
         Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new UnstructuredV2Object with only the fields needed for an update
+        returns a new UnstructuredContainer with only the fields needed for an update
         (qualified_name, name, and any type-specific additional fields).
 
         Returns:
-            A new UnstructuredV2Object instance with only the minimum required fields.
+            A new UnstructuredContainer instance with only the minimum required fields.
         """
         self.validate()
-        return UnstructuredV2Object(qualified_name=self.qualified_name, name=self.name)
+        return UnstructuredContainer(qualified_name=self.qualified_name, name=self.name)
 
-    def relate(self) -> "RelatedUnstructuredV2Object":
+    def relate(self) -> "RelatedUnstructuredContainer":
         """
-        Create a :class:`RelatedUnstructuredV2Object` reference from this instance.
+        Create a :class:`RelatedUnstructuredContainer` reference from this instance.
 
         Returns a lightweight reference suitable for use in relationship
         attributes. Prefers ``guid`` if set, otherwise falls back to
         ``qualified_name``.
 
         Returns:
-            A RelatedUnstructuredV2Object reference to this asset.
+            A RelatedUnstructuredContainer reference to this asset.
         """
         if self.guid is not UNSET:
-            return RelatedUnstructuredV2Object(guid=self.guid)
-        return RelatedUnstructuredV2Object(qualified_name=self.qualified_name)
+            return RelatedUnstructuredContainer(guid=self.guid)
+        return RelatedUnstructuredContainer(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -358,12 +337,12 @@ class UnstructuredV2Object(Asset):
         """Serialize to Atlas nested-format JSON bytes (pure msgspec, no dict intermediate)."""
         if serde is None:
             serde = get_serde()
-        return _unstructured_v2_object_to_nested_bytes(self, serde)
+        return _unstructured_container_to_nested_bytes(self, serde)
 
     @staticmethod
     def from_json(
         json_data: str | bytes, serde: Serde | None = None
-    ) -> UnstructuredV2Object:
+    ) -> UnstructuredContainer:
         """
         Create from JSON string or bytes using optimized nested struct deserialization.
 
@@ -372,13 +351,13 @@ class UnstructuredV2Object(Asset):
             serde: Optional Serde instance for decoder reuse. Uses shared singleton if None.
 
         Returns:
-            UnstructuredV2Object instance
+            UnstructuredContainer instance
         """
         if isinstance(json_data, str):
             json_data = json_data.encode("utf-8")
         if serde is None:
             serde = get_serde()
-        return _unstructured_v2_object_from_nested_bytes(json_data, serde)
+        return _unstructured_container_from_nested_bytes(json_data, serde)
 
 
 # =============================================================================
@@ -386,47 +365,33 @@ class UnstructuredV2Object(Asset):
 # =============================================================================
 
 
-class UnstructuredV2ObjectAttributes(AssetAttributes):
-    """UnstructuredV2Object-specific attributes for nested API format."""
+class UnstructuredContainerAttributes(AssetAttributes):
+    """UnstructuredContainer-specific attributes for nested API format."""
 
-    unstructuredv2_container_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the container in which this object exists."""
+    unstructured_object_count: Union[int, None, UnsetType] = UNSET
+    """Total count of objects within this container, including those nested under folders at any depth."""
 
-    unstructuredv2_container_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the container in which this object exists."""
+    unstructured_folder_count: Union[int, None, UnsetType] = UNSET
+    """Total count of folders within this container, including nested sub-folders at any depth."""
 
-    unstructuredv2_parent_folder_name: Union[str, None, UnsetType] = UNSET
-    """Simple name of the immediate parent folder in which this object exists."""
+    unstructured_container_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the data container that holds this asset."""
 
-    unstructuredv2_object_key: Union[str, None, UnsetType] = UNSET
-    """Unique identity of this object within its container. Usually the concatenation of any folder path with the name of the object itself."""
+    unstructured_container_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the data container that holds this asset."""
 
-    unstructuredv2_object_size: Union[int, None, UnsetType] = UNSET
-    """Object size in bytes."""
+    unstructured_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the immediate parent folder containing this asset."""
 
-    unstructuredv2_object_extension: Union[str, None, UnsetType] = UNSET
-    """File extension of this object without the leading dot, for example: pdf, docx, csv."""
-
-    unstructuredv2_object_mime_type: Union[str, None, UnsetType] = UNSET
-    """MIME type of this object's content, for example: text/plain, application/json, application/pdf."""
-
-    unstructuredv2_object_content_language: Union[str, None, UnsetType] = UNSET
-    """Natural (human) language of this object's content, as detected at the source. For example: English, Spanish, French. This is the language the file is written in — not a programming language."""
-
-    unstructuredv2_parent_folder_qualified_name: Union[str, None, UnsetType] = UNSET
-    """Unique name of the immediate parent folder in which this asset exists."""
-
-    unstructuredv2_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = (
-        UNSET
-    )
-    """Ordered array of folder assets with qualified name and name representing the complete folder hierarchy path for this asset, from immediate parent to root folder."""
+    unstructured_folder_hierarchy: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    """Ordered list of ancestor folders for this asset, from immediate parent (index 0) up to the top-level folder under the container (last index). Each entry is a `{qualifiedName, name}` pair."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
 
-class UnstructuredV2ObjectRelationshipAttributes(AssetRelationshipAttributes):
-    """UnstructuredV2Object-specific relationship attributes for nested API format."""
+class UnstructuredContainerRelationshipAttributes(AssetRelationshipAttributes):
+    """UnstructuredContainer-specific relationship attributes for nested API format."""
 
     input_to_airflow_tasks: Union[List[RelatedAirflowTask], None, UnsetType] = UNSET
     """Tasks to which this asset provides input."""
@@ -442,6 +407,9 @@ class UnstructuredV2ObjectRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -531,24 +499,29 @@ class UnstructuredV2ObjectRelationshipAttributes(AssetRelationshipAttributes):
     output_from_spark_jobs: Union[List[RelatedSparkJob], None, UnsetType] = UNSET
     """"""
 
-    unstructuredv2_parent_folder: Union[
-        RelatedUnstructuredV2Folder, None, UnsetType
-    ] = UNSET
-    """Immediate parent folder containing this object."""
+    unstructured_folders: Union[List[RelatedUnstructuredFolder], None, UnsetType] = (
+        UNSET
+    )
+    """Top-level folders contained directly within this data container."""
+
+    unstructured_objects: Union[List[RelatedUnstructuredObject], None, UnsetType] = (
+        UNSET
+    )
+    """Objects contained directly within this data container with no intermediate folder."""
 
 
-class UnstructuredV2ObjectNested(AssetNested):
-    """UnstructuredV2Object in nested API format for high-performance serialization."""
+class UnstructuredContainerNested(AssetNested):
+    """UnstructuredContainer in nested API format for high-performance serialization."""
 
-    attributes: Union[UnstructuredV2ObjectAttributes, UnsetType] = UNSET
+    attributes: Union[UnstructuredContainerAttributes, UnsetType] = UNSET
     relationship_attributes: Union[
-        UnstructuredV2ObjectRelationshipAttributes, UnsetType
+        UnstructuredContainerRelationshipAttributes, UnsetType
     ] = UNSET
     append_relationship_attributes: Union[
-        UnstructuredV2ObjectRelationshipAttributes, UnsetType
+        UnstructuredContainerRelationshipAttributes, UnsetType
     ] = UNSET
     remove_relationship_attributes: Union[
-        UnstructuredV2ObjectRelationshipAttributes, UnsetType
+        UnstructuredContainerRelationshipAttributes, UnsetType
     ] = UNSET
 
 
@@ -556,13 +529,14 @@ class UnstructuredV2ObjectNested(AssetNested):
 # CONVERSION HELPERS & CONSTANTS
 # =============================================================================
 
-_UNSTRUCTURED_V2_OBJECT_REL_FIELDS: List[str] = [
+_UNSTRUCTURED_CONTAINER_REL_FIELDS: List[str] = [
     *_ASSET_REL_FIELDS,
     "input_to_airflow_tasks",
     "output_from_airflow_tasks",
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -589,57 +563,44 @@ _UNSTRUCTURED_V2_OBJECT_REL_FIELDS: List[str] = [
     "soda_checks",
     "input_to_spark_jobs",
     "output_from_spark_jobs",
-    "unstructuredv2_parent_folder",
+    "unstructured_folders",
+    "unstructured_objects",
 ]
 
 
-def _populate_unstructured_v2_object_attrs(
-    attrs: UnstructuredV2ObjectAttributes, obj: UnstructuredV2Object
+def _populate_unstructured_container_attrs(
+    attrs: UnstructuredContainerAttributes, obj: UnstructuredContainer
 ) -> None:
-    """Populate UnstructuredV2Object-specific attributes on the attrs struct."""
+    """Populate UnstructuredContainer-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.unstructuredv2_container_name = obj.unstructuredv2_container_name
-    attrs.unstructuredv2_container_qualified_name = (
-        obj.unstructuredv2_container_qualified_name
+    attrs.unstructured_object_count = obj.unstructured_object_count
+    attrs.unstructured_folder_count = obj.unstructured_folder_count
+    attrs.unstructured_container_name = obj.unstructured_container_name
+    attrs.unstructured_container_qualified_name = (
+        obj.unstructured_container_qualified_name
     )
-    attrs.unstructuredv2_parent_folder_name = obj.unstructuredv2_parent_folder_name
-    attrs.unstructuredv2_object_key = obj.unstructuredv2_object_key
-    attrs.unstructuredv2_object_size = obj.unstructuredv2_object_size
-    attrs.unstructuredv2_object_extension = obj.unstructuredv2_object_extension
-    attrs.unstructuredv2_object_mime_type = obj.unstructuredv2_object_mime_type
-    attrs.unstructuredv2_object_content_language = (
-        obj.unstructuredv2_object_content_language
+    attrs.unstructured_parent_folder_qualified_name = (
+        obj.unstructured_parent_folder_qualified_name
     )
-    attrs.unstructuredv2_parent_folder_qualified_name = (
-        obj.unstructuredv2_parent_folder_qualified_name
-    )
-    attrs.unstructuredv2_folder_hierarchy = obj.unstructuredv2_folder_hierarchy
+    attrs.unstructured_folder_hierarchy = obj.unstructured_folder_hierarchy
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
-def _extract_unstructured_v2_object_attrs(
-    attrs: UnstructuredV2ObjectAttributes,
+def _extract_unstructured_container_attrs(
+    attrs: UnstructuredContainerAttributes,
 ) -> dict:
-    """Extract all UnstructuredV2Object attributes from the attrs struct into a flat dict."""
+    """Extract all UnstructuredContainer attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["unstructuredv2_container_name"] = attrs.unstructuredv2_container_name
-    result["unstructuredv2_container_qualified_name"] = (
-        attrs.unstructuredv2_container_qualified_name
+    result["unstructured_object_count"] = attrs.unstructured_object_count
+    result["unstructured_folder_count"] = attrs.unstructured_folder_count
+    result["unstructured_container_name"] = attrs.unstructured_container_name
+    result["unstructured_container_qualified_name"] = (
+        attrs.unstructured_container_qualified_name
     )
-    result["unstructuredv2_parent_folder_name"] = (
-        attrs.unstructuredv2_parent_folder_name
+    result["unstructured_parent_folder_qualified_name"] = (
+        attrs.unstructured_parent_folder_qualified_name
     )
-    result["unstructuredv2_object_key"] = attrs.unstructuredv2_object_key
-    result["unstructuredv2_object_size"] = attrs.unstructuredv2_object_size
-    result["unstructuredv2_object_extension"] = attrs.unstructuredv2_object_extension
-    result["unstructuredv2_object_mime_type"] = attrs.unstructuredv2_object_mime_type
-    result["unstructuredv2_object_content_language"] = (
-        attrs.unstructuredv2_object_content_language
-    )
-    result["unstructuredv2_parent_folder_qualified_name"] = (
-        attrs.unstructuredv2_parent_folder_qualified_name
-    )
-    result["unstructuredv2_folder_hierarchy"] = attrs.unstructuredv2_folder_hierarchy
+    result["unstructured_folder_hierarchy"] = attrs.unstructured_folder_hierarchy
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -649,41 +610,41 @@ def _extract_unstructured_v2_object_attrs(
 # =============================================================================
 
 
-def _unstructured_v2_object_to_nested(
-    unstructured_v2_object: UnstructuredV2Object,
-) -> UnstructuredV2ObjectNested:
-    """Convert flat UnstructuredV2Object to nested format."""
-    attrs = UnstructuredV2ObjectAttributes()
-    _populate_unstructured_v2_object_attrs(attrs, unstructured_v2_object)
+def _unstructured_container_to_nested(
+    unstructured_container: UnstructuredContainer,
+) -> UnstructuredContainerNested:
+    """Convert flat UnstructuredContainer to nested format."""
+    attrs = UnstructuredContainerAttributes()
+    _populate_unstructured_container_attrs(attrs, unstructured_container)
     # Categorize relationships by save semantic (REPLACE, APPEND, REMOVE)
     replace_rels, append_rels, remove_rels = categorize_relationships(
-        unstructured_v2_object,
-        _UNSTRUCTURED_V2_OBJECT_REL_FIELDS,
-        UnstructuredV2ObjectRelationshipAttributes,
+        unstructured_container,
+        _UNSTRUCTURED_CONTAINER_REL_FIELDS,
+        UnstructuredContainerRelationshipAttributes,
     )
-    return UnstructuredV2ObjectNested(
-        guid=unstructured_v2_object.guid,
-        type_name=unstructured_v2_object.type_name,
-        status=unstructured_v2_object.status,
-        version=unstructured_v2_object.version,
-        create_time=unstructured_v2_object.create_time,
-        update_time=unstructured_v2_object.update_time,
-        created_by=unstructured_v2_object.created_by,
-        updated_by=unstructured_v2_object.updated_by,
-        classifications=unstructured_v2_object.classifications,
-        classification_names=unstructured_v2_object.classification_names,
-        meanings=unstructured_v2_object.meanings,
-        labels=unstructured_v2_object.labels,
-        business_attributes=unstructured_v2_object.business_attributes,
-        custom_attributes=unstructured_v2_object.custom_attributes,
-        pending_tasks=unstructured_v2_object.pending_tasks,
-        proxy=unstructured_v2_object.proxy,
-        is_incomplete=unstructured_v2_object.is_incomplete,
-        provenance_type=unstructured_v2_object.provenance_type,
-        home_id=unstructured_v2_object.home_id,
-        depth=unstructured_v2_object.depth,
-        immediate_upstream=unstructured_v2_object.immediate_upstream,
-        immediate_downstream=unstructured_v2_object.immediate_downstream,
+    return UnstructuredContainerNested(
+        guid=unstructured_container.guid,
+        type_name=unstructured_container.type_name,
+        status=unstructured_container.status,
+        version=unstructured_container.version,
+        create_time=unstructured_container.create_time,
+        update_time=unstructured_container.update_time,
+        created_by=unstructured_container.created_by,
+        updated_by=unstructured_container.updated_by,
+        classifications=unstructured_container.classifications,
+        classification_names=unstructured_container.classification_names,
+        meanings=unstructured_container.meanings,
+        labels=unstructured_container.labels,
+        business_attributes=unstructured_container.business_attributes,
+        custom_attributes=unstructured_container.custom_attributes,
+        pending_tasks=unstructured_container.pending_tasks,
+        proxy=unstructured_container.proxy,
+        is_incomplete=unstructured_container.is_incomplete,
+        provenance_type=unstructured_container.provenance_type,
+        home_id=unstructured_container.home_id,
+        depth=unstructured_container.depth,
+        immediate_upstream=unstructured_container.immediate_upstream,
+        immediate_downstream=unstructured_container.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -691,24 +652,24 @@ def _unstructured_v2_object_to_nested(
     )
 
 
-def _unstructured_v2_object_from_nested(
-    nested: UnstructuredV2ObjectNested,
-) -> UnstructuredV2Object:
-    """Convert nested format to flat UnstructuredV2Object."""
+def _unstructured_container_from_nested(
+    nested: UnstructuredContainerNested,
+) -> UnstructuredContainer:
+    """Convert nested format to flat UnstructuredContainer."""
     attrs = (
         nested.attributes
         if nested.attributes is not UNSET
-        else UnstructuredV2ObjectAttributes()
+        else UnstructuredContainerAttributes()
     )
     # Merge relationships from all three buckets
     merged_rels = merge_relationships(
         nested.relationship_attributes,
         nested.append_relationship_attributes,
         nested.remove_relationship_attributes,
-        _UNSTRUCTURED_V2_OBJECT_REL_FIELDS,
-        UnstructuredV2ObjectRelationshipAttributes,
+        _UNSTRUCTURED_CONTAINER_REL_FIELDS,
+        UnstructuredContainerRelationshipAttributes,
     )
-    return UnstructuredV2Object(
+    return UnstructuredContainer(
         guid=nested.guid,
         type_name=nested.type_name,
         status=nested.status,
@@ -730,25 +691,25 @@ def _unstructured_v2_object_from_nested(
         depth=nested.depth,
         immediate_upstream=nested.immediate_upstream,
         immediate_downstream=nested.immediate_downstream,
-        **_extract_unstructured_v2_object_attrs(attrs),
+        **_extract_unstructured_container_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
     )
 
 
-def _unstructured_v2_object_to_nested_bytes(
-    unstructured_v2_object: UnstructuredV2Object, serde: Serde
+def _unstructured_container_to_nested_bytes(
+    unstructured_container: UnstructuredContainer, serde: Serde
 ) -> bytes:
-    """Convert flat UnstructuredV2Object to nested JSON bytes."""
-    return serde.encode(_unstructured_v2_object_to_nested(unstructured_v2_object))
+    """Convert flat UnstructuredContainer to nested JSON bytes."""
+    return serde.encode(_unstructured_container_to_nested(unstructured_container))
 
 
-def _unstructured_v2_object_from_nested_bytes(
+def _unstructured_container_from_nested_bytes(
     data: bytes, serde: Serde
-) -> UnstructuredV2Object:
-    """Convert nested JSON bytes to flat UnstructuredV2Object."""
-    nested = serde.decode(data, UnstructuredV2ObjectNested)
-    return _unstructured_v2_object_from_nested(nested)
+) -> UnstructuredContainer:
+    """Convert nested JSON bytes to flat UnstructuredContainer."""
+    nested = serde.decode(data, UnstructuredContainerNested)
+    return _unstructured_container_from_nested(nested)
 
 
 # ---------------------------------------------------------------------------
@@ -760,82 +721,74 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-UnstructuredV2Object.UNSTRUCTUREDV2_CONTAINER_NAME = KeywordField(
-    "unstructuredv2ContainerName", "unstructuredv2ContainerName"
+UnstructuredContainer.UNSTRUCTURED_OBJECT_COUNT = NumericField(
+    "unstructuredObjectCount", "unstructuredObjectCount"
 )
-UnstructuredV2Object.UNSTRUCTUREDV2_CONTAINER_QUALIFIED_NAME = KeywordField(
-    "unstructuredv2ContainerQualifiedName", "unstructuredv2ContainerQualifiedName"
+UnstructuredContainer.UNSTRUCTURED_FOLDER_COUNT = NumericField(
+    "unstructuredFolderCount", "unstructuredFolderCount"
 )
-UnstructuredV2Object.UNSTRUCTUREDV2_PARENT_FOLDER_NAME = KeywordField(
-    "unstructuredv2ParentFolderName", "unstructuredv2ParentFolderName"
+UnstructuredContainer.UNSTRUCTURED_CONTAINER_NAME = KeywordField(
+    "unstructuredContainerName", "unstructuredContainerName"
 )
-UnstructuredV2Object.UNSTRUCTUREDV2_OBJECT_KEY = KeywordField(
-    "unstructuredv2ObjectKey", "unstructuredv2ObjectKey"
+UnstructuredContainer.UNSTRUCTURED_CONTAINER_QUALIFIED_NAME = KeywordField(
+    "unstructuredContainerQualifiedName", "unstructuredContainerQualifiedName"
 )
-UnstructuredV2Object.UNSTRUCTUREDV2_OBJECT_SIZE = NumericField(
-    "unstructuredv2ObjectSize", "unstructuredv2ObjectSize"
+UnstructuredContainer.UNSTRUCTURED_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
+    "unstructuredParentFolderQualifiedName", "unstructuredParentFolderQualifiedName"
 )
-UnstructuredV2Object.UNSTRUCTUREDV2_OBJECT_EXTENSION = KeywordField(
-    "unstructuredv2ObjectExtension", "unstructuredv2ObjectExtension"
+UnstructuredContainer.UNSTRUCTURED_FOLDER_HIERARCHY = KeywordField(
+    "unstructuredFolderHierarchy", "unstructuredFolderHierarchy"
 )
-UnstructuredV2Object.UNSTRUCTUREDV2_OBJECT_MIME_TYPE = KeywordField(
-    "unstructuredv2ObjectMimeType", "unstructuredv2ObjectMimeType"
-)
-UnstructuredV2Object.UNSTRUCTUREDV2_OBJECT_CONTENT_LANGUAGE = KeywordField(
-    "unstructuredv2ObjectContentLanguage", "unstructuredv2ObjectContentLanguage"
-)
-UnstructuredV2Object.UNSTRUCTUREDV2_PARENT_FOLDER_QUALIFIED_NAME = KeywordField(
-    "unstructuredv2ParentFolderQualifiedName", "unstructuredv2ParentFolderQualifiedName"
-)
-UnstructuredV2Object.UNSTRUCTUREDV2_FOLDER_HIERARCHY = KeywordField(
-    "unstructuredv2FolderHierarchy", "unstructuredv2FolderHierarchy"
-)
-UnstructuredV2Object.CATALOG_DATASET_GUID = KeywordField(
+UnstructuredContainer.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
-UnstructuredV2Object.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
-UnstructuredV2Object.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
-UnstructuredV2Object.ANOMALO_CHECKS = RelationField("anomaloChecks")
-UnstructuredV2Object.APPLICATION = RelationField("application")
-UnstructuredV2Object.APPLICATION_FIELD = RelationField("applicationField")
-UnstructuredV2Object.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
-UnstructuredV2Object.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
+UnstructuredContainer.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
+UnstructuredContainer.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
+    "outputFromAirflowTasks"
+)
+UnstructuredContainer.ANOMALO_CHECKS = RelationField("anomaloChecks")
+UnstructuredContainer.APPLICATION = RelationField("application")
+UnstructuredContainer.APPLICATION_FIELD = RelationField("applicationField")
+UnstructuredContainer.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+UnstructuredContainer.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
+UnstructuredContainer.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
 )
-UnstructuredV2Object.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")
-UnstructuredV2Object.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
-UnstructuredV2Object.MODEL_IMPLEMENTED_ENTITIES = RelationField(
+UnstructuredContainer.OUTPUT_PORT_DATA_PRODUCTS = RelationField(
+    "outputPortDataProducts"
+)
+UnstructuredContainer.INPUT_PORT_DATA_PRODUCTS = RelationField("inputPortDataProducts")
+UnstructuredContainer.MODEL_IMPLEMENTED_ENTITIES = RelationField(
     "modelImplementedEntities"
 )
-UnstructuredV2Object.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
+UnstructuredContainer.MODEL_IMPLEMENTED_ATTRIBUTES = RelationField(
     "modelImplementedAttributes"
 )
-UnstructuredV2Object.METRICS = RelationField("metrics")
-UnstructuredV2Object.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
-UnstructuredV2Object.DQ_REFERENCE_DATASET_RULES = RelationField(
+UnstructuredContainer.METRICS = RelationField("metrics")
+UnstructuredContainer.DQ_BASE_DATASET_RULES = RelationField("dqBaseDatasetRules")
+UnstructuredContainer.DQ_REFERENCE_DATASET_RULES = RelationField(
     "dqReferenceDatasetRules"
 )
-UnstructuredV2Object.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
+UnstructuredContainer.GCP_DATAPLEX_ASPECT_TYPE_METADATA_ENTITIES = RelationField(
     "gcpDataplexAspectTypeMetadataEntities"
 )
-UnstructuredV2Object.MEANINGS = RelationField("meanings")
-UnstructuredV2Object.MC_MONITORS = RelationField("mcMonitors")
-UnstructuredV2Object.MC_INCIDENTS = RelationField("mcIncidents")
-UnstructuredV2Object.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
-UnstructuredV2Object.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
-UnstructuredV2Object.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
-UnstructuredV2Object.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
-UnstructuredV2Object.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
-UnstructuredV2Object.USER_DEF_RELATIONSHIP_FROM = RelationField(
+UnstructuredContainer.MEANINGS = RelationField("meanings")
+UnstructuredContainer.MC_MONITORS = RelationField("mcMonitors")
+UnstructuredContainer.MC_INCIDENTS = RelationField("mcIncidents")
+UnstructuredContainer.PARTIAL_CHILD_FIELDS = RelationField("partialChildFields")
+UnstructuredContainer.PARTIAL_CHILD_OBJECTS = RelationField("partialChildObjects")
+UnstructuredContainer.INPUT_TO_PROCESSES = RelationField("inputToProcesses")
+UnstructuredContainer.OUTPUT_FROM_PROCESSES = RelationField("outputFromProcesses")
+UnstructuredContainer.USER_DEF_RELATIONSHIP_TO = RelationField("userDefRelationshipTo")
+UnstructuredContainer.USER_DEF_RELATIONSHIP_FROM = RelationField(
     "userDefRelationshipFrom"
 )
-UnstructuredV2Object.FILES = RelationField("files")
-UnstructuredV2Object.LINKS = RelationField("links")
-UnstructuredV2Object.README = RelationField("readme")
-UnstructuredV2Object.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
-UnstructuredV2Object.SODA_CHECKS = RelationField("sodaChecks")
-UnstructuredV2Object.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
-UnstructuredV2Object.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
-UnstructuredV2Object.UNSTRUCTUREDV2_PARENT_FOLDER = RelationField(
-    "unstructuredv2ParentFolder"
-)
+UnstructuredContainer.FILES = RelationField("files")
+UnstructuredContainer.LINKS = RelationField("links")
+UnstructuredContainer.README = RelationField("readme")
+UnstructuredContainer.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
+UnstructuredContainer.SODA_CHECKS = RelationField("sodaChecks")
+UnstructuredContainer.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
+UnstructuredContainer.OUTPUT_FROM_SPARK_JOBS = RelationField("outputFromSparkJobs")
+UnstructuredContainer.UNSTRUCTURED_FOLDERS = RelationField("unstructuredFolders")
+UnstructuredContainer.UNSTRUCTURED_OBJECTS = RelationField("unstructuredObjects")

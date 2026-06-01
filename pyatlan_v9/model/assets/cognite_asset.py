@@ -45,6 +45,7 @@ from .cognite_related import (
     RelatedCogniteSequence,
     RelatedCogniteTimeSeries,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -82,6 +83,7 @@ class CogniteAsset(Asset):
     COGNITE_SEQUENCES: ClassVar[Any] = None
     COGNITE_TIMESERIES: ClassVar[Any] = None
     COGNITE3DMODELS: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -141,6 +143,9 @@ class CogniteAsset(Asset):
 
     cognite3dmodels: Union[List[RelatedCognite3DModel], None, UnsetType] = UNSET
     """3D models that exist within this asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -385,6 +390,9 @@ class CogniteAssetRelationshipAttributes(AssetRelationshipAttributes):
     cognite3dmodels: Union[List[RelatedCognite3DModel], None, UnsetType] = UNSET
     """3D models that exist within this asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -505,6 +513,7 @@ _COGNITE_ASSET_REL_FIELDS: List[str] = [
     "cognite_sequences",
     "cognite_timeseries",
     "cognite3dmodels",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -664,6 +673,7 @@ CogniteAsset.COGNITE_FILES = RelationField("cogniteFiles")
 CogniteAsset.COGNITE_SEQUENCES = RelationField("cogniteSequences")
 CogniteAsset.COGNITE_TIMESERIES = RelationField("cogniteTimeseries")
 CogniteAsset.COGNITE3DMODELS = RelationField("cognite3dmodels")
+CogniteAsset.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CogniteAsset.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CogniteAsset.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .cosmos_mongo_db_related import (
     RelatedCosmosMongoDBAccount,
     RelatedCosmosMongoDBDatabase,
@@ -91,6 +92,7 @@ class CosmosMongoDBAccount(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     COSMOS_MONGO_DB_DATABASES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
@@ -227,6 +229,9 @@ class CosmosMongoDBAccount(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     cosmos_mongo_db_databases: Union[
         List[RelatedCosmosMongoDBDatabase], None, UnsetType
@@ -554,6 +559,9 @@ class CosmosMongoDBAccountRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     cosmos_mongo_db_databases: Union[
         List[RelatedCosmosMongoDBDatabase], None, UnsetType
     ] = msgspec.field(default=UNSET, name="cosmosMongoDBDatabases")
@@ -674,6 +682,7 @@ _COSMOS_MONGO_DB_ACCOUNT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "cosmos_mongo_db_databases",
     "data_contract_latest",
     "data_contract_latest_certified",
@@ -993,6 +1002,7 @@ CosmosMongoDBAccount.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflo
 CosmosMongoDBAccount.ANOMALO_CHECKS = RelationField("anomaloChecks")
 CosmosMongoDBAccount.APPLICATION = RelationField("application")
 CosmosMongoDBAccount.APPLICATION_FIELD = RelationField("applicationField")
+CosmosMongoDBAccount.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CosmosMongoDBAccount.COSMOS_MONGO_DB_DATABASES = RelationField("cosmosMongoDBDatabases")
 CosmosMongoDBAccount.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CosmosMongoDBAccount.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
