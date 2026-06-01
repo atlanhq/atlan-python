@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -52,6 +53,7 @@ from .sap_related import (
     RelatedSapErpAbapProgram,
     RelatedSapErpCdsView,
     RelatedSapErpComponent,
+    RelatedSapErpFioriApp,
     RelatedSapErpFunctionModule,
     RelatedSapErpTable,
     RelatedSapErpTransactionCode,
@@ -85,6 +87,7 @@ class SapErpComponent(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -115,10 +118,13 @@ class SapErpComponent(Asset):
     SAP_ERP_FUNCTION_MODULES: ClassVar[Any] = None
     SAP_ERP_TABLES: ClassVar[Any] = None
     SAP_ERP_ABAP_PROGRAMS: ClassVar[Any] = None
+    SAP_ERP_FIORI_APPS: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SapErpComponent"
 
     sap_technical_name: Union[str, None, UnsetType] = UNSET
     """Technical identifier for SAP data objects, used for integration and internal reference."""
@@ -133,7 +139,7 @@ class SapErpComponent(Asset):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -158,6 +164,9 @@ class SapErpComponent(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -263,6 +272,9 @@ class SapErpComponent(Asset):
     )
     """SAP ERP Component associated with this SAP ERP ABAP Programs."""
 
+    sap_erp_fiori_apps: Union[List[RelatedSapErpFioriApp], None, UnsetType] = UNSET
+    """SAP ERP Fiori Apps that belong to this SAP ERP Component."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -279,66 +291,6 @@ class SapErpComponent(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpComponent"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SapErpComponent instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpComponent validation failed: {errors}")
-
-    def minimize(self) -> "SapErpComponent":
-        """
-        Return a minimal copy of this SapErpComponent with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SapErpComponent with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SapErpComponent instance with only the minimum required fields.
-        """
-        self.validate()
-        return SapErpComponent(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpComponent":
-        """
-        Create a :class:`RelatedSapErpComponent` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSapErpComponent reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSapErpComponent(guid=self.guid)
-        return RelatedSapErpComponent(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -410,7 +362,7 @@ class SapErpComponentAttributes(AssetAttributes):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -439,6 +391,9 @@ class SapErpComponentRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -544,6 +499,9 @@ class SapErpComponentRelationshipAttributes(AssetRelationshipAttributes):
     )
     """SAP ERP Component associated with this SAP ERP ABAP Programs."""
 
+    sap_erp_fiori_apps: Union[List[RelatedSapErpFioriApp], None, UnsetType] = UNSET
+    """SAP ERP Fiori Apps that belong to this SAP ERP Component."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -585,6 +543,7 @@ _SAP_ERP_COMPONENT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -615,6 +574,7 @@ _SAP_ERP_COMPONENT_REL_FIELDS: List[str] = [
     "sap_erp_function_modules",
     "sap_erp_tables",
     "sap_erp_abap_programs",
+    "sap_erp_fiori_apps",
     "schema_registry_subjects",
     "soda_checks",
     "input_to_spark_jobs",
@@ -688,9 +648,6 @@ def _sap_erp_component_to_nested(
         is_incomplete=sap_erp_component.is_incomplete,
         provenance_type=sap_erp_component.provenance_type,
         home_id=sap_erp_component.home_id,
-        depth=sap_erp_component.depth,
-        immediate_upstream=sap_erp_component.immediate_upstream,
-        immediate_downstream=sap_erp_component.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -724,6 +681,7 @@ def _sap_erp_component_from_nested(nested: SapErpComponentNested) -> SapErpCompo
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -732,9 +690,6 @@ def _sap_erp_component_from_nested(nested: SapErpComponentNested) -> SapErpCompo
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_component_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -782,6 +737,7 @@ SapErpComponent.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTask
 SapErpComponent.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpComponent.APPLICATION = RelationField("application")
 SapErpComponent.APPLICATION_FIELD = RelationField("applicationField")
+SapErpComponent.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SapErpComponent.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SapErpComponent.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
@@ -818,6 +774,7 @@ SapErpComponent.PARENT_COMPONENT = RelationField("parentComponent")
 SapErpComponent.SAP_ERP_FUNCTION_MODULES = RelationField("sapErpFunctionModules")
 SapErpComponent.SAP_ERP_TABLES = RelationField("sapErpTables")
 SapErpComponent.SAP_ERP_ABAP_PROGRAMS = RelationField("sapErpAbapPrograms")
+SapErpComponent.SAP_ERP_FIORI_APPS = RelationField("sapErpFioriApps")
 SapErpComponent.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SapErpComponent.SODA_CHECKS = RelationField("sodaChecks")
 SapErpComponent.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")

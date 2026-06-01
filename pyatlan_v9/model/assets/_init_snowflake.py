@@ -11,17 +11,20 @@ This module provides convenient imports for all Snowflake types and their Relate
 from .snowflake import Snowflake
 from .snowflake_ai_model_context import SnowflakeAIModelContext
 from .snowflake_ai_model_version import SnowflakeAIModelVersion
+from .snowflake_listing import SnowflakeListing
 from .snowflake_related import (
     RelatedSnowflake,
     RelatedSnowflakeAIModelContext,
     RelatedSnowflakeAIModelVersion,
     RelatedSnowflakeDynamicTable,
+    RelatedSnowflakeListing,
     RelatedSnowflakePipe,
     RelatedSnowflakeSemanticDimension,
     RelatedSnowflakeSemanticFact,
     RelatedSnowflakeSemanticLogicalTable,
     RelatedSnowflakeSemanticMetric,
     RelatedSnowflakeSemanticView,
+    RelatedSnowflakeShare,
     RelatedSnowflakeStage,
     RelatedSnowflakeStream,
     RelatedSnowflakeTag,
@@ -31,27 +34,32 @@ from .snowflake_semantic_fact import SnowflakeSemanticFact
 from .snowflake_semantic_logical_table import SnowflakeSemanticLogicalTable
 from .snowflake_semantic_metric import SnowflakeSemanticMetric
 from .snowflake_semantic_view import SnowflakeSemanticView
+from .snowflake_share import SnowflakeShare
 
 __all__ = [
     "RelatedSnowflake",
     "RelatedSnowflakeAIModelContext",
     "RelatedSnowflakeAIModelVersion",
     "RelatedSnowflakeDynamicTable",
+    "RelatedSnowflakeListing",
     "RelatedSnowflakePipe",
     "RelatedSnowflakeSemanticDimension",
     "RelatedSnowflakeSemanticFact",
     "RelatedSnowflakeSemanticLogicalTable",
     "RelatedSnowflakeSemanticMetric",
     "RelatedSnowflakeSemanticView",
+    "RelatedSnowflakeShare",
     "RelatedSnowflakeStage",
     "RelatedSnowflakeStream",
     "RelatedSnowflakeTag",
     "Snowflake",
     "SnowflakeAIModelContext",
     "SnowflakeAIModelVersion",
+    "SnowflakeListing",
     "SnowflakeSemanticDimension",
     "SnowflakeSemanticFact",
     "SnowflakeSemanticLogicalTable",
     "SnowflakeSemanticMetric",
     "SnowflakeSemanticView",
+    "SnowflakeShare",
 ]

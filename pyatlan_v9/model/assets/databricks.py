@@ -38,10 +38,10 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
-from .databricks_related import RelatedDatabricks
 from .dbt_related import (
     RelatedDbtModel,
     RelatedDbtSeed,
@@ -100,12 +100,22 @@ class Databricks(Asset):
     SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_NODE_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[Any] = None
+    SQL_COALESCE_NODE_TYPE: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
+    SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -142,6 +152,8 @@ class Databricks(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "Databricks"
 
     query_count: Union[int, None, UnsetType] = UNSET
     """Number of times this asset has been queried."""
@@ -217,6 +229,33 @@ class Databricks(Asset):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -234,6 +273,9 @@ class Databricks(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -367,66 +409,6 @@ class Databricks(Asset):
         self.type_name = "Databricks"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Databricks instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Databricks validation failed: {errors}")
-
-    def minimize(self) -> "Databricks":
-        """
-        Return a minimal copy of this Databricks with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Databricks with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Databricks instance with only the minimum required fields.
-        """
-        self.validate()
-        return Databricks(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedDatabricks":
-        """
-        Create a :class:`RelatedDatabricks` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedDatabricks reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedDatabricks(guid=self.guid)
-        return RelatedDatabricks(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -555,6 +537,33 @@ class DatabricksAttributes(AssetAttributes):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -576,6 +585,9 @@ class DatabricksRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -730,6 +742,7 @@ _DATABRICKS_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -800,6 +813,15 @@ def _populate_databricks_attrs(attrs: DatabricksAttributes, obj: Databricks) -> 
         obj.sql_ai_insights_popular_filter_count
     )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
+    attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
+    attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
+    attrs.sql_coalesce_last_run_at = obj.sql_coalesce_last_run_at
+    attrs.sql_coalesce_node_type = obj.sql_coalesce_node_type
+    attrs.sql_coalesce_environment_id = obj.sql_coalesce_environment_id
+    attrs.sql_coalesce_environment_name = obj.sql_coalesce_environment_name
+    attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
+    attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
+    attrs.sql_share_qualified_names = obj.sql_share_qualified_names
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -840,6 +862,15 @@ def _extract_databricks_attrs(attrs: DatabricksAttributes) -> dict:
     result["sql_ai_insights_relationship_count"] = (
         attrs.sql_ai_insights_relationship_count
     )
+    result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
+    result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
+    result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
+    result["sql_coalesce_node_type"] = attrs.sql_coalesce_node_type
+    result["sql_coalesce_environment_id"] = attrs.sql_coalesce_environment_id
+    result["sql_coalesce_environment_name"] = attrs.sql_coalesce_environment_name
+    result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
+    result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
+    result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -877,9 +908,6 @@ def _databricks_to_nested(databricks: Databricks) -> DatabricksNested:
         is_incomplete=databricks.is_incomplete,
         provenance_type=databricks.provenance_type,
         home_id=databricks.home_id,
-        depth=databricks.depth,
-        immediate_upstream=databricks.immediate_upstream,
-        immediate_downstream=databricks.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -911,6 +939,7 @@ def _databricks_from_nested(nested: DatabricksNested) -> Databricks:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -919,9 +948,6 @@ def _databricks_from_nested(nested: DatabricksNested) -> Databricks:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_databricks_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -945,6 +971,7 @@ def _databricks_from_nested_bytes(data: bytes, serde: Serde) -> Databricks:
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     BooleanField,
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
 )
@@ -998,6 +1025,35 @@ Databricks.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
 Databricks.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
     "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
 )
+Databricks.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+Databricks.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+Databricks.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+Databricks.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+Databricks.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+Databricks.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+Databricks.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+Databricks.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+Databricks.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
 Databricks.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -1006,6 +1062,7 @@ Databricks.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Databricks.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Databricks.APPLICATION = RelationField("application")
 Databricks.APPLICATION_FIELD = RelationField("applicationField")
+Databricks.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 Databricks.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 Databricks.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Databricks.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")

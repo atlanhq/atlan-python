@@ -11,7 +11,7 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Any, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -82,6 +82,9 @@ class RelatedSageMakerUnifiedStudioProject(RelatedSageMakerUnifiedStudio):
 
     smus_project_s3_location: Union[str, None, UnsetType] = UNSET
     """Amazon S3 location of the SageMaker Unified Studio project."""
+
+    smus_project_sso_users: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """SSO users associated with the SageMaker Unified Studio project, sourced from the source system. Each entry has `email` and `role` fields."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
