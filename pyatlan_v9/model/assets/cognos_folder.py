@@ -48,6 +48,7 @@ from .cognos_related import (
     RelatedCognosPackage,
     RelatedCognosReport,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -100,6 +101,7 @@ class CognosFolder(Asset):
     COGNOS_DATASETS: ClassVar[Any] = None
     COGNOS_SUB_FOLDERS: ClassVar[Any] = None
     COGNOS_FOLDER: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -204,6 +206,9 @@ class CognosFolder(Asset):
 
     cognos_folder: Union[RelatedCognosFolder, None, UnsetType] = UNSET
     """Parent folder containing this folder."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -503,6 +508,9 @@ class CognosFolderRelationshipAttributes(AssetRelationshipAttributes):
     cognos_folder: Union[RelatedCognosFolder, None, UnsetType] = UNSET
     """Parent folder containing this folder."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -627,6 +635,7 @@ _COGNOS_FOLDER_REL_FIELDS: List[str] = [
     "cognos_datasets",
     "cognos_sub_folders",
     "cognos_folder",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -841,6 +850,7 @@ CognosFolder.COGNOS_PACKAGES = RelationField("cognosPackages")
 CognosFolder.COGNOS_DATASETS = RelationField("cognosDatasets")
 CognosFolder.COGNOS_SUB_FOLDERS = RelationField("cognosSubFolders")
 CognosFolder.COGNOS_FOLDER = RelationField("cognosFolder")
+CognosFolder.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CognosFolder.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CognosFolder.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

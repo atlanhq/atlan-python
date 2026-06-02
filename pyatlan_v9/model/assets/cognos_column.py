@@ -47,6 +47,7 @@ from .cognos_related import (
     RelatedCognosModule,
     RelatedCognosPackage,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -97,6 +98,7 @@ class CognosColumn(Asset):
     COGNOS_PACKAGE: ClassVar[Any] = None
     COGNOS_DASHBOARD: ClassVar[Any] = None
     COGNOS_EXPLORATION: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -195,6 +197,9 @@ class CognosColumn(Asset):
 
     cognos_exploration: Union[RelatedCognosExploration, None, UnsetType] = UNSET
     """Parent exploration containing the columns."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -492,6 +497,9 @@ class CognosColumnRelationshipAttributes(AssetRelationshipAttributes):
     cognos_exploration: Union[RelatedCognosExploration, None, UnsetType] = UNSET
     """Parent exploration containing the columns."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -613,6 +621,7 @@ _COGNOS_COLUMN_REL_FIELDS: List[str] = [
     "cognos_package",
     "cognos_dashboard",
     "cognos_exploration",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -826,6 +835,7 @@ CognosColumn.COGNOS_MODULE = RelationField("cognosModule")
 CognosColumn.COGNOS_PACKAGE = RelationField("cognosPackage")
 CognosColumn.COGNOS_DASHBOARD = RelationField("cognosDashboard")
 CognosColumn.COGNOS_EXPLORATION = RelationField("cognosExploration")
+CognosColumn.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CognosColumn.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CognosColumn.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

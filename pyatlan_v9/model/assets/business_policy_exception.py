@@ -42,6 +42,7 @@ from .business_policy_related import (
     RelatedBusinessPolicy,
     RelatedBusinessPolicyException,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -84,6 +85,7 @@ class BusinessPolicyException(Asset):
     RELATED_BUSINESS_POLICIES: ClassVar[Any] = None
     EXCEPTIONS_FOR_BUSINESS_POLICY: ClassVar[Any] = None
     BUSINESS_POLICY_FOR_EXCEPTION: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -172,6 +174,9 @@ class BusinessPolicyException(Asset):
 
     business_policy_for_exception: Union[RelatedBusinessPolicy, None, UnsetType] = UNSET
     """Business policies related to exception"""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -445,6 +450,9 @@ class BusinessPolicyExceptionRelationshipAttributes(AssetRelationshipAttributes)
     business_policy_for_exception: Union[RelatedBusinessPolicy, None, UnsetType] = UNSET
     """Business policies related to exception"""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -535,6 +543,7 @@ _BUSINESS_POLICY_EXCEPTION_REL_FIELDS: List[str] = [
     "related_business_policies",
     "exceptions_for_business_policy",
     "business_policy_for_exception",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -780,6 +789,7 @@ BusinessPolicyException.EXCEPTIONS_FOR_BUSINESS_POLICY = RelationField(
 BusinessPolicyException.BUSINESS_POLICY_FOR_EXCEPTION = RelationField(
     "businessPolicyForException"
 )
+BusinessPolicyException.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 BusinessPolicyException.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 BusinessPolicyException.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

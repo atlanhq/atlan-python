@@ -28,6 +28,7 @@ from pyatlan_v9.model.serde import Serde, get_serde
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
 from .asset_related import RelatedDataSet
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -197,9 +198,9 @@ class DataSet(Referenceable):
     ASSET_SODA_CHECK_STATUSES: ClassVar[Any] = None
     ASSET_SODA_SOURCE_URL: ClassVar[Any] = None
     ASSET_ICON: ClassVar[Any] = None
-    ASSET_SUMMARY_V2_PROVIDER: ClassVar[Any] = None
-    ASSET_SUMMARY_V2: ClassVar[Any] = None
-    ASSET_SUMMARY_V2_FILTER_TOKENS: ClassVar[Any] = None
+    ASSET_SUMMARY_PROVIDER: ClassVar[Any] = None
+    ASSET_SUMMARY: ClassVar[Any] = None
+    ASSET_SUMMARY_FILTER_TOKENS: ClassVar[Any] = None
     ASSET_EXTERNAL_DQ_SCORE_VALUE: ClassVar[Any] = None
     ASSET_EXTERNAL_DQ_TEST_ENTITIES: ClassVar[Any] = None
     ASSET_EXTERNAL_DQ_TEST_LATEST_SCORES: ClassVar[Any] = None
@@ -262,6 +263,7 @@ class DataSet(Referenceable):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -724,14 +726,14 @@ class DataSet(Referenceable):
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
-    asset_summary_v2_provider: Union[Dict[str, str], None, UnsetType] = UNSET
-    """Provider metadata for the summary stored in assetSummaryV2, as a string map. Required key: 'name' (e.g., 'bigid', 'collibra') — frontend uses this to pick the renderer and icon. Optional key: 'summary_source_url' — deep link to the asset's summary in the provider's UI, surfaced as a 'Show in {name}' button."""
+    asset_summary_provider: Union[Dict[str, Any], None, UnsetType] = UNSET
+    """Metadata about the provider of this asset's summary."""
 
-    asset_summary_v2: Union[str, None, UnsetType] = UNSET
-    """Provider-defined summary as a JSON-stringified object. Shape varies by provider — frontend reads assetSummaryV2Provider.name to know how to render. For BigID: { classifier_counts, attribute_counts, policy_violation_counts }."""
+    asset_summary: Union[str, None, UnsetType] = UNSET
+    """Provider-defined summary of this asset as a JSON-stringified object. Display-only; the rendered shape is provider-specific."""
 
-    asset_summary_v2_filter_tokens: Union[List[str], None, UnsetType] = UNSET
-    """Wildcard-searchable tokens for side-panel summary filters. Format: '<dimension>|||<value>|||<count>' (extra parts allowed for richer dimensions). Dimensions are provider-defined; v2 dimension used by BigID: 'classification'."""
+    asset_summary_filter_tokens: Union[List[str], None, UnsetType] = UNSET
+    """Flattened tokens for section-scoped filtering on assetSummary. Each token is shaped as '<section>|||<name>|||<count>'."""
 
     asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="assetExternalDQScoreValue"
@@ -1002,6 +1004,9 @@ class DataSet(Referenceable):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -1626,14 +1631,14 @@ class DataSetAttributes(ReferenceableAttributes):
     asset_icon: Union[str, None, UnsetType] = UNSET
     """Name of the icon to use for this asset. (Only applies to glossaries, currently.)"""
 
-    asset_summary_v2_provider: Union[Dict[str, str], None, UnsetType] = UNSET
-    """Provider metadata for the summary stored in assetSummaryV2, as a string map. Required key: 'name' (e.g., 'bigid', 'collibra') — frontend uses this to pick the renderer and icon. Optional key: 'summary_source_url' — deep link to the asset's summary in the provider's UI, surfaced as a 'Show in {name}' button."""
+    asset_summary_provider: Union[Dict[str, Any], None, UnsetType] = UNSET
+    """Metadata about the provider of this asset's summary."""
 
-    asset_summary_v2: Union[str, None, UnsetType] = UNSET
-    """Provider-defined summary as a JSON-stringified object. Shape varies by provider — frontend reads assetSummaryV2Provider.name to know how to render. For BigID: { classifier_counts, attribute_counts, policy_violation_counts }."""
+    asset_summary: Union[str, None, UnsetType] = UNSET
+    """Provider-defined summary of this asset as a JSON-stringified object. Display-only; the rendered shape is provider-specific."""
 
-    asset_summary_v2_filter_tokens: Union[List[str], None, UnsetType] = UNSET
-    """Wildcard-searchable tokens for side-panel summary filters. Format: '<dimension>|||<value>|||<count>' (extra parts allowed for richer dimensions). Dimensions are provider-defined; v2 dimension used by BigID: 'classification'."""
+    asset_summary_filter_tokens: Union[List[str], None, UnsetType] = UNSET
+    """Flattened tokens for section-scoped filtering on assetSummary. Each token is shaped as '<section>|||<name>|||<count>'."""
 
     asset_external_dq_score_value: Union[float, None, UnsetType] = msgspec.field(
         default=UNSET, name="assetExternalDQScoreValue"
@@ -1909,6 +1914,9 @@ class DataSetRelationshipAttributes(ReferenceableRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -1994,6 +2002,7 @@ _DATA_SET_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -2195,9 +2204,9 @@ def _populate_data_set_attrs(attrs: DataSetAttributes, obj: DataSet) -> None:
     attrs.asset_soda_check_statuses = obj.asset_soda_check_statuses
     attrs.asset_soda_source_url = obj.asset_soda_source_url
     attrs.asset_icon = obj.asset_icon
-    attrs.asset_summary_v2_provider = obj.asset_summary_v2_provider
-    attrs.asset_summary_v2 = obj.asset_summary_v2
-    attrs.asset_summary_v2_filter_tokens = obj.asset_summary_v2_filter_tokens
+    attrs.asset_summary_provider = obj.asset_summary_provider
+    attrs.asset_summary = obj.asset_summary
+    attrs.asset_summary_filter_tokens = obj.asset_summary_filter_tokens
     attrs.asset_external_dq_score_value = obj.asset_external_dq_score_value
     attrs.asset_external_dq_test_entities = obj.asset_external_dq_test_entities
     attrs.asset_external_dq_test_latest_scores = (
@@ -2479,9 +2488,9 @@ def _extract_data_set_attrs(attrs: DataSetAttributes) -> dict:
     result["asset_soda_check_statuses"] = attrs.asset_soda_check_statuses
     result["asset_soda_source_url"] = attrs.asset_soda_source_url
     result["asset_icon"] = attrs.asset_icon
-    result["asset_summary_v2_provider"] = attrs.asset_summary_v2_provider
-    result["asset_summary_v2"] = attrs.asset_summary_v2
-    result["asset_summary_v2_filter_tokens"] = attrs.asset_summary_v2_filter_tokens
+    result["asset_summary_provider"] = attrs.asset_summary_provider
+    result["asset_summary"] = attrs.asset_summary
+    result["asset_summary_filter_tokens"] = attrs.asset_summary_filter_tokens
     result["asset_external_dq_score_value"] = attrs.asset_external_dq_score_value
     result["asset_external_dq_test_entities"] = attrs.asset_external_dq_test_entities
     result["asset_external_dq_test_latest_scores"] = (
@@ -3007,12 +3016,14 @@ DataSet.ASSET_SODA_CHECK_STATUSES = KeywordField(
 )
 DataSet.ASSET_SODA_SOURCE_URL = KeywordField("assetSodaSourceURL", "assetSodaSourceURL")
 DataSet.ASSET_ICON = KeywordField("assetIcon", "assetIcon")
-DataSet.ASSET_SUMMARY_V2_PROVIDER = KeywordField(
-    "assetSummaryV2Provider", "assetSummaryV2Provider"
+DataSet.ASSET_SUMMARY_PROVIDER = KeywordField(
+    "assetSummaryProvider", "assetSummaryProvider"
 )
-DataSet.ASSET_SUMMARY_V2 = KeywordField("assetSummaryV2", "assetSummaryV2")
-DataSet.ASSET_SUMMARY_V2_FILTER_TOKENS = KeywordField(
-    "assetSummaryV2FilterTokens", "assetSummaryV2FilterTokens"
+DataSet.ASSET_SUMMARY = KeywordField("assetSummary", "assetSummary")
+DataSet.ASSET_SUMMARY_FILTER_TOKENS = KeywordTextField(
+    "assetSummaryFilterTokens",
+    "assetSummaryFilterTokens",
+    "assetSummaryFilterTokens.text",
 )
 DataSet.ASSET_EXTERNAL_DQ_SCORE_VALUE = NumericField(
     "assetExternalDQScoreValue", "assetExternalDQScoreValue"
@@ -3171,6 +3182,7 @@ DataSet.ASSET_HAS_AI_README = BooleanField("assetHasAiReadme", "assetHasAiReadme
 DataSet.ANOMALO_CHECKS = RelationField("anomaloChecks")
 DataSet.APPLICATION = RelationField("application")
 DataSet.APPLICATION_FIELD = RelationField("applicationField")
+DataSet.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 DataSet.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 DataSet.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 DataSet.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")

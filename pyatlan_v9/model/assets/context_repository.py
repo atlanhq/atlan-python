@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .asset_related import RelatedAsset
 from .context_related import RelatedContextArtifact, RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -50,6 +51,7 @@ from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
+from .skill_related import RelatedSkill
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -68,6 +70,7 @@ class ContextRepository(Asset):
     CONTEXT_REPOSITORY_AGENT_INSTRUCTIONS: ClassVar[Any] = None
     CONTEXT_REPOSITORY_TARGET_CONNECTION_QUALIFIED_NAME: ClassVar[Any] = None
     CONTEXT_REPOSITORY_QUALIFIED_NAME: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -75,6 +78,9 @@ class ContextRepository(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     CONTEXT_ARTIFACTS: ClassVar[Any] = None
+    CONTEXT_OUTPUT_SKILL: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
+    CONTEXT_INPUT_ASSETS: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -116,6 +122,9 @@ class ContextRepository(Asset):
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -136,6 +145,15 @@ class ContextRepository(Asset):
 
     context_artifacts: Union[List[RelatedContextArtifact], None, UnsetType] = UNSET
     """Context artifacts produced by this repository."""
+
+    context_output_skill: Union[RelatedSkill, None, UnsetType] = UNSET
+    """Skill produced by this context repository."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
+    context_input_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
+    """Assets that serve as input context for this repository."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -359,6 +377,9 @@ class ContextRepositoryAttributes(AssetAttributes):
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -383,6 +404,15 @@ class ContextRepositoryRelationshipAttributes(AssetRelationshipAttributes):
 
     context_artifacts: Union[List[RelatedContextArtifact], None, UnsetType] = UNSET
     """Context artifacts produced by this repository."""
+
+    context_output_skill: Union[RelatedSkill, None, UnsetType] = UNSET
+    """Skill produced by this context repository."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
+    context_input_assets: Union[List[RelatedAsset], None, UnsetType] = UNSET
+    """Assets that serve as input context for this repository."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -500,6 +530,9 @@ _CONTEXT_REPOSITORY_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "context_artifacts",
+    "context_output_skill",
+    "context_repositories",
+    "context_input_assets",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -542,6 +575,7 @@ def _populate_context_repository_attrs(
         obj.context_repository_target_connection_qualified_name
     )
     attrs.context_repository_qualified_name = obj.context_repository_qualified_name
+    attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -560,6 +594,7 @@ def _extract_context_repository_attrs(attrs: ContextRepositoryAttributes) -> dic
     result["context_repository_qualified_name"] = (
         attrs.context_repository_qualified_name
     )
+    result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -676,6 +711,7 @@ def _context_repository_from_nested_bytes(
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     KeywordField,
+    NumericField,
     RelationField,
     TextField,
 )
@@ -693,6 +729,7 @@ ContextRepository.CONTEXT_REPOSITORY_TARGET_CONNECTION_QUALIFIED_NAME = KeywordF
 ContextRepository.CONTEXT_REPOSITORY_QUALIFIED_NAME = KeywordField(
     "contextRepositoryQualifiedName", "contextRepositoryQualifiedName"
 )
+ContextRepository.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 ContextRepository.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -702,6 +739,9 @@ ContextRepository.ANOMALO_CHECKS = RelationField("anomaloChecks")
 ContextRepository.APPLICATION = RelationField("application")
 ContextRepository.APPLICATION_FIELD = RelationField("applicationField")
 ContextRepository.CONTEXT_ARTIFACTS = RelationField("contextArtifacts")
+ContextRepository.CONTEXT_OUTPUT_SKILL = RelationField("contextOutputSkill")
+ContextRepository.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
+ContextRepository.CONTEXT_INPUT_ASSETS = RelationField("contextInputAssets")
 ContextRepository.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 ContextRepository.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

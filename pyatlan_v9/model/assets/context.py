@@ -37,7 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
-from .context_related import RelatedContext
+from .context_related import RelatedContext, RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -65,12 +65,14 @@ class Context(Asset):
     """
 
     CONTEXT_REPOSITORY_QUALIFIED_NAME: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -101,6 +103,9 @@ class Context(Asset):
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -118,6 +123,9 @@ class Context(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -328,6 +336,9 @@ class ContextAttributes(AssetAttributes):
     context_repository_qualified_name: Union[str, None, UnsetType] = UNSET
     """Qualified name of the context repository to which this asset belongs."""
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -349,6 +360,9 @@ class ContextRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -463,6 +477,7 @@ _CONTEXT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -496,6 +511,7 @@ def _populate_context_attrs(attrs: ContextAttributes, obj: Context) -> None:
     """Populate Context-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.context_repository_qualified_name = obj.context_repository_qualified_name
+    attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -505,6 +521,7 @@ def _extract_context_attrs(attrs: ContextAttributes) -> dict:
     result["context_repository_qualified_name"] = (
         attrs.context_repository_qualified_name
     )
+    result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -605,17 +622,23 @@ def _context_from_nested_bytes(data: bytes, serde: Serde) -> Context:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    NumericField,
+    RelationField,
+)
 
 Context.CONTEXT_REPOSITORY_QUALIFIED_NAME = KeywordField(
     "contextRepositoryQualifiedName", "contextRepositoryQualifiedName"
 )
+Context.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 Context.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Context.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Context.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Context.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Context.APPLICATION = RelationField("application")
 Context.APPLICATION_FIELD = RelationField("applicationField")
+Context.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 Context.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 Context.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Context.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")

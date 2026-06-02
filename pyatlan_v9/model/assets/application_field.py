@@ -40,6 +40,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -76,6 +77,7 @@ class ApplicationField(Asset):
     APPLICATION_FIELD_OWNED_ASSETS: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     APPLICATION_PARENT: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -132,6 +134,9 @@ class ApplicationField(Asset):
 
     application_parent: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the ApplicationField."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -436,6 +441,9 @@ class ApplicationFieldRelationshipAttributes(AssetRelationshipAttributes):
     application_parent: Union[RelatedApplication, None, UnsetType] = UNSET
     """Application owning the ApplicationField."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -553,6 +561,7 @@ _APPLICATION_FIELD_REL_FIELDS: List[str] = [
     "application_field_owned_assets",
     "application_field",
     "application_parent",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -727,6 +736,7 @@ ApplicationField.APPLICATION_FIELD_OWNED_ASSETS = RelationField(
 )
 ApplicationField.APPLICATION_FIELD = RelationField("applicationField")
 ApplicationField.APPLICATION_PARENT = RelationField("applicationParent")
+ApplicationField.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 ApplicationField.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 ApplicationField.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

@@ -14,7 +14,7 @@ This module provides:
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, List, Union
+from typing import Any, ClassVar, Dict, List, Union
 
 from msgspec import UNSET, UnsetType
 
@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -72,6 +73,7 @@ class SageMakerUnifiedStudioProject(Asset):
     SMUS_PROJECT_PROFILE_NAME: ClassVar[Any] = None
     SMUS_PROJECT_ROLE_ARN: ClassVar[Any] = None
     SMUS_PROJECT_S3_LOCATION: ClassVar[Any] = None
+    SMUS_PROJECT_SSO_USERS: ClassVar[Any] = None
     SMUS_DOMAIN_NAME: ClassVar[Any] = None
     SMUS_DOMAIN_ID: ClassVar[Any] = None
     SMUS_DOMAIN_UNIT_NAME: ClassVar[Any] = None
@@ -84,6 +86,7 @@ class SageMakerUnifiedStudioProject(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -125,6 +128,9 @@ class SageMakerUnifiedStudioProject(Asset):
     smus_project_s3_location: Union[str, None, UnsetType] = UNSET
     """Amazon S3 location of the SageMaker Unified Studio project."""
 
+    smus_project_sso_users: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """SSO users associated with the SageMaker Unified Studio project, sourced from the source system. Each entry has `email` and `role` fields."""
+
     smus_domain_name: Union[str, None, UnsetType] = UNSET
     """Name of the SageMaker Unified Studio domain."""
 
@@ -160,6 +166,9 @@ class SageMakerUnifiedStudioProject(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -395,6 +404,9 @@ class SageMakerUnifiedStudioProjectAttributes(AssetAttributes):
     smus_project_s3_location: Union[str, None, UnsetType] = UNSET
     """Amazon S3 location of the SageMaker Unified Studio project."""
 
+    smus_project_sso_users: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
+    """SSO users associated with the SageMaker Unified Studio project, sourced from the source system. Each entry has `email` and `role` fields."""
+
     smus_domain_name: Union[str, None, UnsetType] = UNSET
     """Name of the SageMaker Unified Studio domain."""
 
@@ -434,6 +446,9 @@ class SageMakerUnifiedStudioProjectRelationshipAttributes(AssetRelationshipAttri
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -560,6 +575,7 @@ _SAGE_MAKER_UNIFIED_STUDIO_PROJECT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -600,6 +616,7 @@ def _populate_sage_maker_unified_studio_project_attrs(
     attrs.smus_project_profile_name = obj.smus_project_profile_name
     attrs.smus_project_role_arn = obj.smus_project_role_arn
     attrs.smus_project_s3_location = obj.smus_project_s3_location
+    attrs.smus_project_sso_users = obj.smus_project_sso_users
     attrs.smus_domain_name = obj.smus_domain_name
     attrs.smus_domain_id = obj.smus_domain_id
     attrs.smus_domain_unit_name = obj.smus_domain_unit_name
@@ -618,6 +635,7 @@ def _extract_sage_maker_unified_studio_project_attrs(
     result["smus_project_profile_name"] = attrs.smus_project_profile_name
     result["smus_project_role_arn"] = attrs.smus_project_role_arn
     result["smus_project_s3_location"] = attrs.smus_project_s3_location
+    result["smus_project_sso_users"] = attrs.smus_project_sso_users
     result["smus_domain_name"] = attrs.smus_domain_name
     result["smus_domain_id"] = attrs.smus_domain_id
     result["smus_domain_unit_name"] = attrs.smus_domain_unit_name
@@ -756,6 +774,9 @@ SageMakerUnifiedStudioProject.SMUS_PROJECT_ROLE_ARN = KeywordField(
 SageMakerUnifiedStudioProject.SMUS_PROJECT_S3_LOCATION = KeywordField(
     "smusProjectS3Location", "smusProjectS3Location"
 )
+SageMakerUnifiedStudioProject.SMUS_PROJECT_SSO_USERS = KeywordField(
+    "smusProjectSsoUsers", "smusProjectSsoUsers"
+)
 SageMakerUnifiedStudioProject.SMUS_DOMAIN_NAME = KeywordField(
     "smusDomainName", "smusDomainName"
 )
@@ -786,6 +807,9 @@ SageMakerUnifiedStudioProject.OUTPUT_FROM_AIRFLOW_TASKS = RelationField(
 SageMakerUnifiedStudioProject.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SageMakerUnifiedStudioProject.APPLICATION = RelationField("application")
 SageMakerUnifiedStudioProject.APPLICATION_FIELD = RelationField("applicationField")
+SageMakerUnifiedStudioProject.CONTEXT_REPOSITORIES = RelationField(
+    "contextRepositories"
+)
 SageMakerUnifiedStudioProject.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SageMakerUnifiedStudioProject.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

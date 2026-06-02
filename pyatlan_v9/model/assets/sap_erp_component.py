@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -52,6 +53,7 @@ from .sap_related import (
     RelatedSapErpAbapProgram,
     RelatedSapErpCdsView,
     RelatedSapErpComponent,
+    RelatedSapErpFioriApp,
     RelatedSapErpFunctionModule,
     RelatedSapErpTable,
     RelatedSapErpTransactionCode,
@@ -85,6 +87,7 @@ class SapErpComponent(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -115,6 +118,7 @@ class SapErpComponent(Asset):
     SAP_ERP_FUNCTION_MODULES: ClassVar[Any] = None
     SAP_ERP_TABLES: ClassVar[Any] = None
     SAP_ERP_ABAP_PROGRAMS: ClassVar[Any] = None
+    SAP_ERP_FIORI_APPS: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
@@ -133,7 +137,7 @@ class SapErpComponent(Asset):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -158,6 +162,9 @@ class SapErpComponent(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -262,6 +269,9 @@ class SapErpComponent(Asset):
         UNSET
     )
     """SAP ERP Component associated with this SAP ERP ABAP Programs."""
+
+    sap_erp_fiori_apps: Union[List[RelatedSapErpFioriApp], None, UnsetType] = UNSET
+    """SAP ERP Fiori Apps that belong to this SAP ERP Component."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -410,7 +420,7 @@ class SapErpComponentAttributes(AssetAttributes):
     """Name of the SAP component, representing a specific functional area in SAP."""
 
     sap_data_type: Union[str, None, UnsetType] = UNSET
-    """SAP-specific data types"""
+    """SAP-specific data types."""
 
     sap_field_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of fields, columns, or child assets present in a given SAP asset."""
@@ -439,6 +449,9 @@ class SapErpComponentRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -544,6 +557,9 @@ class SapErpComponentRelationshipAttributes(AssetRelationshipAttributes):
     )
     """SAP ERP Component associated with this SAP ERP ABAP Programs."""
 
+    sap_erp_fiori_apps: Union[List[RelatedSapErpFioriApp], None, UnsetType] = UNSET
+    """SAP ERP Fiori Apps that belong to this SAP ERP Component."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -585,6 +601,7 @@ _SAP_ERP_COMPONENT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -615,6 +632,7 @@ _SAP_ERP_COMPONENT_REL_FIELDS: List[str] = [
     "sap_erp_function_modules",
     "sap_erp_tables",
     "sap_erp_abap_programs",
+    "sap_erp_fiori_apps",
     "schema_registry_subjects",
     "soda_checks",
     "input_to_spark_jobs",
@@ -782,6 +800,7 @@ SapErpComponent.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTask
 SapErpComponent.ANOMALO_CHECKS = RelationField("anomaloChecks")
 SapErpComponent.APPLICATION = RelationField("application")
 SapErpComponent.APPLICATION_FIELD = RelationField("applicationField")
+SapErpComponent.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 SapErpComponent.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 SapErpComponent.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
@@ -818,6 +837,7 @@ SapErpComponent.PARENT_COMPONENT = RelationField("parentComponent")
 SapErpComponent.SAP_ERP_FUNCTION_MODULES = RelationField("sapErpFunctionModules")
 SapErpComponent.SAP_ERP_TABLES = RelationField("sapErpTables")
 SapErpComponent.SAP_ERP_ABAP_PROGRAMS = RelationField("sapErpAbapPrograms")
+SapErpComponent.SAP_ERP_FIORI_APPS = RelationField("sapErpFioriApps")
 SapErpComponent.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SapErpComponent.SODA_CHECKS = RelationField("sodaChecks")
 SapErpComponent.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")

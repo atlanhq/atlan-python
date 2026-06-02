@@ -38,6 +38,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -65,6 +66,7 @@ class Artifact(Asset):
     """
 
     ARTIFACT_VERSION: ClassVar[Any] = None
+    AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     FILE_TYPE: ClassVar[Any] = None
     FILE_PATH: ClassVar[Any] = None
@@ -78,6 +80,7 @@ class Artifact(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -106,7 +109,10 @@ class Artifact(Asset):
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -146,6 +152,9 @@ class Artifact(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -357,7 +366,10 @@ class ArtifactAttributes(AssetAttributes):
     """Artifact-specific attributes for nested API format."""
 
     artifact_version: Union[str, None, UnsetType] = UNSET
-    """Version identifier for this artifact."""
+    """String version identifier for this artifact. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
+
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -401,6 +413,9 @@ class ArtifactRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -515,6 +530,7 @@ _ARTIFACT_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -548,6 +564,7 @@ def _populate_artifact_attrs(attrs: ArtifactAttributes, obj: Artifact) -> None:
     """Populate Artifact-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.artifact_version = obj.artifact_version
+    attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
     attrs.file_type = obj.file_type
     attrs.file_path = obj.file_path
@@ -562,6 +579,7 @@ def _extract_artifact_attrs(attrs: ArtifactAttributes) -> dict:
     """Extract all Artifact attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["artifact_version"] = attrs.artifact_version
+    result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     result["file_type"] = attrs.file_type
     result["file_path"] = attrs.file_path
@@ -679,6 +697,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Artifact.ARTIFACT_VERSION = KeywordField("artifactVersion", "artifactVersion")
+Artifact.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 Artifact.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Artifact.FILE_TYPE = KeywordField("fileType", "fileType")
 Artifact.FILE_PATH = KeywordField("filePath", "filePath")
@@ -692,6 +711,7 @@ Artifact.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Artifact.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Artifact.APPLICATION = RelationField("application")
 Artifact.APPLICATION_FIELD = RelationField("applicationField")
+Artifact.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 Artifact.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 Artifact.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Artifact.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")

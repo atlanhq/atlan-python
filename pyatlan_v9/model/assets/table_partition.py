@@ -40,6 +40,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -117,12 +118,22 @@ class TablePartition(Asset):
     SQL_AI_INSIGHTS_POPULAR_JOIN_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT: ClassVar[Any] = None
     SQL_AI_INSIGHTS_RELATIONSHIP_COUNT: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_NODE_STATUS: ClassVar[Any] = None
+    SQL_COALESCE_LAST_RUN_AT: ClassVar[Any] = None
+    SQL_COALESCE_NODE_TYPE: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_ID: ClassVar[Any] = None
+    SQL_COALESCE_ENVIRONMENT_NAME: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_ID: ClassVar[Any] = None
+    SQL_COALESCE_PROJECT_NAME: ClassVar[Any] = None
+    SQL_SHARE_QUALIFIED_NAMES: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -283,6 +294,33 @@ class TablePartition(Asset):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -300,6 +338,9 @@ class TablePartition(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -810,6 +851,33 @@ class TablePartitionAttributes(AssetAttributes):
     sql_ai_insights_relationship_count: Union[int, None, UnsetType] = UNSET
     """Number of relationship insights associated with this asset."""
 
+    sql_coalesce_last_run_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce run. One of: success, failure, cancelled, or skipped."""
+
+    sql_coalesce_node_status: Union[str, None, UnsetType] = UNSET
+    """Status of the Coalesce node for a given run."""
+
+    sql_coalesce_last_run_at: Union[int, None, UnsetType] = UNSET
+    """Time (epoch) at which the Coalesce node that materialized this asset last ran, in milliseconds."""
+
+    sql_coalesce_node_type: Union[str, None, UnsetType] = UNSET
+    """Type of the Coalesce node."""
+
+    sql_coalesce_environment_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce environment."""
+
+    sql_coalesce_environment_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce environment."""
+
+    sql_coalesce_project_id: Union[str, None, UnsetType] = UNSET
+    """Identifier of the Coalesce project."""
+
+    sql_coalesce_project_name: Union[str, None, UnsetType] = UNSET
+    """Name of the Coalesce project."""
+
+    sql_share_qualified_names: Union[List[str], None, UnsetType] = UNSET
+    """Qualified names of data shares this asset is granted to."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -831,6 +899,9 @@ class TablePartitionRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -999,6 +1070,7 @@ _TABLE_PARTITION_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -1090,6 +1162,15 @@ def _populate_table_partition_attrs(
         obj.sql_ai_insights_popular_filter_count
     )
     attrs.sql_ai_insights_relationship_count = obj.sql_ai_insights_relationship_count
+    attrs.sql_coalesce_last_run_status = obj.sql_coalesce_last_run_status
+    attrs.sql_coalesce_node_status = obj.sql_coalesce_node_status
+    attrs.sql_coalesce_last_run_at = obj.sql_coalesce_last_run_at
+    attrs.sql_coalesce_node_type = obj.sql_coalesce_node_type
+    attrs.sql_coalesce_environment_id = obj.sql_coalesce_environment_id
+    attrs.sql_coalesce_environment_name = obj.sql_coalesce_environment_name
+    attrs.sql_coalesce_project_id = obj.sql_coalesce_project_id
+    attrs.sql_coalesce_project_name = obj.sql_coalesce_project_name
+    attrs.sql_share_qualified_names = obj.sql_share_qualified_names
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -1145,6 +1226,15 @@ def _extract_table_partition_attrs(attrs: TablePartitionAttributes) -> dict:
     result["sql_ai_insights_relationship_count"] = (
         attrs.sql_ai_insights_relationship_count
     )
+    result["sql_coalesce_last_run_status"] = attrs.sql_coalesce_last_run_status
+    result["sql_coalesce_node_status"] = attrs.sql_coalesce_node_status
+    result["sql_coalesce_last_run_at"] = attrs.sql_coalesce_last_run_at
+    result["sql_coalesce_node_type"] = attrs.sql_coalesce_node_type
+    result["sql_coalesce_environment_id"] = attrs.sql_coalesce_environment_id
+    result["sql_coalesce_environment_name"] = attrs.sql_coalesce_environment_name
+    result["sql_coalesce_project_id"] = attrs.sql_coalesce_project_id
+    result["sql_coalesce_project_name"] = attrs.sql_coalesce_project_name
+    result["sql_share_qualified_names"] = attrs.sql_share_qualified_names
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -1256,6 +1346,7 @@ def _table_partition_from_nested_bytes(data: bytes, serde: Serde) -> TablePartit
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     BooleanField,
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
 )
@@ -1336,6 +1427,35 @@ TablePartition.SQL_AI_INSIGHTS_POPULAR_FILTER_COUNT = NumericField(
 TablePartition.SQL_AI_INSIGHTS_RELATIONSHIP_COUNT = NumericField(
     "sqlAiInsightsRelationshipCount", "sqlAiInsightsRelationshipCount"
 )
+TablePartition.SQL_COALESCE_LAST_RUN_STATUS = KeywordField(
+    "sqlCoalesceLastRunStatus", "sqlCoalesceLastRunStatus"
+)
+TablePartition.SQL_COALESCE_NODE_STATUS = KeywordField(
+    "sqlCoalesceNodeStatus", "sqlCoalesceNodeStatus"
+)
+TablePartition.SQL_COALESCE_LAST_RUN_AT = NumericField(
+    "sqlCoalesceLastRunAt", "sqlCoalesceLastRunAt"
+)
+TablePartition.SQL_COALESCE_NODE_TYPE = KeywordField(
+    "sqlCoalesceNodeType", "sqlCoalesceNodeType"
+)
+TablePartition.SQL_COALESCE_ENVIRONMENT_ID = KeywordField(
+    "sqlCoalesceEnvironmentId", "sqlCoalesceEnvironmentId"
+)
+TablePartition.SQL_COALESCE_ENVIRONMENT_NAME = KeywordTextField(
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName",
+    "sqlCoalesceEnvironmentName.text",
+)
+TablePartition.SQL_COALESCE_PROJECT_ID = KeywordField(
+    "sqlCoalesceProjectId", "sqlCoalesceProjectId"
+)
+TablePartition.SQL_COALESCE_PROJECT_NAME = KeywordTextField(
+    "sqlCoalesceProjectName", "sqlCoalesceProjectName", "sqlCoalesceProjectName.text"
+)
+TablePartition.SQL_SHARE_QUALIFIED_NAMES = KeywordField(
+    "sqlShareQualifiedNames", "sqlShareQualifiedNames"
+)
 TablePartition.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -1344,6 +1464,7 @@ TablePartition.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks
 TablePartition.ANOMALO_CHECKS = RelationField("anomaloChecks")
 TablePartition.APPLICATION = RelationField("application")
 TablePartition.APPLICATION_FIELD = RelationField("applicationField")
+TablePartition.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 TablePartition.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 TablePartition.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

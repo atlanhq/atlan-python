@@ -33,6 +33,8 @@ __all__ = [
     "RelatedSnowflakeSemanticFact",
     "RelatedSnowflakeSemanticDimension",
     "RelatedSnowflakeSemanticMetric",
+    "RelatedSnowflakeListing",
+    "RelatedSnowflakeShare",
 ]
 
 
@@ -356,3 +358,96 @@ class RelatedSnowflakeSemanticMetric(RelatedSnowflake):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SnowflakeSemanticMetric"
+
+
+class RelatedSnowflakeListing(RelatedSnowflake):
+    """
+    Related entity reference for SnowflakeListing assets.
+
+    Extends RelatedSnowflake with SnowflakeListing-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SnowflakeListing" so it serializes correctly
+
+    snowflake_listing_title: Union[str, None, UnsetType] = UNSET
+    """Snowflake's source-truthful title for the listing. Distinct from `name` (the non-human-readable Snowflake identifier)."""
+
+    snowflake_listing_subtitle: Union[str, None, UnsetType] = UNSET
+    """Marketplace subtitle of the listing."""
+
+    snowflake_listing_uniform_listing_locator: Union[str, None, UnsetType] = UNSET
+    """Uniform Listing Locator (ULL) of the listing."""
+
+    snowflake_listing_state: Union[str, None, UnsetType] = UNSET
+    """Publication state of the listing."""
+
+    snowflake_listing_distribution: Union[str, None, UnsetType] = UNSET
+    """Distribution scope of the listing (organization-internal vs external marketplace/exchange)."""
+
+    snowflake_listing_is_share: Union[bool, None, UnsetType] = UNSET
+    """Whether this listing wraps a data share (true) or not (false)."""
+
+    snowflake_listing_is_application: Union[bool, None, UnsetType] = UNSET
+    """Whether this listing wraps a Snowflake Native App (true) or not (false)."""
+
+    snowflake_listing_application_package: Union[str, None, UnsetType] = UNSET
+    """Application package name when this listing wraps a Native App."""
+
+    snowflake_listing_categories: Union[List[str], None, UnsetType] = UNSET
+    """Discovery categories assigned to the listing."""
+
+    snowflake_listing_data_attributes: Union[str, None, UnsetType] = UNSET
+    """Data properties of the listing (refresh rate, history, freshness window) as a JSON blob emitted by Snowflake."""
+
+    snowflake_listing_terms: Union[str, None, UnsetType] = UNSET
+    """Terms of service for the listing."""
+
+    snowflake_listing_profile: Union[str, None, UnsetType] = UNSET
+    """External Snowflake provider profile attached to the listing."""
+
+    snowflake_listing_support_contact: Union[str, None, UnsetType] = UNSET
+    """Contact info for the listing."""
+
+    snowflake_listing_resharing: Union[str, None, UnsetType] = UNSET
+    """Resharing configuration for the listing."""
+
+    snowflake_listing_auto_fulfillment: Union[str, None, UnsetType] = UNSET
+    """Auto-fulfillment configuration for the listing."""
+
+    snowflake_listing_targets: Union[str, None, UnsetType] = UNSET
+    """Distribution targets of the listing (accounts, regions) as a JSON blob emitted by Snowflake."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SnowflakeListing"
+
+
+class RelatedSnowflakeShare(RelatedSnowflake):
+    """
+    Related entity reference for SnowflakeShare assets.
+
+    Extends RelatedSnowflake with SnowflakeShare-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SnowflakeShare" so it serializes correctly
+
+    snowflake_share_kind: Union[str, None, UnsetType] = UNSET
+    """Direction of the share (inbound or outbound)."""
+
+    snowflake_share_owner_account: Union[str, None, UnsetType] = UNSET
+    """Account that owns the share. Drives the share qualified name."""
+
+    snowflake_share_target_accounts: Union[List[str], None, UnsetType] = UNSET
+    """Consumer accounts targeted by the share."""
+
+    snowflake_share_listing_global_name: Union[str, None, UnsetType] = UNSET
+    """Global name of the listing this share is bound to."""
+
+    snowflake_share_secure_object: Union[bool, None, UnsetType] = UNSET
+    """Whether only secure objects are allowed in this share (true) or not (false)."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SnowflakeShare"

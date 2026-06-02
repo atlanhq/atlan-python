@@ -37,6 +37,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -64,12 +65,14 @@ class Knowledge(Asset):
     Base class for Knowledge assets. Unified container for unstructured context files and knowledge artifacts in Atlan.
     """
 
+    AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -97,6 +100,9 @@ class Knowledge(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -114,6 +120,9 @@ class Knowledge(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -321,6 +330,9 @@ class Knowledge(Asset):
 class KnowledgeAttributes(AssetAttributes):
     """Knowledge-specific attributes for nested API format."""
 
+    agentic_version: Union[int, None, UnsetType] = UNSET
+    """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
 
@@ -342,6 +354,9 @@ class KnowledgeRelationshipAttributes(AssetRelationshipAttributes):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -456,6 +471,7 @@ _KNOWLEDGE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -488,12 +504,14 @@ _KNOWLEDGE_REL_FIELDS: List[str] = [
 def _populate_knowledge_attrs(attrs: KnowledgeAttributes, obj: Knowledge) -> None:
     """Populate Knowledge-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
+    attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
 def _extract_knowledge_attrs(attrs: KnowledgeAttributes) -> dict:
     """Extract all Knowledge attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
+    result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -596,8 +614,13 @@ def _knowledge_from_nested_bytes(data: bytes, serde: Serde) -> Knowledge:
 # ---------------------------------------------------------------------------
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
-from pyatlan.model.fields.atlan_fields import KeywordField, RelationField  # noqa: E402
+from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    KeywordField,
+    NumericField,
+    RelationField,
+)
 
+Knowledge.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 Knowledge.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )
@@ -606,6 +629,7 @@ Knowledge.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 Knowledge.ANOMALO_CHECKS = RelationField("anomaloChecks")
 Knowledge.APPLICATION = RelationField("application")
 Knowledge.APPLICATION_FIELD = RelationField("applicationField")
+Knowledge.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 Knowledge.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 Knowledge.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 Knowledge.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")

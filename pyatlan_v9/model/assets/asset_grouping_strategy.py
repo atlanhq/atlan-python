@@ -41,6 +41,7 @@ from .asset_grouping_related import (
     RelatedAssetGroupingCollection,
     RelatedAssetGroupingStrategy,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -74,6 +75,7 @@ class AssetGroupingStrategy(Asset):
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
     ASSET_GROUPING_COLLECTIONS: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -123,6 +125,9 @@ class AssetGroupingStrategy(Asset):
         List[RelatedAssetGroupingCollection], None, UnsetType
     ] = UNSET
     """Collections derived from this grouping strategy."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -359,6 +364,9 @@ class AssetGroupingStrategyRelationshipAttributes(AssetRelationshipAttributes):
     ] = UNSET
     """Collections derived from this grouping strategy."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -475,6 +483,7 @@ _ASSET_GROUPING_STRATEGY_REL_FIELDS: List[str] = [
     "application",
     "application_field",
     "asset_grouping_collections",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -646,6 +655,7 @@ AssetGroupingStrategy.APPLICATION_FIELD = RelationField("applicationField")
 AssetGroupingStrategy.ASSET_GROUPING_COLLECTIONS = RelationField(
     "assetGroupingCollections"
 )
+AssetGroupingStrategy.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 AssetGroupingStrategy.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 AssetGroupingStrategy.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"

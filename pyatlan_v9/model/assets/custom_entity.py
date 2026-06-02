@@ -39,6 +39,7 @@ from .asset import (
     _extract_asset_attrs,
     _populate_asset_attrs,
 )
+from .context_related import RelatedContextRepository
 from .custom_related import RelatedCustomEntity
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
@@ -73,6 +74,7 @@ class CustomEntity(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     CUSTOM_CHILD_ENTITIES: ClassVar[Any] = None
     CUSTOM_PARENT_ENTITY: ClassVar[Any] = None
     CUSTOM_RELATED_TO_ENTITIES: ClassVar[Any] = None
@@ -124,6 +126,9 @@ class CustomEntity(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     custom_child_entities: Union[List[RelatedCustomEntity], None, UnsetType] = UNSET
     """Custom entities contained within the parent entity."""
@@ -412,6 +417,9 @@ class CustomEntityRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     custom_child_entities: Union[List[RelatedCustomEntity], None, UnsetType] = UNSET
     """Custom entities contained within the parent entity."""
 
@@ -543,6 +551,7 @@ _CUSTOM_ENTITY_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "custom_child_entities",
     "custom_parent_entity",
     "custom_related_to_entities",
@@ -706,6 +715,7 @@ CustomEntity.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 CustomEntity.ANOMALO_CHECKS = RelationField("anomaloChecks")
 CustomEntity.APPLICATION = RelationField("application")
 CustomEntity.APPLICATION_FIELD = RelationField("applicationField")
+CustomEntity.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CustomEntity.CUSTOM_CHILD_ENTITIES = RelationField("customChildEntities")
 CustomEntity.CUSTOM_PARENT_ENTITY = RelationField("customParentEntity")
 CustomEntity.CUSTOM_RELATED_TO_ENTITIES = RelationField("customRelatedToEntities")

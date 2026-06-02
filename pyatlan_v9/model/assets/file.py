@@ -39,6 +39,7 @@ from .asset import (
     _populate_asset_attrs,
 )
 from .asset_related import RelatedAsset
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -78,6 +79,7 @@ class File(Asset):
     ANOMALO_CHECKS: ClassVar[Any] = None
     APPLICATION: ClassVar[Any] = None
     APPLICATION_FIELD: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -144,6 +146,9 @@ class File(Asset):
 
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -486,6 +491,9 @@ class FileRelationshipAttributes(AssetRelationshipAttributes):
     application_field: Union[RelatedApplicationField, None, UnsetType] = UNSET
     """ApplicationField owning the Asset."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -598,6 +606,7 @@ _FILE_REL_FIELDS: List[str] = [
     "anomalo_checks",
     "application",
     "application_field",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -771,6 +780,7 @@ File.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")
 File.ANOMALO_CHECKS = RelationField("anomaloChecks")
 File.APPLICATION = RelationField("application")
 File.APPLICATION_FIELD = RelationField("applicationField")
+File.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 File.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 File.DATA_CONTRACT_LATEST_CERTIFIED = RelationField("dataContractLatestCertified")
 File.OUTPUT_PORT_DATA_PRODUCTS = RelationField("outputPortDataProducts")

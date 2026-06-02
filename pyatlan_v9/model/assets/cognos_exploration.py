@@ -43,6 +43,7 @@ from .cognos_related import (
     RelatedCognosExploration,
     RelatedCognosFolder,
 )
+from .context_related import RelatedContextRepository
 from .data_contract_related import RelatedDataContract
 from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
@@ -86,6 +87,7 @@ class CognosExploration(Asset):
     APPLICATION_FIELD: ClassVar[Any] = None
     COGNOS_FOLDER: ClassVar[Any] = None
     COGNOS_COLUMNS: ClassVar[Any] = None
+    CONTEXT_REPOSITORIES: ClassVar[Any] = None
     DATA_CONTRACT_LATEST: ClassVar[Any] = None
     DATA_CONTRACT_LATEST_CERTIFIED: ClassVar[Any] = None
     OUTPUT_PORT_DATA_PRODUCTS: ClassVar[Any] = None
@@ -163,6 +165,9 @@ class CognosExploration(Asset):
 
     cognos_columns: Union[List[RelatedCognosColumn], None, UnsetType] = UNSET
     """Columns contained in the exploration."""
+
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
 
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
@@ -441,6 +446,9 @@ class CognosExplorationRelationshipAttributes(AssetRelationshipAttributes):
     cognos_columns: Union[List[RelatedCognosColumn], None, UnsetType] = UNSET
     """Columns contained in the exploration."""
 
+    context_repositories: Union[List[RelatedContextRepository], None, UnsetType] = UNSET
+    """Context repositories that use this asset as input."""
+
     data_contract_latest: Union[RelatedDataContract, None, UnsetType] = UNSET
     """Latest version of the data contract (in any status) for this asset."""
 
@@ -558,6 +566,7 @@ _COGNOS_EXPLORATION_REL_FIELDS: List[str] = [
     "application_field",
     "cognos_folder",
     "cognos_columns",
+    "context_repositories",
     "data_contract_latest",
     "data_contract_latest_certified",
     "output_port_data_products",
@@ -764,6 +773,7 @@ CognosExploration.APPLICATION = RelationField("application")
 CognosExploration.APPLICATION_FIELD = RelationField("applicationField")
 CognosExploration.COGNOS_FOLDER = RelationField("cognosFolder")
 CognosExploration.COGNOS_COLUMNS = RelationField("cognosColumns")
+CognosExploration.CONTEXT_REPOSITORIES = RelationField("contextRepositories")
 CognosExploration.DATA_CONTRACT_LATEST = RelationField("dataContractLatest")
 CognosExploration.DATA_CONTRACT_LATEST_CERTIFIED = RelationField(
     "dataContractLatestCertified"
