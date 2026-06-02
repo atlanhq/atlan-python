@@ -1,3 +1,9 @@
+## 9.7.4 (June 2, 2026)
+
+### Experimental: `pyatlan_v9`
+
+- Generated latest typedef models. (#947)
+
 ## 9.7.3 (May 25, 2026)
 
 ### New Features
