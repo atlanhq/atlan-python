@@ -972,3 +972,36 @@ def test_remove_schedule_with_role_cache_api_token_user(
     mock_api_caller._call_api.assert_called_once()
     assert response == workflow_response
     mock_api_caller.reset_mock()
+
+
+def test_user_publish_preflight_prepare_request():
+    from pyatlan.client.common import WorkflowUserPublishPreflight
+    from pyatlan.client.constants import USER_PUBLISH_PREFLIGHT
+
+    endpoint, request = WorkflowUserPublishPreflight.prepare_request(
+        "8c1e2d8a-1564-4e95-8b14-ea14522fcf61", "default/snowflake/1234567890"
+    )
+    assert endpoint is USER_PUBLISH_PREFLIGHT
+    assert request == {
+        "user_id": "8c1e2d8a-1564-4e95-8b14-ea14522fcf61",
+        "connection_qualified_name": "default/snowflake/1234567890",
+    }
+
+
+def test_user_publish_preflight_prepare_request_without_connection():
+    from pyatlan.client.common import WorkflowUserPublishPreflight
+
+    _, request = WorkflowUserPublishPreflight.prepare_request("user-123")
+    assert request == {"user_id": "user-123", "connection_qualified_name": ""}
+
+
+def test_user_publish_preflight_process_response():
+    from pyatlan.client.common import WorkflowUserPublishPreflight
+
+    verdict = {
+        "passed": False,
+        "failed_checks": ["UserEnabled"],
+        "message": "User user-123 failed publish preflight checks: UserEnabled",
+    }
+    assert WorkflowUserPublishPreflight.process_response(verdict) == verdict
+    assert WorkflowUserPublishPreflight.process_response(None) == {}

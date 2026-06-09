@@ -18,6 +18,7 @@ from pyatlan.client.common import (
     WorkflowGetScheduledRun,
     WorkflowStop,
     WorkflowUpdateOwner,
+    WorkflowUserPublishPreflight,
 )
 from pyatlan.client.constants import (
     PACKAGE_WORKFLOW_RERUN,
@@ -584,6 +585,34 @@ class V9WorkflowClient:
         endpoint, _ = WorkflowStop.prepare_request(workflow_run_id)
         raw_json = self._client._call_api(endpoint, request_obj=None)
         return msgspec.convert(raw_json, WorkflowRunResponse, strict=False)
+
+    def user_publish_preflight(
+        self,
+        user_id: str,
+        connection_qualified_name: str = "",
+    ) -> dict:
+        """
+        Run the user publish preflight check (HYP-829) for a workflow creator.
+
+        Verifies the user's account is enabled and that they may publish
+        (ENTITY_CREATE/UPDATE/DELETE) to the target connection. All checks run
+        server-side in Heracles (including the Keycloak impersonation), so the
+        caller only needs its own service-account token — the endpoint is
+        restricted to service-account callers.
+
+        :param user_id: Keycloak user GUID of the workflow creator
+        :param connection_qualified_name: qualifiedName of the target
+            connection (e.g. ``default/snowflake/1234567890``); may be empty,
+            in which case only the user-enabled check runs
+        :returns: dict with ``passed`` (bool), ``failed_checks``
+            (list of str or None) and ``message`` (str)
+        :raises AtlanError: on any API communication issue
+        """
+        endpoint, request = WorkflowUserPublishPreflight.prepare_request(
+            user_id, connection_qualified_name
+        )
+        raw_json = self._client._call_api(endpoint, request_obj=request)
+        return WorkflowUserPublishPreflight.process_response(raw_json)
 
     @validate_arguments
     def delete(

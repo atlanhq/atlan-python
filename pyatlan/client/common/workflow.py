@@ -17,6 +17,7 @@ from pyatlan.client.constants import (
     SCHEDULE_QUERY_WORKFLOWS_MISSED,
     SCHEDULE_QUERY_WORKFLOWS_SEARCH,
     STOP_WORKFLOW_RUN,
+    USER_PUBLISH_PREFLIGHT,
     WORKFLOW_ARCHIVE,
     WORKFLOW_CHANGE_OWNER,
     WORKFLOW_INDEX_RUN_SEARCH,
@@ -374,6 +375,45 @@ class WorkflowStop:
         :returns: WorkflowRunResponse object
         """
         return WorkflowParseResponse.parse_response(raw_json, WorkflowRunResponse)
+
+
+class WorkflowUserPublishPreflight:
+    """Shared logic for the user publish preflight check (HYP-829).
+
+    Verifies the workflow creator's account is enabled and that they may
+    publish (ENTITY_CREATE/UPDATE/DELETE) to the target connection. Heracles
+    runs both checks server-side (including the Keycloak impersonation), so
+    callers only need their own service-account token — the endpoint is
+    restricted to service-account callers.
+    """
+
+    @staticmethod
+    def prepare_request(user_id: str, connection_qualified_name: str = "") -> tuple:
+        """
+        Prepare the request for the user publish preflight check.
+
+        :param user_id: Keycloak user GUID of the workflow creator
+        :param connection_qualified_name: qualifiedName of the target
+            connection (e.g. ``default/snowflake/1234567890``); may be empty,
+            in which case only the user-enabled check runs
+        :returns: tuple of (endpoint, request_obj)
+        """
+        request = {
+            "user_id": user_id,
+            "connection_qualified_name": connection_qualified_name,
+        }
+        return USER_PUBLISH_PREFLIGHT, request
+
+    @staticmethod
+    def process_response(raw_json: Dict) -> Dict:
+        """
+        Process the preflight response.
+
+        :param raw_json: raw response from the API
+        :returns: dict with ``passed`` (bool), ``failed_checks``
+            (list of str or None) and ``message`` (str)
+        """
+        return raw_json or {}
 
 
 class WorkflowDelete:

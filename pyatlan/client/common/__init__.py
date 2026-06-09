@@ -192,6 +192,7 @@ from .workflow import (
     WorkflowStop,
     WorkflowUpdate,
     WorkflowUpdateOwner,
+    WorkflowUserPublishPreflight,
 )
 
 __all__ = [
@@ -337,4 +338,5 @@ __all__ = [
     "WorkflowStop",
     "WorkflowUpdate",
     "WorkflowUpdateOwner",
+    "WorkflowUserPublishPreflight",
 ]

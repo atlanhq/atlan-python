@@ -482,6 +482,17 @@ WORKFLOW_OWNER_RERUN = API(
     WORKFLOW_OWNER_RERUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )
 
+# user publish preflight (HYP-829) — verifies the workflow creator's account is
+# enabled and that they may publish (ENTITY_CREATE/UPDATE/DELETE) to the target
+# connection; restricted to service-account callers on the Heracles side
+USER_PUBLISH_PREFLIGHT_API = "workflows/preflight/user-publish-check"
+USER_PUBLISH_PREFLIGHT = API(
+    USER_PUBLISH_PREFLIGHT_API,
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
 WORKFLOW_RUN_API = "workflows?submit=true"
 WORKFLOW_RUN = API(
     WORKFLOW_RUN_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
