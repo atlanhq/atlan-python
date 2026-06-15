@@ -2455,7 +2455,9 @@ class TestBatch:
         updated = [table_2]
         mutated_entities.CREATE = created
         mutated_entities.UPDATE = updated
+        mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
         mock_response.attach_mock(mutated_entities, "mutated_entities")
 
         # Set up async mocks - need to mock the FluentSearch.execute_async behavior
@@ -2609,7 +2611,9 @@ class TestBatch:
         created = [term_1, term_2]
         mutated_entities.UPDATE = []
         mutated_entities.CREATE = created
+        mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
         mock_response.attach_mock(mutated_entities, "mutated_entities")
         # Set up async mocks - need to mock the FluentSearch.execute_async behavior
         mock_search_results = AsyncMock()

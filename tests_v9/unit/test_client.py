@@ -2469,7 +2469,9 @@ class TestBatch:
         updated = [table_2]
         mutated_entities.CREATE = created
         mutated_entities.UPDATE = updated
+        mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
         mock_response.attach_mock(mutated_entities, "mutated_entities")
 
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
@@ -2593,7 +2595,9 @@ class TestBatch:
         created = [term_1, term_2]
         mutated_entities.UPDATE = []
         mutated_entities.CREATE = created
+        mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
         mock_response.attach_mock(mutated_entities, "mutated_entities")
         mock_atlan_client.asset.search.return_value = [term_1]
         mock_atlan_client.asset.save.return_value = mock_response
