@@ -2241,6 +2241,7 @@ class Batch:
         self._creation_handling: AssetCreationHandling = creation_handling
         self._num_created = 0
         self._num_updated = 0
+        self._num_partial_updated = 0
         self._num_restored = 0
         self._num_skipped = 0
         self._resolved_guids: Dict[str, str] = {}
@@ -2248,6 +2249,7 @@ class Batch:
         self._failures: List[FailedBatch] = []
         self._created: List[Asset] = []
         self._updated: List[Asset] = []
+        self._partial_updated: List[Asset] = []
         self._restored: List[Asset] = []
         self._skipped: List[Asset] = []
         self._resolved_qualified_names: Dict[str, str] = {}
@@ -2276,6 +2278,17 @@ class Batch:
         :returns: a list of all the Assets that were updated
         """
         return self._updated
+
+    @property
+    def partial_updated(self) -> List[Asset]:
+        """Get a list of all the Assets that were partially updated.
+        Atlan reports an update as partial when only primitive attributes
+        change, or when a relationship (such as a glossary term's anchor)
+        is touched. These are successful updates, distinct from `restored`.
+
+        :returns: a list of all the Assets that were partially updated
+        """
+        return self._partial_updated
 
     @property
     def restored(self) -> List[Asset]:
@@ -2309,6 +2322,13 @@ class Batch:
         Number of assets that were updated (count only)
         """
         return self._num_updated
+
+    @property
+    def num_partial_updated(self) -> int:
+        """
+        Number of assets that were partially updated (count only)
+        """
+        return self._num_partial_updated
 
     @property
     def num_restored(self) -> int:
@@ -2512,6 +2532,14 @@ class Batch:
 
     def _track_response(self, response: AssetMutationResponse, sent: list[Asset]):
         if response:
+            # Atlan reports partial updates (primitive-only attribute changes, or
+            # changes that touch a relationship such as a glossary term's anchor)
+            # under mutated_entities.PARTIAL_UPDATE and/or the top-level
+            # partial_updated_entities list. Reconcile both and de-duplicate by GUID
+            # so a successful partial update is counted as updated rather than falling
+            # through to the "restored" bucket below.
+            partial_assets = self._collect_partial_updated(response)
+
             if self._track and response.mutated_entities:
                 if response.mutated_entities.CREATE:
                     for asset in response.mutated_entities.CREATE:
@@ -2519,17 +2547,22 @@ class Batch:
                 if response.mutated_entities.UPDATE:
                     for asset in response.mutated_entities.UPDATE:
                         self.__track(self._updated, asset)
+            if self._track:
+                for asset in partial_assets:
+                    self.__track(self._partial_updated, asset)
 
             # Always track the counts and resolved GUIDs...
             if response.mutated_entities and response.mutated_entities.CREATE:
                 self._num_created += len(response.mutated_entities.CREATE)
             if response.mutated_entities and response.mutated_entities.UPDATE:
                 self._num_updated += len(response.mutated_entities.UPDATE)
+            self._num_partial_updated += len(partial_assets)
 
             if response.guid_assignments:
                 self._resolved_guids.update(response.guid_assignments)
             if sent:
                 created_guids, updated_guids = set(), set()
+                partial_guids = {asset.guid for asset in partial_assets}
                 if response.mutated_entities:
                     if response.mutated_entities.CREATE:
                         created_guids = {
@@ -2552,9 +2585,11 @@ class Batch:
                     if (
                         mapped_guid not in created_guids
                         and mapped_guid not in updated_guids
+                        and mapped_guid not in partial_guids
                     ):
-                        # Ensure any assets that do not show as either created or updated are still tracked
-                        # as possibly restored (and inject the mapped GUID in case it had a placeholder)
+                        # Ensure any assets that do not show as created, updated or
+                        # partially updated are still tracked as possibly restored
+                        # (and inject the mapped GUID in case it had a placeholder)
                         one.guid = mapped_guid
                         self.__track(self._restored, one)
                         self._num_restored += 1
@@ -2578,6 +2613,26 @@ class Batch:
             asset = candidate.trim_to_required()
         asset.name = candidate.name
         tracker.append(asset)
+
+    @staticmethod
+    def _collect_partial_updated(response: AssetMutationResponse) -> List[Asset]:
+        """Gather partially-updated assets from both places Atlan may report them
+        (mutated_entities.PARTIAL_UPDATE and the top-level partial_updated_entities),
+        de-duplicated by GUID.
+        """
+        partial_assets: List[Asset] = []
+        seen_guids: Set[str] = set()
+        sources: List[List[Asset]] = []
+        if response.mutated_entities and response.mutated_entities.PARTIAL_UPDATE:
+            sources.append(response.mutated_entities.PARTIAL_UPDATE)
+        if response.partial_updated_entities:
+            sources.append(response.partial_updated_entities)
+        for source in sources:
+            for asset in source:
+                if asset.guid not in seen_guids:
+                    seen_guids.add(asset.guid)
+                    partial_assets.append(asset)
+        return partial_assets
 
     def add_fuzzy_matched(
         self,
