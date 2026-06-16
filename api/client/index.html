@@ -17024,31 +17024,31 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 
                   <details class="quote">
                     <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2664">2664</a></span>
-<span class="normal"><a href="#__codelineno-0-2665">2665</a></span>
-<span class="normal"><a href="#__codelineno-0-2666">2666</a></span>
-<span class="normal"><a href="#__codelineno-0-2667">2667</a></span>
-<span class="normal"><a href="#__codelineno-0-2668">2668</a></span>
-<span class="normal"><a href="#__codelineno-0-2669">2669</a></span>
-<span class="normal"><a href="#__codelineno-0-2670">2670</a></span>
-<span class="normal"><a href="#__codelineno-0-2671">2671</a></span>
-<span class="normal"><a href="#__codelineno-0-2672">2672</a></span>
-<span class="normal"><a href="#__codelineno-0-2673">2673</a></span>
-<span class="normal"><a href="#__codelineno-0-2674">2674</a></span>
-<span class="normal"><a href="#__codelineno-0-2675">2675</a></span>
-<span class="normal"><a href="#__codelineno-0-2676">2676</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2664"><a id="__codelineno-0-2664" name="__codelineno-0-2664"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="__span-0-2665"><a id="__codelineno-0-2665" name="__codelineno-0-2665"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">case_insensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-2666"><a id="__codelineno-0-2666" name="__codelineno-0-2666"></a><span class="p">):</span>
-</span><span id="__span-0-2667"><a id="__codelineno-0-2667" name="__codelineno-0-2667"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-2668"><a id="__codelineno-0-2668" name="__codelineno-0-2668"></a><span class="sd">    Initializes an AssetIdentity.</span>
-</span><span id="__span-0-2669"><a id="__codelineno-0-2669" name="__codelineno-0-2669"></a>
-</span><span id="__span-0-2670"><a id="__codelineno-0-2670" name="__codelineno-0-2670"></a><span class="sd">    :param type_name: type of the asset.</span>
-</span><span id="__span-0-2671"><a id="__codelineno-0-2671" name="__codelineno-0-2671"></a><span class="sd">    :param qualified_name: qualified name of the asset.</span>
-</span><span id="__span-0-2672"><a id="__codelineno-0-2672" name="__codelineno-0-2672"></a><span class="sd">    :param case_insensitive: Whether the qualified name should be case insensitive.</span>
-</span><span id="__span-0-2673"><a id="__codelineno-0-2673" name="__codelineno-0-2673"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-2674"><a id="__codelineno-0-2674" name="__codelineno-0-2674"></a>    <span class="k">if</span> <span class="n">case_insensitive</span><span class="p">:</span>
-</span><span id="__span-0-2675"><a id="__codelineno-0-2675" name="__codelineno-0-2675"></a>        <span class="n">qualified_name</span> <span class="o">=</span> <span class="n">qualified_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-</span><span id="__span-0-2676"><a id="__codelineno-0-2676" name="__codelineno-0-2676"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_name</span><span class="o">=</span><span class="n">type_name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2676">2676</a></span>
+<span class="normal"><a href="#__codelineno-0-2677">2677</a></span>
+<span class="normal"><a href="#__codelineno-0-2678">2678</a></span>
+<span class="normal"><a href="#__codelineno-0-2679">2679</a></span>
+<span class="normal"><a href="#__codelineno-0-2680">2680</a></span>
+<span class="normal"><a href="#__codelineno-0-2681">2681</a></span>
+<span class="normal"><a href="#__codelineno-0-2682">2682</a></span>
+<span class="normal"><a href="#__codelineno-0-2683">2683</a></span>
+<span class="normal"><a href="#__codelineno-0-2684">2684</a></span>
+<span class="normal"><a href="#__codelineno-0-2685">2685</a></span>
+<span class="normal"><a href="#__codelineno-0-2686">2686</a></span>
+<span class="normal"><a href="#__codelineno-0-2687">2687</a></span>
+<span class="normal"><a href="#__codelineno-0-2688">2688</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2676"><a id="__codelineno-0-2676" name="__codelineno-0-2676"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="__span-0-2677"><a id="__codelineno-0-2677" name="__codelineno-0-2677"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">case_insensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-0-2678"><a id="__codelineno-0-2678" name="__codelineno-0-2678"></a><span class="p">):</span>
+</span><span id="__span-0-2679"><a id="__codelineno-0-2679" name="__codelineno-0-2679"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-0-2680"><a id="__codelineno-0-2680" name="__codelineno-0-2680"></a><span class="sd">    Initializes an AssetIdentity.</span>
+</span><span id="__span-0-2681"><a id="__codelineno-0-2681" name="__codelineno-0-2681"></a>
+</span><span id="__span-0-2682"><a id="__codelineno-0-2682" name="__codelineno-0-2682"></a><span class="sd">    :param type_name: type of the asset.</span>
+</span><span id="__span-0-2683"><a id="__codelineno-0-2683" name="__codelineno-0-2683"></a><span class="sd">    :param qualified_name: qualified name of the asset.</span>
+</span><span id="__span-0-2684"><a id="__codelineno-0-2684" name="__codelineno-0-2684"></a><span class="sd">    :param case_insensitive: Whether the qualified name should be case insensitive.</span>
+</span><span id="__span-0-2685"><a id="__codelineno-0-2685" name="__codelineno-0-2685"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-2686"><a id="__codelineno-0-2686" name="__codelineno-0-2686"></a>    <span class="k">if</span> <span class="n">case_insensitive</span><span class="p">:</span>
+</span><span id="__span-0-2687"><a id="__codelineno-0-2687" name="__codelineno-0-2687"></a>        <span class="n">qualified_name</span> <span class="o">=</span> <span class="n">qualified_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</span><span id="__span-0-2688"><a id="__codelineno-0-2688" name="__codelineno-0-2688"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_name</span><span class="o">=</span><span class="n">type_name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
 </span></code></pre></div></td></tr></table></div>
                   </details>
 
@@ -17086,29 +17086,29 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 
             <details class="quote">
               <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2678">2678</a></span>
-<span class="normal"><a href="#__codelineno-0-2679">2679</a></span>
-<span class="normal"><a href="#__codelineno-0-2680">2680</a></span>
-<span class="normal"><a href="#__codelineno-0-2681">2681</a></span>
-<span class="normal"><a href="#__codelineno-0-2682">2682</a></span>
-<span class="normal"><a href="#__codelineno-0-2683">2683</a></span>
-<span class="normal"><a href="#__codelineno-0-2684">2684</a></span>
-<span class="normal"><a href="#__codelineno-0-2685">2685</a></span>
-<span class="normal"><a href="#__codelineno-0-2686">2686</a></span>
-<span class="normal"><a href="#__codelineno-0-2687">2687</a></span>
-<span class="normal"><a href="#__codelineno-0-2688">2688</a></span>
-<span class="normal"><a href="#__codelineno-0-2689">2689</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2678"><a id="__codelineno-0-2678" name="__codelineno-0-2678"></a><span class="nd">@staticmethod</span>
-</span><span id="__span-0-2679"><a id="__codelineno-0-2679" name="__codelineno-0-2679"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="n">combined</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AssetIdentity&quot;</span><span class="p">:</span>
-</span><span id="__span-0-2680"><a id="__codelineno-0-2680" name="__codelineno-0-2680"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-2681"><a id="__codelineno-0-2681" name="__codelineno-0-2681"></a><span class="sd">    Reverse-engineer an asset identity from a string representation.</span>
-</span><span id="__span-0-2682"><a id="__codelineno-0-2682" name="__codelineno-0-2682"></a>
-</span><span id="__span-0-2683"><a id="__codelineno-0-2683" name="__codelineno-0-2683"></a><span class="sd">    :param combined: The combined (serialized) asset identity.</span>
-</span><span id="__span-0-2684"><a id="__codelineno-0-2684" name="__codelineno-0-2684"></a><span class="sd">    :return: The actual asset identity.</span>
-</span><span id="__span-0-2685"><a id="__codelineno-0-2685" name="__codelineno-0-2685"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-2686"><a id="__codelineno-0-2686" name="__codelineno-0-2686"></a>    <span class="n">tokens</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;::&quot;</span><span class="p">)</span>
-</span><span id="__span-0-2687"><a id="__codelineno-0-2687" name="__codelineno-0-2687"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-</span><span id="__span-0-2688"><a id="__codelineno-0-2688" name="__codelineno-0-2688"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid asset identity: </span><span class="si">{</span><span class="n">combined</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-0-2689"><a id="__codelineno-0-2689" name="__codelineno-0-2689"></a>    <span class="k">return</span> <span class="n">AssetIdentity</span><span class="p">(</span><span class="n">type_name</span><span class="o">=</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2690">2690</a></span>
+<span class="normal"><a href="#__codelineno-0-2691">2691</a></span>
+<span class="normal"><a href="#__codelineno-0-2692">2692</a></span>
+<span class="normal"><a href="#__codelineno-0-2693">2693</a></span>
+<span class="normal"><a href="#__codelineno-0-2694">2694</a></span>
+<span class="normal"><a href="#__codelineno-0-2695">2695</a></span>
+<span class="normal"><a href="#__codelineno-0-2696">2696</a></span>
+<span class="normal"><a href="#__codelineno-0-2697">2697</a></span>
+<span class="normal"><a href="#__codelineno-0-2698">2698</a></span>
+<span class="normal"><a href="#__codelineno-0-2699">2699</a></span>
+<span class="normal"><a href="#__codelineno-0-2700">2700</a></span>
+<span class="normal"><a href="#__codelineno-0-2701">2701</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2690"><a id="__codelineno-0-2690" name="__codelineno-0-2690"></a><span class="nd">@staticmethod</span>
+</span><span id="__span-0-2691"><a id="__codelineno-0-2691" name="__codelineno-0-2691"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="n">combined</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AssetIdentity&quot;</span><span class="p">:</span>
+</span><span id="__span-0-2692"><a id="__codelineno-0-2692" name="__codelineno-0-2692"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-0-2693"><a id="__codelineno-0-2693" name="__codelineno-0-2693"></a><span class="sd">    Reverse-engineer an asset identity from a string representation.</span>
+</span><span id="__span-0-2694"><a id="__codelineno-0-2694" name="__codelineno-0-2694"></a>
+</span><span id="__span-0-2695"><a id="__codelineno-0-2695" name="__codelineno-0-2695"></a><span class="sd">    :param combined: The combined (serialized) asset identity.</span>
+</span><span id="__span-0-2696"><a id="__codelineno-0-2696" name="__codelineno-0-2696"></a><span class="sd">    :return: The actual asset identity.</span>
+</span><span id="__span-0-2697"><a id="__codelineno-0-2697" name="__codelineno-0-2697"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-2698"><a id="__codelineno-0-2698" name="__codelineno-0-2698"></a>    <span class="n">tokens</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;::&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2699"><a id="__codelineno-0-2699" name="__codelineno-0-2699"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+</span><span id="__span-0-2700"><a id="__codelineno-0-2700" name="__codelineno-0-2700"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid asset identity: </span><span class="si">{</span><span class="n">combined</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2701"><a id="__codelineno-0-2701" name="__codelineno-0-2701"></a>    <span class="k">return</span> <span class="n">AssetIdentity</span><span class="p">(</span><span class="n">type_name</span><span class="o">=</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -17992,23 +17992,23 @@ when update only is requested and the asset does not exist in Atlan</p>
 
                   <details class="quote">
                     <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2714">2714</a></span>
-<span class="normal"><a href="#__codelineno-0-2715">2715</a></span>
-<span class="normal"><a href="#__codelineno-0-2716">2716</a></span>
-<span class="normal"><a href="#__codelineno-0-2717">2717</a></span>
-<span class="normal"><a href="#__codelineno-0-2718">2718</a></span>
-<span class="normal"><a href="#__codelineno-0-2719">2719</a></span>
-<span class="normal"><a href="#__codelineno-0-2720">2720</a></span>
-<span class="normal"><a href="#__codelineno-0-2721">2721</a></span>
-<span class="normal"><a href="#__codelineno-0-2722">2722</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2714"><a id="__codelineno-0-2714" name="__codelineno-0-2714"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="__span-0-2715"><a id="__codelineno-0-2715" name="__codelineno-0-2715"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">top_level</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">stub_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlasGlossaryCategory</span><span class="p">]</span>
-</span><span id="__span-0-2716"><a id="__codelineno-0-2716" name="__codelineno-0-2716"></a><span class="p">):</span>
-</span><span id="__span-0-2717"><a id="__codelineno-0-2717" name="__codelineno-0-2717"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_top_level</span> <span class="o">=</span> <span class="n">top_level</span>
-</span><span id="__span-0-2718"><a id="__codelineno-0-2718" name="__codelineno-0-2718"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_root_categories</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2719"><a id="__codelineno-0-2719" name="__codelineno-0-2719"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_categories</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-0-2720"><a id="__codelineno-0-2720" name="__codelineno-0-2720"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_build_category_dict</span><span class="p">(</span><span class="n">stub_dict</span><span class="p">)</span>
-</span><span id="__span-0-2721"><a id="__codelineno-0-2721" name="__codelineno-0-2721"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_bfs_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2722"><a id="__codelineno-0-2722" name="__codelineno-0-2722"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_dfs_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2726">2726</a></span>
+<span class="normal"><a href="#__codelineno-0-2727">2727</a></span>
+<span class="normal"><a href="#__codelineno-0-2728">2728</a></span>
+<span class="normal"><a href="#__codelineno-0-2729">2729</a></span>
+<span class="normal"><a href="#__codelineno-0-2730">2730</a></span>
+<span class="normal"><a href="#__codelineno-0-2731">2731</a></span>
+<span class="normal"><a href="#__codelineno-0-2732">2732</a></span>
+<span class="normal"><a href="#__codelineno-0-2733">2733</a></span>
+<span class="normal"><a href="#__codelineno-0-2734">2734</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2726"><a id="__codelineno-0-2726" name="__codelineno-0-2726"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="__span-0-2727"><a id="__codelineno-0-2727" name="__codelineno-0-2727"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">top_level</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">stub_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlasGlossaryCategory</span><span class="p">]</span>
+</span><span id="__span-0-2728"><a id="__codelineno-0-2728" name="__codelineno-0-2728"></a><span class="p">):</span>
+</span><span id="__span-0-2729"><a id="__codelineno-0-2729" name="__codelineno-0-2729"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_top_level</span> <span class="o">=</span> <span class="n">top_level</span>
+</span><span id="__span-0-2730"><a id="__codelineno-0-2730" name="__codelineno-0-2730"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_root_categories</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2731"><a id="__codelineno-0-2731" name="__codelineno-0-2731"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_categories</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-0-2732"><a id="__codelineno-0-2732" name="__codelineno-0-2732"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_build_category_dict</span><span class="p">(</span><span class="n">stub_dict</span><span class="p">)</span>
+</span><span id="__span-0-2733"><a id="__codelineno-0-2733" name="__codelineno-0-2733"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_bfs_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2734"><a id="__codelineno-0-2734" name="__codelineno-0-2734"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_dfs_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 </span></code></pre></div></td></tr></table></div>
                   </details>
 
@@ -18111,23 +18111,23 @@ when update only is requested and the asset does not exist in Atlan</p>
 
             <details class="quote">
               <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2740">2740</a></span>
-<span class="normal"><a href="#__codelineno-0-2741">2741</a></span>
-<span class="normal"><a href="#__codelineno-0-2742">2742</a></span>
-<span class="normal"><a href="#__codelineno-0-2743">2743</a></span>
-<span class="normal"><a href="#__codelineno-0-2744">2744</a></span>
-<span class="normal"><a href="#__codelineno-0-2745">2745</a></span>
-<span class="normal"><a href="#__codelineno-0-2746">2746</a></span>
-<span class="normal"><a href="#__codelineno-0-2747">2747</a></span>
-<span class="normal"><a href="#__codelineno-0-2748">2748</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2740"><a id="__codelineno-0-2740" name="__codelineno-0-2740"></a><span class="nd">@validate_arguments</span>
-</span><span id="__span-0-2741"><a id="__codelineno-0-2741" name="__codelineno-0-2741"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryCategory</span><span class="p">:</span>
-</span><span id="__span-0-2742"><a id="__codelineno-0-2742" name="__codelineno-0-2742"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-2743"><a id="__codelineno-0-2743" name="__codelineno-0-2743"></a><span class="sd">    Retrieve a specific category from anywhere in the hierarchy by its unique identifier (GUID).</span>
-</span><span id="__span-0-2744"><a id="__codelineno-0-2744" name="__codelineno-0-2744"></a>
-</span><span id="__span-0-2745"><a id="__codelineno-0-2745" name="__codelineno-0-2745"></a><span class="sd">    :param guid: guid of the category to retrieve</span>
-</span><span id="__span-0-2746"><a id="__codelineno-0-2746" name="__codelineno-0-2746"></a><span class="sd">    :returns: the requested category</span>
-</span><span id="__span-0-2747"><a id="__codelineno-0-2747" name="__codelineno-0-2747"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-2748"><a id="__codelineno-0-2748" name="__codelineno-0-2748"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_categories</span><span class="p">[</span><span class="n">guid</span><span class="p">]</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2752">2752</a></span>
+<span class="normal"><a href="#__codelineno-0-2753">2753</a></span>
+<span class="normal"><a href="#__codelineno-0-2754">2754</a></span>
+<span class="normal"><a href="#__codelineno-0-2755">2755</a></span>
+<span class="normal"><a href="#__codelineno-0-2756">2756</a></span>
+<span class="normal"><a href="#__codelineno-0-2757">2757</a></span>
+<span class="normal"><a href="#__codelineno-0-2758">2758</a></span>
+<span class="normal"><a href="#__codelineno-0-2759">2759</a></span>
+<span class="normal"><a href="#__codelineno-0-2760">2760</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2752"><a id="__codelineno-0-2752" name="__codelineno-0-2752"></a><span class="nd">@validate_arguments</span>
+</span><span id="__span-0-2753"><a id="__codelineno-0-2753" name="__codelineno-0-2753"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryCategory</span><span class="p">:</span>
+</span><span id="__span-0-2754"><a id="__codelineno-0-2754" name="__codelineno-0-2754"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-0-2755"><a id="__codelineno-0-2755" name="__codelineno-0-2755"></a><span class="sd">    Retrieve a specific category from anywhere in the hierarchy by its unique identifier (GUID).</span>
+</span><span id="__span-0-2756"><a id="__codelineno-0-2756" name="__codelineno-0-2756"></a>
+</span><span id="__span-0-2757"><a id="__codelineno-0-2757" name="__codelineno-0-2757"></a><span class="sd">    :param guid: guid of the category to retrieve</span>
+</span><span id="__span-0-2758"><a id="__codelineno-0-2758" name="__codelineno-0-2758"></a><span class="sd">    :returns: the requested category</span>
+</span><span id="__span-0-2759"><a id="__codelineno-0-2759" name="__codelineno-0-2759"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-2760"><a id="__codelineno-0-2760" name="__codelineno-0-2760"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_categories</span><span class="p">[</span><span class="n">guid</span><span class="p">]</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
