@@ -2606,11 +2606,21 @@ class Batch:
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
         if isinstance(candidate, AtlasGlossaryTerm):
-            # trim_to_required for AtlasGlossaryTerm requires anchor
-            # which is not include in AssetMutationResponse
+            # trim_to_required for AtlasGlossaryTerm requires the anchor (parent
+            # glossary), which is not present in an AssetMutationResponse, so we
+            # fall back to a guid reference and restore the real identity below.
             asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
+        # Preserve the candidate's real identity. trim_to_required() and
+        # ref_by_guid() mint a placeholder guid (and ref_by_guid also sets
+        # qualified_name to the guid), which makes the tracked lists
+        # (created/updated/partial_updated/restored) impossible to match back by
+        # guid or qualified_name. The candidate carries the real values.
+        if candidate.guid:
+            asset.guid = candidate.guid
+        if candidate.qualified_name:
+            asset.qualified_name = candidate.qualified_name
         asset.name = candidate.name
         tracker.append(asset)
 

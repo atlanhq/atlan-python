@@ -2555,6 +2555,71 @@ class TestBatch:
             mock_ref_by_guid.assert_has_calls([call(term_1.guid), call(term_2.guid)])
             mock_trim_to_required.assert_not_called()
 
+    @pytest.mark.asyncio
+    async def test_track_preserves_real_identity_for_both_types(
+        self, mock_async_atlan_client
+    ):
+        # Regression: the tracked lists (created/updated/partial_updated/
+        # restored) must carry each asset's REAL guid AND qualified_name so
+        # callers can match tracked items back to their inputs by either key.
+        # Before the fix, trim_to_required() gave non-glossary assets a
+        # placeholder negative guid, and ref_by_guid() set a glossary term's
+        # qualified_name to its guid, so neither could be matched back reliably.
+        table_guid = "real-table-guid"
+        table_qn = "default/snowflake/123/db/schema/tbl"
+        term_guid = "real-term-guid"
+        term_qn = "real-term-qn"
+
+        table = Table()
+        table.guid = table_guid
+        table.qualified_name = table_qn
+        table.name = "tbl"
+
+        term = AtlasGlossaryTerm()
+        term.guid = term_guid
+        term.qualified_name = term_qn
+        term.name = "myterm"
+
+        mutated_entities = Mock()
+        mock_response = Mock(spec=AssetMutationResponse)
+        mutated_entities.CREATE = []
+        mutated_entities.UPDATE = [table, term]
+        mutated_entities.PARTIAL_UPDATE = None
+        mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
+        mock_response.attach_mock(mutated_entities, "mutated_entities")
+        mock_async_atlan_client.asset.save = AsyncMock(return_value=mock_response)
+
+        batch = AsyncBatch(
+            client=mock_async_atlan_client,
+            max_size=2,
+            track=True,
+        )
+        await batch.add(table)
+        # Batch not yet full, so nothing flushed/tracked.
+        self.assert_asset_client_not_called(mock_async_atlan_client, batch)
+        await batch.add(term)
+
+        assert 2 == batch.num_updated
+        assert 2 == len(batch.updated)
+
+        tracked_table = next(a for a in batch.updated if isinstance(a, Table))
+        tracked_term = next(
+            a for a in batch.updated if isinstance(a, AtlasGlossaryTerm)
+        )
+
+        # Non-glossary asset must keep the real guid (not a placeholder) AND
+        # the real qualified_name.
+        assert tracked_table.guid == table_guid
+        assert tracked_table.qualified_name == table_qn
+
+        # Glossary term must keep the real guid AND the real qualified_name.
+        # This is the key assertion: before the fix the term's qualified_name
+        # was overwritten with its guid by ref_by_guid().
+        assert tracked_term.guid == term_guid
+        assert tracked_term.qualified_name == term_qn
+        assert tracked_term.qualified_name != term_guid
+
     def test_partial_updates_counted_and_not_restored(self, mock_async_atlan_client):
         # Async mirror: partial updates reported under
         # mutated_entities.PARTIAL_UPDATE and/or the top-level

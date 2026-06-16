@@ -31,5 +31,14 @@ class AsyncBatch(_LegacyAsyncBatch):
             asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
+        # Preserve the candidate's real identity. trim_to_required() drops the
+        # guid (leaving it UNSET) and ref_by_guid() drops the qualified_name,
+        # which makes the tracked lists (created/updated/partial_updated/
+        # restored) impossible to match back by guid or qualified_name. The
+        # candidate carries the real values, so restore them here.
+        if candidate.guid:
+            asset.guid = candidate.guid
+        if candidate.qualified_name:
+            asset.qualified_name = candidate.qualified_name
         asset.name = candidate.name
         tracker.append(asset)

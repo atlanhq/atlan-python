@@ -2646,6 +2646,69 @@ class TestBatch:
             mock_ref_by_guid.assert_has_calls([call(term_1.guid), call(term_2.guid)])
             mock_trim_to_required.assert_not_called()
 
+    @pytest.mark.asyncio
+    async def test_track_preserves_real_identity_for_both_types(
+        self, mock_async_atlan_client
+    ):
+        # Regression: the tracked lists (created/updated/partial_updated/
+        # restored) must carry each asset's REAL guid AND qualified_name so
+        # callers can match tracked items back to their inputs by either key.
+        # In v9, trim_to_required() leaves the guid UNSET for non-glossary
+        # assets, and ref_by_guid() leaves the qualified_name UNSET for glossary
+        # terms, so neither could be matched back reliably before the fix.
+        table_guid = "real-table-guid"
+        table_qn = "default/snowflake/123/db/schema/tbl"
+        term_guid = "real-term-guid"
+        term_qn = "real-term-qn"
+
+        table = Table(guid=table_guid, qualified_name=table_qn, name="tbl")
+        term = AtlasGlossaryTerm(
+            guid=term_guid,
+            qualified_name=term_qn,
+            name="myterm",
+            type_name="AtlasGlossaryTerm",
+        )
+
+        mutated_entities = Mock()
+        mock_response = Mock(spec=AssetMutationResponse)
+        mutated_entities.CREATE = []
+        mutated_entities.UPDATE = [table, term]
+        mutated_entities.PARTIAL_UPDATE = None
+        mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
+        mock_response.attach_mock(mutated_entities, "mutated_entities")
+        mock_async_atlan_client.asset.save = AsyncMock(return_value=mock_response)
+
+        batch = AsyncBatch(
+            client=mock_async_atlan_client,
+            max_size=2,
+            track=True,
+        )
+        await batch.add(table)
+        # Batch not yet full, so nothing flushed/tracked.
+        self.assert_asset_client_not_called(mock_async_atlan_client, batch)
+        await batch.add(term)
+
+        assert 2 == batch.num_updated
+        assert 2 == len(batch.updated)
+
+        tracked_table = next(a for a in batch.updated if isinstance(a, Table))
+        tracked_term = next(
+            a for a in batch.updated if isinstance(a, AtlasGlossaryTerm)
+        )
+
+        # Non-glossary asset must keep the real guid (not UNSET) AND the real
+        # qualified_name.
+        assert tracked_table.guid == table_guid
+        assert tracked_table.qualified_name == table_qn
+
+        # Glossary term must keep the real guid AND the real qualified_name.
+        # Before the fix the term's qualified_name was UNSET (ref_by_guid does
+        # not carry it over).
+        assert tracked_term.guid == term_guid
+        assert tracked_term.qualified_name == term_qn
+        assert tracked_term.qualified_name != term_guid
+
 
 class TestBulkRequest:
     SEE_ALSO = "seeAlso"
