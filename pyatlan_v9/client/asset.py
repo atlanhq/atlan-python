@@ -2287,12 +2287,28 @@ class Batch(_LegacyBatch):
 
     @staticmethod
     def __track(tracker, candidate):
-        if (
-            isinstance(candidate, AtlasGlossaryTerm)
-            or getattr(candidate, "type_name", None) == "AtlasGlossaryTerm"
+        # trim_to_required for AtlasGlossaryTerm/AtlasGlossaryCategory requires
+        # the anchor (parent glossary), which is not present in an
+        # AssetMutationResponse (it would raise "anchor.guid must be
+        # available"), so we fall back to a guid reference of the candidate's
+        # actual type and restore the real identity below.
+        if isinstance(candidate, (AtlasGlossaryTerm, AtlasGlossaryCategory)) or getattr(
+            candidate, "type_name", None
+        ) in (
+            "AtlasGlossaryTerm",
+            "AtlasGlossaryCategory",
         ):
             asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
+        # Preserve the candidate's real identity. trim_to_required() drops the
+        # guid (leaving it UNSET) and ref_by_guid() drops the qualified_name,
+        # which makes the tracked lists (created/updated/partial_updated/
+        # restored) impossible to match back by guid or qualified_name. The
+        # candidate carries the real values, so restore them here.
+        if candidate.guid:
+            asset.guid = candidate.guid
+        if candidate.qualified_name:
+            asset.qualified_name = candidate.qualified_name
         asset.name = candidate.name
         tracker.append(asset)

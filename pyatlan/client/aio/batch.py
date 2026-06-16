@@ -13,7 +13,14 @@ from pyatlan.client.asset import (
     FailedBatch,
 )
 from pyatlan.errors import AtlanError, ErrorCode
-from pyatlan.model.assets import Asset, AtlasGlossaryTerm, MaterialisedView, Table, View
+from pyatlan.model.assets import (
+    Asset,
+    AtlasGlossaryCategory,
+    AtlasGlossaryTerm,
+    MaterialisedView,
+    Table,
+    View,
+)
 from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import DSL
@@ -445,12 +452,24 @@ class AsyncBatch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if isinstance(candidate, AtlasGlossaryTerm):
-            # trim_to_required for AtlasGlossaryTerm requires anchor
-            # which is not include in AssetMutationResponse
-            asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
+        if isinstance(candidate, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
+            # trim_to_required for AtlasGlossaryTerm/AtlasGlossaryCategory
+            # requires the anchor (parent glossary), which is not present in an
+            # AssetMutationResponse (it would raise "anchor.guid must be
+            # available"), so we fall back to a guid reference of the
+            # candidate's actual type and restore the real identity below.
+            asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
+        # Preserve the candidate's real identity. trim_to_required() and
+        # ref_by_guid() mint a placeholder guid (and ref_by_guid also sets
+        # qualified_name to the guid), which makes the tracked lists
+        # (created/updated/partial_updated/restored) impossible to match back by
+        # guid or qualified_name. The candidate carries the real values.
+        if candidate.guid:
+            asset.guid = candidate.guid
+        if candidate.qualified_name:
+            asset.qualified_name = candidate.qualified_name
         asset.name = candidate.name
         tracker.append(asset)
 
