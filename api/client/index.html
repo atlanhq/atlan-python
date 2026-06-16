@@ -1761,6 +1761,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pyatlan.client.asset.Batch.num_partial_updated" class="md-nav__link">
+    <span class="md-ellipsis">
+      num_partial_updated
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pyatlan.client.asset.Batch.num_restored" class="md-nav__link">
     <span class="md-ellipsis">
       num_restored
@@ -1782,6 +1791,15 @@
   <a href="#pyatlan.client.asset.Batch.num_updated" class="md-nav__link">
     <span class="md-ellipsis">
       num_updated
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.client.asset.Batch.partial_updated" class="md-nav__link">
+    <span class="md-ellipsis">
+      partial_updated
     </span>
   </a>
   
@@ -6430,6 +6448,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pyatlan.client.asset.Batch.num_partial_updated" class="md-nav__link">
+    <span class="md-ellipsis">
+      num_partial_updated
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pyatlan.client.asset.Batch.num_restored" class="md-nav__link">
     <span class="md-ellipsis">
       num_restored
@@ -6451,6 +6478,15 @@
   <a href="#pyatlan.client.asset.Batch.num_updated" class="md-nav__link">
     <span class="md-ellipsis">
       num_updated
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyatlan.client.asset.Batch.partial_updated" class="md-nav__link">
+    <span class="md-ellipsis">
+      partial_updated
     </span>
   </a>
   
@@ -16988,31 +17024,31 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 
                   <details class="quote">
                     <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2609">2609</a></span>
-<span class="normal"><a href="#__codelineno-0-2610">2610</a></span>
-<span class="normal"><a href="#__codelineno-0-2611">2611</a></span>
-<span class="normal"><a href="#__codelineno-0-2612">2612</a></span>
-<span class="normal"><a href="#__codelineno-0-2613">2613</a></span>
-<span class="normal"><a href="#__codelineno-0-2614">2614</a></span>
-<span class="normal"><a href="#__codelineno-0-2615">2615</a></span>
-<span class="normal"><a href="#__codelineno-0-2616">2616</a></span>
-<span class="normal"><a href="#__codelineno-0-2617">2617</a></span>
-<span class="normal"><a href="#__codelineno-0-2618">2618</a></span>
-<span class="normal"><a href="#__codelineno-0-2619">2619</a></span>
-<span class="normal"><a href="#__codelineno-0-2620">2620</a></span>
-<span class="normal"><a href="#__codelineno-0-2621">2621</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2609"><a id="__codelineno-0-2609" name="__codelineno-0-2609"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="__span-0-2610"><a id="__codelineno-0-2610" name="__codelineno-0-2610"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">case_insensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-2611"><a id="__codelineno-0-2611" name="__codelineno-0-2611"></a><span class="p">):</span>
-</span><span id="__span-0-2612"><a id="__codelineno-0-2612" name="__codelineno-0-2612"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-2613"><a id="__codelineno-0-2613" name="__codelineno-0-2613"></a><span class="sd">    Initializes an AssetIdentity.</span>
-</span><span id="__span-0-2614"><a id="__codelineno-0-2614" name="__codelineno-0-2614"></a>
-</span><span id="__span-0-2615"><a id="__codelineno-0-2615" name="__codelineno-0-2615"></a><span class="sd">    :param type_name: type of the asset.</span>
-</span><span id="__span-0-2616"><a id="__codelineno-0-2616" name="__codelineno-0-2616"></a><span class="sd">    :param qualified_name: qualified name of the asset.</span>
-</span><span id="__span-0-2617"><a id="__codelineno-0-2617" name="__codelineno-0-2617"></a><span class="sd">    :param case_insensitive: Whether the qualified name should be case insensitive.</span>
-</span><span id="__span-0-2618"><a id="__codelineno-0-2618" name="__codelineno-0-2618"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-2619"><a id="__codelineno-0-2619" name="__codelineno-0-2619"></a>    <span class="k">if</span> <span class="n">case_insensitive</span><span class="p">:</span>
-</span><span id="__span-0-2620"><a id="__codelineno-0-2620" name="__codelineno-0-2620"></a>        <span class="n">qualified_name</span> <span class="o">=</span> <span class="n">qualified_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-</span><span id="__span-0-2621"><a id="__codelineno-0-2621" name="__codelineno-0-2621"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_name</span><span class="o">=</span><span class="n">type_name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2664">2664</a></span>
+<span class="normal"><a href="#__codelineno-0-2665">2665</a></span>
+<span class="normal"><a href="#__codelineno-0-2666">2666</a></span>
+<span class="normal"><a href="#__codelineno-0-2667">2667</a></span>
+<span class="normal"><a href="#__codelineno-0-2668">2668</a></span>
+<span class="normal"><a href="#__codelineno-0-2669">2669</a></span>
+<span class="normal"><a href="#__codelineno-0-2670">2670</a></span>
+<span class="normal"><a href="#__codelineno-0-2671">2671</a></span>
+<span class="normal"><a href="#__codelineno-0-2672">2672</a></span>
+<span class="normal"><a href="#__codelineno-0-2673">2673</a></span>
+<span class="normal"><a href="#__codelineno-0-2674">2674</a></span>
+<span class="normal"><a href="#__codelineno-0-2675">2675</a></span>
+<span class="normal"><a href="#__codelineno-0-2676">2676</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2664"><a id="__codelineno-0-2664" name="__codelineno-0-2664"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="__span-0-2665"><a id="__codelineno-0-2665" name="__codelineno-0-2665"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">case_insensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-0-2666"><a id="__codelineno-0-2666" name="__codelineno-0-2666"></a><span class="p">):</span>
+</span><span id="__span-0-2667"><a id="__codelineno-0-2667" name="__codelineno-0-2667"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-0-2668"><a id="__codelineno-0-2668" name="__codelineno-0-2668"></a><span class="sd">    Initializes an AssetIdentity.</span>
+</span><span id="__span-0-2669"><a id="__codelineno-0-2669" name="__codelineno-0-2669"></a>
+</span><span id="__span-0-2670"><a id="__codelineno-0-2670" name="__codelineno-0-2670"></a><span class="sd">    :param type_name: type of the asset.</span>
+</span><span id="__span-0-2671"><a id="__codelineno-0-2671" name="__codelineno-0-2671"></a><span class="sd">    :param qualified_name: qualified name of the asset.</span>
+</span><span id="__span-0-2672"><a id="__codelineno-0-2672" name="__codelineno-0-2672"></a><span class="sd">    :param case_insensitive: Whether the qualified name should be case insensitive.</span>
+</span><span id="__span-0-2673"><a id="__codelineno-0-2673" name="__codelineno-0-2673"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-2674"><a id="__codelineno-0-2674" name="__codelineno-0-2674"></a>    <span class="k">if</span> <span class="n">case_insensitive</span><span class="p">:</span>
+</span><span id="__span-0-2675"><a id="__codelineno-0-2675" name="__codelineno-0-2675"></a>        <span class="n">qualified_name</span> <span class="o">=</span> <span class="n">qualified_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</span><span id="__span-0-2676"><a id="__codelineno-0-2676" name="__codelineno-0-2676"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">type_name</span><span class="o">=</span><span class="n">type_name</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">)</span>  <span class="c1"># type: ignore[call-arg]</span>
 </span></code></pre></div></td></tr></table></div>
                   </details>
 
@@ -17050,29 +17086,29 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 
             <details class="quote">
               <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2623">2623</a></span>
-<span class="normal"><a href="#__codelineno-0-2624">2624</a></span>
-<span class="normal"><a href="#__codelineno-0-2625">2625</a></span>
-<span class="normal"><a href="#__codelineno-0-2626">2626</a></span>
-<span class="normal"><a href="#__codelineno-0-2627">2627</a></span>
-<span class="normal"><a href="#__codelineno-0-2628">2628</a></span>
-<span class="normal"><a href="#__codelineno-0-2629">2629</a></span>
-<span class="normal"><a href="#__codelineno-0-2630">2630</a></span>
-<span class="normal"><a href="#__codelineno-0-2631">2631</a></span>
-<span class="normal"><a href="#__codelineno-0-2632">2632</a></span>
-<span class="normal"><a href="#__codelineno-0-2633">2633</a></span>
-<span class="normal"><a href="#__codelineno-0-2634">2634</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2623"><a id="__codelineno-0-2623" name="__codelineno-0-2623"></a><span class="nd">@staticmethod</span>
-</span><span id="__span-0-2624"><a id="__codelineno-0-2624" name="__codelineno-0-2624"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="n">combined</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AssetIdentity&quot;</span><span class="p">:</span>
-</span><span id="__span-0-2625"><a id="__codelineno-0-2625" name="__codelineno-0-2625"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-2626"><a id="__codelineno-0-2626" name="__codelineno-0-2626"></a><span class="sd">    Reverse-engineer an asset identity from a string representation.</span>
-</span><span id="__span-0-2627"><a id="__codelineno-0-2627" name="__codelineno-0-2627"></a>
-</span><span id="__span-0-2628"><a id="__codelineno-0-2628" name="__codelineno-0-2628"></a><span class="sd">    :param combined: The combined (serialized) asset identity.</span>
-</span><span id="__span-0-2629"><a id="__codelineno-0-2629" name="__codelineno-0-2629"></a><span class="sd">    :return: The actual asset identity.</span>
-</span><span id="__span-0-2630"><a id="__codelineno-0-2630" name="__codelineno-0-2630"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-2631"><a id="__codelineno-0-2631" name="__codelineno-0-2631"></a>    <span class="n">tokens</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;::&quot;</span><span class="p">)</span>
-</span><span id="__span-0-2632"><a id="__codelineno-0-2632" name="__codelineno-0-2632"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-</span><span id="__span-0-2633"><a id="__codelineno-0-2633" name="__codelineno-0-2633"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid asset identity: </span><span class="si">{</span><span class="n">combined</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-0-2634"><a id="__codelineno-0-2634" name="__codelineno-0-2634"></a>    <span class="k">return</span> <span class="n">AssetIdentity</span><span class="p">(</span><span class="n">type_name</span><span class="o">=</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2678">2678</a></span>
+<span class="normal"><a href="#__codelineno-0-2679">2679</a></span>
+<span class="normal"><a href="#__codelineno-0-2680">2680</a></span>
+<span class="normal"><a href="#__codelineno-0-2681">2681</a></span>
+<span class="normal"><a href="#__codelineno-0-2682">2682</a></span>
+<span class="normal"><a href="#__codelineno-0-2683">2683</a></span>
+<span class="normal"><a href="#__codelineno-0-2684">2684</a></span>
+<span class="normal"><a href="#__codelineno-0-2685">2685</a></span>
+<span class="normal"><a href="#__codelineno-0-2686">2686</a></span>
+<span class="normal"><a href="#__codelineno-0-2687">2687</a></span>
+<span class="normal"><a href="#__codelineno-0-2688">2688</a></span>
+<span class="normal"><a href="#__codelineno-0-2689">2689</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2678"><a id="__codelineno-0-2678" name="__codelineno-0-2678"></a><span class="nd">@staticmethod</span>
+</span><span id="__span-0-2679"><a id="__codelineno-0-2679" name="__codelineno-0-2679"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="n">combined</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AssetIdentity&quot;</span><span class="p">:</span>
+</span><span id="__span-0-2680"><a id="__codelineno-0-2680" name="__codelineno-0-2680"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-0-2681"><a id="__codelineno-0-2681" name="__codelineno-0-2681"></a><span class="sd">    Reverse-engineer an asset identity from a string representation.</span>
+</span><span id="__span-0-2682"><a id="__codelineno-0-2682" name="__codelineno-0-2682"></a>
+</span><span id="__span-0-2683"><a id="__codelineno-0-2683" name="__codelineno-0-2683"></a><span class="sd">    :param combined: The combined (serialized) asset identity.</span>
+</span><span id="__span-0-2684"><a id="__codelineno-0-2684" name="__codelineno-0-2684"></a><span class="sd">    :return: The actual asset identity.</span>
+</span><span id="__span-0-2685"><a id="__codelineno-0-2685" name="__codelineno-0-2685"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-2686"><a id="__codelineno-0-2686" name="__codelineno-0-2686"></a>    <span class="n">tokens</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;::&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2687"><a id="__codelineno-0-2687" name="__codelineno-0-2687"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+</span><span id="__span-0-2688"><a id="__codelineno-0-2688" name="__codelineno-0-2688"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid asset identity: </span><span class="si">{</span><span class="n">combined</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-0-2689"><a id="__codelineno-0-2689" name="__codelineno-0-2689"></a>    <span class="k">return</span> <span class="n">AssetIdentity</span><span class="p">(</span><span class="n">type_name</span><span class="o">=</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -17194,7 +17230,9 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 <span class="normal"><a href="#__codelineno-0-2250">2250</a></span>
 <span class="normal"><a href="#__codelineno-0-2251">2251</a></span>
 <span class="normal"><a href="#__codelineno-0-2252">2252</a></span>
-<span class="normal"><a href="#__codelineno-0-2253">2253</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2192"><a id="__codelineno-0-2192" name="__codelineno-0-2192"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-2253">2253</a></span>
+<span class="normal"><a href="#__codelineno-0-2254">2254</a></span>
+<span class="normal"><a href="#__codelineno-0-2255">2255</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2192"><a id="__codelineno-0-2192" name="__codelineno-0-2192"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="__span-0-2193"><a id="__codelineno-0-2193" name="__codelineno-0-2193"></a>    <span class="bp">self</span><span class="p">,</span>
 </span><span id="__span-0-2194"><a id="__codelineno-0-2194" name="__codelineno-0-2194"></a>    <span class="n">client</span><span class="p">:</span> <span class="n">AtlanClient</span><span class="p">,</span>
 </span><span id="__span-0-2195"><a id="__codelineno-0-2195" name="__codelineno-0-2195"></a>    <span class="n">max_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -17246,16 +17284,18 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 </span><span id="__span-0-2241"><a id="__codelineno-0-2241" name="__codelineno-0-2241"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span><span class="p">:</span> <span class="n">AssetCreationHandling</span> <span class="o">=</span> <span class="n">creation_handling</span>
 </span><span id="__span-0-2242"><a id="__codelineno-0-2242" name="__codelineno-0-2242"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_num_created</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="__span-0-2243"><a id="__codelineno-0-2243" name="__codelineno-0-2243"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_num_updated</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="__span-0-2244"><a id="__codelineno-0-2244" name="__codelineno-0-2244"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_num_restored</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="__span-0-2245"><a id="__codelineno-0-2245" name="__codelineno-0-2245"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_num_skipped</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="__span-0-2246"><a id="__codelineno-0-2246" name="__codelineno-0-2246"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_resolved_guids</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-0-2247"><a id="__codelineno-0-2247" name="__codelineno-0-2247"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2248"><a id="__codelineno-0-2248" name="__codelineno-0-2248"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_failures</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FailedBatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2249"><a id="__codelineno-0-2249" name="__codelineno-0-2249"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_created</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2250"><a id="__codelineno-0-2250" name="__codelineno-0-2250"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_updated</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2251"><a id="__codelineno-0-2251" name="__codelineno-0-2251"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_restored</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2252"><a id="__codelineno-0-2252" name="__codelineno-0-2252"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_skipped</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2253"><a id="__codelineno-0-2253" name="__codelineno-0-2253"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_resolved_qualified_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-0-2244"><a id="__codelineno-0-2244" name="__codelineno-0-2244"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_num_partial_updated</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-2245"><a id="__codelineno-0-2245" name="__codelineno-0-2245"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_num_restored</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-2246"><a id="__codelineno-0-2246" name="__codelineno-0-2246"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_num_skipped</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-2247"><a id="__codelineno-0-2247" name="__codelineno-0-2247"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_resolved_guids</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-0-2248"><a id="__codelineno-0-2248" name="__codelineno-0-2248"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2249"><a id="__codelineno-0-2249" name="__codelineno-0-2249"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_failures</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FailedBatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2250"><a id="__codelineno-0-2250" name="__codelineno-0-2250"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_created</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2251"><a id="__codelineno-0-2251" name="__codelineno-0-2251"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_updated</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2252"><a id="__codelineno-0-2252" name="__codelineno-0-2252"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_partial_updated</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2253"><a id="__codelineno-0-2253" name="__codelineno-0-2253"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_restored</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2254"><a id="__codelineno-0-2254" name="__codelineno-0-2254"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_skipped</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2255"><a id="__codelineno-0-2255" name="__codelineno-0-2255"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_resolved_qualified_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 </span></code></pre></div></td></tr></table></div>
                   </details>
 
@@ -17342,6 +17382,28 @@ an empty list will be returned if there are no failures.</p>
 
 
 
+<h6 id="pyatlan.client.asset.Batch.num_partial_updated" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">num_partial_updated</span><span class="p">:</span> <span class="nb">int</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#pyatlan.client.asset.Batch.num_partial_updated" class="headerlink" title="Permanent link">&para;</a></h6>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Number of assets that were partially updated (count only)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h6 id="pyatlan.client.asset.Batch.num_restored" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">num_restored</span><span class="p">:</span> <span class="nb">int</span></code>
 
@@ -17399,6 +17461,32 @@ an empty list will be returned if there are no failures.</p>
     <div class="doc doc-contents ">
 
         <p>Number of assets that were updated (count only)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h6 id="pyatlan.client.asset.Batch.partial_updated" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">partial_updated</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#pyatlan.client.asset.Batch.partial_updated" class="headerlink" title="Permanent link">&para;</a></h6>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Get a list of all the Assets that were partially updated.
+Atlan reports an update as partial when only primitive attributes
+change, or when a relationship (such as a glossary term's anchor)
+is touched. These are successful updates, distinct from <code>restored</code>.</p>
+<p>:returns: a list of all the Assets that were partially updated</p>
 
     </div>
 
@@ -17496,25 +17584,25 @@ when update only is requested and the asset does not exist in Atlan</p>
 
             <details class="quote">
               <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2327">2327</a></span>
-<span class="normal"><a href="#__codelineno-0-2328">2328</a></span>
-<span class="normal"><a href="#__codelineno-0-2329">2329</a></span>
-<span class="normal"><a href="#__codelineno-0-2330">2330</a></span>
-<span class="normal"><a href="#__codelineno-0-2331">2331</a></span>
-<span class="normal"><a href="#__codelineno-0-2332">2332</a></span>
-<span class="normal"><a href="#__codelineno-0-2333">2333</a></span>
-<span class="normal"><a href="#__codelineno-0-2334">2334</a></span>
-<span class="normal"><a href="#__codelineno-0-2335">2335</a></span>
-<span class="normal"><a href="#__codelineno-0-2336">2336</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2327"><a id="__codelineno-0-2327" name="__codelineno-0-2327"></a><span class="nd">@validate_arguments</span>
-</span><span id="__span-0-2328"><a id="__codelineno-0-2328" name="__codelineno-0-2328"></a><span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="n">Asset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetMutationResponse</span><span class="p">]:</span>
-</span><span id="__span-0-2329"><a id="__codelineno-0-2329" name="__codelineno-0-2329"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-2330"><a id="__codelineno-0-2330" name="__codelineno-0-2330"></a><span class="sd">    Add an asset to the batch to be processed.</span>
-</span><span id="__span-0-2331"><a id="__codelineno-0-2331" name="__codelineno-0-2331"></a>
-</span><span id="__span-0-2332"><a id="__codelineno-0-2332" name="__codelineno-0-2332"></a><span class="sd">    :param single: the asset to add to a batch</span>
-</span><span id="__span-0-2333"><a id="__codelineno-0-2333" name="__codelineno-0-2333"></a><span class="sd">    :returns: an AssetMutationResponse containing the results of the save or None if the batch is still queued.</span>
-</span><span id="__span-0-2334"><a id="__codelineno-0-2334" name="__codelineno-0-2334"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-2335"><a id="__codelineno-0-2335" name="__codelineno-0-2335"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">single</span><span class="p">)</span>
-</span><span id="__span-0-2336"><a id="__codelineno-0-2336" name="__codelineno-0-2336"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="p">()</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2347">2347</a></span>
+<span class="normal"><a href="#__codelineno-0-2348">2348</a></span>
+<span class="normal"><a href="#__codelineno-0-2349">2349</a></span>
+<span class="normal"><a href="#__codelineno-0-2350">2350</a></span>
+<span class="normal"><a href="#__codelineno-0-2351">2351</a></span>
+<span class="normal"><a href="#__codelineno-0-2352">2352</a></span>
+<span class="normal"><a href="#__codelineno-0-2353">2353</a></span>
+<span class="normal"><a href="#__codelineno-0-2354">2354</a></span>
+<span class="normal"><a href="#__codelineno-0-2355">2355</a></span>
+<span class="normal"><a href="#__codelineno-0-2356">2356</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2347"><a id="__codelineno-0-2347" name="__codelineno-0-2347"></a><span class="nd">@validate_arguments</span>
+</span><span id="__span-0-2348"><a id="__codelineno-0-2348" name="__codelineno-0-2348"></a><span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">single</span><span class="p">:</span> <span class="n">Asset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetMutationResponse</span><span class="p">]:</span>
+</span><span id="__span-0-2349"><a id="__codelineno-0-2349" name="__codelineno-0-2349"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-0-2350"><a id="__codelineno-0-2350" name="__codelineno-0-2350"></a><span class="sd">    Add an asset to the batch to be processed.</span>
+</span><span id="__span-0-2351"><a id="__codelineno-0-2351" name="__codelineno-0-2351"></a>
+</span><span id="__span-0-2352"><a id="__codelineno-0-2352" name="__codelineno-0-2352"></a><span class="sd">    :param single: the asset to add to a batch</span>
+</span><span id="__span-0-2353"><a id="__codelineno-0-2353" name="__codelineno-0-2353"></a><span class="sd">    :returns: an AssetMutationResponse containing the results of the save or None if the batch is still queued.</span>
+</span><span id="__span-0-2354"><a id="__codelineno-0-2354" name="__codelineno-0-2354"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-2355"><a id="__codelineno-0-2355" name="__codelineno-0-2355"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">single</span><span class="p">)</span>
+</span><span id="__span-0-2356"><a id="__codelineno-0-2356" name="__codelineno-0-2356"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="p">()</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -17538,27 +17626,7 @@ when update only is requested and the asset does not exist in Atlan</p>
 
             <details class="quote">
               <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2346">2346</a></span>
-<span class="normal"><a href="#__codelineno-0-2347">2347</a></span>
-<span class="normal"><a href="#__codelineno-0-2348">2348</a></span>
-<span class="normal"><a href="#__codelineno-0-2349">2349</a></span>
-<span class="normal"><a href="#__codelineno-0-2350">2350</a></span>
-<span class="normal"><a href="#__codelineno-0-2351">2351</a></span>
-<span class="normal"><a href="#__codelineno-0-2352">2352</a></span>
-<span class="normal"><a href="#__codelineno-0-2353">2353</a></span>
-<span class="normal"><a href="#__codelineno-0-2354">2354</a></span>
-<span class="normal"><a href="#__codelineno-0-2355">2355</a></span>
-<span class="normal"><a href="#__codelineno-0-2356">2356</a></span>
-<span class="normal"><a href="#__codelineno-0-2357">2357</a></span>
-<span class="normal"><a href="#__codelineno-0-2358">2358</a></span>
-<span class="normal"><a href="#__codelineno-0-2359">2359</a></span>
-<span class="normal"><a href="#__codelineno-0-2360">2360</a></span>
-<span class="normal"><a href="#__codelineno-0-2361">2361</a></span>
-<span class="normal"><a href="#__codelineno-0-2362">2362</a></span>
-<span class="normal"><a href="#__codelineno-0-2363">2363</a></span>
-<span class="normal"><a href="#__codelineno-0-2364">2364</a></span>
-<span class="normal"><a href="#__codelineno-0-2365">2365</a></span>
-<span class="normal"><a href="#__codelineno-0-2366">2366</a></span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2366">2366</a></span>
 <span class="normal"><a href="#__codelineno-0-2367">2367</a></span>
 <span class="normal"><a href="#__codelineno-0-2368">2368</a></span>
 <span class="normal"><a href="#__codelineno-0-2369">2369</a></span>
@@ -17703,172 +17771,192 @@ when update only is requested and the asset does not exist in Atlan</p>
 <span class="normal"><a href="#__codelineno-0-2508">2508</a></span>
 <span class="normal"><a href="#__codelineno-0-2509">2509</a></span>
 <span class="normal"><a href="#__codelineno-0-2510">2510</a></span>
-<span class="normal"><a href="#__codelineno-0-2511">2511</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2346"><a id="__codelineno-0-2346" name="__codelineno-0-2346"></a><span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetMutationResponse</span><span class="p">]:</span>
-</span><span id="__span-0-2347"><a id="__codelineno-0-2347" name="__codelineno-0-2347"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Flush any remaining assets in the batch.</span>
-</span><span id="__span-0-2348"><a id="__codelineno-0-2348" name="__codelineno-0-2348"></a>
-</span><span id="__span-0-2349"><a id="__codelineno-0-2349" name="__codelineno-0-2349"></a><span class="sd">    :returns: n AssetMutationResponse containing the results of the saving any assets that were flushed</span>
-</span><span id="__span-0-2350"><a id="__codelineno-0-2350" name="__codelineno-0-2350"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-2351"><a id="__codelineno-0-2351" name="__codelineno-0-2351"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.fluent_search</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluentSearch</span>
-</span><span id="__span-0-2352"><a id="__codelineno-0-2352" name="__codelineno-0-2352"></a>
-</span><span id="__span-0-2353"><a id="__codelineno-0-2353" name="__codelineno-0-2353"></a>    <span class="n">revised</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2354"><a id="__codelineno-0-2354" name="__codelineno-0-2354"></a>    <span class="n">response</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetMutationResponse</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="__span-0-2355"><a id="__codelineno-0-2355" name="__codelineno-0-2355"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">:</span>
-</span><span id="__span-0-2356"><a id="__codelineno-0-2356" name="__codelineno-0-2356"></a>        <span class="n">fuzzy_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="__span-0-2357"><a id="__codelineno-0-2357" name="__codelineno-0-2357"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table_view_agnostic</span><span class="p">:</span>
-</span><span id="__span-0-2358"><a id="__codelineno-0-2358" name="__codelineno-0-2358"></a>            <span class="n">types_in_batch</span> <span class="o">=</span> <span class="p">{</span><span class="n">asset</span><span class="o">.</span><span class="n">type_name</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">}</span>
-</span><span id="__span-0-2359"><a id="__codelineno-0-2359" name="__codelineno-0-2359"></a>            <span class="n">fuzzy_match</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span>
-</span><span id="__span-0-2360"><a id="__codelineno-0-2360" name="__codelineno-0-2360"></a>                <span class="n">type_name</span> <span class="ow">in</span> <span class="n">types_in_batch</span>
-</span><span id="__span-0-2361"><a id="__codelineno-0-2361" name="__codelineno-0-2361"></a>                <span class="k">for</span> <span class="n">type_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TABLE_LEVEL_ASSETS</span>
-</span><span id="__span-0-2362"><a id="__codelineno-0-2362" name="__codelineno-0-2362"></a>            <span class="p">)</span>
-</span><span id="__span-0-2363"><a id="__codelineno-0-2363" name="__codelineno-0-2363"></a>        <span class="k">if</span> <span class="p">(</span>
-</span><span id="__span-0-2364"><a id="__codelineno-0-2364" name="__codelineno-0-2364"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_update_only</span>
-</span><span id="__span-0-2365"><a id="__codelineno-0-2365" name="__codelineno-0-2365"></a>            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span> <span class="o">!=</span> <span class="n">AssetCreationHandling</span><span class="o">.</span><span class="n">FULL</span>
-</span><span id="__span-0-2366"><a id="__codelineno-0-2366" name="__codelineno-0-2366"></a>            <span class="ow">or</span> <span class="n">fuzzy_match</span>
-</span><span id="__span-0-2367"><a id="__codelineno-0-2367" name="__codelineno-0-2367"></a>        <span class="p">):</span>
-</span><span id="__span-0-2368"><a id="__codelineno-0-2368" name="__codelineno-0-2368"></a>            <span class="n">found</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-0-2369"><a id="__codelineno-0-2369" name="__codelineno-0-2369"></a>            <span class="n">qualified_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">]</span>
-</span><span id="__span-0-2370"><a id="__codelineno-0-2370" name="__codelineno-0-2370"></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">:</span>
-</span><span id="__span-0-2371"><a id="__codelineno-0-2371" name="__codelineno-0-2371"></a>                <span class="n">search</span> <span class="o">=</span> <span class="n">FluentSearch</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">include_archived</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">min_somes</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-0-2372"><a id="__codelineno-0-2372" name="__codelineno-0-2372"></a>                <span class="k">for</span> <span class="n">qn</span> <span class="ow">in</span> <span class="n">qualified_names</span><span class="p">:</span>
-</span><span id="__span-0-2373"><a id="__codelineno-0-2373" name="__codelineno-0-2373"></a>                    <span class="n">search</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">where_some</span><span class="p">(</span>
-</span><span id="__span-0-2374"><a id="__codelineno-0-2374" name="__codelineno-0-2374"></a>                        <span class="n">Asset</span><span class="o">.</span><span class="n">QUALIFIED_NAME</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span>
-</span><span id="__span-0-2375"><a id="__codelineno-0-2375" name="__codelineno-0-2375"></a>                            <span class="n">value</span><span class="o">=</span><span class="n">qn</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span>
-</span><span id="__span-0-2376"><a id="__codelineno-0-2376" name="__codelineno-0-2376"></a>                        <span class="p">)</span>
-</span><span id="__span-0-2377"><a id="__codelineno-0-2377" name="__codelineno-0-2377"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2378"><a id="__codelineno-0-2378" name="__codelineno-0-2378"></a>            <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-0-2379"><a id="__codelineno-0-2379" name="__codelineno-0-2379"></a>                <span class="n">search</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-0-2380"><a id="__codelineno-0-2380" name="__codelineno-0-2380"></a>                    <span class="n">FluentSearch</span><span class="p">()</span>
-</span><span id="__span-0-2381"><a id="__codelineno-0-2381" name="__codelineno-0-2381"></a>                    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">include_archived</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-0-2382"><a id="__codelineno-0-2382" name="__codelineno-0-2382"></a>                    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">QUALIFIED_NAME</span><span class="o">.</span><span class="n">within</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">qualified_names</span><span class="p">))</span>
-</span><span id="__span-0-2383"><a id="__codelineno-0-2383" name="__codelineno-0-2383"></a>                <span class="p">)</span>
-</span><span id="__span-0-2384"><a id="__codelineno-0-2384" name="__codelineno-0-2384"></a>            <span class="n">results</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">page_size</span><span class="p">(</span>
-</span><span id="__span-0-2385"><a id="__codelineno-0-2385" name="__codelineno-0-2385"></a>                <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_size</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">DSL</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>  <span class="c1"># type: ignore[union-attr]</span>
-</span><span id="__span-0-2386"><a id="__codelineno-0-2386" name="__codelineno-0-2386"></a>            <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-</span><span id="__span-0-2387"><a id="__codelineno-0-2387" name="__codelineno-0-2387"></a>
-</span><span id="__span-0-2388"><a id="__codelineno-0-2388" name="__codelineno-0-2388"></a>            <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-</span><span id="__span-0-2389"><a id="__codelineno-0-2389" name="__codelineno-0-2389"></a>                <span class="n">asset_id</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
-</span><span id="__span-0-2390"><a id="__codelineno-0-2390" name="__codelineno-0-2390"></a>                    <span class="n">type_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">type_name</span><span class="p">,</span>
-</span><span id="__span-0-2391"><a id="__codelineno-0-2391" name="__codelineno-0-2391"></a>                    <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-2392"><a id="__codelineno-0-2392" name="__codelineno-0-2392"></a>                    <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
-</span><span id="__span-0-2393"><a id="__codelineno-0-2393" name="__codelineno-0-2393"></a>                <span class="p">)</span>
-</span><span id="__span-0-2394"><a id="__codelineno-0-2394" name="__codelineno-0-2394"></a>                <span class="n">found</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
-</span><span id="__span-0-2395"><a id="__codelineno-0-2395" name="__codelineno-0-2395"></a>
-</span><span id="__span-0-2396"><a id="__codelineno-0-2396" name="__codelineno-0-2396"></a>            <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">:</span>
-</span><span id="__span-0-2397"><a id="__codelineno-0-2397" name="__codelineno-0-2397"></a>                <span class="n">asset_id</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
-</span><span id="__span-0-2398"><a id="__codelineno-0-2398" name="__codelineno-0-2398"></a>                    <span class="n">type_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">type_name</span><span class="p">,</span>
-</span><span id="__span-0-2399"><a id="__codelineno-0-2399" name="__codelineno-0-2399"></a>                    <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-2400"><a id="__codelineno-0-2400" name="__codelineno-0-2400"></a>                    <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
-</span><span id="__span-0-2401"><a id="__codelineno-0-2401" name="__codelineno-0-2401"></a>                <span class="p">)</span>
-</span><span id="__span-0-2402"><a id="__codelineno-0-2402" name="__codelineno-0-2402"></a>                <span class="c1"># If found, with a type match, go ahead and update it</span>
-</span><span id="__span-0-2403"><a id="__codelineno-0-2403" name="__codelineno-0-2403"></a>                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
-</span><span id="__span-0-2404"><a id="__codelineno-0-2404" name="__codelineno-0-2404"></a>                    <span class="c1"># Replace the actual qualifiedName on the asset before adding it to the batch</span>
-</span><span id="__span-0-2405"><a id="__codelineno-0-2405" name="__codelineno-0-2405"></a>                    <span class="c1"># in case it matched case-insensitively, we need the proper case-sensitive name we</span>
-</span><span id="__span-0-2406"><a id="__codelineno-0-2406" name="__codelineno-0-2406"></a>                    <span class="c1"># found to ensure it&#39;s an update, not a create)</span>
-</span><span id="__span-0-2407"><a id="__codelineno-0-2407" name="__codelineno-0-2407"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">add_fuzzy_matched</span><span class="p">(</span>
-</span><span id="__span-0-2408"><a id="__codelineno-0-2408" name="__codelineno-0-2408"></a>                        <span class="n">asset</span><span class="o">=</span><span class="n">asset</span><span class="p">,</span>
-</span><span id="__span-0-2409"><a id="__codelineno-0-2409" name="__codelineno-0-2409"></a>                        <span class="n">actual_qn</span><span class="o">=</span><span class="n">found</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">asset_id</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-</span><span id="__span-0-2410"><a id="__codelineno-0-2410" name="__codelineno-0-2410"></a>                        <span class="n">revised</span><span class="o">=</span><span class="n">revised</span><span class="p">,</span>
-</span><span id="__span-0-2411"><a id="__codelineno-0-2411" name="__codelineno-0-2411"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2412"><a id="__codelineno-0-2412" name="__codelineno-0-2412"></a>                <span class="k">elif</span> <span class="p">(</span>
-</span><span id="__span-0-2413"><a id="__codelineno-0-2413" name="__codelineno-0-2413"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_table_view_agnostic</span>
-</span><span id="__span-0-2414"><a id="__codelineno-0-2414" name="__codelineno-0-2414"></a>                    <span class="ow">and</span> <span class="n">asset</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TABLE_LEVEL_ASSETS</span>
-</span><span id="__span-0-2415"><a id="__codelineno-0-2415" name="__codelineno-0-2415"></a>                <span class="p">):</span>
-</span><span id="__span-0-2416"><a id="__codelineno-0-2416" name="__codelineno-0-2416"></a>                    <span class="c1"># If found as a different (but acceptable) type, update that instead</span>
-</span><span id="__span-0-2417"><a id="__codelineno-0-2417" name="__codelineno-0-2417"></a>                    <span class="n">as_table</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
-</span><span id="__span-0-2418"><a id="__codelineno-0-2418" name="__codelineno-0-2418"></a>                        <span class="n">type_name</span><span class="o">=</span><span class="n">Table</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-</span><span id="__span-0-2419"><a id="__codelineno-0-2419" name="__codelineno-0-2419"></a>                        <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-2420"><a id="__codelineno-0-2420" name="__codelineno-0-2420"></a>                        <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
-</span><span id="__span-0-2421"><a id="__codelineno-0-2421" name="__codelineno-0-2421"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2422"><a id="__codelineno-0-2422" name="__codelineno-0-2422"></a>                    <span class="n">as_view</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
-</span><span id="__span-0-2423"><a id="__codelineno-0-2423" name="__codelineno-0-2423"></a>                        <span class="n">type_name</span><span class="o">=</span><span class="n">View</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-</span><span id="__span-0-2424"><a id="__codelineno-0-2424" name="__codelineno-0-2424"></a>                        <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-2425"><a id="__codelineno-0-2425" name="__codelineno-0-2425"></a>                        <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
-</span><span id="__span-0-2426"><a id="__codelineno-0-2426" name="__codelineno-0-2426"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2427"><a id="__codelineno-0-2427" name="__codelineno-0-2427"></a>                    <span class="n">as_materialized_view</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
-</span><span id="__span-0-2428"><a id="__codelineno-0-2428" name="__codelineno-0-2428"></a>                        <span class="n">type_name</span><span class="o">=</span><span class="n">MaterialisedView</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-</span><span id="__span-0-2429"><a id="__codelineno-0-2429" name="__codelineno-0-2429"></a>                        <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="__span-0-2430"><a id="__codelineno-0-2430" name="__codelineno-0-2430"></a>                        <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
+<span class="normal"><a href="#__codelineno-0-2511">2511</a></span>
+<span class="normal"><a href="#__codelineno-0-2512">2512</a></span>
+<span class="normal"><a href="#__codelineno-0-2513">2513</a></span>
+<span class="normal"><a href="#__codelineno-0-2514">2514</a></span>
+<span class="normal"><a href="#__codelineno-0-2515">2515</a></span>
+<span class="normal"><a href="#__codelineno-0-2516">2516</a></span>
+<span class="normal"><a href="#__codelineno-0-2517">2517</a></span>
+<span class="normal"><a href="#__codelineno-0-2518">2518</a></span>
+<span class="normal"><a href="#__codelineno-0-2519">2519</a></span>
+<span class="normal"><a href="#__codelineno-0-2520">2520</a></span>
+<span class="normal"><a href="#__codelineno-0-2521">2521</a></span>
+<span class="normal"><a href="#__codelineno-0-2522">2522</a></span>
+<span class="normal"><a href="#__codelineno-0-2523">2523</a></span>
+<span class="normal"><a href="#__codelineno-0-2524">2524</a></span>
+<span class="normal"><a href="#__codelineno-0-2525">2525</a></span>
+<span class="normal"><a href="#__codelineno-0-2526">2526</a></span>
+<span class="normal"><a href="#__codelineno-0-2527">2527</a></span>
+<span class="normal"><a href="#__codelineno-0-2528">2528</a></span>
+<span class="normal"><a href="#__codelineno-0-2529">2529</a></span>
+<span class="normal"><a href="#__codelineno-0-2530">2530</a></span>
+<span class="normal"><a href="#__codelineno-0-2531">2531</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2366"><a id="__codelineno-0-2366" name="__codelineno-0-2366"></a><span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetMutationResponse</span><span class="p">]:</span>
+</span><span id="__span-0-2367"><a id="__codelineno-0-2367" name="__codelineno-0-2367"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Flush any remaining assets in the batch.</span>
+</span><span id="__span-0-2368"><a id="__codelineno-0-2368" name="__codelineno-0-2368"></a>
+</span><span id="__span-0-2369"><a id="__codelineno-0-2369" name="__codelineno-0-2369"></a><span class="sd">    :returns: n AssetMutationResponse containing the results of the saving any assets that were flushed</span>
+</span><span id="__span-0-2370"><a id="__codelineno-0-2370" name="__codelineno-0-2370"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-2371"><a id="__codelineno-0-2371" name="__codelineno-0-2371"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">pyatlan.model.fluent_search</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluentSearch</span>
+</span><span id="__span-0-2372"><a id="__codelineno-0-2372" name="__codelineno-0-2372"></a>
+</span><span id="__span-0-2373"><a id="__codelineno-0-2373" name="__codelineno-0-2373"></a>    <span class="n">revised</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2374"><a id="__codelineno-0-2374" name="__codelineno-0-2374"></a>    <span class="n">response</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetMutationResponse</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-0-2375"><a id="__codelineno-0-2375" name="__codelineno-0-2375"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">:</span>
+</span><span id="__span-0-2376"><a id="__codelineno-0-2376" name="__codelineno-0-2376"></a>        <span class="n">fuzzy_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-0-2377"><a id="__codelineno-0-2377" name="__codelineno-0-2377"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table_view_agnostic</span><span class="p">:</span>
+</span><span id="__span-0-2378"><a id="__codelineno-0-2378" name="__codelineno-0-2378"></a>            <span class="n">types_in_batch</span> <span class="o">=</span> <span class="p">{</span><span class="n">asset</span><span class="o">.</span><span class="n">type_name</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">}</span>
+</span><span id="__span-0-2379"><a id="__codelineno-0-2379" name="__codelineno-0-2379"></a>            <span class="n">fuzzy_match</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span>
+</span><span id="__span-0-2380"><a id="__codelineno-0-2380" name="__codelineno-0-2380"></a>                <span class="n">type_name</span> <span class="ow">in</span> <span class="n">types_in_batch</span>
+</span><span id="__span-0-2381"><a id="__codelineno-0-2381" name="__codelineno-0-2381"></a>                <span class="k">for</span> <span class="n">type_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TABLE_LEVEL_ASSETS</span>
+</span><span id="__span-0-2382"><a id="__codelineno-0-2382" name="__codelineno-0-2382"></a>            <span class="p">)</span>
+</span><span id="__span-0-2383"><a id="__codelineno-0-2383" name="__codelineno-0-2383"></a>        <span class="k">if</span> <span class="p">(</span>
+</span><span id="__span-0-2384"><a id="__codelineno-0-2384" name="__codelineno-0-2384"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_update_only</span>
+</span><span id="__span-0-2385"><a id="__codelineno-0-2385" name="__codelineno-0-2385"></a>            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span> <span class="o">!=</span> <span class="n">AssetCreationHandling</span><span class="o">.</span><span class="n">FULL</span>
+</span><span id="__span-0-2386"><a id="__codelineno-0-2386" name="__codelineno-0-2386"></a>            <span class="ow">or</span> <span class="n">fuzzy_match</span>
+</span><span id="__span-0-2387"><a id="__codelineno-0-2387" name="__codelineno-0-2387"></a>        <span class="p">):</span>
+</span><span id="__span-0-2388"><a id="__codelineno-0-2388" name="__codelineno-0-2388"></a>            <span class="n">found</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-0-2389"><a id="__codelineno-0-2389" name="__codelineno-0-2389"></a>            <span class="n">qualified_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">]</span>
+</span><span id="__span-0-2390"><a id="__codelineno-0-2390" name="__codelineno-0-2390"></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">:</span>
+</span><span id="__span-0-2391"><a id="__codelineno-0-2391" name="__codelineno-0-2391"></a>                <span class="n">search</span> <span class="o">=</span> <span class="n">FluentSearch</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">include_archived</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">min_somes</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-2392"><a id="__codelineno-0-2392" name="__codelineno-0-2392"></a>                <span class="k">for</span> <span class="n">qn</span> <span class="ow">in</span> <span class="n">qualified_names</span><span class="p">:</span>
+</span><span id="__span-0-2393"><a id="__codelineno-0-2393" name="__codelineno-0-2393"></a>                    <span class="n">search</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">where_some</span><span class="p">(</span>
+</span><span id="__span-0-2394"><a id="__codelineno-0-2394" name="__codelineno-0-2394"></a>                        <span class="n">Asset</span><span class="o">.</span><span class="n">QUALIFIED_NAME</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span>
+</span><span id="__span-0-2395"><a id="__codelineno-0-2395" name="__codelineno-0-2395"></a>                            <span class="n">value</span><span class="o">=</span><span class="n">qn</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span>
+</span><span id="__span-0-2396"><a id="__codelineno-0-2396" name="__codelineno-0-2396"></a>                        <span class="p">)</span>
+</span><span id="__span-0-2397"><a id="__codelineno-0-2397" name="__codelineno-0-2397"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2398"><a id="__codelineno-0-2398" name="__codelineno-0-2398"></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-2399"><a id="__codelineno-0-2399" name="__codelineno-0-2399"></a>                <span class="n">search</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-0-2400"><a id="__codelineno-0-2400" name="__codelineno-0-2400"></a>                    <span class="n">FluentSearch</span><span class="p">()</span>
+</span><span id="__span-0-2401"><a id="__codelineno-0-2401" name="__codelineno-0-2401"></a>                    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">include_archived</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-2402"><a id="__codelineno-0-2402" name="__codelineno-0-2402"></a>                    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">QUALIFIED_NAME</span><span class="o">.</span><span class="n">within</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">qualified_names</span><span class="p">))</span>
+</span><span id="__span-0-2403"><a id="__codelineno-0-2403" name="__codelineno-0-2403"></a>                <span class="p">)</span>
+</span><span id="__span-0-2404"><a id="__codelineno-0-2404" name="__codelineno-0-2404"></a>            <span class="n">results</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">page_size</span><span class="p">(</span>
+</span><span id="__span-0-2405"><a id="__codelineno-0-2405" name="__codelineno-0-2405"></a>                <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_size</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">DSL</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>  <span class="c1"># type: ignore[union-attr]</span>
+</span><span id="__span-0-2406"><a id="__codelineno-0-2406" name="__codelineno-0-2406"></a>            <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+</span><span id="__span-0-2407"><a id="__codelineno-0-2407" name="__codelineno-0-2407"></a>
+</span><span id="__span-0-2408"><a id="__codelineno-0-2408" name="__codelineno-0-2408"></a>            <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+</span><span id="__span-0-2409"><a id="__codelineno-0-2409" name="__codelineno-0-2409"></a>                <span class="n">asset_id</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
+</span><span id="__span-0-2410"><a id="__codelineno-0-2410" name="__codelineno-0-2410"></a>                    <span class="n">type_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">type_name</span><span class="p">,</span>
+</span><span id="__span-0-2411"><a id="__codelineno-0-2411" name="__codelineno-0-2411"></a>                    <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-2412"><a id="__codelineno-0-2412" name="__codelineno-0-2412"></a>                    <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
+</span><span id="__span-0-2413"><a id="__codelineno-0-2413" name="__codelineno-0-2413"></a>                <span class="p">)</span>
+</span><span id="__span-0-2414"><a id="__codelineno-0-2414" name="__codelineno-0-2414"></a>                <span class="n">found</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+</span><span id="__span-0-2415"><a id="__codelineno-0-2415" name="__codelineno-0-2415"></a>
+</span><span id="__span-0-2416"><a id="__codelineno-0-2416" name="__codelineno-0-2416"></a>            <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">:</span>
+</span><span id="__span-0-2417"><a id="__codelineno-0-2417" name="__codelineno-0-2417"></a>                <span class="n">asset_id</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
+</span><span id="__span-0-2418"><a id="__codelineno-0-2418" name="__codelineno-0-2418"></a>                    <span class="n">type_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">type_name</span><span class="p">,</span>
+</span><span id="__span-0-2419"><a id="__codelineno-0-2419" name="__codelineno-0-2419"></a>                    <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-2420"><a id="__codelineno-0-2420" name="__codelineno-0-2420"></a>                    <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
+</span><span id="__span-0-2421"><a id="__codelineno-0-2421" name="__codelineno-0-2421"></a>                <span class="p">)</span>
+</span><span id="__span-0-2422"><a id="__codelineno-0-2422" name="__codelineno-0-2422"></a>                <span class="c1"># If found, with a type match, go ahead and update it</span>
+</span><span id="__span-0-2423"><a id="__codelineno-0-2423" name="__codelineno-0-2423"></a>                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">asset_id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+</span><span id="__span-0-2424"><a id="__codelineno-0-2424" name="__codelineno-0-2424"></a>                    <span class="c1"># Replace the actual qualifiedName on the asset before adding it to the batch</span>
+</span><span id="__span-0-2425"><a id="__codelineno-0-2425" name="__codelineno-0-2425"></a>                    <span class="c1"># in case it matched case-insensitively, we need the proper case-sensitive name we</span>
+</span><span id="__span-0-2426"><a id="__codelineno-0-2426" name="__codelineno-0-2426"></a>                    <span class="c1"># found to ensure it&#39;s an update, not a create)</span>
+</span><span id="__span-0-2427"><a id="__codelineno-0-2427" name="__codelineno-0-2427"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">add_fuzzy_matched</span><span class="p">(</span>
+</span><span id="__span-0-2428"><a id="__codelineno-0-2428" name="__codelineno-0-2428"></a>                        <span class="n">asset</span><span class="o">=</span><span class="n">asset</span><span class="p">,</span>
+</span><span id="__span-0-2429"><a id="__codelineno-0-2429" name="__codelineno-0-2429"></a>                        <span class="n">actual_qn</span><span class="o">=</span><span class="n">found</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">asset_id</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+</span><span id="__span-0-2430"><a id="__codelineno-0-2430" name="__codelineno-0-2430"></a>                        <span class="n">revised</span><span class="o">=</span><span class="n">revised</span><span class="p">,</span>
 </span><span id="__span-0-2431"><a id="__codelineno-0-2431" name="__codelineno-0-2431"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2432"><a id="__codelineno-0-2432" name="__codelineno-0-2432"></a>
-</span><span id="__span-0-2433"><a id="__codelineno-0-2433" name="__codelineno-0-2433"></a>                    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">as_table</span><span class="p">)</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
-</span><span id="__span-0-2434"><a id="__codelineno-0-2434" name="__codelineno-0-2434"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">add_fuzzy_matched</span><span class="p">(</span>
-</span><span id="__span-0-2435"><a id="__codelineno-0-2435" name="__codelineno-0-2435"></a>                            <span class="n">asset</span><span class="o">=</span><span class="n">asset</span><span class="p">,</span>
-</span><span id="__span-0-2436"><a id="__codelineno-0-2436" name="__codelineno-0-2436"></a>                            <span class="n">actual_qn</span><span class="o">=</span><span class="n">found</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">as_table</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-</span><span id="__span-0-2437"><a id="__codelineno-0-2437" name="__codelineno-0-2437"></a>                            <span class="n">revised</span><span class="o">=</span><span class="n">revised</span><span class="p">,</span>
-</span><span id="__span-0-2438"><a id="__codelineno-0-2438" name="__codelineno-0-2438"></a>                            <span class="n">type_name</span><span class="o">=</span><span class="n">Table</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-</span><span id="__span-0-2439"><a id="__codelineno-0-2439" name="__codelineno-0-2439"></a>                        <span class="p">)</span>
-</span><span id="__span-0-2440"><a id="__codelineno-0-2440" name="__codelineno-0-2440"></a>                    <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">as_view</span><span class="p">)</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
-</span><span id="__span-0-2441"><a id="__codelineno-0-2441" name="__codelineno-0-2441"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">add_fuzzy_matched</span><span class="p">(</span>
-</span><span id="__span-0-2442"><a id="__codelineno-0-2442" name="__codelineno-0-2442"></a>                            <span class="n">asset</span><span class="o">=</span><span class="n">asset</span><span class="p">,</span>
-</span><span id="__span-0-2443"><a id="__codelineno-0-2443" name="__codelineno-0-2443"></a>                            <span class="n">actual_qn</span><span class="o">=</span><span class="n">found</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">as_view</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-</span><span id="__span-0-2444"><a id="__codelineno-0-2444" name="__codelineno-0-2444"></a>                            <span class="n">revised</span><span class="o">=</span><span class="n">revised</span><span class="p">,</span>
-</span><span id="__span-0-2445"><a id="__codelineno-0-2445" name="__codelineno-0-2445"></a>                            <span class="n">type_name</span><span class="o">=</span><span class="n">View</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-</span><span id="__span-0-2446"><a id="__codelineno-0-2446" name="__codelineno-0-2446"></a>                        <span class="p">)</span>
-</span><span id="__span-0-2447"><a id="__codelineno-0-2447" name="__codelineno-0-2447"></a>                    <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">as_materialized_view</span><span class="p">)</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
-</span><span id="__span-0-2448"><a id="__codelineno-0-2448" name="__codelineno-0-2448"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">add_fuzzy_matched</span><span class="p">(</span>
-</span><span id="__span-0-2449"><a id="__codelineno-0-2449" name="__codelineno-0-2449"></a>                            <span class="n">asset</span><span class="o">=</span><span class="n">asset</span><span class="p">,</span>
-</span><span id="__span-0-2450"><a id="__codelineno-0-2450" name="__codelineno-0-2450"></a>                            <span class="n">actual_qn</span><span class="o">=</span><span class="n">found</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">as_materialized_view</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-</span><span id="__span-0-2451"><a id="__codelineno-0-2451" name="__codelineno-0-2451"></a>                            <span class="n">revised</span><span class="o">=</span><span class="n">revised</span><span class="p">,</span>
-</span><span id="__span-0-2452"><a id="__codelineno-0-2452" name="__codelineno-0-2452"></a>                            <span class="n">type_name</span><span class="o">=</span><span class="n">MaterialisedView</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-</span><span id="__span-0-2453"><a id="__codelineno-0-2453" name="__codelineno-0-2453"></a>                        <span class="p">)</span>
-</span><span id="__span-0-2454"><a id="__codelineno-0-2454" name="__codelineno-0-2454"></a>                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span> <span class="o">==</span> <span class="n">AssetCreationHandling</span><span class="o">.</span><span class="n">PARTIAL</span><span class="p">:</span>
-</span><span id="__span-0-2455"><a id="__codelineno-0-2455" name="__codelineno-0-2455"></a>                        <span class="c1"># Still create it (partial), if not found</span>
-</span><span id="__span-0-2456"><a id="__codelineno-0-2456" name="__codelineno-0-2456"></a>                        <span class="c1"># and partial asset creation is allowed</span>
-</span><span id="__span-0-2457"><a id="__codelineno-0-2457" name="__codelineno-0-2457"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">add_partial_asset</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">revised</span><span class="p">)</span>
-</span><span id="__span-0-2458"><a id="__codelineno-0-2458" name="__codelineno-0-2458"></a>                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span> <span class="o">==</span> <span class="n">AssetCreationHandling</span><span class="o">.</span><span class="n">FULL</span><span class="p">:</span>
-</span><span id="__span-0-2459"><a id="__codelineno-0-2459" name="__codelineno-0-2459"></a>                        <span class="c1"># Still create it (full), if not found</span>
-</span><span id="__span-0-2460"><a id="__codelineno-0-2460" name="__codelineno-0-2460"></a>                        <span class="c1"># and full asset creation is allowed</span>
-</span><span id="__span-0-2461"><a id="__codelineno-0-2461" name="__codelineno-0-2461"></a>                        <span class="n">revised</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">asset</span><span class="p">)</span>
-</span><span id="__span-0-2462"><a id="__codelineno-0-2462" name="__codelineno-0-2462"></a>                    <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-0-2463"><a id="__codelineno-0-2463" name="__codelineno-0-2463"></a>                        <span class="c1"># Otherwise, if it still does not match any</span>
-</span><span id="__span-0-2464"><a id="__codelineno-0-2464" name="__codelineno-0-2464"></a>                        <span class="c1"># fallback and cannot be created, skip it</span>
-</span><span id="__span-0-2465"><a id="__codelineno-0-2465" name="__codelineno-0-2465"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_skipped</span><span class="p">,</span> <span class="n">asset</span><span class="p">)</span>
-</span><span id="__span-0-2466"><a id="__codelineno-0-2466" name="__codelineno-0-2466"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">_num_skipped</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="__span-0-2467"><a id="__codelineno-0-2467" name="__codelineno-0-2467"></a>                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span> <span class="o">==</span> <span class="n">AssetCreationHandling</span><span class="o">.</span><span class="n">PARTIAL</span><span class="p">:</span>
-</span><span id="__span-0-2468"><a id="__codelineno-0-2468" name="__codelineno-0-2468"></a>                    <span class="c1"># Append `is_partial=True` onto the asset</span>
-</span><span id="__span-0-2469"><a id="__codelineno-0-2469" name="__codelineno-0-2469"></a>                    <span class="c1"># before adding it to the batch, to ensure only</span>
-</span><span id="__span-0-2470"><a id="__codelineno-0-2470" name="__codelineno-0-2470"></a>                    <span class="c1"># a partial (and not a full) asset is created</span>
-</span><span id="__span-0-2471"><a id="__codelineno-0-2471" name="__codelineno-0-2471"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">add_partial_asset</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">revised</span><span class="p">)</span>
-</span><span id="__span-0-2472"><a id="__codelineno-0-2472" name="__codelineno-0-2472"></a>                <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-0-2473"><a id="__codelineno-0-2473" name="__codelineno-0-2473"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_skipped</span><span class="p">,</span> <span class="n">asset</span><span class="p">)</span>
-</span><span id="__span-0-2474"><a id="__codelineno-0-2474" name="__codelineno-0-2474"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_num_skipped</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span id="__span-0-2475"><a id="__codelineno-0-2475" name="__codelineno-0-2475"></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-0-2476"><a id="__codelineno-0-2476" name="__codelineno-0-2476"></a>            <span class="c1"># Otherwise create it (full)</span>
-</span><span id="__span-0-2477"><a id="__codelineno-0-2477" name="__codelineno-0-2477"></a>            <span class="n">revised</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="__span-0-2478"><a id="__codelineno-0-2478" name="__codelineno-0-2478"></a>
-</span><span id="__span-0-2479"><a id="__codelineno-0-2479" name="__codelineno-0-2479"></a>        <span class="k">if</span> <span class="n">revised</span><span class="p">:</span>
-</span><span id="__span-0-2480"><a id="__codelineno-0-2480" name="__codelineno-0-2480"></a>            <span class="k">try</span><span class="p">:</span>
-</span><span id="__span-0-2481"><a id="__codelineno-0-2481" name="__codelineno-0-2481"></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_metadata_handling</span> <span class="o">==</span> <span class="n">CustomMetadataHandling</span><span class="o">.</span><span class="n">IGNORE</span><span class="p">:</span>
-</span><span id="__span-0-2482"><a id="__codelineno-0-2482" name="__codelineno-0-2482"></a>                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-</span><span id="__span-0-2483"><a id="__codelineno-0-2483" name="__codelineno-0-2483"></a>                        <span class="n">revised</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_replace_atlan_tags</span>
-</span><span id="__span-0-2484"><a id="__codelineno-0-2484" name="__codelineno-0-2484"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2485"><a id="__codelineno-0-2485" name="__codelineno-0-2485"></a>                <span class="k">elif</span> <span class="p">(</span>
-</span><span id="__span-0-2486"><a id="__codelineno-0-2486" name="__codelineno-0-2486"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_custom_metadata_handling</span>
-</span><span id="__span-0-2487"><a id="__codelineno-0-2487" name="__codelineno-0-2487"></a>                    <span class="o">==</span> <span class="n">CustomMetadataHandling</span><span class="o">.</span><span class="n">OVERWRITE</span>
-</span><span id="__span-0-2488"><a id="__codelineno-0-2488" name="__codelineno-0-2488"></a>                <span class="p">):</span>
-</span><span id="__span-0-2489"><a id="__codelineno-0-2489" name="__codelineno-0-2489"></a>                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save_replacing_cm</span><span class="p">(</span>
-</span><span id="__span-0-2490"><a id="__codelineno-0-2490" name="__codelineno-0-2490"></a>                        <span class="n">revised</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_replace_atlan_tags</span>
-</span><span id="__span-0-2491"><a id="__codelineno-0-2491" name="__codelineno-0-2491"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2492"><a id="__codelineno-0-2492" name="__codelineno-0-2492"></a>                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_metadata_handling</span> <span class="o">==</span> <span class="n">CustomMetadataHandling</span><span class="o">.</span><span class="n">MERGE</span><span class="p">:</span>
-</span><span id="__span-0-2493"><a id="__codelineno-0-2493" name="__codelineno-0-2493"></a>                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save_merging_cm</span><span class="p">(</span>
-</span><span id="__span-0-2494"><a id="__codelineno-0-2494" name="__codelineno-0-2494"></a>                        <span class="n">revised</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_replace_atlan_tags</span>
-</span><span id="__span-0-2495"><a id="__codelineno-0-2495" name="__codelineno-0-2495"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2496"><a id="__codelineno-0-2496" name="__codelineno-0-2496"></a>                <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-0-2497"><a id="__codelineno-0-2497" name="__codelineno-0-2497"></a>                    <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-</span><span id="__span-0-2498"><a id="__codelineno-0-2498" name="__codelineno-0-2498"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">_custom_metadata_handling</span><span class="p">,</span>
-</span><span id="__span-0-2499"><a id="__codelineno-0-2499" name="__codelineno-0-2499"></a>                        <span class="s2">&quot;CustomMetadataHandling.IGNORE, CustomMetadataHandling.OVERWRITE &quot;</span>
-</span><span id="__span-0-2500"><a id="__codelineno-0-2500" name="__codelineno-0-2500"></a>                        <span class="s2">&quot;or CustomMetadataHandling.MERGE&quot;</span><span class="p">,</span>
-</span><span id="__span-0-2501"><a id="__codelineno-0-2501" name="__codelineno-0-2501"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2502"><a id="__codelineno-0-2502" name="__codelineno-0-2502"></a>            <span class="k">except</span> <span class="n">AtlanError</span> <span class="k">as</span> <span class="n">er</span><span class="p">:</span>
-</span><span id="__span-0-2503"><a id="__codelineno-0-2503" name="__codelineno-0-2503"></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capture_failures</span><span class="p">:</span>
-</span><span id="__span-0-2504"><a id="__codelineno-0-2504" name="__codelineno-0-2504"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-</span><span id="__span-0-2505"><a id="__codelineno-0-2505" name="__codelineno-0-2505"></a>                        <span class="n">FailedBatch</span><span class="p">(</span><span class="n">failed_assets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">,</span> <span class="n">failure_reason</span><span class="o">=</span><span class="n">er</span><span class="p">)</span>
-</span><span id="__span-0-2506"><a id="__codelineno-0-2506" name="__codelineno-0-2506"></a>                    <span class="p">)</span>
-</span><span id="__span-0-2507"><a id="__codelineno-0-2507" name="__codelineno-0-2507"></a>                <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-0-2508"><a id="__codelineno-0-2508" name="__codelineno-0-2508"></a>                    <span class="k">raise</span> <span class="n">er</span>
-</span><span id="__span-0-2509"><a id="__codelineno-0-2509" name="__codelineno-0-2509"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2510"><a id="__codelineno-0-2510" name="__codelineno-0-2510"></a>            <span class="n">response</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">revised</span><span class="p">)</span>
-</span><span id="__span-0-2511"><a id="__codelineno-0-2511" name="__codelineno-0-2511"></a>    <span class="k">return</span> <span class="n">response</span>
+</span><span id="__span-0-2432"><a id="__codelineno-0-2432" name="__codelineno-0-2432"></a>                <span class="k">elif</span> <span class="p">(</span>
+</span><span id="__span-0-2433"><a id="__codelineno-0-2433" name="__codelineno-0-2433"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_table_view_agnostic</span>
+</span><span id="__span-0-2434"><a id="__codelineno-0-2434" name="__codelineno-0-2434"></a>                    <span class="ow">and</span> <span class="n">asset</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TABLE_LEVEL_ASSETS</span>
+</span><span id="__span-0-2435"><a id="__codelineno-0-2435" name="__codelineno-0-2435"></a>                <span class="p">):</span>
+</span><span id="__span-0-2436"><a id="__codelineno-0-2436" name="__codelineno-0-2436"></a>                    <span class="c1"># If found as a different (but acceptable) type, update that instead</span>
+</span><span id="__span-0-2437"><a id="__codelineno-0-2437" name="__codelineno-0-2437"></a>                    <span class="n">as_table</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
+</span><span id="__span-0-2438"><a id="__codelineno-0-2438" name="__codelineno-0-2438"></a>                        <span class="n">type_name</span><span class="o">=</span><span class="n">Table</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+</span><span id="__span-0-2439"><a id="__codelineno-0-2439" name="__codelineno-0-2439"></a>                        <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-2440"><a id="__codelineno-0-2440" name="__codelineno-0-2440"></a>                        <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
+</span><span id="__span-0-2441"><a id="__codelineno-0-2441" name="__codelineno-0-2441"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2442"><a id="__codelineno-0-2442" name="__codelineno-0-2442"></a>                    <span class="n">as_view</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
+</span><span id="__span-0-2443"><a id="__codelineno-0-2443" name="__codelineno-0-2443"></a>                        <span class="n">type_name</span><span class="o">=</span><span class="n">View</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+</span><span id="__span-0-2444"><a id="__codelineno-0-2444" name="__codelineno-0-2444"></a>                        <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-2445"><a id="__codelineno-0-2445" name="__codelineno-0-2445"></a>                        <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
+</span><span id="__span-0-2446"><a id="__codelineno-0-2446" name="__codelineno-0-2446"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2447"><a id="__codelineno-0-2447" name="__codelineno-0-2447"></a>                    <span class="n">as_materialized_view</span> <span class="o">=</span> <span class="n">AssetIdentity</span><span class="p">(</span>
+</span><span id="__span-0-2448"><a id="__codelineno-0-2448" name="__codelineno-0-2448"></a>                        <span class="n">type_name</span><span class="o">=</span><span class="n">MaterialisedView</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+</span><span id="__span-0-2449"><a id="__codelineno-0-2449" name="__codelineno-0-2449"></a>                        <span class="n">qualified_name</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-2450"><a id="__codelineno-0-2450" name="__codelineno-0-2450"></a>                        <span class="n">case_insensitive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_case_insensitive</span><span class="p">,</span>
+</span><span id="__span-0-2451"><a id="__codelineno-0-2451" name="__codelineno-0-2451"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2452"><a id="__codelineno-0-2452" name="__codelineno-0-2452"></a>
+</span><span id="__span-0-2453"><a id="__codelineno-0-2453" name="__codelineno-0-2453"></a>                    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">as_table</span><span class="p">)</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+</span><span id="__span-0-2454"><a id="__codelineno-0-2454" name="__codelineno-0-2454"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">add_fuzzy_matched</span><span class="p">(</span>
+</span><span id="__span-0-2455"><a id="__codelineno-0-2455" name="__codelineno-0-2455"></a>                            <span class="n">asset</span><span class="o">=</span><span class="n">asset</span><span class="p">,</span>
+</span><span id="__span-0-2456"><a id="__codelineno-0-2456" name="__codelineno-0-2456"></a>                            <span class="n">actual_qn</span><span class="o">=</span><span class="n">found</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">as_table</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+</span><span id="__span-0-2457"><a id="__codelineno-0-2457" name="__codelineno-0-2457"></a>                            <span class="n">revised</span><span class="o">=</span><span class="n">revised</span><span class="p">,</span>
+</span><span id="__span-0-2458"><a id="__codelineno-0-2458" name="__codelineno-0-2458"></a>                            <span class="n">type_name</span><span class="o">=</span><span class="n">Table</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+</span><span id="__span-0-2459"><a id="__codelineno-0-2459" name="__codelineno-0-2459"></a>                        <span class="p">)</span>
+</span><span id="__span-0-2460"><a id="__codelineno-0-2460" name="__codelineno-0-2460"></a>                    <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">as_view</span><span class="p">)</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+</span><span id="__span-0-2461"><a id="__codelineno-0-2461" name="__codelineno-0-2461"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">add_fuzzy_matched</span><span class="p">(</span>
+</span><span id="__span-0-2462"><a id="__codelineno-0-2462" name="__codelineno-0-2462"></a>                            <span class="n">asset</span><span class="o">=</span><span class="n">asset</span><span class="p">,</span>
+</span><span id="__span-0-2463"><a id="__codelineno-0-2463" name="__codelineno-0-2463"></a>                            <span class="n">actual_qn</span><span class="o">=</span><span class="n">found</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">as_view</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+</span><span id="__span-0-2464"><a id="__codelineno-0-2464" name="__codelineno-0-2464"></a>                            <span class="n">revised</span><span class="o">=</span><span class="n">revised</span><span class="p">,</span>
+</span><span id="__span-0-2465"><a id="__codelineno-0-2465" name="__codelineno-0-2465"></a>                            <span class="n">type_name</span><span class="o">=</span><span class="n">View</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+</span><span id="__span-0-2466"><a id="__codelineno-0-2466" name="__codelineno-0-2466"></a>                        <span class="p">)</span>
+</span><span id="__span-0-2467"><a id="__codelineno-0-2467" name="__codelineno-0-2467"></a>                    <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">as_materialized_view</span><span class="p">)</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+</span><span id="__span-0-2468"><a id="__codelineno-0-2468" name="__codelineno-0-2468"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">add_fuzzy_matched</span><span class="p">(</span>
+</span><span id="__span-0-2469"><a id="__codelineno-0-2469" name="__codelineno-0-2469"></a>                            <span class="n">asset</span><span class="o">=</span><span class="n">asset</span><span class="p">,</span>
+</span><span id="__span-0-2470"><a id="__codelineno-0-2470" name="__codelineno-0-2470"></a>                            <span class="n">actual_qn</span><span class="o">=</span><span class="n">found</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">as_materialized_view</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+</span><span id="__span-0-2471"><a id="__codelineno-0-2471" name="__codelineno-0-2471"></a>                            <span class="n">revised</span><span class="o">=</span><span class="n">revised</span><span class="p">,</span>
+</span><span id="__span-0-2472"><a id="__codelineno-0-2472" name="__codelineno-0-2472"></a>                            <span class="n">type_name</span><span class="o">=</span><span class="n">MaterialisedView</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+</span><span id="__span-0-2473"><a id="__codelineno-0-2473" name="__codelineno-0-2473"></a>                        <span class="p">)</span>
+</span><span id="__span-0-2474"><a id="__codelineno-0-2474" name="__codelineno-0-2474"></a>                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span> <span class="o">==</span> <span class="n">AssetCreationHandling</span><span class="o">.</span><span class="n">PARTIAL</span><span class="p">:</span>
+</span><span id="__span-0-2475"><a id="__codelineno-0-2475" name="__codelineno-0-2475"></a>                        <span class="c1"># Still create it (partial), if not found</span>
+</span><span id="__span-0-2476"><a id="__codelineno-0-2476" name="__codelineno-0-2476"></a>                        <span class="c1"># and partial asset creation is allowed</span>
+</span><span id="__span-0-2477"><a id="__codelineno-0-2477" name="__codelineno-0-2477"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">add_partial_asset</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">revised</span><span class="p">)</span>
+</span><span id="__span-0-2478"><a id="__codelineno-0-2478" name="__codelineno-0-2478"></a>                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span> <span class="o">==</span> <span class="n">AssetCreationHandling</span><span class="o">.</span><span class="n">FULL</span><span class="p">:</span>
+</span><span id="__span-0-2479"><a id="__codelineno-0-2479" name="__codelineno-0-2479"></a>                        <span class="c1"># Still create it (full), if not found</span>
+</span><span id="__span-0-2480"><a id="__codelineno-0-2480" name="__codelineno-0-2480"></a>                        <span class="c1"># and full asset creation is allowed</span>
+</span><span id="__span-0-2481"><a id="__codelineno-0-2481" name="__codelineno-0-2481"></a>                        <span class="n">revised</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">asset</span><span class="p">)</span>
+</span><span id="__span-0-2482"><a id="__codelineno-0-2482" name="__codelineno-0-2482"></a>                    <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-2483"><a id="__codelineno-0-2483" name="__codelineno-0-2483"></a>                        <span class="c1"># Otherwise, if it still does not match any</span>
+</span><span id="__span-0-2484"><a id="__codelineno-0-2484" name="__codelineno-0-2484"></a>                        <span class="c1"># fallback and cannot be created, skip it</span>
+</span><span id="__span-0-2485"><a id="__codelineno-0-2485" name="__codelineno-0-2485"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">__track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_skipped</span><span class="p">,</span> <span class="n">asset</span><span class="p">)</span>
+</span><span id="__span-0-2486"><a id="__codelineno-0-2486" name="__codelineno-0-2486"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">_num_skipped</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="__span-0-2487"><a id="__codelineno-0-2487" name="__codelineno-0-2487"></a>                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_creation_handling</span> <span class="o">==</span> <span class="n">AssetCreationHandling</span><span class="o">.</span><span class="n">PARTIAL</span><span class="p">:</span>
+</span><span id="__span-0-2488"><a id="__codelineno-0-2488" name="__codelineno-0-2488"></a>                    <span class="c1"># Append `is_partial=True` onto the asset</span>
+</span><span id="__span-0-2489"><a id="__codelineno-0-2489" name="__codelineno-0-2489"></a>                    <span class="c1"># before adding it to the batch, to ensure only</span>
+</span><span id="__span-0-2490"><a id="__codelineno-0-2490" name="__codelineno-0-2490"></a>                    <span class="c1"># a partial (and not a full) asset is created</span>
+</span><span id="__span-0-2491"><a id="__codelineno-0-2491" name="__codelineno-0-2491"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">add_partial_asset</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">revised</span><span class="p">)</span>
+</span><span id="__span-0-2492"><a id="__codelineno-0-2492" name="__codelineno-0-2492"></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-2493"><a id="__codelineno-0-2493" name="__codelineno-0-2493"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">__track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_skipped</span><span class="p">,</span> <span class="n">asset</span><span class="p">)</span>
+</span><span id="__span-0-2494"><a id="__codelineno-0-2494" name="__codelineno-0-2494"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_num_skipped</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="__span-0-2495"><a id="__codelineno-0-2495" name="__codelineno-0-2495"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-2496"><a id="__codelineno-0-2496" name="__codelineno-0-2496"></a>            <span class="c1"># Otherwise create it (full)</span>
+</span><span id="__span-0-2497"><a id="__codelineno-0-2497" name="__codelineno-0-2497"></a>            <span class="n">revised</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="__span-0-2498"><a id="__codelineno-0-2498" name="__codelineno-0-2498"></a>
+</span><span id="__span-0-2499"><a id="__codelineno-0-2499" name="__codelineno-0-2499"></a>        <span class="k">if</span> <span class="n">revised</span><span class="p">:</span>
+</span><span id="__span-0-2500"><a id="__codelineno-0-2500" name="__codelineno-0-2500"></a>            <span class="k">try</span><span class="p">:</span>
+</span><span id="__span-0-2501"><a id="__codelineno-0-2501" name="__codelineno-0-2501"></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_metadata_handling</span> <span class="o">==</span> <span class="n">CustomMetadataHandling</span><span class="o">.</span><span class="n">IGNORE</span><span class="p">:</span>
+</span><span id="__span-0-2502"><a id="__codelineno-0-2502" name="__codelineno-0-2502"></a>                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+</span><span id="__span-0-2503"><a id="__codelineno-0-2503" name="__codelineno-0-2503"></a>                        <span class="n">revised</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_replace_atlan_tags</span>
+</span><span id="__span-0-2504"><a id="__codelineno-0-2504" name="__codelineno-0-2504"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2505"><a id="__codelineno-0-2505" name="__codelineno-0-2505"></a>                <span class="k">elif</span> <span class="p">(</span>
+</span><span id="__span-0-2506"><a id="__codelineno-0-2506" name="__codelineno-0-2506"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_custom_metadata_handling</span>
+</span><span id="__span-0-2507"><a id="__codelineno-0-2507" name="__codelineno-0-2507"></a>                    <span class="o">==</span> <span class="n">CustomMetadataHandling</span><span class="o">.</span><span class="n">OVERWRITE</span>
+</span><span id="__span-0-2508"><a id="__codelineno-0-2508" name="__codelineno-0-2508"></a>                <span class="p">):</span>
+</span><span id="__span-0-2509"><a id="__codelineno-0-2509" name="__codelineno-0-2509"></a>                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save_replacing_cm</span><span class="p">(</span>
+</span><span id="__span-0-2510"><a id="__codelineno-0-2510" name="__codelineno-0-2510"></a>                        <span class="n">revised</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_replace_atlan_tags</span>
+</span><span id="__span-0-2511"><a id="__codelineno-0-2511" name="__codelineno-0-2511"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2512"><a id="__codelineno-0-2512" name="__codelineno-0-2512"></a>                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_metadata_handling</span> <span class="o">==</span> <span class="n">CustomMetadataHandling</span><span class="o">.</span><span class="n">MERGE</span><span class="p">:</span>
+</span><span id="__span-0-2513"><a id="__codelineno-0-2513" name="__codelineno-0-2513"></a>                    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save_merging_cm</span><span class="p">(</span>
+</span><span id="__span-0-2514"><a id="__codelineno-0-2514" name="__codelineno-0-2514"></a>                        <span class="n">revised</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_replace_atlan_tags</span>
+</span><span id="__span-0-2515"><a id="__codelineno-0-2515" name="__codelineno-0-2515"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2516"><a id="__codelineno-0-2516" name="__codelineno-0-2516"></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-2517"><a id="__codelineno-0-2517" name="__codelineno-0-2517"></a>                    <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+</span><span id="__span-0-2518"><a id="__codelineno-0-2518" name="__codelineno-0-2518"></a>                        <span class="bp">self</span><span class="o">.</span><span class="n">_custom_metadata_handling</span><span class="p">,</span>
+</span><span id="__span-0-2519"><a id="__codelineno-0-2519" name="__codelineno-0-2519"></a>                        <span class="s2">&quot;CustomMetadataHandling.IGNORE, CustomMetadataHandling.OVERWRITE &quot;</span>
+</span><span id="__span-0-2520"><a id="__codelineno-0-2520" name="__codelineno-0-2520"></a>                        <span class="s2">&quot;or CustomMetadataHandling.MERGE&quot;</span><span class="p">,</span>
+</span><span id="__span-0-2521"><a id="__codelineno-0-2521" name="__codelineno-0-2521"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2522"><a id="__codelineno-0-2522" name="__codelineno-0-2522"></a>            <span class="k">except</span> <span class="n">AtlanError</span> <span class="k">as</span> <span class="n">er</span><span class="p">:</span>
+</span><span id="__span-0-2523"><a id="__codelineno-0-2523" name="__codelineno-0-2523"></a>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_capture_failures</span><span class="p">:</span>
+</span><span id="__span-0-2524"><a id="__codelineno-0-2524" name="__codelineno-0-2524"></a>                    <span class="bp">self</span><span class="o">.</span><span class="n">_failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+</span><span id="__span-0-2525"><a id="__codelineno-0-2525" name="__codelineno-0-2525"></a>                        <span class="n">FailedBatch</span><span class="p">(</span><span class="n">failed_assets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch</span><span class="p">,</span> <span class="n">failure_reason</span><span class="o">=</span><span class="n">er</span><span class="p">)</span>
+</span><span id="__span-0-2526"><a id="__codelineno-0-2526" name="__codelineno-0-2526"></a>                    <span class="p">)</span>
+</span><span id="__span-0-2527"><a id="__codelineno-0-2527" name="__codelineno-0-2527"></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-2528"><a id="__codelineno-0-2528" name="__codelineno-0-2528"></a>                    <span class="k">raise</span> <span class="n">er</span>
+</span><span id="__span-0-2529"><a id="__codelineno-0-2529" name="__codelineno-0-2529"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_batch</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2530"><a id="__codelineno-0-2530" name="__codelineno-0-2530"></a>            <span class="n">response</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_track_response</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">revised</span><span class="p">)</span>
+</span><span id="__span-0-2531"><a id="__codelineno-0-2531" name="__codelineno-0-2531"></a>    <span class="k">return</span> <span class="n">response</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -17904,23 +17992,23 @@ when update only is requested and the asset does not exist in Atlan</p>
 
                   <details class="quote">
                     <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2659">2659</a></span>
-<span class="normal"><a href="#__codelineno-0-2660">2660</a></span>
-<span class="normal"><a href="#__codelineno-0-2661">2661</a></span>
-<span class="normal"><a href="#__codelineno-0-2662">2662</a></span>
-<span class="normal"><a href="#__codelineno-0-2663">2663</a></span>
-<span class="normal"><a href="#__codelineno-0-2664">2664</a></span>
-<span class="normal"><a href="#__codelineno-0-2665">2665</a></span>
-<span class="normal"><a href="#__codelineno-0-2666">2666</a></span>
-<span class="normal"><a href="#__codelineno-0-2667">2667</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2659"><a id="__codelineno-0-2659" name="__codelineno-0-2659"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="__span-0-2660"><a id="__codelineno-0-2660" name="__codelineno-0-2660"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">top_level</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">stub_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlasGlossaryCategory</span><span class="p">]</span>
-</span><span id="__span-0-2661"><a id="__codelineno-0-2661" name="__codelineno-0-2661"></a><span class="p">):</span>
-</span><span id="__span-0-2662"><a id="__codelineno-0-2662" name="__codelineno-0-2662"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_top_level</span> <span class="o">=</span> <span class="n">top_level</span>
-</span><span id="__span-0-2663"><a id="__codelineno-0-2663" name="__codelineno-0-2663"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_root_categories</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2664"><a id="__codelineno-0-2664" name="__codelineno-0-2664"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_categories</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span id="__span-0-2665"><a id="__codelineno-0-2665" name="__codelineno-0-2665"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_build_category_dict</span><span class="p">(</span><span class="n">stub_dict</span><span class="p">)</span>
-</span><span id="__span-0-2666"><a id="__codelineno-0-2666" name="__codelineno-0-2666"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_bfs_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-2667"><a id="__codelineno-0-2667" name="__codelineno-0-2667"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_dfs_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2714">2714</a></span>
+<span class="normal"><a href="#__codelineno-0-2715">2715</a></span>
+<span class="normal"><a href="#__codelineno-0-2716">2716</a></span>
+<span class="normal"><a href="#__codelineno-0-2717">2717</a></span>
+<span class="normal"><a href="#__codelineno-0-2718">2718</a></span>
+<span class="normal"><a href="#__codelineno-0-2719">2719</a></span>
+<span class="normal"><a href="#__codelineno-0-2720">2720</a></span>
+<span class="normal"><a href="#__codelineno-0-2721">2721</a></span>
+<span class="normal"><a href="#__codelineno-0-2722">2722</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2714"><a id="__codelineno-0-2714" name="__codelineno-0-2714"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="__span-0-2715"><a id="__codelineno-0-2715" name="__codelineno-0-2715"></a>    <span class="bp">self</span><span class="p">,</span> <span class="n">top_level</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">stub_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlasGlossaryCategory</span><span class="p">]</span>
+</span><span id="__span-0-2716"><a id="__codelineno-0-2716" name="__codelineno-0-2716"></a><span class="p">):</span>
+</span><span id="__span-0-2717"><a id="__codelineno-0-2717" name="__codelineno-0-2717"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_top_level</span> <span class="o">=</span> <span class="n">top_level</span>
+</span><span id="__span-0-2718"><a id="__codelineno-0-2718" name="__codelineno-0-2718"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_root_categories</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2719"><a id="__codelineno-0-2719" name="__codelineno-0-2719"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_categories</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-0-2720"><a id="__codelineno-0-2720" name="__codelineno-0-2720"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_build_category_dict</span><span class="p">(</span><span class="n">stub_dict</span><span class="p">)</span>
+</span><span id="__span-0-2721"><a id="__codelineno-0-2721" name="__codelineno-0-2721"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_bfs_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-2722"><a id="__codelineno-0-2722" name="__codelineno-0-2722"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_dfs_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 </span></code></pre></div></td></tr></table></div>
                   </details>
 
@@ -18023,23 +18111,23 @@ when update only is requested and the asset does not exist in Atlan</p>
 
             <details class="quote">
               <summary>Source code in <code>pyatlan/client/asset.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2685">2685</a></span>
-<span class="normal"><a href="#__codelineno-0-2686">2686</a></span>
-<span class="normal"><a href="#__codelineno-0-2687">2687</a></span>
-<span class="normal"><a href="#__codelineno-0-2688">2688</a></span>
-<span class="normal"><a href="#__codelineno-0-2689">2689</a></span>
-<span class="normal"><a href="#__codelineno-0-2690">2690</a></span>
-<span class="normal"><a href="#__codelineno-0-2691">2691</a></span>
-<span class="normal"><a href="#__codelineno-0-2692">2692</a></span>
-<span class="normal"><a href="#__codelineno-0-2693">2693</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2685"><a id="__codelineno-0-2685" name="__codelineno-0-2685"></a><span class="nd">@validate_arguments</span>
-</span><span id="__span-0-2686"><a id="__codelineno-0-2686" name="__codelineno-0-2686"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryCategory</span><span class="p">:</span>
-</span><span id="__span-0-2687"><a id="__codelineno-0-2687" name="__codelineno-0-2687"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="__span-0-2688"><a id="__codelineno-0-2688" name="__codelineno-0-2688"></a><span class="sd">    Retrieve a specific category from anywhere in the hierarchy by its unique identifier (GUID).</span>
-</span><span id="__span-0-2689"><a id="__codelineno-0-2689" name="__codelineno-0-2689"></a>
-</span><span id="__span-0-2690"><a id="__codelineno-0-2690" name="__codelineno-0-2690"></a><span class="sd">    :param guid: guid of the category to retrieve</span>
-</span><span id="__span-0-2691"><a id="__codelineno-0-2691" name="__codelineno-0-2691"></a><span class="sd">    :returns: the requested category</span>
-</span><span id="__span-0-2692"><a id="__codelineno-0-2692" name="__codelineno-0-2692"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-2693"><a id="__codelineno-0-2693" name="__codelineno-0-2693"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_categories</span><span class="p">[</span><span class="n">guid</span><span class="p">]</span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-2740">2740</a></span>
+<span class="normal"><a href="#__codelineno-0-2741">2741</a></span>
+<span class="normal"><a href="#__codelineno-0-2742">2742</a></span>
+<span class="normal"><a href="#__codelineno-0-2743">2743</a></span>
+<span class="normal"><a href="#__codelineno-0-2744">2744</a></span>
+<span class="normal"><a href="#__codelineno-0-2745">2745</a></span>
+<span class="normal"><a href="#__codelineno-0-2746">2746</a></span>
+<span class="normal"><a href="#__codelineno-0-2747">2747</a></span>
+<span class="normal"><a href="#__codelineno-0-2748">2748</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-2740"><a id="__codelineno-0-2740" name="__codelineno-0-2740"></a><span class="nd">@validate_arguments</span>
+</span><span id="__span-0-2741"><a id="__codelineno-0-2741" name="__codelineno-0-2741"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_category</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryCategory</span><span class="p">:</span>
+</span><span id="__span-0-2742"><a id="__codelineno-0-2742" name="__codelineno-0-2742"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-0-2743"><a id="__codelineno-0-2743" name="__codelineno-0-2743"></a><span class="sd">    Retrieve a specific category from anywhere in the hierarchy by its unique identifier (GUID).</span>
+</span><span id="__span-0-2744"><a id="__codelineno-0-2744" name="__codelineno-0-2744"></a>
+</span><span id="__span-0-2745"><a id="__codelineno-0-2745" name="__codelineno-0-2745"></a><span class="sd">    :param guid: guid of the category to retrieve</span>
+</span><span id="__span-0-2746"><a id="__codelineno-0-2746" name="__codelineno-0-2746"></a><span class="sd">    :returns: the requested category</span>
+</span><span id="__span-0-2747"><a id="__codelineno-0-2747" name="__codelineno-0-2747"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-2748"><a id="__codelineno-0-2748" name="__codelineno-0-2748"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_categories</span><span class="p">[</span><span class="n">guid</span><span class="p">]</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
     </div>
