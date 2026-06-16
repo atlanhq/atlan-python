@@ -2190,7 +2190,9 @@ class TestBatch:
         updated = [table_2]
         mutated_entities.CREATE = created
         mutated_entities.UPDATE = updated
+        mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
         mock_response.attach_mock(mutated_entities, "mutated_entities")
 
         if custom_metadata_handling == CustomMetadataHandling.IGNORE:
@@ -2304,7 +2306,9 @@ class TestBatch:
         created = [term_1, term_2]
         mutated_entities.UPDATE = []
         mutated_entities.CREATE = created
+        mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
         mock_response.attach_mock(mutated_entities, "mutated_entities")
         mock_atlan_client.asset.search.return_value = [term_1]
         mock_atlan_client.asset.save.return_value = mock_response
@@ -2321,6 +2325,88 @@ class TestBatch:
         assert len(created) == batch.num_created
         mock_ref_by_guid.assert_has_calls([call(term_1.guid), call(term_2.guid)])
         mock_trim_to_required.assert_not_called()
+
+    def test_partial_update_alias_does_not_collide_with_delete(self):
+        # Regression: MutatedEntities.PARTIAL_UPDATE previously carried
+        # alias="DELETE", so a wire "PARTIAL_UPDATE" payload was dropped and
+        # deleted assets leaked into partial-updates. They must stay distinct.
+        response = AssetMutationResponse(
+            **{
+                "mutatedEntities": {
+                    "DELETE": [
+                        {
+                            "typeName": "Table",
+                            "attributes": {
+                                "qualifiedName": "default/d/1",
+                                "name": "d1",
+                            },
+                            "guid": "del-1",
+                        }
+                    ],
+                    "PARTIAL_UPDATE": [
+                        {
+                            "typeName": "Table",
+                            "attributes": {
+                                "qualifiedName": "default/p/1",
+                                "name": "p1",
+                            },
+                            "guid": "pu-1",
+                        }
+                    ],
+                }
+            }
+        )
+        assert [a.guid for a in response.mutated_entities.DELETE] == ["del-1"]
+        assert [a.guid for a in response.mutated_entities.PARTIAL_UPDATE] == ["pu-1"]
+        assert [a.guid for a in response.assets_deleted(Table)] == ["del-1"]
+        assert [a.guid for a in response.assets_partially_updated(Table)] == ["pu-1"]
+
+    def test_partial_updates_counted_and_not_restored(self, mock_atlan_client):
+        # A successful partial update (a primitive-only change, or a glossary
+        # term whose anchor relationship makes every change partial) is reported
+        # by Atlan under mutated_entities.PARTIAL_UPDATE and/or the top-level
+        # partial_updated_entities list. Both must be counted as partial updates,
+        # de-duplicated by GUID, and must NOT fall through to "restored".
+        response = AssetMutationResponse(
+            **{
+                "mutatedEntities": {
+                    "PARTIAL_UPDATE": [
+                        {
+                            "typeName": "Table",
+                            "attributes": {
+                                "qualifiedName": "default/p/1",
+                                "name": "p1",
+                            },
+                            "guid": "pu-1",
+                        }
+                    ]
+                },
+                "partialUpdatedEntities": [
+                    {
+                        "typeName": "AtlasGlossaryTerm",
+                        "attributes": {"qualifiedName": "term/1", "name": "term1"},
+                        "guid": "term-1",
+                    },
+                    # Duplicate of the mutated_entities.PARTIAL_UPDATE entry above;
+                    # must be de-duplicated rather than double-counted.
+                    {
+                        "typeName": "Table",
+                        "attributes": {"qualifiedName": "default/p/1", "name": "p1"},
+                        "guid": "pu-1",
+                    },
+                ],
+            }
+        )
+        batch = Batch(client=mock_atlan_client, max_size=10, track=True)
+        sent = [Table.ref_by_guid("pu-1"), AtlasGlossaryTerm.ref_by_guid("term-1")]
+        batch._track_response(response, sent=sent)
+
+        assert batch.num_partial_updated == 2
+        assert len(batch.partial_updated) == 2
+        assert "term-1" in {a.guid for a in batch.partial_updated}
+        # The key regression guard: partial updates are not mislabeled as restored.
+        assert batch.num_restored == 0
+        assert batch.num_updated == 0
 
 
 class TestBulkRequest:

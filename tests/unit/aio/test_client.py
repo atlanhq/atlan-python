@@ -2364,7 +2364,9 @@ class TestBatch:
         updated = [table_2]
         mutated_entities.CREATE = created
         mutated_entities.UPDATE = updated
+        mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
         mock_response.attach_mock(mutated_entities, "mutated_entities")
 
         # Set up async mocks - need to mock the FluentSearch.execute_async behavior
@@ -2518,7 +2520,9 @@ class TestBatch:
         created = [term_1, term_2]
         mutated_entities.UPDATE = []
         mutated_entities.CREATE = created
+        mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
+        mock_response.partial_updated_entities = None
         mock_response.attach_mock(mutated_entities, "mutated_entities")
         # Set up async mocks - need to mock the FluentSearch.execute_async behavior
         mock_search_results = AsyncMock()
@@ -2550,6 +2554,49 @@ class TestBatch:
             assert len(created) == batch.num_created
             mock_ref_by_guid.assert_has_calls([call(term_1.guid), call(term_2.guid)])
             mock_trim_to_required.assert_not_called()
+
+    def test_partial_updates_counted_and_not_restored(self, mock_async_atlan_client):
+        # Async mirror: partial updates reported under
+        # mutated_entities.PARTIAL_UPDATE and/or the top-level
+        # partial_updated_entities must be counted (de-duplicated by GUID) and
+        # must NOT be mislabeled as restored.
+        response = AssetMutationResponse(
+            **{
+                "mutatedEntities": {
+                    "PARTIAL_UPDATE": [
+                        {
+                            "typeName": "Table",
+                            "attributes": {
+                                "qualifiedName": "default/p/1",
+                                "name": "p1",
+                            },
+                            "guid": "pu-1",
+                        }
+                    ]
+                },
+                "partialUpdatedEntities": [
+                    {
+                        "typeName": "AtlasGlossaryTerm",
+                        "attributes": {"qualifiedName": "term/1", "name": "term1"},
+                        "guid": "term-1",
+                    },
+                    {
+                        "typeName": "Table",
+                        "attributes": {"qualifiedName": "default/p/1", "name": "p1"},
+                        "guid": "pu-1",
+                    },
+                ],
+            }
+        )
+        batch = AsyncBatch(client=mock_async_atlan_client, max_size=10, track=True)
+        sent = [Table.ref_by_guid("pu-1"), AtlasGlossaryTerm.ref_by_guid("term-1")]
+        batch._track_response(response, sent=sent)
+
+        assert batch.num_partial_updated == 2
+        assert len(batch.partial_updated) == 2
+        assert "term-1" in {a.guid for a in batch.partial_updated}
+        assert batch.num_restored == 0
+        assert batch.num_updated == 0
 
 
 class TestBulkRequest:

@@ -32,7 +32,7 @@ class MutatedEntities(AtlanObject):
         default=None,
         description="Assets that were partially updated. The detailed properties of the returned asset will "
         "vary based on the type of asset, but listed in the example are the common set of properties across assets.",
-        alias="DELETE",
+        alias="PARTIAL_UPDATE",
     )
 
 
