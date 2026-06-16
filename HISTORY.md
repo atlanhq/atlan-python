@@ -1,3 +1,10 @@
+## 9.7.5 (June 16, 2026)
+
+### Bug Fixes
+
+- **Count partial updates in `Batch`/`AsyncBatch`**: Successful *partial* updates — primitive-only attribute changes (e.g. `user_description` alone) and any change touching a relationship (e.g. a glossary term's `anchor`) — were never counted: they reported `num_updated: 0` and were mislabeled as `restored`, causing retry storms for callers that retry on "nothing updated" (notably the common glossary-term path). They are now reconciled from both `mutated_entities.PARTIAL_UPDATE` and the top-level `partial_updated_entities` (de-duplicated by GUID) into new `partial_updated` / `num_partial_updated` trackers. (#951)
+- **Fix `MutatedEntities.PARTIAL_UPDATE` alias collision**: the field was mistakenly declared with `alias="DELETE"`, colliding with the real `DELETE` field — so wire `PARTIAL_UPDATE` payloads were dropped and deleted assets leaked into `assets_partially_updated()`. Corrected to `alias="PARTIAL_UPDATE"`. (#951)
+
 ## 9.7.4 (June 2, 2026)
 
 ### Experimental: `pyatlan_v9`
