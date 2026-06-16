@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Optional, cast
 
 from pyatlan.client.aio.batch import AsyncBatch as _LegacyAsyncBatch
-from pyatlan_v9.model.assets import Asset, AtlasGlossaryTerm
+from pyatlan_v9.model.assets import Asset, AtlasGlossaryCategory, AtlasGlossaryTerm
 from pyatlan_v9.model.response import AssetMutationResponse
 
 
@@ -24,9 +24,16 @@ class AsyncBatch(_LegacyAsyncBatch):
 
     @staticmethod
     def __track(tracker, candidate):
-        if (
-            isinstance(candidate, AtlasGlossaryTerm)
-            or getattr(candidate, "type_name", None) == "AtlasGlossaryTerm"
+        # trim_to_required for AtlasGlossaryTerm/AtlasGlossaryCategory requires
+        # the anchor (parent glossary), which is not present in an
+        # AssetMutationResponse (it would raise "anchor.guid must be
+        # available"), so we fall back to a guid reference of the candidate's
+        # actual type and restore the real identity below.
+        if isinstance(candidate, (AtlasGlossaryTerm, AtlasGlossaryCategory)) or getattr(
+            candidate, "type_name", None
+        ) in (
+            "AtlasGlossaryTerm",
+            "AtlasGlossaryCategory",
         ):
             asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
         else:

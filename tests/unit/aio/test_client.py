@@ -2565,10 +2565,15 @@ class TestBatch:
         # Before the fix, trim_to_required() gave non-glossary assets a
         # placeholder negative guid, and ref_by_guid() set a glossary term's
         # qualified_name to its guid, so neither could be matched back reliably.
+        # A glossary category in the tracked path crashed __track entirely,
+        # because AtlasGlossaryCategory.trim_to_required() raises
+        # "anchor.guid must be available" without the parent glossary.
         table_guid = "real-table-guid"
         table_qn = "default/snowflake/123/db/schema/tbl"
         term_guid = "real-term-guid"
         term_qn = "real-term-qn"
+        category_guid = "real-category-guid"
+        category_qn = "real-category-qn"
 
         table = Table()
         table.guid = table_guid
@@ -2580,10 +2585,15 @@ class TestBatch:
         term.qualified_name = term_qn
         term.name = "myterm"
 
+        category = AtlasGlossaryCategory()
+        category.guid = category_guid
+        category.qualified_name = category_qn
+        category.name = "mycat"
+
         mutated_entities = Mock()
         mock_response = Mock(spec=AssetMutationResponse)
         mutated_entities.CREATE = []
-        mutated_entities.UPDATE = [table, term]
+        mutated_entities.UPDATE = [table, term, category]
         mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
         mock_response.partial_updated_entities = None
@@ -2592,20 +2602,25 @@ class TestBatch:
 
         batch = AsyncBatch(
             client=mock_async_atlan_client,
-            max_size=2,
+            max_size=3,
             track=True,
         )
         await batch.add(table)
         # Batch not yet full, so nothing flushed/tracked.
         self.assert_asset_client_not_called(mock_async_atlan_client, batch)
         await batch.add(term)
+        # Adding the category must NOT raise (it previously crashed __track).
+        await batch.add(category)
 
-        assert 2 == batch.num_updated
-        assert 2 == len(batch.updated)
+        assert 3 == batch.num_updated
+        assert 3 == len(batch.updated)
 
         tracked_table = next(a for a in batch.updated if isinstance(a, Table))
         tracked_term = next(
             a for a in batch.updated if isinstance(a, AtlasGlossaryTerm)
+        )
+        tracked_category = next(
+            a for a in batch.updated if isinstance(a, AtlasGlossaryCategory)
         )
 
         # Non-glossary asset must keep the real guid (not a placeholder) AND
@@ -2619,6 +2634,13 @@ class TestBatch:
         assert tracked_term.guid == term_guid
         assert tracked_term.qualified_name == term_qn
         assert tracked_term.qualified_name != term_guid
+
+        # Glossary category must keep the real guid AND the real
+        # qualified_name, and stay typed as a category (not a term).
+        assert tracked_category.guid == category_guid
+        assert tracked_category.qualified_name == category_qn
+        assert tracked_category.qualified_name != category_guid
+        assert tracked_category.type_name == "AtlasGlossaryCategory"
 
     def test_partial_updates_counted_and_not_restored(self, mock_async_atlan_client):
         # Async mirror: partial updates reported under

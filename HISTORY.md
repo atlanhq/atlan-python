@@ -2,7 +2,7 @@
 
 ### Bug Fixes
 
-- **`Batch`/`AsyncBatch` tracked lists now carry real identity (both `pyatlan` and `pyatlan_v9`)**: the tracked lists (`created` / `updated` / `partial_updated` / `restored`) now carry each asset's real `guid` and `qualified_name`, so callers can match tracked items back to their inputs by either key. Previously non-glossary assets got a placeholder (negative) guid in `pyatlan` (or a missing/`UNSET` guid in `pyatlan_v9`) via `trim_to_required()`, and glossary terms got the guid in place of `qualified_name` in `pyatlan` (or a missing/`UNSET` `qualified_name` in `pyatlan_v9`) via `ref_by_guid()`, making the tracked items impossible to match back by guid or qualified_name.
+- **`Batch`/`AsyncBatch` tracked lists now carry real identity (both `pyatlan` and `pyatlan_v9`)**: the tracked lists (`created` / `updated` / `partial_updated` / `restored`) now carry each asset's real `guid` and `qualified_name`, so callers can match tracked items back to their inputs by either key. Previously non-glossary assets got a placeholder (negative) guid in `pyatlan` (or a missing/`UNSET` guid in `pyatlan_v9`) via `trim_to_required()`, and glossary terms got the guid in place of `qualified_name` in `pyatlan` (or a missing/`UNSET` `qualified_name` in `pyatlan_v9`) via `ref_by_guid()`, making the tracked items impossible to match back by guid or qualified_name. Tracking also now handles `AtlasGlossaryCategory` (and types it correctly as a category): previously a category in the tracked path crashed `__track` with `ValueError("anchor.guid must be available")`, because — like `AtlasGlossaryTerm` — its `trim_to_required()` requires the parent glossary anchor, which is absent in an `AssetMutationResponse`.
 
 ## 9.7.5 (June 16, 2026)
 

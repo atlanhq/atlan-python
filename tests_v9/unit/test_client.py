@@ -2622,10 +2622,15 @@ class TestBatch:
         # In v9, trim_to_required() leaves the guid UNSET for non-glossary
         # assets, and ref_by_guid() leaves the qualified_name UNSET for glossary
         # terms, so neither could be matched back reliably before the fix.
+        # A glossary category in the tracked path crashed __track entirely,
+        # because AtlasGlossaryCategory.trim_to_required() raises
+        # "anchor.guid must be available" without the parent glossary.
         table_guid = "real-table-guid"
         table_qn = "default/snowflake/123/db/schema/tbl"
         term_guid = "real-term-guid"
         term_qn = "real-term-qn"
+        category_guid = "real-category-guid"
+        category_qn = "real-category-qn"
 
         table = Table(guid=table_guid, qualified_name=table_qn, name="tbl")
         term = AtlasGlossaryTerm(
@@ -2634,11 +2639,17 @@ class TestBatch:
             name="myterm",
             type_name="AtlasGlossaryTerm",
         )
+        category = AtlasGlossaryCategory(
+            guid=category_guid,
+            qualified_name=category_qn,
+            name="mycat",
+            type_name="AtlasGlossaryCategory",
+        )
 
         mutated_entities = Mock()
         mock_response = Mock(spec=AssetMutationResponse)
         mutated_entities.CREATE = []
-        mutated_entities.UPDATE = [table, term]
+        mutated_entities.UPDATE = [table, term, category]
         mutated_entities.PARTIAL_UPDATE = None
         mock_response.guid_assignments = {}
         mock_response.partial_updated_entities = None
@@ -2647,20 +2658,25 @@ class TestBatch:
 
         batch = Batch(
             client=mock_atlan_client,
-            max_size=2,
+            max_size=3,
             track=True,
         )
         batch.add(table)
         # Batch not yet full, so nothing flushed/tracked.
         self.assert_asset_client_not_called(mock_atlan_client, batch)
         batch.add(term)
+        # Adding the category must NOT raise (it previously crashed __track).
+        batch.add(category)
 
-        assert 2 == batch.num_updated
-        assert 2 == len(batch.updated)
+        assert 3 == batch.num_updated
+        assert 3 == len(batch.updated)
 
         tracked_table = next(a for a in batch.updated if isinstance(a, Table))
         tracked_term = next(
             a for a in batch.updated if isinstance(a, AtlasGlossaryTerm)
+        )
+        tracked_category = next(
+            a for a in batch.updated if isinstance(a, AtlasGlossaryCategory)
         )
 
         # Non-glossary asset must keep the real guid (not UNSET) AND the real
@@ -2674,6 +2690,13 @@ class TestBatch:
         assert tracked_term.guid == term_guid
         assert tracked_term.qualified_name == term_qn
         assert tracked_term.qualified_name != term_guid
+
+        # Glossary category must keep the real guid AND the real
+        # qualified_name, and stay typed as a category (not a term).
+        assert tracked_category.guid == category_guid
+        assert tracked_category.qualified_name == category_qn
+        assert tracked_category.qualified_name != category_guid
+        assert tracked_category.type_name == "AtlasGlossaryCategory"
 
 
 # ---------------------------------------------------------------------------

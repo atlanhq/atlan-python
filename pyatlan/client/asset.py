@@ -2605,11 +2605,13 @@ class Batch:
 
     @staticmethod
     def __track(tracker: List[Asset], candidate: Asset):
-        if isinstance(candidate, AtlasGlossaryTerm):
-            # trim_to_required for AtlasGlossaryTerm requires the anchor (parent
-            # glossary), which is not present in an AssetMutationResponse, so we
-            # fall back to a guid reference and restore the real identity below.
-            asset = cast(Asset, AtlasGlossaryTerm.ref_by_guid(candidate.guid))
+        if isinstance(candidate, (AtlasGlossaryTerm, AtlasGlossaryCategory)):
+            # trim_to_required for AtlasGlossaryTerm/AtlasGlossaryCategory
+            # requires the anchor (parent glossary), which is not present in an
+            # AssetMutationResponse (it would raise "anchor.guid must be
+            # available"), so we fall back to a guid reference of the
+            # candidate's actual type and restore the real identity below.
+            asset = cast(Asset, type(candidate).ref_by_guid(candidate.guid))
         else:
             asset = candidate.trim_to_required()
         # Preserve the candidate's real identity. trim_to_required() and
