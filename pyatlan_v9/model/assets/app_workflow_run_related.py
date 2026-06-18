@@ -45,6 +45,9 @@ class RelatedAppWorkflowRun(RelatedCatalog):
     app_workflow_run_started_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who started the workflow run."""
 
+    app_workflow_run_stopped_by: Union[str, None, UnsetType] = UNSET
+    """Username of the user who stopped the workflow run."""
+
     app_workflow_run_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the workflow run finished execution."""
 
