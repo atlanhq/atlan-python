@@ -9,7 +9,7 @@ is awaited. Obtain via :attr:`pyatlan.client.aio.client.AsyncAtlanClient.app`.
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from pydantic.v1 import validate_arguments
 
@@ -33,6 +33,7 @@ from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
     AppInputContract,
+    AppInputsBuilder,
     AppList,
     AppResponse,
     AppRunCancelResponse,
@@ -72,18 +73,28 @@ class AsyncAppClient:
         raw = await self._client._call_api(endpoint, query_params=query_params)
         return AppGetInputContract.process_response(raw)
 
-    # ----------------------------- lifecycle ----------------------------- #
     @validate_arguments
+    async def inputs(
+        self, app_id: str, entrypoint: Optional[str] = None
+    ) -> AppInputsBuilder:
+        """Start a contract-validated inputs builder (fetches the live contract)."""
+        contract = await self.get_input_contract(app_id, entrypoint)
+        return AppInputsBuilder(contract=contract, app_id=app_id, entrypoint=entrypoint)
+
+    # ----------------------------- lifecycle ----------------------------- #
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def create(
         self,
         app_id: str,
         name: str,
-        inputs: Dict[str, Any],
+        inputs: Union[Dict[str, Any], AppInputsBuilder],
         entrypoint: Optional[str] = None,
         schedule: Optional[AppSchedule] = None,
         run: Optional[bool] = None,
     ) -> AppResponse:
         """Create a workflow (create + version + publish + optional schedule/run)."""
+        if isinstance(inputs, AppInputsBuilder):
+            inputs = inputs.build()
         # Only include optional fields when provided so exclude_unset omits them
         # (passing None explicitly would serialize as null and reach the server).
         request_kwargs: Dict[str, Any] = {
@@ -117,11 +128,16 @@ class AsyncAppClient:
         raw = await self._client._call_api(AppGet.prepare_request(slug))
         return AppGet.process_response(raw)
 
-    @validate_arguments
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def update(
-        self, slug: str, inputs: Dict[str, Any], entrypoint: Optional[str] = None
+        self,
+        slug: str,
+        inputs: Union[Dict[str, Any], AppInputsBuilder],
+        entrypoint: Optional[str] = None,
     ) -> AppResponse:
         """Replace a workflow's inputs and publish a new version on the same slug."""
+        if isinstance(inputs, AppInputsBuilder):
+            inputs = inputs.build()
         request_kwargs: Dict[str, Any] = {"inputs": inputs}
         if entrypoint is not None:
             request_kwargs["entrypoint"] = entrypoint

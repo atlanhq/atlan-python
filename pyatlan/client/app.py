@@ -12,7 +12,7 @@ Obtain via :attr:`pyatlan.client.atlan.AtlanClient.app`.
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from pydantic.v1 import validate_arguments
 
@@ -36,6 +36,7 @@ from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
     AppInputContract,
+    AppInputsBuilder,
     AppList,
     AppResponse,
     AppRunCancelResponse,
@@ -87,13 +88,28 @@ class AppClient:
         raw = self._client._call_api(endpoint, query_params=query_params)
         return AppGetInputContract.process_response(raw)
 
-    # ----------------------------- lifecycle ----------------------------- #
     @validate_arguments
+    def inputs(self, app_id: str, entrypoint: Optional[str] = None) -> AppInputsBuilder:
+        """Start a contract-validated inputs builder for an app/entrypoint.
+
+        Fetches the app's input contract and returns an :class:`AppInputsBuilder`
+        whose ``.set()`` calls are validated against it. Pass the built dict (or
+        the builder itself) to :meth:`create` / :meth:`update`.
+
+        :param app_id: marketplace application id.
+        :param entrypoint: optional; omit to use the app's default.
+        :returns: an :class:`AppInputsBuilder` bound to the live contract.
+        """
+        contract = self.get_input_contract(app_id, entrypoint)
+        return AppInputsBuilder(contract=contract, app_id=app_id, entrypoint=entrypoint)
+
+    # ----------------------------- lifecycle ----------------------------- #
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def create(
         self,
         app_id: str,
         name: str,
-        inputs: Dict[str, Any],
+        inputs: Union[Dict[str, Any], AppInputsBuilder],
         entrypoint: Optional[str] = None,
         schedule: Optional[AppSchedule] = None,
         run: Optional[bool] = None,
@@ -102,12 +118,15 @@ class AppClient:
 
         :param app_id: marketplace application id.
         :param name: display label (NOT the identifier — the server mints a slug).
-        :param inputs: values matching the app's input contract (validated server-side).
+        :param inputs: a values dict matching the app's input contract, or an
+            :class:`AppInputsBuilder` (built automatically).
         :param entrypoint: optional; omit to use the app's default.
         :param schedule: optional cron schedule to attach on create.
         :param run: submit a run on create; server defaults to ``True`` when omitted.
         :returns: an :class:`AppResponse` — **persist** ``slug`` for lifecycle ops.
         """
+        if isinstance(inputs, AppInputsBuilder):
+            inputs = inputs.build()
         # Only include optional fields when provided so exclude_unset omits them
         # (passing None explicitly would serialize as null and reach the server).
         request_kwargs: Dict[str, Any] = {
@@ -150,9 +169,12 @@ class AppClient:
         raw = self._client._call_api(AppGet.prepare_request(slug))
         return AppGet.process_response(raw)
 
-    @validate_arguments
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def update(
-        self, slug: str, inputs: Dict[str, Any], entrypoint: Optional[str] = None
+        self,
+        slug: str,
+        inputs: Union[Dict[str, Any], AppInputsBuilder],
+        entrypoint: Optional[str] = None,
     ) -> AppResponse:
         """Replace a workflow's inputs and publish a new version on the same slug.
 
@@ -160,10 +182,13 @@ class AppClient:
         credential-preserving (omit the credential to keep the persisted one).
 
         :param slug: the workflow identity.
-        :param inputs: the complete input-contract values.
+        :param inputs: the complete input-contract values (dict or
+            :class:`AppInputsBuilder`).
         :param entrypoint: optional; omit to use the app's default.
         :returns: an :class:`AppResponse` with the new ``version``.
         """
+        if isinstance(inputs, AppInputsBuilder):
+            inputs = inputs.build()
         request_kwargs: Dict[str, Any] = {"inputs": inputs}
         if entrypoint is not None:
             request_kwargs["entrypoint"] = entrypoint
