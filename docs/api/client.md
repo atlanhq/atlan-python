@@ -38,7 +38,21 @@
 
 ## Workflow Client
 
+> **Deprecated.** Targets the legacy Argo workflow surface, which no longer runs
+> on Automation-Engine-migrated tenants. Use the **App Client** below for native
+> (v3) app workflows.
+
 ::: pyatlan.client.workflow
+
+## App Client
+
+The native (v3) app-workflow client (`client.app`). Creates and manages
+Automation-Engine workflows from an `app_id` plus a generic `inputs` dict
+validated server-side against the app's live input contract — replacing the
+hand-maintained `model.packages` builders. Discover inputs at runtime via
+`client.app.get_input_contract(...)`.
+
+::: pyatlan.client.app
 
 ## Credential Client
 

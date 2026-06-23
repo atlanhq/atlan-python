@@ -1,3 +1,4 @@
+import warnings
 from json import loads
 from typing import List
 
@@ -20,13 +21,27 @@ from pyatlan.model.workflow import (
 
 class AbstractPackage:
     """
-    Abstract class for packages
+    Abstract class for packages.
+
+    .. deprecated::
+        Package workflows build Argo-orchestrated workflows, which no longer run
+        on tenants migrated to the Automation Engine (AE / Temporal-native).
+        Use :attr:`AtlanClient.app` (``AppClient``) instead: create workflows
+        from an ``app_id`` plus an ``inputs`` dict validated against the app's
+        live input contract (``client.app.get_input_contract(...)``).
     """
 
     _PACKAGE_NAME: str = ""
     _PACKAGE_PREFIX: str = ""
 
     def __init__(self):
+        warnings.warn(
+            "Atlan package workflows are deprecated since the Automation Engine "
+            "(AE) migration and may not run on AE-migrated tenants. Use "
+            "AtlanClient.app (AppClient) with the app's input contract instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self._parameters = []
         self._credentials_body = {}
 
