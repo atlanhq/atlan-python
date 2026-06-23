@@ -51,6 +51,7 @@ from pyatlan.client.aio.sso import AsyncSSOClient
 from pyatlan.client.aio.task import AsyncTaskClient
 from pyatlan.client.aio.token import AsyncTokenClient
 from pyatlan.client.aio.typedef import AsyncTypeDefClient
+from pyatlan.client.aio.app import AsyncAppClient
 from pyatlan.client.aio.user import AsyncUserClient
 from pyatlan.client.aio.workflow import AsyncWorkflowClient
 from pyatlan.client.atlan import (
@@ -118,6 +119,7 @@ class AsyncAtlanClient(AtlanClient):
     _async_typedef_client: Optional[AsyncTypeDefClient] = PrivateAttr(default=None)
     _async_user_client: Optional[AsyncUserClient] = PrivateAttr(default=None)
     _async_workflow_client: Optional[AsyncWorkflowClient] = PrivateAttr(default=None)
+    _async_app_client: Optional[AsyncAppClient] = PrivateAttr(default=None)
 
     # Async cache instances
     _async_atlan_tag_cache: Optional[AsyncAtlanTagCache] = PrivateAttr(default=None)
@@ -393,6 +395,13 @@ class AsyncAtlanClient(AtlanClient):
         if self._async_workflow_client is None:
             self._async_workflow_client = AsyncWorkflowClient(self)  # type: ignore[arg-type]
         return self._async_workflow_client
+
+    @property
+    def app(self) -> AsyncAppClient:  # type: ignore[override]
+        """Get async app (v3 workflow) client with same API as sync"""
+        if self._async_app_client is None:
+            self._async_app_client = AsyncAppClient(self)  # type: ignore[arg-type]
+        return self._async_app_client
 
     @property
     def atlan_tag_cache(self) -> AsyncAtlanTagCache:  # type: ignore[override]
@@ -964,6 +973,7 @@ class AsyncAtlanClient(AtlanClient):
         self._async_typedef_client = None
         self._async_user_client = None
         self._async_workflow_client = None
+        self._async_app_client = None
 
     @contextlib.asynccontextmanager  # type: ignore[arg-type]
     async def max_retries(  # type: ignore[override,misc]

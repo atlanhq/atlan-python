@@ -59,6 +59,7 @@ from pyatlan.client.task import TaskClient
 from pyatlan.client.token import TokenClient
 from pyatlan.client.transport import PyatlanSyncTransport  # type: ignore
 from pyatlan.client.typedef import TypeDefClient
+from pyatlan.client.app import AppClient
 from pyatlan.client.user import UserClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
@@ -154,6 +155,7 @@ class AtlanClient(BaseSettings):
     _user_id: Optional[str] = PrivateAttr(default=None)
     _oauth_token_manager: Optional[Any] = PrivateAttr(default=None)
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
+    _app_client: Optional[AppClient] = PrivateAttr(default=None)
     _credential_client: Optional[CredentialClient] = PrivateAttr(default=None)
     _admin_client: Optional[AdminClient] = PrivateAttr(default=None)
     _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
@@ -350,6 +352,12 @@ class AtlanClient(BaseSettings):
         if self._workflow_client is None:
             self._workflow_client = WorkflowClient(client=self)
         return self._workflow_client
+
+    @property
+    def app(self) -> AppClient:
+        if self._app_client is None:
+            self._app_client = AppClient(client=self)
+        return self._app_client
 
     @property
     def credentials(self) -> CredentialClient:

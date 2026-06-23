@@ -706,3 +706,84 @@ OPEN_LINEAGE_SEND_EVENT_API = API(
 )
 
 CONTRACT_DELETE_SCOPE_HEADER = "x-atlan-contract-delete-scope"
+
+# =============================================================================
+# Native (v3) App Workflow APIs (BLDX-1472)
+# Served under the gateway prefix `api/service/` (EndPoint.HERACLES).
+# =============================================================================
+APP_BASE_API = "v1/app"
+APPS_DISCOVERY_API = "v1/apps"
+
+# Discovery
+GET_APP = API(
+    APPS_DISCOVERY_API + "/{app_id}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+GET_APP_INPUT_CONTRACT = API(
+    APPS_DISCOVERY_API + "/{app_id}/inputs",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
+# Lifecycle
+CREATE_APP_WORKFLOW = API(
+    APP_BASE_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+LIST_APP_WORKFLOWS = API(
+    APP_BASE_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+GET_APP_WORKFLOW = API(
+    APP_BASE_API + "/{slug}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+UPDATE_APP_WORKFLOW = API(
+    APP_BASE_API + "/{slug}",
+    HTTPMethod.PUT,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+DELETE_APP_WORKFLOW = API(
+    APP_BASE_API + "/{slug}",
+    HTTPMethod.DELETE,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
+# Running
+SUBMIT_APP_WORKFLOW = API(
+    APP_BASE_API + "/{slug}/submit",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+GET_APP_RUN = API(
+    APP_BASE_API + "/runs/{run_id}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+CANCEL_APP_RUN = API(
+    APP_BASE_API + "/runs/{run_id}/cancel",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
+# Scheduling
+ADD_APP_SCHEDULE = API(
+    APP_BASE_API + "/{slug}/schedule",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+REMOVE_APP_SCHEDULE = API(
+    APP_BASE_API + "/{slug}/schedule/{trigger_id}",
+    HTTPMethod.DELETE,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
