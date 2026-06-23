@@ -29,6 +29,7 @@ from pyatlan.client.common.app import (
     AppUpdate,
 )
 from pyatlan.errors import ErrorCode
+from pyatlan.model.app_inputs import AppInput
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
@@ -87,7 +88,7 @@ class AsyncAppClient:
         self,
         app_id: str,
         name: str,
-        inputs: Union[Dict[str, Any], AppInputsBuilder],
+        inputs: Union[Dict[str, Any], AppInputsBuilder, AppInput],
         entrypoint: Optional[str] = None,
         schedule: Optional[AppSchedule] = None,
         run: Optional[bool] = None,
@@ -95,6 +96,8 @@ class AsyncAppClient:
         """Create a workflow (create + version + publish + optional schedule/run)."""
         if isinstance(inputs, AppInputsBuilder):
             inputs = inputs.build()
+        elif isinstance(inputs, AppInput):
+            inputs = inputs.to_inputs()
         # Only include optional fields when provided so exclude_unset omits them
         # (passing None explicitly would serialize as null and reach the server).
         request_kwargs: Dict[str, Any] = {
@@ -132,12 +135,14 @@ class AsyncAppClient:
     async def update(
         self,
         slug: str,
-        inputs: Union[Dict[str, Any], AppInputsBuilder],
+        inputs: Union[Dict[str, Any], AppInputsBuilder, AppInput],
         entrypoint: Optional[str] = None,
     ) -> AppResponse:
         """Replace a workflow's inputs and publish a new version on the same slug."""
         if isinstance(inputs, AppInputsBuilder):
             inputs = inputs.build()
+        elif isinstance(inputs, AppInput):
+            inputs = inputs.to_inputs()
         request_kwargs: Dict[str, Any] = {"inputs": inputs}
         if entrypoint is not None:
             request_kwargs["entrypoint"] = entrypoint
