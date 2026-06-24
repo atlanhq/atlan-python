@@ -47,6 +47,11 @@ Repository = "https://github.com/atlanhq/atlan-python"
 Documentation = "https://github.com/atlanhq/atlan-python"
 Issues = "https://github.com/atlanhq/atlan-python/issues"
 
+[project.scripts]
+# Regenerate the native (v3) app builders + their tests from the tenant's UI
+# configmaps. Needs ATLAN_BASE_URL + ATLAN_API_KEY in the environment.
+generate-apps = "pyatlan.generator.generate_apps:main"
+
 [dependency-groups]
 dev = [
     "mypy~=1.19.0",

@@ -49,15 +49,14 @@ MONITOR_SLEEP_SECONDS = 5
 
 class WorkflowClient:
     """
-    Retrieve information about and rerun (Argo) workflows. Obtained through the
+    Retrieve information about and rerun workflows. Obtained through the
     ``workflow`` property of AtlanClient.
 
     .. deprecated::
-        This client targets the legacy Argo orchestration surface, which no
-        longer runs on tenants migrated to the Automation Engine (AE /
-        Temporal-native). For creating, running, scheduling, and managing app
-        workflows, use :attr:`AtlanClient.app` (``AppClient``) — the native
-        ``/v1/app`` APIs.
+        This client targets the legacy workflow surface, which no longer runs on
+        newer Atlan tenants. For creating, running, scheduling, and managing app
+        workflows, use :attr:`AtlanClient.app` (``AppClient``) — the ``/v1/app``
+        APIs.
     """
 
     _WORKFLOW_RUN_SCHEDULE = "orchestration.atlan.com/schedule"
@@ -69,9 +68,9 @@ class WorkflowClient:
                 "client", "ApiCaller"
             )
         warnings.warn(
-            "WorkflowClient targets the legacy Argo workflow surface, which no "
-            "longer runs on Automation-Engine-migrated tenants. Use "
-            "AtlanClient.app (AppClient) for native (v3) app workflows.",
+            "WorkflowClient targets the legacy workflow surface, which no longer "
+            "runs on newer Atlan tenants. Use AtlanClient.app (AppClient) for app "
+            "workflows.",
             DeprecationWarning,
             stacklevel=2,
         )

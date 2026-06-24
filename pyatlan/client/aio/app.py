@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-"""Async client for the native (v3) App APIs (BLDX-1472).
+"""Async client for the App workflow APIs.
 
 Async mirror of :class:`pyatlan.client.app.AppClient` — same request building and
 response parsing (shared via :mod:`pyatlan.client.common.app`); only ``_call_api``
@@ -29,12 +29,11 @@ from pyatlan.client.common.app import (
     AppUpdate,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.model.app_inputs import AppInput
+from pyatlan.model.apps import AppInput
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
     AppInputContract,
-    AppInputsBuilder,
     AppList,
     AppResponse,
     AppRunCancelResponse,
@@ -60,8 +59,8 @@ class AsyncAppClient:
 
     # ----------------------------- discovery ----------------------------- #
     @validate_arguments
-    async def get_app(self, app_id: str) -> AppInfo:
-        """Describe an app: native-readiness + entrypoints."""
+    async def describe(self, app_id: str) -> AppInfo:
+        """Describe an app: native-readiness + entrypoints (contrast :meth:`get`)."""
         raw = await self._client._call_api(AppGetInfo.prepare_request(app_id))
         return AppGetInfo.process_response(raw)
 
@@ -74,29 +73,19 @@ class AsyncAppClient:
         raw = await self._client._call_api(endpoint, query_params=query_params)
         return AppGetInputContract.process_response(raw)
 
-    @validate_arguments
-    async def inputs(
-        self, app_id: str, entrypoint: Optional[str] = None
-    ) -> AppInputsBuilder:
-        """Start a contract-validated inputs builder (fetches the live contract)."""
-        contract = await self.get_input_contract(app_id, entrypoint)
-        return AppInputsBuilder(contract=contract, app_id=app_id, entrypoint=entrypoint)
-
     # ----------------------------- lifecycle ----------------------------- #
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     async def create(
         self,
         app_id: str,
         name: str,
-        inputs: Union[Dict[str, Any], AppInputsBuilder, AppInput],
+        inputs: Union[Dict[str, Any], AppInput],
         entrypoint: Optional[str] = None,
         schedule: Optional[AppSchedule] = None,
         run: Optional[bool] = None,
     ) -> AppResponse:
         """Create a workflow (create + version + publish + optional schedule/run)."""
-        if isinstance(inputs, AppInputsBuilder):
-            inputs = inputs.build()
-        elif isinstance(inputs, AppInput):
+        if isinstance(inputs, AppInput):
             inputs = inputs.to_inputs()
         # Only include optional fields when provided so exclude_unset omits them
         # (passing None explicitly would serialize as null and reach the server).
@@ -135,13 +124,11 @@ class AsyncAppClient:
     async def update(
         self,
         slug: str,
-        inputs: Union[Dict[str, Any], AppInputsBuilder, AppInput],
+        inputs: Union[Dict[str, Any], AppInput],
         entrypoint: Optional[str] = None,
     ) -> AppResponse:
         """Replace a workflow's inputs and publish a new version on the same slug."""
-        if isinstance(inputs, AppInputsBuilder):
-            inputs = inputs.build()
-        elif isinstance(inputs, AppInput):
+        if isinstance(inputs, AppInput):
             inputs = inputs.to_inputs()
         request_kwargs: Dict[str, Any] = {"inputs": inputs}
         if entrypoint is not None:
@@ -182,7 +169,8 @@ class AsyncAppClient:
         self, slug: str, cron: str, timezone: Optional[str] = None
     ) -> AppScheduleResponse:
         """Attach a cron schedule to the latest published version."""
-        schedule = AppSchedule(cron=cron, timezone=timezone)
+        # The server rejects a null timezone, so apply the documented UTC default.
+        schedule = AppSchedule(cron=cron, timezone=timezone or "UTC")
         endpoint, request_obj = AppAddSchedule.prepare_request(slug, schedule)
         raw = await self._client._call_api(endpoint, request_obj=request_obj)
         return AppAddSchedule.process_response(raw)

@@ -398,7 +398,7 @@ class AsyncAtlanClient(AtlanClient):
 
     @property
     def app(self) -> AsyncAppClient:  # type: ignore[override]
-        """Get async app (v3 workflow) client with same API as sync"""
+        """Get async app workflow client with same API as sync"""
         if self._async_app_client is None:
             self._async_app_client = AsyncAppClient(self)  # type: ignore[arg-type]
         return self._async_app_client

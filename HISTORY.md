@@ -1,3 +1,14 @@
+## 9.8.0 (June 24, 2026)
+
+### New Features
+
+- **App workflow client (`client.app`)**: A new `AppClient` (sync + async) for creating, running, scheduling, and managing app workflows over the `/v1/app*` APIs. Workflows are created from an `app_id` plus a generic `inputs` dict validated server-side against the app's live input contract (`client.app.get_input_contract(...)`), so a connector never needs a hand-maintained package class. Includes `describe`, `get_input_contract`, `create`, `get`, `get_all`, `update`, `submit`, `get_run`, `cancel_run`, `add_schedule`, `remove_schedule`, and `delete`. (#959)
+- **Typed app builders (`pyatlan.model.apps`)**: A fluent, UI-equivalent builder per connector app (e.g. `BigqueryCrawler`, `SnowflakeCrawler`, `AtlanTableau`, `PostgresCrawler`, …) mirroring the "new app" wizard (Credential → Connection → Metadata). A builder vaults the credential, mints the connection qualified name, and assembles the full payload — so callers never hand-build a connection object or guess an input key, e.g. `BigqueryCrawler(client).service_account(...).connection(name=...).include({...}).run()`. Each builder and its typed `*Inputs` model are generated from the app's UI configmaps via `uv run generate-apps`; 33 connectors are covered. (#959)
+
+### Deprecations
+
+- **`WorkflowClient` (`client.workflow`) and `model.packages.*`** are deprecated and now emit a `DeprecationWarning`. They target the legacy workflow surface, which no longer runs on newer Atlan tenants — use `client.app` instead. (#959)
+
 ## 9.7.6 (June 16, 2026)
 
 ### Bug Fixes

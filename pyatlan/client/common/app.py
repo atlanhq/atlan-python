@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-"""Shared business logic for the native (v3) App APIs (BLDX-1472).
+"""Shared business logic for the App workflow APIs.
 
 Each operation exposes ``prepare_request`` / ``process_response`` static methods
 so the sync (:class:`pyatlan.client.app.AppClient`) and async

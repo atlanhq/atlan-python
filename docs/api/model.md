@@ -34,15 +34,15 @@
 
 ## App
 
-Models for the native (v3) app-workflow APIs (`client.app`).
+Models for the app-workflow APIs (`client.app`).
 
 ::: pyatlan.model.app
 
 ## Packages
 
-> **Deprecated.** Package builders produce Argo workflows, which no longer run on
-> Automation-Engine-migrated tenants. Use `client.app` with the app's input
-> contract instead (see the **App** models above).
+> **Deprecated.** Package builders produce legacy workflows, which no longer run
+> on newer Atlan tenants. Use `client.app` with the app's input contract instead
+> (see the **App** models above).
 
 ::: pyatlan.model.packages
 

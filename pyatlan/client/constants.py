@@ -708,7 +708,7 @@ OPEN_LINEAGE_SEND_EVENT_API = API(
 CONTRACT_DELETE_SCOPE_HEADER = "x-atlan-contract-delete-scope"
 
 # =============================================================================
-# Native (v3) App Workflow APIs (BLDX-1472)
+# App Workflow APIs
 # Served under the gateway prefix `api/service/` (EndPoint.HERACLES).
 # =============================================================================
 APP_BASE_API = "v1/app"

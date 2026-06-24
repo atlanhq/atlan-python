@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-"""Unit tests for the native (v3) App client (BLDX-1472) — sync + async."""
+"""Unit tests for the App workflow client — sync + async."""
 
 from unittest.mock import AsyncMock, Mock
 
@@ -50,7 +50,7 @@ def test_init_rejects_non_apicaller():
 # --------------------------------------------------------------------------- #
 # Discovery
 # --------------------------------------------------------------------------- #
-def test_get_app(client, mock_api_caller):
+def test_describe(client, mock_api_caller):
     mock_api_caller._call_api.return_value = {
         "app_id": "bigquery-crawler",
         "name": "BigQuery",
@@ -58,7 +58,7 @@ def test_get_app(client, mock_api_caller):
         "execution_mode": "native",
         "entrypoints": [{"name": "crawler"}],
     }
-    result = client.get_app("bigquery-crawler")
+    result = client.describe("bigquery-crawler")
     assert isinstance(result, AppInfo)
     assert result.native_ready is True
     assert [e.name for e in result.entrypoints] == ["crawler"]
@@ -227,14 +227,14 @@ def async_mock_api_caller():
 
 
 @pytest.mark.asyncio
-async def test_async_get_app(async_mock_api_caller):
+async def test_async_describe(async_mock_api_caller):
     async_mock_api_caller._call_api.return_value = {
         "app_id": "bigquery-crawler",
         "native_ready": True,
         "entrypoints": [{"name": "crawler"}],
     }
     client = AsyncAppClient(async_mock_api_caller)
-    result = await client.get_app("bigquery-crawler")
+    result = await client.describe("bigquery-crawler")
     assert isinstance(result, AppInfo)
     assert result.native_ready is True
 

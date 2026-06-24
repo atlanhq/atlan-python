@@ -224,6 +224,32 @@ This will:
 - 🎨 Format code automatically
 - ⚡ Support incremental updates
 
+### App Builders Generator
+
+Generate the app builders in `pyatlan.model.apps` (one per connector
+app) from your tenant's UI configmaps. Each app gets a typed `*Inputs` model and a
+fluent, UI-equivalent builder (Credential → Connection → Metadata), plus a matching
+unit-test module under `tests/unit/apps/`.
+
+```bash
+# Needs a tenant with the apps installed
+export ATLAN_BASE_URL=https://<your-tenant-host>
+export ATLAN_API_KEY=<your-api-key>
+
+# Regenerate all app builders + their tests
+uv run generate-apps
+```
+
+This will:
+- 🔎 Discover installed apps (live discovery ∪ the manifest in `generate_apps.py`)
+- 🧩 Read each app's UI configmaps for fields, labels, enums, and the credential form
+- 🏗️ Emit a `{App}Inputs` model + `{App}` builder per app (hand-written builders are never overwritten)
+- 🧪 Generate a per-app config-assertion test module
+- 🎨 Format code automatically
+
+> To cover an app that isn't currently running on the tenant, add its `(app_id, entrypoint)`
+> to `MANIFEST` in [`pyatlan/generator/generate_apps.py`](pyatlan/generator/generate_apps.py).
+
 ## 🏗️ pyatlan_v9 Model Generation (msgspec)
 
 The `pyatlan_v9` package uses [msgspec](https://jcristharris.com/msgspec/) `Struct`-based models generated from Pkl type definitions in the [atlanhq/models](https://github.com/atlanhq/models) repo.
