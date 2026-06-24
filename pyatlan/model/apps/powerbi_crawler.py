@@ -63,8 +63,7 @@ class PowerbiCrawler(AppBuilder):
 
         resp = (
             PowerbiCrawler(client)
-            .service_principal(tenant_id="...", client_id="...", client_secret="...", admin_api="...", admin_api_summary="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(qualified_name="default/powerbi/1700000000")
             .include_workspaces(...)
             .run()
         )

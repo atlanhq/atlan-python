@@ -36,8 +36,7 @@ class OracleMiner(AppBuilder):
 
         resp = (
             OracleMiner(client)
-            .credential_guid("...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(qualified_name="default/oracle/1700000000")
             .start_date(...)
             .run()
         )
@@ -45,7 +44,7 @@ class OracleMiner(AppBuilder):
 
     _APP_ID: ClassVar[str] = "oracle-miner"
     _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
-    _CONNECTOR_NAME: ClassVar[str] = "oracle-miner"
+    _CONNECTOR_NAME: ClassVar[str] = "oracle"
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = OracleMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"workflow_type": "mine-queries"}

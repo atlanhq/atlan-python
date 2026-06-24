@@ -13,7 +13,7 @@ from unittest.mock import Mock
 import pytest
 
 import pyatlan.model.apps as apps
-from pyatlan.model.apps import AppBuilder, BigqueryCrawler
+from pyatlan.model.apps import AppBuilder, BigqueryCrawler, SnowflakeMiner
 
 # Every concrete builder (the hand-written flagship + all generated ones).
 BUILDERS = [
@@ -204,6 +204,32 @@ def test_create_with_existing_guid_sends_guid_not_raw_credential(client):
     out = client.app.create.call_args.kwargs["inputs"].to_inputs()
     assert out["credential_guid"] == "existing-guid"
     assert "credential" not in out  # no raw credential when referencing a guid
+
+
+# --------------------------------------------------------------------------- #
+# Existing-connection (miner) path — select by QN, no name/credential needed
+# --------------------------------------------------------------------------- #
+def test_miner_references_existing_connection_by_qn_only():
+    out = (
+        SnowflakeMiner(Mock())
+        .connection(qualified_name="default/snowflake/1700000000")
+        .preview()
+    )
+    attrs = out["connection"]["attributes"]
+    assert attrs["qualifiedName"] == "default/snowflake/1700000000"
+    # connectorName derived from the QN, not the app-id
+    assert attrs["connectorName"] == "snowflake"
+    assert "name" not in attrs  # no display name needed when selecting existing
+    # no credential supplied — server resolves the connection's default credential
+    assert out["credential_guid"] == ""
+    assert "credential" not in out and "agent_json" not in out
+
+
+def test_connector_name_derived_from_qn(client):
+    # Even when the builder's connector fallback differs, the QN wins.
+    SnowflakeMiner(client).connection(qualified_name="default/snowflake/123").create()
+    out = client.app.create.call_args.kwargs["inputs"].to_inputs()
+    assert out["connection"]["attributes"]["connectorName"] == "snowflake"
 
 
 def test_agent_mode_uses_agent_json_not_credential(client):

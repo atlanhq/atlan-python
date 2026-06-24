@@ -30,7 +30,7 @@ def test_snowflake_miner_builder_payload():
         .credential_guid("g")
         .preview()
     )
-    assert out["connection"]["attributes"]["connectorName"] == "snowflake-miner"
+    assert out["connection"]["attributes"]["connectorName"] == "snowflake"
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"
     assert out["extract_strategy"] == "miner"

@@ -42,8 +42,7 @@ class PowerbiMiner(AppBuilder):
 
         resp = (
             PowerbiMiner(client)
-            .credential_guid("...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(qualified_name="default/powerbi/1700000000")
             .advanced_config('default')
             .run()
         )
@@ -51,7 +50,7 @@ class PowerbiMiner(AppBuilder):
 
     _APP_ID: ClassVar[str] = "powerbi-miner"
     _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
-    _CONNECTOR_NAME: ClassVar[str] = "powerbi-miner"
+    _CONNECTOR_NAME: ClassVar[str] = "powerbi"
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = PowerbiMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}

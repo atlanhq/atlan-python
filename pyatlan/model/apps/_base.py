@@ -102,14 +102,20 @@ class AppBuilder:
     # ── Step 2 · Connection ────────────────────────────────────────────────
     def connection(
         self,
-        name: str,
+        name: Optional[str] = None,
         *,
         admins: Optional[List[str]] = None,
         admin_groups: Optional[List[str]] = None,
         admin_roles: Optional[List[str]] = None,
         qualified_name: Optional[str] = None,
     ):
-        """Name the connection to create (the UI mints ``default/{connector}/{epoch}``)."""
+        """Configure the connection.
+
+        To **create** a new connection (e.g. crawlers), pass ``name`` (the UI mints
+        ``default/{connector}/{epoch}``). To **reference an existing** connection
+        (e.g. miners), pass only ``qualified_name`` — the ``name`` is optional and
+        the server resolves the connection (and its default credential) from the QN.
+        """
         self._connection_name = name
         self._admin_users = list(admins or [])
         self._admin_groups = list(admin_groups or [])
@@ -119,11 +125,21 @@ class AppBuilder:
 
     # ── assembly (no network) ──────────────────────────────────────────────
     def _build_connection(self, qualified_name: str) -> Dict[str, Any]:
+        # Derive the connector from the QN (``default/{connector}/{epoch}``) so a
+        # referenced existing connection (e.g. for miners) reports the right
+        # connectorName, not the builder's app-id-derived fallback.
+        parts = qualified_name.split("/")
+        connector = (
+            parts[1]
+            if len(parts) >= 3 and parts[0] == "default"
+            else self._CONNECTOR_NAME
+        )
         attrs: Dict[str, Any] = {
-            "name": self._connection_name,
             "qualifiedName": qualified_name,
-            "connectorName": self._CONNECTOR_NAME,
+            "connectorName": connector,
         }
+        if self._connection_name:
+            attrs["name"] = self._connection_name
         if self._admin_users:
             attrs["adminUsers"] = self._admin_users
         if self._admin_groups:
@@ -175,6 +191,11 @@ class AppBuilder:
             # credential_guid as a (non-null) string, so send "" to satisfy
             # validation — omitting it is read as null and rejected.
             kwargs["credential"] = self._raw_credential(epoch=epoch, redact=redact)
+            kwargs["credential_guid"] = ""
+        else:
+            # No credential supplied (e.g. miners) — the server resolves the
+            # connection's default credential from its qualified name. The
+            # contract still requires credential_guid as a (non-null) string.
             kwargs["credential_guid"] = ""
         return self._INPUTS_CLASS(**kwargs)
 

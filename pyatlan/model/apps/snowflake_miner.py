@@ -55,8 +55,7 @@ class SnowflakeMiner(AppBuilder):
 
         resp = (
             SnowflakeMiner(client)
-            .credential_guid("...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(qualified_name="default/snowflake/1700000000")
             .snowflake_database('default')
             .run()
         )
@@ -64,7 +63,7 @@ class SnowflakeMiner(AppBuilder):
 
     _APP_ID: ClassVar[str] = "snowflake-miner"
     _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
-    _CONNECTOR_NAME: ClassVar[str] = "snowflake-miner"
+    _CONNECTOR_NAME: ClassVar[str] = "snowflake"
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = SnowflakeMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {

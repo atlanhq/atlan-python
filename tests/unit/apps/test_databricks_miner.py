@@ -34,7 +34,7 @@ def test_databricks_miner_builder_payload():
         .credential_guid("g")
         .preview()
     )
-    assert out["connection"]["attributes"]["connectorName"] == "databricks-miner"
+    assert out["connection"]["attributes"]["connectorName"] == "databricks"
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"
     assert out["miner_lookback_days"] == 30

@@ -76,8 +76,7 @@ class DatabricksMiner(AppBuilder):
 
         resp = (
             DatabricksMiner(client)
-            .credential_guid("...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(qualified_name="default/databricks/1700000000")
             .lineage_extraction_method('system-table')
             .run()
         )
@@ -85,7 +84,7 @@ class DatabricksMiner(AppBuilder):
 
     _APP_ID: ClassVar[str] = "databricks-miner"
     _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
-    _CONNECTOR_NAME: ClassVar[str] = "databricks-miner"
+    _CONNECTOR_NAME: ClassVar[str] = "databricks"
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = DatabricksMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {

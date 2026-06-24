@@ -34,15 +34,14 @@ class PostgresMiner(AppBuilder):
 
         resp = (
             PostgresMiner(client)
-            .credential_guid("...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(qualified_name="default/postgres/1700000000")
             .run()
         )
     """
 
     _APP_ID: ClassVar[str] = "postgres-miner"
     _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
-    _CONNECTOR_NAME: ClassVar[str] = "postgres-miner"
+    _CONNECTOR_NAME: ClassVar[str] = "postgres"
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = PostgresMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}

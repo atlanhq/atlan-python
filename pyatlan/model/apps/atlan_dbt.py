@@ -57,8 +57,7 @@ class AtlanDbt(AppBuilder):
 
         resp = (
             AtlanDbt(client)
-            .api(password="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(qualified_name="default/dbt/1700000000")
             .source('api')
             .run()
         )

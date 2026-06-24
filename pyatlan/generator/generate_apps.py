@@ -509,7 +509,15 @@ def _render_builder(
         meta_blocks.append("")
         meta_samples.append((mname, sample))
 
-    docstring = _builder_docstring(cls, app_id, ep, auth_infos, meta_samples)
+    # Apps that select an existing connection (e.g. miners) instead of creating one.
+    selects_connection = any(
+        _ui(s).get("widget") == "connectionSelector"
+        for s in (cfg.get("properties") or {}).values()
+        if isinstance(s, dict)
+    )
+    docstring = _builder_docstring(
+        cls, app_id, ep, auth_infos, meta_samples, connector_name, selects_connection
+    )
     lines = [
         f"class {cls}(AppBuilder):",
         docstring,
@@ -535,6 +543,8 @@ def _builder_docstring(
     ep: str,
     auth_infos: List[Dict[str, Any]],
     meta_samples: List[Tuple[str, str]],
+    connector_name: str,
+    selects_connection: bool,
 ) -> str:
     """A class docstring with a runnable usage example (first auth + first toggle)."""
     title = (
@@ -543,13 +553,20 @@ def _builder_docstring(
         + " app."
     )
     chain = [f"            {cls}(client)"]
-    if auth_infos:
-        a = auth_infos[0]
-        args = ", ".join(f'{p}="..."' for p in a["required"])
-        chain.append(f"            .{a['name']}({args})")
+    if selects_connection:
+        # e.g. miners: pick an existing connection by QN; its default credential
+        # is reused, so there is no credential step and no name needed.
+        chain.append(
+            f'            .connection(qualified_name="default/{connector_name}/1700000000")'
+        )
     else:
-        chain.append('            .credential_guid("...")')
-    chain.append('            .connection(name="my-connection", admins=["jdoe"])')
+        if auth_infos:
+            a = auth_infos[0]
+            args = ", ".join(f'{p}="..."' for p in a["required"])
+            chain.append(f"            .{a['name']}({args})")
+        else:
+            chain.append('            .credential_guid("...")')
+        chain.append('            .connection(name="my-connection", admins=["jdoe"])')
     if meta_samples:
         mname, sample = meta_samples[0]
         chain.append(f"            .{mname}({sample})")
@@ -734,7 +751,14 @@ def _build_one(
         print(f"  SKIP {app_id} ({ep}): inputs configmap missing")
         return None
     connector_config = _connector_config(cfg) or ""
-    connector_name = re.sub(r"^atlan-connectors-", "", connector_config) or app_id
+    if connector_config:
+        connector_name = re.sub(r"^atlan-connectors-", "", connector_config)
+    else:
+        # No credential widget (e.g. miners select an existing connection) — derive
+        # the connector from the app-id by stripping the atlan- prefix + role suffix.
+        connector_name = re.sub(
+            r"-(crawler|miner)$", "", re.sub(r"^atlan-", "", app_id)
+        )
     cfg2 = cms.get(connector_config, app_id=app_id) if connector_config else None
     cls, content, test = _render_module(
         app_id, ep or "", cfg, cfg2, connector_name, connector_config

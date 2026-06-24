@@ -21,6 +21,6 @@ def test_postgres_miner_builder_payload():
         .credential_guid("g")
         .preview()
     )
-    assert out["connection"]["attributes"]["connectorName"] == "postgres-miner"
+    assert out["connection"]["attributes"]["connectorName"] == "postgres"
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"

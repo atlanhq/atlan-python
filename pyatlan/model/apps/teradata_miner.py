@@ -44,8 +44,7 @@ class TeradataMiner(AppBuilder):
 
         resp = (
             TeradataMiner(client)
-            .credential_guid("...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(qualified_name="default/teradata/1700000000")
             .start_date("")
             .run()
         )
@@ -53,7 +52,7 @@ class TeradataMiner(AppBuilder):
 
     _APP_ID: ClassVar[str] = "teradata-miner"
     _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
-    _CONNECTOR_NAME: ClassVar[str] = "teradata-miner"
+    _CONNECTOR_NAME: ClassVar[str] = "teradata"
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = TeradataMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
