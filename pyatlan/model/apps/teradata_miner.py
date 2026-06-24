@@ -4,12 +4,11 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Literal, Mapping, Optional, Union  # noqa: F401
+from typing import Any, ClassVar, Dict, Literal, Optional
 
-from pydantic.v1 import Field  # noqa: F401
+from pydantic.v1 import Field
 
-
-from ._base import AppBuilder, AppInput, _anchor_filter  # noqa: F401
+from ._base import AppBuilder, AppInput
 
 
 class TeradataMinerInputs(AppInput):

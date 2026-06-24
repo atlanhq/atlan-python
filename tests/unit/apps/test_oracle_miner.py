@@ -24,4 +24,4 @@ def test_oracle_miner_builder_payload():
     assert out["connection"]["attributes"]["connectorName"] == "oracle"
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"
-    assert out["workflow_type"] == "mine-queries"
+    assert out["workflow_type"] == "miner"

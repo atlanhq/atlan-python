@@ -4,12 +4,11 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Literal, Mapping, Optional, Union  # noqa: F401
+from typing import Any, ClassVar, Dict, Optional
 
-from pydantic.v1 import Field  # noqa: F401
+from pydantic.v1 import Field
 
-
-from ._base import AppBuilder, AppInput, _anchor_filter  # noqa: F401
+from ._base import AppBuilder, AppInput
 
 
 class OracleMinerInputs(AppInput):
@@ -47,7 +46,7 @@ class OracleMiner(AppBuilder):
     _CONNECTOR_NAME: ClassVar[str] = "oracle"
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = OracleMinerInputs
-    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"workflow_type": "mine-queries"}
+    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"workflow_type": "miner"}
 
     # ── Step 3 · Metadata ──
     def start_date(self, value: float) -> "OracleMiner":

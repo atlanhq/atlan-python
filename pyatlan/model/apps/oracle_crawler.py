@@ -4,13 +4,13 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Literal, Mapping, Optional, Union  # noqa: F401
+from typing import Any, ClassVar, Dict, List, Literal, Mapping, Optional, Union
 
-from pydantic.v1 import Field  # noqa: F401
+from pydantic.v1 import Field
 
 from pyatlan.model.credential import Credential
 
-from ._base import AppBuilder, AppInput, _anchor_filter  # noqa: F401
+from ._base import AppBuilder, AppInput, _anchor_filter
 
 
 class OracleCrawlerInputs(AppInput):
@@ -56,7 +56,7 @@ class OracleCrawler(AppBuilder):
     _CONNECTOR_CONFIG: ClassVar[str] = "atlan-connectors-oracle"
     _INPUTS_CLASS = OracleCrawlerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {
-        "workflow_type": "extract-metadata",
+        "workflow_type": "crawler",
         "incremental_extraction": "false",
         "system_schema_name": "SYS",
     }

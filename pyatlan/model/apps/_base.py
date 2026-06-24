@@ -113,8 +113,9 @@ class AppBuilder:
 
         To **create** a new connection (e.g. crawlers), pass ``name`` (the UI mints
         ``default/{connector}/{epoch}``). To **reference an existing** connection
-        (e.g. miners), pass only ``qualified_name`` — the ``name`` is optional and
-        the server resolves the connection (and its default credential) from the QN.
+        (e.g. miners), pass only ``qualified_name`` — on ``create()``/``run()`` the
+        builder looks up that connection and reuses its own credential (its
+        ``defaultCredentialGuid``), so no credential step is needed.
         """
         self._connection_name = name
         self._admin_users = list(admins or [])
@@ -193,9 +194,10 @@ class AppBuilder:
             kwargs["credential"] = self._raw_credential(epoch=epoch, redact=redact)
             kwargs["credential_guid"] = ""
         else:
-            # No credential supplied (e.g. miners) — the server resolves the
-            # connection's default credential from its qualified name. The
-            # contract still requires credential_guid as a (non-null) string.
+            # No credential resolved (e.g. preview, or the connection lookup found
+            # nothing) — send "" to satisfy the contract's non-null string so
+            # create() validates. For miners, _create() auto-resolves the existing
+            # connection's credential before assembly.
             kwargs["credential_guid"] = ""
         return self._INPUTS_CLASS(**kwargs)
 
@@ -220,11 +222,43 @@ class AppBuilder:
         """Create the workflow **and** submit a run immediately (``run=True``)."""
         return self._create(name=name, run=True, schedule=schedule)
 
+    def _resolve_connection_credential(self, qualified_name: str) -> Optional[str]:
+        """Look up an existing connection's ``defaultCredentialGuid`` so a caller
+        referencing a connection by QN (e.g. miners) reuses that connection's
+        credential without having to know its guid. Best-effort: returns None if
+        the connection can't be read."""
+        try:
+            from pyatlan.model.assets import Connection
+            from pyatlan.model.fluent_search import FluentSearch
+
+            request = (
+                FluentSearch()
+                .where(Connection.TYPE_NAME.eq("Connection"))
+                .where(Connection.QUALIFIED_NAME.eq(qualified_name))
+                .include_on_results(Connection.DEFAULT_CREDENTIAL_GUID)
+                .page_size(1)
+            ).to_request()
+            for asset in self._client.asset.search(request):
+                return asset.default_credential_guid
+        except Exception:  # noqa: BLE001
+            return None
+        return None
+
     def _create(self, *, name: Optional[str], run: bool, schedule: Optional[Any]):
         epoch = int(time.time())
         qn = (
             self._connection_qualified_name or f"default/{self._CONNECTOR_NAME}/{epoch}"
         )
+        # Referencing an existing connection without a credential (e.g. miners):
+        # reuse that connection's own credential (its defaultCredentialGuid), looked
+        # up by QN — so the caller only needs to supply the connection.
+        if (
+            self._extraction_method != "agent"
+            and self._credential is None
+            and self._credential_guid is None
+            and self._connection_qualified_name
+        ):
+            self._credential_guid = self._resolve_connection_credential(qn)
         inputs = self._assemble(qualified_name=qn, epoch=epoch)
         return self._client.app.create(
             app_id=self._APP_ID,

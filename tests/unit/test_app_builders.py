@@ -232,6 +232,18 @@ def test_connector_name_derived_from_qn(client):
     assert out["connection"]["attributes"]["connectorName"] == "snowflake"
 
 
+def test_miner_auto_resolves_connection_credential(client):
+    # Referencing an existing connection by QN (no credential) → the builder looks
+    # up the connection and reuses its defaultCredentialGuid on create().
+    client.asset.search.return_value = iter(
+        [Mock(default_credential_guid="conn-cred-guid")]
+    )
+    SnowflakeMiner(client).connection(qualified_name="default/snowflake/123").create()
+    assert client.asset.search.called  # connection was looked up
+    out = client.app.create.call_args.kwargs["inputs"].to_inputs()
+    assert out["credential_guid"] == "conn-cred-guid"  # its credential reused
+
+
 def test_agent_mode_uses_agent_json_not_credential(client):
     (
         BigqueryCrawler(client)

@@ -27,7 +27,7 @@ def test_oracle_crawler_builder_payload():
     assert out["connection"]["attributes"]["connectorName"] == "oracle"
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"
-    assert out["workflow_type"] == "extract-metadata"
+    assert out["workflow_type"] == "crawler"
     assert out["incremental_extraction"] == "false"
     assert out["system_schema_name"] == "SYS"
 

@@ -30,6 +30,8 @@ import json
 import keyword
 import os
 import re
+import shutil
+import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -230,18 +232,32 @@ def _auth_keys(cfg2: Dict[str, Any]) -> List[str]:
 # --------------------------------------------------------------------------- #
 # rendering
 # --------------------------------------------------------------------------- #
-_HEADER = (
+_COMMENT_HEADER = (
     "# SPDX-License-Identifier: Apache-2.0\n"
     "# Copyright 2026 Atlan Pte. Ltd.\n"
     "# AUTO-GENERATED from the app's UI configmaps — DO NOT EDIT.\n"
     "# Regenerate: uv run python -m pyatlan.generator.generate_apps\n"
     "from __future__ import annotations\n\n"
-    "from typing import Any, ClassVar, Dict, List, Literal, Mapping, Optional, Union  "
-    "# noqa: F401\n\n"
-    "from pydantic.v1 import Field  # noqa: F401\n\n"
-    "from pyatlan.model.credential import Credential\n\n"
-    "from ._base import AppBuilder, AppInput, _anchor_filter  # noqa: F401\n\n\n"
 )
+
+_TYPING_NAMES = ("Any", "ClassVar", "Dict", "List", "Literal", "Mapping", "Optional", "Union")
+
+
+def _module_header(body: str) -> str:
+    """Build a header importing only the names ``body`` actually uses (no F401)."""
+    out = [_COMMENT_HEADER.rstrip("\n") + "\n\n"]
+    typing_used = [n for n in _TYPING_NAMES if re.search(rf"\b{n}\b", body)]
+    if typing_used:
+        out.append(f"from typing import {', '.join(typing_used)}\n\n")
+    if "Field(" in body:
+        out.append("from pydantic.v1 import Field\n\n")
+    if "Credential(" in body:
+        out.append("from pyatlan.model.credential import Credential\n\n")
+    base = ["AppBuilder", "AppInput"]
+    if "_anchor_filter(" in body:
+        base.append("_anchor_filter")
+    out.append(f"from ._base import {', '.join(sorted(base))}\n\n\n")
+    return "".join(out)
 
 # reserved names a metadata/credential method must not collide with.
 _RESERVED = {
@@ -554,8 +570,8 @@ def _builder_docstring(
     )
     chain = [f"            {cls}(client)"]
     if selects_connection:
-        # e.g. miners: pick an existing connection by QN; its default credential
-        # is reused, so there is no credential step and no name needed.
+        # e.g. miners: select an existing connection by QN — the builder reuses
+        # that connection's own credential automatically (no credential step).
         chain.append(
             f'            .connection(qualified_name="default/{connector_name}/1700000000")'
         )
@@ -676,13 +692,13 @@ def _render_module(
     builder_code, auth_infos = _render_builder(
         builder_cls, inputs_cls, app_id, ep, cfg, cfg2, connector_name, connector_config
     )
-    body = (
-        _HEADER
-        + _render_inputs(inputs_cls, app_id, ep, cfg)
+    code = (
+        _render_inputs(inputs_cls, app_id, ep, cfg)
         + "\n\n"
         + builder_code
         + f'\n\n__all__ = ["{builder_cls}", "{inputs_cls}"]\n'
     )
+    body = _module_header(code) + code
     module = _module_name(app_id, ep)
     test = _render_test_module(
         module,
@@ -868,10 +884,25 @@ def main() -> None:
     # __init__ also re-exports hand-written builders.
     hand = {"bigquery_crawler": ["BigqueryCrawler", "BigqueryCrawlerInputs"]}
     (out_dir / "__init__.py").write_text(_render_init(modules, hand))
+    _format([out_dir, test_dir])
     print(
         f"done ({len(modules)} generated + {len(hand)} hand-written modules; "
         f"tests in {test_dir})"
     )
+
+
+def _format(paths: List[Path]) -> None:
+    """Format + lint-fix the generated code so the output is always clean and
+    deterministic (no manual ruff pass needed)."""
+    ruff = shutil.which("ruff")
+    if not ruff:
+        print("WARNING: ruff not found on PATH — skipping auto-format")
+        return
+    targets = [str(p) for p in paths]
+    print("formatting generated code (ruff) ...")
+    # check --fix first (drops any unused import, sorts), then format (style).
+    subprocess.run([ruff, "check", "--fix", "--quiet", *targets], check=False)
+    subprocess.run([ruff, "format", "--quiet", *targets], check=False)
 
 
 if __name__ == "__main__":
