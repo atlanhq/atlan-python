@@ -51,7 +51,7 @@ class PostgresCrawler(AppBuilder):
 
         resp = (
             PostgresCrawler(client)
-            .basic(username="...", password="...")
+            .basic(username="...", password="...", database="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
@@ -66,14 +66,25 @@ class PostgresCrawler(AppBuilder):
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"use_jdbc_internal_methods": "true"}
 
     # ── Step 1 · Credential ──
-    def basic(self, *, username: str, password: str, **extra: Any) -> "PostgresCrawler":
+    def basic(
+        self,
+        *,
+        username: str,
+        password: str,
+        database: str,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        **extra: Any,
+    ) -> "PostgresCrawler":
         """Direct extraction with Basic Authentication auth.
 
         :param username: Username.
         :param password: Password.
+        :param database: Database.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
+        extras["database"] = database
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
@@ -81,6 +92,8 @@ class PostgresCrawler(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host or "host",
+            port=port or 5432,
             extra=extras,
         )
         return self
@@ -94,6 +107,9 @@ class PostgresCrawler(AppBuilder):
         username_2: str,
         aws_region: str,
         rds_port: Optional[str] = None,
+        database: str,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
         **extra: Any,
     ) -> "PostgresCrawler":
         """Direct extraction with IAM User auth.
@@ -103,6 +119,7 @@ class PostgresCrawler(AppBuilder):
         :param username_2: Database Username.
         :param aws_region: AWS Region.
         :param rds_port: RDS Port.
+        :param database: Database.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
@@ -110,6 +127,7 @@ class PostgresCrawler(AppBuilder):
         extras["aws_region"] = aws_region
         if rds_port is not None:
             extras["rds_port"] = rds_port
+        extras["database"] = database
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
@@ -117,6 +135,8 @@ class PostgresCrawler(AppBuilder):
             auth_type="iam_user",
             username=username,
             password=password,
+            host=host or "host",
+            port=port or 5432,
             extra=extras,
         )
         return self
@@ -130,6 +150,9 @@ class PostgresCrawler(AppBuilder):
         aws_external_id: Optional[str] = None,
         aws_region: str,
         rds_port: Optional[str] = None,
+        database: str,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
         **extra: Any,
     ) -> "PostgresCrawler":
         """Direct extraction with IAM Role auth.
@@ -139,6 +162,7 @@ class PostgresCrawler(AppBuilder):
         :param aws_external_id: AWS External ID.
         :param aws_region: AWS Region.
         :param rds_port: RDS Port.
+        :param database: Database.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
@@ -148,12 +172,15 @@ class PostgresCrawler(AppBuilder):
         extras["aws_region"] = aws_region
         if rds_port is not None:
             extras["rds_port"] = rds_port
+        extras["database"] = database
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
             connector_type=self._CONNECTOR_NAME,
             auth_type="iam_role",
             username=username,
+            host=host or "host",
+            port=port or 5432,
             extra=extras,
         )
         return self

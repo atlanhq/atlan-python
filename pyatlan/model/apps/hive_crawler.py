@@ -58,7 +58,17 @@ class HiveCrawler(AppBuilder):
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
 
     # ── Step 1 · Credential ──
-    def basic(self, *, username: str, password: str, **extra: Any) -> "HiveCrawler":
+    def basic(
+        self,
+        *,
+        username: str,
+        password: str,
+        default_schema: Optional[str] = None,
+        database_name: Optional[str] = None,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        **extra: Any,
+    ) -> "HiveCrawler":
         """Direct extraction with Basic Authentication auth.
 
         :param username: Username.
@@ -66,6 +76,10 @@ class HiveCrawler(AppBuilder):
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
+        if default_schema is not None:
+            extras["default_schema"] = default_schema
+        if database_name is not None:
+            extras["databaseName"] = database_name
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
@@ -73,6 +87,8 @@ class HiveCrawler(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host or "",
+            port=port or 10000,
             extra=extras,
         )
         return self
@@ -90,6 +106,10 @@ class HiveCrawler(AppBuilder):
         client_cert_file: Optional[str] = None,
         client_key_file: Optional[str] = None,
         client_key_passphrase: Optional[str] = None,
+        default_schema: Optional[str] = None,
+        database_name: Optional[str] = None,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
         **extra: Any,
     ) -> "HiveCrawler":
         """Direct extraction with Kerberos Authentication auth.
@@ -115,11 +135,17 @@ class HiveCrawler(AppBuilder):
             extras["client_key-file"] = client_key_file
         if client_key_passphrase is not None:
             extras["client_key_passphrase"] = client_key_passphrase
+        if default_schema is not None:
+            extras["default_schema"] = default_schema
+        if database_name is not None:
+            extras["databaseName"] = database_name
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
             connector_type=self._CONNECTOR_NAME,
             auth_type="kerberos",
+            host=host or "",
+            port=port or 10000,
             extra=extras,
         )
         return self

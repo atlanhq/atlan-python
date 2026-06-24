@@ -62,7 +62,15 @@ class TeradataCrawler(AppBuilder):
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
 
     # ── Step 1 · Credential ──
-    def basic(self, *, username: str, password: str, **extra: Any) -> "TeradataCrawler":
+    def basic(
+        self,
+        *,
+        username: str,
+        password: str,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        **extra: Any,
+    ) -> "TeradataCrawler":
         """Direct extraction with Basic Authentication auth.
 
         :param username: Username.
@@ -77,12 +85,22 @@ class TeradataCrawler(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host or "host",
+            port=port or 1025,
             extra=extras,
         )
         return self
 
     # ── Step 1 · Credential ──
-    def ldap(self, *, username: str, password: str, **extra: Any) -> "TeradataCrawler":
+    def ldap(
+        self,
+        *,
+        username: str,
+        password: str,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        **extra: Any,
+    ) -> "TeradataCrawler":
         """Direct extraction with LDAP Authentication auth.
 
         :param username: Username.
@@ -97,6 +115,8 @@ class TeradataCrawler(AppBuilder):
             auth_type="ldap",
             username=username,
             password=password,
+            host=host or "host",
+            port=port or 1025,
             extra=extras,
         )
         return self

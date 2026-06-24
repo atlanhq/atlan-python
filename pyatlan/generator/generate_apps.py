@@ -230,16 +230,20 @@ def _auth_keys(props: Dict[str, Any]) -> List[str]:
 
 
 def _credential_props(cfg2: Dict[str, Any]) -> Dict[str, Any]:
-    """The dict of credential properties to read auth from. Usually top-level, but
-    JDBC-URL connectors (``AdvancedJDBCUrlGroup``, e.g. mssql) nest the auth-type +
-    host/port/database under ``jdbcUrl`` — descend there only when the top level has
-    no auth of its own (so connectors like postgres, which have both, are unaffected)."""
-    props = cfg2.get("properties") or {}
-    if _auth_keys(props):
-        return props
-    jdbc = props.get("jdbcUrl")
-    if isinstance(jdbc, dict) and isinstance(jdbc.get("properties"), dict):
-        return jdbc["properties"]
+    """The credential properties to read auth + host/port/extra from.
+
+    JDBC-URL connectors (``AdvancedJDBCUrlGroup``) put some credential fields under
+    ``jdbcUrl`` — and split them inconsistently: mssql nests *everything* there,
+    while hive/postgres keep the ``auth-type``/auth objects at the top level but
+    the ``host``/``port``/``extra`` under ``jdbcUrl``. So merge the two (top-level
+    wins on conflict), giving a single view with auth + host/port regardless of
+    where each lives. Connectors without a JDBC-URL group are unchanged."""
+    props = dict(cfg2.get("properties") or {})
+    jdbc = (props.get("jdbcUrl") or {}).get("properties")
+    if isinstance(jdbc, dict):
+        merged = dict(jdbc)
+        merged.update(props)  # top-level values take precedence over the group's
+        return merged
     return props
 
 

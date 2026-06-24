@@ -34,13 +34,13 @@ def test_postgres_crawler_builder_payload():
 
 
 def test_postgres_crawler_credential_basic():
-    b = PostgresCrawler(Mock()).basic(username="x", password="x")
+    b = PostgresCrawler(Mock()).basic(username="x", password="x", database="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-postgres"
     out = (
         PostgresCrawler(Mock())
-        .basic(username="x", password="x")
+        .basic(username="x", password="x", database="x")
         .connection(name="c")
         .preview()
     )
@@ -50,14 +50,16 @@ def test_postgres_crawler_credential_basic():
 
 def test_postgres_crawler_credential_iam_user():
     b = PostgresCrawler(Mock()).iam_user(
-        username="x", password="x", username_2="x", aws_region="x"
+        username="x", password="x", username_2="x", aws_region="x", database="x"
     )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-postgres"
     out = (
         PostgresCrawler(Mock())
-        .iam_user(username="x", password="x", username_2="x", aws_region="x")
+        .iam_user(
+            username="x", password="x", username_2="x", aws_region="x", database="x"
+        )
         .connection(name="c")
         .preview()
     )
@@ -66,13 +68,15 @@ def test_postgres_crawler_credential_iam_user():
 
 
 def test_postgres_crawler_credential_iam_role():
-    b = PostgresCrawler(Mock()).iam_role(username="x", aws_role_arn="x", aws_region="x")
+    b = PostgresCrawler(Mock()).iam_role(
+        username="x", aws_role_arn="x", aws_region="x", database="x"
+    )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-postgres"
     out = (
         PostgresCrawler(Mock())
-        .iam_role(username="x", aws_role_arn="x", aws_region="x")
+        .iam_role(username="x", aws_role_arn="x", aws_region="x", database="x")
         .connection(name="c")
         .preview()
     )
