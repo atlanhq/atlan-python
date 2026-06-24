@@ -4,7 +4,9 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, Literal, Optional
+import json
+
+from typing import Any, ClassVar, Dict, Literal, Optional, Union
 
 from pydantic.v1 import Field
 
@@ -32,9 +34,9 @@ class AtlanDbtInputs(AppInput):
     """Manifest Source — Where dbt artifacts are stored: Atlan's object storage (no extra credential needed) or an external cloud bucket (AWS/GCP/Azure)."""
     core_extract_output_prefix: str = Field("", alias="core-extract-output-prefix")
     """Object Storage Prefix — Path in Atlan's object storage where dbt artifacts are stored. Example: artifacts/apps/dbt/workflows/my-run/metadata"""
-    include_filter: Dict[str, Any] = Field("{}", alias="include-filter")
+    include_filter: Union[Dict[str, Any], str] = Field("{}", alias="include-filter")
     """Include Metadata — Only selected projects and jobs will be processed. Exclude gets preference over include."""
-    exclude_filter: Dict[str, Any] = Field("{}", alias="exclude-filter")
+    exclude_filter: Union[Dict[str, Any], str] = Field("{}", alias="exclude-filter")
     """Exclude Metadata — Selected projects and jobs will not be processed."""
     include_filter_core: str = Field("*", alias="include-filter-core")
     """Include Folder Filter — Pipe-separated folder name patterns to include during Core extraction. Defaults to * (include all). Example: project_a|project_b"""
@@ -89,7 +91,6 @@ class AtlanDbt(AppBuilder):
             "api_credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-dbt",
-                connector_type="dbt",
                 auth_type="api",
                 password=password,
                 host=host or "https://cloud.getdbt.com",
@@ -130,7 +131,6 @@ class AtlanDbt(AppBuilder):
             "object_store_credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-dbt-objectstore",
-                connector_type="dbt-objectstore",
                 auth_type="aws",
                 extra=extras,
             ),
@@ -167,7 +167,6 @@ class AtlanDbt(AppBuilder):
             "object_store_credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-dbt-objectstore",
-                connector_type="dbt-objectstore",
                 auth_type="gcp",
                 extra=extras,
             ),
@@ -210,7 +209,6 @@ class AtlanDbt(AppBuilder):
             "object_store_credential_guid",
             Credential(
                 connector_config_name="atlan-connectors-dbt-objectstore",
-                connector_type="dbt-objectstore",
                 auth_type="azure",
                 extra=extras,
             ),
@@ -232,14 +230,18 @@ class AtlanDbt(AppBuilder):
         self._metadata["core-extract-output-prefix"] = value
         return self
 
-    def include_metadata(self, value: Dict[str, Any]) -> "AtlanDbt":
+    def include_metadata(self, value: Union[Dict[str, Any], str]) -> "AtlanDbt":
         """Include Metadata — Only selected projects and jobs will be processed. Exclude gets preference over include."""
-        self._metadata["include-filter"] = value
+        self._metadata["include-filter"] = (
+            value if isinstance(value, str) else json.dumps(value)
+        )
         return self
 
-    def exclude_metadata(self, value: Dict[str, Any]) -> "AtlanDbt":
+    def exclude_metadata(self, value: Union[Dict[str, Any], str]) -> "AtlanDbt":
         """Exclude Metadata — Selected projects and jobs will not be processed."""
-        self._metadata["exclude-filter"] = value
+        self._metadata["exclude-filter"] = (
+            value if isinstance(value, str) else json.dumps(value)
+        )
         return self
 
     def include_folder_filter(self, value: str) -> "AtlanDbt":

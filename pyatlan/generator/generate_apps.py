@@ -76,7 +76,9 @@ _PRIMITIVE = {
     "integer": "int",
     "number": "float",
     "string": "str",
-    "object": "Dict[str, Any]",
+    # object fields are submitted as a JSON string (the contract accepts a string
+    # or array, and the worker json.loads it), so accept either a dict or a string.
+    "object": "Union[Dict[str, Any], str]",
     "array": "List[Any]",
 }
 
@@ -258,12 +260,23 @@ _COMMENT_HEADER = (
     "from __future__ import annotations\n\n"
 )
 
-_TYPING_NAMES = ("Any", "ClassVar", "Dict", "List", "Literal", "Mapping", "Optional", "Union")
+_TYPING_NAMES = (
+    "Any",
+    "ClassVar",
+    "Dict",
+    "List",
+    "Literal",
+    "Mapping",
+    "Optional",
+    "Union",
+)
 
 
 def _module_header(body: str) -> str:
     """Build a header importing only the names ``body`` actually uses (no F401)."""
     out = [_COMMENT_HEADER.rstrip("\n") + "\n\n"]
+    if re.search(r"\bjson\.", body):
+        out.append("import json\n\n")
     typing_used = [n for n in _TYPING_NAMES if re.search(rf"\b{n}\b", body)]
     if typing_used:
         out.append(f"from typing import {', '.join(typing_used)}\n\n")
@@ -276,6 +289,7 @@ def _module_header(body: str) -> str:
         base.append("_anchor_filter")
     out.append(f"from ._base import {', '.join(sorted(base))}\n\n\n")
     return "".join(out)
+
 
 # reserved names a metadata/credential method must not collide with.
 _RESERVED = {
@@ -381,14 +395,15 @@ def _render_credential_method(
     if mname in _RESERVED or mname in used:
         mname = f"{mname}_auth"
     used.add(mname)
-    connector_type = re.sub(r"^atlan-connectors-", "", config_name) or config_name
 
     params: List[str] = ["self", "*"]
     body_extras: List[Tuple[str, str, bool]] = []
     required_params: List[str] = []
+    # connector_type is intentionally omitted: the vault stores credentials with an
+    # empty connector_type, and a non-empty value blocks vaulting into a named field
+    # (e.g. dbt's api_credential_guid). connector_config_name identifies the connector.
     cred_kwargs: List[str] = [
         f'connector_config_name="{config_name}"',
-        f'connector_type="{connector_type}"',
         f'auth_type="{av}"',
     ]
     doc_lines: List[str] = []
@@ -506,7 +521,7 @@ def _render_credential_method(
             else f"port={port_param}"
         )
     cred_kwargs.append("extra=extras")  # 'extra' is the Credential field alias
-    code.append('        return self._stage_credential(')
+    code.append("        return self._stage_credential(")
     code.append(f'            "{target_field}",')
     code.append("            Credential(")
     for kw in cred_kwargs:
@@ -549,6 +564,16 @@ def _render_metadata_method(
         )
         body = f'        self._metadata["{key}"] = _anchor_filter(assets)'
         sample = '{"my_db": ["my_schema"]}'
+    elif spec.get("type") in ("object", "conditional"):
+        # object/filter fields are submitted as a JSON string: the contract accepts
+        # a string or array (not a nested object), and the worker json.loads it back.
+        vtype = _value_type(spec)
+        sig = f'    def {mname}(self, value: {vtype}) -> "{{cls}}":'
+        body = (
+            f'        self._metadata["{key}"] = '
+            "value if isinstance(value, str) else json.dumps(value)"
+        )
+        sample = "{}"
     else:
         vtype = _value_type(spec)
         sig = f'    def {mname}(self, value: {vtype}) -> "{{cls}}":'
@@ -753,14 +778,12 @@ def _render_test_module(
     for info in auth_infos:
         mname, required = info["name"], info["required"]
         # port params are typed int — use a number; everything else a string.
-        args = ", ".join(
-            f"{p}=443" if p == "port" else f'{p}="x"' for p in required
-        )
+        args = ", ".join(f"{p}=443" if p == "port" else f'{p}="x"' for p in required)
         out.append(f"def test_{module}_credential_{mname}():")
         out.append(f"    b = {builder_cls}(Mock()).{mname}({args})")
         out.append("    assert b._raw_creds  # a credential was staged")
         out.append("    cred = next(iter(b._raw_creds.values()))")
-        out.append('    assert cred.auth_type and cred.connector_config_name')
+        out.append("    assert cred.auth_type and cred.connector_config_name")
         out.append("")
         out.append("")
 
@@ -778,7 +801,14 @@ def _render_module(
     base = _class_base(app_id, ep)
     inputs_cls, builder_cls = f"{base}Inputs", base
     builder_code, auth_infos = _render_builder(
-        builder_cls, inputs_cls, app_id, ep, cfg, creds, connector_name, connector_config
+        builder_cls,
+        inputs_cls,
+        app_id,
+        ep,
+        cfg,
+        creds,
+        connector_name,
+        connector_config,
     )
     code = (
         _render_inputs(inputs_cls, app_id, ep, cfg)

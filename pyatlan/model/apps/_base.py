@@ -202,12 +202,13 @@ class AppBuilder:
             return self._INPUTS_CLASS(**kwargs)
 
         # Each staged credential lands in its target field:
-        #  * the standard ``credential_guid`` field -> the raw body goes in the
-        #    shape-recognized ``credential`` key, which the create endpoint vaults
-        #    and routes back to credential_guid;
+        #  * the standard ``credential_guid`` field is a string, so its raw body
+        #    goes in the shape-recognized ``credential`` key — the create endpoint
+        #    vaults that and routes the issued guid back to credential_guid;
         #  * a named field (e.g. dbt's api_credential_guid) is NOT vaulted from the
-        #    payload — it must hold a real guid, so _create() vaults it first
-        #    (``resolved_guids``); in preview the redacted raw is shown for clarity.
+        #    payload, so _create() vaults it first (``resolved_guids``) and the guid
+        #    string goes straight in the field. In preview (offline) the redacted
+        #    raw body is shown instead, for inspection.
         for field, cred in self._raw_creds.items():
             if field == "credential_guid":
                 kwargs["credential"] = self._raw_credential(
@@ -244,6 +245,24 @@ class AppBuilder:
     def run(self, *, name: Optional[str] = None, schedule: Optional[Any] = None):
         """Create the workflow **and** submit a run immediately (``run=True``)."""
         return self._create(name=name, run=True, schedule=schedule)
+
+    def _vault_credential(self, cred: Credential) -> str:
+        """Vault a raw credential into Atlan's secret store and return its guid.
+
+        Used for named credential fields (e.g. dbt's ``api_credential_guid``) that
+        the create endpoint does not vault from the payload — only the standard
+        ``credential`` shape-key is vaulted there. Created without a connection test
+        (these connectors have no credential-test helper); the workflow's own
+        preflight validates the credential when it runs.
+        """
+        from pyatlan.client.common.credential import CredentialCreate
+        from pyatlan.model.credential import CredentialResponse
+
+        endpoint, query_params = CredentialCreate.prepare_request(test=False)
+        raw = self._client._call_api(
+            api=endpoint, query_params=query_params, request_obj=cred
+        )
+        return CredentialResponse(**raw).id or ""
 
     def _resolve_connection_credential(self, qualified_name: str) -> Optional[str]:
         """Look up an existing connection's ``defaultCredentialGuid`` so a caller
@@ -290,9 +309,7 @@ class AppBuilder:
                 continue
             if not cred.name:
                 cred.name = f"default-{self._CONNECTOR_NAME}-{epoch}-0"
-            resolved_guids[field] = self._client.credentials.creator(
-                credential=cred, test=True
-            ).id
+            resolved_guids[field] = self._vault_credential(cred)
         inputs = self._assemble(
             qualified_name=qn, epoch=epoch, resolved_guids=resolved_guids
         )
