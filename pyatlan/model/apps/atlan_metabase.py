@@ -68,20 +68,21 @@ class AtlanMetabase(AppBuilder):
         :param username: Username.
         :param password: Password.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host or "https://<account-id>.metabaseapp.com",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-metabase",
+                connector_type="metabase",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host or "https://<account-id>.metabaseapp.com",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_collections(self, value: Dict[str, Any]) -> "AtlanMetabase":

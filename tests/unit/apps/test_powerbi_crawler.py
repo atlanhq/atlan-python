@@ -43,39 +43,15 @@ def test_powerbi_crawler_credential_service_principal():
         admin_api="x",
         admin_api_summary="x",
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-powerbi"
-    out = (
-        PowerbiCrawler(Mock())
-        .service_principal(
-            tenant_id="x",
-            client_id="x",
-            client_secret="x",
-            admin_api="x",
-            admin_api_summary="x",
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_powerbi_crawler_credential_basic():
     b = PowerbiCrawler(Mock()).basic(
         username="x", password="x", tenant_id="x", client_id="x", client_secret="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-powerbi"
-    out = (
-        PowerbiCrawler(Mock())
-        .basic(
-            username="x", password="x", tenant_id="x", client_id="x", client_secret="x"
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

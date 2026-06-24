@@ -82,21 +82,22 @@ class PostgresCrawler(AppBuilder):
         :param password: Password.
         :param database: Database.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["database"] = database
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host or "host",
-            port=port or 5432,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-postgres",
+                connector_type="postgres",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host or "host",
+                port=port or 5432,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def iam_user(
@@ -121,7 +122,6 @@ class PostgresCrawler(AppBuilder):
         :param rds_port: RDS Port.
         :param database: Database.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["username"] = username_2
         extras["aws_region"] = aws_region
@@ -129,17 +129,19 @@ class PostgresCrawler(AppBuilder):
             extras["rds_port"] = rds_port
         extras["database"] = database
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="iam_user",
-            username=username,
-            password=password,
-            host=host or "host",
-            port=port or 5432,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-postgres",
+                connector_type="postgres",
+                auth_type="iam_user",
+                username=username,
+                password=password,
+                host=host or "host",
+                port=port or 5432,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def iam_role(
@@ -164,7 +166,6 @@ class PostgresCrawler(AppBuilder):
         :param rds_port: RDS Port.
         :param database: Database.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["aws_role_arn"] = aws_role_arn
         if aws_external_id is not None:
@@ -174,16 +175,18 @@ class PostgresCrawler(AppBuilder):
             extras["rds_port"] = rds_port
         extras["database"] = database
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="iam_role",
-            username=username,
-            host=host or "host",
-            port=port or 5432,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-postgres",
+                connector_type="postgres",
+                auth_type="iam_role",
+                username=username,
+                host=host or "host",
+                port=port or 5432,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_metadata(

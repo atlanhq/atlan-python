@@ -107,7 +107,6 @@ class SnowflakeCrawler(AppBuilder):
         :param role: Role.
         :param warehouse: Warehouse.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         if private_key_password is not None:
             extras["private_key_password"] = private_key_password
@@ -116,17 +115,19 @@ class SnowflakeCrawler(AppBuilder):
         if warehouse is not None:
             extras["warehouse"] = warehouse
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="keypair",
-            username=username,
-            password=password,
-            host=host or "",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-snowflake",
+                connector_type="snowflake",
+                auth_type="keypair",
+                username=username,
+                password=password,
+                host=host or "",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def okta(
@@ -149,7 +150,6 @@ class SnowflakeCrawler(AppBuilder):
         :param role: Role.
         :param warehouse: Warehouse.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["authenticator"] = authenticator
         if role is not None:
@@ -157,17 +157,19 @@ class SnowflakeCrawler(AppBuilder):
         if warehouse is not None:
             extras["warehouse"] = warehouse
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="okta",
-            username=username,
-            password=password,
-            host=host or "",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-snowflake",
+                connector_type="snowflake",
+                auth_type="okta",
+                username=username,
+                password=password,
+                host=host or "",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def entra_id(
@@ -192,7 +194,6 @@ class SnowflakeCrawler(AppBuilder):
         :param role: Role.
         :param warehouse: Warehouse.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["tenantId"] = tenant_id
         extras["oauthScope"] = oauth_scope
@@ -201,17 +202,19 @@ class SnowflakeCrawler(AppBuilder):
         if warehouse is not None:
             extras["warehouse"] = warehouse
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="entra_id",
-            username=username,
-            password=password,
-            host=host or "",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-snowflake",
+                connector_type="snowflake",
+                auth_type="entra_id",
+                username=username,
+                password=password,
+                host=host or "",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def basic(
@@ -232,24 +235,25 @@ class SnowflakeCrawler(AppBuilder):
         :param role: Role.
         :param warehouse: Warehouse.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         if role is not None:
             extras["role"] = role
         if warehouse is not None:
             extras["warehouse"] = warehouse
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host or "",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-snowflake",
+                connector_type="snowflake",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host or "",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def extraction_method(

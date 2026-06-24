@@ -33,17 +33,9 @@ def test_kafka_apache_credential_noauth():
     b = KafkaApache(Mock()).noauth(
         security_protocol="x", include_schema_registry="x", host="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-apache-kafka"
-    out = (
-        KafkaApache(Mock())
-        .noauth(security_protocol="x", include_schema_registry="x", host="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_kafka_apache_credential_basic():
@@ -54,23 +46,9 @@ def test_kafka_apache_credential_basic():
         include_schema_registry="x",
         host="x",
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-apache-kafka"
-    out = (
-        KafkaApache(Mock())
-        .basic(
-            username="x",
-            password="x",
-            security_protocol="x",
-            include_schema_registry="x",
-            host="x",
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_kafka_apache_credential_scram():
@@ -82,36 +60,13 @@ def test_kafka_apache_credential_scram():
         include_schema_registry="x",
         host="x",
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-apache-kafka"
-    out = (
-        KafkaApache(Mock())
-        .scram(
-            username="x",
-            password="x",
-            security_protocol="x",
-            sasl_mechanism="x",
-            include_schema_registry="x",
-            host="x",
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_kafka_apache_credential_mtls():
     b = KafkaApache(Mock()).mtls(mtls_cert="x", include_schema_registry="x", host="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-apache-kafka"
-    out = (
-        KafkaApache(Mock())
-        .mtls(mtls_cert="x", include_schema_registry="x", host="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

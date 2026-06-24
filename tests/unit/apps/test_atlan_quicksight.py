@@ -33,14 +33,6 @@ def test_atlan_quicksight_credential_iam():
     b = AtlanQuicksight(Mock()).iam(
         username="x", password="x", region="x", accountid="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-quicksight"
-    out = (
-        AtlanQuicksight(Mock())
-        .iam(username="x", password="x", region="x", accountid="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

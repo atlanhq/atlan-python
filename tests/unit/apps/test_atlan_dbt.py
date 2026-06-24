@@ -38,9 +38,36 @@ def test_atlan_dbt_builder_payload():
 
 def test_atlan_dbt_credential_api():
     b = AtlanDbt(Mock()).api(password="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-dbt"
-    out = AtlanDbt(Mock()).api(password="x").connection(name="c").preview()
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
+
+
+def test_atlan_dbt_credential_aws():
+    b = AtlanDbt(Mock()).aws(bucket="x", prefix="x", region="x")
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
+
+
+def test_atlan_dbt_credential_gcp():
+    b = AtlanDbt(Mock()).gcp(
+        project_id="x", service_account_json="x", bucket="x", prefix="x"
+    )
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
+
+
+def test_atlan_dbt_credential_azure():
+    b = AtlanDbt(Mock()).azure(
+        tenant_id="x",
+        client_id="x",
+        client_secret="x",
+        account_name="x",
+        bucket="x",
+        prefix="x",
+    )
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

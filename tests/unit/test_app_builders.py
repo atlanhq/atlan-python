@@ -148,7 +148,7 @@ def test_service_account_credential_shape():
         connectivity="private",
         host="https://psc.internal",
     )
-    cred = b._credential
+    cred = b._raw_creds["credential_guid"]
     assert cred.auth_type == "basic"
     assert cred.connector_config_name == "atlan-connectors-bigquery"
     assert cred.username == "svc@p.iam.gserviceaccount.com"
@@ -158,8 +158,9 @@ def test_service_account_credential_shape():
 
 def test_workload_identity_federation_auth_type():
     b = BigqueryCrawler(Mock()).workload_identity_federation(project_id="proj")
-    assert b._credential.auth_type == "gcp-wif"
-    assert b._credential.extras["project_id"] == "proj"
+    cred = b._raw_creds["credential_guid"]
+    assert cred.auth_type == "gcp-wif"
+    assert cred.extras["project_id"] == "proj"
 
 
 # --------------------------------------------------------------------------- #

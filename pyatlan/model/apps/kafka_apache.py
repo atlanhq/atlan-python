@@ -76,7 +76,6 @@ class KafkaApache(AppBuilder):
         :param schema_registry_username: API Key.
         :param schema_registry_password: API Secret.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["securityProtocol"] = security_protocol
         extras["includeSchemaRegistry"] = include_schema_registry
@@ -87,14 +86,16 @@ class KafkaApache(AppBuilder):
         if schema_registry_password is not None:
             extras["schemaRegistryPassword"] = schema_registry_password
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="noauth",
-            host=host,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-apache-kafka",
+                connector_type="apache-kafka",
+                auth_type="noauth",
+                host=host,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def basic(
@@ -120,7 +121,6 @@ class KafkaApache(AppBuilder):
         :param schema_registry_username: API Key.
         :param schema_registry_password: API Secret.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["securityProtocol"] = security_protocol
         extras["includeSchemaRegistry"] = include_schema_registry
@@ -131,16 +131,18 @@ class KafkaApache(AppBuilder):
         if schema_registry_password is not None:
             extras["schemaRegistryPassword"] = schema_registry_password
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-apache-kafka",
+                connector_type="apache-kafka",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def scram(
@@ -168,7 +170,6 @@ class KafkaApache(AppBuilder):
         :param schema_registry_username: API Key.
         :param schema_registry_password: API Secret.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["securityProtocol"] = security_protocol
         extras["saslMechanism"] = sasl_mechanism
@@ -180,16 +181,18 @@ class KafkaApache(AppBuilder):
         if schema_registry_password is not None:
             extras["schemaRegistryPassword"] = schema_registry_password
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="scram",
-            username=username,
-            password=password,
-            host=host,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-apache-kafka",
+                connector_type="apache-kafka",
+                auth_type="scram",
+                username=username,
+                password=password,
+                host=host,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def mtls(
@@ -213,7 +216,6 @@ class KafkaApache(AppBuilder):
         :param schema_registry_username: API Key.
         :param schema_registry_password: API Secret.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         if key_password is not None:
             extras["key_password"] = key_password
@@ -226,14 +228,16 @@ class KafkaApache(AppBuilder):
         if schema_registry_password is not None:
             extras["schemaRegistryPassword"] = schema_registry_password
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="mtls",
-            host=host,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-apache-kafka",
+                connector_type="apache-kafka",
+                auth_type="mtls",
+                host=host,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def skip_internal_topics(self, value: bool) -> "KafkaApache":

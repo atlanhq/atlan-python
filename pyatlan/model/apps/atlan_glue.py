@@ -67,19 +67,20 @@ class AtlanGlue(AppBuilder):
         :param password: AWS Secret Key.
         :param region: Region.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["region"] = region
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="iam",
-            username=username,
-            password=password,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-glue",
+                connector_type="glue",
+                auth_type="iam",
+                username=username,
+                password=password,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def role(
@@ -96,7 +97,6 @@ class AtlanGlue(AppBuilder):
         :param aws_external_id: AWS External ID.
         :param region: Region.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         if aws_role_arn is not None:
             extras["aws_role_arn"] = aws_role_arn
@@ -104,13 +104,15 @@ class AtlanGlue(AppBuilder):
             extras["aws_external_id"] = aws_external_id
         extras["region"] = region
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="role",
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-glue",
+                connector_type="glue",
+                auth_type="role",
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def catalog_id(self, value: str) -> "AtlanGlue":

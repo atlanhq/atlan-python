@@ -68,20 +68,21 @@ class AtlanPresto(AppBuilder):
         :param username: Username.
         :param password: Password.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host,
-            port=port or 8080,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-presto",
+                connector_type="presto",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host,
+                port=port or 8080,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_metadata(

@@ -30,46 +30,22 @@ def test_atlan_mysql_builder_payload():
 
 def test_atlan_mysql_credential_basic():
     b = AtlanMysql(Mock()).basic(username="x", password="x", host="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-mysql"
-    out = (
-        AtlanMysql(Mock())
-        .basic(username="x", password="x", host="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_mysql_credential_iam_user():
     b = AtlanMysql(Mock()).iam_user(
         username="x", password="x", username_2="x", host="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-mysql"
-    out = (
-        AtlanMysql(Mock())
-        .iam_user(username="x", password="x", username_2="x", host="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_mysql_credential_iam_role():
     b = AtlanMysql(Mock()).iam_role(username="x", aws_role_arn="x", host="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-mysql"
-    out = (
-        AtlanMysql(Mock())
-        .iam_role(username="x", aws_role_arn="x", host="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

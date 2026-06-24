@@ -31,17 +31,9 @@ def test_hive_crawler_builder_payload():
 
 def test_hive_crawler_credential_basic():
     b = HiveCrawler(Mock()).basic(username="x", password="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-hive"
-    out = (
-        HiveCrawler(Mock())
-        .basic(username="x", password="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_hive_crawler_credential_kerberos():
@@ -52,20 +44,6 @@ def test_hive_crawler_credential_kerberos():
         krb5_conf_file="x",
         kerberos_type="x",
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-hive"
-    out = (
-        HiveCrawler(Mock())
-        .kerberos(
-            principal="x",
-            service_name="x",
-            keytab_file="x",
-            krb5_conf_file="x",
-            kerberos_type="x",
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

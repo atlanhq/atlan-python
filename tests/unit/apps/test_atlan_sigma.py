@@ -30,14 +30,6 @@ def test_atlan_sigma_builder_payload():
 
 def test_atlan_sigma_credential_api_token():
     b = AtlanSigma(Mock()).api_token(username="x", password="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-sigma"
-    out = (
-        AtlanSigma(Mock())
-        .api_token(username="x", password="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

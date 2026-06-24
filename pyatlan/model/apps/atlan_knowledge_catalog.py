@@ -84,7 +84,6 @@ class AtlanKnowledgeCatalog(AppBuilder):
         :param service_account_json: Service Account JSON.
         :param project_id: Home Project Id.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         if network_connectivity is not None:
             extras["network_connectivity"] = network_connectivity
@@ -93,13 +92,15 @@ class AtlanKnowledgeCatalog(AppBuilder):
         extras["service_account_json"] = service_account_json
         extras["project_id"] = project_id
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-dataplex",
+                connector_type="dataplex",
+                auth_type="basic",
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def gcp_wif(
@@ -124,7 +125,6 @@ class AtlanKnowledgeCatalog(AppBuilder):
         :param atlan_oauth_secret: Atlan OAuth Client Secret.
         :param project_id: Home Project Id.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         if network_connectivity is not None:
             extras["network_connectivity"] = network_connectivity
@@ -136,13 +136,15 @@ class AtlanKnowledgeCatalog(AppBuilder):
         extras["atlan_oauth_secret"] = atlan_oauth_secret
         extras["project_id"] = project_id
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="gcp-wif",
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-dataplex",
+                connector_type="dataplex",
+                auth_type="gcp-wif",
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_projects_optional(

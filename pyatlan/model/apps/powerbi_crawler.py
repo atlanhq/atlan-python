@@ -96,7 +96,6 @@ class PowerbiCrawler(AppBuilder):
         :param client_secret: Client Secret.
         :param admin_api: Enable Scanner API Access.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["tenantId"] = tenant_id
         extras["clientId"] = client_id
@@ -104,15 +103,17 @@ class PowerbiCrawler(AppBuilder):
         extras["adminAPI"] = admin_api
         extras["adminAPISummary"] = admin_api_summary
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="service_principal",
-            host=host or "api.powerbi.com",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-powerbi",
+                connector_type="powerbi",
+                auth_type="service_principal",
+                host=host or "api.powerbi.com",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def basic(
@@ -135,23 +136,24 @@ class PowerbiCrawler(AppBuilder):
         :param client_id: Client ID.
         :param client_secret: Client Secret.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["tenantId"] = tenant_id
         extras["clientId"] = client_id
         extras["clientSecret"] = client_secret
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host or "api.powerbi.com",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-powerbi",
+                connector_type="powerbi",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host or "api.powerbi.com",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_workspaces(self, value: Union[Dict[str, Any], str]) -> "PowerbiCrawler":

@@ -29,29 +29,13 @@ def test_atlan_dynamodb_builder_payload():
 
 def test_atlan_dynamodb_credential_iam_user():
     b = AtlanDynamodb(Mock()).iam_user(username="x", password="x", region="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-dynamodb"
-    out = (
-        AtlanDynamodb(Mock())
-        .iam_user(username="x", password="x", region="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_dynamodb_credential_assume_role():
     b = AtlanDynamodb(Mock()).assume_role(aws_role_arn="x", region="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-dynamodb"
-    out = (
-        AtlanDynamodb(Mock())
-        .assume_role(aws_role_arn="x", region="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

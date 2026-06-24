@@ -83,19 +83,138 @@ class AtlanDbt(AppBuilder):
 
         :param password: API Token.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="api",
-            password=password,
-            host=host or "https://cloud.getdbt.com",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "api_credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-dbt",
+                connector_type="dbt",
+                auth_type="api",
+                password=password,
+                host=host or "https://cloud.getdbt.com",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
+
+    # ── Step 1 · Credential ──
+    def aws(
+        self,
+        *,
+        object_store_access_type: Optional[str] = None,
+        aws_role_arn: Optional[str] = None,
+        bucket: str,
+        prefix: str,
+        region: str,
+        **extra: Any,
+    ) -> "AtlanDbt":
+        """Direct extraction with aws auth.
+
+        :param object_store_access_type: Authentication.
+        :param aws_role_arn: AWS Role ARN.
+        :param bucket: Bucket Name.
+        :param prefix: Prefix.
+        :param region: Region.
+        """
+        extras: Dict[str, Any] = {}
+        if object_store_access_type is not None:
+            extras["object_store_access_type"] = object_store_access_type
+        if aws_role_arn is not None:
+            extras["aws_role_arn"] = aws_role_arn
+        extras["bucket"] = bucket
+        extras["prefix"] = prefix
+        extras["region"] = region
+        extras.update(extra)
+        return self._stage_credential(
+            "object_store_credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-dbt-objectstore",
+                connector_type="dbt-objectstore",
+                auth_type="aws",
+                extra=extras,
+            ),
+        )
+
+    # ── Step 1 · Credential ──
+    def gcp(
+        self,
+        *,
+        object_store_access_type: Optional[str] = None,
+        project_id: str,
+        service_account_json: str,
+        bucket: str,
+        prefix: str,
+        **extra: Any,
+    ) -> "AtlanDbt":
+        """Direct extraction with gcp auth.
+
+        :param object_store_access_type: Authentication.
+        :param project_id: Project ID.
+        :param service_account_json: Service Account JSON.
+        :param bucket: Bucket Name.
+        :param prefix: Prefix.
+        """
+        extras: Dict[str, Any] = {}
+        if object_store_access_type is not None:
+            extras["object_store_access_type"] = object_store_access_type
+        extras["project_id"] = project_id
+        extras["service_account_json"] = service_account_json
+        extras["bucket"] = bucket
+        extras["prefix"] = prefix
+        extras.update(extra)
+        return self._stage_credential(
+            "object_store_credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-dbt-objectstore",
+                connector_type="dbt-objectstore",
+                auth_type="gcp",
+                extra=extras,
+            ),
+        )
+
+    # ── Step 1 · Credential ──
+    def azure(
+        self,
+        *,
+        object_store_access_type: Optional[str] = None,
+        tenant_id: str,
+        client_id: str,
+        client_secret: str,
+        account_name: str,
+        bucket: str,
+        prefix: str,
+        **extra: Any,
+    ) -> "AtlanDbt":
+        """Direct extraction with azure auth.
+
+        :param object_store_access_type: Authentication.
+        :param tenant_id: Tenant ID.
+        :param client_id: Client ID.
+        :param client_secret: Client Secret.
+        :param account_name: Account Name.
+        :param bucket: Container Name.
+        :param prefix: Prefix.
+        """
+        extras: Dict[str, Any] = {}
+        if object_store_access_type is not None:
+            extras["object_store_access_type"] = object_store_access_type
+        extras["tenant_id"] = tenant_id
+        extras["client_id"] = client_id
+        extras["client_secret"] = client_secret
+        extras["account_name"] = account_name
+        extras["bucket"] = bucket
+        extras["prefix"] = prefix
+        extras.update(extra)
+        return self._stage_credential(
+            "object_store_credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-dbt-objectstore",
+                connector_type="dbt-objectstore",
+                auth_type="azure",
+                extra=extras,
+            ),
+        )
 
     # ── Step 3 · Metadata ──
     def source(self, value: Literal["api", "objectstore"]) -> "AtlanDbt":

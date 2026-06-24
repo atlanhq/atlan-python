@@ -70,20 +70,21 @@ class AtlanMysql(AppBuilder):
         :param username: Username.
         :param password: Password.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host,
-            port=port or 3306,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-mysql",
+                connector_type="mysql",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host,
+                port=port or 3306,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def iam_user(
@@ -102,21 +103,22 @@ class AtlanMysql(AppBuilder):
         :param password: AWS Secret Access Key.
         :param username_2: Database User.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["username"] = username_2
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="iam_user",
-            username=username,
-            password=password,
-            host=host,
-            port=port or 3306,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-mysql",
+                connector_type="mysql",
+                auth_type="iam_user",
+                username=username,
+                password=password,
+                host=host,
+                port=port or 3306,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def iam_role(
@@ -135,22 +137,23 @@ class AtlanMysql(AppBuilder):
         :param aws_role_arn: IAM Role ARN.
         :param aws_external_id: AWS External ID.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["aws_role_arn"] = aws_role_arn
         if aws_external_id is not None:
             extras["aws_external_id"] = aws_external_id
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="iam_role",
-            username=username,
-            host=host,
-            port=port or 3306,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-mysql",
+                connector_type="mysql",
+                auth_type="iam_role",
+                username=username,
+                host=host,
+                port=port or 3306,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_metadata(

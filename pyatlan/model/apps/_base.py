@@ -76,7 +76,10 @@ class AppBuilder:
     def __init__(self, client: Any):
         self._client = client
         self._extraction_method: str = "direct"
-        self._credential: Optional[Credential] = None
+        # field name (wire key) -> raw Credential to vault into that field. A
+        # connector may expose several (e.g. dbt: api_credential_guid +
+        # object_store_credential_guid); the standard field is "credential_guid".
+        self._raw_creds: Dict[str, Credential] = {}
         self._credential_guid: Optional[str] = None
         self._agent_json: Optional[Any] = None
         self._connection_name: Optional[str] = None
@@ -87,6 +90,13 @@ class AppBuilder:
         self._metadata: Dict[str, Any] = {}
 
     # ── Step 1 · Credential ────────────────────────────────────────────────
+    def _stage_credential(self, field: str, credential: Credential):
+        """Stage a raw credential to be vaulted into ``field`` (used by generated
+        per-auth-type methods)."""
+        self._extraction_method = "direct"
+        self._raw_creds[field] = credential
+        return self
+
     def credential_guid(self, guid: str):
         """Reuse an already-vaulted credential instead of creating a new one."""
         self._credential_guid = guid
@@ -149,12 +159,12 @@ class AppBuilder:
             attrs["adminRoles"] = self._admin_roles
         return {"typeName": "Connection", "attributes": attrs}
 
-    def _raw_credential(self, *, epoch: int, redact: bool = False) -> Dict[str, Any]:
-        """Serialize the staged credential to the camelCase raw-credential body the
+    def _raw_credential(
+        self, cred: Credential, *, epoch: int, redact: bool = False
+    ) -> Dict[str, Any]:
+        """Serialize a staged credential to the camelCase raw-credential body the
         create endpoint vaults server-side (``authType`` + ``extra.*`` …). The
         secret never persists in the workflow — it is stripped after vaulting."""
-        cred = self._credential
-        assert cred is not None
         out: Dict[str, Any] = {
             "authType": cred.auth_type,
             "name": cred.name or f"default-{self._CONNECTOR_NAME}-{epoch}-0",
@@ -183,21 +193,24 @@ class AppBuilder:
         kwargs["extraction_method"] = self._extraction_method
         if self._extraction_method == "agent":
             kwargs["agent_json"] = self._agent_json
-        elif self._credential_guid is not None:
-            # Reference an already-vaulted credential.
+            return self._INPUTS_CLASS(**kwargs)
+
+        # Vault each staged raw credential into its target field. The standard
+        # "credential_guid" field is a string, so its raw body goes in the
+        # shape-recognized ``credential`` key (and credential_guid is sent ""); any
+        # other (named) credential field — e.g. dbt's api_credential_guid /
+        # object_store_credential_guid — takes the raw body directly.
+        for field, cred in self._raw_creds.items():
+            raw = self._raw_credential(cred, epoch=epoch, redact=redact)
+            if field == "credential_guid":
+                kwargs["credential"] = raw
+            else:
+                kwargs[field] = raw
+        if self._credential_guid is not None:
             kwargs["credential_guid"] = self._credential_guid
-        elif self._credential is not None:
-            # Net-new: embed the raw credential; the create endpoint vaults it and
-            # overwrites credential_guid with the issued guid. The contract types
-            # credential_guid as a (non-null) string, so send "" to satisfy
-            # validation — omitting it is read as null and rejected.
-            kwargs["credential"] = self._raw_credential(epoch=epoch, redact=redact)
-            kwargs["credential_guid"] = ""
-        else:
-            # No credential resolved (e.g. preview, or the connection lookup found
-            # nothing) — send "" to satisfy the contract's non-null string so
-            # create() validates. For miners, _create() auto-resolves the existing
-            # connection's credential before assembly.
+        elif "credential_guid" not in kwargs:
+            # Contract types credential_guid as a (non-null) string; "" satisfies
+            # validation when we didn't set it above (omitting reads as null).
             kwargs["credential_guid"] = ""
         return self._INPUTS_CLASS(**kwargs)
 
@@ -254,7 +267,7 @@ class AppBuilder:
         # up by QN — so the caller only needs to supply the connection.
         if (
             self._extraction_method != "agent"
-            and self._credential is None
+            and not self._raw_creds
             and self._credential_guid is None
             and self._connection_qualified_name
         ):

@@ -76,23 +76,24 @@ class AtlanMssql(AppBuilder):
         :param database: Database.
         :param enable_ssl: Encrypt Connection.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["database"] = database
         if enable_ssl is not None:
             extras["__enable_ssl"] = enable_ssl
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host or "host",
-            port=port or 1433,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-mssql",
+                connector_type="mssql",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host or "host",
+                port=port or 1433,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def azure_ad_sp(
@@ -115,7 +116,6 @@ class AtlanMssql(AppBuilder):
         :param database: Database.
         :param enable_ssl: Encrypt Connection.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["aad_principal_id"] = aad_principal_id
         extras["aad_principal_secret"] = aad_principal_secret
@@ -124,15 +124,17 @@ class AtlanMssql(AppBuilder):
         if enable_ssl is not None:
             extras["__enable_ssl"] = enable_ssl
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="azure-ad-sp",
-            host=host or "host",
-            port=port or 1433,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-mssql",
+                connector_type="mssql",
+                auth_type="azure-ad-sp",
+                host=host or "host",
+                port=port or 1433,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def ntlm(
@@ -155,24 +157,25 @@ class AtlanMssql(AppBuilder):
         :param database: Database.
         :param enable_ssl: Encrypt Connection.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["domain"] = domain
         extras["database"] = database
         if enable_ssl is not None:
             extras["__enable_ssl"] = enable_ssl
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="ntlm",
-            username=username,
-            password=password,
-            host=host or "host",
-            port=port or 1433,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-mssql",
+                connector_type="mssql",
+                auth_type="ntlm",
+                username=username,
+                password=password,
+                host=host or "host",
+                port=port or 1433,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def agent_name(self, value: str) -> "AtlanMssql":

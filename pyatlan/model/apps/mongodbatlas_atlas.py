@@ -78,7 +78,6 @@ class MongodbatlasAtlas(AppBuilder):
         :param ssl: SSL.
         :param connection_string: Connection string (advanced — overrides above fields).
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["native-host"] = native_host
         extras["default-database"] = default_database
@@ -87,17 +86,19 @@ class MongodbatlasAtlas(AppBuilder):
         if connection_string is not None:
             extras["connection_string"] = connection_string
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host,
-            port=port or 27017,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-mongodb",
+                connector_type="mongodb",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host,
+                port=port or 27017,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_databases(self, value: str) -> "MongodbatlasAtlas":

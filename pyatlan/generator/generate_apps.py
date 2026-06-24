@@ -367,26 +367,28 @@ def _default_repr(spec: Dict[str, Any]) -> str:
 
 
 def _render_credential_method(
-    av: str, props: Dict[str, Any], used: set
+    av: str, props: Dict[str, Any], target_field: str, config_name: str, used: set
 ) -> Tuple[str, Dict[str, Any]]:
     """Render one credential method for auth-type ``av`` within a credential-props
     root (top-level, or a JDBC-URL group — see :func:`_credential_props`).
 
-    Returns (code, info) where info = {"name", "required"} — the method name and
-    its required parameter names (used by the generated tests)."""
+    ``target_field`` is the input field the vaulted credential lands in (e.g.
+    ``credential_guid`` or dbt's ``api_credential_guid``); ``config_name`` is that
+    credential's connector config. Returns (code, info)."""
     nested = (props.get(av) or {}).get("properties") or {}
     # Concise, stable method name from the auth-type key (e.g. basic, ntlm, jwt).
     mname = _snake(av)
     if mname in _RESERVED or mname in used:
         mname = f"{mname}_auth"
     used.add(mname)
+    connector_type = re.sub(r"^atlan-connectors-", "", config_name) or config_name
 
     params: List[str] = ["self", "*"]
     body_extras: List[Tuple[str, str, bool]] = []
     required_params: List[str] = []
     cred_kwargs: List[str] = [
-        "connector_config_name=self._CONNECTOR_CONFIG",
-        "connector_type=self._CONNECTOR_NAME",
+        f'connector_config_name="{config_name}"',
+        f'connector_type="{connector_type}"',
         f'auth_type="{av}"',
     ]
     doc_lines: List[str] = []
@@ -480,7 +482,6 @@ def _render_credential_method(
     for dl in doc_lines:
         code.append(f"        {dl}")
     code.append('        """')
-    code.append('        self._extraction_method = "direct"')
     # extras assembly
     code.append("        extras: Dict[str, Any] = {}")
     for ekey, pname, required in body_extras:
@@ -505,11 +506,13 @@ def _render_credential_method(
             else f"port={port_param}"
         )
     cred_kwargs.append("extra=extras")  # 'extra' is the Credential field alias
-    code.append("        self._credential = Credential(")
+    code.append('        return self._stage_credential(')
+    code.append(f'            "{target_field}",')
+    code.append("            Credential(")
     for kw in cred_kwargs:
-        code.append(f"            {kw},")
+        code.append(f"                {kw},")
+    code.append("            ),")
     code.append("        )")
-    code.append("        return self")
     return "\n".join(code), {"name": mname, "required": required_params}
 
 
@@ -566,7 +569,7 @@ def _render_builder(
     app_id: str,
     ep: str,
     cfg: Dict[str, Any],
-    cfg2: Optional[Dict[str, Any]],
+    creds: List[Tuple[str, Dict[str, Any], str]],
     connector_name: str,
     connector_config: str,
 ) -> Tuple[str, List[Dict[str, Any]]]:
@@ -574,12 +577,16 @@ def _render_builder(
     auth_infos: List[Dict[str, Any]] = []
 
     # Render credential methods first (so the docstring example can reference one).
+    # A connector may expose several credential widgets (e.g. dbt) — emit a method
+    # per auth-type of each, targeting that widget's input field.
     used: set = set()
     cred_blocks: List[str] = []
-    if cfg2:
-        cred_props = _credential_props(cfg2)
+    for target_field, cm2, config_name in creds:
+        cred_props = _credential_props(cm2)
         for av in _auth_keys(cred_props):
-            code, info = _render_credential_method(av, cred_props, used)
+            code, info = _render_credential_method(
+                av, cred_props, target_field, config_name, used
+            )
             auth_infos.append(info)
             cred_blocks.append("    # ── Step 1 · Credential ──")
             cred_blocks.append(code.replace("{cls}", cls))
@@ -729,20 +736,18 @@ def _render_test_module(
     out.append("")
     out.append("")
 
-    # 3) every generated credential method builds the right Credential
+    # 3) every generated credential method stages a credential
     for info in auth_infos:
         mname, required = info["name"], info["required"]
-        args = ", ".join(f'{p}="x"' for p in required)
+        # port params are typed int — use a number; everything else a string.
+        args = ", ".join(
+            f"{p}=443" if p == "port" else f'{p}="x"' for p in required
+        )
         out.append(f"def test_{module}_credential_{mname}():")
         out.append(f"    b = {builder_cls}(Mock()).{mname}({args})")
-        out.append("    cred = b._credential")
-        out.append("    assert cred is not None")
-        out.append(f'    assert cred.connector_config_name == "{connector_config}"')
-        raw = f"    out = {builder_cls}(Mock()).{mname}({args})"
-        raw += '.connection(name="c").preview()'
-        out.append(raw)
-        out.append('    assert out["credential"]["authType"]')
-        out.append('    assert out["credential_guid"] == ""')
+        out.append("    assert b._raw_creds  # a credential was staged")
+        out.append("    cred = next(iter(b._raw_creds.values()))")
+        out.append('    assert cred.auth_type and cred.connector_config_name')
         out.append("")
         out.append("")
 
@@ -753,14 +758,14 @@ def _render_module(
     app_id: str,
     ep: str,
     cfg: Dict[str, Any],
-    cfg2: Optional[Dict[str, Any]],
+    creds: List[Tuple[str, Dict[str, Any], str]],
     connector_name: str,
     connector_config: str,
 ) -> Tuple[str, str, str]:
     base = _class_base(app_id, ep)
     inputs_cls, builder_cls = f"{base}Inputs", base
     builder_code, auth_infos = _render_builder(
-        builder_cls, inputs_cls, app_id, ep, cfg, cfg2, connector_name, connector_config
+        builder_cls, inputs_cls, app_id, ep, cfg, creds, connector_name, connector_config
     )
     code = (
         _render_inputs(inputs_cls, app_id, ep, cfg)
@@ -788,11 +793,16 @@ def _render_module(
 # --------------------------------------------------------------------------- #
 # discovery + orchestration
 # --------------------------------------------------------------------------- #
-def _connector_config(cfg: Dict[str, Any]) -> Optional[str]:
-    for spec in (cfg.get("properties") or {}).values():
+def _credential_widgets(cfg: Dict[str, Any]) -> List[Tuple[str, str]]:
+    """Every credential widget in the inputs form, as (field_wire_key, credentialType).
+    Most apps have one; some (e.g. dbt) have several with different credentialTypes."""
+    out: List[Tuple[str, str]] = []
+    for key, spec in (cfg.get("properties") or {}).items():
         if isinstance(spec, dict) and _ui(spec).get("widget") == "credential":
-            return _ui(spec).get("credentialType")
-    return None
+            ct = _ui(spec).get("credentialType")
+            if ct:
+                out.append((_snake(key), ct))
+    return out
 
 
 def discover_targets(client: AtlanClient) -> List[Tuple[str, Optional[str]]]:
@@ -836,23 +846,30 @@ def _build_one(
     if not cfg:
         print(f"  SKIP {app_id} ({ep}): inputs configmap missing")
         return None
-    connector_config = _connector_config(cfg) or ""
-    if connector_config:
-        connector_name = re.sub(r"^atlan-connectors-", "", connector_config)
+    widgets = _credential_widgets(cfg)
+    # Fetch each credential widget's configmap -> (field, cm2, credentialType).
+    creds: List[Tuple[str, Dict[str, Any], str]] = []
+    for field, ct in widgets:
+        cm2 = cms.get(ct, app_id=app_id)
+        if cm2:
+            creds.append((field, cm2, ct))
+    primary_config = widgets[0][1] if widgets else ""
+    if primary_config:
+        connector_name = re.sub(r"^atlan-connectors-", "", primary_config)
     else:
         # No credential widget (e.g. miners select an existing connection) — derive
         # the connector from the app-id by stripping the atlan- prefix + role suffix.
         connector_name = re.sub(
             r"-(crawler|miner)$", "", re.sub(r"^atlan-", "", app_id)
         )
-    cfg2 = cms.get(connector_config, app_id=app_id) if connector_config else None
     cls, content, test = _render_module(
-        app_id, ep or "", cfg, cfg2, connector_name, connector_config
+        app_id, ep or "", cfg, creds, connector_name, primary_config
     )
     n_meta = len(_metadata_fields(cfg))
-    n_auth = len(_auth_keys(_credential_props(cfg2))) if cfg2 else 0
+    n_auth = sum(len(_auth_keys(_credential_props(cm2))) for _, cm2, _ in creds)
     print(
-        f"  generated {module}.py :: {cls} ({n_meta} metadata, {n_auth} auth methods)"
+        f"  generated {module}.py :: {cls} "
+        f"({n_meta} metadata, {n_auth} auth methods, {len(creds)} credential(s))"
     )
     return module, cls, content, test
 

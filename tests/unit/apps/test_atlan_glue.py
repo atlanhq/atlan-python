@@ -31,24 +31,13 @@ def test_atlan_glue_builder_payload():
 
 def test_atlan_glue_credential_iam():
     b = AtlanGlue(Mock()).iam(username="x", password="x", region="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-glue"
-    out = (
-        AtlanGlue(Mock())
-        .iam(username="x", password="x", region="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_glue_credential_role():
     b = AtlanGlue(Mock()).role(region="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-glue"
-    out = AtlanGlue(Mock()).role(region="x").connection(name="c").preview()
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

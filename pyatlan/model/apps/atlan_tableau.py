@@ -94,7 +94,6 @@ class AtlanTableau(AppBuilder):
         :param protocol: SSL.
         :param self_signed_ssl_certificate: SSL Certificate.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         if default_site is not None:
             extras["defaultSite"] = default_site
@@ -102,17 +101,19 @@ class AtlanTableau(AppBuilder):
         if self_signed_ssl_certificate is not None:
             extras["selfSignedSSLCertificate"] = self_signed_ssl_certificate
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host,
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-tableau",
+                connector_type="tableau",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host,
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def personal_access_token(
@@ -135,7 +136,6 @@ class AtlanTableau(AppBuilder):
         :param protocol: SSL.
         :param self_signed_ssl_certificate: SSL Certificate.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         if default_site is not None:
             extras["defaultSite"] = default_site
@@ -143,17 +143,19 @@ class AtlanTableau(AppBuilder):
         if self_signed_ssl_certificate is not None:
             extras["selfSignedSSLCertificate"] = self_signed_ssl_certificate
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="personal_access_token",
-            username=username,
-            password=password,
-            host=host,
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-tableau",
+                connector_type="tableau",
+                auth_type="personal_access_token",
+                username=username,
+                password=password,
+                host=host,
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def jwt(
@@ -180,7 +182,6 @@ class AtlanTableau(AppBuilder):
         :param protocol: SSL.
         :param self_signed_ssl_certificate: SSL Certificate.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["client_id"] = client_id
         extras["private_id"] = private_id
@@ -191,16 +192,18 @@ class AtlanTableau(AppBuilder):
         if self_signed_ssl_certificate is not None:
             extras["selfSignedSSLCertificate"] = self_signed_ssl_certificate
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="jwt",
-            username=username,
-            host=host,
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-tableau",
+                connector_type="tableau",
+                auth_type="jwt",
+                username=username,
+                host=host,
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_projects(self, value: Dict[str, Any]) -> "AtlanTableau":

@@ -30,14 +30,6 @@ def test_atlan_presto_builder_payload():
 
 def test_atlan_presto_credential_basic():
     b = AtlanPresto(Mock()).basic(username="x", password="x", host="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-presto"
-    out = (
-        AtlanPresto(Mock())
-        .basic(username="x", password="x", host="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

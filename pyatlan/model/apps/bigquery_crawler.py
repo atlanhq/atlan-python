@@ -114,18 +114,19 @@ class BigqueryCrawler(AppBuilder):
         :param connectivity: ``public`` (Google's endpoint) or ``private`` (PSC).
         :param host: Private Service Connect host (required for ``private``).
         """
-        self._extraction_method = "direct"
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            host=host or self._DEFAULT_HOST,
-            port=port or self._DEFAULT_PORT,
-            username=email,
-            password=service_account_json,
-            extra={"project_id": project_id, "connect_type": connectivity},
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name=self._CONNECTOR_CONFIG,
+                connector_type=self._CONNECTOR_NAME,
+                auth_type="basic",
+                host=host or self._DEFAULT_HOST,
+                port=port or self._DEFAULT_PORT,
+                username=email,
+                password=service_account_json,
+                extra={"project_id": project_id, "connect_type": connectivity},
+            ),
         )
-        return self
 
     def workload_identity_federation(
         self,
@@ -137,16 +138,17 @@ class BigqueryCrawler(AppBuilder):
         **extra: Any,
     ) -> "BigqueryCrawler":
         """Direct extraction with Workload Identity Federation auth."""
-        self._extraction_method = "direct"
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="gcp-wif",
-            host=host or self._DEFAULT_HOST,
-            port=port or self._DEFAULT_PORT,
-            extra={"project_id": project_id, "connect_type": connectivity, **extra},
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name=self._CONNECTOR_CONFIG,
+                connector_type=self._CONNECTOR_NAME,
+                auth_type="gcp-wif",
+                host=host or self._DEFAULT_HOST,
+                port=port or self._DEFAULT_PORT,
+                extra={"project_id": project_id, "connect_type": connectivity, **extra},
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──────────────────────────────────────────────────
     def include(self, assets: Union[str, Mapping[str, List[str]]]) -> "BigqueryCrawler":

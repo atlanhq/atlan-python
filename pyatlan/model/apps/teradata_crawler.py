@@ -76,20 +76,21 @@ class TeradataCrawler(AppBuilder):
         :param username: Username.
         :param password: Password.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host or "host",
-            port=port or 1025,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-teradata",
+                connector_type="teradata",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host or "host",
+                port=port or 1025,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def ldap(
@@ -106,20 +107,21 @@ class TeradataCrawler(AppBuilder):
         :param username: Username.
         :param password: Password.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="ldap",
-            username=username,
-            password=password,
-            host=host or "host",
-            port=port or 1025,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-teradata",
+                connector_type="teradata",
+                auth_type="ldap",
+                username=username,
+                password=password,
+                host=host or "host",
+                port=port or 1025,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_metadata(

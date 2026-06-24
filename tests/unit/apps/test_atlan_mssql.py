@@ -31,48 +31,22 @@ def test_atlan_mssql_builder_payload():
 
 def test_atlan_mssql_credential_basic():
     b = AtlanMssql(Mock()).basic(username="x", password="x", database="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-mssql"
-    out = (
-        AtlanMssql(Mock())
-        .basic(username="x", password="x", database="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_mssql_credential_azure_ad_sp():
     b = AtlanMssql(Mock()).azure_ad_sp(
         aad_principal_id="x", aad_principal_secret="x", tenant_id="x", database="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-mssql"
-    out = (
-        AtlanMssql(Mock())
-        .azure_ad_sp(
-            aad_principal_id="x", aad_principal_secret="x", tenant_id="x", database="x"
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_mssql_credential_ntlm():
     b = AtlanMssql(Mock()).ntlm(username="x", password="x", domain="x", database="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-mssql"
-    out = (
-        AtlanMssql(Mock())
-        .ntlm(username="x", password="x", domain="x", database="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

@@ -68,20 +68,21 @@ class AtlanSigma(AppBuilder):
         :param username: Client ID.
         :param password: API Token.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="api_token",
-            username=username,
-            password=password,
-            host=host or "aws-api.sigmacomputing.com",
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-sigma",
+                connector_type="sigma",
+                auth_type="api_token",
+                username=username,
+                password=password,
+                host=host or "aws-api.sigmacomputing.com",
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_workbooks(self, value: Dict[str, Any]) -> "AtlanSigma":

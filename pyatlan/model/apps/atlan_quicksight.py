@@ -66,20 +66,21 @@ class AtlanQuicksight(AppBuilder):
         :param region: Region.
         :param accountid: AWS Account ID.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["region"] = region
         extras["accountid"] = accountid
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="iam",
-            username=username,
-            password=password,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-quicksight",
+                connector_type="quicksight",
+                auth_type="iam",
+                username=username,
+                password=password,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def fetch_all_assets_without_folder(

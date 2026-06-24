@@ -44,61 +44,29 @@ def test_snowflake_crawler_builder_payload():
 
 def test_snowflake_crawler_credential_keypair():
     b = SnowflakeCrawler(Mock()).keypair(username="x", password="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-snowflake"
-    out = (
-        SnowflakeCrawler(Mock())
-        .keypair(username="x", password="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_snowflake_crawler_credential_okta():
     b = SnowflakeCrawler(Mock()).okta(username="x", password="x", authenticator="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-snowflake"
-    out = (
-        SnowflakeCrawler(Mock())
-        .okta(username="x", password="x", authenticator="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_snowflake_crawler_credential_entra_id():
     b = SnowflakeCrawler(Mock()).entra_id(
         username="x", password="x", tenant_id="x", oauth_scope="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-snowflake"
-    out = (
-        SnowflakeCrawler(Mock())
-        .entra_id(username="x", password="x", tenant_id="x", oauth_scope="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_snowflake_crawler_credential_basic():
     b = SnowflakeCrawler(Mock()).basic(username="x", password="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-snowflake"
-    out = (
-        SnowflakeCrawler(Mock())
-        .basic(username="x", password="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

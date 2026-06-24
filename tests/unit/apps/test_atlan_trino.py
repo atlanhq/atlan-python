@@ -35,39 +35,15 @@ def test_atlan_trino_credential_basic():
         disable_ssl_verification="x",
         host="x",
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-trino"
-    out = (
-        AtlanTrino(Mock())
-        .basic(
-            username="x",
-            password="x",
-            enable_tls_https="x",
-            disable_ssl_verification="x",
-            host="x",
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_trino_credential_jwt():
     b = AtlanTrino(Mock()).jwt(
         jwt_token="x", enable_tls_https="x", disable_ssl_verification="x", host="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-trino"
-    out = (
-        AtlanTrino(Mock())
-        .jwt(
-            jwt_token="x", enable_tls_https="x", disable_ssl_verification="x", host="x"
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

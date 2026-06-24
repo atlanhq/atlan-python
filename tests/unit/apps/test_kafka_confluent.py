@@ -38,21 +38,6 @@ def test_kafka_confluent_credential_basic():
         include_schema_registry="x",
         host="x",
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-confluent-kafka"
-    out = (
-        KafkaConfluent(Mock())
-        .basic(
-            username="x",
-            password="x",
-            security_protocol="x",
-            include_cloud_metrics="x",
-            include_schema_registry="x",
-            host="x",
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

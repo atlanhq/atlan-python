@@ -84,7 +84,6 @@ class OracleCrawler(AppBuilder):
         :param database_name: Default Database Name.
         :param protocol: Protocol.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["sid"] = sid
         extras["databaseName"] = database_name
@@ -95,17 +94,19 @@ class OracleCrawler(AppBuilder):
         if wallet_password is not None:
             extras["walletPassword"] = wallet_password
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host,
-            port=port or 1521,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-oracle",
+                connector_type="oracle",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host,
+                port=port or 1521,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_metadata(

@@ -72,22 +72,23 @@ class AtlanTrino(AppBuilder):
         :param enable_tls_https: Enable TLS/HTTPS.
         :param disable_ssl_verification: Disable SSL verification.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["__enable_tls_https"] = enable_tls_https
         extras["__disable_ssl_verification"] = disable_ssl_verification
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host,
-            port=port or 8080,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-trino",
+                connector_type="trino",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host,
+                port=port or 8080,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def jwt(
@@ -106,21 +107,22 @@ class AtlanTrino(AppBuilder):
         :param enable_tls_https: Enable TLS/HTTPS.
         :param disable_ssl_verification: Disable SSL verification.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["__jwt_token"] = jwt_token
         extras["__enable_tls_https"] = enable_tls_https
         extras["__disable_ssl_verification"] = disable_ssl_verification
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="jwt",
-            host=host,
-            port=port or 8080,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-trino",
+                connector_type="trino",
+                auth_type="jwt",
+                host=host,
+                port=port or 8080,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_metadata(

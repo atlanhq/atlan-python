@@ -110,20 +110,21 @@ class DatabricksCrawler(AppBuilder):
         :param password: Personal Access Token.
         :param http_path: HTTP Path.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["__http_path"] = http_path
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            password=password,
-            host=host,
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-databricks",
+                connector_type="databricks",
+                auth_type="basic",
+                password=password,
+                host=host,
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def aws_service(
@@ -140,20 +141,21 @@ class DatabricksCrawler(AppBuilder):
         :param client_id: Client ID.
         :param client_secret: Client Secret.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["clientID"] = client_id
         extras["clientSecret"] = client_secret
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="aws_service",
-            host=host,
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-databricks",
+                connector_type="databricks",
+                auth_type="aws_service",
+                host=host,
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def azure_service(
@@ -172,21 +174,22 @@ class DatabricksCrawler(AppBuilder):
         :param client_secret: Client Secret.
         :param tenant_id: Tenant ID.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["clientID"] = client_id
         extras["clientSecret"] = client_secret
         extras["tenantID"] = tenant_id
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="azure_service",
-            host=host,
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-databricks",
+                connector_type="databricks",
+                auth_type="azure_service",
+                host=host,
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def extraction_strategy(

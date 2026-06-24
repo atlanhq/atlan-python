@@ -66,19 +66,20 @@ class Anaplan(AppBuilder):
         :param username: Username.
         :param password: Password.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host or "",
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-anaplan",
+                connector_type="anaplan",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host or "",
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 1 · Credential ──
     def ca_cert(
@@ -96,20 +97,21 @@ class Anaplan(AppBuilder):
         :param password: Encoded Signed Data.
         :param ca_certificate: CA Certificate File.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["CaCertificate"] = ca_certificate
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="ca_cert",
-            username=username,
-            password=password,
-            host=host or "",
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-anaplan",
+                connector_type="anaplan",
+                auth_type="ca_cert",
+                username=username,
+                password=password,
+                host=host or "",
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_metadata(self, value: Dict[str, Any]) -> "Anaplan":

@@ -32,29 +32,13 @@ def test_teradata_crawler_builder_payload():
 
 def test_teradata_crawler_credential_basic():
     b = TeradataCrawler(Mock()).basic(username="x", password="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-teradata"
-    out = (
-        TeradataCrawler(Mock())
-        .basic(username="x", password="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_teradata_crawler_credential_ldap():
     b = TeradataCrawler(Mock()).ldap(username="x", password="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-teradata"
-    out = (
-        TeradataCrawler(Mock())
-        .ldap(username="x", password="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

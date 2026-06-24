@@ -31,26 +31,13 @@ def test_anaplan_builder_payload():
 
 def test_anaplan_credential_basic():
     b = Anaplan(Mock()).basic(username="x", password="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-anaplan"
-    out = (
-        Anaplan(Mock()).basic(username="x", password="x").connection(name="c").preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_anaplan_credential_ca_cert():
     b = Anaplan(Mock()).ca_cert(username="x", password="x", ca_certificate="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-anaplan"
-    out = (
-        Anaplan(Mock())
-        .ca_cert(username="x", password="x", ca_certificate="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

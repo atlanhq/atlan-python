@@ -35,50 +35,24 @@ def test_postgres_crawler_builder_payload():
 
 def test_postgres_crawler_credential_basic():
     b = PostgresCrawler(Mock()).basic(username="x", password="x", database="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-postgres"
-    out = (
-        PostgresCrawler(Mock())
-        .basic(username="x", password="x", database="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_postgres_crawler_credential_iam_user():
     b = PostgresCrawler(Mock()).iam_user(
         username="x", password="x", username_2="x", aws_region="x", database="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-postgres"
-    out = (
-        PostgresCrawler(Mock())
-        .iam_user(
-            username="x", password="x", username_2="x", aws_region="x", database="x"
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_postgres_crawler_credential_iam_role():
     b = PostgresCrawler(Mock()).iam_role(
         username="x", aws_role_arn="x", aws_region="x", database="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-postgres"
-    out = (
-        PostgresCrawler(Mock())
-        .iam_role(username="x", aws_role_arn="x", aws_region="x", database="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

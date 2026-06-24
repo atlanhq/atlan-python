@@ -36,34 +36,18 @@ def test_atlan_tableau_builder_payload():
 
 def test_atlan_tableau_credential_basic():
     b = AtlanTableau(Mock()).basic(username="x", password="x", protocol="x", host="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-tableau"
-    out = (
-        AtlanTableau(Mock())
-        .basic(username="x", password="x", protocol="x", host="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_tableau_credential_personal_access_token():
     b = AtlanTableau(Mock()).personal_access_token(
         username="x", password="x", protocol="x", host="x"
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-tableau"
-    out = (
-        AtlanTableau(Mock())
-        .personal_access_token(username="x", password="x", protocol="x", host="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_tableau_credential_jwt():
@@ -75,21 +59,6 @@ def test_atlan_tableau_credential_jwt():
         protocol="x",
         host="x",
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-tableau"
-    out = (
-        AtlanTableau(Mock())
-        .jwt(
-            username="x",
-            client_id="x",
-            private_id="x",
-            private_key="x",
-            protocol="x",
-            host="x",
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

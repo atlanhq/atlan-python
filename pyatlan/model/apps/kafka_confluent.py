@@ -88,7 +88,6 @@ class KafkaConfluent(AppBuilder):
         :param schema_registry_username: API Key.
         :param schema_registry_password: API Secret.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["securityProtocol"] = security_protocol
         extras["includeCloudMetrics"] = include_cloud_metrics
@@ -106,16 +105,18 @@ class KafkaConfluent(AppBuilder):
         if schema_registry_password is not None:
             extras["schemaRegistryPassword"] = schema_registry_password
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="basic",
-            username=username,
-            password=password,
-            host=host,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-confluent-kafka",
+                connector_type="confluent-kafka",
+                auth_type="basic",
+                username=username,
+                password=password,
+                host=host,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def skip_internal_topics(self, value: bool) -> "KafkaConfluent":

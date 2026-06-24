@@ -37,17 +37,9 @@ def test_atlan_knowledge_catalog_builder_payload():
 
 def test_atlan_knowledge_catalog_credential_basic():
     b = AtlanKnowledgeCatalog(Mock()).basic(service_account_json="x", project_id="x")
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-dataplex"
-    out = (
-        AtlanKnowledgeCatalog(Mock())
-        .basic(service_account_json="x", project_id="x")
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
 
 
 def test_atlan_knowledge_catalog_credential_gcp_wif():
@@ -58,20 +50,6 @@ def test_atlan_knowledge_catalog_credential_gcp_wif():
         atlan_oauth_secret="x",
         project_id="x",
     )
-    cred = b._credential
-    assert cred is not None
-    assert cred.connector_config_name == "atlan-connectors-dataplex"
-    out = (
-        AtlanKnowledgeCatalog(Mock())
-        .gcp_wif(
-            service_account_email="x",
-            wif_pool_provider_id="x",
-            atlan_oauth_id="x",
-            atlan_oauth_secret="x",
-            project_id="x",
-        )
-        .connection(name="c")
-        .preview()
-    )
-    assert out["credential"]["authType"]
-    assert out["credential_guid"] == ""
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

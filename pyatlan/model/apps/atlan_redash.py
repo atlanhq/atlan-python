@@ -79,19 +79,20 @@ class AtlanRedash(AppBuilder):
 
         :param password: API Key.
         """
-        self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras.update(extra)
-        self._credential = Credential(
-            connector_config_name=self._CONNECTOR_CONFIG,
-            connector_type=self._CONNECTOR_NAME,
-            auth_type="api_key",
-            password=password,
-            host=host,
-            port=port or 443,
-            extra=extras,
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-redash",
+                connector_type="redash",
+                auth_type="api_key",
+                password=password,
+                host=host,
+                port=port or 443,
+                extra=extras,
+            ),
         )
-        return self
 
     # ── Step 3 · Metadata ──
     def include_queries_with_tags(self, value: Dict[str, Any]) -> "AtlanRedash":
