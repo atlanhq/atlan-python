@@ -10,10 +10,6 @@ from pyatlan.model.apps._base import AppBuilder, AppInput
 from pyatlan.model.apps.bigquery_crawler import BigqueryCrawler, BigqueryCrawlerInputs
 from pyatlan.model.apps.anaplan import Anaplan, AnaplanInputs
 from pyatlan.model.apps.atlan_athena import AtlanAthena, AtlanAthenaInputs
-from pyatlan.model.apps.atlan_azure_event_hub import (
-    AtlanAzureEventHub,
-    AtlanAzureEventHubInputs,
-)
 from pyatlan.model.apps.atlan_dbt import AtlanDbt, AtlanDbtInputs
 from pyatlan.model.apps.atlan_dynamodb import AtlanDynamodb, AtlanDynamodbInputs
 from pyatlan.model.apps.atlan_glue import AtlanGlue, AtlanGlueInputs
@@ -65,8 +61,6 @@ __all__ = [
     "AnaplanInputs",
     "AtlanAthena",
     "AtlanAthenaInputs",
-    "AtlanAzureEventHub",
-    "AtlanAzureEventHubInputs",
     "AtlanDbt",
     "AtlanDbtInputs",
     "AtlanDynamodb",

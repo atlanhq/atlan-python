@@ -30,13 +30,15 @@ def test_kafka_apache_builder_payload():
 
 
 def test_kafka_apache_credential_noauth():
-    b = KafkaApache(Mock()).noauth(security_protocol="x", include_schema_registry="x")
+    b = KafkaApache(Mock()).noauth(
+        security_protocol="x", include_schema_registry="x", host="x"
+    )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-apache-kafka"
     out = (
         KafkaApache(Mock())
-        .noauth(security_protocol="x", include_schema_registry="x")
+        .noauth(security_protocol="x", include_schema_registry="x", host="x")
         .connection(name="c")
         .preview()
     )
@@ -46,7 +48,11 @@ def test_kafka_apache_credential_noauth():
 
 def test_kafka_apache_credential_basic():
     b = KafkaApache(Mock()).basic(
-        username="x", password="x", security_protocol="x", include_schema_registry="x"
+        username="x",
+        password="x",
+        security_protocol="x",
+        include_schema_registry="x",
+        host="x",
     )
     cred = b._credential
     assert cred is not None
@@ -58,6 +64,7 @@ def test_kafka_apache_credential_basic():
             password="x",
             security_protocol="x",
             include_schema_registry="x",
+            host="x",
         )
         .connection(name="c")
         .preview()
@@ -73,6 +80,7 @@ def test_kafka_apache_credential_scram():
         security_protocol="x",
         sasl_mechanism="x",
         include_schema_registry="x",
+        host="x",
     )
     cred = b._credential
     assert cred is not None
@@ -85,6 +93,7 @@ def test_kafka_apache_credential_scram():
             security_protocol="x",
             sasl_mechanism="x",
             include_schema_registry="x",
+            host="x",
         )
         .connection(name="c")
         .preview()
@@ -94,13 +103,13 @@ def test_kafka_apache_credential_scram():
 
 
 def test_kafka_apache_credential_mtls():
-    b = KafkaApache(Mock()).mtls(mtls_cert="x", include_schema_registry="x")
+    b = KafkaApache(Mock()).mtls(mtls_cert="x", include_schema_registry="x", host="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-apache-kafka"
     out = (
         KafkaApache(Mock())
-        .mtls(mtls_cert="x", include_schema_registry="x")
+        .mtls(mtls_cert="x", include_schema_registry="x", host="x")
         .connection(name="c")
         .preview()
     )

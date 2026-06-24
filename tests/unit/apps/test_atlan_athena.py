@@ -34,13 +34,15 @@ def test_atlan_athena_builder_payload():
 
 
 def test_atlan_athena_credential_basic():
-    b = AtlanAthena(Mock()).basic(username="x", password="x", s3_output_location="x")
+    b = AtlanAthena(Mock()).basic(
+        username="x", password="x", s3_output_location="x", host="x"
+    )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-athena"
     out = (
         AtlanAthena(Mock())
-        .basic(username="x", password="x", s3_output_location="x")
+        .basic(username="x", password="x", s3_output_location="x", host="x")
         .connection(name="c")
         .preview()
     )
@@ -49,12 +51,15 @@ def test_atlan_athena_credential_basic():
 
 
 def test_atlan_athena_credential_role():
-    b = AtlanAthena(Mock()).role(s3_output_location="x")
+    b = AtlanAthena(Mock()).role(s3_output_location="x", host="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-athena"
     out = (
-        AtlanAthena(Mock()).role(s3_output_location="x").connection(name="c").preview()
+        AtlanAthena(Mock())
+        .role(s3_output_location="x", host="x")
+        .connection(name="c")
+        .preview()
     )
     assert out["credential"]["authType"]
     assert out["credential_guid"] == ""

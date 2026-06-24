@@ -19,7 +19,7 @@ def test_atlan_redash_inputs_defaults():
     assert i.include_unpublished_queries == "true"
     assert i.queries_without_tags == "true"
     assert i.dashboards_without_tags == "true"
-    assert i.redash_alternate_host == ""
+    assert i.redash_alternate_host == "https://redash.alternate-host.com"
 
 
 def test_atlan_redash_builder_payload():
@@ -36,10 +36,15 @@ def test_atlan_redash_builder_payload():
 
 
 def test_atlan_redash_credential_api_key():
-    b = AtlanRedash(Mock()).api_key(password="x")
+    b = AtlanRedash(Mock()).api_key(password="x", host="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-redash"
-    out = AtlanRedash(Mock()).api_key(password="x").connection(name="c").preview()
+    out = (
+        AtlanRedash(Mock())
+        .api_key(password="x", host="x")
+        .connection(name="c")
+        .preview()
+    )
     assert out["credential"]["authType"]
     assert out["credential_guid"] == ""

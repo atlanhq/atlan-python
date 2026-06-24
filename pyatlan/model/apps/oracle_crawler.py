@@ -43,7 +43,7 @@ class OracleCrawler(AppBuilder):
 
         resp = (
             OracleCrawler(client)
-            .basic(username="...", password="...", sid="...", database_name="...")
+            .basic(username="...", password="...", sid="...", database_name="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
@@ -72,6 +72,7 @@ class OracleCrawler(AppBuilder):
         protocol: Optional[str] = None,
         oracle_wallet: Optional[str] = None,
         wallet_password: Optional[str] = None,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "OracleCrawler":
@@ -100,6 +101,7 @@ class OracleCrawler(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             port=port or 1521,
             extra=extras,
         )

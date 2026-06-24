@@ -36,6 +36,7 @@ def test_kafka_confluent_credential_basic():
         security_protocol="x",
         include_cloud_metrics="x",
         include_schema_registry="x",
+        host="x",
     )
     cred = b._credential
     assert cred is not None
@@ -48,6 +49,7 @@ def test_kafka_confluent_credential_basic():
             security_protocol="x",
             include_cloud_metrics="x",
             include_schema_registry="x",
+            host="x",
         )
         .connection(name="c")
         .preview()

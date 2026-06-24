@@ -44,13 +44,13 @@ def test_databricks_crawler_builder_payload():
 
 
 def test_databricks_crawler_credential_basic():
-    b = DatabricksCrawler(Mock()).basic(password="x", http_path="x")
+    b = DatabricksCrawler(Mock()).basic(password="x", http_path="x", host="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-databricks"
     out = (
         DatabricksCrawler(Mock())
-        .basic(password="x", http_path="x")
+        .basic(password="x", http_path="x", host="x")
         .connection(name="c")
         .preview()
     )
@@ -59,13 +59,15 @@ def test_databricks_crawler_credential_basic():
 
 
 def test_databricks_crawler_credential_aws_service():
-    b = DatabricksCrawler(Mock()).aws_service(client_id="x", client_secret="x")
+    b = DatabricksCrawler(Mock()).aws_service(
+        client_id="x", client_secret="x", host="x"
+    )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-databricks"
     out = (
         DatabricksCrawler(Mock())
-        .aws_service(client_id="x", client_secret="x")
+        .aws_service(client_id="x", client_secret="x", host="x")
         .connection(name="c")
         .preview()
     )
@@ -75,14 +77,14 @@ def test_databricks_crawler_credential_aws_service():
 
 def test_databricks_crawler_credential_azure_service():
     b = DatabricksCrawler(Mock()).azure_service(
-        client_id="x", client_secret="x", tenant_id="x"
+        client_id="x", client_secret="x", tenant_id="x", host="x"
     )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-databricks"
     out = (
         DatabricksCrawler(Mock())
-        .azure_service(client_id="x", client_secret="x", tenant_id="x")
+        .azure_service(client_id="x", client_secret="x", tenant_id="x", host="x")
         .connection(name="c")
         .preview()
     )

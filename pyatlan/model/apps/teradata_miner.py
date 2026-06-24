@@ -24,7 +24,7 @@ class TeradataMinerInputs(AppInput):
     agent_json: Optional[Any] = None
 
     # Step 3 · Metadata (only fields the UI surfaces)
-    miner_start_time_epoch: str = Field("", alias="miner-start-time-epoch")
+    miner_start_time_epoch: str = Field(0, alias="miner-start-time-epoch")
     """Start date — Earliest date (epoch seconds) from which to mine query history. The miner extracts up to two weeks of history. Set 0 to use the full window."""
     advanced_config: str = Field("default", alias="advanced-config")
     """Advanced Config — Set advanced configuration of the miner"""

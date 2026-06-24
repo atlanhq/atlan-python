@@ -75,7 +75,7 @@ class DatabricksCrawler(AppBuilder):
 
         resp = (
             DatabricksCrawler(client)
-            .basic(password="...", http_path="...")
+            .basic(password="...", http_path="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .extraction_strategy('system-tables')
             .run()
@@ -97,7 +97,13 @@ class DatabricksCrawler(AppBuilder):
 
     # ── Step 1 · Credential ──
     def basic(
-        self, *, password: str, http_path: str, port: Optional[int] = None, **extra: Any
+        self,
+        *,
+        password: str,
+        http_path: str,
+        host: str,
+        port: Optional[int] = None,
+        **extra: Any,
     ) -> "DatabricksCrawler":
         """Direct extraction with basic auth.
 
@@ -113,6 +119,7 @@ class DatabricksCrawler(AppBuilder):
             connector_type=self._CONNECTOR_NAME,
             auth_type="basic",
             password=password,
+            host=host,
             port=port or 443,
             extra=extras,
         )
@@ -124,6 +131,7 @@ class DatabricksCrawler(AppBuilder):
         *,
         client_id: str,
         client_secret: str,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "DatabricksCrawler":
@@ -141,6 +149,7 @@ class DatabricksCrawler(AppBuilder):
             connector_config_name=self._CONNECTOR_CONFIG,
             connector_type=self._CONNECTOR_NAME,
             auth_type="aws_service",
+            host=host,
             port=port or 443,
             extra=extras,
         )
@@ -153,6 +162,7 @@ class DatabricksCrawler(AppBuilder):
         client_id: str,
         client_secret: str,
         tenant_id: str,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "DatabricksCrawler":
@@ -172,6 +182,7 @@ class DatabricksCrawler(AppBuilder):
             connector_config_name=self._CONNECTOR_CONFIG,
             connector_type=self._CONNECTOR_NAME,
             auth_type="azure_service",
+            host=host,
             port=port or 443,
             extra=extras,
         )

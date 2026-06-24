@@ -11,7 +11,7 @@ def test_teradata_miner_inputs_defaults():
     i = TeradataMinerInputs()
     assert TeradataMinerInputs._APP_ID == "teradata-miner"
     assert TeradataMinerInputs._ENTRYPOINT == "miner"
-    assert i.miner_start_time_epoch == ""
+    assert i.miner_start_time_epoch == 0
     assert i.advanced_config == "default"
     assert i.cross_connection == "false"
     assert i.control_config_strategy == "default"

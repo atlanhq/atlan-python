@@ -42,7 +42,7 @@ class KafkaApache(AppBuilder):
 
         resp = (
             KafkaApache(client)
-            .noauth(security_protocol="...", include_schema_registry="...")
+            .noauth(security_protocol="...", include_schema_registry="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .skip_internal_topics(True)
             .run()
@@ -65,6 +65,7 @@ class KafkaApache(AppBuilder):
         schema_registry_host: Optional[str] = None,
         schema_registry_username: Optional[str] = None,
         schema_registry_password: Optional[str] = None,
+        host: str,
         **extra: Any,
     ) -> "KafkaApache":
         """Direct extraction with noauth auth.
@@ -90,6 +91,7 @@ class KafkaApache(AppBuilder):
             connector_config_name=self._CONNECTOR_CONFIG,
             connector_type=self._CONNECTOR_NAME,
             auth_type="noauth",
+            host=host,
             extra=extras,
         )
         return self
@@ -105,6 +107,7 @@ class KafkaApache(AppBuilder):
         schema_registry_host: Optional[str] = None,
         schema_registry_username: Optional[str] = None,
         schema_registry_password: Optional[str] = None,
+        host: str,
         **extra: Any,
     ) -> "KafkaApache":
         """Direct extraction with basic auth.
@@ -134,6 +137,7 @@ class KafkaApache(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             extra=extras,
         )
         return self
@@ -150,6 +154,7 @@ class KafkaApache(AppBuilder):
         schema_registry_host: Optional[str] = None,
         schema_registry_username: Optional[str] = None,
         schema_registry_password: Optional[str] = None,
+        host: str,
         **extra: Any,
     ) -> "KafkaApache":
         """Direct extraction with scram auth.
@@ -181,6 +186,7 @@ class KafkaApache(AppBuilder):
             auth_type="scram",
             username=username,
             password=password,
+            host=host,
             extra=extras,
         )
         return self
@@ -195,6 +201,7 @@ class KafkaApache(AppBuilder):
         schema_registry_host: Optional[str] = None,
         schema_registry_username: Optional[str] = None,
         schema_registry_password: Optional[str] = None,
+        host: str,
         **extra: Any,
     ) -> "KafkaApache":
         """Direct extraction with mtls auth.
@@ -223,6 +230,7 @@ class KafkaApache(AppBuilder):
             connector_config_name=self._CONNECTOR_CONFIG,
             connector_type=self._CONNECTOR_NAME,
             auth_type="mtls",
+            host=host,
             extra=extras,
         )
         return self

@@ -41,7 +41,7 @@ class AtlanMysql(AppBuilder):
 
         resp = (
             AtlanMysql(client)
-            .basic(username="...", password="...")
+            .basic(username="...", password="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
@@ -57,7 +57,13 @@ class AtlanMysql(AppBuilder):
 
     # ── Step 1 · Credential ──
     def basic(
-        self, *, username: str, password: str, port: Optional[int] = None, **extra: Any
+        self,
+        *,
+        username: str,
+        password: str,
+        host: str,
+        port: Optional[int] = None,
+        **extra: Any,
     ) -> "AtlanMysql":
         """Direct extraction with basic auth.
 
@@ -73,6 +79,7 @@ class AtlanMysql(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             port=port or 3306,
             extra=extras,
         )
@@ -85,6 +92,7 @@ class AtlanMysql(AppBuilder):
         username: str,
         password: str,
         username_2: str,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "AtlanMysql":
@@ -104,6 +112,7 @@ class AtlanMysql(AppBuilder):
             auth_type="iam_user",
             username=username,
             password=password,
+            host=host,
             port=port or 3306,
             extra=extras,
         )
@@ -116,6 +125,7 @@ class AtlanMysql(AppBuilder):
         username: str,
         aws_role_arn: str,
         aws_external_id: Optional[str] = None,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "AtlanMysql":
@@ -136,6 +146,7 @@ class AtlanMysql(AppBuilder):
             connector_type=self._CONNECTOR_NAME,
             auth_type="iam_role",
             username=username,
+            host=host,
             port=port or 3306,
             extra=extras,
         )

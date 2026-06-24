@@ -39,7 +39,7 @@ class MongodbatlasAtlas(AppBuilder):
 
         resp = (
             MongodbatlasAtlas(client)
-            .basic(username="...", password="...", native_host="...", default_database="...", authsource="...", ssl="...")
+            .basic(username="...", password="...", native_host="...", default_database="...", authsource="...", ssl="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_databases("")
             .run()
@@ -64,6 +64,7 @@ class MongodbatlasAtlas(AppBuilder):
         authsource: str,
         ssl: str,
         connection_string: Optional[str] = None,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "MongodbatlasAtlas":
@@ -92,6 +93,7 @@ class MongodbatlasAtlas(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             port=port or 27017,
             extra=extras,
         )

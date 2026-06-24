@@ -55,7 +55,13 @@ class AtlanMetabase(AppBuilder):
 
     # ── Step 1 · Credential ──
     def basic(
-        self, *, username: str, password: str, port: Optional[int] = None, **extra: Any
+        self,
+        *,
+        username: str,
+        password: str,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        **extra: Any,
     ) -> "AtlanMetabase":
         """Direct extraction with basic auth.
 
@@ -71,6 +77,7 @@ class AtlanMetabase(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host or "https://<account-id>.metabaseapp.com",
             port=port or 443,
             extra=extras,
         )

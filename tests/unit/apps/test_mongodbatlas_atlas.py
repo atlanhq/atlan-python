@@ -35,6 +35,7 @@ def test_mongodbatlas_atlas_credential_basic():
         default_database="x",
         authsource="x",
         ssl="x",
+        host="x",
     )
     cred = b._credential
     assert cred is not None
@@ -48,6 +49,7 @@ def test_mongodbatlas_atlas_credential_basic():
             default_database="x",
             authsource="x",
             ssl="x",
+            host="x",
         )
         .connection(name="c")
         .preview()

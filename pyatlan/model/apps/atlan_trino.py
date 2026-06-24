@@ -39,7 +39,7 @@ class AtlanTrino(AppBuilder):
 
         resp = (
             AtlanTrino(client)
-            .basic(username="...", password="...")
+            .basic(username="...", password="...", enable_tls_https="...", disable_ssl_verification="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
@@ -55,15 +55,27 @@ class AtlanTrino(AppBuilder):
 
     # ── Step 1 · Credential ──
     def basic(
-        self, *, username: str, password: str, port: Optional[int] = None, **extra: Any
+        self,
+        *,
+        username: str,
+        password: str,
+        enable_tls_https: str,
+        disable_ssl_verification: str,
+        host: str,
+        port: Optional[int] = None,
+        **extra: Any,
     ) -> "AtlanTrino":
         """Direct extraction with basic auth.
 
         :param username: Username.
         :param password: Password.
+        :param enable_tls_https: Enable TLS/HTTPS.
+        :param disable_ssl_verification: Disable SSL verification.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
+        extras["__enable_tls_https"] = enable_tls_https
+        extras["__disable_ssl_verification"] = disable_ssl_verification
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
@@ -71,6 +83,7 @@ class AtlanTrino(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             port=port or 8080,
             extra=extras,
         )
@@ -78,20 +91,32 @@ class AtlanTrino(AppBuilder):
 
     # ── Step 1 · Credential ──
     def jwt(
-        self, *, jwt_token: str, port: Optional[int] = None, **extra: Any
+        self,
+        *,
+        jwt_token: str,
+        enable_tls_https: str,
+        disable_ssl_verification: str,
+        host: str,
+        port: Optional[int] = None,
+        **extra: Any,
     ) -> "AtlanTrino":
         """Direct extraction with jwt auth.
 
         :param jwt_token: JWT Token.
+        :param enable_tls_https: Enable TLS/HTTPS.
+        :param disable_ssl_verification: Disable SSL verification.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
         extras["__jwt_token"] = jwt_token
+        extras["__enable_tls_https"] = enable_tls_https
+        extras["__disable_ssl_verification"] = disable_ssl_verification
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
             connector_type=self._CONNECTOR_NAME,
             auth_type="jwt",
+            host=host,
             port=port or 8080,
             extra=extras,
         )

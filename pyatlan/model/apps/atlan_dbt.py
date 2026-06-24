@@ -72,7 +72,12 @@ class AtlanDbt(AppBuilder):
 
     # ── Step 1 · Credential ──
     def api(
-        self, *, password: str, host: Optional[str] = None, **extra: Any
+        self,
+        *,
+        password: str,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        **extra: Any,
     ) -> "AtlanDbt":
         """Direct extraction with api auth.
 
@@ -87,6 +92,7 @@ class AtlanDbt(AppBuilder):
             auth_type="api",
             password=password,
             host=host or "https://cloud.getdbt.com",
+            port=port or 443,
             extra=extras,
         )
         return self

@@ -28,13 +28,13 @@ def test_atlan_dynamodb_builder_payload():
 
 
 def test_atlan_dynamodb_credential_iam_user():
-    b = AtlanDynamodb(Mock()).iam_user(username="x", password="x")
+    b = AtlanDynamodb(Mock()).iam_user(username="x", password="x", region="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-dynamodb"
     out = (
         AtlanDynamodb(Mock())
-        .iam_user(username="x", password="x")
+        .iam_user(username="x", password="x", region="x")
         .connection(name="c")
         .preview()
     )
@@ -43,13 +43,13 @@ def test_atlan_dynamodb_credential_iam_user():
 
 
 def test_atlan_dynamodb_credential_assume_role():
-    b = AtlanDynamodb(Mock()).assume_role(aws_role_arn="x")
+    b = AtlanDynamodb(Mock()).assume_role(aws_role_arn="x", region="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-dynamodb"
     out = (
         AtlanDynamodb(Mock())
-        .assume_role(aws_role_arn="x")
+        .assume_role(aws_role_arn="x", region="x")
         .connection(name="c")
         .preview()
     )

@@ -32,7 +32,9 @@ class AtlanTableauInputs(AppInput):
     """Exclude Projects — Selected projects will not be processed."""
     exclude_projects_regex: str = Field("", alias="exclude-projects-regex")
     """Exclude Projects Regex — Projects whose names match the regex will not be processed. Defaults to empty string."""
-    tableau_alternate_host: str = Field("", alias="tableau-alternate-host")
+    tableau_alternate_host: str = Field(
+        "https://alternate.tableau.com", alias="tableau-alternate-host"
+    )
     """Alternate Host URL — Protocol and host name to use in the link for the 'View in Tableau' button."""
     crawl_unpublished_worksheets_dashboards: bool = Field(
         True, alias="crawl-unpublished-worksheets-dashboards"
@@ -57,7 +59,7 @@ class AtlanTableau(AppBuilder):
 
         resp = (
             AtlanTableau(client)
-            .basic(username="...", password="...", protocol="...")
+            .basic(username="...", password="...", protocol="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_projects(...)
             .run()
@@ -80,6 +82,7 @@ class AtlanTableau(AppBuilder):
         default_site: Optional[str] = None,
         protocol: str,
         self_signed_ssl_certificate: Optional[str] = None,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "AtlanTableau":
@@ -105,6 +108,7 @@ class AtlanTableau(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             port=port or 443,
             extra=extras,
         )
@@ -119,6 +123,7 @@ class AtlanTableau(AppBuilder):
         default_site: Optional[str] = None,
         protocol: str,
         self_signed_ssl_certificate: Optional[str] = None,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "AtlanTableau":
@@ -144,6 +149,7 @@ class AtlanTableau(AppBuilder):
             auth_type="personal_access_token",
             username=username,
             password=password,
+            host=host,
             port=port or 443,
             extra=extras,
         )
@@ -160,6 +166,7 @@ class AtlanTableau(AppBuilder):
         default_site: Optional[str] = None,
         protocol: str,
         self_signed_ssl_certificate: Optional[str] = None,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "AtlanTableau":
@@ -189,6 +196,7 @@ class AtlanTableau(AppBuilder):
             connector_type=self._CONNECTOR_NAME,
             auth_type="jwt",
             username=username,
+            host=host,
             port=port or 443,
             extra=extras,
         )

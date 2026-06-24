@@ -44,7 +44,9 @@ class AtlanRedashInputs(AppInput):
     """Include queries without tags — Include queries that do not have any tags associated to them."""
     dashboards_without_tags: str = Field("true", alias="dashboards-without-tags")
     """Include dashboards without tags — Include dashboards that do not have any tags associated to them."""
-    redash_alternate_host: str = Field("", alias="redash-alternate-host")
+    redash_alternate_host: str = Field(
+        "https://redash.alternate-host.com", alias="redash-alternate-host"
+    )
     """Alternate Host URL — Protocol and host used in the 'View in Redash' link."""
 
 
@@ -55,7 +57,7 @@ class AtlanRedash(AppBuilder):
 
         resp = (
             AtlanRedash(client)
-            .api_key(password="...")
+            .api_key(password="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_queries_with_tags(...)
             .run()
@@ -71,7 +73,7 @@ class AtlanRedash(AppBuilder):
 
     # ── Step 1 · Credential ──
     def api_key(
-        self, *, password: str, port: Optional[int] = None, **extra: Any
+        self, *, password: str, host: str, port: Optional[int] = None, **extra: Any
     ) -> "AtlanRedash":
         """Direct extraction with api_key auth.
 
@@ -85,6 +87,7 @@ class AtlanRedash(AppBuilder):
             connector_type=self._CONNECTOR_NAME,
             auth_type="api_key",
             password=password,
+            host=host,
             port=port or 443,
             extra=extras,
         )

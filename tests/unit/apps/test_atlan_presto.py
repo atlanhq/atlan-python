@@ -29,13 +29,13 @@ def test_atlan_presto_builder_payload():
 
 
 def test_atlan_presto_credential_basic():
-    b = AtlanPresto(Mock()).basic(username="x", password="x")
+    b = AtlanPresto(Mock()).basic(username="x", password="x", host="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-presto"
     out = (
         AtlanPresto(Mock())
-        .basic(username="x", password="x")
+        .basic(username="x", password="x", host="x")
         .connection(name="c")
         .preview()
     )

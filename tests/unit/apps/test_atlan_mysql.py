@@ -29,13 +29,13 @@ def test_atlan_mysql_builder_payload():
 
 
 def test_atlan_mysql_credential_basic():
-    b = AtlanMysql(Mock()).basic(username="x", password="x")
+    b = AtlanMysql(Mock()).basic(username="x", password="x", host="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-mysql"
     out = (
         AtlanMysql(Mock())
-        .basic(username="x", password="x")
+        .basic(username="x", password="x", host="x")
         .connection(name="c")
         .preview()
     )
@@ -44,13 +44,15 @@ def test_atlan_mysql_credential_basic():
 
 
 def test_atlan_mysql_credential_iam_user():
-    b = AtlanMysql(Mock()).iam_user(username="x", password="x", username_2="x")
+    b = AtlanMysql(Mock()).iam_user(
+        username="x", password="x", username_2="x", host="x"
+    )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-mysql"
     out = (
         AtlanMysql(Mock())
-        .iam_user(username="x", password="x", username_2="x")
+        .iam_user(username="x", password="x", username_2="x", host="x")
         .connection(name="c")
         .preview()
     )
@@ -59,13 +61,13 @@ def test_atlan_mysql_credential_iam_user():
 
 
 def test_atlan_mysql_credential_iam_role():
-    b = AtlanMysql(Mock()).iam_role(username="x", aws_role_arn="x")
+    b = AtlanMysql(Mock()).iam_role(username="x", aws_role_arn="x", host="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-mysql"
     out = (
         AtlanMysql(Mock())
-        .iam_role(username="x", aws_role_arn="x")
+        .iam_role(username="x", aws_role_arn="x", host="x")
         .connection(name="c")
         .preview()
     )

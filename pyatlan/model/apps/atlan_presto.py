@@ -39,7 +39,7 @@ class AtlanPresto(AppBuilder):
 
         resp = (
             AtlanPresto(client)
-            .basic(username="...", password="...")
+            .basic(username="...", password="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
@@ -55,7 +55,13 @@ class AtlanPresto(AppBuilder):
 
     # ── Step 1 · Credential ──
     def basic(
-        self, *, username: str, password: str, port: Optional[int] = None, **extra: Any
+        self,
+        *,
+        username: str,
+        password: str,
+        host: str,
+        port: Optional[int] = None,
+        **extra: Any,
     ) -> "AtlanPresto":
         """Direct extraction with basic auth.
 
@@ -71,6 +77,7 @@ class AtlanPresto(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             port=port or 8080,
             extra=extras,
         )

@@ -42,7 +42,7 @@ class KafkaConfluent(AppBuilder):
 
         resp = (
             KafkaConfluent(client)
-            .basic(username="...", password="...", security_protocol="...", include_cloud_metrics="...", include_schema_registry="...")
+            .basic(username="...", password="...", security_protocol="...", include_cloud_metrics="...", include_schema_registry="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .skip_internal_topics(True)
             .run()
@@ -71,6 +71,7 @@ class KafkaConfluent(AppBuilder):
         schema_registry_host: Optional[str] = None,
         schema_registry_username: Optional[str] = None,
         schema_registry_password: Optional[str] = None,
+        host: str,
         **extra: Any,
     ) -> "KafkaConfluent":
         """Direct extraction with basic auth.
@@ -111,6 +112,7 @@ class KafkaConfluent(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             extra=extras,
         )
         return self

@@ -43,7 +43,7 @@ class AtlanGlue(AppBuilder):
 
         resp = (
             AtlanGlue(client)
-            .iam(username="...", password="...")
+            .iam(username="...", password="...", region="...")
             .connection(name="my-connection", admins=["jdoe"])
             .catalog_id("")
             .run()
@@ -58,14 +58,18 @@ class AtlanGlue(AppBuilder):
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
 
     # ── Step 1 · Credential ──
-    def iam(self, *, username: str, password: str, **extra: Any) -> "AtlanGlue":
+    def iam(
+        self, *, username: str, password: str, region: str, **extra: Any
+    ) -> "AtlanGlue":
         """Direct extraction with iam auth.
 
         :param username: AWS Access Key.
         :param password: AWS Secret Key.
+        :param region: Region.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
+        extras["region"] = region
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
@@ -83,12 +87,14 @@ class AtlanGlue(AppBuilder):
         *,
         aws_role_arn: Optional[str] = None,
         aws_external_id: Optional[str] = None,
+        region: str,
         **extra: Any,
     ) -> "AtlanGlue":
         """Direct extraction with role auth.
 
         :param aws_role_arn: AWS Role ARN.
         :param aws_external_id: AWS External ID.
+        :param region: Region.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
@@ -96,6 +102,7 @@ class AtlanGlue(AppBuilder):
             extras["aws_role_arn"] = aws_role_arn
         if aws_external_id is not None:
             extras["aws_external_id"] = aws_external_id
+        extras["region"] = region
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,

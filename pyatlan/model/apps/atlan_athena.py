@@ -47,7 +47,7 @@ class AtlanAthena(AppBuilder):
 
         resp = (
             AtlanAthena(client)
-            .basic(username="...", password="...", s3_output_location="...")
+            .basic(username="...", password="...", s3_output_location="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
@@ -73,6 +73,7 @@ class AtlanAthena(AppBuilder):
         password: str,
         s3_output_location: str,
         workgroup: Optional[str] = None,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "AtlanAthena":
@@ -95,6 +96,7 @@ class AtlanAthena(AppBuilder):
             auth_type="basic",
             username=username,
             password=password,
+            host=host,
             port=port or 443,
             extra=extras,
         )
@@ -108,6 +110,7 @@ class AtlanAthena(AppBuilder):
         aws_external_id: Optional[str] = None,
         s3_output_location: str,
         workgroup: Optional[str] = None,
+        host: str,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "AtlanAthena":
@@ -132,6 +135,7 @@ class AtlanAthena(AppBuilder):
             connector_config_name=self._CONNECTOR_CONFIG,
             connector_type=self._CONNECTOR_NAME,
             auth_type="role",
+            host=host,
             port=port or 443,
             extra=extras,
         )

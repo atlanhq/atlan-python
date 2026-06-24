@@ -28,13 +28,25 @@ def test_atlan_trino_builder_payload():
 
 
 def test_atlan_trino_credential_basic():
-    b = AtlanTrino(Mock()).basic(username="x", password="x")
+    b = AtlanTrino(Mock()).basic(
+        username="x",
+        password="x",
+        enable_tls_https="x",
+        disable_ssl_verification="x",
+        host="x",
+    )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-trino"
     out = (
         AtlanTrino(Mock())
-        .basic(username="x", password="x")
+        .basic(
+            username="x",
+            password="x",
+            enable_tls_https="x",
+            disable_ssl_verification="x",
+            host="x",
+        )
         .connection(name="c")
         .preview()
     )
@@ -43,10 +55,19 @@ def test_atlan_trino_credential_basic():
 
 
 def test_atlan_trino_credential_jwt():
-    b = AtlanTrino(Mock()).jwt(jwt_token="x")
+    b = AtlanTrino(Mock()).jwt(
+        jwt_token="x", enable_tls_https="x", disable_ssl_verification="x", host="x"
+    )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-trino"
-    out = AtlanTrino(Mock()).jwt(jwt_token="x").connection(name="c").preview()
+    out = (
+        AtlanTrino(Mock())
+        .jwt(
+            jwt_token="x", enable_tls_https="x", disable_ssl_verification="x", host="x"
+        )
+        .connection(name="c")
+        .preview()
+    )
     assert out["credential"]["authType"]
     assert out["credential_guid"] == ""

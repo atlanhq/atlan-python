@@ -39,7 +39,7 @@ class AtlanDynamodb(AppBuilder):
 
         resp = (
             AtlanDynamodb(client)
-            .iam_user(username="...", password="...")
+            .iam_user(username="...", password="...", region="...")
             .connection(name="my-connection", admins=["jdoe"])
             .exclude_tables_regex("")
             .run()
@@ -55,15 +55,26 @@ class AtlanDynamodb(AppBuilder):
 
     # ── Step 1 · Credential ──
     def iam_user(
-        self, *, username: str, password: str, **extra: Any
+        self,
+        *,
+        username: str,
+        password: str,
+        region: str,
+        endpoint_url: Optional[str] = None,
+        **extra: Any,
     ) -> "AtlanDynamodb":
         """Direct extraction with iam_user auth.
 
         :param username: AWS Access Key.
         :param password: AWS Secret Key.
+        :param region: AWS Region.
+        :param endpoint_url: Custom Endpoint URL.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
+        extras["region"] = region
+        if endpoint_url is not None:
+            extras["endpoint_url"] = endpoint_url
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,
@@ -82,6 +93,8 @@ class AtlanDynamodb(AppBuilder):
         aws_role_arn: str,
         aws_external_id: Optional[str] = None,
         session_name: Optional[str] = None,
+        region: str,
+        endpoint_url: Optional[str] = None,
         **extra: Any,
     ) -> "AtlanDynamodb":
         """Direct extraction with assume_role auth.
@@ -89,6 +102,8 @@ class AtlanDynamodb(AppBuilder):
         :param aws_role_arn: AWS Role ARN.
         :param aws_external_id: AWS External ID.
         :param session_name: Session Name.
+        :param region: AWS Region.
+        :param endpoint_url: Custom Endpoint URL.
         """
         self._extraction_method = "direct"
         extras: Dict[str, Any] = {}
@@ -97,6 +112,9 @@ class AtlanDynamodb(AppBuilder):
             extras["aws_external_id"] = aws_external_id
         if session_name is not None:
             extras["session_name"] = session_name
+        extras["region"] = region
+        if endpoint_url is not None:
+            extras["endpoint_url"] = endpoint_url
         extras.update(extra)
         self._credential = Credential(
             connector_config_name=self._CONNECTOR_CONFIG,

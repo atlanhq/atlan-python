@@ -213,12 +213,12 @@ def _hidden_defaults(cfg: Dict[str, Any]) -> Dict[str, Any]:
 # --------------------------------------------------------------------------- #
 # credentials (Step 1) — auth methods from the connector configmap
 # --------------------------------------------------------------------------- #
-def _auth_keys(cfg2: Dict[str, Any]) -> List[str]:
-    props = cfg2.get("properties") or {}
+def _auth_keys(props: Dict[str, Any]) -> List[str]:
+    """Auth-type keys within a credential-props root (an ``auth-type`` enum, or
+    top-level nested auth objects)."""
     at = props.get("auth-type") or {}
     if at.get("enum"):
         return list(at["enum"])
-    # No auth-type selector: top-level nested objects that look like auth methods.
     return [
         k
         for k, s in props.items()
@@ -227,6 +227,20 @@ def _auth_keys(cfg2: Dict[str, Any]) -> List[str]:
         and isinstance(s.get("properties"), dict)
         and any(f in s["properties"] for f in ("username", "password", "extra"))
     ]
+
+
+def _credential_props(cfg2: Dict[str, Any]) -> Dict[str, Any]:
+    """The dict of credential properties to read auth from. Usually top-level, but
+    JDBC-URL connectors (``AdvancedJDBCUrlGroup``, e.g. mssql) nest the auth-type +
+    host/port/database under ``jdbcUrl`` — descend there only when the top level has
+    no auth of its own (so connectors like postgres, which have both, are unaffected)."""
+    props = cfg2.get("properties") or {}
+    if _auth_keys(props):
+        return props
+    jdbc = props.get("jdbcUrl")
+    if isinstance(jdbc, dict) and isinstance(jdbc.get("properties"), dict):
+        return jdbc["properties"]
+    return props
 
 
 # --------------------------------------------------------------------------- #
@@ -322,24 +336,42 @@ def _cmp(repr_val: str) -> str:
     return "is" if repr_val in ("True", "False", "None") else "=="
 
 
+def _placeholder_default(spec: Dict[str, Any]) -> Any:
+    """A UI placeholder that is a *concrete* value usable as a default — a number
+    (e.g. port 443) or a URL — as opposed to hint text ("Project ID", "host").
+    The UI surfaces some real defaults via the placeholder rather than ``default``."""
+    ph = str(_ui(spec).get("placeholder") or "").strip()
+    if not ph:
+        return None
+    if ph.isdigit():
+        return int(ph)
+    if ph.startswith(("http://", "https://")):
+        return ph
+    return None
+
+
 def _default_repr(spec: Dict[str, Any]) -> str:
     if "default" in spec and spec["default"] is not None:
         return repr(spec["default"])
     enum = spec.get("enum")
     if enum:  # a constrained field defaults to its first allowed value
         return repr(enum[0])
+    ph = _placeholder_default(spec)  # the UI's concrete-placeholder default
+    if ph is not None:
+        return repr(ph)
     return _EMPTY_DEFAULT.get(spec.get("type") or "", "None")
 
 
 def _render_credential_method(
-    av: str, cfg2: Dict[str, Any], used: set
+    av: str, props: Dict[str, Any], used: set
 ) -> Tuple[str, Dict[str, Any]]:
-    """Render one credential method for auth-type ``av``.
+    """Render one credential method for auth-type ``av`` within a credential-props
+    root (top-level, or a JDBC-URL group — see :func:`_credential_props`).
 
     Returns (code, info) where info = {"name", "required"} — the method name and
     its required parameter names (used by the generated tests)."""
-    props = cfg2.get("properties") or {}
     nested = (props.get(av) or {}).get("properties") or {}
+    # Concise, stable method name from the auth-type key (e.g. basic, ntlm, jwt).
     mname = _snake(av)
     if mname in _RESERVED or mname in used:
         mname = f"{mname}_auth"
@@ -377,18 +409,26 @@ def _render_credential_method(
             if lbl:
                 doc_lines.append(f":param {pn}: {lbl}.")
 
-    # nested extra.* sub-fields -> explicit kwargs folded into extras
-    extra_props = (nested.get("extra") or {}).get("properties") or {}
-    for ekey, espec in extra_props.items():
-        pname = unique(_snake(ekey))
-        required = espec.get("required")
-        params.append(f"{pname}: str" if required else f"{pname}: Optional[str] = None")
-        body_extras.append((ekey, pname, bool(required)))
-        if required:
-            required_params.append(pname)
-        lbl = label_of(espec)
-        if lbl:
-            doc_lines.append(f":param {pname}: {lbl}.")
+    # extra.* sub-fields -> explicit kwargs folded into extras. Two sources:
+    # the auth object's own ``extra`` and a sibling ``extra`` at the props root
+    # (e.g. a JDBC-URL group's database / ssl flags).
+    extra_sources = [
+        (nested.get("extra") or {}).get("properties") or {},
+        (props.get("extra") or {}).get("properties") or {},
+    ]
+    for extra_props in extra_sources:
+        for ekey, espec in extra_props.items():
+            pname = unique(_snake(ekey))
+            required = espec.get("required")
+            params.append(
+                f"{pname}: str" if required else f"{pname}: Optional[str] = None"
+            )
+            body_extras.append((ekey, pname, bool(required)))
+            if required:
+                required_params.append(pname)
+            lbl = label_of(espec)
+            if lbl:
+                doc_lines.append(f":param {pname}: {lbl}.")
 
     # top-level connectivity (extra.connect_type)
     conn_spec = props.get("extra.connect_type") or {}
@@ -399,16 +439,33 @@ def _render_credential_method(
         conn_param = unique("connectivity")
         params.append(f'{conn_param}: str = "{default}"')
 
-    # host / port (defaulted from the configmap when present)
-    host_default = (props.get("host") or {}).get("default")
-    port_default = (props.get("port") or {}).get("default")
+    # host / port — exposed when the credential form has them. Defaulted from the
+    # configmap when it provides one; otherwise required (e.g. mssql host/port).
+    host_spec = props.get("host")
+    port_spec = props.get("port")
+    # Fall back to a concrete UI placeholder (e.g. port 443, a URL host) when the
+    # configmap provides no explicit `default`.
+    host_default = (host_spec or {}).get("default")
+    if host_default is None and host_spec:
+        host_default = _placeholder_default(host_spec)
+    port_default = (port_spec or {}).get("default")
+    if port_default is None and port_spec:
+        port_default = _placeholder_default(port_spec)
     host_param = port_param = ""
-    if host_default is not None:
+    if host_spec is not None:
         host_param = unique("host")
-        params.append(f"{host_param}: Optional[str] = None")
-    if port_default is not None:
+        if host_default is not None:
+            params.append(f"{host_param}: Optional[str] = None")
+        else:
+            params.append(f"{host_param}: str")
+            required_params.append(host_param)
+    if port_spec is not None:
         port_param = unique("port")
-        params.append(f"{port_param}: Optional[int] = None")
+        if port_default is not None:
+            params.append(f"{port_param}: Optional[int] = None")
+        else:
+            params.append(f"{port_param}: int")
+            required_params.append(port_param)
     params.append("**extra: Any")
 
     code = [f'    def {mname}({", ".join(params)}) -> "{{cls}}":']
@@ -431,10 +488,18 @@ def _render_credential_method(
     if has_connectivity:
         code.append(f'        extras["connect_type"] = {conn_param}')
     code.append("        extras.update(extra)")
-    if host_default is not None:
-        cred_kwargs.append(f"host={host_param} or {host_default!r}")
-    if port_default is not None:
-        cred_kwargs.append(f"port={port_param} or {port_default!r}")
+    if host_param:
+        cred_kwargs.append(
+            f"host={host_param} or {host_default!r}"
+            if host_default is not None
+            else f"host={host_param}"
+        )
+    if port_param:
+        cred_kwargs.append(
+            f"port={port_param} or {port_default!r}"
+            if port_default is not None
+            else f"port={port_param}"
+        )
     cred_kwargs.append("extra=extras")  # 'extra' is the Credential field alias
     code.append("        self._credential = Credential(")
     for kw in cred_kwargs:
@@ -508,8 +573,9 @@ def _render_builder(
     used: set = set()
     cred_blocks: List[str] = []
     if cfg2:
-        for av in _auth_keys(cfg2):
-            code, info = _render_credential_method(av, cfg2, used)
+        cred_props = _credential_props(cfg2)
+        for av in _auth_keys(cred_props):
+            code, info = _render_credential_method(av, cred_props, used)
             auth_infos.append(info)
             cred_blocks.append("    # ── Step 1 · Credential ──")
             cred_blocks.append(code.replace("{cls}", cls))
@@ -780,7 +846,7 @@ def _build_one(
         app_id, ep or "", cfg, cfg2, connector_name, connector_config
     )
     n_meta = len(_metadata_fields(cfg))
-    n_auth = len(_auth_keys(cfg2)) if cfg2 else 0
+    n_auth = len(_auth_keys(_credential_props(cfg2))) if cfg2 else 0
     print(
         f"  generated {module}.py :: {cls} ({n_meta} metadata, {n_auth} auth methods)"
     )

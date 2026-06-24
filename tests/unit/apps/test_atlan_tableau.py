@@ -14,7 +14,7 @@ def test_atlan_tableau_inputs_defaults():
     assert i.include_filter == {}
     assert i.exclude_filter == {}
     assert i.exclude_projects_regex == ""
-    assert i.tableau_alternate_host == ""
+    assert i.tableau_alternate_host == "https://alternate.tableau.com"
     assert i.crawl_unpublished_worksheets_dashboards is True
     assert i.crawl_hidden_datasource_fields is True
     assert i.crawl_embedded_dashboards is False
@@ -35,13 +35,13 @@ def test_atlan_tableau_builder_payload():
 
 
 def test_atlan_tableau_credential_basic():
-    b = AtlanTableau(Mock()).basic(username="x", password="x", protocol="x")
+    b = AtlanTableau(Mock()).basic(username="x", password="x", protocol="x", host="x")
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-tableau"
     out = (
         AtlanTableau(Mock())
-        .basic(username="x", password="x", protocol="x")
+        .basic(username="x", password="x", protocol="x", host="x")
         .connection(name="c")
         .preview()
     )
@@ -51,14 +51,14 @@ def test_atlan_tableau_credential_basic():
 
 def test_atlan_tableau_credential_personal_access_token():
     b = AtlanTableau(Mock()).personal_access_token(
-        username="x", password="x", protocol="x"
+        username="x", password="x", protocol="x", host="x"
     )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-tableau"
     out = (
         AtlanTableau(Mock())
-        .personal_access_token(username="x", password="x", protocol="x")
+        .personal_access_token(username="x", password="x", protocol="x", host="x")
         .connection(name="c")
         .preview()
     )
@@ -68,14 +68,26 @@ def test_atlan_tableau_credential_personal_access_token():
 
 def test_atlan_tableau_credential_jwt():
     b = AtlanTableau(Mock()).jwt(
-        username="x", client_id="x", private_id="x", private_key="x", protocol="x"
+        username="x",
+        client_id="x",
+        private_id="x",
+        private_key="x",
+        protocol="x",
+        host="x",
     )
     cred = b._credential
     assert cred is not None
     assert cred.connector_config_name == "atlan-connectors-tableau"
     out = (
         AtlanTableau(Mock())
-        .jwt(username="x", client_id="x", private_id="x", private_key="x", protocol="x")
+        .jwt(
+            username="x",
+            client_id="x",
+            private_id="x",
+            private_key="x",
+            protocol="x",
+            host="x",
+        )
         .connection(name="c")
         .preview()
     )
