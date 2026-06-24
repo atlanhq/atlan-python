@@ -11,11 +11,11 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class PowerbiMinerInputs(AppInput):
+    """Typed inputs for the `powerbi-miner` / `miner` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
-    _ENTRYPOINT: ClassVar[Optional[str]] = ""
+    _APP_ID: ClassVar[str] = "powerbi-miner"
+    _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
 
     connection: Optional[Any] = None
     credential_guid: str = ""
@@ -32,8 +32,15 @@ class AtlanMssqlInputs(AppInput):
     """Temp Table Regex"""
     source_tag_prefix: str = ""
     """Source Tag Prefix"""
+    advanced_config: str = "default"
+    """Advanced Config"""
+    miner_start_timestamp: int = 0
+    """Miner Start Timestamp"""
+    popularity_exclude_user_config: str = ""
+    """Popularity Exclude User Config"""
     preflight_check: str = ""
     """Preflight Check"""
+    powerbi_credential: Any = None
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["PowerbiMinerInputs"]

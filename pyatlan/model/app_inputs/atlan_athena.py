@@ -11,21 +11,20 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class SnowflakeCrawlerInputs(AppInput):
-    """Typed inputs for the `snowflake-crawler` / `crawler` app (generated from its input contract)."""
+class AtlanAthenaInputs(AppInput):
+    """Typed inputs for the `atlan-athena` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "snowflake-crawler"
-    _ENTRYPOINT: ClassVar[Optional[str]] = "crawler"
+    _APP_ID: ClassVar[str] = "atlan-athena"
+    _ENTRYPOINT: ClassVar[Optional[str]] = ""
 
     credential_guid: str = ""
     """Credential Guid"""
-    credential_ref: Any = None
+    credentials: Dict[str, Any] = {}
+    """Credentials"""
     connection: Dict[str, Any] = {}
     """Connection"""
     metadata: Dict[str, Any] = {}
     """Metadata"""
-    output_prefix: str = ""
-    """Output Prefix"""
 
 
-__all__ = ["SnowflakeCrawlerInputs"]
+__all__ = ["AtlanAthenaInputs"]

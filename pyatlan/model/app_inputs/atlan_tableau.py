@@ -11,10 +11,10 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class AtlanTableauInputs(AppInput):
+    """Typed inputs for the `atlan-tableau` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
+    _APP_ID: ClassVar[str] = "atlan-tableau"
     _ENTRYPOINT: ClassVar[Optional[str]] = ""
 
     connection: Optional[Any] = None
@@ -32,8 +32,23 @@ class AtlanMssqlInputs(AppInput):
     """Temp Table Regex"""
     source_tag_prefix: str = ""
     """Source Tag Prefix"""
+    exclude_projects_regex: str = ""
+    """Exclude Projects Regex"""
     preflight_check: str = ""
     """Preflight Check"""
+    tableau_alternate_host: str = ""
+    """Tableau Alternate Host"""
+    crawl_unpublished_worksheets_dashboards: bool = True
+    """Crawl Unpublished Worksheets Dashboards"""
+    crawl_hidden_datasource_fields: bool = True
+    """Crawl Hidden Datasource Fields"""
+    crawl_embedded_dashboards: bool = False
+    """Crawl Embedded Dashboards"""
+    incremental_enabled: bool = False
+    """Incremental Enabled"""
+    force_full_extraction: bool = False
+    """Force Full Extraction"""
+    tableau_credential: Any = None
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["AtlanTableauInputs"]

@@ -24,10 +24,6 @@ class BigqueryCrawlerInputs(AppInput):
     extraction_method: str = ""
     """Extraction Method"""
     agent_json: Any = None
-    output_prefix: str = ""
-    """Output Prefix"""
-    output_path: str = ""
-    """Output Path"""
     exclude_filter: Union[Dict[str, Any], str] = ""
     """Exclude Filter"""
     include_filter: Union[Dict[str, Any], str] = ""
@@ -36,8 +32,6 @@ class BigqueryCrawlerInputs(AppInput):
     """Temp Table Regex"""
     source_tag_prefix: str = ""
     """Source Tag Prefix"""
-    atlas_auth_type: str = "internal"
-    """Atlas Auth Type"""
     enable_nested_columns: bool = True
     """Enable Nested Columns"""
     enable_bigquery_tag_sync: bool = False
@@ -56,21 +50,9 @@ class BigqueryCrawlerInputs(AppInput):
     """Mapping Chunk Size"""
     extract_output_chuck_size: int = 50000
     """Extract Output Chuck Size"""
-    max_concurrent_activities: int = 15
-    """Max Concurrent Activities"""
-    max_activities_per_execution: int = 300
-    """Max Activities Per Execution"""
     preflight_check: str = ""
     """Preflight Check"""
     bigquery_crawler_credential: Any = None
-    output_dir: str = ""
-    """Output Dir"""
-    checkpoint_dir: str = ""
-    """Checkpoint Dir"""
-    load_to_atlan: bool = True
-    """Load To Atlan"""
-    publish_dry_run: bool = False
-    """Publish Dry Run"""
 
 
 __all__ = ["BigqueryCrawlerInputs"]

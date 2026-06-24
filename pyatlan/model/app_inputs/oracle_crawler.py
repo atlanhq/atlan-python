@@ -24,10 +24,6 @@ class OracleCrawlerInputs(AppInput):
     extraction_method: str = ""
     """Extraction Method"""
     agent_json: Any = None
-    output_prefix: str = ""
-    """Output Prefix"""
-    output_path: str = ""
-    """Output Path"""
     exclude_filter: Union[Dict[str, Any], str] = ""
     """Exclude Filter"""
     include_filter: Union[Dict[str, Any], str] = ""

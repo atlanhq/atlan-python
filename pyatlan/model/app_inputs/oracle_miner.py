@@ -11,10 +11,10 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class OracleMinerInputs(AppInput):
+    """Typed inputs for the `oracle-miner` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
+    _APP_ID: ClassVar[str] = "oracle-miner"
     _ENTRYPOINT: ClassVar[Optional[str]] = ""
 
     connection: Optional[Any] = None
@@ -32,8 +32,18 @@ class AtlanMssqlInputs(AppInput):
     """Temp Table Regex"""
     source_tag_prefix: str = ""
     """Source Tag Prefix"""
-    preflight_check: str = ""
-    """Preflight Check"""
+    incremental_extraction: bool = False
+    """Incremental Extraction"""
+    column_batch_size: int = 25000
+    """Column Batch Size"""
+    column_chunk_size: int = 100000
+    """Column Chunk Size"""
+    copy_workers: int = 3
+    """Copy Workers"""
+    prepone_marker_timestamp: bool = True
+    """Prepone Marker Timestamp"""
+    prepone_marker_hours: int = 3
+    """Prepone Marker Hours"""
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["OracleMinerInputs"]

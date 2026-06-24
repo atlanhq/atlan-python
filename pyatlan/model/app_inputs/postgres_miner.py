@@ -11,11 +11,11 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class PostgresMinerInputs(AppInput):
+    """Typed inputs for the `postgres-miner` / `miner` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
-    _ENTRYPOINT: ClassVar[Optional[str]] = ""
+    _APP_ID: ClassVar[str] = "postgres-miner"
+    _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
 
     connection: Optional[Any] = None
     credential_guid: str = ""
@@ -34,6 +34,7 @@ class AtlanMssqlInputs(AppInput):
     """Source Tag Prefix"""
     preflight_check: str = ""
     """Preflight Check"""
+    postgres_miner_credential: Any = None
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["PostgresMinerInputs"]

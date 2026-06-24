@@ -11,10 +11,10 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class AtlanMysqlInputs(AppInput):
+    """Typed inputs for the `atlan-mysql` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
+    _APP_ID: ClassVar[str] = "atlan-mysql"
     _ENTRYPOINT: ClassVar[Optional[str]] = ""
 
     connection: Optional[Any] = None
@@ -32,8 +32,10 @@ class AtlanMssqlInputs(AppInput):
     """Temp Table Regex"""
     source_tag_prefix: str = ""
     """Source Tag Prefix"""
+    exclude_table_regex: str = ""
+    """Exclude Table Regex"""
     preflight_check: str = ""
     """Preflight Check"""
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["AtlanMysqlInputs"]

@@ -11,11 +11,11 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class TeradataCrawlerInputs(AppInput):
+    """Typed inputs for the `teradata-crawler` / `crawler` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
-    _ENTRYPOINT: ClassVar[Optional[str]] = ""
+    _APP_ID: ClassVar[str] = "teradata-crawler"
+    _ENTRYPOINT: ClassVar[Optional[str]] = "crawler"
 
     connection: Optional[Any] = None
     credential_guid: str = ""
@@ -32,8 +32,13 @@ class AtlanMssqlInputs(AppInput):
     """Temp Table Regex"""
     source_tag_prefix: str = ""
     """Source Tag Prefix"""
+    advanced_config_strategy: str = "default"
+    """Advanced Config Strategy"""
+    use_source_schema_filtering: str = "false"
+    """Use Source Schema Filtering"""
     preflight_check: str = ""
     """Preflight Check"""
+    teradata_crawler_credential: Any = None
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["TeradataCrawlerInputs"]

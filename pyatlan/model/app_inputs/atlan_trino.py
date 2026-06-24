@@ -11,10 +11,10 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class AtlanTrinoInputs(AppInput):
+    """Typed inputs for the `atlan-trino` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
+    _APP_ID: ClassVar[str] = "atlan-trino"
     _ENTRYPOINT: ClassVar[Optional[str]] = ""
 
     connection: Optional[Any] = None
@@ -36,4 +36,4 @@ class AtlanMssqlInputs(AppInput):
     """Preflight Check"""
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["AtlanTrinoInputs"]

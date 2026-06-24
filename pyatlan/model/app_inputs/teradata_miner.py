@@ -11,11 +11,11 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class TeradataMinerInputs(AppInput):
+    """Typed inputs for the `teradata-miner` / `miner` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
-    _ENTRYPOINT: ClassVar[Optional[str]] = ""
+    _APP_ID: ClassVar[str] = "teradata-miner"
+    _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
 
     connection: Optional[Any] = None
     credential_guid: str = ""
@@ -32,8 +32,19 @@ class AtlanMssqlInputs(AppInput):
     """Temp Table Regex"""
     source_tag_prefix: str = ""
     """Source Tag Prefix"""
+    miner_start_time_epoch: str = ""
+    """Miner Start Time Epoch"""
+    advanced_config: str = "default"
+    """Advanced Config"""
+    cross_connection: str = "false"
+    """Cross Connection"""
+    control_config_strategy: str = "default"
+    """Control Config Strategy"""
+    control_config: str = ""
+    """Control Config"""
     preflight_check: str = ""
     """Preflight Check"""
+    teradata_miner_credential: Any = None
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["TeradataMinerInputs"]

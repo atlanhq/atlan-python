@@ -24,10 +24,6 @@ class PostgresCrawlerInputs(AppInput):
     extraction_method: str = ""
     """Extraction Method"""
     agent_json: Any = None
-    output_prefix: str = ""
-    """Output Prefix"""
-    output_path: str = ""
-    """Output Path"""
     exclude_filter: Union[Dict[str, Any], str] = ""
     """Exclude Filter"""
     include_filter: Union[Dict[str, Any], str] = ""
@@ -49,14 +45,6 @@ class PostgresCrawlerInputs(AppInput):
     preflight_check: str = ""
     """Preflight Check"""
     postgres_crawler_credential: Any = None
-    output_dir: str = ""
-    """Output Dir"""
-    checkpoint_dir: str = ""
-    """Checkpoint Dir"""
-    load_to_atlan: bool = True
-    """Load To Atlan"""
-    publish_dry_run: bool = False
-    """Publish Dry Run"""
 
 
 __all__ = ["PostgresCrawlerInputs"]

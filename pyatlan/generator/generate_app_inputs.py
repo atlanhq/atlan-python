@@ -15,8 +15,9 @@ Run (needs ATLAN_BASE_URL + ATLAN_API_KEY for a tenant with the apps deployed):
 from __future__ import annotations
 
 import re
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from pyatlan.client.atlan import AtlanClient
 
@@ -30,8 +31,26 @@ MANIFEST: List[Tuple[str, str]] = [
     ("atlan-mssql", "crawler"),
 ]
 
-# Internal/handshake fields that are not user inputs (stripped server-side).
-_EXCLUDE = {"user-id", "user_id", "workflow_id", "correlation_id"}
+# Internal/infra fields the UI never surfaces — kept out of the typed classes so
+# they mirror the user-facing form rather than the full data contract. (Handshake
+# ids stripped server-side, plus output/checkpoint/publish/runtime-tuning knobs.)
+_EXCLUDE = {
+    "user-id",
+    "user_id",
+    "workflow_id",
+    "correlation_id",
+    "output_dir",
+    "checkpoint_dir",
+    "output_prefix",
+    "output_path",
+    "load_to_atlan",
+    "publish_dry_run",
+    "atlas_auth_type",
+    "max_concurrent_activities",
+    "max_activities_per_execution",
+    "enable_continue_as_new",
+    "schedule_to_start_timeout_secs",
+}
 
 _PRIMITIVE = {
     "boolean": "bool",
@@ -141,20 +160,71 @@ def _module_name(app_id: str, entrypoint: str) -> str:
     return base
 
 
-def generate(client: AtlanClient) -> Dict[str, Tuple[str, str]]:
-    """Return {module_name: (class_name, file_content)} for each resolved app."""
+def discover_targets(client: AtlanClient) -> List[Tuple[str, Optional[str]]]:
+    """Discover every app deployed on the tenant and resolve its entrypoints.
+
+    There is no catalog endpoint, so we collect distinct ``app_id``s from the
+    deployed workflows' DAGs, then describe each app for its entrypoints. Only
+    native-ready apps are kept; an app with no named entrypoints yields one
+    target with the default (``None``).
+    """
+    app_ids: set[str] = set()
+    cursor: Optional[str] = None
+    for _ in range(50):
+        page = client.app.get_all(limit=100, cursor=cursor)
+        for w in page.workflows:
+            dag = getattr(w, "dag", None)
+            if isinstance(dag, dict):
+                aid = ((dag.get("extract") or {}).get("inputs") or {}).get("app_id")
+                if aid:
+                    app_ids.add(aid)
+        if not page.has_more:
+            break
+        cursor = page.next_cursor
+
+    targets: List[Tuple[str, Optional[str]]] = []
+    for app_id in sorted(app_ids):
+        try:
+            info = client.app.get_app(app_id)
+        except Exception as exc:  # noqa: BLE001
+            print(f"  SKIP {app_id}: describe failed: {str(exc)[:60]}")
+            continue
+        if not info.native_ready:
+            print(f"  SKIP {app_id}: not native-ready")
+            continue
+        eps = [e.name for e in info.entrypoints] or [None]
+        targets.extend((app_id, ep) for ep in eps)
+    print(f"discovered {len(app_ids)} apps -> {len(targets)} targets")
+    return targets
+
+
+def _fetch_contract(
+    client: AtlanClient, app_id: str, entrypoint: Optional[str]
+) -> Tuple[str, Optional[str], Any, Any]:
+    """Fetch one contract, trying the entrypoint then the default. Thread-safe."""
+    last: Any = None
+    for ep in (entrypoint, None) if entrypoint else (None,):
+        try:
+            return app_id, ep, client.app.get_input_contract(app_id, entrypoint=ep), None
+        except Exception as exc:  # noqa: BLE001
+            last = exc
+    return app_id, entrypoint, None, last
+
+
+def generate(
+    client: AtlanClient, targets: Optional[List[Tuple[str, Optional[str]]]] = None
+) -> Dict[str, Tuple[str, str]]:
+    """Return {module_name: (class_name, file_content)} for each resolved app.
+
+    ``targets`` defaults to live discovery of every app on the tenant. Contracts
+    are fetched concurrently (the slow per-app step).
+    """
+    if targets is None:
+        targets = discover_targets(client)
     modules: Dict[str, Tuple[str, str]] = {}
-    for app_id, entrypoint in MANIFEST:
-        # Try the requested entrypoint; fall back to the app default; else skip.
-        contract = None
-        last: Any = None
-        for ep in (entrypoint, None) if entrypoint else (None,):
-            try:
-                contract = client.app.get_input_contract(app_id, entrypoint=ep)
-                entrypoint = ep
-                break
-            except Exception as exc:  # noqa: BLE001
-                last = exc
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = pool.map(lambda t: _fetch_contract(client, t[0], t[1]), targets)
+    for app_id, entrypoint, contract, last in results:
         if contract is None:
             print(f"  SKIP {app_id}: {str(last)[:80]}")
             continue
@@ -165,7 +235,9 @@ def generate(client: AtlanClient) -> Dict[str, Tuple[str, str]]:
         )
         content += f'\n\n__all__ = ["{class_name}"]\n'
         modules[module] = (class_name, content)
-        print(f"  generated {module}.py :: {class_name}  ({len(contract.field_names())} fields)")
+        print(
+            f"  generated {module}.py :: {class_name} ({len(contract.field_names())} fields)"
+        )
     return modules
 
 
@@ -199,6 +271,10 @@ def main() -> None:
     out_dir = Path(__file__).resolve().parents[1] / "model" / "app_inputs"
     print(f"Generating modules into {out_dir} ...")
     modules = generate(client)
+    # Clear stale generated modules (keep _base.py and __init__.py).
+    for existing in out_dir.glob("*.py"):
+        if existing.name not in {"_base.py", "__init__.py"}:
+            existing.unlink()
     for module, (_class_name, content) in modules.items():
         (out_dir / f"{module}.py").write_text(content)
     (out_dir / "__init__.py").write_text(_render_init(modules))

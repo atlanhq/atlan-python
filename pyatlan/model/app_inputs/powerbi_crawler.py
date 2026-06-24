@@ -11,10 +11,10 @@ from pydantic.v1 import Field  # noqa: F401
 from pyatlan.model.app_inputs._base import AppInput
 
 
-class AtlanMssqlInputs(AppInput):
-    """Typed inputs for the `atlan-mssql` app (generated from its input contract)."""
+class PowerbiCrawlerInputs(AppInput):
+    """Typed inputs for the `powerbi-crawler` app (generated from its input contract)."""
 
-    _APP_ID: ClassVar[str] = "atlan-mssql"
+    _APP_ID: ClassVar[str] = "powerbi-crawler"
     _ENTRYPOINT: ClassVar[Optional[str]] = ""
 
     connection: Optional[Any] = None
@@ -32,8 +32,25 @@ class AtlanMssqlInputs(AppInput):
     """Temp Table Regex"""
     source_tag_prefix: str = ""
     """Source Tag Prefix"""
+    dashboard_report_include_regex: str = ""
+    """Dashboard Report Include Regex"""
+    dashboard_report_exclude_regex: str = ""
+    """Dashboard Report Exclude Regex"""
+    fetch_report_definition_extracts: bool = True
+    """Fetch Report Definition Extracts"""
+    endorsement_attach_mode: str = "metastore"
+    """Endorsement Attach Mode"""
+    incremental_extraction: bool = False
+    """Incremental Extraction"""
+    sql_connection_qualified_names: str = ""
+    """Sql Connection Qualified Names"""
+    enable_odbc_connectivity_mapping: str = "false"
+    """Enable Odbc Connectivity Mapping"""
+    odbc_dsn_config_mapping: Optional[Dict[str, Any]] = None
+    """Odbc Dsn Config Mapping"""
     preflight_check: str = ""
     """Preflight Check"""
+    powerbi_credential: Any = None
 
 
-__all__ = ["AtlanMssqlInputs"]
+__all__ = ["PowerbiCrawlerInputs"]
