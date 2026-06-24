@@ -54,7 +54,8 @@ def test_builder_create_path(cls):
     cls(c).connection(name="conn", admins=["u"]).credential_guid("g").create()
     ak = c.app.create.call_args.kwargs
     assert ak["app_id"] == cls._APP_ID
-    assert ak["entrypoint"] == cls._ENTRYPOINT
+    # an empty entrypoint is sent as None ("use the app's default")
+    assert ak["entrypoint"] == (cls._ENTRYPOINT or None)
     assert ak["run"] is False  # .create() does not run
     out = ak["inputs"].to_inputs()
     assert out["connection"]["attributes"]["connectorName"] == cls._CONNECTOR_NAME

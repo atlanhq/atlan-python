@@ -315,7 +315,9 @@ class AppBuilder:
         )
         return self._client.app.create(
             app_id=self._APP_ID,
-            entrypoint=self._ENTRYPOINT,
+            # An empty entrypoint means "use the app's default" — send None so it is
+            # omitted; an empty string is rejected as an unknown entrypoint.
+            entrypoint=self._ENTRYPOINT or None,
             name=name or self._connection_name or self._APP_ID,
             inputs=inputs,
             run=run,
