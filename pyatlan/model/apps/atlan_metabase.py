@@ -41,7 +41,7 @@ class AtlanMetabase(AppBuilder):
             AtlanMetabase(client)
             .basic(username="...", password="...")
             .connection(name="my-connection", admins=["jdoe"])
-            .include_collections(...)
+            .include_collections({})
             .run()
         )
     """

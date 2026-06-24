@@ -36,7 +36,7 @@ class OracleMiner(AppBuilder):
         resp = (
             OracleMiner(client)
             .connection(qualified_name="default/oracle/1700000000")
-            .start_date(...)
+            .start_date(0.0)
             .run()
         )
     """

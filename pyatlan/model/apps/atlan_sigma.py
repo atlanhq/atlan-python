@@ -41,7 +41,7 @@ class AtlanSigma(AppBuilder):
             AtlanSigma(client)
             .api_token(username="...", password="...")
             .connection(name="my-connection", admins=["jdoe"])
-            .include_workbooks(...)
+            .include_workbooks({})
             .run()
         )
     """

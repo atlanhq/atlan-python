@@ -554,7 +554,20 @@ def _render_metadata_method(
         sig = f'    def {mname}(self, value: {vtype}) -> "{{cls}}":'
         body = f'        self._metadata["{key}"] = value'
         enum = spec.get("enum")
-        sample = repr(enum[0]) if enum else ('""' if vtype == "str" else "...")
+        if enum:
+            sample = repr(enum[0])
+        elif vtype == "str":
+            sample = '""'
+        elif vtype.startswith(("Dict", "Union")):
+            sample = "{}"
+        elif vtype == "int":
+            sample = "0"
+        elif vtype == "float":
+            sample = "0.0"
+        elif vtype.startswith("List"):
+            sample = "[]"
+        else:
+            sample = "None"
     parts = [sig]
     if docstring:
         parts.append(docstring)

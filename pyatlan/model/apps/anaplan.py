@@ -45,7 +45,7 @@ class Anaplan(AppBuilder):
             Anaplan(client)
             .basic(username="...", password="...")
             .connection(name="my-connection", admins=["jdoe"])
-            .include_metadata(...)
+            .include_metadata({})
             .run()
         )
     """

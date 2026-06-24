@@ -52,7 +52,7 @@ class AtlanKnowledgeCatalog(AppBuilder):
             AtlanKnowledgeCatalog(client)
             .basic(service_account_json="...", project_id="...")
             .connection(name="my-connection", admins=["jdoe"])
-            .include_projects_optional(...)
+            .include_projects_optional({})
             .run()
         )
     """

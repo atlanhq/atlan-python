@@ -185,8 +185,14 @@ class AppBuilder:
         return out
 
     def _assemble(
-        self, *, qualified_name: str, epoch: int, redact: bool = False
+        self,
+        *,
+        qualified_name: str,
+        epoch: int,
+        redact: bool = False,
+        resolved_guids: Optional[Dict[str, str]] = None,
     ) -> AppInput:
+        resolved_guids = resolved_guids or {}
         kwargs: Dict[str, Any] = dict(self._HIDDEN_DEFAULTS)
         kwargs.update(self._metadata)
         kwargs["connection"] = self._build_connection(qualified_name)
@@ -195,17 +201,22 @@ class AppBuilder:
             kwargs["agent_json"] = self._agent_json
             return self._INPUTS_CLASS(**kwargs)
 
-        # The staged raw credential goes in the shape-recognized ``credential`` key
-        # — the only one the create endpoint vaults; the server then routes the
-        # issued guid to the right field by the credential's connectorConfigName
-        # (e.g. dbt's api_credential_guid vs object_store_credential_guid). Builders
-        # stage one credential per run (selected by .source(...)); if several are
-        # staged the last wins.
-        staged = list(self._raw_creds.values())
-        if staged:
-            kwargs["credential"] = self._raw_credential(
-                staged[-1], epoch=epoch, redact=redact
-            )
+        # Each staged credential lands in its target field:
+        #  * the standard ``credential_guid`` field -> the raw body goes in the
+        #    shape-recognized ``credential`` key, which the create endpoint vaults
+        #    and routes back to credential_guid;
+        #  * a named field (e.g. dbt's api_credential_guid) is NOT vaulted from the
+        #    payload — it must hold a real guid, so _create() vaults it first
+        #    (``resolved_guids``); in preview the redacted raw is shown for clarity.
+        for field, cred in self._raw_creds.items():
+            if field == "credential_guid":
+                kwargs["credential"] = self._raw_credential(
+                    cred, epoch=epoch, redact=redact
+                )
+            elif field in resolved_guids:
+                kwargs[field] = resolved_guids[field]
+            else:
+                kwargs[field] = self._raw_credential(cred, epoch=epoch, redact=True)
         # credential_guid is a (non-null) string in the contract: reuse an existing
         # guid if given, else "" (omitting it reads as null and is rejected).
         kwargs["credential_guid"] = (
@@ -271,7 +282,20 @@ class AppBuilder:
             and self._connection_qualified_name
         ):
             self._credential_guid = self._resolve_connection_credential(qn)
-        inputs = self._assemble(qualified_name=qn, epoch=epoch)
+        # Named credential fields (e.g. dbt's api_credential_guid) aren't vaulted
+        # from the payload — vault them now and place the issued guid in the field.
+        resolved_guids: Dict[str, str] = {}
+        for field, cred in self._raw_creds.items():
+            if field == "credential_guid":
+                continue
+            if not cred.name:
+                cred.name = f"default-{self._CONNECTOR_NAME}-{epoch}-0"
+            resolved_guids[field] = self._client.credentials.creator(
+                credential=cred, test=True
+            ).id
+        inputs = self._assemble(
+            qualified_name=qn, epoch=epoch, resolved_guids=resolved_guids
+        )
         return self._client.app.create(
             app_id=self._APP_ID,
             entrypoint=self._ENTRYPOINT,

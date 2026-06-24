@@ -64,7 +64,7 @@ class PowerbiCrawler(AppBuilder):
         resp = (
             PowerbiCrawler(client)
             .connection(qualified_name="default/powerbi/1700000000")
-            .include_workspaces(...)
+            .include_workspaces({})
             .run()
         )
     """

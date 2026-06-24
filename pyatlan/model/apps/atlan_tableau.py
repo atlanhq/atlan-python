@@ -61,7 +61,7 @@ class AtlanTableau(AppBuilder):
             AtlanTableau(client)
             .basic(username="...", password="...", protocol="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
-            .include_projects(...)
+            .include_projects({})
             .run()
         )
     """
