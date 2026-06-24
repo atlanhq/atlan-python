@@ -195,23 +195,22 @@ class AppBuilder:
             kwargs["agent_json"] = self._agent_json
             return self._INPUTS_CLASS(**kwargs)
 
-        # Vault each staged raw credential into its target field. The standard
-        # "credential_guid" field is a string, so its raw body goes in the
-        # shape-recognized ``credential`` key (and credential_guid is sent ""); any
-        # other (named) credential field — e.g. dbt's api_credential_guid /
-        # object_store_credential_guid — takes the raw body directly.
-        for field, cred in self._raw_creds.items():
-            raw = self._raw_credential(cred, epoch=epoch, redact=redact)
-            if field == "credential_guid":
-                kwargs["credential"] = raw
-            else:
-                kwargs[field] = raw
-        if self._credential_guid is not None:
-            kwargs["credential_guid"] = self._credential_guid
-        elif "credential_guid" not in kwargs:
-            # Contract types credential_guid as a (non-null) string; "" satisfies
-            # validation when we didn't set it above (omitting reads as null).
-            kwargs["credential_guid"] = ""
+        # The staged raw credential goes in the shape-recognized ``credential`` key
+        # — the only one the create endpoint vaults; the server then routes the
+        # issued guid to the right field by the credential's connectorConfigName
+        # (e.g. dbt's api_credential_guid vs object_store_credential_guid). Builders
+        # stage one credential per run (selected by .source(...)); if several are
+        # staged the last wins.
+        staged = list(self._raw_creds.values())
+        if staged:
+            kwargs["credential"] = self._raw_credential(
+                staged[-1], epoch=epoch, redact=redact
+            )
+        # credential_guid is a (non-null) string in the contract: reuse an existing
+        # guid if given, else "" (omitting it reads as null and is rejected).
+        kwargs["credential_guid"] = (
+            self._credential_guid if self._credential_guid is not None else ""
+        )
         return self._INPUTS_CLASS(**kwargs)
 
     def preview(self) -> Dict[str, Any]:
