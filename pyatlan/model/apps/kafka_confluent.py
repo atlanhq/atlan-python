@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-# AUTO-GENERATED from the app's UI configmaps — DO NOT EDIT.
-# Regenerate: uv run python -m pyatlan.generator.generate_apps
+# Hand-maintained (see _HAND_WRITTEN in the generator): the credential vaults under
+# a connector config name (atlan-connectors-kafka-confluent-cloud) that differs from
+# the configmap's credentialType, so it can't be derived automatically.
 from __future__ import annotations
 
 from typing import Any, ClassVar, Dict, Optional
@@ -52,7 +53,7 @@ class KafkaConfluent(AppBuilder):
     _APP_ID: ClassVar[str] = "Kafka-confluent"
     _ENTRYPOINT: ClassVar[Optional[str]] = "confluent"
     _CONNECTOR_NAME: ClassVar[str] = "confluent-kafka"
-    _CONNECTOR_CONFIG: ClassVar[str] = "atlan-connectors-confluent-kafka"
+    _CONNECTOR_CONFIG: ClassVar[str] = "atlan-connectors-kafka-confluent-cloud"
     _INPUTS_CLASS = KafkaConfluentInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
 
@@ -72,6 +73,7 @@ class KafkaConfluent(AppBuilder):
         schema_registry_username: Optional[str] = None,
         schema_registry_password: Optional[str] = None,
         host: str,
+        port: Optional[int] = None,
         **extra: Any,
     ) -> "KafkaConfluent":
         """Direct extraction with basic auth.
@@ -108,12 +110,16 @@ class KafkaConfluent(AppBuilder):
         return self._stage_credential(
             "credential_guid",
             Credential(
-                connector_config_name="atlan-connectors-confluent-kafka",
+                # The vault registers this connector as kafka-confluent-cloud; the
+                # configmap's credentialType (atlan-connectors-confluent-kafka) is a
+                # different name the vault can't store ("failed to store credential").
+                connector_config_name="atlan-connectors-kafka-confluent-cloud",
                 connector_type="confluent-kafka",
                 auth_type="basic",
                 username=username,
                 password=password,
                 host=host,
+                port=port or 9092,
                 extra=extras,
             ),
         )

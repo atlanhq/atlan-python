@@ -44,7 +44,7 @@ from pyatlan.client.atlan import AtlanClient
 # Modules with a hand-polished builder — the generator leaves these untouched.
 # databricks_crawler has a hand-written multi-mode asset_selection (the configmap
 # can't express its include/exclude × hierarchy/regex widget).
-_HAND_WRITTEN = {"bigquery_crawler", "databricks_crawler"}
+_HAND_WRITTEN = {"bigquery_crawler", "databricks_crawler", "kafka_confluent"}
 
 # Apps to generate even when not currently deployed/running on the tenant
 # (configmaps are served per app-id, so live discovery alone misses these).

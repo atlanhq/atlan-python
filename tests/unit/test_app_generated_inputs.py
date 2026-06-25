@@ -84,7 +84,11 @@ def test_no_internal_fields_leak(cls):
 
 
 # Hand-authored reference modules (the shape the configmap generator emits).
-_HAND_WRITTEN = {"BigqueryCrawlerInputs", "DatabricksCrawlerInputs"}
+_HAND_WRITTEN = {
+    "BigqueryCrawlerInputs",
+    "DatabricksCrawlerInputs",
+    "KafkaConfluentInputs",
+}
 
 
 @pytest.mark.parametrize("cls", GENERATED, ids=IDS)
