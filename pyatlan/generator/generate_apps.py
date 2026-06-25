@@ -52,6 +52,7 @@ _HAND_WRITTEN = {"bigquery_crawler", "databricks_crawler", "kafka_confluent"}
 MANIFEST: List[Tuple[str, Optional[str]]] = [
     ("snowflake-crawler", "crawler"),
     ("snowflake-miner", "miner"),
+    ("bigquery-miner", "miner"),
     ("atlan-dbt", None),
     ("atlan-glue", None),
     ("atlan-dynamodb", None),

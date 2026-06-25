@@ -8,6 +8,7 @@ Connection -> Metadata); see ``pyatlan.generator.generate_apps``.
 
 from pyatlan.model.apps._base import AppBuilder, AppInput
 from pyatlan.model.apps.bigquery_crawler import BigqueryCrawler, BigqueryCrawlerInputs
+from pyatlan.model.apps.bigquery_miner import BigqueryMiner, BigqueryMinerInputs
 from pyatlan.model.apps.anaplan import Anaplan, AnaplanInputs
 from pyatlan.model.apps.atlan_athena import AtlanAthena, AtlanAthenaInputs
 from pyatlan.model.apps.atlan_dbt import AtlanDbt, AtlanDbtInputs
@@ -57,6 +58,8 @@ __all__ = [
     "AppBuilder",
     "BigqueryCrawler",
     "BigqueryCrawlerInputs",
+    "BigqueryMiner",
+    "BigqueryMinerInputs",
     "Anaplan",
     "AnaplanInputs",
     "AtlanAthena",
