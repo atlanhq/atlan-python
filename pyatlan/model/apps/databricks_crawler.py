@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-# AUTO-GENERATED from the app's UI configmaps — DO NOT EDIT.
-# Regenerate: uv run python -m pyatlan.generator.generate_apps
+# Hand-maintained (see _HAND_WRITTEN in the generator): the asset_selection widget
+# is multi-mode (include/exclude × hierarchy/regex) and can't be derived from the
+# configmap. Other fields mirror the app's input contract.
 from __future__ import annotations
 
 from typing import Any, ClassVar, Dict, Literal, Optional, Union
@@ -64,8 +65,6 @@ class DatabricksCrawlerInputs(AppInput):
     """Incremental Extraction — Only extract assets changed since the last successful run (uses a timestamp watermark)."""
     sql_warehouse: Union[Dict[str, Any], str] = Field({}, alias="sql-warehouse")
     """SQL warehouse — SQL warehouse used for tag extraction and REST preflight checks."""
-    asset_selection: Union[Dict[str, Any], str] = Field("{}", alias="asset-selection")
-    """Asset selection — Select the assets you want to crawl, or filter out the ones you don't."""
 
 
 class DatabricksCrawler(AppBuilder):
@@ -87,10 +86,12 @@ class DatabricksCrawler(AppBuilder):
     _CONNECTOR_NAME: ClassVar[str] = "databricks"
     _CONNECTOR_CONFIG: ClassVar[str] = "atlan-connectors-databricks"
     _INPUTS_CLASS = DatabricksCrawlerInputs
+    # include_filter / exclude_filter are objects in the contract (default {});
+    # workspace_credential_overrides is a JSON string. Match each field's type.
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {
         "workspace_credential_overrides": "{}",
-        "include_filter": "{}",
-        "exclude_filter": "{}",
+        "include_filter": {},
+        "exclude_filter": {},
         "use_parallelize_table_enrichment": "true",
         "enable_tag_sync": "false",
     }
@@ -268,9 +269,45 @@ class DatabricksCrawler(AppBuilder):
         self._metadata["sql-warehouse"] = value
         return self
 
-    def asset_selection(self, value: Union[Dict[str, Any], str]) -> "DatabricksCrawler":
-        """Asset selection — Select the assets you want to crawl, or filter out the ones you don't."""
-        self._metadata["asset-selection"] = value
+    #: Asset types supported by regex-based selection (schema / table).
+    _REGEX_ASSET_TYPES: ClassVar[tuple] = ("schema", "table")
+
+    def asset_selection(
+        self,
+        *,
+        include_hierarchy: Optional[Dict[str, Any]] = None,
+        exclude_hierarchy: Optional[Dict[str, Any]] = None,
+        include_regex: Optional[Dict[str, str]] = None,
+        exclude_regex: Optional[Dict[str, str]] = None,
+    ) -> "DatabricksCrawler":
+        """Asset selection — mirrors the UI's multi-mode "Asset selection" widget.
+        Provide any combination of the four modes (all optional):
+
+        * ``include_hierarchy`` / ``exclude_hierarchy``: ``{catalog: [schema, ...]}``
+          (sent as objects — the workflow's ``include_filter`` / ``exclude_filter``).
+        * ``include_regex`` / ``exclude_regex``: ``{asset_type: regex}`` where
+          ``asset_type`` is ``"schema"`` or ``"table"`` (the workflow's
+          ``{asset_type}_include_regex`` / ``{asset_type}_exclude_regex``).
+
+        Example::
+
+            .asset_selection(
+                include_hierarchy={"my_catalog": ["sales", "marketing"]},
+                exclude_regex={"table": ".*_tmp$"},
+            )
+        """
+        if include_hierarchy is not None:
+            self._metadata["include_filter"] = include_hierarchy
+        if exclude_hierarchy is not None:
+            self._metadata["exclude_filter"] = exclude_hierarchy
+        for kind, mapping in (("include", include_regex), ("exclude", exclude_regex)):
+            for asset_type, regex in (mapping or {}).items():
+                if asset_type not in self._REGEX_ASSET_TYPES:
+                    raise ValueError(
+                        f"asset_type must be one of {self._REGEX_ASSET_TYPES}, "
+                        f"got {asset_type!r}"
+                    )
+                self._metadata[f"{asset_type}_{kind}_regex"] = regex
         return self
 
 

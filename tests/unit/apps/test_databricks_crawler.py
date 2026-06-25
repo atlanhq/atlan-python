@@ -23,7 +23,6 @@ def test_databricks_crawler_inputs_defaults():
     assert i.use_source_schema_filtering == "false"
     assert i.incremental_extraction == "false"
     assert i.sql_warehouse == {}
-    assert i.asset_selection == "{}"
 
 
 def test_databricks_crawler_builder_payload():
@@ -37,8 +36,9 @@ def test_databricks_crawler_builder_payload():
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"
     assert out["workspace_credential_overrides"] == "{}"
-    assert out["include_filter"] == "{}"
-    assert out["exclude_filter"] == "{}"
+    # include_filter / exclude_filter are objects in the contract (default {})
+    assert out["include_filter"] == {}
+    assert out["exclude_filter"] == {}
     assert out["use_parallelize_table_enrichment"] == "true"
     assert out["enable_tag_sync"] == "false"
 
