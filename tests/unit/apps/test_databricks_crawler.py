@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Atlan Pte. Ltd.
+# AUTO-GENERATED from the app's UI configmaps — DO NOT EDIT.
+# Regenerate: uv run python -m pyatlan.generator.generate_apps
+from unittest.mock import Mock
+
+from pyatlan.model.apps import DatabricksCrawler, DatabricksCrawlerInputs
+
+
+def test_databricks_crawler_inputs_defaults():
+    i = DatabricksCrawlerInputs()
+    assert DatabricksCrawlerInputs._APP_ID == "databricks-crawler"
+    assert DatabricksCrawlerInputs._ENTRYPOINT == "crawler"
+    assert i.extract_strategy == "system-tables"
+    assert i.enable_cross_workspace_discovery == "false"
+    assert i.temp_table_regex == ""
+    assert i.enable_tags == "false"
+    assert i.enable_models == "false"
+    assert i.enable_model_lineage == "false"
+    assert i.enable_complex_types == "true"
+    assert i.advanced_config_strategy == "default"
+    assert i.enable_view_lineage == "true"
+    assert i.use_source_schema_filtering == "false"
+    assert i.incremental_extraction == "false"
+    assert i.sql_warehouse == {}
+
+
+def test_databricks_crawler_builder_payload():
+    out = (
+        DatabricksCrawler(Mock())
+        .connection(name="conn", admin_users=["u"])
+        .credential_guid("g")
+        .preview()
+    )
+    assert out["connection"]["attributes"]["connectorName"] == "databricks"
+    assert out["credential_guid"] == "g"
+    assert out["extraction_method"] == "direct"
+    assert out["workspace_credential_overrides"] == "{}"
+    # include_filter / exclude_filter are objects in the contract (default {})
+    assert out["include_filter"] == {}
+    assert out["exclude_filter"] == {}
+    assert out["use_parallelize_table_enrichment"] == "true"
+    assert out["enable_tag_sync"] == "false"
+
+
+def test_databricks_crawler_credential_basic():
+    b = DatabricksCrawler(Mock()).basic(password="x", http_path="x", host="x")
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
+
+
+def test_databricks_crawler_credential_aws_service():
+    b = DatabricksCrawler(Mock()).aws_service(
+        client_id="x", client_secret="x", host="x"
+    )
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name
+
+
+def test_databricks_crawler_credential_azure_service():
+    b = DatabricksCrawler(Mock()).azure_service(
+        client_id="x", client_secret="x", tenant_id="x", host="x"
+    )
+    assert b._raw_creds  # a credential was staged
+    cred = next(iter(b._raw_creds.values()))
+    assert cred.auth_type and cred.connector_config_name

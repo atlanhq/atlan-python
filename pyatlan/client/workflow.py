@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import warnings
 from logging import Logger
 from time import sleep
 from typing import List, Optional, Union, overload
@@ -48,8 +49,14 @@ MONITOR_SLEEP_SECONDS = 5
 
 class WorkflowClient:
     """
-    This class can be used to retrieve information and rerun workflows. This class does not need to be instantiated
-    directly but can be obtained through the workflow property of AtlanClient.
+    Retrieve information about and rerun workflows. Obtained through the
+    ``workflow`` property of AtlanClient.
+
+    .. deprecated::
+        This client targets the legacy workflow surface, which no longer runs on
+        newer Atlan tenants. For creating, running, scheduling, and managing app
+        workflows, use :attr:`AtlanClient.app` (``AppClient``) — the ``/v1/app``
+        APIs.
     """
 
     _WORKFLOW_RUN_SCHEDULE = "orchestration.atlan.com/schedule"
@@ -60,6 +67,13 @@ class WorkflowClient:
             raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
                 "client", "ApiCaller"
             )
+        warnings.warn(
+            "WorkflowClient targets the legacy workflow surface, which no longer "
+            "runs on newer Atlan tenants. Use AtlanClient.app (AppClient) for app "
+            "workflows.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self._client = client
 
     @validate_arguments

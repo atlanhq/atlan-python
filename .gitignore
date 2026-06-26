@@ -60,3 +60,6 @@ pyatlan/documentation/*.md
 docs/_build/
 docs/generated/
 site/
+test.py
+test_apps/
+native-v3-workflow-api-guide.md

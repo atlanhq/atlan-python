@@ -1,0 +1,107 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Atlan Pte. Ltd.
+# AUTO-GENERATED from the app's UI configmaps — DO NOT EDIT.
+# Regenerate: uv run python -m pyatlan.generator.generate_apps
+from __future__ import annotations
+
+from typing import Any, ClassVar, Dict, Optional, Union
+
+from pydantic.v1 import Field
+
+from pyatlan.model.credential import Credential
+
+from ._base import AppBuilder, AppInput, _selective_filter
+
+
+class AtlanSigmaInputs(AppInput):
+    """Typed, UI-facing inputs for the `atlan-sigma` app (generated from its configmap)."""
+
+    _APP_ID: ClassVar[str] = "atlan-sigma"
+    _ENTRYPOINT: ClassVar[Optional[str]] = ""
+
+    # Step 1 · Credential / Connection plumbing
+    connection: Optional[Any] = None
+    extraction_method: str = "direct"
+    credential_guid: Optional[str] = None
+    agent_json: Optional[Any] = None
+
+    # Step 3 · Metadata (only fields the UI surfaces)
+    include_filter: Union[Dict[str, Any], str] = Field("{}", alias="include-filter")
+    """Include Workbooks — Selected workbooks will be extracted."""
+    exclude_filter: Union[Dict[str, Any], str] = Field("{}", alias="exclude-filter")
+    """Exclude Workbooks — Selected workbooks will be excluded from extraction."""
+
+
+class AtlanSigma(AppBuilder):
+    """Fluent, UI-equivalent builder for the `atlan-sigma` app.
+
+    Example::
+
+        resp = (
+            AtlanSigma(client)
+            .api_token(username="...", password="...")
+            .connection(name="my-connection", admin_users=["jdoe"])
+            .include_workbooks({})
+            .run()
+        )
+    """
+
+    _APP_ID: ClassVar[str] = "atlan-sigma"
+    _ENTRYPOINT: ClassVar[Optional[str]] = ""
+    _CONNECTOR_NAME: ClassVar[str] = "sigma"
+    _CONNECTOR_CONFIG: ClassVar[str] = "atlan-connectors-sigma"
+    _INPUTS_CLASS = AtlanSigmaInputs
+    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"extraction_method": "direct"}
+
+    # ── Step 1 · Credential ──
+    def api_token(
+        self,
+        *,
+        username: str,
+        password: str,
+        host: Optional[str] = None,
+        port: Optional[int] = None,
+        **extra: Any,
+    ) -> "AtlanSigma":
+        """Direct extraction with api_token auth.
+
+        :param username: Client ID.
+        :param password: API Token.
+        """
+        extras: Dict[str, Any] = {}
+        extras.update(extra)
+        return self._stage_credential(
+            "credential_guid",
+            Credential(
+                connector_config_name="atlan-connectors-sigma",
+                connector_type="sigma",
+                auth_type="api_token",
+                username=username,
+                password=password,
+                host=host or "aws-api.sigmacomputing.com",
+                port=port or 443,
+                extra=extras,
+            ),
+        )
+
+    # ── Step 3 · Metadata ──
+    def include_workbooks(self, value: Union[Dict[str, Any], str]) -> "AtlanSigma":
+        """Include Workbooks — Selected workbooks will be extracted.
+
+        Pass a ``{workbook_id: {}}`` map — it is serialized to the JSON-string form
+        the contract expects. A string passes through as-is.
+        """
+        self._metadata["include-filter"] = _selective_filter(value)
+        return self
+
+    def exclude_workbooks(self, value: Union[Dict[str, Any], str]) -> "AtlanSigma":
+        """Exclude Workbooks — Selected workbooks will be excluded from extraction.
+
+        Pass a ``{workbook_id: {}}`` map — it is serialized to the JSON-string form
+        the contract expects. A string passes through as-is.
+        """
+        self._metadata["exclude-filter"] = _selective_filter(value)
+        return self
+
+
+__all__ = ["AtlanSigma", "AtlanSigmaInputs"]
