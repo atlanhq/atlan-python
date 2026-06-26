@@ -56,6 +56,23 @@ def _anchor_filter(assets: Union[str, Mapping[str, List[str]]]) -> str:
     )
 
 
+def _selective_filter(assets: Union[str, Mapping[str, Any]]) -> str:
+    """Turn a friendly ``{parent: [child, ...]}`` map (or an already-nested
+    ``{parent: {child: {}}}`` map) into the nested-object filter JSON some apps
+    expect (e.g. Glue: ``{"AwsDataCatalog": {"db1": {}, "db2": {}}}``). Unlike
+    :func:`_anchor_filter`, names are NOT regex-anchored. A string passes through."""
+    if isinstance(assets, str):
+        return assets
+    out: Dict[str, Any] = {}
+    for parent, children in (assets or {}).items():
+        out[parent] = (
+            children
+            if isinstance(children, dict)
+            else {child: {} for child in (children or [])}
+        )
+    return json.dumps(out)
+
+
 class AppBuilder:
     """Base fluent builder mirroring the UI's 3-step "new app" wizard.
 

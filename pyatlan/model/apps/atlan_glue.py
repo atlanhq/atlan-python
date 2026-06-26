@@ -10,7 +10,7 @@ from pydantic.v1 import Field
 
 from pyatlan.model.credential import Credential
 
-from ._base import AppBuilder, AppInput, _anchor_filter
+from ._base import AppBuilder, AppInput, _selective_filter
 
 
 class AtlanGlueInputs(AppInput):
@@ -124,14 +124,14 @@ class AtlanGlue(AppBuilder):
         self, assets: Union[str, Mapping[str, List[str]]]
     ) -> "AtlanGlue":
         """Include Metadata — Only the selected databases will be extracted. Exclude gets preference over include for common databases, if present, in the config."""
-        self._metadata["include-filter"] = _anchor_filter(assets)
+        self._metadata["include-filter"] = _selective_filter(assets)
         return self
 
     def exclude_metadata(
         self, assets: Union[str, Mapping[str, List[str]]]
     ) -> "AtlanGlue":
         """Exclude Metadata — Selected databases won't be extracted."""
-        self._metadata["exclude-filter"] = _anchor_filter(assets)
+        self._metadata["exclude-filter"] = _selective_filter(assets)
         return self
 
     def exclude_table_regex(self, value: str) -> "AtlanGlue":
