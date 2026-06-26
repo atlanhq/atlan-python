@@ -10,7 +10,10 @@ building and response parsing — only the ``_call_api`` await differs.
 
 from __future__ import annotations
 
+import json
 from typing import Any, Dict, Optional, Tuple
+
+from pyatlan.errors import AtlanError
 
 from pyatlan.client.constants import (
     ADD_APP_SCHEDULE,
@@ -42,6 +45,35 @@ from pyatlan.model.app import (
     CreateApp,
     UpdateApp,
 )
+
+
+def is_duplicate_name_conflict(exc: AtlanError) -> bool:
+    """True when ``exc`` is the server's ``409`` "workflow name already exists".
+
+    The create endpoint returns ``409`` with a body that has no ``code``/``status``
+    field, so the transport raises a plain :class:`AtlanError` (not the mapped
+    ``ConflictError``) — detect it by the HTTP status carried on ``error_code``.
+    """
+    return getattr(getattr(exc, "error_code", None), "http_error_code", None) == 409
+
+
+def existing_slug_from_conflict(exc: AtlanError) -> Optional[str]:
+    """Pull the existing workflow's ``slug`` out of a duplicate-name ``409`` body.
+
+    Heracles returns ``{"message": ..., "slug": ..., "version": ...}``; the raw body
+    is preserved on the error message. Returns ``None`` if no single slug is present
+    (e.g. the multi-match ``slugs[]`` form), so callers can fall back to a lookup.
+    """
+    raw = getattr(getattr(exc, "error_code", None), "error_message", "") or ""
+    try:
+        start, end = raw.find("{"), raw.rfind("}")
+        if start != -1 and end > start:
+            slug = json.loads(raw[start : end + 1]).get("slug")
+            if isinstance(slug, str) and slug:
+                return slug
+    except (ValueError, TypeError):
+        pass
+    return None
 
 
 class AppGetInfo:

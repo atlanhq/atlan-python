@@ -31,8 +31,10 @@ from pyatlan.client.common.app import (
     AppRemoveSchedule,
     AppSubmit,
     AppUpdate,
+    existing_slug_from_conflict,
+    is_duplicate_name_conflict,
 )
-from pyatlan.errors import ConflictError, ErrorCode
+from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.apps import AppInput
 from pyatlan.model.app import (
     AppDeleteResponse,
@@ -142,18 +144,24 @@ class AppClient:
         endpoint, request_obj = AppCreate.prepare_request(request)
         try:
             raw = self._client._call_api(endpoint, request_obj=request_obj)
-        except ConflictError as conflict:
-            return self._reuse_on_conflict(name, conflict)
+        except AtlanError as exc:
+            if is_duplicate_name_conflict(exc):
+                return self._reuse_on_conflict(name, exc)
+            raise
         return AppCreate.process_response(raw)
 
-    def _reuse_on_conflict(self, name: str, conflict: ConflictError) -> AppResponse:
+    def _reuse_on_conflict(self, name: str, conflict: AtlanError) -> AppResponse:
         """Resolve a duplicate-name ``409`` to the existing workflow's slug.
 
-        Heracles returns ``409`` (with the existing slug) when ``name`` already
-        exists. We look the workflow up by name and return it so callers don't have
-        to special-case re-runs. A non-unique name can't be reused safely, so the
-        original conflict is re-raised.
+        Heracles returns ``409`` with the existing slug in the body when ``name``
+        already exists; prefer that, and fall back to a by-name lookup. Either way we
+        return the existing workflow so callers don't special-case re-runs. A
+        non-unique name can't be reused safely, so the conflict is re-raised.
         """
+        slug = existing_slug_from_conflict(conflict)
+        if slug:
+            LOGGER.info("App workflow %r already exists; reusing slug %s", name, slug)
+            return AppResponse(slug=slug)
         existing = [w for w in self.get_all(name=name).workflows if w.slug]
         if len(existing) == 1:
             slug = existing[0].slug
