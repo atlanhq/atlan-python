@@ -652,6 +652,12 @@ def _render_builder(
     docstring = _builder_docstring(
         cls, app_id, ep, auth_infos, meta_samples, connector_name, selects_connection
     )
+    # The direct-extraction method defaults to "direct"; some apps require another
+    # value (e.g. bigquery-miner -> "query_history") via the configmap's
+    # extraction-method default. Emit an override only when it differs.
+    em_default = ((cfg.get("properties") or {}).get("extraction-method") or {}).get(
+        "default"
+    ) or "direct"
     lines = [
         f"class {cls}(AppBuilder):",
         docstring,
@@ -660,6 +666,10 @@ def _render_builder(
         f"    _ENTRYPOINT: ClassVar[Optional[str]] = {ep!r}",
         f'    _CONNECTOR_NAME: ClassVar[str] = "{connector_name}"',
         f'    _CONNECTOR_CONFIG: ClassVar[str] = "{connector_config}"',
+    ]
+    if em_default != "direct":
+        lines.append(f'    _EXTRACTION_METHOD: ClassVar[str] = "{em_default}"')
+    lines += [
         f"    _INPUTS_CLASS = {inputs_cls}",
         f"    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {hidden!r}",
         "",
@@ -742,6 +752,9 @@ def _render_test_module(
     hidden: Dict[str, Any],
 ) -> str:
     metadata = _metadata_fields(cfg)
+    em_default = ((cfg.get("properties") or {}).get("extraction-method") or {}).get(
+        "default"
+    ) or "direct"
     out = [_TEST_HEADER.format(builder=builder_cls, inputs=inputs_cls)]
 
     # 1) inputs defaults match the configmap
@@ -771,7 +784,7 @@ def _render_test_module(
         f'== "{connector_name}"'
     )
     out.append('    assert out["credential_guid"] == "g"')
-    out.append('    assert out["extraction_method"] == "direct"')
+    out.append(f'    assert out["extraction_method"] == "{em_default}"')
     for hk, hv in hidden.items():
         out.append(f'    assert out["{hk}"] {_cmp(repr(hv))} {hv!r}')
     out.append("")

@@ -70,18 +70,22 @@ class AppBuilder:
     _CONNECTOR_NAME: ClassVar[str] = ""
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS: ClassVar[Type[AppInput]] = AppInput
+    #: Default extraction method for direct (non-agent) extraction. Usually
+    #: "direct"; some apps require another value (e.g. bigquery-miner uses
+    #: "query_history"), taken from the configmap's extraction-method default.
+    _EXTRACTION_METHOD: ClassVar[str] = "direct"
     #: Hidden (``ui.hidden``) inputs the UI still submits with their defaults.
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
 
     def __init__(self, client: Any):
         self._client = client
-        self._extraction_method: str = "direct"
+        self._extraction_method: str = self._EXTRACTION_METHOD
         # field name (wire key) -> raw Credential to vault into that field. A
         # connector may expose several (e.g. dbt: api_credential_guid +
         # object_store_credential_guid); the standard field is "credential_guid".
         self._raw_creds: Dict[str, Credential] = {}
         self._credential_guid: Optional[str] = None
-        self._agent_json: Optional[Any] = None
+        self._agent_json: Optional[Any] = {}
         self._connection_name: Optional[str] = None
         self._connection_qualified_name: Optional[str] = None
         self._admin_users: List[str] = []
@@ -93,7 +97,7 @@ class AppBuilder:
     def _stage_credential(self, field: str, credential: Credential):
         """Stage a raw credential to be vaulted into ``field`` (used by generated
         per-auth-type methods)."""
-        self._extraction_method = "direct"
+        self._extraction_method = self._EXTRACTION_METHOD
         self._raw_creds[field] = credential
         return self
 

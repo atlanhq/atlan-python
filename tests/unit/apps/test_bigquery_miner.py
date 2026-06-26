@@ -32,7 +32,7 @@ def test_bigquery_miner_builder_payload():
     )
     assert out["connection"]["attributes"]["connectorName"] == "bigquery"
     assert out["credential_guid"] == "g"
-    assert out["extraction_method"] == "direct"
+    assert out["extraction_method"] == "query_history"
     assert out["chunk_interval_hours"] == 0
     assert out["enable_continue_as_new"] is False
     assert out["max_concurrent_activities"] == 50

@@ -67,6 +67,7 @@ class BigqueryMiner(AppBuilder):
     _ENTRYPOINT: ClassVar[Optional[str]] = "miner"
     _CONNECTOR_NAME: ClassVar[str] = "bigquery"
     _CONNECTOR_CONFIG: ClassVar[str] = ""
+    _EXTRACTION_METHOD: ClassVar[str] = "query_history"
     _INPUTS_CLASS = BigqueryMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {
         "chunk_interval_hours": 0,
