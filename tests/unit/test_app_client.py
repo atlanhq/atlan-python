@@ -2,6 +2,8 @@
 # Copyright 2026 Atlan Pte. Ltd.
 """Unit tests for the App workflow client — sync + async."""
 
+import json
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -9,7 +11,7 @@ import pytest
 from pyatlan.client.aio.app import AsyncAppClient
 from pyatlan.client.app import AppClient
 from pyatlan.client.common import ApiCaller, AsyncApiCaller
-from pyatlan.errors import ConflictError, ErrorCode
+from pyatlan.errors import AtlanError
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
@@ -133,14 +135,34 @@ def test_get_all_passes_name_filter(client, mock_api_caller):
     }
 
 
-def _conflict() -> ConflictError:
-    return ErrorCode.CONFLICT_PASSTHROUGH.exception_with_parameters(
-        409, "name already exists", ""
+def _conflict(slug: str | None = None) -> AtlanError:
+    """A realistic duplicate-name 409 — the server body has no code/status field, so
+    the transport raises a plain AtlanError (NOT the mapped ConflictError). When
+    ``slug`` is given it is embedded in the body, as Heracles actually returns it."""
+    body = {"message": "a workflow with that name already exists"}
+    if slug:
+        body["slug"] = slug
+    return AtlanError(
+        SimpleNamespace(
+            http_error_code=409,
+            error_id="ATLAN-PYTHON-409-000",
+            error_message=json.dumps(body),
+            user_action="resolve the conflict",
+        )
     )
 
 
-def test_create_reuses_existing_slug_on_conflict(client, mock_api_caller):
-    # First call (create) -> 409; second call (get_all by name) -> the existing one.
+def test_create_reuses_slug_from_conflict_body(client, mock_api_caller):
+    # The 409 body carries the existing slug -> reuse it directly, no second call.
+    mock_api_caller._call_api.side_effect = [_conflict(slug="prod-crawler-9f")]
+    result = client.create(app_id="bigquery-crawler", name="prod-crawler", inputs={})
+    assert isinstance(result, AppResponse)
+    assert result.slug == "prod-crawler-9f"
+    assert mock_api_caller._call_api.call_count == 1  # no get_all needed
+
+
+def test_create_reuses_slug_via_name_lookup(client, mock_api_caller):
+    # 409 body without a slug -> fall back to resolving by name.
     mock_api_caller._call_api.side_effect = [
         _conflict(),
         {
@@ -152,7 +174,6 @@ def test_create_reuses_existing_slug_on_conflict(client, mock_api_caller):
     result = client.create(app_id="bigquery-crawler", name="prod-crawler", inputs={})
     assert isinstance(result, AppResponse)
     assert result.slug == "prod-crawler-9f"
-    # the reuse lookup filtered by name
     assert mock_api_caller._call_api.call_args.kwargs["query_params"] == {
         "name": "prod-crawler"
     }
@@ -163,7 +184,7 @@ def test_create_reraises_conflict_when_name_not_unique(client, mock_api_caller):
         _conflict(),
         {"workflows": [{"slug": "a-1", "name": "dup"}, {"slug": "a-2", "name": "dup"}]},
     ]
-    with pytest.raises(ConflictError):
+    with pytest.raises(AtlanError):
         client.create(app_id="x", name="dup", inputs={})
 
 
