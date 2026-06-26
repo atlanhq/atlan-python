@@ -1,24 +1,26 @@
 ---
 title: Redash assets app
-description: Learn how to crawl Redash and publish to Atlan for discovery.
+description: Learn how to crawl Redash assets and publish them to Atlan for discovery.
 ---
 
 # Redash assets app
 
-The Redash assets app crawls Redash assets and publishes to Atlan. Build it with the `AtlanRedash` builder.
+The Redash assets app crawls Redash queries and dashboards and publishes them to
+Atlan. Build it with the `AtlanRedash` builder.
 
 !!! warning "Creating an app creates a new connection"
-    Each create mints a new connection and new assets. To re-crawl, re-run the
-    existing workflow (see [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
+    Each create mints a **new** connection and new assets. To re-crawl, re-run the
+    **existing** workflow (see
+    [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
 
-## Api Key authentication
+## API key
 
 <!-- md:python 9.8.0 -->
 <!-- md:flag experimental -->
 
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Redash assets crawling with api_key auth"
+    ```python linenums="1" title="Redash crawling with an API key"
     from pyatlan.client.atlan import AtlanClient
     from pyatlan.model.apps import AtlanRedash
 
@@ -26,54 +28,53 @@ The Redash assets app crawls Redash assets and publishes to Atlan. Build it with
 
     response = (
         AtlanRedash(client)
-        .api_key(
-            password="...",  # (1)
-            host="...",  # (2)
-            port=0,  # (3)
+        .api_key( # (1)
+            password="••••••", # (2)
+            host="redash.example.com", # (3)
         )
-        .connection(  # (4)
+        .connection(
             name="production-redash",
             admin_roles=[client.role_cache.get_id_for_name("$admin")],
         )
-        .run(name="redash-prod")  # (5)
+        .run(name="redash-prod")
     )
     print(response.slug, response.run_id)
     ```
 
-    1. API Key.
-    2. Host.
-    3. Port.
-    4. Display name + at least one admin (role, group, or user).
-    5. `.run()` creates and submits a run; use `.create()` to create without running.
+    1. **Step 1 — Credential.** API-key auth; the key is vaulted.
+    2. **Required.** The Redash API key.
+    3. **Required.** The Redash host. The port (`port=`) is optional.
 
 ## Configuration options
 
+Redash filters queries and dashboards **by tag**. All options are **optional**:
+
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Metadata configuration"
+    ```python linenums="1" title="Redash metadata configuration"
     (
         AtlanRedash(client)
-        .api_key(...)
+        .api_key(password="••••••", host="redash.example.com")
         .connection(name="production-redash", admin_roles=[...])
-        .advanced_config('default')  # (1)
-        .alternate_host_url("...")  # (2)
-        .exclude_dashboards_with_tags({...})  # (3)
-        .exclude_queries_with_tags({...})  # (4)
-        .include_dashboards_with_tags({...})  # (5)
-        .include_dashboards_without_tags('true')  # (6)
-        .include_queries_with_tags({...})  # (7)
-        .include_queries_without_tags('true')  # (8)
-        .include_unpublished_queries('true')  # (9)
+        .include_queries_with_tags(["prod"]) # (1)
+        .exclude_queries_with_tags(["draft"]) # (2)
+        .include_queries_without_tags(True) # (3)
+        .include_unpublished_queries(False) # (4)
+        .include_dashboards_with_tags(["prod"]) # (5)
+        .exclude_dashboards_with_tags(["draft"]) # (6)
+        .include_dashboards_without_tags(True) # (7)
+        .alternate_host_url("https://redash.mycompany.com") # (8)
+        .advanced_config("...") # (9)
         .run(name="redash-prod")
     )
     ```
 
-    1. Advanced Config — Controls advanced asset inclusion features.
-    2. Alternate Host URL — Protocol and host used in the 'View in Redash' link.
-    3. Exclude dashboards with tags — Dashboards having selected tags will not be crawled.
-    4. Exclude queries with tags — Queries having selected tags will not be crawled.
-    5. Include dashboards with tags — Dashboards having selected tags will be crawled. Exclude gets preference over include.
-    6. Include dashboards without tags — Include dashboards that do not have any tags associated to them.
-    7. Include queries with tags — Queries having selected tags will be crawled. Exclude gets preference over include.
-    8. Include queries without tags — Include queries that do not have any tags associated to them.
-    9. Include unpublished queries — Select whether unpublished queries should be fetched.
+    1. Crawl queries having these tags. Exclude takes priority over include.
+    2. Skip queries having these tags.
+    3. Also include queries that have no tags.
+    4. Whether to fetch unpublished queries.
+    5. Crawl dashboards having these tags. Exclude takes priority over include.
+    6. Skip dashboards having these tags.
+    7. Also include dashboards that have no tags.
+    8. Protocol + host used in the "View in Redash" links.
+    9. Controls advanced asset-inclusion features.

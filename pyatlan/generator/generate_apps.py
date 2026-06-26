@@ -91,6 +91,10 @@ _PRIMITIVE = {
 # --------------------------------------------------------------------------- #
 def _snake(text: str) -> str:
     s = str(text)
+    # drop possessive apostrophes and parens so e.g. "project's" -> "projects"
+    # and "Project(s)" -> "projects" (not "project_s")
+    s = re.sub(r"['’]s\b", "s", s)
+    s = s.replace("'", "").replace("’", "").replace("(", "").replace(")", "")
     # split camelCase / PascalCase boundaries (e.g. schemaRegistryHost,
     # HTTPHost) so they become proper snake_case
     s = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", s)
@@ -119,7 +123,13 @@ def _camel(text: str) -> str:
     return "".join(p.capitalize() for p in _tokens(text))
 
 
+# Friendlier class names than the app-id tokens would produce.
+_CLASS_OVERRIDE = {"mongodbatlas-atlas": "MongodbAtlas"}
+
+
 def _class_base(app_id: str, entrypoint: str) -> str:
+    if app_id in _CLASS_OVERRIDE:
+        return _CLASS_OVERRIDE[app_id]
     base = _camel(app_id)
     ep = _camel(entrypoint or "")
     if ep and ep.lower() not in base.lower():

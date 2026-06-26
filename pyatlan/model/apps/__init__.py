@@ -36,8 +36,8 @@ from pyatlan.model.apps.hive_crawler import HiveCrawler, HiveCrawlerInputs
 from pyatlan.model.apps.kafka_apache import KafkaApache, KafkaApacheInputs
 from pyatlan.model.apps.kafka_confluent import KafkaConfluent, KafkaConfluentInputs
 from pyatlan.model.apps.mongodbatlas_atlas import (
-    MongodbatlasAtlas,
-    MongodbatlasAtlasInputs,
+    MongodbAtlas,
+    MongodbAtlasInputs,
 )
 from pyatlan.model.apps.oracle_crawler import OracleCrawler, OracleCrawlerInputs
 from pyatlan.model.apps.oracle_miner import OracleMiner, OracleMinerInputs
@@ -100,8 +100,8 @@ __all__ = [
     "KafkaApacheInputs",
     "KafkaConfluent",
     "KafkaConfluentInputs",
-    "MongodbatlasAtlas",
-    "MongodbatlasAtlasInputs",
+    "MongodbAtlas",
+    "MongodbAtlasInputs",
     "OracleCrawler",
     "OracleCrawlerInputs",
     "OracleMiner",

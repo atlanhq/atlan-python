@@ -84,7 +84,7 @@ class PowerbiCrawler(AppBuilder):
         client_id: str,
         client_secret: str,
         admin_api: str,
-        admin_api_summary: str,
+        admin_api_summary: Optional[str]=None,
         host: Optional[str] = None,
         port: Optional[int] = None,
         **extra: Any,
@@ -101,7 +101,8 @@ class PowerbiCrawler(AppBuilder):
         extras["clientId"] = client_id
         extras["clientSecret"] = client_secret
         extras["adminAPI"] = admin_api
-        extras["adminAPISummary"] = admin_api_summary
+        if admin_api_summary:
+            extras["adminAPISummary"] = admin_api_summary
         extras.update(extra)
         return self._stage_credential(
             "credential_guid",

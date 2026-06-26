@@ -13,7 +13,7 @@ from pyatlan.model.credential import Credential
 from ._base import AppBuilder, AppInput
 
 
-class MongodbatlasAtlasInputs(AppInput):
+class MongodbAtlasInputs(AppInput):
     """Typed, UI-facing inputs for the `mongodbatlas-atlas` app (generated from its configmap)."""
 
     _APP_ID: ClassVar[str] = "mongodbatlas-atlas"
@@ -32,13 +32,13 @@ class MongodbatlasAtlasInputs(AppInput):
     """Exclude Databases — Comma-separated database name patterns (regex). Wins over include."""
 
 
-class MongodbatlasAtlas(AppBuilder):
+class MongodbAtlas(AppBuilder):
     """Fluent, UI-equivalent builder for the `mongodbatlas-atlas` app.
 
     Example::
 
         resp = (
-            MongodbatlasAtlas(client)
+            MongodbAtlas(client)
             .basic(username="...", password="...", native_host="...", default_database="...", authsource="...", ssl="...", host="...")
             .connection(name="my-connection", admins=["jdoe"])
             .include_databases("")
@@ -50,7 +50,7 @@ class MongodbatlasAtlas(AppBuilder):
     _ENTRYPOINT: ClassVar[Optional[str]] = ""
     _CONNECTOR_NAME: ClassVar[str] = "mongodb"
     _CONNECTOR_CONFIG: ClassVar[str] = "atlan-connectors-mongodb"
-    _INPUTS_CLASS = MongodbatlasAtlasInputs
+    _INPUTS_CLASS = MongodbAtlasInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
 
     # ── Step 1 · Credential ──
@@ -67,7 +67,7 @@ class MongodbatlasAtlas(AppBuilder):
         host: str,
         port: Optional[int] = None,
         **extra: Any,
-    ) -> "MongodbatlasAtlas":
+    ) -> "MongodbAtlas":
         """Direct extraction with basic auth.
 
         :param username: Username.
@@ -101,15 +101,15 @@ class MongodbatlasAtlas(AppBuilder):
         )
 
     # ── Step 3 · Metadata ──
-    def include_databases(self, value: str) -> "MongodbatlasAtlas":
+    def include_databases(self, value: str) -> "MongodbAtlas":
         """Include Databases — Comma-separated database name patterns (regex)."""
         self._metadata["include-filter"] = value
         return self
 
-    def exclude_databases(self, value: str) -> "MongodbatlasAtlas":
+    def exclude_databases(self, value: str) -> "MongodbAtlas":
         """Exclude Databases — Comma-separated database name patterns (regex). Wins over include."""
         self._metadata["exclude-filter"] = value
         return self
 
 
-__all__ = ["MongodbatlasAtlas", "MongodbatlasAtlasInputs"]
+__all__ = ["MongodbAtlas", "MongodbAtlasInputs"]

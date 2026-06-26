@@ -1,14 +1,16 @@
 ---
 title: PostgreSQL miner app
-description: Learn how to mine query history from PostgreSQL and publish to Atlan for discovery.
+description: Learn how to mine query history from PostgreSQL to generate lineage and usage metrics.
 ---
 
 # PostgreSQL miner app
 
-The PostgreSQL miner app mines query history from PostgreSQL to generate lineage and usage metrics and publishes to Atlan. Build it with the `PostgresMiner` builder.
+The PostgreSQL miner app mines query history from PostgreSQL to generate lineage and
+usage metrics. Build it with the `PostgresMiner` builder.
 
-A miner does not create a connection or take a credential — it runs against an
-**existing** connection and reuses that connection's own credential.
+A miner does **not** create a connection or take a credential — it runs against an
+**existing** PostgreSQL connection and reuses that connection's own credential, so
+you only supply the connection's `qualifiedName`.
 
 ## Source extraction
 
@@ -25,10 +27,18 @@ A miner does not create a connection or take a credential — it runs against an
 
     response = (
         PostgresMiner(client)
-        .connection(qualified_name="default/postgres/1700000000")  # (1)
-        .run(name="postgres-miner")  # (2)
+        .connection( # (1)
+            qualified_name="default/postgres/1700000000",
+        )
+        .run(name="postgres-prod-miner") # (2)
     )
+    print(response.slug, response.run_id)
     ```
 
-    1. The exact `qualifiedName` of the existing connection to mine; its credential is reused.
-    2. Always pass an explicit unique `name` for miners (a bare run defaults to the app id and collides).
+    1. **Required.** The exact `qualifiedName` of the existing PostgreSQL connection
+       to mine. The builder resolves that connection's credential automatically — no
+       credential step is needed.
+    2. **Always pass an explicit `name` for miners.** A miner has no connection
+       display name to derive one from, so a bare `.run()` would default the workflow
+       name to the app id (`postgres-miner`) and a second run would collide
+       (`409 already exists`).

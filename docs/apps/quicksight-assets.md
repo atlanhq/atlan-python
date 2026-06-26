@@ -1,24 +1,27 @@
 ---
 title: QuickSight assets app
-description: Learn how to crawl QuickSight and publish to Atlan for discovery.
+description: Learn how to crawl Amazon QuickSight assets and publish them to Atlan for discovery.
 ---
 
 # QuickSight assets app
 
-The QuickSight assets app crawls QuickSight assets and publishes to Atlan. Build it with the `AtlanQuicksight` builder.
+The QuickSight assets app crawls Amazon QuickSight dashboards, analyses, datasets,
+and folders and publishes them to Atlan. Build it with the `AtlanQuicksight`
+builder.
 
 !!! warning "Creating an app creates a new connection"
-    Each create mints a new connection and new assets. To re-crawl, re-run the
-    existing workflow (see [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
+    Each create mints a **new** connection and new assets. To re-crawl, re-run the
+    **existing** workflow (see
+    [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
 
-## Iam authentication
+## IAM authentication
 
 <!-- md:python 9.8.0 -->
 <!-- md:flag experimental -->
 
 === ":lang-python: Python"
 
-    ```python linenums="1" title="QuickSight assets crawling with iam auth"
+    ```python linenums="1" title="QuickSight crawling with IAM credentials"
     from pyatlan.client.atlan import AtlanClient
     from pyatlan.model.apps import AtlanQuicksight
 
@@ -26,44 +29,48 @@ The QuickSight assets app crawls QuickSight assets and publishes to Atlan. Build
 
     response = (
         AtlanQuicksight(client)
-        .iam(
-            username="...",  # (1)
-            password="...",  # (2)
-            region="...",  # (3)
-            accountid="...",  # (4)
+        .iam( # (1)
+            username="AKIA...", # (2)
+            password="••••••", # (3)
+            region="us-east-1", # (4)
+            accountid="123456789012", # (5)
         )
-        .connection(  # (5)
+        .connection(
             name="production-quicksight",
             admin_roles=[client.role_cache.get_id_for_name("$admin")],
         )
-        .run(name="quicksight-prod")  # (6)
+        .include_folders({"folder-id-1": {}}) # (6)
+        .run(name="quicksight-prod")
     )
     print(response.slug, response.run_id)
     ```
 
-    1. AWS Access Key.
-    2. AWS Secret Key.
-    3. Region.
-    4. AWS Account ID.
-    5. Display name + at least one admin (role, group, or user).
-    6. `.run()` creates and submits a run; use `.create()` to create without running.
+    1. **Step 1 — Credential.** AWS access key/secret auth; the secret is vaulted.
+    2. **Required.** AWS access key.
+    3. **Required.** AWS secret key.
+    4. **Required.** AWS region.
+    5. **Required.** AWS account id.
+    6. **Step 3 — Metadata.** Folders to crawl (`{folder_id: {}}`). Omit to crawl all
+       folders.
 
 ## Configuration options
 
+All metadata options are **optional**:
+
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Metadata configuration"
+    ```python linenums="1" title="QuickSight metadata configuration"
     (
         AtlanQuicksight(client)
-        .iam(...)
+        .iam(username="AKIA...", password="••••••", region="us-east-1", accountid="123456789012")
         .connection(name="production-quicksight", admin_roles=[...])
-        .exclude_folders({...})  # (1)
-        .fetch_all_assets_without_folder(True)  # (2)
-        .include_folders({...})  # (3)
+        .include_folders({"folder-id-1": {}}) # (1)
+        .exclude_folders({"folder-id-2": {}}) # (2)
+        .fetch_all_assets_without_folder(True) # (3)
         .run(name="quicksight-prod")
     )
     ```
 
-    1. Exclude Folders — Selected folders will not be processed.
-    2. Fetch all assets without folder? — Fetch assets not linked to any folder, including datasets, analyses & dashboards.
-    3. Include Folders — Selected folders will be processed. Exclude gets preference over include.
+    1. Folders to include (`{folder_id: {}}`). Exclude takes priority over include.
+    2. Folders to exclude.
+    3. Also fetch assets not linked to any folder (datasets, analyses, dashboards).

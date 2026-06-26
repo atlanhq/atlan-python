@@ -94,7 +94,7 @@ class BigqueryMiner(AppBuilder):
         self._metadata["region"] = value
         return self
 
-    def fetch_excluded_project_s_query_history(
+    def fetch_excluded_projects_query_history(
         self, enabled: bool = True
     ) -> "BigqueryMiner":
         """Fetch excluded project's QUERY_HISTORY — Enable this if you want to bring-in queries from excluded database/project. If unsure, don't enable this."""

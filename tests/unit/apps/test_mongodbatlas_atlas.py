@@ -4,20 +4,20 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from unittest.mock import Mock
 
-from pyatlan.model.apps import MongodbatlasAtlas, MongodbatlasAtlasInputs
+from pyatlan.model.apps import MongodbAtlas, MongodbAtlasInputs
 
 
 def test_mongodbatlas_atlas_inputs_defaults():
-    i = MongodbatlasAtlasInputs()
-    assert MongodbatlasAtlasInputs._APP_ID == "mongodbatlas-atlas"
-    assert MongodbatlasAtlasInputs._ENTRYPOINT == ""
+    i = MongodbAtlasInputs()
+    assert MongodbAtlasInputs._APP_ID == "mongodbatlas-atlas"
+    assert MongodbAtlasInputs._ENTRYPOINT == ""
     assert i.include_filter == ""
     assert i.exclude_filter == ""
 
 
 def test_mongodbatlas_atlas_builder_payload():
     out = (
-        MongodbatlasAtlas(Mock())
+        MongodbAtlas(Mock())
         .connection(name="conn", admins=["u"])
         .credential_guid("g")
         .preview()
@@ -28,7 +28,7 @@ def test_mongodbatlas_atlas_builder_payload():
 
 
 def test_mongodbatlas_atlas_credential_basic():
-    b = MongodbatlasAtlas(Mock()).basic(
+    b = MongodbAtlas(Mock()).basic(
         username="x",
         password="x",
         native_host="x",

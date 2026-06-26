@@ -1,19 +1,23 @@
 ---
 title: Snowflake miner app
-description: Learn how to mine query history from Snowflake and publish to Atlan for discovery.
+description: Learn how to mine query history from Snowflake to generate lineage and usage metrics.
 ---
 
 # Snowflake miner app
 
-The Snowflake miner app mines query history from Snowflake to generate lineage and usage metrics and publishes to Atlan. Build it with the `SnowflakeMiner` builder.
+The Snowflake miner app mines query history from Snowflake to generate lineage and
+usage (popularity) metrics. Build it with the `SnowflakeMiner` builder.
 
-A miner does not create a connection or take a credential — it runs against an
-**existing** connection and reuses that connection's own credential.
+Unlike a crawler, a miner does **not** create a connection or take a credential. It
+runs against an **existing** Snowflake connection and reuses that connection's own
+credential — so you only supply the connection's `qualifiedName`.
 
 ## Source extraction
 
 <!-- md:python 9.8.0 -->
 <!-- md:flag experimental -->
+
+To mine query history from an existing Snowflake connection:
 
 === ":lang-python: Python"
 
@@ -25,30 +29,68 @@ A miner does not create a connection or take a credential — it runs against an
 
     response = (
         SnowflakeMiner(client)
-        .connection(qualified_name="default/snowflake/1700000000")  # (1)
-        .advanced_config('default')  # (2)
-        .calculate_popularity(True)  # (3)
-        .custom_config("...")  # (4)
-        .database_name("...")  # (5)
-        .excluded_users([...])  # (6)
-        .popularity_window_days(0.0)  # (7)
-        .preflight_check("...")  # (8)
-        .schema_name("...")  # (9)
-        .snowflake_database('default')  # (10)
-        .start_date(0.0)  # (11)
-        .run(name="snowflake-miner")  # (12)
+        .connection( # (1)
+            qualified_name="default/snowflake/1700000000",
+        )
+        .start_date(1704067200) # (2)
+        .calculate_popularity(True) # (3)
+        .popularity_window_days(30) # (4)
+        .excluded_users(["SYSTEM", "ATLAN_SERVICE"]) # (5)
+        .run(name="snowflake-prod-miner") # (6)
+    )
+    print(response.slug, response.run_id)
+    ```
+
+    1. **Required.** The exact `qualifiedName` of the existing Snowflake connection
+       to mine. The builder resolves that connection's credential automatically — no
+       credential step is needed.
+    2. *Optional.* The date (as an epoch) from which to start mining query history.
+    3. *Optional.* Generate popularity metrics from the mined query history.
+    4. *Optional.* Number of days of history to consider when calculating popularity.
+    5. *Optional.* Users (e.g. service accounts) to exclude from usage metrics.
+    6. **Always pass an explicit `name` for miners.** A miner has no connection
+       display name to derive one from, so a bare `.run()` would default the workflow
+       name to the app id (`snowflake-miner`) and a second run would collide
+       (`409 already exists`).
+
+## Account-usage source
+
+By default the miner reads from Snowflake's `SNOWFLAKE.ACCOUNT_USAGE`. To point it at
+a different database/schema (e.g. a clone) — all of these are **optional**:
+
+=== ":lang-python: Python"
+
+    ```python linenums="1" title="Mine from a cloned account-usage database"
+    (
+        SnowflakeMiner(client)
+        .connection(qualified_name="default/snowflake/1700000000")
+        .snowflake_database("cloned") # (1)
+        .database_name("SNOWFLAKE_CLONE") # (2)
+        .schema_name("ACCOUNT_USAGE") # (3)
+        .start_date(1704067200)
+        .run(name="snowflake-prod-miner")
     )
     ```
 
-    1. The exact `qualifiedName` of the existing connection to mine; its credential is reused.
-    2. Advanced Config — Controls custom experimental feature flags for the miner
-    3. Calculate popularity — Enable popularity metrics generated using mined data.
-    4. Custom Config — Custom JSON config controlling experimental feature flags for the miner
-    5. Database Name — Snowflake database name to be used
-    6. Excluded Users — List of users who should be excluded while calculating usage metrics for assets
-    7. Popularity Window (days) — Number of days to consider for calculating popularity.
-    8. preflight_check
-    9. Schema Name — Account Usage schema name in the Snowflake database
-    10. Snowflake Database — Optionally provide details of the cloned version of the snowflake database
-    11. Start date
-    12. Always pass an explicit unique `name` for miners (a bare run defaults to the app id and collides).
+    1. Use a `cloned` Snowflake database instead of the `default`.
+    2. The Snowflake database name to mine from.
+    3. The account-usage schema name in that database.
+
+## Advanced config
+
+=== ":lang-python: Python"
+
+    ```python linenums="1" title="Custom feature-flag config"
+    (
+        SnowflakeMiner(client)
+        .connection(qualified_name="default/snowflake/1700000000")
+        .start_date(1704067200)
+        .advanced_config("custom") # (1)
+        .custom_config('{"flag": true}') # (2)
+        .run(name="snowflake-prod-miner")
+    )
+    ```
+
+    1. Switch advanced config to `custom` to enable experimental feature flags.
+    2. Custom feature-flag config as a JSON string (used when `advanced_config` is
+       `custom`).

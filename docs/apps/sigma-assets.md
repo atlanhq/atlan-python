@@ -1,24 +1,26 @@
 ---
 title: Sigma assets app
-description: Learn how to crawl Sigma and publish to Atlan for discovery.
+description: Learn how to crawl Sigma assets and publish them to Atlan for discovery.
 ---
 
 # Sigma assets app
 
-The Sigma assets app crawls Sigma assets and publishes to Atlan. Build it with the `AtlanSigma` builder.
+The Sigma assets app crawls Sigma workbooks (and their elements) and publishes them
+to Atlan. Build it with the `AtlanSigma` builder.
 
 !!! warning "Creating an app creates a new connection"
-    Each create mints a new connection and new assets. To re-crawl, re-run the
-    existing workflow (see [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
+    Each create mints a **new** connection and new assets. To re-crawl, re-run the
+    **existing** workflow (see
+    [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
 
-## Api Token authentication
+## API token
 
 <!-- md:python 9.8.0 -->
 <!-- md:flag experimental -->
 
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Sigma assets crawling with api_token auth"
+    ```python linenums="1" title="Sigma crawling with an API token"
     from pyatlan.client.atlan import AtlanClient
     from pyatlan.model.apps import AtlanSigma
 
@@ -26,42 +28,44 @@ The Sigma assets app crawls Sigma assets and publishes to Atlan. Build it with t
 
     response = (
         AtlanSigma(client)
-        .api_token(
-            username="...",  # (1)
-            password="...",  # (2)
-            host="...",  # (3)
-            port=0,  # (4)
+        .api_token( # (1)
+            username="client-id", # (2)
+            password="••••••", # (3)
+            host="aws-api.sigmacomputing.com", # (4)
         )
-        .connection(  # (5)
+        .connection(
             name="production-sigma",
             admin_roles=[client.role_cache.get_id_for_name("$admin")],
         )
-        .run(name="sigma-prod")  # (6)
+        .include_workbooks({"c13051d8-...": {}}) # (5)
+        .run(name="sigma-prod")
     )
     print(response.slug, response.run_id)
     ```
 
-    1. Client ID.
-    2. API Token.
-    3. Host.
-    4. Port.
-    5. Display name + at least one admin (role, group, or user).
-    6. `.run()` creates and submits a run; use `.create()` to create without running.
+    1. **Step 1 — Credential.** API client-id + token auth; the token is vaulted.
+    2. **Required.** The Sigma client id.
+    3. **Required.** The Sigma API token.
+    4. *Optional.* The Sigma API host. The port (`port=`) is optional.
+    5. **Step 3 — Metadata.** Workbooks to crawl (`{workbook_id: {}}`). Omit to crawl
+       all workbooks.
 
 ## Configuration options
 
+All metadata options are **optional**:
+
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Metadata configuration"
+    ```python linenums="1" title="Sigma metadata configuration"
     (
         AtlanSigma(client)
-        .api_token(...)
+        .api_token(username="client-id", password="••••••", host="aws-api.sigmacomputing.com")
         .connection(name="production-sigma", admin_roles=[...])
-        .exclude_workbooks({...})  # (1)
-        .include_workbooks({...})  # (2)
+        .include_workbooks({"c13051d8-...": {}}) # (1)
+        .exclude_workbooks({"99999999-...": {}}) # (2)
         .run(name="sigma-prod")
     )
     ```
 
-    1. Exclude Workbooks — Selected workbooks will be excluded from extraction.
-    2. Include Workbooks — Selected workbooks will be extracted.
+    1. Workbooks to include (`{workbook_id: {}}`).
+    2. Workbooks to exclude.

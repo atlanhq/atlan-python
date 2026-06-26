@@ -1,24 +1,36 @@
 ---
 title: Snowflake assets app
-description: Learn how to crawl Snowflake and publish to Atlan for discovery.
+description: Learn how to crawl Snowflake assets and publish them to Atlan for discovery.
 ---
 
 # Snowflake assets app
 
-The Snowflake assets app crawls Snowflake assets and publishes to Atlan. Build it with the `SnowflakeCrawler` builder.
+The Snowflake assets app crawls Snowflake databases, schemas, tables, views,
+columns (and optionally tags and stages) and publishes them to Atlan for
+discovery. Build it with the `SnowflakeCrawler` builder, which mirrors the
+"new app" wizard: **Credential → Connection → Metadata**.
 
 !!! warning "Creating an app creates a new connection"
-    Each create mints a new connection and new assets. To re-crawl, re-run the
-    existing workflow (see [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
+    Each create mints a **new** connection and new assets within it — running it
+    repeatedly with the same settings can produce duplicate assets. To re-crawl,
+    re-run the **existing** workflow (see
+    [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
+
+Snowflake supports four authentication methods: **basic**, **key-pair**,
+**Okta SSO**, and **Microsoft Entra ID**. All four accept an optional `role` and
+`warehouse` (the role/warehouse Atlan uses to run extraction queries) and default
+the port to `443`.
 
 ## Basic authentication
 
 <!-- md:python 9.8.0 -->
 <!-- md:flag experimental -->
 
+To crawl Snowflake with a username and password:
+
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Snowflake assets crawling with basic auth"
+    ```python linenums="1" title="Snowflake crawling with basic auth"
     from pyatlan.client.atlan import AtlanClient
     from pyatlan.model.apps import SnowflakeCrawler
 
@@ -26,86 +38,164 @@ The Snowflake assets app crawls Snowflake assets and publishes to Atlan. Build i
 
     response = (
         SnowflakeCrawler(client)
-        .basic(
-            username="...",  # (1)
-            password="...",  # (2)
-            role="...",  # (3)
-            warehouse="...",  # (4)
-            host="...",  # (5)
-            port=0,  # (6)
+        .basic( # (1)
+            username="ATLAN_USER", # (2)
+            password="••••••", # (3)
+            role="ATLAN_ROLE", # (4)
+            warehouse="COMPUTE_WH", # (5)
+            host="abc12345.snowflakecomputing.com", # (6)
         )
-        .connection(  # (7)
+        .connection( # (7)
             name="production-snowflake",
             admin_roles=[client.role_cache.get_id_for_name("$admin")],
         )
-        .run(name="snowflake-prod")  # (8)
+        .extraction_method("account-usage") # (8)
+        .include_metadata({"ANALYTICS": ["PUBLIC", "SALES"]}) # (9)
+        .run(name="snowflake-prod") # (10)
     )
     print(response.slug, response.run_id)
     ```
 
-    1. Username.
-    2. Password.
-    3. Role.
-    4. Warehouse.
-    5. Host.
-    6. Port.
-    7. Display name + at least one admin (role, group, or user).
-    8. `.run()` creates and submits a run; use `.create()` to create without running.
+    1. **Step 1 — Credential.** Username/password auth; the secret is vaulted and
+       never persisted in the workflow.
+    2. **Required.** The Snowflake username.
+    3. **Required.** The password.
+    4. *Optional.* The role Atlan assumes when extracting (e.g. a read-only role).
+    5. *Optional.* The warehouse used to run extraction queries.
+    6. *Optional.* Your Snowflake account host. The port (`port=`) is optional and
+       defaults to `443`.
+    7. **Step 2 — Connection.** Display name + at least one admin (role, group, or
+       user). The builder mints the connection qualified name.
+    8. **Step 3 — Metadata.** `account-usage` queries Snowflake's `ACCOUNT_USAGE`
+       views (fast, recommended); `information-schema` queries each database's
+       information schema directly.
+    9. Databases/schemas to crawl, as `{database: [schema, ...]}`. Omit to crawl
+       everything. Exclude takes priority over include.
+    10. `.run(name=...)` creates **and** submits a run; use `.create(name=...)` to
+        create without running.
 
-## Other authentication methods
+## Key-pair authentication
+
+To authenticate with an encrypted private key instead of a password:
 
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Alternate auth methods"
-    SnowflakeCrawler(client).entra_id(username="...", password="...", tenant_id="...", oauth_scope="...")
-    SnowflakeCrawler(client).keypair(username="...", password="...")
-    SnowflakeCrawler(client).okta(username="...", password="...", authenticator="...")
-    ```
-
-## Configuration options
-
-=== ":lang-python: Python"
-
-    ```python linenums="1" title="Metadata configuration"
+    ```python linenums="1" title="Snowflake crawling with key-pair auth"
     (
         SnowflakeCrawler(client)
-        .basic(...)
+        .keypair(
+            username="ATLAN_USER", # (1)
+            password=encrypted_private_key, # (2)
+            private_key_password="••••••", # (3)
+            role="ATLAN_ROLE", # (4)
+            warehouse="COMPUTE_WH",
+            host="abc12345.snowflakecomputing.com",
+        )
         .connection(name="production-snowflake", admin_roles=[...])
-        .asset_selection({...})  # (1)
-        .control_config('default')  # (2)
-        .custom_config("...")  # (3)
-        .database_name("...")  # (4)
-        .enable_incremental_extraction(True)  # (5)
-        .exclude_metadata({...})  # (6)
-        .exclude_regex_for_tables_views("...")  # (7)
-        .exclude_tables_with_empty_data(True)  # (8)
-        .exclude_views(True)  # (9)
-        .extraction_method('information-schema')  # (10)
-        .import_semantic_views(True)  # (11)
-        .import_stages(True)  # (12)
-        .import_tags(True)  # (13)
-        .include_metadata({...})  # (14)
-        .preflight_check("...")  # (15)
-        .schema_name("...")  # (16)
-        .view_definition_lineage(True)  # (17)
         .run(name="snowflake-prod")
     )
     ```
 
-    1. Asset selection — Select the assets you want to crawl, or filter out the ones you don't.
-    2. Control Config — Controls custom experimental feature flags for the crawler
-    3. Custom Config — Custom JSON config controlling experimental feature flags for the crawler
-    4. Database Name — Database name to extract account usage data from. Defaults to SNOWFLAKE
-    5. Enable Incremental Extraction — Enable or Disable Schema Incremental Extraction on source.
-    6. Exclude Metadata — Selected databases and schemas wont be extracted.
-    7. Exclude regex for tables & views — Regex of tables & views to ignore. Defaults to empty string
-    8. Exclude tables with empty data — Excludes tables and their corresponding columns when the table contains no data.
-    9. Exclude views — Excludes all views
-    10. Extraction method — Determines the method the package will use to extract metadata from Snowflake. Please refer to the docs [here](https://docs.atlan.com/apps/connectors/data-warehouses/snowflake/how-tos/set-up-snowflake#choose-metadata-fetching-method).
-    11. Import Semantic Views — Import semantic views, logical tables, dimensions, metrics and facts from snowflake to atlan
-    12. Import Stages — Import internal and external named stages from snowflake to atlan
-    13. Import Tags — Syncing tags from snowflake to atlan
-    14. Include Metadata — Only the selected databases will be extracted. Exclude gets preference over include for common databases, if present, in the config.
-    15. preflight_check
-    16. Schema Name — Schema name to extract account usage data from. Defaults to ACCOUNT_USAGE
-    17. View Definition Lineage — Enable view definition lineage while crawling
+    1. **Required.** The Snowflake username.
+    2. **Required.** The encrypted private key (PEM contents), passed as `password`.
+    3. *Optional.* The passphrase for the encrypted private key.
+    4. *Optional.* `role`, `warehouse`, `host`, and `port` behave as in basic auth.
+
+## Okta SSO authentication
+
+=== ":lang-python: Python"
+
+    ```python linenums="1" title="Snowflake crawling with Okta SSO"
+    (
+        SnowflakeCrawler(client)
+        .okta(
+            username="ATLAN_USER", # (1)
+            password="••••••", # (2)
+            authenticator="https://my-org.okta.com", # (3)
+            role="ATLAN_ROLE",
+            warehouse="COMPUTE_WH",
+            host="abc12345.snowflakecomputing.com",
+        )
+        .connection(name="production-snowflake", admin_roles=[...])
+        .run(name="snowflake-prod")
+    )
+    ```
+
+    1. **Required.** The Snowflake username.
+    2. **Required.** The password.
+    3. **Required.** The Okta authenticator URL for your organization.
+       `role` / `warehouse` / `host` / `port` are optional (as in basic auth).
+
+## Microsoft Entra ID authentication
+
+=== ":lang-python: Python"
+
+    ```python linenums="1" title="Snowflake crawling with Microsoft Entra ID"
+    (
+        SnowflakeCrawler(client)
+        .entra_id(
+            username=client_id, # (1)
+            password=client_secret, # (2)
+            tenant_id="...", # (3)
+            oauth_scope="session:role:ATLAN_ROLE", # (4)
+            warehouse="COMPUTE_WH",
+            host="abc12345.snowflakecomputing.com",
+        )
+        .connection(name="production-snowflake", admin_roles=[...])
+        .run(name="snowflake-prod")
+    )
+    ```
+
+    1. **Required.** The Entra ID application **Client ID**, passed as `username`.
+    2. **Required.** The application **Client Secret**, passed as `password`.
+    3. **Required.** Your Entra ID tenant id.
+    4. **Required.** The OAuth scope to request. `role` / `warehouse` / `host` /
+       `port` are optional (as in basic auth).
+
+## Configuration options
+
+Every wizard metadata toggle is available on the builder. All of these are
+**optional** — set only the ones you need:
+
+=== ":lang-python: Python"
+
+    ```python linenums="1" title="Snowflake metadata configuration"
+    (
+        SnowflakeCrawler(client)
+        .basic(username="ATLAN_USER", password="••••••", host="abc12345.snowflakecomputing.com")
+        .connection(name="production-snowflake", admin_roles=[...])
+        # what to crawl
+        .include_metadata({"ANALYTICS": ["PUBLIC"]}) # (1)
+        .exclude_metadata({"ANALYTICS": ["STAGING"]}) # (2)
+        .exclude_regex_for_tables_views(".*_TMP$") # (3)
+        .exclude_views(False) # (4)
+        .exclude_tables_with_empty_data(False) # (5)
+        # account-usage source (only relevant when extraction_method="account-usage")
+        .database_name("SNOWFLAKE") # (6)
+        .schema_name("ACCOUNT_USAGE") # (7)
+        # enrichment
+        .view_definition_lineage(True) # (8)
+        .import_tags(True) # (9)
+        .import_stages(True) # (10)
+        .enable_incremental_extraction(False) # (11)
+        # advanced
+        .control_config("custom") # (12)
+        .custom_config('{"flag": true}') # (13)
+        .run(name="snowflake-prod")
+    )
+    ```
+
+    1. Databases/schemas to include, as `{database: [schema, ...]}`.
+    2. Databases/schemas to exclude — exclude takes priority over include.
+    3. Regex of tables/views to ignore.
+    4. Exclude all views.
+    5. Exclude tables (and their columns) that contain no data.
+    6. Database to read `ACCOUNT_USAGE` data from (defaults to `SNOWFLAKE`).
+    7. Schema to read account-usage data from (defaults to `ACCOUNT_USAGE`).
+    8. Build column-level lineage for views from their definitions.
+    9. Sync Snowflake tags to Atlan.
+    10. Import internal and external named stages.
+    11. Only extract schemas changed since the last successful run.
+    12. Switch advanced config to `custom` to enable experimental feature flags.
+    13. Custom feature-flag config as a JSON string (used when `control_config` is
+        `custom`).

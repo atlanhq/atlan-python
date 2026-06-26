@@ -1,15 +1,20 @@
 ---
 title: Anaplan assets app
-description: Learn how to crawl Anaplan and publish to Atlan for discovery.
+description: Learn how to crawl Anaplan assets and publish them to Atlan for discovery.
 ---
 
 # Anaplan assets app
 
-The Anaplan assets app crawls Anaplan assets and publishes to Atlan. Build it with the `Anaplan` builder.
+The Anaplan assets app crawls Anaplan workspaces, models, modules, and line items
+and publishes them to Atlan. Build it with the `Anaplan` builder.
 
 !!! warning "Creating an app creates a new connection"
-    Each create mints a new connection and new assets. To re-crawl, re-run the
-    existing workflow (see [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
+    Each create mints a **new** connection and new assets. To re-crawl, re-run the
+    **existing** workflow (see
+    [Re-run an existing app](manage-apps.md#re-run-an-existing-app)).
+
+Anaplan supports two authentication methods: **basic** (username/password) and
+**CA certificate**.
 
 ## Basic authentication
 
@@ -18,7 +23,7 @@ The Anaplan assets app crawls Anaplan assets and publishes to Atlan. Build it wi
 
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Anaplan assets crawling with basic auth"
+    ```python linenums="1" title="Anaplan crawling with basic auth"
     from pyatlan.client.atlan import AtlanClient
     from pyatlan.model.apps import Anaplan
 
@@ -26,52 +31,67 @@ The Anaplan assets app crawls Anaplan assets and publishes to Atlan. Build it wi
 
     response = (
         Anaplan(client)
-        .basic(
-            username="...",  # (1)
-            password="...",  # (2)
-            host="...",  # (3)
+        .basic( # (1)
+            username="atlan_user", # (2)
+            password="••••••", # (3)
         )
-        .connection(  # (4)
+        .connection(
             name="production-anaplan",
             admin_roles=[client.role_cache.get_id_for_name("$admin")],
         )
-        .run(name="anaplan-prod")  # (5)
+        .include_metadata({"my_workspace": {}}) # (4)
+        .run(name="anaplan-prod")
     )
     print(response.slug, response.run_id)
     ```
 
-    1. Username.
-    2. Password.
-    3. Host.
-    4. Display name + at least one admin (role, group, or user).
-    5. `.run()` creates and submits a run; use `.create()` to create without running.
+    1. **Step 1 — Credential.** Username/password auth; the secret is vaulted.
+    2. **Required.** Username.
+    3. **Required.** Password. A custom `host` is optional.
+    4. **Step 3 — Metadata.** Workspaces/models to crawl.
 
-## Other authentication methods
-
-=== ":lang-python: Python"
-
-    ```python linenums="1" title="Alternate auth methods"
-    Anaplan(client).ca_cert(username="...", password="...", ca_certificate="...")
-    ```
-
-## Configuration options
+## CA certificate authentication
 
 === ":lang-python: Python"
 
-    ```python linenums="1" title="Metadata configuration"
+    ```python linenums="1" title="Anaplan crawling with a CA certificate"
     (
         Anaplan(client)
-        .basic(...)
+        .ca_cert(
+            username=encoded_data, # (1)
+            password=encoded_signed_data, # (2)
+            ca_certificate=ca_cert_contents, # (3)
+        )
         .connection(name="production-anaplan", admin_roles=[...])
-        .exclude_empty_modules(True)  # (1)
-        .exclude_metadata({...})  # (2)
-        .include_metadata({...})  # (3)
-        .ingest_system_dimensions('proxy')  # (4)
         .run(name="anaplan-prod")
     )
     ```
 
-    1. Exclude Empty Modules — Exclude modules that have no line items.
-    2. Exclude Metadata
-    3. Include Metadata
-    4. Ingest System Dimensions? — Ingest System Dimensions (Time and Versions) as a proxy, individually, or not at all.
+    1. **Required.** The encoded data.
+    2. **Required.** The encoded signed data.
+    3. **Required.** The CA certificate file contents. A custom `host` is optional.
+
+## Configuration options
+
+All metadata options are **optional**:
+
+=== ":lang-python: Python"
+
+    ```python linenums="1" title="Anaplan metadata configuration"
+    (
+        Anaplan(client)
+        .basic(username="atlan_user", password="••••••")
+        .connection(name="production-anaplan", admin_roles=[...])
+        .include_metadata({"my_workspace": {}}) # (1)
+        .exclude_metadata({"sandbox_workspace": {}}) # (2)
+        .exclude_empty_modules(True) # (3)
+        .ingest_system_dimensions("proxy") # (4)
+        .run(name="anaplan-prod")
+    )
+    ```
+
+    1. Workspaces/models to include.
+    2. Workspaces/models to exclude.
+    3. Exclude modules that have no line items.
+    4. How to ingest system dimensions (Time and Versions) — as a proxy,
+       individually, or not at all.
