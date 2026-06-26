@@ -26,9 +26,9 @@ class AtlanPrestoInputs(AppInput):
     agent_json: Optional[Any] = None
 
     # Step 3 · Metadata (only fields the UI surfaces)
-    include_filter: Dict[str, Any] = Field("{}", alias="include-filter")
+    include_filter: Union[Dict[str, Any], str] = Field("{}", alias="include-filter")
     """Include Metadata — Select the catalogs and schemas to include in extraction."""
-    exclude_filter: Dict[str, Any] = Field("{}", alias="exclude-filter")
+    exclude_filter: Union[Dict[str, Any], str] = Field("{}", alias="exclude-filter")
     """Exclude Metadata — Select the catalogs and schemas to exclude from extraction."""
 
 

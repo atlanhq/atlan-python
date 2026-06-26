@@ -26,9 +26,9 @@ class AtlanAthenaInputs(AppInput):
     agent_json: Optional[Any] = None
 
     # Step 3 · Metadata (only fields the UI surfaces)
-    include_filter: Dict[str, Any] = Field("{}", alias="include-filter")
+    include_filter: Union[Dict[str, Any], str] = Field("{}", alias="include-filter")
     """Include Metadata"""
-    exclude_filter: Dict[str, Any] = Field("{}", alias="exclude-filter")
+    exclude_filter: Union[Dict[str, Any], str] = Field("{}", alias="exclude-filter")
     """Exclude Metadata"""
     temp_table_regex: str = Field("", alias="temp-table-regex")
     """Exclude regex for tables & views — Regex of tables & views to ignore. Defaults to empty string"""
