@@ -730,7 +730,9 @@ def _builder_docstring(
             chain.append(f"            .{a['name']}({args})")
         else:
             chain.append('            .credential_guid("...")')
-        chain.append('            .connection(name="my-connection", admin_users=["jdoe"])')
+        chain.append(
+            '            .connection(name="my-connection", admin_users=["jdoe"])'
+        )
     if meta_samples:
         mname, sample = meta_samples[0]
         chain.append(f"            .{mname}({sample})")
