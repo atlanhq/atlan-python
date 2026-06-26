@@ -26,7 +26,7 @@ def test_snowflake_miner_inputs_defaults():
 def test_snowflake_miner_builder_payload():
     out = (
         SnowflakeMiner(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

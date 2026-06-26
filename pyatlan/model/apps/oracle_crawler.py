@@ -44,7 +44,7 @@ class OracleCrawler(AppBuilder):
         resp = (
             OracleCrawler(client)
             .basic(username="...", password="...", sid="...", database_name="...", host="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
         )

@@ -19,7 +19,7 @@ def test_atlan_mysql_inputs_defaults():
 def test_atlan_mysql_builder_payload():
     out = (
         AtlanMysql(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

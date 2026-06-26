@@ -71,7 +71,7 @@ class BigqueryCrawler(AppBuilder):
                 service_account_json=sa_json,
                 project_id="my-project",
             )
-            .connection(name="prod-bigquery", admins=["jdoe"])
+            .connection(name="prod-bigquery", admin_users=["jdoe"])
             .include({"my-project": ["analytics_*"]})
             .import_nested_columns(True)
             .run()

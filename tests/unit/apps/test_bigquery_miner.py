@@ -26,7 +26,7 @@ def test_bigquery_miner_inputs_defaults():
 def test_bigquery_miner_builder_payload():
     out = (
         BigqueryMiner(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

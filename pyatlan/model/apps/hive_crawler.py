@@ -44,7 +44,7 @@ class HiveCrawler(AppBuilder):
         resp = (
             HiveCrawler(client)
             .basic(username="...", password="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
         )

@@ -21,7 +21,7 @@ def test_teradata_miner_inputs_defaults():
 def test_teradata_miner_builder_payload():
     out = (
         TeradataMiner(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

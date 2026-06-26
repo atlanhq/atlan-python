@@ -42,7 +42,7 @@ class AtlanQuicksight(AppBuilder):
         resp = (
             AtlanQuicksight(client)
             .iam(username="...", password="...", region="...", accountid="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .fetch_all_assets_without_folder(True)
             .run()
         )

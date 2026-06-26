@@ -25,7 +25,7 @@ def test_atlan_tableau_inputs_defaults():
 def test_atlan_tableau_builder_payload():
     out = (
         AtlanTableau(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

@@ -20,7 +20,7 @@ def test_anaplan_inputs_defaults():
 def test_anaplan_builder_payload():
     out = (
         Anaplan(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

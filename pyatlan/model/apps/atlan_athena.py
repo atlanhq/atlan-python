@@ -48,7 +48,7 @@ class AtlanAthena(AppBuilder):
         resp = (
             AtlanAthena(client)
             .basic(username="...", password="...", s3_output_location="...", host="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
         )

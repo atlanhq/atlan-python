@@ -730,7 +730,7 @@ def _builder_docstring(
             chain.append(f"            .{a['name']}({args})")
         else:
             chain.append('            .credential_guid("...")')
-        chain.append('            .connection(name="my-connection", admins=["jdoe"])')
+        chain.append('            .connection(name="my-connection", admin_users=["jdoe"])')
     if meta_samples:
         mname, sample = meta_samples[0]
         chain.append(f"            .{mname}({sample})")
@@ -797,7 +797,7 @@ def _render_test_module(
     out.append(f"def test_{module}_builder_payload():")
     out.append(
         f"    out = {builder_cls}(Mock()).connection("
-        'name="conn", admins=["u"]).credential_guid("g").preview()'
+        'name="conn", admin_users=["u"]).credential_guid("g").preview()'
     )
     out.append(
         f'    assert out["connection"]["attributes"]["connectorName"] '

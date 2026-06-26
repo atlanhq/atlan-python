@@ -18,7 +18,7 @@ def test_atlan_dynamodb_inputs_defaults():
 def test_atlan_dynamodb_builder_payload():
     out = (
         AtlanDynamodb(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

@@ -44,7 +44,7 @@ class KafkaConfluent(AppBuilder):
         resp = (
             KafkaConfluent(client)
             .basic(username="...", password="...", security_protocol="...", include_cloud_metrics="...", include_schema_registry="...", host="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .skip_internal_topics(True)
             .run()
         )

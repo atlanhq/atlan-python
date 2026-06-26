@@ -51,7 +51,7 @@ def test_builder_create_path(cls):
     # connection + existing guid is the uniform path across every connector.
     c = Mock()
     c.app.create.return_value = Mock(slug="s", version=1, run_id="r")
-    cls(c).connection(name="conn", admins=["u"]).credential_guid("g").create()
+    cls(c).connection(name="conn", admin_users=["u"]).credential_guid("g").create()
     ak = c.app.create.call_args.kwargs
     assert ak["app_id"] == cls._APP_ID
     # an empty entrypoint is sent as None ("use the app's default")
@@ -88,7 +88,7 @@ def test_preview_mirrors_ui_form():
             service_account_json='{"k":"v"}',
             project_id="proj",
         )
-        .connection(name="prod-bq", admins=["jdoe"], admin_groups=["g1"])
+        .connection(name="prod-bq", admin_users=["jdoe"], admin_groups=["g1"])
         .include({"proj": ["analytics"]})
         .exclude({"proj": ["tmp"]})
         .import_nested_columns(False)
@@ -175,7 +175,7 @@ def test_run_embeds_raw_credential_for_server_to_vault(client):
             service_account_json='{"k":"v"}',
             project_id="proj",
         )
-        .connection(name="prod-bq", admins=["jdoe"])
+        .connection(name="prod-bq", admin_users=["jdoe"])
         .include({"proj": ["ds"]})
         .run()  # create AND submit a run
     )

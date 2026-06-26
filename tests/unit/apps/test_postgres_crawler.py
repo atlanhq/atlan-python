@@ -23,7 +23,7 @@ def test_postgres_crawler_inputs_defaults():
 def test_postgres_crawler_builder_payload():
     out = (
         PostgresCrawler(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

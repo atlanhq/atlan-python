@@ -73,7 +73,7 @@ class SnowflakeCrawler(AppBuilder):
         resp = (
             SnowflakeCrawler(client)
             .keypair(username="...", password="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .extraction_method('information-schema')
             .run()
         )

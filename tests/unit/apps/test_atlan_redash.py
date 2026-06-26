@@ -25,7 +25,7 @@ def test_atlan_redash_inputs_defaults():
 def test_atlan_redash_builder_payload():
     out = (
         AtlanRedash(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

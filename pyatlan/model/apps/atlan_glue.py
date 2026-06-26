@@ -44,7 +44,7 @@ class AtlanGlue(AppBuilder):
         resp = (
             AtlanGlue(client)
             .iam(username="...", password="...", region="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .catalog_id("")
             .run()
         )

@@ -18,7 +18,7 @@ def test_atlan_sigma_inputs_defaults():
 def test_atlan_sigma_builder_payload():
     out = (
         AtlanSigma(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

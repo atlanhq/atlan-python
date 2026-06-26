@@ -20,7 +20,7 @@ def test_atlan_glue_inputs_defaults():
 def test_atlan_glue_builder_payload():
     out = (
         AtlanGlue(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

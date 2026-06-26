@@ -75,7 +75,7 @@ class DatabricksCrawler(AppBuilder):
         resp = (
             DatabricksCrawler(client)
             .basic(password="...", http_path="...", host="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .extraction_strategy('system-tables')
             .run()
         )

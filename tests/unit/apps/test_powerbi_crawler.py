@@ -26,7 +26,7 @@ def test_powerbi_crawler_inputs_defaults():
 def test_powerbi_crawler_builder_payload():
     out = (
         PowerbiCrawler(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

@@ -40,7 +40,7 @@ class MongodbAtlas(AppBuilder):
         resp = (
             MongodbAtlas(client)
             .basic(username="...", password="...", native_host="...", default_database="...", authsource="...", ssl="...", host="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .include_databases("")
             .run()
         )

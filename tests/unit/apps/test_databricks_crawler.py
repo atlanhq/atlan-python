@@ -28,7 +28,7 @@ def test_databricks_crawler_inputs_defaults():
 def test_databricks_crawler_builder_payload():
     out = (
         DatabricksCrawler(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

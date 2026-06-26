@@ -58,7 +58,7 @@ class AtlanRedash(AppBuilder):
         resp = (
             AtlanRedash(client)
             .api_key(password="...", host="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .include_queries_with_tags({})
             .run()
         )

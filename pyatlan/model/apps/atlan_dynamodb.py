@@ -40,7 +40,7 @@ class AtlanDynamodb(AppBuilder):
         resp = (
             AtlanDynamodb(client)
             .iam_user(username="...", password="...", region="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .exclude_tables_regex("")
             .run()
         )

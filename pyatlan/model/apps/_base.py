@@ -118,7 +118,7 @@ class AppBuilder:
         self,
         name: Optional[str] = None,
         *,
-        admins: Optional[List[str]] = None,
+        admin_users: Optional[List[str]] = None,
         admin_groups: Optional[List[str]] = None,
         admin_roles: Optional[List[str]] = None,
         qualified_name: Optional[str] = None,
@@ -132,7 +132,7 @@ class AppBuilder:
         ``defaultCredentialGuid``), so no credential step is needed.
         """
         self._connection_name = name
-        self._admin_users = list(admins or [])
+        self._admin_users = list(admin_users or [])
         self._admin_groups = list(admin_groups or [])
         self._admin_roles = list(admin_roles or [])
         self._connection_qualified_name = qualified_name

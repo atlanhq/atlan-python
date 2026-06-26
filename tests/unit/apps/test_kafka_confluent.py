@@ -20,7 +20,7 @@ def test_kafka_confluent_inputs_defaults():
 def test_kafka_confluent_builder_payload():
     out = (
         KafkaConfluent(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

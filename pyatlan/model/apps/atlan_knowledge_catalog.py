@@ -51,7 +51,7 @@ class AtlanKnowledgeCatalog(AppBuilder):
         resp = (
             AtlanKnowledgeCatalog(client)
             .basic(service_account_json="...", project_id="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .include_projects_optional({})
             .run()
         )

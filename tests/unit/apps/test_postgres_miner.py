@@ -17,7 +17,7 @@ def test_postgres_miner_inputs_defaults():
 def test_postgres_miner_builder_payload():
     out = (
         PostgresMiner(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )

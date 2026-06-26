@@ -42,7 +42,7 @@ class AtlanMysql(AppBuilder):
         resp = (
             AtlanMysql(client)
             .basic(username="...", password="...", host="...")
-            .connection(name="my-connection", admins=["jdoe"])
+            .connection(name="my-connection", admin_users=["jdoe"])
             .include_metadata({"my_db": ["my_schema"]})
             .run()
         )

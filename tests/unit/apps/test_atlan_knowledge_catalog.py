@@ -24,7 +24,7 @@ def test_atlan_knowledge_catalog_inputs_defaults():
 def test_atlan_knowledge_catalog_builder_payload():
     out = (
         AtlanKnowledgeCatalog(Mock())
-        .connection(name="conn", admins=["u"])
+        .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
         .preview()
     )
