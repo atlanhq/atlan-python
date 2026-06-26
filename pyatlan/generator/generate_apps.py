@@ -486,20 +486,30 @@ def _render_credential_method(
     if port_default is None and port_spec:
         port_default = _placeholder_default(port_spec)
     host_param = port_param = ""
+    source = re.sub(r"^atlan-connectors-", "", config_name) or "data source"
     if host_spec is not None:
         host_param = unique("host")
         if host_default is not None:
             params.append(f"{host_param}: Optional[str] = None")
+            doc_lines.append(
+                f":param {host_param}: Hostname of the {source} instance "
+                f"(defaults to {host_default!r})."
+            )
         else:
             params.append(f"{host_param}: str")
             required_params.append(host_param)
+            doc_lines.append(f":param {host_param}: Hostname of the {source} instance.")
     if port_spec is not None:
         port_param = unique("port")
         if port_default is not None:
             params.append(f"{port_param}: Optional[int] = None")
+            doc_lines.append(
+                f":param {port_param}: Port to connect on (defaults to {port_default})."
+            )
         else:
             params.append(f"{port_param}: int")
             required_params.append(port_param)
+            doc_lines.append(f":param {port_param}: Port to connect on.")
     params.append("**extra: Any")
 
     code = [f'    def {mname}({", ".join(params)}) -> "{{cls}}":']

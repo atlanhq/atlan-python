@@ -105,7 +105,9 @@ class SnowflakeCrawler(AppBuilder):
         :param password: Encrypted Private Key.
         :param private_key_password: Private Key Password.
         :param role: Role.
-        :param warehouse: Warehouse.
+        :param warehouse: Warehouse to run extraction queries with.
+        :param host: Hostname of the Snowflake account (e.g. abc12345.snowflakecomputing.com).
+        :param port: Port to connect on (defaults to 443).
         """
         extras: Dict[str, Any] = {}
         if private_key_password is not None:
@@ -148,7 +150,9 @@ class SnowflakeCrawler(AppBuilder):
         :param password: Password.
         :param authenticator: Authenticator.
         :param role: Role.
-        :param warehouse: Warehouse.
+        :param warehouse: Warehouse to run extraction queries with.
+        :param host: Hostname of the Snowflake account (e.g. abc12345.snowflakecomputing.com).
+        :param port: Port to connect on (defaults to 443).
         """
         extras: Dict[str, Any] = {}
         extras["authenticator"] = authenticator
@@ -192,7 +196,9 @@ class SnowflakeCrawler(AppBuilder):
         :param tenant_id: Tenant ID.
         :param oauth_scope: OAuth Scope.
         :param role: Role.
-        :param warehouse: Warehouse.
+        :param warehouse: Warehouse to run extraction queries with.
+        :param host: Hostname of the Snowflake account (e.g. abc12345.snowflakecomputing.com).
+        :param port: Port to connect on (defaults to 443).
         """
         extras: Dict[str, Any] = {}
         extras["tenantId"] = tenant_id
@@ -233,7 +239,9 @@ class SnowflakeCrawler(AppBuilder):
         :param username: Username.
         :param password: Password.
         :param role: Role.
-        :param warehouse: Warehouse.
+        :param warehouse: Warehouse to run extraction queries with.
+        :param host: Hostname of the Snowflake account (e.g. abc12345.snowflakecomputing.com).
+        :param port: Port to connect on (defaults to 443).
         """
         extras: Dict[str, Any] = {}
         if role is not None:
