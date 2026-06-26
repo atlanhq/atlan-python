@@ -4,13 +4,13 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, Optional, Union
+from typing import Any, ClassVar, Dict, List, Mapping, Optional, Union
 
 from pydantic.v1 import Field
 
 from pyatlan.model.credential import Credential
 
-from ._base import AppBuilder, AppInput
+from ._base import AppBuilder, AppInput, _anchor_filter
 
 
 class AtlanGlueInputs(AppInput):
@@ -120,14 +120,18 @@ class AtlanGlue(AppBuilder):
         self._metadata["catalog-id"] = value
         return self
 
-    def include_metadata(self, value: Union[Dict[str, Any], str]) -> "AtlanGlue":
+    def include_metadata(
+        self, assets: Union[str, Mapping[str, List[str]]]
+    ) -> "AtlanGlue":
         """Include Metadata — Only the selected databases will be extracted. Exclude gets preference over include for common databases, if present, in the config."""
-        self._metadata["include-filter"] = value
+        self._metadata["include-filter"] = _anchor_filter(assets)
         return self
 
-    def exclude_metadata(self, value: Union[Dict[str, Any], str]) -> "AtlanGlue":
+    def exclude_metadata(
+        self, assets: Union[str, Mapping[str, List[str]]]
+    ) -> "AtlanGlue":
         """Exclude Metadata — Selected databases won't be extracted."""
-        self._metadata["exclude-filter"] = value
+        self._metadata["exclude-filter"] = _anchor_filter(assets)
         return self
 
     def exclude_table_regex(self, value: str) -> "AtlanGlue":

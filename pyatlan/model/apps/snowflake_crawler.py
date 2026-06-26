@@ -4,13 +4,13 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, Literal, Optional, Union
+from typing import Any, ClassVar, Dict, List, Literal, Mapping, Optional, Union
 
 from pydantic.v1 import Field
 
 from pyatlan.model.credential import Credential
 
-from ._base import AppBuilder, AppInput
+from ._base import AppBuilder, AppInput, _anchor_filter
 
 
 class SnowflakeCrawlerInputs(AppInput):
@@ -301,14 +301,18 @@ class SnowflakeCrawler(AppBuilder):
         self._metadata["enable-lineage"] = value
         return self
 
-    def include_metadata(self, value: Union[Dict[str, Any], str]) -> "SnowflakeCrawler":
+    def include_metadata(
+        self, assets: Union[str, Mapping[str, List[str]]]
+    ) -> "SnowflakeCrawler":
         """Include Metadata — Only the selected databases will be extracted. Exclude gets preference over include for common databases, if present, in the config."""
-        self._metadata["include-filter"] = value
+        self._metadata["include-filter"] = _anchor_filter(assets)
         return self
 
-    def exclude_metadata(self, value: Union[Dict[str, Any], str]) -> "SnowflakeCrawler":
+    def exclude_metadata(
+        self, assets: Union[str, Mapping[str, List[str]]]
+    ) -> "SnowflakeCrawler":
         """Exclude Metadata — Selected databases and schemas wont be extracted."""
-        self._metadata["exclude-filter"] = value
+        self._metadata["exclude-filter"] = _anchor_filter(assets)
         return self
 
     def asset_selection(self, value: Union[Dict[str, Any], str]) -> "SnowflakeCrawler":
