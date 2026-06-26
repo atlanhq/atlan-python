@@ -27,4 +27,4 @@ def test_teradata_miner_builder_payload():
     )
     assert out["connection"]["attributes"]["connectorName"] == "teradata"
     assert out["credential_guid"] == "g"
-    assert out["extraction_method"] == "direct"
+    assert out["extraction_method"] == "query_history"

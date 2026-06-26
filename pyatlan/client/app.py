@@ -12,6 +12,7 @@ Obtain via :attr:`pyatlan.client.atlan.AtlanClient.app`.
 
 from __future__ import annotations
 
+import logging
 from typing import Any, Dict, Optional, Union
 
 from pydantic.v1 import validate_arguments
@@ -31,7 +32,7 @@ from pyatlan.client.common.app import (
     AppSubmit,
     AppUpdate,
 )
-from pyatlan.errors import ErrorCode
+from pyatlan.errors import ConflictError, ErrorCode
 from pyatlan.model.apps import AppInput
 from pyatlan.model.app import (
     AppDeleteResponse,
@@ -48,6 +49,9 @@ from pyatlan.model.app import (
     CreateApp,
     UpdateApp,
 )
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class AppClient:
@@ -112,6 +116,12 @@ class AppClient:
         :param schedule: optional cron schedule to attach on create.
         :param run: submit a run on create; server defaults to ``True`` when omitted.
         :returns: an :class:`AppResponse` — **persist** ``slug`` for lifecycle ops.
+
+        On a duplicate ``name`` the server responds ``409``; rather than failing, this
+        resolves the existing workflow by name and returns it (so re-running a
+        migration script is idempotent — *create-or-reuse-by-name*). If more than one
+        workflow shares the name, the conflict is re-raised — disambiguate with
+        :meth:`get_all` (``name=``).
         """
         if isinstance(inputs, AppInput):
             inputs = inputs.to_inputs()
@@ -130,20 +140,44 @@ class AppClient:
             request_kwargs["run"] = run
         request = CreateApp(**request_kwargs)
         endpoint, request_obj = AppCreate.prepare_request(request)
-        raw = self._client._call_api(endpoint, request_obj=request_obj)
+        try:
+            raw = self._client._call_api(endpoint, request_obj=request_obj)
+        except ConflictError as conflict:
+            return self._reuse_on_conflict(name, conflict)
         return AppCreate.process_response(raw)
+
+    def _reuse_on_conflict(self, name: str, conflict: ConflictError) -> AppResponse:
+        """Resolve a duplicate-name ``409`` to the existing workflow's slug.
+
+        Heracles returns ``409`` (with the existing slug) when ``name`` already
+        exists. We look the workflow up by name and return it so callers don't have
+        to special-case re-runs. A non-unique name can't be reused safely, so the
+        original conflict is re-raised.
+        """
+        existing = [w for w in self.get_all(name=name).workflows if w.slug]
+        if len(existing) == 1:
+            slug = existing[0].slug
+            assert slug is not None  # guaranteed by the filter above
+            LOGGER.info("App workflow %r already exists; reusing slug %s", name, slug)
+            return AppResponse(slug=slug, version=existing[0].version)
+        raise conflict
 
     @validate_arguments
     def get_all(
-        self, limit: Optional[int] = None, cursor: Optional[str] = None
+        self,
+        limit: Optional[int] = None,
+        cursor: Optional[str] = None,
+        name: Optional[str] = None,
     ) -> AppList:
         """List published native app workflows (paginate via ``next_cursor``).
 
         :param limit: page size (server default 50).
         :param cursor: opaque pagination cursor (pass ``next_cursor`` back).
+        :param name: filter to workflows with this exact ``name`` (server ``?name=``);
+            use it to resolve a workflow's slug from its name.
         :returns: an :class:`AppList`.
         """
-        endpoint, query_params = AppListAll.prepare_request(limit, cursor)
+        endpoint, query_params = AppListAll.prepare_request(limit, cursor, name)
         raw = self._client._call_api(endpoint, query_params=query_params)
         return AppListAll.process_response(raw)
 

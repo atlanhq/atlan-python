@@ -166,6 +166,25 @@ def test_list_is_paginated(client: AtlanClient, created: AppResponse):
     assert isinstance(listing.has_more, bool)
 
 
+def test_get_all_by_name_resolves_slug(client: AtlanClient, created: AppResponse):
+    # The ``name`` filter is what lets a stateless script resolve a slug from a name.
+    listing = client.app.get_all(name=MODULE_NAME)
+    slugs = {w.slug for w in listing.workflows}
+    assert created.slug in slugs
+    assert all(w.name == MODULE_NAME for w in listing.workflows)
+
+
+def test_create_duplicate_name_reuses_existing(
+    client: AtlanClient, created: AppResponse
+):
+    # Re-creating with the same name hits the server's 409 duplicate-name response;
+    # the client resolves it to the existing workflow (create-or-reuse idempotency)
+    # instead of raising — so re-running a migration script is safe.
+    reused = _builder(client, MODULE_NAME).create(name=MODULE_NAME)
+    assert isinstance(reused, AppResponse)
+    assert reused.slug == created.slug  # reused, not a new workflow
+
+
 # --------------------------------------------------------------------------- #
 # Update (full-replace via a typed inputs model)
 # --------------------------------------------------------------------------- #

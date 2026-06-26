@@ -55,6 +55,7 @@ class TeradataMiner(AppBuilder):
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = TeradataMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
+    _EXTRACTION_METHOD: ClassVar[str] = "query_history"
 
     # ── Step 3 · Metadata ──
     def start_date(self, value: str) -> "TeradataMiner":

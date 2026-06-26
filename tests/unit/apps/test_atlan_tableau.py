@@ -11,8 +11,8 @@ def test_atlan_tableau_inputs_defaults():
     i = AtlanTableauInputs()
     assert AtlanTableauInputs._APP_ID == "atlan-tableau"
     assert AtlanTableauInputs._ENTRYPOINT == ""
-    assert i.include_filter == {}
-    assert i.exclude_filter == {}
+    assert i.include_filter == "{}"
+    assert i.exclude_filter == "{}"
     assert i.exclude_projects_regex == ""
     assert i.tableau_alternate_host == "https://alternate.tableau.com"
     assert i.crawl_unpublished_worksheets_dashboards is True
@@ -27,11 +27,14 @@ def test_atlan_tableau_builder_payload():
         AtlanTableau(Mock())
         .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
+        .include_projects({"40e6b97a": {}, "bd1f0402": {}})
         .preview()
     )
     assert out["connection"]["attributes"]["connectorName"] == "tableau"
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"
+    # projects are serialized to the JSON-string form the input contract expects
+    assert out["include_filter"] == '{"40e6b97a": {}, "bd1f0402": {}}'
 
 
 def test_atlan_tableau_credential_basic():

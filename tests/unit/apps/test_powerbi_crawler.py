@@ -20,7 +20,7 @@ def test_powerbi_crawler_inputs_defaults():
     assert i.incremental_extraction is False
     assert i.sql_connection_info_note == ""
     assert i.enable_odbc_connectivity_mapping == "false"
-    assert i.odbc_dsn_config_mapping == "{}"
+    assert i.odbc_dsn_config_mapping == {}
 
 
 def test_powerbi_crawler_builder_payload():
@@ -28,11 +28,16 @@ def test_powerbi_crawler_builder_payload():
         PowerbiCrawler(Mock())
         .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
+        .include_workspaces({"ws-1": {}, "ws-2": {}})
         .preview()
     )
     assert out["connection"]["attributes"]["connectorName"] == "powerbi"
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"
+    # workspaces are serialized to the JSON-string form the input contract expects
+    assert out["include_filter"] == '{"ws-1": {}, "ws-2": {}}'
+    # odbc mapping is a plain object (the contract has no string branch for it)
+    assert out["odbc_dsn_config_mapping"] == {}
 
 
 def test_powerbi_crawler_credential_service_principal():

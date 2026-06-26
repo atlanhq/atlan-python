@@ -10,7 +10,7 @@ from pydantic.v1 import Field
 
 from pyatlan.model.credential import Credential
 
-from ._base import AppBuilder, AppInput
+from ._base import AppBuilder, AppInput, _selective_filter
 
 
 class PowerbiCrawlerInputs(AppInput):
@@ -51,8 +51,8 @@ class PowerbiCrawlerInputs(AppInput):
         "false", alias="enable-odbc-connectivity-mapping"
     )
     """Enable ODBC DSN Connectivity Mapping"""
-    odbc_dsn_config_mapping: Union[Dict[str, Any], str] = Field(
-        "{}", alias="odbc-dsn-config-mapping"
+    odbc_dsn_config_mapping: Dict[str, Any] = Field(
+        default_factory=dict, alias="odbc-dsn-config-mapping"
     )
 
 
@@ -158,13 +158,21 @@ class PowerbiCrawler(AppBuilder):
 
     # ── Step 3 · Metadata ──
     def include_workspaces(self, value: Union[Dict[str, Any], str]) -> "PowerbiCrawler":
-        """Include Workspaces — Selected workspaces will be processed."""
-        self._metadata["include-filter"] = value
+        """Include Workspaces — Selected workspaces will be processed.
+
+        Pass a ``{workspace_id: {}}`` map — it is serialized to the JSON-string form
+        the contract expects. A string passes through as-is.
+        """
+        self._metadata["include-filter"] = _selective_filter(value)
         return self
 
     def exclude_workspaces(self, value: Union[Dict[str, Any], str]) -> "PowerbiCrawler":
-        """Exclude Workspaces — Selected workspaces will not be processed."""
-        self._metadata["exclude-filter"] = value
+        """Exclude Workspaces — Selected workspaces will not be processed.
+
+        Pass a ``{workspace_id: {}}`` map — it is serialized to the JSON-string form
+        the contract expects. A string passes through as-is.
+        """
+        self._metadata["exclude-filter"] = _selective_filter(value)
         return self
 
     def include_dashboard_and_reports_regex(self, value: str) -> "PowerbiCrawler":

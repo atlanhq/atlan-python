@@ -334,13 +334,29 @@ class AppBuilder:
         inputs = self._assemble(
             qualified_name=qn, epoch=epoch, resolved_guids=resolved_guids
         )
-        return self._client.app.create(
-            app_id=self._APP_ID,
-            # An empty entrypoint means "use the app's default" — send None so it is
-            # omitted; an empty string is rejected as an unknown entrypoint.
-            entrypoint=self._ENTRYPOINT or None,
-            name=name or self._connection_name or self._APP_ID,
-            inputs=inputs,
-            run=run,
-            schedule=schedule,
-        )
+
+        def _create_with(entrypoint: Optional[str]):
+            return self._client.app.create(
+                app_id=self._APP_ID,
+                # An empty entrypoint means "use the app's default" — send None so it
+                # is omitted; an empty string is rejected as an unknown entrypoint.
+                entrypoint=entrypoint or None,
+                name=name or self._connection_name or self._APP_ID,
+                inputs=inputs,
+                run=run,
+                schedule=schedule,
+            )
+
+        # Some apps declare a named entrypoint (e.g. "crawler") but register their
+        # input contract only at the app's default slot — passing the declared name
+        # then fails with 1003 ("unknown entrypoint or app does not expose an input
+        # contract"). Retry once without the entrypoint so the server resolves the
+        # default contract. Apps whose entrypoint is correct succeed on the first try.
+        ep = self._ENTRYPOINT or None
+        try:
+            return _create_with(ep)
+        except Exception as exc:  # noqa: BLE001
+            msg = str(exc)
+            if ep is not None and ("1003" in msg or "unknown entrypoint" in msg):
+                return _create_with(None)
+            raise

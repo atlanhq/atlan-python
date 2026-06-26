@@ -9,6 +9,7 @@ is awaited. Obtain via :attr:`pyatlan.client.aio.client.AsyncAtlanClient.app`.
 
 from __future__ import annotations
 
+import logging
 from typing import Any, Dict, Optional, Union
 
 from pydantic.v1 import validate_arguments
@@ -28,7 +29,7 @@ from pyatlan.client.common.app import (
     AppSubmit,
     AppUpdate,
 )
-from pyatlan.errors import ErrorCode
+from pyatlan.errors import ConflictError, ErrorCode
 from pyatlan.model.apps import AppInput
 from pyatlan.model.app import (
     AppDeleteResponse,
@@ -45,6 +46,9 @@ from pyatlan.model.app import (
     CreateApp,
     UpdateApp,
 )
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class AsyncAppClient:
@@ -84,7 +88,12 @@ class AsyncAppClient:
         schedule: Optional[AppSchedule] = None,
         run: Optional[bool] = None,
     ) -> AppResponse:
-        """Create a workflow (create + version + publish + optional schedule/run)."""
+        """Create a workflow (create + version + publish + optional schedule/run).
+
+        On a duplicate ``name`` the server responds ``409``; this resolves the existing
+        workflow by name and returns it (idempotent *create-or-reuse-by-name*). A
+        non-unique name re-raises the conflict — disambiguate with :meth:`get_all`.
+        """
         if isinstance(inputs, AppInput):
             inputs = inputs.to_inputs()
         # Only include optional fields when provided so exclude_unset omits them
@@ -102,15 +111,40 @@ class AsyncAppClient:
             request_kwargs["run"] = run
         request = CreateApp(**request_kwargs)
         endpoint, request_obj = AppCreate.prepare_request(request)
-        raw = await self._client._call_api(endpoint, request_obj=request_obj)
+        try:
+            raw = await self._client._call_api(endpoint, request_obj=request_obj)
+        except ConflictError as conflict:
+            return await self._reuse_on_conflict(name, conflict)
         return AppCreate.process_response(raw)
+
+    async def _reuse_on_conflict(
+        self, name: str, conflict: ConflictError
+    ) -> AppResponse:
+        """Resolve a duplicate-name ``409`` to the existing workflow's slug (reuse).
+
+        A non-unique name can't be reused safely, so the conflict is re-raised.
+        """
+        existing = [w for w in (await self.get_all(name=name)).workflows if w.slug]
+        if len(existing) == 1:
+            slug = existing[0].slug
+            assert slug is not None  # guaranteed by the filter above
+            LOGGER.info("App workflow %r already exists; reusing slug %s", name, slug)
+            return AppResponse(slug=slug, version=existing[0].version)
+        raise conflict
 
     @validate_arguments
     async def get_all(
-        self, limit: Optional[int] = None, cursor: Optional[str] = None
+        self,
+        limit: Optional[int] = None,
+        cursor: Optional[str] = None,
+        name: Optional[str] = None,
     ) -> AppList:
-        """List published native app workflows (paginate via ``next_cursor``)."""
-        endpoint, query_params = AppListAll.prepare_request(limit, cursor)
+        """List published native app workflows (paginate via ``next_cursor``).
+
+        :param name: filter to workflows with this exact ``name`` (server ``?name=``);
+            use it to resolve a workflow's slug from its name.
+        """
+        endpoint, query_params = AppListAll.prepare_request(limit, cursor, name)
         raw = await self._client._call_api(endpoint, query_params=query_params)
         return AppListAll.process_response(raw)
 

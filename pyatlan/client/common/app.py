@@ -91,13 +91,17 @@ class AppListAll:
 
     @staticmethod
     def prepare_request(
-        limit: Optional[int] = None, cursor: Optional[str] = None
+        limit: Optional[int] = None,
+        cursor: Optional[str] = None,
+        name: Optional[str] = None,
     ) -> Tuple[API, Dict[str, Any]]:
         query_params: Dict[str, Any] = {}
         if limit is not None:
             query_params["limit"] = limit
         if cursor is not None:
             query_params["cursor"] = cursor
+        if name is not None:
+            query_params["name"] = name
         return LIST_APP_WORKFLOWS, query_params
 
     @staticmethod

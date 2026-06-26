@@ -25,7 +25,7 @@ class OracleMinerInputs(AppInput):
 
     # Step 3 · Metadata (only fields the UI surfaces)
     miner_start_time_epoch: float = Field(0, alias="miner-start-time-epoch")
-    """Start date — Pick how far back to mine query history. The widget returns a negative-day offset (e.g. -3 = three days ago) which the miner converts to an AWR cutoff timestamp. Mirrors MSSQL v3 miner's date widget."""
+    """Start date — how far back to mine query history, as an epoch timestamp in seconds (the miner's AWR cutoff). In the UI this is a date widget; the SDK sends the raw epoch value."""
 
 
 class OracleMiner(AppBuilder):
@@ -33,10 +33,12 @@ class OracleMiner(AppBuilder):
 
     Example::
 
+        import time
+
         resp = (
             OracleMiner(client)
             .connection(qualified_name="default/oracle/1700000000")
-            .start_date(0.0)
+            .start_date(int(time.time()) - 30 * 86400)  # epoch seconds; mine the last 30 days
             .run()
         )
     """
@@ -47,10 +49,11 @@ class OracleMiner(AppBuilder):
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = OracleMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"workflow_type": "miner"}
+    _EXTRACTION_METHOD: ClassVar[str] = "query_history"
 
     # ── Step 3 · Metadata ──
     def start_date(self, value: float) -> "OracleMiner":
-        """Start date — Pick how far back to mine query history. The widget returns a negative-day offset (e.g. -3 = three days ago) which the miner converts to an AWR cutoff timestamp. Mirrors MSSQL v3 miner's date widget."""
+        """Start date — how far back to mine query history, as an **epoch timestamp in seconds** (the miner's AWR cutoff). For example, ``int(time.time()) - 30 * 86400`` mines the last 30 days. In the UI this is a date widget; the SDK sends the raw epoch value."""
         self._metadata["miner-start-time-epoch"] = value
         return self
 

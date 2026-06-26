@@ -42,6 +42,7 @@ class PostgresMiner(AppBuilder):
     _CONNECTOR_CONFIG: ClassVar[str] = ""
     _INPUTS_CLASS = PostgresMinerInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
+    _EXTRACTION_METHOD: ClassVar[str] = "query_history"
 
 
 __all__ = ["PostgresMiner", "PostgresMinerInputs"]

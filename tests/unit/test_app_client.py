@@ -9,6 +9,7 @@ import pytest
 from pyatlan.client.aio.app import AsyncAppClient
 from pyatlan.client.app import AppClient
 from pyatlan.client.common import ApiCaller, AsyncApiCaller
+from pyatlan.errors import ConflictError, ErrorCode
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
@@ -122,6 +123,48 @@ def test_get_all(client, mock_api_caller):
     assert result.has_more is True
     assert result.workflows[0].slug == "a-1"
     assert mock_api_caller._call_api.call_args.kwargs["query_params"] == {"limit": 2}
+
+
+def test_get_all_passes_name_filter(client, mock_api_caller):
+    mock_api_caller._call_api.return_value = {"workflows": [{"slug": "a-1"}]}
+    client.get_all(name="prod-crawler")
+    assert mock_api_caller._call_api.call_args.kwargs["query_params"] == {
+        "name": "prod-crawler"
+    }
+
+
+def _conflict() -> ConflictError:
+    return ErrorCode.CONFLICT_PASSTHROUGH.exception_with_parameters(
+        409, "name already exists", ""
+    )
+
+
+def test_create_reuses_existing_slug_on_conflict(client, mock_api_caller):
+    # First call (create) -> 409; second call (get_all by name) -> the existing one.
+    mock_api_caller._call_api.side_effect = [
+        _conflict(),
+        {
+            "workflows": [
+                {"slug": "prod-crawler-9f", "name": "prod-crawler", "version": 3}
+            ]
+        },
+    ]
+    result = client.create(app_id="bigquery-crawler", name="prod-crawler", inputs={})
+    assert isinstance(result, AppResponse)
+    assert result.slug == "prod-crawler-9f"
+    # the reuse lookup filtered by name
+    assert mock_api_caller._call_api.call_args.kwargs["query_params"] == {
+        "name": "prod-crawler"
+    }
+
+
+def test_create_reraises_conflict_when_name_not_unique(client, mock_api_caller):
+    mock_api_caller._call_api.side_effect = [
+        _conflict(),
+        {"workflows": [{"slug": "a-1", "name": "dup"}, {"slug": "a-2", "name": "dup"}]},
+    ]
+    with pytest.raises(ConflictError):
+        client.create(app_id="x", name="dup", inputs={})
 
 
 def test_get_one(client, mock_api_caller):
@@ -246,3 +289,25 @@ async def test_async_create(async_mock_api_caller):
     result = await client.create(app_id="x", name="n", inputs={}, run=False)
     assert isinstance(result, AppResponse)
     assert result.slug == "x-1"
+
+
+@pytest.mark.asyncio
+async def test_async_create_reuses_existing_slug_on_conflict(async_mock_api_caller):
+    async_mock_api_caller._call_api.side_effect = [
+        _conflict(),
+        {"workflows": [{"slug": "n-7", "name": "n", "version": 2}]},
+    ]
+    client = AsyncAppClient(async_mock_api_caller)
+    result = await client.create(app_id="x", name="n", inputs={})
+    assert isinstance(result, AppResponse)
+    assert result.slug == "n-7"
+
+
+@pytest.mark.asyncio
+async def test_async_get_all_passes_name_filter(async_mock_api_caller):
+    async_mock_api_caller._call_api.return_value = {"workflows": [{"slug": "n-7"}]}
+    client = AsyncAppClient(async_mock_api_caller)
+    await client.get_all(name="n")
+    assert async_mock_api_caller._call_api.call_args.kwargs["query_params"] == {
+        "name": "n"
+    }

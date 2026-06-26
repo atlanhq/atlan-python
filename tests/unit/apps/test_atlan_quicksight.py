@@ -12,8 +12,8 @@ def test_atlan_quicksight_inputs_defaults():
     assert AtlanQuicksightInputs._APP_ID == "atlan-quicksight"
     assert AtlanQuicksightInputs._ENTRYPOINT == ""
     assert i.fetch_folderless_assets is True
-    assert i.include_filter == {}
-    assert i.exclude_filter == {}
+    assert i.include_filter == "{}"
+    assert i.exclude_filter == "{}"
 
 
 def test_atlan_quicksight_builder_payload():
@@ -21,12 +21,14 @@ def test_atlan_quicksight_builder_payload():
         AtlanQuicksight(Mock())
         .connection(name="conn", admin_users=["u"])
         .credential_guid("g")
+        .include_folders({"SharedFolders": {}})
         .preview()
     )
     assert out["connection"]["attributes"]["connectorName"] == "quicksight"
     assert out["credential_guid"] == "g"
     assert out["extraction_method"] == "direct"
-    assert out["extraction_method"] == "direct"
+    # folders are serialized to the JSON-string form the input contract expects
+    assert out["include_filter"] == '{"SharedFolders": {}}'
 
 
 def test_atlan_quicksight_credential_iam():

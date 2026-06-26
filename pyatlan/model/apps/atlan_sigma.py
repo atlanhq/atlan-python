@@ -4,13 +4,13 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, Optional
+from typing import Any, ClassVar, Dict, Optional, Union
 
 from pydantic.v1 import Field
 
 from pyatlan.model.credential import Credential
 
-from ._base import AppBuilder, AppInput
+from ._base import AppBuilder, AppInput, _selective_filter
 
 
 class AtlanSigmaInputs(AppInput):
@@ -26,9 +26,9 @@ class AtlanSigmaInputs(AppInput):
     agent_json: Optional[Any] = None
 
     # Step 3 · Metadata (only fields the UI surfaces)
-    include_filter: Dict[str, Any] = Field("{}", alias="include-filter")
+    include_filter: Union[Dict[str, Any], str] = Field("{}", alias="include-filter")
     """Include Workbooks — Selected workbooks will be extracted."""
-    exclude_filter: Dict[str, Any] = Field("{}", alias="exclude-filter")
+    exclude_filter: Union[Dict[str, Any], str] = Field("{}", alias="exclude-filter")
     """Exclude Workbooks — Selected workbooks will be excluded from extraction."""
 
 
@@ -85,14 +85,22 @@ class AtlanSigma(AppBuilder):
         )
 
     # ── Step 3 · Metadata ──
-    def include_workbooks(self, value: Dict[str, Any]) -> "AtlanSigma":
-        """Include Workbooks — Selected workbooks will be extracted."""
-        self._metadata["include-filter"] = value
+    def include_workbooks(self, value: Union[Dict[str, Any], str]) -> "AtlanSigma":
+        """Include Workbooks — Selected workbooks will be extracted.
+
+        Pass a ``{workbook_id: {}}`` map — it is serialized to the JSON-string form
+        the contract expects. A string passes through as-is.
+        """
+        self._metadata["include-filter"] = _selective_filter(value)
         return self
 
-    def exclude_workbooks(self, value: Dict[str, Any]) -> "AtlanSigma":
-        """Exclude Workbooks — Selected workbooks will be excluded from extraction."""
-        self._metadata["exclude-filter"] = value
+    def exclude_workbooks(self, value: Union[Dict[str, Any], str]) -> "AtlanSigma":
+        """Exclude Workbooks — Selected workbooks will be excluded from extraction.
+
+        Pass a ``{workbook_id: {}}`` map — it is serialized to the JSON-string form
+        the contract expects. A string passes through as-is.
+        """
+        self._metadata["exclude-filter"] = _selective_filter(value)
         return self
 
 

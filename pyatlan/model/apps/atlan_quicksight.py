@@ -4,13 +4,13 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, Optional
+from typing import Any, ClassVar, Dict, Optional, Union
 
 from pydantic.v1 import Field
 
 from pyatlan.model.credential import Credential
 
-from ._base import AppBuilder, AppInput
+from ._base import AppBuilder, AppInput, _selective_filter
 
 
 class AtlanQuicksightInputs(AppInput):
@@ -28,9 +28,9 @@ class AtlanQuicksightInputs(AppInput):
     # Step 3 · Metadata (only fields the UI surfaces)
     fetch_folderless_assets: bool = Field(True, alias="fetch-folderless-assets")
     """Fetch all assets without folder? — Fetch assets not linked to any folder, including datasets, analyses & dashboards."""
-    include_filter: Dict[str, Any] = Field({}, alias="include-filter")
+    include_filter: Union[Dict[str, Any], str] = Field("{}", alias="include-filter")
     """Include Folders — Selected folders will be processed. Exclude gets preference over include."""
-    exclude_filter: Dict[str, Any] = Field({}, alias="exclude-filter")
+    exclude_filter: Union[Dict[str, Any], str] = Field("{}", alias="exclude-filter")
     """Exclude Folders — Selected folders will not be processed."""
 
 
@@ -90,14 +90,22 @@ class AtlanQuicksight(AppBuilder):
         self._metadata["fetch-folderless-assets"] = enabled
         return self
 
-    def include_folders(self, value: Dict[str, Any]) -> "AtlanQuicksight":
-        """Include Folders — Selected folders will be processed. Exclude gets preference over include."""
-        self._metadata["include-filter"] = value
+    def include_folders(self, value: Union[Dict[str, Any], str]) -> "AtlanQuicksight":
+        """Include Folders — Selected folders will be processed. Exclude gets preference over include.
+
+        Pass a ``{folder: {}}`` map (e.g. ``{"SharedFolders": {}}``) — it is serialized
+        to the JSON-string form the contract expects. A string passes through as-is.
+        """
+        self._metadata["include-filter"] = _selective_filter(value)
         return self
 
-    def exclude_folders(self, value: Dict[str, Any]) -> "AtlanQuicksight":
-        """Exclude Folders — Selected folders will not be processed."""
-        self._metadata["exclude-filter"] = value
+    def exclude_folders(self, value: Union[Dict[str, Any], str]) -> "AtlanQuicksight":
+        """Exclude Folders — Selected folders will not be processed.
+
+        Pass a ``{folder: {}}`` map (e.g. ``{"SharedFolders": {}}``) — it is serialized
+        to the JSON-string form the contract expects. A string passes through as-is.
+        """
+        self._metadata["exclude-filter"] = _selective_filter(value)
         return self
 
 

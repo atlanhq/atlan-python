@@ -4,13 +4,13 @@
 # Regenerate: uv run python -m pyatlan.generator.generate_apps
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, Optional
+from typing import Any, ClassVar, Dict, Optional, Union
 
 from pydantic.v1 import Field
 
 from pyatlan.model.credential import Credential
 
-from ._base import AppBuilder, AppInput
+from ._base import AppBuilder, AppInput, _selective_filter
 
 
 class AtlanTableauInputs(AppInput):
@@ -26,9 +26,9 @@ class AtlanTableauInputs(AppInput):
     agent_json: Optional[Any] = None
 
     # Step 3 · Metadata (only fields the UI surfaces)
-    include_filter: Dict[str, Any] = Field({}, alias="include-filter")
+    include_filter: Union[Dict[str, Any], str] = Field("{}", alias="include-filter")
     """Include Projects — Selected projects will be processed (empty = all projects)."""
-    exclude_filter: Dict[str, Any] = Field({}, alias="exclude-filter")
+    exclude_filter: Union[Dict[str, Any], str] = Field("{}", alias="exclude-filter")
     """Exclude Projects — Selected projects will not be processed."""
     exclude_projects_regex: str = Field("", alias="exclude-projects-regex")
     """Exclude Projects Regex — Projects whose names match the regex will not be processed. Defaults to empty string."""
@@ -206,14 +206,22 @@ class AtlanTableau(AppBuilder):
         )
 
     # ── Step 3 · Metadata ──
-    def include_projects(self, value: Dict[str, Any]) -> "AtlanTableau":
-        """Include Projects — Selected projects will be processed (empty = all projects)."""
-        self._metadata["include-filter"] = value
+    def include_projects(self, value: Union[Dict[str, Any], str]) -> "AtlanTableau":
+        """Include Projects — Selected projects will be processed (empty = all projects).
+
+        Pass a ``{project_id: {}}`` map — it is serialized to the JSON-string form the
+        contract expects. A string passes through as-is.
+        """
+        self._metadata["include-filter"] = _selective_filter(value)
         return self
 
-    def exclude_projects(self, value: Dict[str, Any]) -> "AtlanTableau":
-        """Exclude Projects — Selected projects will not be processed."""
-        self._metadata["exclude-filter"] = value
+    def exclude_projects(self, value: Union[Dict[str, Any], str]) -> "AtlanTableau":
+        """Exclude Projects — Selected projects will not be processed.
+
+        Pass a ``{project_id: {}}`` map — it is serialized to the JSON-string form the
+        contract expects. A string passes through as-is.
+        """
+        self._metadata["exclude-filter"] = _selective_filter(value)
         return self
 
     def exclude_projects_regex(self, value: str) -> "AtlanTableau":
