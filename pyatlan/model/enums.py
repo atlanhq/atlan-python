@@ -2190,6 +2190,49 @@ class PurposeMetadataAction(str, Enum):
     DETACH_TERMS = "purpose-remove-terms"
 
 
+class PersonaAIAction(str, Enum):
+    APP_READ = "persona-ai-application-read"
+    APP_CREATE = "persona-ai-application-create"
+    APP_UPDATE = "persona-ai-application-update"
+    APP_DELETE = "persona-ai-application-delete"
+    APP_UPDATE_CM = "persona-ai-application-business-update-metadata"
+    APP_ADD_TERMS = "persona-ai-application-add-terms"
+    APP_REMOVE_TERMS = "persona-ai-application-remove-terms"
+    APP_ADD_ATLAN_TAGS = "persona-ai-application-add-classification"
+    APP_REMOVE_ATLAN_TAGS = "persona-ai-application-remove-classification"
+    MODEL_READ = "persona-ai-model-read"
+    MODEL_CREATE = "persona-ai-model-create"
+    MODEL_UPDATE = "persona-ai-model-update"
+    MODEL_DELETE = "persona-ai-model-delete"
+    MODEL_UPDATE_CM = "persona-ai-model-business-update-metadata"
+    MODEL_ADD_TERMS = "persona-ai-model-add-terms"
+    MODEL_REMOVE_TERMS = "persona-ai-model-remove-terms"
+    MODEL_ADD_ATLAN_TAGS = "persona-ai-model-add-classification"
+    MODEL_REMOVE_ATLAN_TAGS = "persona-ai-model-remove-classification"
+
+
+class AdminAction(str, Enum):
+    ADMIN_TASK_CUD = "admin-task-cud"
+    ADMIN_AUDITS = "admin-audits"
+    ADMIN_EXPORT = "admin-export"
+    ADMIN_FEATURE_FLAG_CUD = "admin-featureFlag-cud"
+    ADMIN_IMPORT = "admin-import"
+    ADMIN_PURGE = "admin-purge"
+    ADMIN_REPAIR_INDEX = "admin-repair-index"
+
+
+class TypeDefAction(str, Enum):
+    CREATE = "type-create"
+    READ = "type-read"
+    UPDATE = "type-update"
+    DELETE = "type-delete"
+    ADD_LABEL = "entity-add-label"
+    REMOVE_LABEL = "entity-remove-label"
+    ADD_RELATIONSHIP = "add-relationship"
+    UPDATE_RELATIONSHIP = "update-relationship"
+    REMOVE_RELATIONSHIP = "remove-relationship"
+
+
 class QueryParserSourceType(str, Enum):
     ANSI = "ansi"
     BIGQUERY = "bigquery"
