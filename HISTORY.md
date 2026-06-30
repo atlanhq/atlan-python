@@ -1,3 +1,18 @@
+## 9.9.0 (June 30, 2026)
+
+### New Features
+
+- **Python 3.14 support**: pyatlan now supports Python 3.14. The model layer's pydantic v1 compatibility shim was incompatible with Python 3.14's deferred-annotation semantics (PEP 649 / PEP 749) on pydantic 2.12.x — `AtlanClient` failed to import with `ConfigError: unable to infer type for attribute ...`. Bumping pydantic to 2.13.x restores the v1 compat layer on 3.14; no API changes. Verified across Python 3.9–3.14. (#962)
+- **New policy-action enums (`PersonaAIAction`, `AdminAction`, `TypeDefAction`)**: Added to `pyatlan.model.enums`, mirroring the Java SDK and matching the shape of the existing `PersonaMetadataAction` / `DataAction`. `PersonaAIAction` covers the 18 `persona-ai-application-*` / `persona-ai-model-*` Ranger slugs; `AdminAction` and `TypeDefAction` cover the `admin-*` and `type-*` / relationship slugs — so tooling can convert raw Ranger policy-action slugs to their canonical enum names. (#961)
+
+### Bug Fixes
+
+- **App create — idempotent reuse on a bare `409` duplicate-name**: `client.app.create(...)` now reliably reuses an existing workflow on a duplicate name. The create endpoint's `409` body carries no `code`/`status` field, so it surfaced as a bare `AtlanError` rather than `ConflictError` and the create-or-reuse path never triggered; `create` (sync + async) now handles that case, reading the existing slug straight from the response body (with a by-name lookup fallback) and re-raising only when the name is non-unique. (#960)
+
+### Packages
+
+- **pydantic** bumped from `~=2.12.5` to `~=2.13.4` (enables Python 3.14 support). (#962)
+
 ## 9.8.0 (June 24, 2026)
 
 ### New Features
