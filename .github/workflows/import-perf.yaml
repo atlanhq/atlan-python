@@ -1,0 +1,31 @@
+# Import-performance gate (CONNECT-49). The asset-model import cost is
+# hardware/OS-sensitive and the rest of CI is ubuntu-only, so a slow-import (or
+# hang) regression can ship invisibly. This job runs the lightweight import-perf
+# tests on BOTH Windows and Ubuntu at a representative Python version.
+name: import-perf
+
+on:
+  pull_request:
+    paths:
+      - "pyatlan/**"
+      - "tests/unit/test_import_performance.py"
+      - ".github/workflows/import-perf.yaml"
+  workflow_dispatch:
+
+jobs:
+  import-perf:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v7
+      - name: Install
+        run: uv sync --group dev
+      - name: Import-performance tests
+        run: uv run pytest tests/unit/test_import_performance.py -vv
