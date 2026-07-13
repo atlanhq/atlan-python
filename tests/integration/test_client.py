@@ -778,6 +778,22 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert str(classification.type_name) == CLASSIFICATION_NAME
 
 
+def test_add_nonexistent_classification_raises_named_error(
+    client: AtlanClient, term1: AtlasGlossaryTerm
+):
+    # BLDX-1530: adding a tag that does not exist on the tenant must raise a
+    # clear client-side NotFoundError naming the tag — not the opaque server-side
+    # "ATLAS-404-00-008: Given classification (DELETED) was invalid".
+    assert term1.qualified_name
+    missing_tag = "Definitely-Not-A-Real-Tag-BLDX-1530"
+    with pytest.raises(
+        NotFoundError, match=f"Atlan tag with name {missing_tag} does not exist"
+    ):
+        client.asset.add_atlan_tags(
+            AtlasGlossaryTerm, term1.qualified_name, [missing_tag]
+        )
+
+
 @pytest.mark.order(after="test_add_classification")
 def test_include_atlan_tag_names(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1 and term1.qualified_name
