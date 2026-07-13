@@ -98,8 +98,18 @@ class AsyncAtlanTagRetranslator(AsyncBaseRetranslator):
                     if not raw_name:
                         continue
                     tag_name = str(raw_name)
-                    tag_id = await self.client.atlan_tag_cache.get_id_for_name(tag_name)
-                    if not tag_id and tag_name != DELETED_:
+                    cache = self.client.atlan_tag_cache
+                    tag_id = await cache.get_id_for_name(tag_name)
+                    # get_id_for_name returns None for BOTH a soft-deleted tag and
+                    # a name that never existed. Distinguish them: a known-deleted
+                    # tag (in deleted_names) — or the (DELETED) sentinel from a read
+                    # round-trip — keeps the sentinel (lossless; the tag really
+                    # existed), whereas a name that never existed is a client error.
+                    if (
+                        not tag_id
+                        and tag_name != DELETED_
+                        and tag_name not in cache.deleted_names
+                    ):
                         raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
                             tag_name
                         )

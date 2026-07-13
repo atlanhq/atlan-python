@@ -1,13 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from unittest.mock import MagicMock
+
 import pytest
 from pydantic.v1 import parse_obj_as
 
 import pyatlan.cache.atlan_tag_cache
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import Purpose
 from pyatlan.model.constants import DELETED_
 from pyatlan.model.core import AtlanRequest, AtlanResponse, AtlanTagName
+from pyatlan.model.retranslators import AtlanTagRetranslator
 
 ATLAN_TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"
 
@@ -237,3 +241,68 @@ def test_asset_tag_name_field_serde_with_translation(client: AtlanClient, monkey
     _assert_asset_tags(
         purpose_without_translation_and_retranslation, is_retranslated=True
     )
+
+
+# --- AtlanTagRetranslator: tag name → ID resolution on the write path (BLDX-1530) ---
+# Covers BOTH behaviours: an existing tag still resolves + the deleted sentinel
+# still round-trips (no regression), AND a genuinely unresolvable name now raises
+# a clear NotFoundError instead of shipping the (DELETED) sentinel to Atlas.
+def _tag_retranslator(name_to_id, deleted_names=None):
+    client = MagicMock()
+    client.atlan_tag_cache.get_id_for_name.side_effect = lambda name: name_to_id.get(
+        name
+    )
+    client.atlan_tag_cache.get_source_tags_attr_id.return_value = None
+    client.atlan_tag_cache.deleted_names = set(deleted_names or ())
+    return AtlanTagRetranslator(client)
+
+
+def test_retranslate_resolves_existing_tag_name_to_id():
+    # No regression: a real tag still maps name → hashed id.
+    retranslator = _tag_retranslator({"PII": "abc123"})
+    out = retranslator.retranslate({"classifications": [{"typeName": "PII"}]})
+    assert out["classifications"][0]["typeName"] == "abc123"
+
+
+def test_retranslate_deleted_tag_keeps_sentinel_not_raises():
+    # A KNOWN-deleted tag (tracked in the cache's deleted_names) referenced by its
+    # original name keeps the (DELETED) sentinel — the tag really existed and was
+    # deleted, so this is not the "never existed" client error.
+    retranslator = _tag_retranslator({}, deleted_names={"WasDeleted"})
+    out = retranslator.retranslate({"classifications": [{"typeName": "WasDeleted"}]})
+    assert out["classifications"][0]["typeName"] == DELETED_
+
+
+def test_retranslate_missing_tag_raises_named_not_found():
+    # New behaviour: add_atlan_tags(["Alert: DQ"]) on a tenant without that tag
+    # now fails fast with a clear, named client-side error (no sentinel leak).
+    retranslator = _tag_retranslator({})
+    with pytest.raises(NotFoundError) as exc:
+        retranslator.retranslate(
+            {"addOrUpdateClassifications": [{"typeName": "Alert: DQ"}]}
+        )
+    message = str(exc.value)
+    assert "Alert: DQ" in message
+    assert "ATLAN-PYTHON-404-006" in message
+    assert DELETED_ not in message
+
+
+def test_retranslate_remove_missing_tag_also_raises():
+    retranslator = _tag_retranslator({})
+    with pytest.raises(NotFoundError):
+        retranslator.retranslate({"removeClassifications": [{"typeName": "GhostTag"}]})
+
+
+def test_retranslate_deleted_sentinel_round_trip_is_preserved():
+    # No regression: an asset READ with an already-deleted tag surfaces (DELETED);
+    # re-serializing it stays lossless (no raise).
+    retranslator = _tag_retranslator({})
+    out = retranslator.retranslate({"classifications": [{"typeName": DELETED_}]})
+    assert out["classifications"][0]["typeName"] == DELETED_
+
+
+def test_retranslate_names_path_policy_serde_stays_tolerant():
+    # No regression: purpose/persona policy names round-trip through the sentinel.
+    retranslator = _tag_retranslator({})
+    out = retranslator.retranslate({"purposeClassifications": ["ghost-policy-tag"]})
+    assert out["purposeClassifications"] == [DELETED_]
