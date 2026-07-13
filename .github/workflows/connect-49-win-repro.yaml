@@ -1,0 +1,63 @@
+# TEMPORARY — CONNECT-49 reproduction. Reproduces the Windows import-hang/slowness
+# at the customer's exact versions and validates the shallow-copy lever. Delete
+# before merge (kept off the normal CI triggers; only this branch + manual).
+name: connect-49-win-repro
+
+on:
+  push:
+    branches: [aryaman/connect-49]
+  workflow_dispatch:
+
+jobs:
+  repro:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.3"
+
+      - name: Install customer's exact versions
+        run: pip install "pyatlan==9.9.0" "pydantic==2.13.4"
+
+      - name: Environment
+        shell: python
+        run: |
+          import platform, sys, pydantic, pydantic_core
+          print("os:", platform.platform())
+          print("python:", sys.version.split()[0])
+          print("pydantic:", pydantic.VERSION, "| pydantic_core:", pydantic_core.__version__)
+
+      - name: Measure cold import — baseline vs scoped shallow-copy
+        shell: python
+        run: |
+          import subprocess, sys
+          BASE = (
+              "import time\n"
+              "t=time.perf_counter()\n"
+              "from pyatlan.model.assets import Column\n"
+              "print(round(time.perf_counter()-t,2))\n"
+          )
+          # Shallow-copy lever (measurement only — the shipped fix is scoped to
+          # pyatlan's metaclass, not a process-global patch like this).
+          PATCH = (
+              "import copy\n"
+              "import pydantic.v1.utils as u, pydantic.v1.main as m, pydantic.v1.fields as f\n"
+              "_o=u.smart_deepcopy\n"
+              "_IMM=(int,float,str,bool,bytes,type(None),frozenset)\n"
+              "def fast(o):\n"
+              "    if type(o) in _IMM: return o\n"
+              "    try: return copy.copy(o)\n"
+              "    except Exception: return _o(o)\n"
+              "u.smart_deepcopy=fast; m.smart_deepcopy=fast; f.smart_deepcopy=fast\n"
+          )
+          def run(code, n=3):
+              return [float(subprocess.check_output([sys.executable, "-c", code], text=True).strip().splitlines()[-1]) for _ in range(n)]
+          base = run(BASE)
+          patched = run(PATCH + BASE)
+          print("BASELINE cold-import runs:", base, "-> min %.2fs" % min(base))
+          print("PATCHED  cold-import runs:", patched, "-> min %.2fs" % min(patched))
+          print("SPEEDUP ~ %.1fx" % (min(base) / max(min(patched), 0.01)))
