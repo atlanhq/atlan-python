@@ -285,12 +285,16 @@ async def test_retranslate_resolves_existing_tag_name_to_id():
     assert out["classifications"][0]["typeName"] == "abc123"
 
 
-async def test_retranslate_deleted_tag_keeps_sentinel_not_raises():
+async def test_retranslate_deleted_names_membership_does_not_suppress_raise():
+    # deleted_names conflates soft-deleted with never-existed (a refresh miss adds
+    # any unresolved name to it), so it must not suppress the raise — only the
+    # (DELETED) sentinel string does. Guards against regressing to BLDX-1530.
     retranslator = _tag_retranslator({}, deleted_names={"WasDeleted"})
-    out = await retranslator.retranslate(
-        {"classifications": [{"typeName": "WasDeleted"}]}
-    )
-    assert out["classifications"][0]["typeName"] == DELETED_
+    with pytest.raises(NotFoundError) as exc:
+        await retranslator.retranslate(
+            {"classifications": [{"typeName": "WasDeleted"}]}
+        )
+    assert "WasDeleted" in str(exc.value)
 
 
 async def test_retranslate_missing_tag_raises_named_not_found():

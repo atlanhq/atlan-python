@@ -786,12 +786,16 @@ def test_add_nonexistent_classification_raises_named_error(
     # "ATLAS-404-00-008: Given classification (DELETED) was invalid".
     assert term1.qualified_name
     missing_tag = "Definitely-Not-A-Real-Tag-BLDX-1530"
-    with pytest.raises(
-        NotFoundError, match=f"Atlan tag with name {missing_tag} does not exist"
-    ):
+    with pytest.raises(NotFoundError) as exc:
         client.asset.add_atlan_tags(
             AtlasGlossaryTerm, term1.qualified_name, [missing_tag]
         )
+    message = str(exc.value)
+    # The clear, client-side error names the tag — not the opaque server-side
+    # "ATLAS-404-00-008: Given classification (DELETED) was invalid".
+    assert f"Atlan tag with name {missing_tag} does not exist" in message
+    assert "ATLAN-PYTHON-404-006" in message
+    assert "(DELETED)" not in message
 
 
 @pytest.mark.order(after="test_add_classification")

@@ -244,9 +244,9 @@ def test_asset_tag_name_field_serde_with_translation(client: AtlanClient, monkey
 
 
 # --- AtlanTagRetranslator: tag name → ID resolution on the write path (BLDX-1530) ---
-# Covers BOTH behaviours: an existing tag still resolves + the deleted sentinel
-# still round-trips (no regression), AND a genuinely unresolvable name now raises
-# a clear NotFoundError instead of shipping the (DELETED) sentinel to Atlas.
+# Covers BOTH behaviours: an existing tag still resolves + the deleted (DELETED)
+# sentinel still round-trips (no regression), AND a genuinely unresolvable name now
+# raises a clear NotFoundError instead of shipping the (DELETED) sentinel to Atlas.
 def _tag_retranslator(name_to_id, deleted_names=None):
     client = MagicMock()
     client.atlan_tag_cache.get_id_for_name.side_effect = lambda name: name_to_id.get(
@@ -264,13 +264,18 @@ def test_retranslate_resolves_existing_tag_name_to_id():
     assert out["classifications"][0]["typeName"] == "abc123"
 
 
-def test_retranslate_deleted_tag_keeps_sentinel_not_raises():
-    # A KNOWN-deleted tag (tracked in the cache's deleted_names) referenced by its
-    # original name keeps the (DELETED) sentinel — the tag really existed and was
-    # deleted, so this is not the "never existed" client error.
+def test_retranslate_deleted_names_membership_does_not_suppress_raise():
+    # The cache's deleted_names set conflates "soft-deleted" with "never existed":
+    # get_id_for_name_after_refresh adds ANY unresolved name to it on a refresh
+    # miss. So membership there is NOT a reliable "genuinely deleted" signal and
+    # must not suppress the raise — only the (DELETED) sentinel *string* does
+    # (see test_retranslate_deleted_sentinel_round_trip_is_preserved). This guards
+    # against regressing to a deleted_names-based check that silently ships
+    # (DELETED) to Atlas again (BLDX-1530).
     retranslator = _tag_retranslator({}, deleted_names={"WasDeleted"})
-    out = retranslator.retranslate({"classifications": [{"typeName": "WasDeleted"}]})
-    assert out["classifications"][0]["typeName"] == DELETED_
+    with pytest.raises(NotFoundError) as exc:
+        retranslator.retranslate({"classifications": [{"typeName": "WasDeleted"}]})
+    assert "WasDeleted" in str(exc.value)
 
 
 def test_retranslate_missing_tag_raises_named_not_found():

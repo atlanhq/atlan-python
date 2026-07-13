@@ -87,8 +87,12 @@ class AsyncAtlanTagRetranslator(AsyncBaseRetranslator):
         # A user-supplied tag name that does not resolve is a client-side error —
         # raise NotFoundError naming it rather than sending the (DELETED) sentinel
         # to Atlas (opaque "Given classification (DELETED) was invalid"; BLDX-1530).
-        # The sentinel itself is preserved (an asset READ with an already-deleted
-        # tag surfaces (DELETED) and must re-serialize losslessly).
+        # get_id_for_name returns None for a soft-deleted tag AND for a name that
+        # never existed, and the cache's deleted_names set conflates the two (a
+        # never-existed name is added to it after a refresh miss). So the only
+        # reliable "genuinely deleted" signal is the (DELETED) sentinel *string*
+        # itself, produced by an asset READ with an already-deleted tag: preserve
+        # it so re-serialization stays lossless. Any other unresolvable name raises.
         from pyatlan.errors import ErrorCode
 
         for key in self._CLASSIFICATION_KEYS:
@@ -98,18 +102,8 @@ class AsyncAtlanTagRetranslator(AsyncBaseRetranslator):
                     if not raw_name:
                         continue
                     tag_name = str(raw_name)
-                    cache = self.client.atlan_tag_cache
-                    tag_id = await cache.get_id_for_name(tag_name)
-                    # get_id_for_name returns None for BOTH a soft-deleted tag and
-                    # a name that never existed. Distinguish them: a known-deleted
-                    # tag (in deleted_names) — or the (DELETED) sentinel from a read
-                    # round-trip — keeps the sentinel (lossless; the tag really
-                    # existed), whereas a name that never existed is a client error.
-                    if (
-                        not tag_id
-                        and tag_name != DELETED_
-                        and tag_name not in cache.deleted_names
-                    ):
+                    tag_id = await self.client.atlan_tag_cache.get_id_for_name(tag_name)
+                    if not tag_id and tag_name != DELETED_:
                         raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
                             tag_name
                         )

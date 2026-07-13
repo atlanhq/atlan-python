@@ -105,18 +105,15 @@ class AtlanTagRetranslator(BaseRetranslator):
                     if not raw_name:
                         continue
                     tag_name = str(raw_name)
-                    cache = self.client.atlan_tag_cache
-                    tag_id = cache.get_id_for_name(tag_name)
-                    # get_id_for_name returns None for BOTH a soft-deleted tag and
-                    # a name that never existed. Distinguish them: a known-deleted
-                    # tag (in deleted_names) — or the (DELETED) sentinel from a read
-                    # round-trip — keeps the sentinel (lossless; the tag really
-                    # existed), whereas a name that never existed is a client error.
-                    if (
-                        not tag_id
-                        and tag_name != DELETED_
-                        and tag_name not in cache.deleted_names
-                    ):
+                    tag_id = self.client.atlan_tag_cache.get_id_for_name(tag_name)
+                    # get_id_for_name returns None for a soft-deleted tag AND for a
+                    # name that never existed, and the cache's deleted_names set
+                    # conflates the two (a never-existed name is added to it after a
+                    # refresh miss). So the only reliable "genuinely deleted" signal
+                    # is the (DELETED) sentinel *string* itself, produced by a read
+                    # of a deleted tag: preserve it (lossless round-trip). Any other
+                    # unresolvable name is a client error — raise, naming the tag.
+                    if not tag_id and tag_name != DELETED_:
                         raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
                             tag_name
                         )
