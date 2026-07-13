@@ -3,7 +3,14 @@
 import logging.config
 import os
 
-from pyatlan.utils import REQUEST_ID_FILTER
+# CONNECT-49: speed up importing the pydantic.v1 asset models. Must run before
+# any asset model class is built (before anything imports pyatlan.model.assets.*),
+# so it is the very first thing the package does.
+from pyatlan._pydantic_v1_perf import install as _install_pydantic_v1_perf
+
+_install_pydantic_v1_perf()
+
+from pyatlan.utils import REQUEST_ID_FILTER  # noqa: E402  (perf patch must install first)
 
 # Version information
 try:
