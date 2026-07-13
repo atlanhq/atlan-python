@@ -83,29 +83,46 @@ class AsyncAtlanTagRetranslator(AsyncBaseRetranslator):
                     tag_ids.append(tag_id or DELETED_)
                 data[key] = tag_ids
 
-        # Convert classification objects human-readable name typeName → hash ID
+        # Convert classification objects human-readable name typeName → hash ID.
+        # A user-supplied tag name that does not resolve is a client-side error —
+        # raise NotFoundError naming it rather than sending the (DELETED) sentinel
+        # to Atlas (opaque "Given classification (DELETED) was invalid"; BLDX-1530).
+        # get_id_for_name returns None for a soft-deleted tag AND for a name that
+        # never existed, and the cache's deleted_names set conflates the two (a
+        # never-existed name is added to it after a refresh miss). So the only
+        # reliable "genuinely deleted" signal is the (DELETED) sentinel *string*
+        # itself, produced by an asset READ with an already-deleted tag: preserve
+        # it so re-serialization stays lossless. Any other unresolvable name raises.
+        from pyatlan.errors import ErrorCode
+
         for key in self._CLASSIFICATION_KEYS:
             if key in data:
                 for classification in data[key]:
-                    tag_name = str(classification.get(self._TYPE_NAME))
-                    if tag_name:
-                        tag_id = await self.client.atlan_tag_cache.get_id_for_name(
+                    raw_name = classification.get(self._TYPE_NAME)
+                    if not raw_name:
+                        continue
+                    tag_name = str(raw_name)
+                    tag_id = await self.client.atlan_tag_cache.get_id_for_name(tag_name)
+                    if not tag_id and tag_name != DELETED_:
+                        raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
                             tag_name
                         )
-                        classification[self._TYPE_NAME] = tag_id if tag_id else DELETED_
+                    classification[self._TYPE_NAME] = tag_id if tag_id else DELETED_
 
-                        # Rebuild source tag attributes
-                        attachments = classification.pop(self._SOURCE_ATTACHMENTS, None)
-                        if attachments and tag_id:
-                            attr_id = await self.client.atlan_tag_cache.get_source_tags_attr_id(
+                    # Rebuild source tag attributes
+                    attachments = classification.pop(self._SOURCE_ATTACHMENTS, None)
+                    if attachments and tag_id:
+                        attr_id = (
+                            await self.client.atlan_tag_cache.get_source_tags_attr_id(
                                 tag_id
                             )
-                            if attr_id:
-                                classification.setdefault("attributes", {})[attr_id] = [
-                                    {
-                                        "typeName": "SourceTagAttachment",
-                                        "attributes": attachment.dict(),
-                                    }
-                                    for attachment in attachments
-                                ]
+                        )
+                        if attr_id:
+                            classification.setdefault("attributes", {})[attr_id] = [
+                                {
+                                    "typeName": "SourceTagAttachment",
+                                    "attributes": attachment.dict(),
+                                }
+                                for attachment in attachments
+                            ]
         return data

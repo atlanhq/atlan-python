@@ -1,11 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2025 Atlan Pte. Ltd.
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
 from pydantic.v1 import parse_obj_as
 
 import pyatlan.cache.aio.atlan_tag_cache
 from pyatlan.client.aio.client import AsyncAtlanClient
+from pyatlan.errors import NotFoundError
 from pyatlan.model.aio.core import AsyncAtlanRequest, AsyncAtlanResponse
+from pyatlan.model.aio.retranslators import AsyncAtlanTagRetranslator
 from pyatlan.model.assets import Purpose
 from pyatlan.model.constants import DELETED_
 from pyatlan.model.core import AtlanTagName
@@ -262,3 +266,50 @@ async def test_asset_tag_name_field_serde_with_translation_async(
     _assert_asset_tags(
         purpose_without_translation_and_retranslation, is_retranslated=True
     )
+
+
+# --- AsyncAtlanTagRetranslator: tag name → ID resolution on the write path (BLDX-1530) ---
+def _tag_retranslator(name_to_id, deleted_names=None):
+    client = MagicMock()
+    client.atlan_tag_cache.get_id_for_name = AsyncMock(
+        side_effect=lambda name: name_to_id.get(name)
+    )
+    client.atlan_tag_cache.get_source_tags_attr_id = AsyncMock(return_value=None)
+    client.atlan_tag_cache.deleted_names = set(deleted_names or ())
+    return AsyncAtlanTagRetranslator(client)
+
+
+async def test_retranslate_resolves_existing_tag_name_to_id():
+    retranslator = _tag_retranslator({"PII": "abc123"})
+    out = await retranslator.retranslate({"classifications": [{"typeName": "PII"}]})
+    assert out["classifications"][0]["typeName"] == "abc123"
+
+
+async def test_retranslate_deleted_names_membership_does_not_suppress_raise():
+    # deleted_names conflates soft-deleted with never-existed (a refresh miss adds
+    # any unresolved name to it), so it must not suppress the raise — only the
+    # (DELETED) sentinel string does. Guards against regressing to BLDX-1530.
+    retranslator = _tag_retranslator({}, deleted_names={"WasDeleted"})
+    with pytest.raises(NotFoundError) as exc:
+        await retranslator.retranslate(
+            {"classifications": [{"typeName": "WasDeleted"}]}
+        )
+    assert "WasDeleted" in str(exc.value)
+
+
+async def test_retranslate_missing_tag_raises_named_not_found():
+    retranslator = _tag_retranslator({})
+    with pytest.raises(NotFoundError) as exc:
+        await retranslator.retranslate(
+            {"addOrUpdateClassifications": [{"typeName": "Alert: DQ"}]}
+        )
+    message = str(exc.value)
+    assert "Alert: DQ" in message
+    assert "ATLAN-PYTHON-404-006" in message
+    assert DELETED_ not in message
+
+
+async def test_retranslate_deleted_sentinel_round_trip_is_preserved():
+    retranslator = _tag_retranslator({})
+    out = await retranslator.retranslate({"classifications": [{"typeName": DELETED_}]})
+    assert out["classifications"][0]["typeName"] == DELETED_
