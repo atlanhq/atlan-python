@@ -54,10 +54,30 @@ jobs:
               "    except Exception: return _o(o)\n"
               "u.smart_deepcopy=fast; m.smart_deepcopy=fast; f.smart_deepcopy=fast\n"
           )
+          # NARROW = the shippable fix: only the __fields__ dict copy is shallowed
+          # (own ModelField + field_info per class); field DEFAULTS keep the
+          # original deepcopy -> instance isolation unchanged.
+          NARROW = (
+              "import copy\n"
+              "import pydantic.v1.main as m, pydantic.v1.fields as f, pydantic.v1.utils as u\n"
+              "from pydantic.v1.fields import ModelField\n"
+              "_o=u.smart_deepcopy\n"
+              "def fast(o):\n"
+              "    if type(o) is dict and o:\n"
+              "        if type(next(iter(o.values()))) is ModelField:\n"
+              "            out={}\n"
+              "            for k,v in o.items():\n"
+              "                nf=copy.copy(v); nf.field_info=copy.copy(v.field_info); out[k]=nf\n"
+              "            return out\n"
+              "    return _o(o)\n"
+              "m.smart_deepcopy=fast; f.smart_deepcopy=fast; u.smart_deepcopy=fast\n"
+          )
           def run(code, n=3):
               return [float(subprocess.check_output([sys.executable, "-c", code], text=True).strip().splitlines()[-1]) for _ in range(n)]
           base = run(BASE)
           patched = run(PATCH + BASE)
-          print("BASELINE cold-import runs:", base, "-> min %.2fs" % min(base))
-          print("PATCHED  cold-import runs:", patched, "-> min %.2fs" % min(patched))
-          print("SPEEDUP ~ %.1fx" % (min(base) / max(min(patched), 0.01)))
+          narrow = run(NARROW + BASE)
+          print("BASELINE       cold-import runs:", base, "-> min %.2fs" % min(base))
+          print("PATCHED-blanket cold-import runs:", patched, "-> min %.2fs" % min(patched))
+          print("NARROW-shipfix  cold-import runs:", narrow, "-> min %.2fs" % min(narrow))
+          print("SPEEDUP blanket ~ %.1fx | narrow ~ %.1fx" % (min(base)/max(min(patched),0.01), min(base)/max(min(narrow),0.01)))
