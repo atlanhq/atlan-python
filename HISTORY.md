@@ -1,3 +1,14 @@
+## 9.10.0 (July 14, 2026)
+
+### Bug Fixes
+
+- **Clearer error when adding a tag that doesn't exist**: Adding an Atlan tag by a name that isn't in your workspace now fails right away with a clear message that names the tag (`Atlan tag with name <name> does not exist.`), instead of a confusing server error that made it look like the tag had been deleted. Reading and re-saving assets that already carry a deleted tag continues to work as before.
+- **Much faster imports**: Importing asset models (for example, `from pyatlan.model.assets import Column`) is now about 3× faster — a cold import drops from roughly 8 seconds to under 3. The improvement is largest on Windows, where imports could previously stall. Everything else behaves exactly the same.
+
+### Packages
+
+- **cryptography upgraded** to pick up an important security fix. Note: this now requires Python 3.9.1 or newer.
+
 ## 9.9.0 (June 30, 2026)
 
 ### New Features
