@@ -262,6 +262,13 @@ class AuditSearchResults(Iterable):
         self._first_record_creation_time = -2
         self._last_record_creation_time = -2
         self._processed_entity_keys: Set[str] = set()
+        # Track the greatest `created` timestamp seen among processed audits and
+        # how many processed audits share it. The timestamp-paging offset fallback
+        # offsets WITHIN this single-timestamp bucket (bounded) rather than over the
+        # whole result set — so `from_ + size` can never exceed ES's max_result_window
+        # (BLDX-1549: the old `from_ = len(processed)` crashed past 10,000 audits).
+        self._max_processed_ts: Optional[datetime] = None
+        self._count_at_max_ts: int = 0
 
     @property
     def aggregations(self) -> Optional[Aggregation]:
@@ -298,9 +305,17 @@ class AuditSearchResults(Iterable):
             # in a previous page of results.
             # If it has,then exclude it from the current results;
             # otherwise, we may encounter duplicate audit entity records.
-            self._processed_entity_keys.update(
-                entity.event_key for entity in self._entity_audits
-            )
+            for entity in self._entity_audits:
+                if entity.event_key in self._processed_entity_keys:
+                    continue
+                self._processed_entity_keys.add(entity.event_key)
+                # Maintain the max-timestamp bucket used by the offset fallback.
+                ts = entity.created
+                if self._max_processed_ts is None or ts > self._max_processed_ts:
+                    self._max_processed_ts = ts
+                    self._count_at_max_ts = 1
+                elif ts == self._max_processed_ts:
+                    self._count_at_max_ts += 1
         return self._get_next_page() if self._entity_audits else False
 
     def _get_next_page(self):
@@ -363,43 +378,50 @@ class AuditSearchResults(Iterable):
                 rewritten_filters.append(filter_)
 
         if self._first_record_creation_time != self._last_record_creation_time:
+            # The page spans multiple `created` timestamps: advance the window past
+            # the last one and reset the offset — the normal fast path.
             rewritten_filters.append(
                 self._get_paging_timestamp_query(self._last_record_creation_time)
             )
-            if isinstance(query, Bool):
-                rewritten_query = Bool(
-                    filter=rewritten_filters,
-                    must=query.must,
-                    must_not=query.must_not,
-                    should=query.should,
-                    boost=query.boost,
-                    minimum_should_match=query.minimum_should_match,
-                )
-            else:
-                # If a Term, Range, etc query type is found
-                # in the DSL, append it to the Bool `filter`.
-                rewritten_filters.append(query)
-                rewritten_query = Bool(filter=rewritten_filters)
-            self._criteria.dsl.from_ = 0
-            self._criteria.dsl.query = rewritten_query
+            from_ = 0
         else:
-            # Ensure that when switching to offset-based paging, if the first and last record timestamps are the same,
-            # we do not include a created timestamp filter (ie: Range(field='__timestamp', gte=VALUE)) in the query.
-            # Instead, ensure the search runs with only SortItem(field='__timestamp', order=<SortOrder.ASCENDING>).
-            # Failing to do so can lead to incomplete results (less than the approximate count) when running the search
-            # with a small page size.
-            if isinstance(query, Bool):
-                for filter_ in query.filter:
-                    if self._is_paging_timestamp_query(filter_):
-                        query.filter.remove(filter_)
+            # The page collapsed to a single `created` timestamp (or netted <= 1 new
+            # record after dedup), so the window cannot be advanced by timestamp.
+            # Keep the timestamp filter pinned to that timestamp and offset only
+            # WITHIN its bucket, so `from_` is bounded by the number of audits that
+            # share one timestamp — `from_ + size` can never exceed ES's
+            # max_result_window. Dedup via `_processed_entity_keys` still guards
+            # against boundary overlap.
+            #
+            # Previously this offset was `len(self._processed_entity_keys)` over the
+            # whole result set with the timestamp filter dropped, which Elasticsearch
+            # rejected once > 10,000 audits had been processed (BLDX-1549:
+            # "Result window is too large ... but was [43504]").
+            if self._max_processed_ts is not None:
+                rewritten_filters.append(
+                    self._get_paging_timestamp_query(self._max_processed_ts)
+                )
+            from_ = self._count_at_max_ts
 
-            # Always ensure that the offset is set to the length of the processed assets
-            # instead of the default (start + size), as the default may skip some assets
-            # and result in incomplete results (less than the approximate count)
-            self._criteria.dsl.from_ = len(self._processed_entity_keys)
+        if isinstance(query, Bool):
+            rewritten_query = Bool(
+                filter=rewritten_filters,
+                must=query.must,
+                must_not=query.must_not,
+                should=query.should,
+                boost=query.boost,
+                minimum_should_match=query.minimum_should_match,
+            )
+        else:
+            # If a Term, Range, etc query type is found
+            # in the DSL, append it to the Bool `filter`.
+            rewritten_filters.append(query)
+            rewritten_query = Bool(filter=rewritten_filters)
+        self._criteria.dsl.from_ = from_
+        self._criteria.dsl.query = rewritten_query
 
     @staticmethod
-    def _get_paging_timestamp_query(last_timestamp: int) -> Query:
+    def _get_paging_timestamp_query(last_timestamp: Union[int, datetime]) -> Query:
         return Range(field="created", gte=last_timestamp)
 
     @staticmethod
