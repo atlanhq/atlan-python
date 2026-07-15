@@ -12,7 +12,7 @@ from pyatlan.errors import InvalidRequestError
 from pyatlan.model.audit import AuditSearchRequest, AuditSearchResults
 from pyatlan.model.enums import SortOrder
 from pyatlan.model.fluent_search import DSL
-from pyatlan.model.search import Bool, SortItem, Term
+from pyatlan.model.search import Bool, Range, SortItem, Term
 
 SEARCH_RESPONSES_DIR = Path(__file__).parent / "data" / "search_responses"
 AUDIT_SEARCH_PAGING_JSON = "audit_search_paging.json"
@@ -173,3 +173,79 @@ def test_audit_search_pagination(
 
     mock_logger.reset_mock()
     mock_api_caller.reset_mock()
+
+
+# --- BLDX-1549: bulk AuditSearch must not blow past ES max_result_window ------
+def _bulk_results_in_collapse_state(processed=10500, count_at_max_ts=7):
+    """An AuditSearchResults mid-bulk-scan whose latest page collapsed to a
+    single `created` timestamp (first == last) after >10k audits processed —
+    the exact state that triggered the offset fallback in prod."""
+    dsl = DSL(
+        query=Bool(filter=[Term(field="entityId", value="some-guid")]),
+        sort=[],
+        size=300,
+        from_=0,
+    )
+    criteria = AuditSearchRequest(dsl=dsl)
+    results = AuditSearchResults(
+        client=Mock(spec=ApiCaller),
+        criteria=criteria,
+        start=0,
+        size=300,
+        entity_audits=[],
+        count=50000,
+        bulk=True,
+    )
+    results._processed_entity_keys = {f"k{i}" for i in range(processed)}
+    results._max_processed_ts = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    results._count_at_max_ts = count_at_max_ts
+    # A page netting <= 1 new record after dedup leaves first == last (sentinel).
+    results._first_record_creation_time = results._last_record_creation_time = -2
+    return results, criteria
+
+
+def _gte_created_filters(query):
+    return [
+        f
+        for f in query.filter
+        if isinstance(f, Range) and f.field == "created" and f.gte is not None
+    ]
+
+
+def test_bulk_offset_fallback_is_bounded_within_timestamp_bucket():
+    """BLDX-1549: with >10k audits processed, the timestamp-paging offset
+    fallback must offset WITHIN the current timestamp bucket (bounded), keeping
+    the timestamp filter — never `len(processed)` over the whole result set,
+    which pushed from_ + size past ES's 10,000 max_result_window and crashed with
+    'Result window is too large ... [43504]'."""
+    results, criteria = _bulk_results_in_collapse_state(
+        processed=10500, count_at_max_ts=7
+    )
+
+    results._prepare_query_for_timestamp_paging(criteria.dsl.query)
+
+    # offset is the per-timestamp count, NOT the whole processed set (the old bug)
+    assert criteria.dsl.from_ == 7
+    assert criteria.dsl.from_ != 10500
+    # and it stays within the ES result window
+    assert criteria.dsl.from_ + criteria.dsl.size <= 10000
+    # the timestamp filter is retained, pinned to the max processed timestamp
+    gte = _gte_created_filters(criteria.dsl.query)
+    assert len(gte) == 1
+    assert gte[0].gte == results._max_processed_ts
+
+
+def test_bulk_paging_advances_window_on_distinct_timestamps():
+    """Fast path unchanged: a page spanning multiple timestamps advances the
+    window (gte = last record's created) and resets the offset to 0."""
+    results, criteria = _bulk_results_in_collapse_state()
+    t_last = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    results._first_record_creation_time = datetime(2026, 6, 30, tzinfo=timezone.utc)
+    results._last_record_creation_time = t_last
+
+    results._prepare_query_for_timestamp_paging(criteria.dsl.query)
+
+    assert criteria.dsl.from_ == 0
+    gte = _gte_created_filters(criteria.dsl.query)
+    assert len(gte) == 1
+    assert gte[0].gte == t_last

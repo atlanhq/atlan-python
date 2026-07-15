@@ -15,7 +15,7 @@ from pyatlan.model.aio.audit import AsyncAuditSearchResults
 from pyatlan.model.audit import AuditSearchRequest
 from pyatlan.model.enums import SortOrder
 from pyatlan.model.fluent_search import DSL
-from pyatlan.model.search import Bool, SortItem, Term
+from pyatlan.model.search import Bool, Range, SortItem, Term
 
 SEARCH_RESPONSES_DIR = Path(__file__).parent.parent / "data" / "search_responses"
 AUDIT_SEARCH_PAGING_JSON = "audit_search_paging.json"
@@ -179,3 +179,49 @@ async def test_audit_search_pagination(
             ),
         ):
             await client.search(criteria=audit_search_request, bulk=True)
+
+
+# --- BLDX-1549: async bulk AuditSearch must not blow past ES max_result_window
+def _async_bulk_results_in_collapse_state(processed=10500, count_at_max_ts=7):
+    dsl = DSL(
+        query=Bool(filter=[Term(field="entityId", value="some-guid")]),
+        sort=[],
+        size=300,
+        from_=0,
+    )
+    criteria = AuditSearchRequest(dsl=dsl)
+    client = Mock(spec=AsyncApiCaller)
+    client._call_api = AsyncMock()
+    results = AsyncAuditSearchResults(
+        client=client,
+        criteria=criteria,
+        start=0,
+        size=300,
+        entity_audits=[],
+        count=50000,
+        bulk=True,
+    )
+    results._processed_entity_keys = {f"k{i}" for i in range(processed)}
+    results._max_processed_ts = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    results._count_at_max_ts = count_at_max_ts
+    results._first_record_creation_time = results._last_record_creation_time = -2
+    return results, criteria
+
+
+def test_async_bulk_offset_fallback_is_bounded_within_timestamp_bucket():
+    """BLDX-1549 (async): offset fallback must stay within a single timestamp
+    bucket, so from_ + size never exceeds ES's 10,000 max_result_window."""
+    results, criteria = _async_bulk_results_in_collapse_state(
+        processed=10500, count_at_max_ts=7
+    )
+    results._prepare_query_for_timestamp_paging(criteria.dsl.query)
+    assert criteria.dsl.from_ == 7
+    assert criteria.dsl.from_ != 10500
+    assert criteria.dsl.from_ + criteria.dsl.size <= 10000
+    gte = [
+        f
+        for f in criteria.dsl.query.filter
+        if isinstance(f, Range) and f.field == "created" and f.gte is not None
+    ]
+    assert len(gte) == 1
+    assert gte[0].gte == results._max_processed_ts
