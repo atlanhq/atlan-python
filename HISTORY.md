@@ -1,3 +1,9 @@
+## 9.10.1 (July 15, 2026)
+
+### Bug Fixes
+
+- **Bulk audit search no longer fails on large result sets**: Iterating a bulk audit search (`client.audit.search(..., bulk=True)`) over more than 10,000 matching events could fail partway with an Elasticsearch "Result window is too large" error and stop without returning the rest. Pagination now stays within the result-window limit no matter how many events match, so large audit scans complete and return every record.
+
 ## 9.10.0 (July 14, 2026)
 
 ### Bug Fixes
