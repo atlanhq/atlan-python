@@ -5,20 +5,58 @@
 from __future__ import annotations
 
 from typing import ClassVar, List, Optional
+from warnings import warn
 
 from pydantic.v1 import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .metabase import Metabase
 
 
 class MetabaseQuestion(Metabase):
     """Description"""
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls, *, name: str, connection_qualified_name: str, metabase_id: str
+    ) -> MetabaseQuestion:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "metabase_id"],
+            [name, connection_qualified_name, metabase_id],
+        )
+        attributes = MetabaseQuestion.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            metabase_id=metabase_id,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, connection_qualified_name: str, metabase_id: str
+    ) -> MetabaseQuestion:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            metabase_id=metabase_id,
+        )
 
     type_name: str = Field(default="MetabaseQuestion", allow_mutation=False)
 
@@ -135,6 +173,24 @@ class MetabaseQuestion(Metabase):
         metabase_collection: Optional[MetabaseCollection] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str, metabase_id: str
+        ) -> MetabaseQuestion.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "metabase_id"],
+                [name, connection_qualified_name, metabase_id],
+            )
+            return MetabaseQuestion.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/questions/{metabase_id}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
 
     attributes: MetabaseQuestion.Attributes = Field(
         default_factory=lambda: MetabaseQuestion.Attributes(),

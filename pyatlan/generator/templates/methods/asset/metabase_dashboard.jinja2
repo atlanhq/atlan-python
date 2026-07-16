@@ -1,0 +1,35 @@
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls, *, name: str, connection_qualified_name: str, metabase_id: str
+    ) -> MetabaseDashboard:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "metabase_id"],
+            [name, connection_qualified_name, metabase_id],
+        )
+        attributes = MetabaseDashboard.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            metabase_id=metabase_id,
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    @init_guid
+    def create(
+        cls, *, name: str, connection_qualified_name: str, metabase_id: str
+    ) -> MetabaseDashboard:
+        warn(
+            (
+                "This method is deprecated, please use 'creator' "
+                "instead, which offers identical functionality."
+            ),
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.creator(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            metabase_id=metabase_id,
+        )
