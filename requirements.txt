@@ -114,7 +114,9 @@ more-itertools==10.8.0 ; python_full_version < '3.15' and platform_machine != 'p
     # via
     #   jaraco-classes
     #   jaraco-functools
-msgspec==0.20.0 ; python_full_version < '3.15' and platform_python_implementation == 'CPython'
+msgspec==0.20.0 ; python_full_version < '3.10' and platform_python_implementation == 'CPython'
+    # via pyatlan
+msgspec==0.21.1 ; python_full_version >= '3.10' and python_full_version < '3.15' and platform_python_implementation == 'CPython'
     # via pyatlan
 multidict==6.7.1 ; python_full_version < '3.15' and platform_python_implementation == 'CPython'
     # via yarl
