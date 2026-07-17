@@ -52,7 +52,6 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .skill_artifact_related import RelatedSkillArtifact
-from .skill_related import RelatedSkill
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
 
@@ -73,6 +72,10 @@ class Skill(Asset):
     SKILL_STATUS: ClassVar[Any] = None
     SKILL_ARTIFACT_PATHS: ClassVar[Any] = None
     SKILL_ARTIFACT_FILE_QUALIFIED_NAMES: ClassVar[Any] = None
+    SKILL_IS_DORMANT: ClassVar[Any] = None
+    SKILL_SOURCE_PATH: ClassVar[Any] = None
+    SKILL_SCOPE: ClassVar[Any] = None
+    SKILL_CHECKSUM: ClassVar[Any] = None
     AGENTIC_VERSION: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     AGENT_AGENTS: ClassVar[Any] = None
@@ -111,6 +114,8 @@ class Skill(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Skill"
+
     skill_version: Union[str, None, UnsetType] = UNSET
     """String version identifier for this skill. Will be superseded by agenticVersion (long, epoch-ms) on the Agentic supertype in a future release; continue using this for now."""
 
@@ -118,7 +123,7 @@ class Skill(Asset):
     """URL-safe unique identifier for this skill (for example, my-sql-skill)."""
 
     skill_type: Union[str, None, UnsetType] = UNSET
-    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+    """Origin type of this skill — system-provided, context repository output, custom user/agent created, or connector-synced from an external system."""
 
     skill_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of this skill version (draft or published)."""
@@ -128,6 +133,18 @@ class Skill(Asset):
 
     skill_artifact_file_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Denormalized list of qualifiedNames of the SkillArtifact entities belonging to this skill version."""
+
+    skill_is_dormant: Union[bool, None, UnsetType] = UNSET
+    """Health signal — true when the skill was discovered with a missing, empty, or insufficiently descriptive description and is surfaced for governance review. Orthogonal to status: a published skill can also be dormant."""
+
+    skill_source_path: Union[str, None, UnsetType] = UNSET
+    """Source-system path the skill was synced from (for example, the Databricks workspace SKILL.md path)."""
+
+    skill_scope: Union[str, None, UnsetType] = UNSET
+    """Scope under which the skill was discovered, as a keyword string (for example, user or workspace)."""
+
+    skill_checksum: Union[str, None, UnsetType] = UNSET
+    """SHA-256 hex digest of the source SKILL.md content (UTF-8), used for change detection across crawls."""
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
@@ -254,66 +271,6 @@ class Skill(Asset):
         self.type_name = "Skill"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Skill instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Skill validation failed: {errors}")
-
-    def minimize(self) -> "Skill":
-        """
-        Return a minimal copy of this Skill with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Skill with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Skill instance with only the minimum required fields.
-        """
-        self.validate()
-        return Skill(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSkill":
-        """
-        Create a :class:`RelatedSkill` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSkill reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSkill(guid=self.guid)
-        return RelatedSkill(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -375,7 +332,7 @@ class SkillAttributes(AssetAttributes):
     """URL-safe unique identifier for this skill (for example, my-sql-skill)."""
 
     skill_type: Union[str, None, UnsetType] = UNSET
-    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+    """Origin type of this skill — system-provided, context repository output, custom user/agent created, or connector-synced from an external system."""
 
     skill_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of this skill version (draft or published)."""
@@ -385,6 +342,18 @@ class SkillAttributes(AssetAttributes):
 
     skill_artifact_file_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Denormalized list of qualifiedNames of the SkillArtifact entities belonging to this skill version."""
+
+    skill_is_dormant: Union[bool, None, UnsetType] = UNSET
+    """Health signal — true when the skill was discovered with a missing, empty, or insufficiently descriptive description and is surfaced for governance review. Orthogonal to status: a published skill can also be dormant."""
+
+    skill_source_path: Union[str, None, UnsetType] = UNSET
+    """Source-system path the skill was synced from (for example, the Databricks workspace SKILL.md path)."""
+
+    skill_scope: Union[str, None, UnsetType] = UNSET
+    """Scope under which the skill was discovered, as a keyword string (for example, user or workspace)."""
+
+    skill_checksum: Union[str, None, UnsetType] = UNSET
+    """SHA-256 hex digest of the source SKILL.md content (UTF-8), used for change detection across crawls."""
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
@@ -578,6 +547,10 @@ def _populate_skill_attrs(attrs: SkillAttributes, obj: Skill) -> None:
     attrs.skill_status = obj.skill_status
     attrs.skill_artifact_paths = obj.skill_artifact_paths
     attrs.skill_artifact_file_qualified_names = obj.skill_artifact_file_qualified_names
+    attrs.skill_is_dormant = obj.skill_is_dormant
+    attrs.skill_source_path = obj.skill_source_path
+    attrs.skill_scope = obj.skill_scope
+    attrs.skill_checksum = obj.skill_checksum
     attrs.agentic_version = obj.agentic_version
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
@@ -593,6 +566,10 @@ def _extract_skill_attrs(attrs: SkillAttributes) -> dict:
     result["skill_artifact_file_qualified_names"] = (
         attrs.skill_artifact_file_qualified_names
     )
+    result["skill_is_dormant"] = attrs.skill_is_dormant
+    result["skill_source_path"] = attrs.skill_source_path
+    result["skill_scope"] = attrs.skill_scope
+    result["skill_checksum"] = attrs.skill_checksum
     result["agentic_version"] = attrs.agentic_version
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
@@ -631,9 +608,6 @@ def _skill_to_nested(skill: Skill) -> SkillNested:
         is_incomplete=skill.is_incomplete,
         provenance_type=skill.provenance_type,
         home_id=skill.home_id,
-        depth=skill.depth,
-        immediate_upstream=skill.immediate_upstream,
-        immediate_downstream=skill.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -663,6 +637,7 @@ def _skill_from_nested(nested: SkillNested) -> Skill:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -671,9 +646,6 @@ def _skill_from_nested(nested: SkillNested) -> Skill:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_skill_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -695,6 +667,7 @@ def _skill_from_nested_bytes(data: bytes, serde: Serde) -> Skill:
 # Deferred field descriptor initialization
 # ---------------------------------------------------------------------------
 from pyatlan.model.fields.atlan_fields import (  # noqa: E402
+    BooleanField,
     KeywordField,
     NumericField,
     RelationField,
@@ -708,6 +681,10 @@ Skill.SKILL_ARTIFACT_PATHS = KeywordField("skillArtifactPaths", "skillArtifactPa
 Skill.SKILL_ARTIFACT_FILE_QUALIFIED_NAMES = KeywordField(
     "skillArtifactFileQualifiedNames", "skillArtifactFileQualifiedNames"
 )
+Skill.SKILL_IS_DORMANT = BooleanField("skillIsDormant", "skillIsDormant")
+Skill.SKILL_SOURCE_PATH = KeywordField("skillSourcePath", "skillSourcePath")
+Skill.SKILL_SCOPE = KeywordField("skillScope", "skillScope")
+Skill.SKILL_CHECKSUM = KeywordField("skillChecksum", "skillChecksum")
 Skill.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
 Skill.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Skill.AGENT_AGENTS = RelationField("agentAgents")
