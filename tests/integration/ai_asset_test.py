@@ -3,7 +3,13 @@
 from typing import Generator
 
 import pytest
-from tenacity import retry, retry_if_result, stop_after_attempt, wait_exponential
+from tenacity import (
+    RetryError,
+    retry,
+    retry_if_result,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AIApplication, AIModel, Asset, Connection, Process
@@ -131,7 +137,10 @@ def _process_with_io(client: AtlanClient, created: Process) -> Process:
             created.guid, asset_type=Process, ignore_relationships=False
         )
 
-    return _fetch()
+    try:
+        return _fetch()
+    except RetryError as err:
+        return err.last_attempt.result()
 
 
 def _assert_response_processes_creator(
