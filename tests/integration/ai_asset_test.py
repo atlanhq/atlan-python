@@ -3,9 +3,10 @@
 from typing import Generator
 
 import pytest
+from tenacity import retry, retry_if_result, stop_after_attempt, wait_exponential
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AIApplication, AIModel, Asset, Connection
+from pyatlan.model.assets import AIApplication, AIModel, Asset, Connection, Process
 from pyatlan.model.enums import (
     AIApplicationDevelopmentStage,
     AIDatasetType,
@@ -112,45 +113,42 @@ def test_update_ai_assets(
     _update_ai_model(client, ai_model)
 
 
+def _process_with_io(client: AtlanClient, created: Process) -> Process:
+    """
+    The mutation response does not reliably echo the process inputs/outputs
+    relationships, so re-fetch the process until they are materialized.
+    """
+    if created.inputs and created.outputs:
+        return created
+
+    @retry(
+        retry=retry_if_result(lambda process: not (process.inputs and process.outputs)),
+        stop=stop_after_attempt(10),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+    )
+    def _fetch() -> Process:
+        return client.asset.get_by_guid(
+            created.guid, asset_type=Process, ignore_relationships=False
+        )
+
+    return _fetch()
+
+
 def _assert_response_processes_creator(
-    mutation_response, asset_list, ai_dataset_type, process_sum, ai_model
+    client, mutation_response, asset_list, ai_dataset_type, process_sum, ai_model
 ):
     for i in range(len(asset_list)):
-        assert mutation_response.mutated_entities.CREATE[i + process_sum]
-        assert (
-            mutation_response.mutated_entities.CREATE[i + process_sum].ai_dataset_type  # type: ignore
-            == ai_dataset_type
-        )
+        created = mutation_response.mutated_entities.CREATE[i + process_sum]
+        assert created
+        assert created.ai_dataset_type == ai_dataset_type
+        process = _process_with_io(client, created)
+        assert process.inputs and process.outputs
         if ai_dataset_type == AIDatasetType.OUTPUT:
-            assert (
-                mutation_response.mutated_entities.CREATE[i + process_sum].inputs  # type: ignore
-                and mutation_response.mutated_entities.CREATE[i + process_sum]
-                .inputs[0]
-                .guid
-                == ai_model.guid  # type: ignore
-            )
-            assert (
-                mutation_response.mutated_entities.CREATE[i + process_sum].outputs  # type: ignore
-                and mutation_response.mutated_entities.CREATE[i + process_sum]
-                .outputs[0]
-                .guid  # type: ignore
-                == asset_list[i].guid
-            )
+            assert process.inputs[0].guid == ai_model.guid
+            assert process.outputs[0].guid == asset_list[i].guid
         else:
-            assert (
-                mutation_response.mutated_entities.CREATE[i + process_sum].inputs  # type: ignore
-                and mutation_response.mutated_entities.CREATE[i + process_sum]
-                .inputs[0]
-                .guid
-                == asset_list[i].guid  # type: ignore
-            )
-            assert (
-                mutation_response.mutated_entities.CREATE[i + process_sum].outputs  # type: ignore
-                and mutation_response.mutated_entities.CREATE[i + process_sum]
-                .outputs[0]
-                .guid  # type: ignore
-                == ai_model.guid
-            )
+            assert process.inputs[0].guid == asset_list[i].guid
+            assert process.outputs[0].guid == ai_model.guid
 
 
 def test_ai_model_processes_creator(
@@ -217,10 +215,11 @@ def test_ai_model_processes_creator(
     )
     currnt_processes_sum = 0
     _assert_response_processes_creator(
-        mutation_response, list_training, AIDatasetType.TRAINING, 0, ai_model
+        client, mutation_response, list_training, AIDatasetType.TRAINING, 0, ai_model
     )
     currnt_processes_sum += len(list_training)
     _assert_response_processes_creator(
+        client,
         mutation_response,
         list_testing,
         AIDatasetType.TESTING,
@@ -229,6 +228,7 @@ def test_ai_model_processes_creator(
     )
     currnt_processes_sum += len(list_testing)
     _assert_response_processes_creator(
+        client,
         mutation_response,
         list_inference,
         AIDatasetType.INFERENCE,
@@ -237,6 +237,7 @@ def test_ai_model_processes_creator(
     )
     currnt_processes_sum += len(list_inference)
     _assert_response_processes_creator(
+        client,
         mutation_response,
         list_validation,
         AIDatasetType.VALIDATION,
@@ -245,6 +246,7 @@ def test_ai_model_processes_creator(
     )
     currnt_processes_sum += len(list_validation)
     _assert_response_processes_creator(
+        client,
         mutation_response,
         list_output,
         AIDatasetType.OUTPUT,

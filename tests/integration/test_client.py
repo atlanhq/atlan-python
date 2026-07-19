@@ -6,6 +6,13 @@ from unittest.mock import patch
 import pytest
 from httpx import Headers
 from pydantic.v1 import StrictStr
+from tenacity import (
+    RetryError,
+    retry,
+    retry_if_result,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from pyatlan import __version__ as VERSION
 from pyatlan.client.atlan import DEFAULT_RETRY, AtlanClient
@@ -1051,9 +1058,21 @@ def generate_audit_entries(client: AtlanClient, audit_glossary: AtlasGlossary):
         time.sleep(1)
 
     request = AuditSearchRequest.by_guid(guid=audit_glossary.guid, size=log_count)
-    response = client.audit.search(request)
-    assert response.total_count >= log_count, (
-        f"Expected at least {log_count} logs, but got {response.total_count}."
+
+    @retry(
+        retry=retry_if_result(lambda count: count < log_count),
+        stop=stop_after_attempt(10),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+    )
+    def _audit_entry_count() -> int:
+        return client.audit.search(request).total_count
+
+    try:
+        total_count = _audit_entry_count()
+    except RetryError as err:
+        total_count = err.last_attempt.result()
+    assert total_count >= log_count, (
+        f"Expected at least {log_count} logs, but got {total_count}."
     )
 
 
