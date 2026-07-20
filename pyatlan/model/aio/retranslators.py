@@ -74,7 +74,7 @@ class AsyncAtlanTagRetranslator(AsyncBaseRetranslator):
 
         # Convert classification human-readable name → hash ID
         for key in self._CLASSIFICATION_NAMES:
-            if key in data:
+            if key in data and data[key] is not None:
                 tag_ids = []
                 for name in data[key]:
                     tag_id = await self.client.atlan_tag_cache.get_id_for_name(
@@ -96,7 +96,7 @@ class AsyncAtlanTagRetranslator(AsyncBaseRetranslator):
         from pyatlan.errors import ErrorCode
 
         for key in self._CLASSIFICATION_KEYS:
-            if key in data:
+            if key in data and data[key] is not None:
                 for classification in data[key]:
                     raw_name = classification.get(self._TYPE_NAME)
                     if not raw_name:
