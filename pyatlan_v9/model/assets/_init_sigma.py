@@ -11,6 +11,8 @@ This module provides convenient imports for all Sigma types and their Related va
 from .sigma import Sigma
 from .sigma_data_element import SigmaDataElement
 from .sigma_data_element_field import SigmaDataElementField
+from .sigma_data_model import SigmaDataModel
+from .sigma_data_model_column import SigmaDataModelColumn
 from .sigma_dataset import SigmaDataset
 from .sigma_dataset_column import SigmaDatasetColumn
 from .sigma_page import SigmaPage
@@ -18,6 +20,8 @@ from .sigma_related import (
     RelatedSigma,
     RelatedSigmaDataElement,
     RelatedSigmaDataElementField,
+    RelatedSigmaDataModel,
+    RelatedSigmaDataModelColumn,
     RelatedSigmaDataset,
     RelatedSigmaDatasetColumn,
     RelatedSigmaPage,
@@ -29,6 +33,8 @@ __all__ = [
     "RelatedSigma",
     "RelatedSigmaDataElement",
     "RelatedSigmaDataElementField",
+    "RelatedSigmaDataModel",
+    "RelatedSigmaDataModelColumn",
     "RelatedSigmaDataset",
     "RelatedSigmaDatasetColumn",
     "RelatedSigmaPage",
@@ -36,6 +42,8 @@ __all__ = [
     "Sigma",
     "SigmaDataElement",
     "SigmaDataElementField",
+    "SigmaDataModel",
+    "SigmaDataModelColumn",
     "SigmaDataset",
     "SigmaDatasetColumn",
     "SigmaPage",
