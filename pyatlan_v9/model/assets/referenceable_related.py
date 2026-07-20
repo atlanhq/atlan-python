@@ -19,7 +19,6 @@ from .related_entity import RelatedEntity
 
 __all__ = [
     "RelatedReferenceable",
-    "RelatedPersona",
 ]
 
 
@@ -50,19 +49,3 @@ class RelatedReferenceable(RelatedEntity):
         """
         if self.qualified_name is not UNSET and self.unique_attributes is UNSET:
             self.unique_attributes = {"qualifiedName": self.qualified_name}
-
-
-class RelatedPersona(RelatedReferenceable):
-    """
-    Related entity reference for Persona assets.
-
-    Persona is a bootstrapped type that exists in all Atlan tenants but is not
-    defined in the typedef hierarchy.
-    """
-
-    # type_name inherited from parent with default=UNSET
-    # __post_init__ sets it to "Persona" so it serializes correctly
-
-    def __post_init__(self) -> None:
-        RelatedReferenceable.__post_init__(self)
-        self.type_name = "Persona"
