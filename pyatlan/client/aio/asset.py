@@ -388,7 +388,10 @@ class AsyncAssetClient:
 
     @validate_arguments
     async def save_merging_cm(
-        self, entity: Union[Asset, List[Asset]], replace_atlan_tags: bool = False
+        self,
+        entity: Union[Asset, List[Asset]],
+        replace_atlan_tags: bool = False,
+        append_atlan_tags: bool = False,
     ) -> AssetMutationResponse:
         """
         Async save with merging custom metadata.
@@ -398,6 +401,7 @@ class AsyncAssetClient:
 
         :param entity: one or more assets to save
         :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
+        :param append_atlan_tags: whether to add/update/remove AtlanTags during an update (True) or not (False)
         :returns: details of the created or updated assets
         """
         return await self.save(
@@ -405,11 +409,15 @@ class AsyncAssetClient:
             replace_atlan_tags=replace_atlan_tags,
             replace_custom_metadata=True,
             overwrite_custom_metadata=False,
+            append_atlan_tags=append_atlan_tags,
         )
 
     @validate_arguments
     async def update_merging_cm(
-        self, entity: Asset, replace_atlan_tags: bool = False
+        self,
+        entity: Asset,
+        replace_atlan_tags: bool = False,
+        append_atlan_tags: bool = False,
     ) -> AssetMutationResponse:
         """
         Async update with merging custom metadata.
@@ -419,6 +427,7 @@ class AsyncAssetClient:
 
         :param entity: the asset to update
         :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
+        :param append_atlan_tags: whether to add/update/remove AtlanTags during an update (True) or not (False)
         :returns: details of the updated asset
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
@@ -430,7 +439,9 @@ class AsyncAssetClient:
             get_by_qualified_name_func=self.get_by_qualified_name,
         )
         return await self.save_merging_cm(
-            entity=entity, replace_atlan_tags=replace_atlan_tags
+            entity=entity,
+            replace_atlan_tags=replace_atlan_tags,
+            append_atlan_tags=append_atlan_tags,
         )
 
     @validate_arguments
