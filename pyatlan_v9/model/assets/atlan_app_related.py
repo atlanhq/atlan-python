@@ -126,16 +126,16 @@ class RelatedAtlanAppTool(RelatedAtlanApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanAppTool" so it serializes correctly
 
-    atlan_app_tool_input_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_input_schema: Union[str, None, UnsetType] = UNSET
     """Input schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_tool_output_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_output_schema: Union[str, None, UnsetType] = UNSET
     """Output schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_tool_task_queue: Union[str, None, UnsetType] = UNSET
+    atlan_app_task_queue: Union[str, None, UnsetType] = UNSET
     """Name of the Temporal task queue for the Atlan application tool."""
 
-    atlan_app_tool_category: Union[str, None, UnsetType] = UNSET
+    atlan_app_category: Union[str, None, UnsetType] = UNSET
     """Category of the tool."""
 
     def __post_init__(self) -> None:
@@ -153,25 +153,25 @@ class RelatedAtlanAppWorkflow(RelatedAtlanApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanAppWorkflow" so it serializes correctly
 
-    atlan_app_workflow_version: Union[str, None, UnsetType] = UNSET
+    atlan_app_version: Union[str, None, UnsetType] = UNSET
     """Version of the workflow."""
 
-    atlan_app_workflow_slug: Union[str, None, UnsetType] = UNSET
+    atlan_app_slug: Union[str, None, UnsetType] = UNSET
     """Slug of the workflow."""
 
-    atlan_app_workflow_dag: Union[str, None, UnsetType] = UNSET
+    atlan_app_dag: Union[str, None, UnsetType] = UNSET
     """Map of all activity steps for the workflow (escaped JSON string)."""
 
-    atlan_app_workflow_status: Union[str, None, UnsetType] = UNSET
+    atlan_app_status: Union[str, None, UnsetType] = UNSET
     """Status of the workflow."""
 
-    atlan_app_workflow_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
+    atlan_app_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Error handling strategy for the workflow."""
 
-    atlan_app_workflow_ownership: Union[str, None, UnsetType] = UNSET
+    atlan_app_ownership: Union[str, None, UnsetType] = UNSET
     """Ownership type of the workflow, indicating whether it is managed by Atlan or by a user."""
 
-    atlan_app_workflow_triggers: Union[str, None, UnsetType] = UNSET
+    atlan_app_triggers: Union[str, None, UnsetType] = UNSET
     """Triggers configured for this workflow (escaped JSON string)."""
 
     def __post_init__(self) -> None:
