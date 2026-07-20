@@ -39,6 +39,7 @@ from pyatlan.cache.role_cache import RoleCache
 from pyatlan.cache.source_tag_cache import SourceTagCache
 from pyatlan.cache.user_cache import UserCache
 from pyatlan.client.admin import AdminClient
+from pyatlan.client.app import AppClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY, ImpersonateUser
@@ -59,7 +60,6 @@ from pyatlan.client.task import TaskClient
 from pyatlan.client.token import TokenClient
 from pyatlan.client.transport import PyatlanSyncTransport  # type: ignore
 from pyatlan.client.typedef import TypeDefClient
-from pyatlan.client.app import AppClient
 from pyatlan.client.user import UserClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
