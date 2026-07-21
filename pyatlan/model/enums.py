@@ -362,6 +362,7 @@ class AtlanConnectorType(str, Enum, metaclass=utils.ExtendableEnumMeta):
     DM = ("dm", AtlanConnectionCategory.DATABASE)
     MODEL = ("model", AtlanConnectionCategory.DATABASE)
     IICS = ("iics", AtlanConnectionCategory.ELT)
+    INFORMATICA_POWERCENTER = ("informatica-powercenter", AtlanConnectionCategory.ELT)
     ABINITIO = ("abinitio", AtlanConnectionCategory.ELT)
     SAP_S4_HANA = ("sap-s4-hana", AtlanConnectionCategory.WAREHOUSE)
     INRIVER = ("inriver", AtlanConnectionCategory.DATABASE)
