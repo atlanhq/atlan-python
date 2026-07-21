@@ -1,3 +1,14 @@
+## 9.10.2 (July 21, 2026)
+
+### New Features
+
+- **New `INFORMATICA_POWERCENTER` connector type**: Added `INFORMATICA_POWERCENTER` to the supported connector types. (PARTCON-28)
+
+### Packages
+
+- **Dependencies refreshed while keeping Python 3.9 support**: Runtime and dev dependencies were bumped to their current releases using `python_version` marker splits, so packages that have dropped Python 3.9 stay pinned to their last 3.9-compatible version on 3.9 and move forward on 3.10+. Includes `httpx-retries`, `authlib`, `tenacity`, and `networkx`, plus dev tooling (`pytest` 9, `mypy` 2.3, `vcrpy` 8, `deepdiff` 9, and others). No API changes; verified across Python 3.9 and 3.13. (BLDX-1571)
+- **`msgspec` cap lifted on Python 3.10+**: `msgspec` now resolves to `~=0.21.1` on Python 3.10+ to avoid a known Python 3.13 concurrent-decode segfault, while Python 3.9 stays on `~=0.20.0`. (CNCT-85)
+
 ## 9.10.1 (July 15, 2026)
 
 ### Bug Fixes
