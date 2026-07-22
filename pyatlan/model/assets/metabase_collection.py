@@ -16,7 +16,6 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     RelationField,
 )
-
 from pyatlan.utils import init_guid, validate_required_fields
 
 from .metabase import Metabase
