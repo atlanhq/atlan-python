@@ -1,3 +1,9 @@
+## 9.10.3 (July 22, 2026)
+
+### New Features
+
+- **Metabase `creator()` factories**: Added `creator()` factory methods for the Metabase asset family — `MetabaseCollection` (`name`, `connection_qualified_name`, `metabase_id`), `MetabaseDashboard`, and `MetabaseQuestion` — so the qualifiedName grammar is owned centrally by the SDK instead of connectors hand-building qualifiedNames with f-strings (resolves the application-sdk `P028 ManualQualifiedNameFString` conformance warnings). Also available in the experimental `pyatlan_v9` package, with integration tests covering the new factories.
+
 ## 9.10.2 (July 21, 2026)
 
 ### New Features
