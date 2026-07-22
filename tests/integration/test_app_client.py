@@ -20,11 +20,7 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.app import (
-    AppInfo,
-    AppInputContract,
-    AppResponse,
-)
+from pyatlan.model.app import AppInfo, AppInputContract, AppResponse
 from pyatlan.model.apps import BigqueryCrawler, BigqueryCrawlerInputs
 from tests.integration.client import TestId
 
