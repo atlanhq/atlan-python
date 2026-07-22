@@ -1,0 +1,18 @@
+
+        @classmethod
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str, metabase_id: str
+        ) -> MetabaseDashboard.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "metabase_id"],
+                [name, connection_qualified_name, metabase_id],
+            )
+            return MetabaseDashboard.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/dashboards/{metabase_id}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=AtlanConnectorType.get_connector_name(
+                    connection_qualified_name
+                ),
+            )
