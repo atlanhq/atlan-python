@@ -40,7 +40,7 @@ class RelatedSkill(RelatedAgentic):
     """URL-safe unique identifier for this skill (for example, my-sql-skill)."""
 
     skill_type: Union[str, None, UnsetType] = UNSET
-    """Origin type of this skill — system-provided, context repository output, or custom user/agent created."""
+    """Origin type of this skill — system-provided, context repository output, custom user/agent created, or connector-synced from an external system."""
 
     skill_status: Union[str, None, UnsetType] = UNSET
     """Lifecycle status of this skill version (draft or published)."""
@@ -50,6 +50,18 @@ class RelatedSkill(RelatedAgentic):
 
     skill_artifact_file_qualified_names: Union[List[str], None, UnsetType] = UNSET
     """Denormalized list of qualifiedNames of the SkillArtifact entities belonging to this skill version."""
+
+    skill_is_dormant: Union[bool, None, UnsetType] = UNSET
+    """Health signal — true when the skill was discovered with a missing, empty, or insufficiently descriptive description and is surfaced for governance review. Orthogonal to status: a published skill can also be dormant."""
+
+    skill_source_path: Union[str, None, UnsetType] = UNSET
+    """Source-system path the skill was synced from (for example, the Databricks workspace SKILL.md path)."""
+
+    skill_scope: Union[str, None, UnsetType] = UNSET
+    """Scope under which the skill was discovered, as a keyword string (for example, user or workspace)."""
+
+    skill_checksum: Union[str, None, UnsetType] = UNSET
+    """SHA-256 hex digest of the source SKILL.md content (UTF-8), used for change detection across crawls."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)

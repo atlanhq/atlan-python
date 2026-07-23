@@ -50,6 +50,9 @@ class RelatedAirflow(RelatedCatalog):
     airflow_run_type: Union[str, None, UnsetType] = UNSET
     """Type of the run."""
 
+    airflow_run_error_message: Union[str, None, UnsetType] = UNSET
+    """Error message of the run in Airflow, populated when the run fails."""
+
     airflow_run_start_time: Union[int, None, UnsetType] = UNSET
     """Start time of the run."""
 
