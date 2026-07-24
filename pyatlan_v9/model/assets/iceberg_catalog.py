@@ -51,7 +51,6 @@ from .dbt_related import (
 from .fabric_related import RelatedFabricWorkspace
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .iceberg_related import RelatedIcebergCatalog
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -159,6 +158,7 @@ class IcebergCatalog(Asset):
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
     SCHEMAS: ClassVar[Any] = None
+    SQL_SCHEMAS: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_SEMANTIC_LOGICAL_TABLES: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
@@ -167,6 +167,8 @@ class IcebergCatalog(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "IcebergCatalog"
 
     iceberg_catalog_type: Union[str, None, UnsetType] = UNSET
     """Type of the Iceberg catalog (e.g., 'hadoop', 'hive', 'nessie', 'rest')."""
@@ -420,6 +422,9 @@ class IcebergCatalog(Asset):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
+    sql_schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
+    """Schemas grouped under this database."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -456,66 +461,6 @@ class IcebergCatalog(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "IcebergCatalog"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this IcebergCatalog instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"IcebergCatalog validation failed: {errors}")
-
-    def minimize(self) -> "IcebergCatalog":
-        """
-        Return a minimal copy of this IcebergCatalog with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new IcebergCatalog with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new IcebergCatalog instance with only the minimum required fields.
-        """
-        self.validate()
-        return IcebergCatalog(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedIcebergCatalog":
-        """
-        Create a :class:`RelatedIcebergCatalog` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedIcebergCatalog reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedIcebergCatalog(guid=self.guid)
-        return RelatedIcebergCatalog(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -828,6 +773,9 @@ class IcebergCatalogRelationshipAttributes(AssetRelationshipAttributes):
     schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
     """Schemas that exist within this database."""
 
+    sql_schemas: Union[List[RelatedSchema], None, UnsetType] = UNSET
+    """Schemas grouped under this database."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -920,6 +868,7 @@ _ICEBERG_CATALOG_REL_FIELDS: List[str] = [
     "links",
     "readme",
     "schemas",
+    "sql_schemas",
     "schema_registry_subjects",
     "snowflake_semantic_logical_tables",
     "soda_checks",
@@ -1085,9 +1034,6 @@ def _iceberg_catalog_to_nested(iceberg_catalog: IcebergCatalog) -> IcebergCatalo
         is_incomplete=iceberg_catalog.is_incomplete,
         provenance_type=iceberg_catalog.provenance_type,
         home_id=iceberg_catalog.home_id,
-        depth=iceberg_catalog.depth,
-        immediate_upstream=iceberg_catalog.immediate_upstream,
-        immediate_downstream=iceberg_catalog.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1121,6 +1067,7 @@ def _iceberg_catalog_from_nested(nested: IcebergCatalogNested) -> IcebergCatalog
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1129,9 +1076,6 @@ def _iceberg_catalog_from_nested(nested: IcebergCatalogNested) -> IcebergCatalog
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_iceberg_catalog_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1311,6 +1255,7 @@ IcebergCatalog.FILES = RelationField("files")
 IcebergCatalog.LINKS = RelationField("links")
 IcebergCatalog.README = RelationField("readme")
 IcebergCatalog.SCHEMAS = RelationField("schemas")
+IcebergCatalog.SQL_SCHEMAS = RelationField("sqlSchemas")
 IcebergCatalog.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 IcebergCatalog.SNOWFLAKE_SEMANTIC_LOGICAL_TABLES = RelationField(
     "snowflakeSemanticLogicalTables"
