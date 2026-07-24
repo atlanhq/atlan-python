@@ -59,7 +59,6 @@ from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
-    RelatedSnowflakeListing,
     RelatedSnowflakeSemanticLogicalTable,
     RelatedSnowflakeShare,
 )
@@ -81,22 +80,22 @@ class SnowflakeListing(Asset):
     Instance of a Snowflake listing in Atlan.
     """
 
-    SNOWFLAKE_LISTING_TITLE: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_SUBTITLE: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_UNIFORM_LISTING_LOCATOR: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_STATE: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_DISTRIBUTION: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_IS_SHARE: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_IS_APPLICATION: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_APPLICATION_PACKAGE: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_CATEGORIES: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_DATA_ATTRIBUTES: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_TERMS: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_PROFILE: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_SUPPORT_CONTACT: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_RESHARING: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_AUTO_FULFILLMENT: ClassVar[Any] = None
-    SNOWFLAKE_LISTING_TARGETS: ClassVar[Any] = None
+    SNOWFLAKE_TITLE: ClassVar[Any] = None
+    SNOWFLAKE_SUBTITLE: ClassVar[Any] = None
+    SNOWFLAKE_UNIFORM_LISTING_LOCATOR: ClassVar[Any] = None
+    SNOWFLAKE_STATE: ClassVar[Any] = None
+    SNOWFLAKE_DISTRIBUTION: ClassVar[Any] = None
+    SNOWFLAKE_IS_SHARE: ClassVar[Any] = None
+    SNOWFLAKE_IS_APPLICATION: ClassVar[Any] = None
+    SNOWFLAKE_APPLICATION_PACKAGE: ClassVar[Any] = None
+    SNOWFLAKE_CATEGORIES: ClassVar[Any] = None
+    SNOWFLAKE_DATA_ATTRIBUTES: ClassVar[Any] = None
+    SNOWFLAKE_TERMS: ClassVar[Any] = None
+    SNOWFLAKE_PROFILE: ClassVar[Any] = None
+    SNOWFLAKE_SUPPORT_CONTACT: ClassVar[Any] = None
+    SNOWFLAKE_RESHARING: ClassVar[Any] = None
+    SNOWFLAKE_AUTO_FULFILLMENT: ClassVar[Any] = None
+    SNOWFLAKE_TARGETS: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -175,52 +174,54 @@ class SnowflakeListing(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    snowflake_listing_title: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SnowflakeListing"
+
+    snowflake_title: Union[str, None, UnsetType] = UNSET
     """Snowflake's source-truthful title for the listing. Distinct from `name` (the non-human-readable Snowflake identifier)."""
 
-    snowflake_listing_subtitle: Union[str, None, UnsetType] = UNSET
+    snowflake_subtitle: Union[str, None, UnsetType] = UNSET
     """Marketplace subtitle of the listing."""
 
-    snowflake_listing_uniform_listing_locator: Union[str, None, UnsetType] = UNSET
+    snowflake_uniform_listing_locator: Union[str, None, UnsetType] = UNSET
     """Uniform Listing Locator (ULL) of the listing."""
 
-    snowflake_listing_state: Union[str, None, UnsetType] = UNSET
+    snowflake_state: Union[str, None, UnsetType] = UNSET
     """Publication state of the listing."""
 
-    snowflake_listing_distribution: Union[str, None, UnsetType] = UNSET
+    snowflake_distribution: Union[str, None, UnsetType] = UNSET
     """Distribution scope of the listing (organization-internal vs external marketplace/exchange)."""
 
-    snowflake_listing_is_share: Union[bool, None, UnsetType] = UNSET
+    snowflake_is_share: Union[bool, None, UnsetType] = UNSET
     """Whether this listing wraps a data share (true) or not (false)."""
 
-    snowflake_listing_is_application: Union[bool, None, UnsetType] = UNSET
+    snowflake_is_application: Union[bool, None, UnsetType] = UNSET
     """Whether this listing wraps a Snowflake Native App (true) or not (false)."""
 
-    snowflake_listing_application_package: Union[str, None, UnsetType] = UNSET
+    snowflake_application_package: Union[str, None, UnsetType] = UNSET
     """Application package name when this listing wraps a Native App."""
 
-    snowflake_listing_categories: Union[List[str], None, UnsetType] = UNSET
+    snowflake_categories: Union[List[str], None, UnsetType] = UNSET
     """Discovery categories assigned to the listing."""
 
-    snowflake_listing_data_attributes: Union[str, None, UnsetType] = UNSET
+    snowflake_data_attributes: Union[str, None, UnsetType] = UNSET
     """Data properties of the listing (refresh rate, history, freshness window) as a JSON blob emitted by Snowflake."""
 
-    snowflake_listing_terms: Union[str, None, UnsetType] = UNSET
+    snowflake_terms: Union[str, None, UnsetType] = UNSET
     """Terms of service for the listing."""
 
-    snowflake_listing_profile: Union[str, None, UnsetType] = UNSET
+    snowflake_profile: Union[str, None, UnsetType] = UNSET
     """External Snowflake provider profile attached to the listing."""
 
-    snowflake_listing_support_contact: Union[str, None, UnsetType] = UNSET
+    snowflake_support_contact: Union[str, None, UnsetType] = UNSET
     """Contact info for the listing."""
 
-    snowflake_listing_resharing: Union[str, None, UnsetType] = UNSET
+    snowflake_resharing: Union[str, None, UnsetType] = UNSET
     """Resharing configuration for the listing."""
 
-    snowflake_listing_auto_fulfillment: Union[str, None, UnsetType] = UNSET
+    snowflake_auto_fulfillment: Union[str, None, UnsetType] = UNSET
     """Auto-fulfillment configuration for the listing."""
 
-    snowflake_listing_targets: Union[str, None, UnsetType] = UNSET
+    snowflake_targets: Union[str, None, UnsetType] = UNSET
     """Distribution targets of the listing (accounts, regions) as a JSON blob emitted by Snowflake."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -485,67 +486,6 @@ class SnowflakeListing(Asset):
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/listing/[^/]+$")
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SnowflakeListing instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if errors:
-            raise ValueError(f"SnowflakeListing validation failed: {errors}")
-
-    def minimize(self) -> "SnowflakeListing":
-        """
-        Return a minimal copy of this SnowflakeListing with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SnowflakeListing with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SnowflakeListing instance with only the minimum required fields.
-        """
-        self.validate()
-        return SnowflakeListing(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSnowflakeListing":
-        """
-        Create a :class:`RelatedSnowflakeListing` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSnowflakeListing reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSnowflakeListing(guid=self.guid)
-        return RelatedSnowflakeListing(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -603,52 +543,52 @@ class SnowflakeListing(Asset):
 class SnowflakeListingAttributes(AssetAttributes):
     """SnowflakeListing-specific attributes for nested API format."""
 
-    snowflake_listing_title: Union[str, None, UnsetType] = UNSET
+    snowflake_title: Union[str, None, UnsetType] = UNSET
     """Snowflake's source-truthful title for the listing. Distinct from `name` (the non-human-readable Snowflake identifier)."""
 
-    snowflake_listing_subtitle: Union[str, None, UnsetType] = UNSET
+    snowflake_subtitle: Union[str, None, UnsetType] = UNSET
     """Marketplace subtitle of the listing."""
 
-    snowflake_listing_uniform_listing_locator: Union[str, None, UnsetType] = UNSET
+    snowflake_uniform_listing_locator: Union[str, None, UnsetType] = UNSET
     """Uniform Listing Locator (ULL) of the listing."""
 
-    snowflake_listing_state: Union[str, None, UnsetType] = UNSET
+    snowflake_state: Union[str, None, UnsetType] = UNSET
     """Publication state of the listing."""
 
-    snowflake_listing_distribution: Union[str, None, UnsetType] = UNSET
+    snowflake_distribution: Union[str, None, UnsetType] = UNSET
     """Distribution scope of the listing (organization-internal vs external marketplace/exchange)."""
 
-    snowflake_listing_is_share: Union[bool, None, UnsetType] = UNSET
+    snowflake_is_share: Union[bool, None, UnsetType] = UNSET
     """Whether this listing wraps a data share (true) or not (false)."""
 
-    snowflake_listing_is_application: Union[bool, None, UnsetType] = UNSET
+    snowflake_is_application: Union[bool, None, UnsetType] = UNSET
     """Whether this listing wraps a Snowflake Native App (true) or not (false)."""
 
-    snowflake_listing_application_package: Union[str, None, UnsetType] = UNSET
+    snowflake_application_package: Union[str, None, UnsetType] = UNSET
     """Application package name when this listing wraps a Native App."""
 
-    snowflake_listing_categories: Union[List[str], None, UnsetType] = UNSET
+    snowflake_categories: Union[List[str], None, UnsetType] = UNSET
     """Discovery categories assigned to the listing."""
 
-    snowflake_listing_data_attributes: Union[str, None, UnsetType] = UNSET
+    snowflake_data_attributes: Union[str, None, UnsetType] = UNSET
     """Data properties of the listing (refresh rate, history, freshness window) as a JSON blob emitted by Snowflake."""
 
-    snowflake_listing_terms: Union[str, None, UnsetType] = UNSET
+    snowflake_terms: Union[str, None, UnsetType] = UNSET
     """Terms of service for the listing."""
 
-    snowflake_listing_profile: Union[str, None, UnsetType] = UNSET
+    snowflake_profile: Union[str, None, UnsetType] = UNSET
     """External Snowflake provider profile attached to the listing."""
 
-    snowflake_listing_support_contact: Union[str, None, UnsetType] = UNSET
+    snowflake_support_contact: Union[str, None, UnsetType] = UNSET
     """Contact info for the listing."""
 
-    snowflake_listing_resharing: Union[str, None, UnsetType] = UNSET
+    snowflake_resharing: Union[str, None, UnsetType] = UNSET
     """Resharing configuration for the listing."""
 
-    snowflake_listing_auto_fulfillment: Union[str, None, UnsetType] = UNSET
+    snowflake_auto_fulfillment: Union[str, None, UnsetType] = UNSET
     """Auto-fulfillment configuration for the listing."""
 
-    snowflake_listing_targets: Union[str, None, UnsetType] = UNSET
+    snowflake_targets: Union[str, None, UnsetType] = UNSET
     """Distribution targets of the listing (accounts, regions) as a JSON blob emitted by Snowflake."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -981,26 +921,22 @@ def _populate_snowflake_listing_attrs(
 ) -> None:
     """Populate SnowflakeListing-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.snowflake_listing_title = obj.snowflake_listing_title
-    attrs.snowflake_listing_subtitle = obj.snowflake_listing_subtitle
-    attrs.snowflake_listing_uniform_listing_locator = (
-        obj.snowflake_listing_uniform_listing_locator
-    )
-    attrs.snowflake_listing_state = obj.snowflake_listing_state
-    attrs.snowflake_listing_distribution = obj.snowflake_listing_distribution
-    attrs.snowflake_listing_is_share = obj.snowflake_listing_is_share
-    attrs.snowflake_listing_is_application = obj.snowflake_listing_is_application
-    attrs.snowflake_listing_application_package = (
-        obj.snowflake_listing_application_package
-    )
-    attrs.snowflake_listing_categories = obj.snowflake_listing_categories
-    attrs.snowflake_listing_data_attributes = obj.snowflake_listing_data_attributes
-    attrs.snowflake_listing_terms = obj.snowflake_listing_terms
-    attrs.snowflake_listing_profile = obj.snowflake_listing_profile
-    attrs.snowflake_listing_support_contact = obj.snowflake_listing_support_contact
-    attrs.snowflake_listing_resharing = obj.snowflake_listing_resharing
-    attrs.snowflake_listing_auto_fulfillment = obj.snowflake_listing_auto_fulfillment
-    attrs.snowflake_listing_targets = obj.snowflake_listing_targets
+    attrs.snowflake_title = obj.snowflake_title
+    attrs.snowflake_subtitle = obj.snowflake_subtitle
+    attrs.snowflake_uniform_listing_locator = obj.snowflake_uniform_listing_locator
+    attrs.snowflake_state = obj.snowflake_state
+    attrs.snowflake_distribution = obj.snowflake_distribution
+    attrs.snowflake_is_share = obj.snowflake_is_share
+    attrs.snowflake_is_application = obj.snowflake_is_application
+    attrs.snowflake_application_package = obj.snowflake_application_package
+    attrs.snowflake_categories = obj.snowflake_categories
+    attrs.snowflake_data_attributes = obj.snowflake_data_attributes
+    attrs.snowflake_terms = obj.snowflake_terms
+    attrs.snowflake_profile = obj.snowflake_profile
+    attrs.snowflake_support_contact = obj.snowflake_support_contact
+    attrs.snowflake_resharing = obj.snowflake_resharing
+    attrs.snowflake_auto_fulfillment = obj.snowflake_auto_fulfillment
+    attrs.snowflake_targets = obj.snowflake_targets
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -1044,32 +980,24 @@ def _populate_snowflake_listing_attrs(
 def _extract_snowflake_listing_attrs(attrs: SnowflakeListingAttributes) -> dict:
     """Extract all SnowflakeListing attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["snowflake_listing_title"] = attrs.snowflake_listing_title
-    result["snowflake_listing_subtitle"] = attrs.snowflake_listing_subtitle
-    result["snowflake_listing_uniform_listing_locator"] = (
-        attrs.snowflake_listing_uniform_listing_locator
+    result["snowflake_title"] = attrs.snowflake_title
+    result["snowflake_subtitle"] = attrs.snowflake_subtitle
+    result["snowflake_uniform_listing_locator"] = (
+        attrs.snowflake_uniform_listing_locator
     )
-    result["snowflake_listing_state"] = attrs.snowflake_listing_state
-    result["snowflake_listing_distribution"] = attrs.snowflake_listing_distribution
-    result["snowflake_listing_is_share"] = attrs.snowflake_listing_is_share
-    result["snowflake_listing_is_application"] = attrs.snowflake_listing_is_application
-    result["snowflake_listing_application_package"] = (
-        attrs.snowflake_listing_application_package
-    )
-    result["snowflake_listing_categories"] = attrs.snowflake_listing_categories
-    result["snowflake_listing_data_attributes"] = (
-        attrs.snowflake_listing_data_attributes
-    )
-    result["snowflake_listing_terms"] = attrs.snowflake_listing_terms
-    result["snowflake_listing_profile"] = attrs.snowflake_listing_profile
-    result["snowflake_listing_support_contact"] = (
-        attrs.snowflake_listing_support_contact
-    )
-    result["snowflake_listing_resharing"] = attrs.snowflake_listing_resharing
-    result["snowflake_listing_auto_fulfillment"] = (
-        attrs.snowflake_listing_auto_fulfillment
-    )
-    result["snowflake_listing_targets"] = attrs.snowflake_listing_targets
+    result["snowflake_state"] = attrs.snowflake_state
+    result["snowflake_distribution"] = attrs.snowflake_distribution
+    result["snowflake_is_share"] = attrs.snowflake_is_share
+    result["snowflake_is_application"] = attrs.snowflake_is_application
+    result["snowflake_application_package"] = attrs.snowflake_application_package
+    result["snowflake_categories"] = attrs.snowflake_categories
+    result["snowflake_data_attributes"] = attrs.snowflake_data_attributes
+    result["snowflake_terms"] = attrs.snowflake_terms
+    result["snowflake_profile"] = attrs.snowflake_profile
+    result["snowflake_support_contact"] = attrs.snowflake_support_contact
+    result["snowflake_resharing"] = attrs.snowflake_resharing
+    result["snowflake_auto_fulfillment"] = attrs.snowflake_auto_fulfillment
+    result["snowflake_targets"] = attrs.snowflake_targets
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1154,9 +1082,6 @@ def _snowflake_listing_to_nested(
         is_incomplete=snowflake_listing.is_incomplete,
         provenance_type=snowflake_listing.provenance_type,
         home_id=snowflake_listing.home_id,
-        depth=snowflake_listing.depth,
-        immediate_upstream=snowflake_listing.immediate_upstream,
-        immediate_downstream=snowflake_listing.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1190,6 +1115,7 @@ def _snowflake_listing_from_nested(nested: SnowflakeListingNested) -> SnowflakeL
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1198,9 +1124,6 @@ def _snowflake_listing_from_nested(nested: SnowflakeListingNested) -> SnowflakeL
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_listing_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1231,53 +1154,47 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SnowflakeListing.SNOWFLAKE_LISTING_TITLE = KeywordField(
-    "snowflakeListingTitle", "snowflakeListingTitle"
+SnowflakeListing.SNOWFLAKE_TITLE = KeywordField("snowflakeTitle", "snowflakeTitle")
+SnowflakeListing.SNOWFLAKE_SUBTITLE = KeywordField(
+    "snowflakeSubtitle", "snowflakeSubtitle"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_SUBTITLE = KeywordField(
-    "snowflakeListingSubtitle", "snowflakeListingSubtitle"
+SnowflakeListing.SNOWFLAKE_UNIFORM_LISTING_LOCATOR = KeywordField(
+    "snowflakeUniformListingLocator", "snowflakeUniformListingLocator"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_UNIFORM_LISTING_LOCATOR = KeywordField(
-    "snowflakeListingUniformListingLocator", "snowflakeListingUniformListingLocator"
+SnowflakeListing.SNOWFLAKE_STATE = KeywordField("snowflakeState", "snowflakeState")
+SnowflakeListing.SNOWFLAKE_DISTRIBUTION = KeywordField(
+    "snowflakeDistribution", "snowflakeDistribution"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_STATE = KeywordField(
-    "snowflakeListingState", "snowflakeListingState"
+SnowflakeListing.SNOWFLAKE_IS_SHARE = BooleanField(
+    "snowflakeIsShare", "snowflakeIsShare"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_DISTRIBUTION = KeywordField(
-    "snowflakeListingDistribution", "snowflakeListingDistribution"
+SnowflakeListing.SNOWFLAKE_IS_APPLICATION = BooleanField(
+    "snowflakeIsApplication", "snowflakeIsApplication"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_IS_SHARE = BooleanField(
-    "snowflakeListingIsShare", "snowflakeListingIsShare"
+SnowflakeListing.SNOWFLAKE_APPLICATION_PACKAGE = KeywordField(
+    "snowflakeApplicationPackage", "snowflakeApplicationPackage"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_IS_APPLICATION = BooleanField(
-    "snowflakeListingIsApplication", "snowflakeListingIsApplication"
+SnowflakeListing.SNOWFLAKE_CATEGORIES = KeywordField(
+    "snowflakeCategories", "snowflakeCategories"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_APPLICATION_PACKAGE = KeywordField(
-    "snowflakeListingApplicationPackage", "snowflakeListingApplicationPackage"
+SnowflakeListing.SNOWFLAKE_DATA_ATTRIBUTES = KeywordField(
+    "snowflakeDataAttributes", "snowflakeDataAttributes"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_CATEGORIES = KeywordField(
-    "snowflakeListingCategories", "snowflakeListingCategories"
+SnowflakeListing.SNOWFLAKE_TERMS = KeywordField("snowflakeTerms", "snowflakeTerms")
+SnowflakeListing.SNOWFLAKE_PROFILE = KeywordField(
+    "snowflakeProfile", "snowflakeProfile"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_DATA_ATTRIBUTES = KeywordField(
-    "snowflakeListingDataAttributes", "snowflakeListingDataAttributes"
+SnowflakeListing.SNOWFLAKE_SUPPORT_CONTACT = KeywordField(
+    "snowflakeSupportContact", "snowflakeSupportContact"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_TERMS = KeywordField(
-    "snowflakeListingTerms", "snowflakeListingTerms"
+SnowflakeListing.SNOWFLAKE_RESHARING = KeywordField(
+    "snowflakeResharing", "snowflakeResharing"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_PROFILE = KeywordField(
-    "snowflakeListingProfile", "snowflakeListingProfile"
+SnowflakeListing.SNOWFLAKE_AUTO_FULFILLMENT = KeywordField(
+    "snowflakeAutoFulfillment", "snowflakeAutoFulfillment"
 )
-SnowflakeListing.SNOWFLAKE_LISTING_SUPPORT_CONTACT = KeywordField(
-    "snowflakeListingSupportContact", "snowflakeListingSupportContact"
-)
-SnowflakeListing.SNOWFLAKE_LISTING_RESHARING = KeywordField(
-    "snowflakeListingResharing", "snowflakeListingResharing"
-)
-SnowflakeListing.SNOWFLAKE_LISTING_AUTO_FULFILLMENT = KeywordField(
-    "snowflakeListingAutoFulfillment", "snowflakeListingAutoFulfillment"
-)
-SnowflakeListing.SNOWFLAKE_LISTING_TARGETS = KeywordField(
-    "snowflakeListingTargets", "snowflakeListingTargets"
+SnowflakeListing.SNOWFLAKE_TARGETS = KeywordField(
+    "snowflakeTargets", "snowflakeTargets"
 )
 SnowflakeListing.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakeListing.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
