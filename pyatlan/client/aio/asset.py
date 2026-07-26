@@ -343,6 +343,12 @@ class AsyncAssetClient:
         """
         Async save method - creates or updates assets based on qualified_name.
 
+        When using AtlanTag with semantic values:
+        - APPEND: adds/updates the tag using addOrUpdateClassifications
+        - REMOVE: removes the tag using removeClassifications
+        - REPLACE: replaces all tags on the asset
+        - None: uses existing logic based on replace_atlan_tags and append_atlan_tags flags
+
         :param entity: one or more assets to save
         :param replace_atlan_tags: whether to replace AtlanTags during an update
         :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
@@ -352,7 +358,22 @@ class AsyncAssetClient:
         :raises AtlanError: on any API communication issue
         :raises ApiError: if a connection was created and blocking until policies are synced overruns the retry limit
         """
+        # Convert entity to list for consistent handling
+        entities: List[Asset] = []
+        if isinstance(entity, list):
+            entities.extend(entity)
+        else:
+            entities.append(entity)
 
+        # Check if any entity has tags with semantic
+        if Save.has_tags_with_semantic(entities):
+            return await self._save_with_tag_semantic(
+                entities=entities,
+                replace_custom_metadata=replace_custom_metadata,
+                overwrite_custom_metadata=overwrite_custom_metadata,
+            )
+
+        # Use existing logic for backward compatibility
         query_params, request = await Save.prepare_request_async(
             entity=entity,
             replace_atlan_tags=replace_atlan_tags,
@@ -365,6 +386,54 @@ class AsyncAssetClient:
         response = Save.process_response(raw_json)
         if connections_created := response.assets_created(Connection):
             await self._wait_for_connections_to_be_created(connections_created)
+        return response
+
+    async def _save_with_tag_semantic(
+        self,
+        entities: List[Asset],
+        replace_custom_metadata: bool = False,
+        overwrite_custom_metadata: bool = False,
+    ) -> AssetMutationResponse:
+        """
+        Internal async method to handle saving assets with tag semantic values.
+        Updates query params based on semantics and makes a single API call.
+
+        If entities have APPEND/REMOVE semantic tags → appendTags=True
+        If entities have REPLACE semantic tags → replaceTags=True
+        If both are present → both flags True → backend error (user must make separate calls)
+
+        :param entities: list of assets to save
+        :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
+        :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values
+        :returns: AssetMutationResponse from the API call
+        """
+        # Determine which flags to set based on semantics present
+        has_append_remove, has_replace = Save.get_semantic_flags(entities)
+
+        # Process entities with APPEND/REMOVE semantic to set classification fields
+        for entity in entities:
+            Save.process_asset_for_append_remove_semantic(entity)
+
+        # Validate and flush custom metadata
+        await Save.validate_and_flush_entities_async(entities, self._client)  # type: ignore[arg-type]
+
+        # Build query params based on semantics
+        # If user mixes APPEND/REMOVE and REPLACE, both flags will be True → backend error
+        query_params = {
+            "replaceTags": has_replace,
+            "appendTags": has_append_remove,
+            "replaceBusinessAttributes": replace_custom_metadata,
+            "overwriteBusinessAttributes": overwrite_custom_metadata,
+        }
+
+        request = BulkRequest[Asset](entities=entities)
+        raw_json = await self._client._call_api(BULK_UPDATE, query_params, request)
+        response = Save.process_response(raw_json)
+
+        # Handle connection waiting for any created connections
+        if connections_created := response.assets_created(Connection):
+            await self._wait_for_connections_to_be_created(connections_created)
+
         return response
 
     async def _wait_for_connections_to_be_created(self, connections_created):
