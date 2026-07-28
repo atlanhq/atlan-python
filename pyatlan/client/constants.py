@@ -633,6 +633,14 @@ DELETE_TYPE_DEF_BY_NAME = API(
 SSO_API = "idp/"
 SSO_GROUP_MAPPER = SSO_API + "{sso_alias}/mappers"
 
+GET_ALL_IDPS = API("idp", HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES)
+UPDATE_IDP = API(
+    SSO_API + "{sso_alias}",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
 GET_SSO_GROUP_MAPPING = API(
     SSO_GROUP_MAPPER + "/{group_map_id}",
     HTTPMethod.GET,

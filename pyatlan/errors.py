@@ -284,6 +284,15 @@ class ErrorCode(Enum):
         "a new connection. Without at least one admin, the connection will be inaccessible to all.",
         InvalidRequestError,
     )
+    INVALID_CERTIFICATE = (
+        400,
+        "ATLAN-PYTHON-400-080",
+        "Invalid signing certificate: {0}.",
+        "The SSO configuration stores one X.509 certificate as a single line of "
+        "base64, with no BEGIN/END lines and no line breaks. PEM input is "
+        "accepted and converted to that form.",
+        InvalidRequestError,
+    )
     MISSING_PERSONA_ID = (
         400,
         "ATLAN-PYTHON-400-023",
@@ -993,6 +1002,13 @@ class ErrorCode(Enum):
         "ATLAN-PYTHON-404-030",
         "Role '{0}' does not exist. Available roles: {1}",
         "Verify the role description provided matches one of the available roles.",
+        NotFoundError,
+    )
+    IDP_NOT_FOUND_BY_ALIAS = (
+        404,
+        "ATLAN-PYTHON-404-031",
+        "Identity provider with alias '{0}' does not exist.",
+        "Verify the SSO provider alias (for example: 'azure', 'okta', 'google').",
         NotFoundError,
     )
     CONFLICT_PASSTHROUGH = (
