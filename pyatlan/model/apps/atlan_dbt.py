@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 import json
-
 from typing import Any, ClassVar, Dict, Literal, Optional, Union
 
 from pydantic.v1 import Field
