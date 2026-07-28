@@ -4,20 +4,105 @@
 
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime
-from typing import ClassVar, List, Optional
+from typing import ClassVar, Dict, List, Optional, Union
 
 from pydantic.v1 import Field, validator
 
 from pyatlan.model.enums import SqlInsightJoinCardinality, SqlInsightJoinType
 from pyatlan.model.fields.atlan_fields import KeywordField, NumericField, RelationField
 from pyatlan.model.structs import PopularityInsights, SqlInsightJoinColumnPair
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .sql_insight import SqlInsight
 
 
 class SqlInsightJoin(SqlInsight):
     """Description"""
+
+    @staticmethod
+    def generate_qualified_name(
+        *,
+        source_qualified_name: str,
+        joined_qualified_name: str,
+        column_pairs: List[Dict[str, str]],
+        join_type: Union[SqlInsightJoinType, str] = SqlInsightJoinType.INNER,
+    ) -> str:
+        """
+        Derive the deterministic qualifiedName for a SqlInsightJoin, identical to
+        the SQL-Intelligence miner's formula — so a human-confirmed join and a
+        later mined observation of the same join converge on one entity instead
+        of duplicating:
+
+        ``source_qn || '/join/' || md5(joined_qn || '|' || sorted_pairs || '|' || join_type)``
+
+        where ``sorted_pairs`` joins ``SOURCE=JOINED`` bare column names with
+        commas, ordered by source column.
+
+        :param source_qualified_name: unique name of the source (left) dataset
+        :param joined_qualified_name: unique name of the joined (right) dataset
+        :param column_pairs: join keys as dicts with bare (unqualified) column
+            names, e.g. ``[{"source_column": "ACCOUNT_ID", "joined_column": "ACCOUNTID"}]``
+        :param join_type: type of the join (INNER, LEFT, RIGHT, FULL, CROSS)
+        :returns: the deterministic qualifiedName for the join entity
+        """
+        join_type_value = (
+            join_type.value
+            if isinstance(join_type, SqlInsightJoinType)
+            else str(join_type)
+        )
+        sorted_pairs = ",".join(
+            f"{pair['source_column']}={pair['joined_column']}"
+            for pair in sorted(column_pairs, key=lambda pair: pair["source_column"])
+        )
+        digest = hashlib.md5(  # noqa: S324 (miner-compatible identity, not crypto)
+            f"{joined_qualified_name}|{sorted_pairs}|{join_type_value}".encode()
+        ).hexdigest()
+        return f"{source_qualified_name}/join/{digest}"
+
+    @classmethod
+    @init_guid
+    def creator(
+        cls,
+        *,
+        source_dataset: SQL,
+        joined_dataset: SQL,
+        column_pairs: List[Dict[str, str]],
+        join_type: SqlInsightJoinType = SqlInsightJoinType.INNER,
+        cardinality: SqlInsightJoinCardinality = SqlInsightJoinCardinality.MANY_TO_ONE,
+        when_to_use: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> SqlInsightJoin:
+        """
+        Create a SqlInsightJoin between two SQL datasets, carrying both the
+        string qualified-name attributes (read by metadata-lakehouse consumers)
+        and the dataset relationship edges (rendered on the asset page) — plus a
+        deterministic, miner-identical qualifiedName so repeated confirmation or
+        a later mined observation converges on the same entity.
+
+        :param source_dataset: source (left) dataset, e.g.
+            ``Table.ref_by_qualified_name(...)`` or a search result — must carry
+            its real type (Table / View / MaterialisedView) and qualifiedName
+        :param joined_dataset: joined (right) dataset, same requirements
+        :param column_pairs: join keys as dicts with bare (unqualified) column
+            names, e.g. ``[{"source_column": "ACCOUNT_ID", "joined_column": "ACCOUNTID"}]``
+        :param join_type: type of the join (defaults to INNER)
+        :param cardinality: cardinality of the join (defaults to MANY_TO_ONE)
+        :param when_to_use: optional guidance on when this join should be used
+        :param name: optional display name (defaults to "<SOURCE> JOIN <JOINED>")
+        :returns: the minimal request to create the SqlInsightJoin
+        """
+        attributes = SqlInsightJoin.Attributes.creator(
+            source_dataset=source_dataset,
+            joined_dataset=joined_dataset,
+            column_pairs=column_pairs,
+            join_type=join_type,
+            cardinality=cardinality,
+            when_to_use=when_to_use,
+            name=name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field(default="SqlInsightJoin", allow_mutation=False)
 
@@ -352,6 +437,74 @@ class SqlInsightJoin(SqlInsight):
         sql_insight_joined_dataset: Optional[SQL] = Field(
             default=None, description=""
         )  # relationship
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            source_dataset: SQL,
+            joined_dataset: SQL,
+            column_pairs: List[Dict[str, str]],
+            join_type: SqlInsightJoinType = SqlInsightJoinType.INNER,
+            cardinality: SqlInsightJoinCardinality = SqlInsightJoinCardinality.MANY_TO_ONE,
+            when_to_use: Optional[str] = None,
+            name: Optional[str] = None,
+        ) -> SqlInsightJoin.Attributes:
+            validate_required_fields(
+                ["source_dataset", "joined_dataset", "column_pairs"],
+                [source_dataset, joined_dataset, column_pairs],
+            )
+            source_qualified_name = source_dataset.qualified_name
+            joined_qualified_name = joined_dataset.qualified_name
+            validate_required_fields(
+                ["source_dataset.qualified_name", "joined_dataset.qualified_name"],
+                [source_qualified_name, joined_qualified_name],
+            )
+            for pair in column_pairs:
+                if (
+                    not isinstance(pair, dict)
+                    or not pair.get("source_column")
+                    or not pair.get("joined_column")
+                ):
+                    raise ValueError(
+                        "each column pair must be a dict with non-empty "
+                        "'source_column' and 'joined_column' bare column names"
+                    )
+            return SqlInsightJoin.Attributes(
+                name=name
+                or (
+                    f"{source_qualified_name.rsplit('/', 1)[-1]} JOIN "  # type: ignore[union-attr]
+                    f"{joined_qualified_name.rsplit('/', 1)[-1]}"  # type: ignore[union-attr]
+                ),
+                qualified_name=SqlInsightJoin.generate_qualified_name(
+                    source_qualified_name=source_qualified_name,  # type: ignore[arg-type]
+                    joined_qualified_name=joined_qualified_name,  # type: ignore[arg-type]
+                    column_pairs=column_pairs,
+                    join_type=join_type,
+                ),
+                sql_insight_join_source_dataset_qualified_name=source_qualified_name,
+                sql_insight_join_joined_dataset_qualified_name=joined_qualified_name,
+                sql_insight_join_type=join_type,
+                sql_insight_join_cardinality=cardinality,
+                sql_insight_join_when_to_use=when_to_use,
+                sql_insight_join_column_pairs=[
+                    SqlInsightJoinColumnPair(
+                        sql_insight_join_column_pair_source_column_qualified_name=(
+                            f"{source_qualified_name}/{pair['source_column']}"
+                        ),
+                        sql_insight_join_column_pair_joined_column_qualified_name=(
+                            f"{joined_qualified_name}/{pair['joined_column']}"
+                        ),
+                    )
+                    for pair in column_pairs
+                ],
+                # A human-declared join has no observed usage: never claim any.
+                sql_insight_join_query_count=0,
+                sql_insight_join_unique_users=0,
+                sql_insight_source_dataset=source_dataset,
+                sql_insight_joined_dataset=joined_dataset,
+            )
 
     attributes: SqlInsightJoin.Attributes = Field(
         default_factory=lambda: SqlInsightJoin.Attributes(),
