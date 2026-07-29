@@ -1,3 +1,9 @@
+## 9.11.0 (July 29, 2026)
+
+### New Features
+
+- **`SqlInsightJoin.creator()` with miner-identical qualifiedName**: Added a typed `creator()` for `SqlInsightJoin` (previously only `updater()` existed), so SDK callers — the Atlan MCP server's `create_sql_insight_join` tool first among them — can author human-confirmed SQL-Intelligence join relationships without hand-building raw Atlas payloads. The new public `SqlInsightJoin.generate_qualified_name()` derives the deterministic identity (`source_qn/join/md5(joined_qn|sorted_pairs|join_type)`) byte-identically to the SQL-Intelligence miner, so a human-confirmed join and a later mined observation of the same join converge on one entity instead of duplicating. The creator writes both anchorings — the string qualified-name attributes and `sqlInsightJoinColumnPairs` (read by metadata-lakehouse consumers) and both `sqlInsightSourceDataset`/`sqlInsightJoinedDataset` relationship edges (rendered on the asset page) — and pins `queryCount`/`uniqueUsers` to 0, since a human-declared join has no observed usage. Covered by unit tests (including a byte-exact digest golden against a live mined row) and integration tests (create, read-back with live edges, upsert convergence on the same guid).
+
 ## 9.10.3 (July 22, 2026)
 
 ### New Features
