@@ -1,0 +1,68 @@
+
+        @classmethod
+        @init_guid
+        def creator(
+            cls,
+            *,
+            source_dataset: SQL,
+            joined_dataset: SQL,
+            column_pairs: List[Dict[str, str]],
+            join_type: SqlInsightJoinType = SqlInsightJoinType.INNER,
+            cardinality: SqlInsightJoinCardinality = SqlInsightJoinCardinality.MANY_TO_ONE,
+            when_to_use: Optional[str] = None,
+            name: Optional[str] = None,
+        ) -> SqlInsightJoin.Attributes:
+            validate_required_fields(
+                ["source_dataset", "joined_dataset", "column_pairs"],
+                [source_dataset, joined_dataset, column_pairs],
+            )
+            source_qualified_name = source_dataset.qualified_name
+            joined_qualified_name = joined_dataset.qualified_name
+            validate_required_fields(
+                ["source_dataset.qualified_name", "joined_dataset.qualified_name"],
+                [source_qualified_name, joined_qualified_name],
+            )
+            for pair in column_pairs:
+                if (
+                    not isinstance(pair, dict)
+                    or not pair.get("source_column")
+                    or not pair.get("joined_column")
+                ):
+                    raise ValueError(
+                        "each column pair must be a dict with non-empty "
+                        "'source_column' and 'joined_column' bare column names"
+                    )
+            return SqlInsightJoin.Attributes(
+                name=name
+                or (
+                    f"{source_qualified_name.rsplit('/', 1)[-1]} JOIN "  # type: ignore[union-attr]
+                    f"{joined_qualified_name.rsplit('/', 1)[-1]}"  # type: ignore[union-attr]
+                ),
+                qualified_name=SqlInsightJoin.generate_qualified_name(
+                    source_qualified_name=source_qualified_name,  # type: ignore[arg-type]
+                    joined_qualified_name=joined_qualified_name,  # type: ignore[arg-type]
+                    column_pairs=column_pairs,
+                    join_type=join_type,
+                ),
+                sql_insight_join_source_dataset_qualified_name=source_qualified_name,
+                sql_insight_join_joined_dataset_qualified_name=joined_qualified_name,
+                sql_insight_join_type=join_type,
+                sql_insight_join_cardinality=cardinality,
+                sql_insight_join_when_to_use=when_to_use,
+                sql_insight_join_column_pairs=[
+                    SqlInsightJoinColumnPair(
+                        sql_insight_join_column_pair_source_column_qualified_name=(
+                            f"{source_qualified_name}/{pair['source_column']}"
+                        ),
+                        sql_insight_join_column_pair_joined_column_qualified_name=(
+                            f"{joined_qualified_name}/{pair['joined_column']}"
+                        ),
+                    )
+                    for pair in column_pairs
+                ],
+                # A human-declared join has no observed usage: never claim any.
+                sql_insight_join_query_count=0,
+                sql_insight_join_unique_users=0,
+                sql_insight_source_dataset=source_dataset,
+                sql_insight_joined_dataset=joined_dataset,
+            )
