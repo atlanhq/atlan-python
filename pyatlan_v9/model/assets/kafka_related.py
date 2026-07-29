@@ -224,7 +224,7 @@ class RelatedAzureEventHub(RelatedKafka):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AzureEventHub" so it serializes correctly
 
-    azure_event_hub_status: Union[str, None, UnsetType] = UNSET
+    kafka_status: Union[str, None, UnsetType] = UNSET
     """Operational status of the Azure Event Hub at the source."""
 
     def __post_init__(self) -> None:

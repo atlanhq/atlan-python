@@ -10,6 +10,7 @@ This module provides convenient imports for all SAP types and their Related vari
 
 from .sap import SAP
 from .sap_column_process import SAPColumnProcess
+from .sap_datasphere_replication_flow import SapDatasphereReplicationFlow
 from .sap_erp_abap_program import SapErpAbapProgram
 from .sap_erp_cds_view import SapErpCdsView
 from .sap_erp_column import SapErpColumn
@@ -23,6 +24,7 @@ from .sap_process import SAPProcess
 from .sap_related import (
     RelatedSAP,
     RelatedSAPColumnProcess,
+    RelatedSapDatasphereReplicationFlow,
     RelatedSapErpAbapProgram,
     RelatedSapErpCdsView,
     RelatedSapErpColumn,
@@ -39,6 +41,7 @@ __all__ = [
     "RelatedSAP",
     "RelatedSAPColumnProcess",
     "RelatedSAPProcess",
+    "RelatedSapDatasphereReplicationFlow",
     "RelatedSapErpAbapProgram",
     "RelatedSapErpCdsView",
     "RelatedSapErpColumn",
@@ -51,6 +54,7 @@ __all__ = [
     "SAP",
     "SAPColumnProcess",
     "SAPProcess",
+    "SapDatasphereReplicationFlow",
     "SapErpAbapProgram",
     "SapErpCdsView",
     "SapErpColumn",

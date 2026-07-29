@@ -11,6 +11,10 @@ These classes are used for relationship attributes to reference related entities
 
 from __future__ import annotations
 
+from typing import Union
+
+from msgspec import UNSET, UnsetType
+
 from .artifact_related import RelatedArtifact
 from .referenceable_related import RelatedReferenceable
 
@@ -28,6 +32,9 @@ class RelatedSkillArtifact(RelatedArtifact):
 
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SkillArtifact" so it serializes correctly
+
+    skill_artifact_content: Union[str, None, UnsetType] = UNSET
+    """Full textual body of this skill artifact file (for example, the markdown of SKILL.md or the source of a script). Stored per-artifact because a skill folder contains many files, each with distinct content."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
