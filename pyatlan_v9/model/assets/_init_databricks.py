@@ -11,6 +11,7 @@ This module provides convenient imports for all Databricks types and their Relat
 from .databricks import Databricks
 from .databricks_ai_model_context import DatabricksAIModelContext
 from .databricks_ai_model_version import DatabricksAIModelVersion
+from .databricks_dashboard import DatabricksDashboard
 from .databricks_external_location import DatabricksExternalLocation
 from .databricks_external_location_path import DatabricksExternalLocationPath
 from .databricks_metric_view import DatabricksMetricView
@@ -19,6 +20,7 @@ from .databricks_related import (
     RelatedDatabricks,
     RelatedDatabricksAIModelContext,
     RelatedDatabricksAIModelVersion,
+    RelatedDatabricksDashboard,
     RelatedDatabricksExternalLocation,
     RelatedDatabricksExternalLocationPath,
     RelatedDatabricksMetricView,
@@ -34,6 +36,7 @@ __all__ = [
     "Databricks",
     "DatabricksAIModelContext",
     "DatabricksAIModelVersion",
+    "DatabricksDashboard",
     "DatabricksExternalLocation",
     "DatabricksExternalLocationPath",
     "DatabricksMetricView",
@@ -43,6 +46,7 @@ __all__ = [
     "RelatedDatabricks",
     "RelatedDatabricksAIModelContext",
     "RelatedDatabricksAIModelVersion",
+    "RelatedDatabricksDashboard",
     "RelatedDatabricksExternalLocation",
     "RelatedDatabricksExternalLocationPath",
     "RelatedDatabricksMetricView",

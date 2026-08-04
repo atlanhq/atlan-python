@@ -59,6 +59,7 @@ from .partial_related import RelatedPartialField, RelatedPartialObject
 from .process_related import RelatedProcess
 from .referenceable_related import RelatedReferenceable
 from .resource_related import RelatedFile, RelatedLink, RelatedReadme
+from .sap_related import RelatedSapDatasphereReplicationFlow
 from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeAIModelContext,
@@ -175,6 +176,7 @@ class IcebergNamespace(Asset):
     FILES: ClassVar[Any] = None
     LINKS: ClassVar[Any] = None
     README: ClassVar[Any] = None
+    SAP_DATASPHERE_REPLICATION_FLOWS: ClassVar[Any] = None
     CALCULATION_VIEWS: ClassVar[Any] = None
     FUNCTIONS: ClassVar[Any] = None
     MATERIALISED_VIEWS: ClassVar[Any] = None
@@ -182,6 +184,7 @@ class IcebergNamespace(Asset):
     DATABASE: ClassVar[Any] = None
     TABLES: ClassVar[Any] = None
     VIEWS: ClassVar[Any] = None
+    SQL_DATABASES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SNOWFLAKE_DYNAMIC_TABLES: ClassVar[Any] = None
     SNOWFLAKE_PIPES: ClassVar[Any] = None
@@ -197,6 +200,8 @@ class IcebergNamespace(Asset):
     SQL_INSIGHT_OUTGOING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "IcebergNamespace"
 
     iceberg_parent_namespace_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the immediate parent namespace in which this asset exists."""
@@ -448,6 +453,11 @@ class IcebergNamespace(Asset):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_replication_flows: Union[
+        List[RelatedSapDatasphereReplicationFlow], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
+
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
 
@@ -468,6 +478,9 @@ class IcebergNamespace(Asset):
 
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
+
+    sql_databases: Union[List[RelatedDatabase], None, UnsetType] = UNSET
+    """Databases to which this schema belongs."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -538,70 +551,6 @@ class IcebergNamespace(Asset):
     # =========================================================================
 
     _QUALIFIED_NAME_PATTERN: ClassVar[re.Pattern] = re.compile(r"^.+/[^/]+/[^/]+$")
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this IcebergNamespace instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-        if errors:
-            raise ValueError(f"IcebergNamespace validation failed: {errors}")
-
-    def minimize(self) -> "IcebergNamespace":
-        """
-        Return a minimal copy of this IcebergNamespace with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new IcebergNamespace with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new IcebergNamespace instance with only the minimum required fields.
-        """
-        self.validate()
-        return IcebergNamespace(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedIcebergNamespace":
-        """
-        Create a :class:`RelatedIcebergNamespace` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedIcebergNamespace reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedIcebergNamespace(guid=self.guid)
-        return RelatedIcebergNamespace(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -914,6 +863,11 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
     readme: Union[RelatedReadme, None, UnsetType] = UNSET
     """README that is linked to this asset."""
 
+    sap_datasphere_replication_flows: Union[
+        List[RelatedSapDatasphereReplicationFlow], None, UnsetType
+    ] = UNSET
+    """SAP Datasphere replication flows that create tables within this schema (Datasphere space)."""
+
     calculation_views: Union[List[RelatedCalculationView], None, UnsetType] = UNSET
     """Calculation views that exist within this schema."""
 
@@ -934,6 +888,9 @@ class IcebergNamespaceRelationshipAttributes(AssetRelationshipAttributes):
 
     views: Union[List[RelatedView], None, UnsetType] = UNSET
     """Views that exist within this schema."""
+
+    sql_databases: Union[List[RelatedDatabase], None, UnsetType] = UNSET
+    """Databases to which this schema belongs."""
 
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
@@ -1056,6 +1013,7 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "files",
     "links",
     "readme",
+    "sap_datasphere_replication_flows",
     "calculation_views",
     "functions",
     "materialised_views",
@@ -1063,6 +1021,7 @@ _ICEBERG_NAMESPACE_REL_FIELDS: List[str] = [
     "database",
     "tables",
     "views",
+    "sql_databases",
     "schema_registry_subjects",
     "snowflake_dynamic_tables",
     "snowflake_pipes",
@@ -1229,9 +1188,6 @@ def _iceberg_namespace_to_nested(
         is_incomplete=iceberg_namespace.is_incomplete,
         provenance_type=iceberg_namespace.provenance_type,
         home_id=iceberg_namespace.home_id,
-        depth=iceberg_namespace.depth,
-        immediate_upstream=iceberg_namespace.immediate_upstream,
-        immediate_downstream=iceberg_namespace.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1265,6 +1221,7 @@ def _iceberg_namespace_from_nested(nested: IcebergNamespaceNested) -> IcebergNam
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1273,9 +1230,6 @@ def _iceberg_namespace_from_nested(nested: IcebergNamespaceNested) -> IcebergNam
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_iceberg_namespace_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1451,6 +1405,9 @@ IcebergNamespace.USER_DEF_RELATIONSHIP_FROM = RelationField("userDefRelationship
 IcebergNamespace.FILES = RelationField("files")
 IcebergNamespace.LINKS = RelationField("links")
 IcebergNamespace.README = RelationField("readme")
+IcebergNamespace.SAP_DATASPHERE_REPLICATION_FLOWS = RelationField(
+    "sapDatasphereReplicationFlows"
+)
 IcebergNamespace.CALCULATION_VIEWS = RelationField("calculationViews")
 IcebergNamespace.FUNCTIONS = RelationField("functions")
 IcebergNamespace.MATERIALISED_VIEWS = RelationField("materialisedViews")
@@ -1458,6 +1415,7 @@ IcebergNamespace.PROCEDURES = RelationField("procedures")
 IcebergNamespace.DATABASE = RelationField("database")
 IcebergNamespace.TABLES = RelationField("tables")
 IcebergNamespace.VIEWS = RelationField("views")
+IcebergNamespace.SQL_DATABASES = RelationField("sqlDatabases")
 IcebergNamespace.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 IcebergNamespace.SNOWFLAKE_DYNAMIC_TABLES = RelationField("snowflakeDynamicTables")
 IcebergNamespace.SNOWFLAKE_PIPES = RelationField("snowflakePipes")

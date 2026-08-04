@@ -61,7 +61,6 @@ from .schema_registry_related import RelatedSchemaRegistrySubject
 from .snowflake_related import (
     RelatedSnowflakeListing,
     RelatedSnowflakeSemanticLogicalTable,
-    RelatedSnowflakeShare,
 )
 from .soda_related import RelatedSodaCheck
 from .spark_related import RelatedSparkJob
@@ -81,11 +80,11 @@ class SnowflakeShare(Asset):
     Instance of a Snowflake share in Atlan.
     """
 
-    SNOWFLAKE_SHARE_KIND: ClassVar[Any] = None
-    SNOWFLAKE_SHARE_OWNER_ACCOUNT: ClassVar[Any] = None
-    SNOWFLAKE_SHARE_TARGET_ACCOUNTS: ClassVar[Any] = None
-    SNOWFLAKE_SHARE_LISTING_GLOBAL_NAME: ClassVar[Any] = None
-    SNOWFLAKE_SHARE_SECURE_OBJECT: ClassVar[Any] = None
+    SNOWFLAKE_KIND: ClassVar[Any] = None
+    SNOWFLAKE_OWNER_ACCOUNT: ClassVar[Any] = None
+    SNOWFLAKE_TARGET_ACCOUNTS: ClassVar[Any] = None
+    SNOWFLAKE_LISTING_GLOBAL_NAME: ClassVar[Any] = None
+    SNOWFLAKE_SECURE_OBJECT: ClassVar[Any] = None
     QUERY_COUNT: ClassVar[Any] = None
     QUERY_USER_COUNT: ClassVar[Any] = None
     QUERY_USER_MAP: ClassVar[Any] = None
@@ -164,19 +163,21 @@ class SnowflakeShare(Asset):
     SQL_INSIGHT_INCOMING_JOINS: ClassVar[Any] = None
     SQL_INSIGHT_BUSINESS_QUESTIONS: ClassVar[Any] = None
 
-    snowflake_share_kind: Union[str, None, UnsetType] = UNSET
+    type_name: Union[str, UnsetType] = "SnowflakeShare"
+
+    snowflake_kind: Union[str, None, UnsetType] = UNSET
     """Direction of the share (inbound or outbound)."""
 
-    snowflake_share_owner_account: Union[str, None, UnsetType] = UNSET
+    snowflake_owner_account: Union[str, None, UnsetType] = UNSET
     """Account that owns the share. Drives the share qualified name."""
 
-    snowflake_share_target_accounts: Union[List[str], None, UnsetType] = UNSET
+    snowflake_target_accounts: Union[List[str], None, UnsetType] = UNSET
     """Consumer accounts targeted by the share."""
 
-    snowflake_share_listing_global_name: Union[str, None, UnsetType] = UNSET
+    snowflake_listing_global_name: Union[str, None, UnsetType] = UNSET
     """Global name of the listing this share is bound to."""
 
-    snowflake_share_secure_object: Union[bool, None, UnsetType] = UNSET
+    snowflake_secure_object: Union[bool, None, UnsetType] = UNSET
     """Whether only secure objects are allowed in this share (true) or not (false)."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -443,72 +444,6 @@ class SnowflakeShare(Asset):
         r"^.+/share/[^/]+/[^/]+$"
     )
 
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SnowflakeShare instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        elif not self._QUALIFIED_NAME_PATTERN.match(self.qualified_name):
-            errors.append(
-                f"qualified_name '{self.qualified_name}' does not match expected "
-                f"pattern: {self._QUALIFIED_NAME_PATTERN.pattern}"
-            )
-        if for_creation:
-            if self.connection_qualified_name is UNSET:
-                errors.append("connection_qualified_name is required for creation")
-            if self.snowflake_listing is UNSET:
-                errors.append("snowflake_listing is required for creation")
-        if errors:
-            raise ValueError(f"SnowflakeShare validation failed: {errors}")
-
-    def minimize(self) -> "SnowflakeShare":
-        """
-        Return a minimal copy of this SnowflakeShare with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SnowflakeShare with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SnowflakeShare instance with only the minimum required fields.
-        """
-        self.validate()
-        return SnowflakeShare(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSnowflakeShare":
-        """
-        Create a :class:`RelatedSnowflakeShare` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSnowflakeShare reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSnowflakeShare(guid=self.guid)
-        return RelatedSnowflakeShare(qualified_name=self.qualified_name)
-
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
@@ -564,19 +499,19 @@ class SnowflakeShare(Asset):
 class SnowflakeShareAttributes(AssetAttributes):
     """SnowflakeShare-specific attributes for nested API format."""
 
-    snowflake_share_kind: Union[str, None, UnsetType] = UNSET
+    snowflake_kind: Union[str, None, UnsetType] = UNSET
     """Direction of the share (inbound or outbound)."""
 
-    snowflake_share_owner_account: Union[str, None, UnsetType] = UNSET
+    snowflake_owner_account: Union[str, None, UnsetType] = UNSET
     """Account that owns the share. Drives the share qualified name."""
 
-    snowflake_share_target_accounts: Union[List[str], None, UnsetType] = UNSET
+    snowflake_target_accounts: Union[List[str], None, UnsetType] = UNSET
     """Consumer accounts targeted by the share."""
 
-    snowflake_share_listing_global_name: Union[str, None, UnsetType] = UNSET
+    snowflake_listing_global_name: Union[str, None, UnsetType] = UNSET
     """Global name of the listing this share is bound to."""
 
-    snowflake_share_secure_object: Union[bool, None, UnsetType] = UNSET
+    snowflake_secure_object: Union[bool, None, UnsetType] = UNSET
     """Whether only secure objects are allowed in this share (true) or not (false)."""
 
     query_count: Union[int, None, UnsetType] = UNSET
@@ -909,11 +844,11 @@ def _populate_snowflake_share_attrs(
 ) -> None:
     """Populate SnowflakeShare-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
-    attrs.snowflake_share_kind = obj.snowflake_share_kind
-    attrs.snowflake_share_owner_account = obj.snowflake_share_owner_account
-    attrs.snowflake_share_target_accounts = obj.snowflake_share_target_accounts
-    attrs.snowflake_share_listing_global_name = obj.snowflake_share_listing_global_name
-    attrs.snowflake_share_secure_object = obj.snowflake_share_secure_object
+    attrs.snowflake_kind = obj.snowflake_kind
+    attrs.snowflake_owner_account = obj.snowflake_owner_account
+    attrs.snowflake_target_accounts = obj.snowflake_target_accounts
+    attrs.snowflake_listing_global_name = obj.snowflake_listing_global_name
+    attrs.snowflake_secure_object = obj.snowflake_secure_object
     attrs.query_count = obj.query_count
     attrs.query_user_count = obj.query_user_count
     attrs.query_user_map = obj.query_user_map
@@ -957,13 +892,11 @@ def _populate_snowflake_share_attrs(
 def _extract_snowflake_share_attrs(attrs: SnowflakeShareAttributes) -> dict:
     """Extract all SnowflakeShare attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
-    result["snowflake_share_kind"] = attrs.snowflake_share_kind
-    result["snowflake_share_owner_account"] = attrs.snowflake_share_owner_account
-    result["snowflake_share_target_accounts"] = attrs.snowflake_share_target_accounts
-    result["snowflake_share_listing_global_name"] = (
-        attrs.snowflake_share_listing_global_name
-    )
-    result["snowflake_share_secure_object"] = attrs.snowflake_share_secure_object
+    result["snowflake_kind"] = attrs.snowflake_kind
+    result["snowflake_owner_account"] = attrs.snowflake_owner_account
+    result["snowflake_target_accounts"] = attrs.snowflake_target_accounts
+    result["snowflake_listing_global_name"] = attrs.snowflake_listing_global_name
+    result["snowflake_secure_object"] = attrs.snowflake_secure_object
     result["query_count"] = attrs.query_count
     result["query_user_count"] = attrs.query_user_count
     result["query_user_map"] = attrs.query_user_map
@@ -1046,9 +979,6 @@ def _snowflake_share_to_nested(snowflake_share: SnowflakeShare) -> SnowflakeShar
         is_incomplete=snowflake_share.is_incomplete,
         provenance_type=snowflake_share.provenance_type,
         home_id=snowflake_share.home_id,
-        depth=snowflake_share.depth,
-        immediate_upstream=snowflake_share.immediate_upstream,
-        immediate_downstream=snowflake_share.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -1082,6 +1012,7 @@ def _snowflake_share_from_nested(nested: SnowflakeShareNested) -> SnowflakeShare
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -1090,9 +1021,6 @@ def _snowflake_share_from_nested(nested: SnowflakeShareNested) -> SnowflakeShare
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_snowflake_share_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -1123,20 +1051,18 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
     RelationField,
 )
 
-SnowflakeShare.SNOWFLAKE_SHARE_KIND = KeywordField(
-    "snowflakeShareKind", "snowflakeShareKind"
+SnowflakeShare.SNOWFLAKE_KIND = KeywordField("snowflakeKind", "snowflakeKind")
+SnowflakeShare.SNOWFLAKE_OWNER_ACCOUNT = KeywordField(
+    "snowflakeOwnerAccount", "snowflakeOwnerAccount"
 )
-SnowflakeShare.SNOWFLAKE_SHARE_OWNER_ACCOUNT = KeywordField(
-    "snowflakeShareOwnerAccount", "snowflakeShareOwnerAccount"
+SnowflakeShare.SNOWFLAKE_TARGET_ACCOUNTS = KeywordField(
+    "snowflakeTargetAccounts", "snowflakeTargetAccounts"
 )
-SnowflakeShare.SNOWFLAKE_SHARE_TARGET_ACCOUNTS = KeywordField(
-    "snowflakeShareTargetAccounts", "snowflakeShareTargetAccounts"
+SnowflakeShare.SNOWFLAKE_LISTING_GLOBAL_NAME = KeywordField(
+    "snowflakeListingGlobalName", "snowflakeListingGlobalName"
 )
-SnowflakeShare.SNOWFLAKE_SHARE_LISTING_GLOBAL_NAME = KeywordField(
-    "snowflakeShareListingGlobalName", "snowflakeShareListingGlobalName"
-)
-SnowflakeShare.SNOWFLAKE_SHARE_SECURE_OBJECT = BooleanField(
-    "snowflakeShareSecureObject", "snowflakeShareSecureObject"
+SnowflakeShare.SNOWFLAKE_SECURE_OBJECT = BooleanField(
+    "snowflakeSecureObject", "snowflakeSecureObject"
 )
 SnowflakeShare.QUERY_COUNT = NumericField("queryCount", "queryCount")
 SnowflakeShare.QUERY_USER_COUNT = NumericField("queryUserCount", "queryUserCount")
