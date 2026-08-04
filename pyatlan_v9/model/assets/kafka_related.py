@@ -209,6 +209,24 @@ class RelatedKafkaField(RelatedKafka):
     kafka_field_schema_type: Union[str, None, UnsetType] = UNSET
     """Type of schema from which this field is derived, for example: key or value."""
 
+    kafka_parent_field_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the parent KafkaField in which this field is nested."""
+
+    kafka_parent_field_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the parent KafkaField in which this field is nested."""
+
+    kafka_field_depth_level: Union[int, None, UnsetType] = UNSET
+    """Level of nesting of this field (1 = direct child of topic schema, 2 = nested one level, etc.)."""
+
+    kafka_nested_field_count: Union[int, None, UnsetType] = UNSET
+    """Number of KafkaField assets directly nested within this field."""
+
+    kafka_nested_field_order: Union[str, None, UnsetType] = UNSET
+    """Order (position) in which this field appears within its parent nested field (nest level starts at 1)."""
+
+    kafka_field_hierarchies: Union[List[Dict[str, str]], None, UnsetType] = UNSET
+    """List of top-level upstream nested fields."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "KafkaField"
@@ -224,7 +242,7 @@ class RelatedAzureEventHub(RelatedKafka):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AzureEventHub" so it serializes correctly
 
-    azure_event_hub_status: Union[str, None, UnsetType] = UNSET
+    kafka_status: Union[str, None, UnsetType] = UNSET
     """Operational status of the Azure Event Hub at the source."""
 
     def __post_init__(self) -> None:
