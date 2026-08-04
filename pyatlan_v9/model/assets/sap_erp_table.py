@@ -105,10 +105,13 @@ class SapErpTable(Asset):
     README: ClassVar[Any] = None
     SAP_ERP_COLUMNS: ClassVar[Any] = None
     SAP_ERP_COMPONENT: ClassVar[Any] = None
+    SAP_ERP_RELATED_TABLES: ClassVar[Any] = None
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[Any] = None
     SODA_CHECKS: ClassVar[Any] = None
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
+
+    type_name: Union[str, UnsetType] = "SapErpTable"
 
     sap_erp_table_type: Union[str, None, UnsetType] = UNSET
     """Type of the SAP ERP table."""
@@ -238,6 +241,9 @@ class SapErpTable(Asset):
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP Tables that are associated with this SAP ERP Component."""
 
+    sap_erp_related_tables: Union[List[RelatedSapErpTable], None, UnsetType] = UNSET
+    """SAP ERP Tables that are related to this SAP ERP Table."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -254,66 +260,6 @@ class SapErpTable(Asset):
 
     def __post_init__(self) -> None:
         self.type_name = "SapErpTable"
-
-    # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this SapErpTable instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"SapErpTable validation failed: {errors}")
-
-    def minimize(self) -> "SapErpTable":
-        """
-        Return a minimal copy of this SapErpTable with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new SapErpTable with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new SapErpTable instance with only the minimum required fields.
-        """
-        self.validate()
-        return SapErpTable(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedSapErpTable":
-        """
-        Create a :class:`RelatedSapErpTable` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedSapErpTable reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedSapErpTable(guid=self.guid)
-        return RelatedSapErpTable(qualified_name=self.qualified_name)
 
     # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
@@ -502,6 +448,9 @@ class SapErpTableRelationshipAttributes(AssetRelationshipAttributes):
     sap_erp_component: Union[RelatedSapErpComponent, None, UnsetType] = UNSET
     """SAP ERP Tables that are associated with this SAP ERP Component."""
 
+    sap_erp_related_tables: Union[List[RelatedSapErpTable], None, UnsetType] = UNSET
+    """SAP ERP Tables that are related to this SAP ERP Table."""
+
     schema_registry_subjects: Union[
         List[RelatedSchemaRegistrySubject], None, UnsetType
     ] = UNSET
@@ -566,6 +515,7 @@ _SAP_ERP_TABLE_REL_FIELDS: List[str] = [
     "readme",
     "sap_erp_columns",
     "sap_erp_component",
+    "sap_erp_related_tables",
     "schema_registry_subjects",
     "soda_checks",
     "input_to_spark_jobs",
@@ -639,9 +589,6 @@ def _sap_erp_table_to_nested(sap_erp_table: SapErpTable) -> SapErpTableNested:
         is_incomplete=sap_erp_table.is_incomplete,
         provenance_type=sap_erp_table.provenance_type,
         home_id=sap_erp_table.home_id,
-        depth=sap_erp_table.depth,
-        immediate_upstream=sap_erp_table.immediate_upstream,
-        immediate_downstream=sap_erp_table.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -673,6 +620,7 @@ def _sap_erp_table_from_nested(nested: SapErpTableNested) -> SapErpTable:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -681,9 +629,6 @@ def _sap_erp_table_from_nested(nested: SapErpTableNested) -> SapErpTable:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_sap_erp_table_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -758,6 +703,7 @@ SapErpTable.LINKS = RelationField("links")
 SapErpTable.README = RelationField("readme")
 SapErpTable.SAP_ERP_COLUMNS = RelationField("sapErpColumns")
 SapErpTable.SAP_ERP_COMPONENT = RelationField("sapErpComponent")
+SapErpTable.SAP_ERP_RELATED_TABLES = RelationField("sapErpRelatedTables")
 SapErpTable.SCHEMA_REGISTRY_SUBJECTS = RelationField("schemaRegistrySubjects")
 SapErpTable.SODA_CHECKS = RelationField("sodaChecks")
 SapErpTable.INPUT_TO_SPARK_JOBS = RelationField("inputToSparkJobs")
