@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from typing import no_type_check
 from unittest.mock import MagicMock
 
@@ -41,6 +43,60 @@ class TestAtlanTag:
         sut = AtlanTag(**{"typeName": ""})
 
         assert sut.type_name == AtlanTagName.get_deleted_sentinel()
+
+    def test_declared_propagation_defaults_reach_the_wire(self):
+        """A tag built without propagation flags sends the SDK's declared
+        defaults — previously they were omitted and the server default
+        (propagate=True) silently won (BLDX-1589)."""
+        sut = AtlanTag(**{"typeName": "123"})
+
+        wire = json.loads(sut.json(by_alias=True, exclude_unset=True))
+        assert wire == {
+            "typeName": "123",
+            "propagate": False,
+            "removePropagationsOnEntityDelete": True,
+            "restrictPropagationThroughLineage": False,
+            "restrictPropagationThroughHierarchy": False,
+        }
+
+    def test_explicit_propagation_values_override_defaults(self):
+        """Explicitly-set propagation flags reach the wire unchanged
+        (BLDX-1589)."""
+        sut = AtlanTag(
+            **{"typeName": "123"},
+            propagate=True,
+            remove_propagations_on_entity_delete=False,
+            restrict_propagation_through_lineage=True,
+            restrict_propagation_through_hierarchy=True,
+        )
+
+        wire = json.loads(sut.json(by_alias=True, exclude_unset=True))
+        assert wire == {
+            "typeName": "123",
+            "propagate": True,
+            "removePropagationsOnEntityDelete": False,
+            "restrictPropagationThroughLineage": True,
+            "restrictPropagationThroughHierarchy": True,
+        }
+
+    def test_server_parsed_propagation_values_roundtrip_unchanged(self):
+        """Tags parsed from a server response keep the server's values on
+        re-serialization — the wire defaults never stomp them (BLDX-1589)."""
+        sut = AtlanTag(
+            **{
+                "typeName": "123",
+                "propagate": True,
+                "removePropagationsOnEntityDelete": False,
+                "restrictPropagationThroughLineage": True,
+                "restrictPropagationThroughHierarchy": True,
+            }
+        )
+
+        wire = json.loads(sut.json(by_alias=True, exclude_unset=True))
+        assert wire["propagate"] is True
+        assert wire["removePropagationsOnEntityDelete"] is False
+        assert wire["restrictPropagationThroughLineage"] is True
+        assert wire["restrictPropagationThroughHierarchy"] is True
 
 
 class TestAtlanObjectExtraFields:
