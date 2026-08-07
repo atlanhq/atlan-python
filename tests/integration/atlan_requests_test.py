@@ -1,15 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-"""Live tests for client.requests (classic Metadata Inbox) and client.inbox
-(governance-workflow approvals) — BLDX-1611.
+"""Live tests for client.requests (the classic Metadata Inbox / Requests
+module) — BLDX-1611. Fully self-contained: creates its own requests against
+a disposable term and verifies approval applies the change on the backend.
 
-The classic lifecycle is fully self-contained: it creates its own request
-against a disposable term and verifies approval applies the change on the
-backend. The inbox tests need a governance workflow to exist on the tenant
-(the `Governance Workflows and Inbox` Labs feature), so they are gated on
-ATLAN_TEST_WORKFLOW_GROUP_KEY.
+The governance-workflow Inbox (client.inbox) lives in inbox_test.py.
 """
-import os
 import time
 from typing import Generator
 
@@ -109,19 +105,3 @@ def test_reject_does_not_apply(client: AtlanClient, term: AtlasGlossaryTerm):
     assert asset.user_description != "requests-test-rejected", (
         "rejected request must not apply its change"
     )
-
-
-@pytest.mark.skipif(
-    not os.environ.get("ATLAN_TEST_WORKFLOW_GROUP_KEY"),
-    reason=(
-        "inbox bulk-action needs a tenant with the Governance Workflows Labs "
-        "feature and a pending task group — set ATLAN_TEST_WORKFLOW_GROUP_KEY"
-    ),
-)
-def test_inbox_bulk_action(client: AtlanClient):
-    group_key = os.environ["ATLAN_TEST_WORKFLOW_GROUP_KEY"]
-    response = client.inbox.reject_all(
-        group_key=group_key, comment="integration bulk reject"
-    )
-    assert response.total_tasks is not None
-    assert response.message
