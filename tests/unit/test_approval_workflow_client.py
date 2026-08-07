@@ -88,6 +88,21 @@ def test_bulk_action_body_is_snake_case(client, mock_api_caller, method, decisio
     mock_api_caller.reset_mock()
 
 
+def test_recipient_scoped_1003_gets_actionable_message(client, mock_api_caller):
+    """The server's misleading 'No pending tasks found' (1003) is translated
+    into a message explaining recipient scoping (BLDX-1611)."""
+    from pyatlan.errors import ErrorCode
+
+    mock_api_caller._call_api.side_effect = (
+        ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
+            "1003", "No pending tasks found for the specified group", ""
+        )
+    )
+    with pytest.raises(InvalidRequestError, match="recipient-scoped"):
+        client.approve_all(group_key=ASSET_GUID)
+    mock_api_caller.reset_mock(side_effect=True)
+
+
 def test_bulk_action_omits_optional_fields(client, mock_api_caller):
     """sub_type/comment stay off the wire when not given (exclude_unset)."""
     mock_api_caller._call_api.return_value = {"total_tasks": 1, "message": "ok"}

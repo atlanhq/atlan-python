@@ -12,12 +12,37 @@ from pyatlan.client.common import (
     ApprovalWorkflowBulkActionRequests,
     ApprovalWorkflowGetRequest,
 )
-from pyatlan.errors import ErrorCode
+from pyatlan.errors import ErrorCode, InvalidRequestError
 from pyatlan.model.enums import ApprovalWorkflowRequestType
 from pyatlan.model.approval_workflow import (
     ApprovalWorkflowBulkActionResponse,
     ApprovalWorkflowRequest,
 )
+
+
+def _raise_if_recipient_scoped(err: InvalidRequestError, group_key: str):
+    """Translate the server's misleading 1003 into an actionable message.
+
+    Bulk actions are RECIPIENT-scoped: the server reports "No pending tasks
+    found for the specified group" even when the group visibly has pending
+    tasks — whenever none of them are addressed to the calling identity.
+    """
+    if "No pending tasks found" not in str(err):
+        return
+    raise ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
+        "1003",
+        (
+            f"no pending tasks in group '{group_key}' are addressed to the "
+            "calling identity. Bulk approvals are recipient-scoped: only the "
+            "user a task is assigned to can action it — an admin role does "
+            "not override this. To automate approvals, configure the "
+            "governance workflow's approver to be the identity behind this "
+            "token (note: the workflow builder currently only supports "
+            "human users and groups as approvers, so automation may require "
+            "a user token)."
+        ),
+        "",
+    ) from err
 
 
 class ApprovalWorkflowClient:
@@ -72,7 +97,11 @@ class ApprovalWorkflowClient:
         endpoint, request_obj = ApprovalWorkflowBulkActionRequests.prepare_request(
             group_key, "APPROVED", sub_type, comment
         )
-        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        try:
+            raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        except InvalidRequestError as err:
+            _raise_if_recipient_scoped(err, group_key)
+            raise
         return ApprovalWorkflowBulkActionRequests.process_response(raw_json)
 
     @validate_arguments
@@ -96,5 +125,9 @@ class ApprovalWorkflowClient:
         endpoint, request_obj = ApprovalWorkflowBulkActionRequests.prepare_request(
             group_key, "REJECTED", sub_type, comment
         )
-        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        try:
+            raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        except InvalidRequestError as err:
+            _raise_if_recipient_scoped(err, group_key)
+            raise
         return ApprovalWorkflowBulkActionRequests.process_response(raw_json)
