@@ -82,6 +82,21 @@ def test_list_with_typed_filter(client, mock_api_caller):
     mock_api_caller.reset_mock()
 
 
+def test_actioned_records_with_list_approvers_parse():
+    """rejectedBy/approvedBy come back as LISTS for multi-approver requests —
+    a page containing already-actioned records must parse (regression: the
+    str-typed fields crashed list() on any tenant with actioned requests)."""
+    actioned = {
+        **RAW_REQUEST,
+        "status": "rejected",
+        "rejectedBy": ["admin-one", "admin-two"],
+        "approvedBy": [],
+    }
+    parsed = AtlanRequest(**actioned)
+    assert parsed.rejected_by == ["admin-one", "admin-two"]
+    assert parsed.approved_by == []
+
+
 def test_filter_builder_combines_with_and():
     """Multiple typed filters combine with AND; enums serialize to their
     wire values."""

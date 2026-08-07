@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, Generator, List, Optional
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from pydantic.v1 import Field, PrivateAttr, ValidationError, parse_obj_as
 
@@ -132,11 +132,19 @@ class AtlanRequest(AtlanObject):
         default=None,
         description="How the request must be approved: `single`, `unanimous` or `consesus`.",
     )
-    approved_by: Optional[str] = Field(
-        default=None, description="User who approved the request, if approved."
+    approved_by: Optional[Union[str, List[str]]] = Field(
+        default=None,
+        description=(
+            "User(s) who approved the request — a list when the request "
+            "has multiple approvers."
+        ),
     )
-    rejected_by: Optional[str] = Field(
-        default=None, description="User who rejected the request, if rejected."
+    rejected_by: Optional[Union[str, List[str]]] = Field(
+        default=None,
+        description=(
+            "User(s) who rejected the request — a list when the request "
+            "has multiple approvers."
+        ),
     )
     status: Optional[str] = Field(
         default=None,
