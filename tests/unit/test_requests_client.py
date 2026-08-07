@@ -86,15 +86,21 @@ def test_actioned_records_with_list_approvers_parse():
     """rejectedBy/approvedBy come back as LISTS for multi-approver requests —
     a page containing already-actioned records must parse (regression: the
     str-typed fields crashed list() on any tenant with actioned requests)."""
-    actioned = {
-        **RAW_REQUEST,
-        "status": "rejected",
-        "rejectedBy": ["admin-one", "admin-two"],
-        "approvedBy": [],
-    }
-    parsed = AtlanRequest(**actioned)
-    assert parsed.rejected_by == ["admin-one", "admin-two"]
-    assert parsed.approved_by == []
+    # every shape seen or plausible in the wild must parse
+    for rejected_by in (
+        "admin-one",
+        ["admin-one", "admin-two"],
+        [{"username": "admin-one", "timestamp": 1786100000000}],
+    ):
+        actioned = {
+            **RAW_REQUEST,
+            "status": "rejected",
+            "rejectedBy": rejected_by,
+            "approvedBy": [],
+        }
+        parsed = AtlanRequest(**actioned)
+        assert parsed.rejected_by == rejected_by
+        assert parsed.approved_by == []
 
 
 def test_filter_builder_combines_with_and():

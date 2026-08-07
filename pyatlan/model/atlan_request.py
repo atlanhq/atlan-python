@@ -132,18 +132,20 @@ class AtlanRequest(AtlanObject):
         default=None,
         description="How the request must be approved: `single`, `unanimous` or `consesus`.",
     )
-    approved_by: Optional[Union[str, List[str]]] = Field(
+    approved_by: Optional[Any] = Field(
         default=None,
         description=(
-            "User(s) who approved the request — a list when the request "
-            "has multiple approvers."
+            "Who approved the request. The wire shape varies by platform "
+            "version: a username string, a list of usernames, or a list of "
+            "approver-detail objects — kept untyped so every variant parses."
         ),
     )
-    rejected_by: Optional[Union[str, List[str]]] = Field(
+    rejected_by: Optional[Any] = Field(
         default=None,
         description=(
-            "User(s) who rejected the request — a list when the request "
-            "has multiple approvers."
+            "Who rejected the request. The wire shape varies by platform "
+            "version: a username string, a list of usernames, or a list of "
+            "approver-detail objects — kept untyped so every variant parses."
         ),
     )
     status: Optional[str] = Field(
