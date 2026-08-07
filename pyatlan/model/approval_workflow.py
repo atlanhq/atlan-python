@@ -67,11 +67,19 @@ class ApprovalWorkflowRequest(ApprovalWorkflowObject):
     updated_at: Optional[str] = Field(
         default=None, description="When the request was last updated."
     )
-    approval_details: Optional[List[Dict[str, Any]]] = Field(
-        default=None, description="Details of each approval stage."
+    approval_details: Optional[Any] = Field(
+        default=None,
+        description=(
+            "Details of the approval configuration/stages — wire shape "
+            "varies by platform version; kept untyped so every variant parses."
+        ),
     )
-    action_details: Optional[List[Dict[str, Any]]] = Field(
-        default=None, description="Details of actions taken on the request."
+    action_details: Optional[Any] = Field(
+        default=None,
+        description=(
+            "Details of actions taken on the request — wire shape varies "
+            "by platform version; kept untyped so every variant parses."
+        ),
     )
 
 
