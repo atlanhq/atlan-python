@@ -1,0 +1,99 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 Atlan Pte. Ltd.
+
+from __future__ import annotations
+
+from typing import Optional
+
+from pydantic.v1 import validate_arguments
+
+from pyatlan.client.common import (
+    ApiCaller,
+    ApprovalWorkflowBulkActionRequests,
+    ApprovalWorkflowGetRequest,
+)
+from pyatlan.errors import ErrorCode
+from pyatlan.model.approval_workflow import (
+    ApprovalWorkflowBulkActionResponse,
+    ApprovalWorkflowRequest,
+)
+
+
+class ApprovalWorkflowClient:
+    """
+    A client for the governance-workflow approval system (the newer Inbox,
+    enabled via the `Governance Workflows and Inbox` feature). For the classic
+    Requests module use `client.requests` instead — tenants can have both.
+
+    Inbox tasks are `Task` assets: list them with FluentSearch on the `Task`
+    type, then action them here using the task GUID (or the related asset
+    GUID) as the group key.
+    """
+
+    def __init__(self, client: ApiCaller):
+        if not isinstance(client, ApiCaller):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                "client", "ApiCaller"
+            )
+        self._client = client
+
+    @validate_arguments
+    def get(self, guid: str) -> Optional[ApprovalWorkflowRequest]:
+        """
+        Retrieve one approval-workflow request by its GUID.
+
+        :param guid: unique identifier of the workflow request
+        :raises AtlanError: on any error during API invocation.
+        :returns: the workflow request, or None if it does not exist
+        """
+        endpoint = ApprovalWorkflowGetRequest.prepare_request(guid)
+        raw_json = self._client._call_api(endpoint)
+        return ApprovalWorkflowGetRequest.process_response(raw_json)
+
+    @validate_arguments
+    def approve_all(
+        self,
+        group_key: str,
+        sub_type: Optional[str] = None,
+        comment: Optional[str] = None,
+    ) -> ApprovalWorkflowBulkActionResponse:
+        """
+        Bulk-approve all pending workflow tasks in a group.
+
+        :param group_key: task GUID or related asset GUID whose pending tasks
+            should be approved
+        :param sub_type: optional filter (CHANGE_MANAGEMENT, DATA_ACCESS,
+            PUBLICATION_MANAGEMENT, POLICY_APPROVAL)
+        :param comment: optional comment for the approval
+        :raises AtlanError: on any error during API invocation.
+        :returns: number of tasks queued for (async) processing
+        """
+        endpoint, request_obj = ApprovalWorkflowBulkActionRequests.prepare_request(
+            group_key, "APPROVED", sub_type, comment
+        )
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        return ApprovalWorkflowBulkActionRequests.process_response(raw_json)
+
+    @validate_arguments
+    def reject_all(
+        self,
+        group_key: str,
+        sub_type: Optional[str] = None,
+        comment: Optional[str] = None,
+    ) -> ApprovalWorkflowBulkActionResponse:
+        """
+        Bulk-reject all pending workflow tasks in a group.
+
+        :param group_key: task GUID or related asset GUID whose pending tasks
+            should be rejected
+        :param sub_type: optional filter (CHANGE_MANAGEMENT, DATA_ACCESS,
+            PUBLICATION_MANAGEMENT, POLICY_APPROVAL)
+        :param comment: optional comment for the rejection
+        :raises AtlanError: on any error during API invocation.
+        :returns: number of tasks queued for (async) processing
+        """
+        endpoint, request_obj = ApprovalWorkflowBulkActionRequests.prepare_request(
+            group_key, "REJECTED", sub_type, comment
+        )
+        raw_json = self._client._call_api(endpoint, request_obj=request_obj)
+        return ApprovalWorkflowBulkActionRequests.process_response(raw_json)

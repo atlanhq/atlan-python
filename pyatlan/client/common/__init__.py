@@ -117,6 +117,10 @@ from .open_lineage import (
 from .query import QueryStream
 
 # Role shared logic classes
+from .approval_workflow import (
+    ApprovalWorkflowBulkActionRequests,
+    ApprovalWorkflowGetRequest,
+)
 from .requests import (
     RequestsAction,
     RequestsCreate,
@@ -284,6 +288,8 @@ __all__ = [
     # Query shared logic classes
     "QueryStream",
     # Role shared logic classes
+    "ApprovalWorkflowBulkActionRequests",
+    "ApprovalWorkflowGetRequest",
     "RequestsAction",
     "RequestsCreate",
     "RequestsGetById",
