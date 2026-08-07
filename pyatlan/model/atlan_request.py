@@ -32,9 +32,11 @@ def build_requests_filter(
     """
     typed: Dict[str, Any] = {}
     if status is not None:
-        typed["status"] = AtlanRequestStatus(status).value
+        # status must go through the $in operator — plain equality is
+        # ignored by the endpoint (grammar mirrored from the Atlan UI)
+        typed["status"] = {"$in": [AtlanRequestStatus(status).value]}
     if request_type is not None:
-        typed["requestType"] = AtlanRequestType(request_type).value
+        typed["requestType"] = {"$in": [AtlanRequestType(request_type).value]}
     if destination_guid is not None:
         typed["destinationGuid"] = destination_guid
     if destination_qualified_name is not None:
@@ -51,9 +53,9 @@ def build_requests_filter(
         return post_filter
     if not typed:
         return None
-    if len(typed) == 1:
-        return json.dumps(typed)
-    return json.dumps({"$and": [{k: v} for k, v in typed.items()]})
+    # Same shape the Atlan UI sends: AND of the duplicate-exclusion clause
+    # and the typed conditions.
+    return json.dumps({"$and": [{"isDuplicate": False}, typed]})
 
 
 class AtlanRequest(AtlanObject):

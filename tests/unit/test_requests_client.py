@@ -74,9 +74,11 @@ def test_list_with_typed_filter(client, mock_api_caller):
     assert record.id == REQUEST_ID
     assert record.status == "active"
     assert record.destination_attribute == "userDescription"
-    # the typed filter reached the query params as JSON
+    # the typed filter reached the query params in the UI grammar
     query_params = mock_api_caller._call_api.call_args[0][1]
-    assert loads(query_params["filter"]) == {"status": "active"}
+    assert loads(query_params["filter"]) == {
+        "$and": [{"isDuplicate": False}, {"status": {"$in": ["active"]}}]
+    }
     mock_api_caller.reset_mock()
 
 
@@ -90,7 +92,13 @@ def test_filter_builder_combines_with_and():
         )
     )
     assert built == {
-        "$and": [{"status": "active"}, {"requestType": "attach_classification"}]
+        "$and": [
+            {"isDuplicate": False},
+            {
+                "status": {"$in": ["active"]},
+                "requestType": {"$in": ["attach_classification"]},
+            },
+        ]
     }
     assert build_requests_filter() is None
 
