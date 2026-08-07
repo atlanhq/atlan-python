@@ -13,6 +13,7 @@ from pyatlan.client.common import (
     ApprovalWorkflowGetRequest,
 )
 from pyatlan.errors import ErrorCode
+from pyatlan.model.enums import ApprovalWorkflowRequestType
 from pyatlan.model.approval_workflow import (
     ApprovalWorkflowBulkActionResponse,
     ApprovalWorkflowRequest,
@@ -54,7 +55,7 @@ class ApprovalWorkflowClient:
     def approve_all(
         self,
         group_key: str,
-        sub_type: Optional[str] = None,
+        sub_type: Optional[ApprovalWorkflowRequestType] = None,
         comment: Optional[str] = None,
     ) -> ApprovalWorkflowBulkActionResponse:
         """
@@ -78,7 +79,7 @@ class ApprovalWorkflowClient:
     def reject_all(
         self,
         group_key: str,
-        sub_type: Optional[str] = None,
+        sub_type: Optional[ApprovalWorkflowRequestType] = None,
         comment: Optional[str] = None,
     ) -> ApprovalWorkflowBulkActionResponse:
         """

@@ -16,7 +16,13 @@ from pyatlan.client.common import (
     RequestsListActionable,
 )
 from pyatlan.errors import ErrorCode
-from pyatlan.model.atlan_request import AtlanRequest, AtlanRequestResponse
+from pyatlan.model.atlan_request import (
+    AtlanRequest,
+    AtlanRequestResponse,
+    AtlanRequestsCriteria,
+    build_requests_filter,
+)
+from pyatlan.model.enums import AtlanRequestStatus, AtlanRequestType
 
 
 class RequestsClient:
@@ -39,6 +45,12 @@ class RequestsClient:
     @validate_arguments
     def list(
         self,
+        status: Optional[AtlanRequestStatus] = None,
+        request_type: Optional[AtlanRequestType] = None,
+        destination_guid: Optional[str] = None,
+        destination_qualified_name: Optional[str] = None,
+        entity_type: Optional[str] = None,
+        created_by: Optional[str] = None,
         post_filter: Optional[str] = None,
         sort: Optional[str] = None,
         count: bool = True,
@@ -46,25 +58,58 @@ class RequestsClient:
         limit: int = 20,
     ) -> AtlanRequestResponse:
         """
-        List requests, optionally filtered.
+        List requests, optionally filtered by typed arguments.
+        Iterate the response to lazily page through ALL matches.
 
-        :param post_filter: JSON filter, e.g. '{"status":"active"}'
-        :param sort: property by which to sort the results, e.g. '-createdAt'
+        :param status: only requests with this status (AtlanRequestStatus, e.g. ACTIVE)
+        :param request_type: only this type (AtlanRequestType, e.g. ATTRIBUTE, ATLAN_TAG)
+        :param destination_guid: only requests against this asset GUID
+        :param destination_qualified_name: only requests against this qualified name
+        :param entity_type: only requests against this asset type
+        :param created_by: only requests raised by this user
+        :param post_filter: raw JSON filter (escape hatch — cannot be combined with the typed filters above)
+        :param sort: property by which to sort the results, e.g. `-createdAt`
         :param count: whether to include the total number of records
         :param offset: starting point for results, for paging
         :param limit: maximum number of results per page
         :raises AtlanError: on any error during API invocation.
-        :returns: a page of requests
+        :returns: a lazily-pageable response of requests
         """
-        endpoint, query_params = RequestsList.prepare_request(
-            post_filter, sort, count, offset, limit
+        criteria = AtlanRequestsCriteria(
+            post_filter=build_requests_filter(
+                status=status,
+                request_type=request_type,
+                destination_guid=destination_guid,
+                destination_qualified_name=destination_qualified_name,
+                entity_type=entity_type,
+                created_by=created_by,
+                post_filter=post_filter,
+            ),
+            sort=sort,
+            count=count,
+            offset=offset,
+            limit=limit,
         )
+        endpoint, query_params = RequestsList.prepare_request(criteria)
         raw_json = self._client._call_api(endpoint, query_params)
-        return RequestsList.process_response(raw_json)
+        return AtlanRequestResponse(
+            client=self._client,
+            endpoint=RequestsList.ENDPOINT,
+            criteria=criteria,
+            start=offset,
+            size=limit,
+            **raw_json,
+        )
 
     @validate_arguments
     def list_actionable(
         self,
+        status: Optional[AtlanRequestStatus] = None,
+        request_type: Optional[AtlanRequestType] = None,
+        destination_guid: Optional[str] = None,
+        destination_qualified_name: Optional[str] = None,
+        entity_type: Optional[str] = None,
+        created_by: Optional[str] = None,
         post_filter: Optional[str] = None,
         sort: Optional[str] = None,
         count: bool = True,
@@ -73,20 +118,47 @@ class RequestsClient:
     ) -> AtlanRequestResponse:
         """
         List requests the current identity can approve or reject.
+        Iterate the response to lazily page through ALL matches.
 
-        :param post_filter: JSON filter, e.g. '{"status":"active"}'
-        :param sort: property by which to sort the results, e.g. '-createdAt'
+        :param status: only requests with this status (AtlanRequestStatus, e.g. ACTIVE)
+        :param request_type: only this type (AtlanRequestType, e.g. ATTRIBUTE, ATLAN_TAG)
+        :param destination_guid: only requests against this asset GUID
+        :param destination_qualified_name: only requests against this qualified name
+        :param entity_type: only requests against this asset type
+        :param created_by: only requests raised by this user
+        :param post_filter: raw JSON filter (escape hatch — cannot be combined with the typed filters above)
+        :param sort: property by which to sort the results, e.g. `-createdAt`
         :param count: whether to include the total number of records
         :param offset: starting point for results, for paging
         :param limit: maximum number of results per page
         :raises AtlanError: on any error during API invocation.
-        :returns: a page of actionable requests
+        :returns: a lazily-pageable response of requests
         """
-        endpoint, query_params = RequestsListActionable.prepare_request(
-            post_filter, sort, count, offset, limit
+        criteria = AtlanRequestsCriteria(
+            post_filter=build_requests_filter(
+                status=status,
+                request_type=request_type,
+                destination_guid=destination_guid,
+                destination_qualified_name=destination_qualified_name,
+                entity_type=entity_type,
+                created_by=created_by,
+                post_filter=post_filter,
+            ),
+            sort=sort,
+            count=count,
+            offset=offset,
+            limit=limit,
         )
+        endpoint, query_params = RequestsListActionable.prepare_request(criteria)
         raw_json = self._client._call_api(endpoint, query_params)
-        return RequestsListActionable.process_response(raw_json)
+        return AtlanRequestResponse(
+            client=self._client,
+            endpoint=RequestsListActionable.ENDPOINT,
+            criteria=criteria,
+            start=offset,
+            size=limit,
+            **raw_json,
+        )
 
     @validate_arguments
     def get(self, guid: str) -> Optional[AtlanRequest]:

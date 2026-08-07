@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, Optional
+from typing import Optional
 
 from pyatlan.client.constants import (
     ACTION_REQUEST,
@@ -15,67 +15,24 @@ from pyatlan.client.constants import (
 from pyatlan.model.atlan_request import (
     AtlanRequest,
     AtlanRequestAction,
-    AtlanRequestResponse,
+    AtlanRequestsCriteria,
 )
-
-
-def _list_query_params(
-    post_filter: Optional[str],
-    sort: Optional[str],
-    count: bool,
-    offset: int,
-    limit: int,
-) -> Dict[str, str]:
-    query_params: Dict[str, str] = {
-        "count": str(count),
-        "offset": str(offset),
-        "limit": str(limit),
-    }
-    if post_filter is not None:
-        query_params["filter"] = post_filter
-    if sort is not None:
-        query_params["sort"] = sort
-    return query_params
 
 
 class RequestsList:
     """Shared logic for listing requests (Metadata Inbox)."""
 
-    @staticmethod
-    def prepare_request(
-        post_filter: Optional[str] = None,
-        sort: Optional[str] = None,
-        count: bool = True,
-        offset: int = 0,
-        limit: int = 20,
-    ) -> tuple:
-        return GET_REQUESTS.format_path_with_params(), _list_query_params(
-            post_filter, sort, count, offset, limit
-        )
+    ENDPOINT = GET_REQUESTS
 
-    @staticmethod
-    def process_response(raw_json: Dict) -> AtlanRequestResponse:
-        return AtlanRequestResponse(**raw_json)
+    @classmethod
+    def prepare_request(cls, criteria: AtlanRequestsCriteria) -> tuple:
+        return cls.ENDPOINT.format_path_with_params(), criteria.query_params
 
 
-class RequestsListActionable:
+class RequestsListActionable(RequestsList):
     """Shared logic for listing requests actionable by the current identity."""
 
-    @staticmethod
-    def prepare_request(
-        post_filter: Optional[str] = None,
-        sort: Optional[str] = None,
-        count: bool = True,
-        offset: int = 0,
-        limit: int = 20,
-    ) -> tuple:
-        return GET_ACTIONABLE_REQUESTS.format_path_with_params(), _list_query_params(
-            post_filter, sort, count, offset, limit
-        )
-
-    @staticmethod
-    def process_response(raw_json: Dict) -> AtlanRequestResponse:
-        return AtlanRequestResponse(**raw_json)
+    ENDPOINT = GET_ACTIONABLE_REQUESTS
 
 
 class RequestsGetById:

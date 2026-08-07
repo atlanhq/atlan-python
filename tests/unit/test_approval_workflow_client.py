@@ -9,6 +9,7 @@ from pyatlan.client.approval_workflow import ApprovalWorkflowClient
 from pyatlan.client.common import ApiCaller
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.approval_workflow import ApprovalWorkflowRequest
+from pyatlan.model.enums import ApprovalWorkflowRequestType
 
 WF_REQUEST_GUID = "1a2b3c4d-1111-2222-3333-444455556666"
 ASSET_GUID = "9c67229e-f345-4de4-b046-c3b6cb2a5c34"
@@ -66,7 +67,7 @@ def test_bulk_action_body_is_snake_case(client, mock_api_caller, method, decisio
         "message": "queued",
     }
     result = getattr(client, method)(
-        group_key=ASSET_GUID, sub_type="DATA_ACCESS", comment="bulk"
+        group_key=ASSET_GUID, sub_type=ApprovalWorkflowRequestType.DATA_ACCESS, comment="bulk"
     )
 
     assert result.total_tasks == 3

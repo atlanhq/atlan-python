@@ -42,7 +42,7 @@ class ApprovalWorkflowBulkActionRequests:
     ) -> tuple:
         body = ApprovalWorkflowBulkAction(group_key=group_key, decision=decision)
         if sub_type is not None:
-            body.sub_type = sub_type
+            body.sub_type = getattr(sub_type, "value", sub_type)
         if comment is not None:
             body.comment = comment
         return BULK_ACTION_APPROVAL_WORKFLOW_REQUESTS.format_path_with_params(), body

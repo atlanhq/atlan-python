@@ -8,7 +8,12 @@ import pytest
 from pyatlan.client.common import ApiCaller
 from pyatlan.client.requests import RequestsClient
 from pyatlan.errors import InvalidRequestError
-from pyatlan.model.atlan_request import AtlanRequest, AttributeRequest
+from pyatlan.model.atlan_request import (
+    AtlanRequest,
+    AttributeRequest,
+    build_requests_filter,
+)
+from pyatlan.model.enums import AtlanRequestStatus, AtlanRequestType
 
 REQUEST_ID = "070c46dc-734b-4bed-b89f-54ae752ec589"
 TERM_GUID = "9c67229e-f345-4de4-b046-c3b6cb2a5c34"
@@ -58,9 +63,9 @@ def test_init_rejects_non_api_caller():
         RequestsClient("not-a-client")  # type: ignore[arg-type]
 
 
-def test_list_parses_paged_response(client, mock_api_caller):
+def test_list_with_typed_filter(client, mock_api_caller):
     mock_api_caller._call_api.return_value = RAW_LIST
-    response = client.list(post_filter='{"status":"active"}')
+    response = client.list(status=AtlanRequestStatus.ACTIVE)
 
     assert response.total_record == 2
     assert response.filter_record == 1
@@ -69,10 +74,51 @@ def test_list_parses_paged_response(client, mock_api_caller):
     assert record.id == REQUEST_ID
     assert record.status == "active"
     assert record.destination_attribute == "userDescription"
-    # the filter reached the query params
+    # the typed filter reached the query params as JSON
     query_params = mock_api_caller._call_api.call_args[0][1]
-    assert query_params["filter"] == '{"status":"active"}'
+    assert loads(query_params["filter"]) == {"status": "active"}
     mock_api_caller.reset_mock()
+
+
+def test_filter_builder_combines_with_and():
+    """Multiple typed filters combine with AND; enums serialize to their
+    wire values."""
+    built = loads(
+        build_requests_filter(
+            status=AtlanRequestStatus.ACTIVE,
+            request_type=AtlanRequestType.ATLAN_TAG,
+        )
+    )
+    assert built == {
+        "$and": [{"status": "active"}, {"requestType": "attach_classification"}]
+    }
+    assert build_requests_filter() is None
+
+
+def test_filter_builder_rejects_raw_plus_typed():
+    """The raw escape hatch cannot silently swallow typed filters."""
+    with pytest.raises(InvalidRequestError):
+        build_requests_filter(
+            status=AtlanRequestStatus.ACTIVE, post_filter='{"x":1}'
+        )
+
+
+def test_iteration_pages_lazily(client, mock_api_caller):
+    """Iterating the response fetches subsequent pages until one is empty
+    (UserResponse/GroupResponse pagination pattern)."""
+    second = {"id": "second-id", "requestType": "attribute", "status": "active"}
+    mock_api_caller._call_api.side_effect = [
+        {"totalRecord": 2, "filterRecord": 2, "records": [RAW_REQUEST]},
+        {"records": [second]},
+        {"records": []},
+    ]
+    response = client.list(status=AtlanRequestStatus.ACTIVE, limit=1)
+    seen = [r.id for r in response]
+
+    assert seen == [REQUEST_ID, "second-id"]
+    # three calls: first page + two pagination fetches (second, then empty)
+    assert mock_api_caller._call_api.call_count == 3
+    mock_api_caller.reset_mock(side_effect=True)
 
 
 def test_list_actionable_uses_actionable_route(client, mock_api_caller):
