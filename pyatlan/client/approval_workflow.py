@@ -32,14 +32,16 @@ def _raise_if_recipient_scoped(err: InvalidRequestError, group_key: str):
     raise ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
         "1003",
         (
-            f"no pending tasks in group '{group_key}' are addressed to the "
-            "calling identity. Bulk approvals are recipient-scoped: only the "
-            "user a task is assigned to can action it — an admin role does "
-            "not override this. To automate approvals, configure the "
-            "governance workflow's approver to be the identity behind this "
-            "token (note: the workflow builder currently only supports "
-            "human users and groups as approvers, so automation may require "
-            "a user token)."
+            f"no actionable pending tasks in group '{group_key}' for the "
+            "calling identity. Two common causes: (1) every task in the "
+            "group is already actioned (approved/rejected/withdrawn) — "
+            "check task_execution_action via a Task search; (2) the pending "
+            "tasks are addressed to a different user — bulk approvals are "
+            "recipient-scoped, and an admin role does not override this. "
+            "To automate approvals, the token's identity must be the "
+            "workflow's approver (the workflow builder currently supports "
+            "only human users and groups as approvers, so automation may "
+            "require a user token)."
         ),
         "",
     ) from err
