@@ -46,6 +46,7 @@ def term(
 
 
 def _create_request(client: AtlanClient, term: AtlasGlossaryTerm, value: str):
+    assert term.guid and term.qualified_name
     request = AttributeRequest.creator(
         destination_guid=term.guid,
         destination_qualified_name=term.qualified_name,
@@ -81,7 +82,9 @@ def test_approve_applies_the_change(client: AtlanClient, term: AtlasGlossaryTerm
     assert client.requests.approve(guid=created.id, message="integration approve")
 
     def _applied() -> bool:
-        asset = client.asset.get_by_guid(term.guid, ignore_relationships=True)
+        asset: AtlasGlossaryTerm = client.asset.get_by_guid(
+            term.guid, ignore_relationships=True
+        )
         return asset.user_description == "requests-test-approved"
 
     deadline = time.time() + 30
@@ -100,7 +103,9 @@ def test_reject_does_not_apply(client: AtlanClient, term: AtlasGlossaryTerm):
 
     assert client.requests.reject(guid=created.id, message="integration reject")
     time.sleep(3)
-    asset = client.asset.get_by_guid(term.guid, ignore_relationships=True)
+    asset: AtlasGlossaryTerm = client.asset.get_by_guid(
+        term.guid, ignore_relationships=True
+    )
     assert asset.user_description != "requests-test-rejected", (
         "rejected request must not apply its change"
     )
