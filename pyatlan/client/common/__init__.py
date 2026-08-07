@@ -117,6 +117,13 @@ from .open_lineage import (
 from .query import QueryStream
 
 # Role shared logic classes
+from .requests import (
+    RequestsAction,
+    RequestsCreate,
+    RequestsGetById,
+    RequestsList,
+    RequestsListActionable,
+)
 from .role import RoleGet, RoleGetAll
 
 # Search log shared logic classes
@@ -277,6 +284,11 @@ __all__ = [
     # Query shared logic classes
     "QueryStream",
     # Role shared logic classes
+    "RequestsAction",
+    "RequestsCreate",
+    "RequestsGetById",
+    "RequestsList",
+    "RequestsListActionable",
     "RoleGet",
     "RoleGetAll",
     # Search log shared logic classes
