@@ -153,11 +153,6 @@ ADMIN_EVENTS = API(
 )
 
 # API token APIs
-PACKAGE_WORKFLOWS_API = "package-workflows"
-CREATE_PACKAGE_WORKFLOW = API(
-    PACKAGE_WORKFLOWS_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
-)
-
 GET_API_TOKENS = API(
     TOKENS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )

@@ -93,17 +93,6 @@ class AppBuilder:
     _EXTRACTION_METHOD: ClassVar[str] = "direct"
     #: Hidden (``ui.hidden``) inputs the UI still submits with their defaults.
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {}
-    #: How ``create()``/``run()`` submit. ``"app"`` posts typed inputs to
-    #: ``POST /v1/app`` (connector apps with a manifest). ``"package_workflow"``
-    #: posts the Argo-shaped native document to ``POST /package-workflows`` —
-    #: the route the UI uses for CSA "uber app" utilities, which expose no
-    #: manifest for the inputs route (it 500s with "No manifest available").
-    _SUBMIT_STYLE: ClassVar[str] = "app"
-    #: ``package.argoproj.io/name`` annotation for package_workflow submits.
-    _PACKAGE_ANNOTATION: ClassVar[str] = ""
-    #: Fallback in-cluster app service URL (captured at generation time) used
-    #: when ``client.app.describe`` can't provide it at run time.
-    _APP_SERVICE_URL: ClassVar[str] = ""
 
     def __init__(self, client: Any):
         self._client = client
@@ -318,120 +307,7 @@ class AppBuilder:
             return None
         return None
 
-    def _native_document(self, *, name: Optional[str], epoch: int) -> Dict[str, Any]:
-        """Assemble the Argo-shaped native document ``POST /package-workflows``
-        expects (mirrors the UI's submission for CSA uber apps): kebab-case dag
-        parameters + ``execution_mode: native`` + the app service pointers that
-        let the server fetch the app's manifest."""
-        wf_name = f"{self._APP_ID}-{epoch}"
-        display_name = name or wf_name
-        # kebab-case parameters via the inputs model's aliases; plumbing fields
-        # (connection/extraction_method/credential_guid/agent_json) stay out.
-        kwargs: Dict[str, Any] = dict(self._HIDDEN_DEFAULTS)
-        kwargs.update(self._metadata)
-        model = self._INPUTS_CLASS(**kwargs)
-        plumbing = {"connection", "extraction_method", "credential_guid", "agent_json"}
-        def _wire_key(field: str) -> str:
-            declared = model.__fields__.get(field)
-            if declared is not None:
-                return declared.alias or field
-            # hidden configmap fields ride through Extra.allow with their
-            # snake_case default keys — the wire wants kebab-case
-            return field.replace("_", "-")
-
-        values = {
-            _wire_key(f): v
-            for f, v in model.dict(exclude_none=True).items()
-            if f not in plumbing
-        }
-        parameters = [{"name": k, "value": v} for k, v in values.items()]
-        # CLOUD delivery: vault the staged object-store credential and pass its
-        # guid as the contract's credential parameter.
-        for field, cred in self._raw_creds.items():
-            if not cred.name:
-                cred.name = f"default-{self._CONNECTOR_NAME}-{epoch}-0"
-            guid = self._vault_credential(cred)
-            parameters.append({"name": "credential-guid", "value": guid})
-            break
-        if self._credential_guid:
-            parameters.append(
-                {"name": "credential-guid", "value": self._credential_guid}
-            )
-        parameters.append({"name": "_internal_workflow_name", "value": display_name})
-
-        package_annotation = self._PACKAGE_ANNOTATION or f"@atlan/{self._APP_ID}"
-        app_service_url = self._APP_SERVICE_URL
-        try:  # prefer the live registry when the token can read it
-            info = self._client.app.describe(self._APP_ID)
-            app_service_url = info.app_service_url or app_service_url
-        except Exception:  # noqa: BLE001 — fall back to the generated constant
-            pass
-
-        metadata: Dict[str, Any] = {
-            "labels": {"orchestration.atlan.com/atlan-ui": "true"},
-            "annotations": {
-                "orchestration.atlan.com/name": self._CONNECTOR_NAME or self._APP_ID,
-                "package.argoproj.io/name": package_annotation,
-                "orchestration.atlan.com/atlanName": display_name,
-            },
-            "name": wf_name,
-            "namespace": "default",
-        }
-        if self._ENTRYPOINT:
-            metadata["entrypoint"] = self._ENTRYPOINT
-        if app_service_url:
-            metadata["app_service_url"] = app_service_url
-
-        return {
-            "metadata": metadata,
-            "spec": {
-                "templates": [
-                    {
-                        "name": "main",
-                        "dag": {
-                            "tasks": [
-                                {
-                                    "name": "run",
-                                    "arguments": {"parameters": parameters},
-                                    "templateRef": {
-                                        "name": self._APP_ID,
-                                        "template": "main",
-                                        "clusterScope": True,
-                                    },
-                                }
-                            ]
-                        },
-                    }
-                ],
-                "entrypoint": "main",
-                "workflowMetadata": {
-                    "annotations": {"package.argoproj.io/name": package_annotation}
-                },
-            },
-            "payload": [],
-            "execution_mode": "native",
-        }
-
-    def _create_native_package(self, *, name: Optional[str], run: bool):
-        """Create (and optionally submit) via ``POST /package-workflows`` — the
-        UI's route for native CSA uber apps, which have no manifest for the
-        ``/v1/app`` inputs route."""
-        from pyatlan.client.constants import CREATE_PACKAGE_WORKFLOW
-        from pyatlan.model.app import NativeWorkflowCreateResponse
-
-        document = self._native_document(name=name, epoch=int(time.time()))
-        raw = self._client._call_api(
-            CREATE_PACKAGE_WORKFLOW.format_path_with_params(),
-            query_params={"submit": str(bool(run)).lower()},
-            request_obj=document,
-        )
-        if isinstance(raw, dict) and isinstance(raw.get("data"), dict):
-            raw = raw["data"]
-        return NativeWorkflowCreateResponse.parse_obj(raw if isinstance(raw, dict) else {})
-
     def _create(self, *, name: Optional[str], run: bool, schedule: Optional[Any]):
-        if self._SUBMIT_STYLE == "package_workflow":
-            return self._create_native_package(name=name, run=run)
         epoch = int(time.time())
         qn = (
             self._connection_qualified_name or f"default/{self._CONNECTOR_NAME}/{epoch}"

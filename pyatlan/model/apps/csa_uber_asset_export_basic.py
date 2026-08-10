@@ -64,9 +64,6 @@ class CsaUberAssetExportBasic(AppBuilder):
     _CONNECTOR_CONFIG: ClassVar[str] = "csa-connectors-objectstore"
     _INPUTS_CLASS = CsaUberAssetExportBasicInputs
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {'all_attributes': False}
-    _SUBMIT_STYLE: ClassVar[str] = "package_workflow"
-    _PACKAGE_ANNOTATION: ClassVar[str] = "@atlan/csa-uber-asset-export-basic"
-    _APP_SERVICE_URL: ClassVar[str] = "http://csa-uber.csa-uber-app.svc.cluster.local"
 
     # ── Step 1 · Credential ──
     def s3(self, *, username: str, password: str, aws_role_arn: Optional[str] = None, region: Optional[str] = None, s3_bucket: Optional[str] = None, **extra: Any) -> "CsaUberAssetExportBasic":
