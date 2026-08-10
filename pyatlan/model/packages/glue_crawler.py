@@ -27,6 +27,9 @@ class GlueCrawler(AbstractCrawler):
     that can be returned by a query, default: 0
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "AtlanGlue"
+
     _NAME = "glue"
     _PACKAGE_NAME = "@atlan/glue"
     _PACKAGE_PREFIX = WorkflowPackage.GLUE.value

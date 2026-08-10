@@ -34,11 +34,23 @@ class AbstractPackage:
     _PACKAGE_NAME: str = ""
     _PACKAGE_PREFIX: str = ""
 
+    #: Name of the typed v3 builder in :mod:`pyatlan.model.apps` that replaces
+    #: this package, when one exists — named in the deprecation warning so the
+    #: migration path is one import away.
+    _APPS_EQUIVALENT: str = ""
+
     def __init__(self):
+        equivalent = (
+            f" Use pyatlan.model.apps.{self._APPS_EQUIVALENT} instead."
+            if self._APPS_EQUIVALENT
+            else (
+                " Use AtlanClient.app (AppClient) with the app's input "
+                "contract instead."
+            )
+        )
         warnings.warn(
             "Atlan package workflows are deprecated and may not run on newer "
-            "Atlan tenants. Use AtlanClient.app (AppClient) with the app's input "
-            "contract instead.",
+            "Atlan tenants." + equivalent,
             DeprecationWarning,
             stacklevel=2,
         )

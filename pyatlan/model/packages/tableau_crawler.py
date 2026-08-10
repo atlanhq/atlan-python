@@ -25,6 +25,9 @@ class TableauCrawler(AbstractCrawler):
     that can be returned by a query, default: 0
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "AtlanTableau"
+
     _NAME = "tableau"
     _PACKAGE_NAME = "@atlan/tableau"
     _PACKAGE_PREFIX = WorkflowPackage.TABLEAU.value

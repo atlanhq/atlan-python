@@ -25,6 +25,9 @@ class AssetExportBasic(AbstractCustomPackage):
             ).qualified_name_prefix_for_assets("default/bigquery/123").run()
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "CsaUberAssetExportBasic"
+
     _NAME = "asset-export-basic"
     _PACKAGE_NAME = f"@csa/{_NAME}"
     _PACKAGE_PREFIX = WorkflowPackage.ASSET_EXPORT_BASIC.value

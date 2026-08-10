@@ -27,6 +27,9 @@ class OracleCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "OracleCrawler"
+
     _NAME = "oracle"
     _PACKAGE_NAME = "@atlan/oracle"
     _PACKAGE_PREFIX = WorkflowPackage.ORACLE.value

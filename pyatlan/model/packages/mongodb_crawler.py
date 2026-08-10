@@ -25,6 +25,9 @@ class MongoDBCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "MongodbAtlas"
+
     _NAME = "mongodb"
     _PACKAGE_NAME = "@atlan/mongodb"
     _PACKAGE_PREFIX = WorkflowPackage.MONGODB.value

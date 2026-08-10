@@ -28,6 +28,9 @@ class DatabricksCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "DatabricksCrawler"
+
     _NAME = "databricks"
     _PACKAGE_NAME = "@atlan/databricks"
     _PACKAGE_PREFIX = WorkflowPackage.DATABRICKS.value

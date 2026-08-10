@@ -1827,3 +1827,22 @@ def test_wrong_glue_package_filter_raises_invalid_req_err(
             admin_groups=None,
             admin_users=None,
         ).include(assets=test_assets)
+
+
+def test_deprecation_warning_names_the_apps_equivalent():
+    """Legacy packages with a typed v3 builder name it in the deprecation
+    warning, so the migration path is one import away (AICHAT-1588)."""
+    import warnings
+
+    from pyatlan.model.packages.asset_export_basic import AssetExportBasic
+    from pyatlan.model.packages.connection_delete import ConnectionDelete
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        AssetExportBasic()
+        ConnectionDelete(qualified_name="qn", purge=False)
+
+    mapped, unmapped = str(caught[0].message), str(caught[1].message)
+    assert "pyatlan.model.apps.CsaUberAssetExportBasic" in mapped
+    # packages without an equivalent keep the generic AppClient guidance
+    assert "AppClient" in unmapped

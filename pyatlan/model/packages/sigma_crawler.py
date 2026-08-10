@@ -26,6 +26,9 @@ class SigmaCrawler(AbstractCrawler):
     that can be returned by a query, default: 0
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "AtlanSigma"
+
     _NAME = "sigma"
     _PACKAGE_NAME = "@atlan/sigma"
     _PACKAGE_PREFIX = WorkflowPackage.SIGMA.value

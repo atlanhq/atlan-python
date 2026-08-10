@@ -25,6 +25,9 @@ class PostgresCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "PostgresCrawler"
+
     _NAME = "postgres"
     _PACKAGE_NAME = "@atlan/postgres"
     _PACKAGE_PREFIX = WorkflowPackage.POSTGRES.value

@@ -24,6 +24,9 @@ class SQLServerCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "AtlanMssql"
+
     _NAME = "mssql"
     _PACKAGE_NAME = "@atlan/mssql"
     _PACKAGE_PREFIX = WorkflowPackage.MSSQL.value

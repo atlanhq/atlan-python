@@ -25,6 +25,9 @@ class PowerBICrawler(AbstractCrawler):
     that can be returned by a query, default: 0
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "PowerbiCrawler"
+
     _NAME = "powerbi"
     _PACKAGE_NAME = "@atlan/powerbi"
     _PACKAGE_PREFIX = WorkflowPackage.POWERBI.value
