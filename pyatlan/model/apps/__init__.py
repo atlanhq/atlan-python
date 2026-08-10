@@ -27,6 +27,10 @@ from pyatlan.model.apps.atlan_redash import AtlanRedash, AtlanRedashInputs
 from pyatlan.model.apps.atlan_sigma import AtlanSigma, AtlanSigmaInputs
 from pyatlan.model.apps.atlan_tableau import AtlanTableau, AtlanTableauInputs
 from pyatlan.model.apps.atlan_trino import AtlanTrino, AtlanTrinoInputs
+from pyatlan.model.apps.csa_uber_asset_export_basic import (
+    CsaUberAssetExportBasic,
+    CsaUberAssetExportBasicInputs,
+)
 from pyatlan.model.apps.databricks_crawler import (
     DatabricksCrawler,
     DatabricksCrawlerInputs,
@@ -54,6 +58,8 @@ from pyatlan.model.apps.teradata_crawler import TeradataCrawler, TeradataCrawler
 from pyatlan.model.apps.teradata_miner import TeradataMiner, TeradataMinerInputs
 
 __all__ = [
+    "CsaUberAssetExportBasic",
+    "CsaUberAssetExportBasicInputs",
     "AppInput",
     "AppBuilder",
     "BigqueryCrawler",

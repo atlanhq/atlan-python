@@ -58,6 +58,9 @@ MANIFEST: List[Tuple[str, Optional[str]]] = [
     ("atlan-dynamodb", None),
     ("atlan-sigma", None),
     ("mongodbatlas-atlas", None),
+    # CSA "uber app" utilities (AICHAT-1588): the legacy Argo templates are gone
+    # on v3-only tenants, so the typed path must target the native app.
+    ("csa-uber-asset-export-basic", "asset-export-basic"),
 ]
 
 # Widgets handled by the builder/base as Step 1/2 plumbing — not metadata methods.
