@@ -48,8 +48,19 @@ def test_builder_class_vars(cls):
 
 @pytest.mark.parametrize("cls", BUILDERS, ids=BUILDER_IDS)
 def test_builder_create_path(cls):
-    # connection + existing guid is the uniform path across every connector.
     c = Mock()
+    if cls._SUBMIT_STYLE == "package_workflow":
+        # CSA uber apps have no /v1/app manifest — create() must route to
+        # POST /package-workflows instead (payload shape is pinned in
+        # tests/unit/apps/test_asset_export_flows_handwritten.py).
+        c.app.describe.side_effect = Exception("registry not readable")
+        c._call_api.return_value = {"data": {"slug": "s"}}
+        cls(c).create(name="n")
+        c.app.create.assert_not_called()
+        assert "package-workflows" in c._call_api.call_args[0][0].path
+        assert c._call_api.call_args.kwargs["query_params"] == {"submit": "false"}
+        return
+    # connection + existing guid is the uniform path across every connector.
     c.app.create.return_value = Mock(slug="s", version=1, run_id="r")
     cls(c).connection(name="conn", admin_users=["u"]).credential_guid("g").create()
     ak = c.app.create.call_args.kwargs
