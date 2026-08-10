@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-"""Hand-written flow tests for the v3 Asset Export builder (AICHAT-1588).
+"""HAND-WRITTEN flow tests for the v3 Asset Export builder (AICHAT-1588).
 
-Lives outside tests/unit/apps/ because the generator clears that directory
-on every regen; these assert the customer-facing flows stay stable.
+The generator's regen only clears files carrying the AUTO-GENERATED banner,
+so this file survives regeneration; it asserts the customer-facing flows
+stay stable across regens.
 """
 from unittest.mock import Mock
 

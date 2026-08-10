@@ -1047,8 +1047,11 @@ def main() -> None:
         if existing.name not in keep:
             existing.unlink()
     test_dir.mkdir(parents=True, exist_ok=True)
+    # Clear only OUR generated tests (identified by the banner) — hand-written
+    # test files in this directory survive regeneration, mirroring _HAND_WRITTEN.
     for existing in test_dir.glob("test_*.py"):
-        existing.unlink()
+        if "AUTO-GENERATED" in existing.read_text()[:300]:
+            existing.unlink()
     for module, (_cls, content, test) in modules.items():
         (out_dir / f"{module}.py").write_text(content)
         (test_dir / f"test_{module}.py").write_text(test)
