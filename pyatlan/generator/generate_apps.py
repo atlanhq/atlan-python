@@ -695,6 +695,15 @@ def _render_builder(
     lines += [
         f"    _INPUTS_CLASS = {inputs_cls}",
         f"    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {hidden!r}",
+    ]
+    if app_id.startswith("csa-"):
+        # CSA uber apps expose no manifest for the /v1/app inputs route — they
+        # submit the Argo-shaped native document instead (AICHAT-1588).
+        lines += [
+            '    _SUBMIT_STYLE: ClassVar[str] = "package_workflow"',
+            f'    _PACKAGE_ANNOTATION: ClassVar[str] = "@atlan/{app_id}"',
+        ]
+    lines += [
         "",
     ]
     lines.extend(cred_blocks)

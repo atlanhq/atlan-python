@@ -156,7 +156,24 @@ class AppInfo(AppObject):
     name: Optional[str] = None
     native_ready: bool = False
     execution_mode: Optional[str] = None
+    app_service_url: Optional[str] = None
     entrypoints: List[AppEntrypoint] = Field(default_factory=list)
+
+
+class NativeWorkflowCreateResponse(AppObject):
+    """Result of ``POST /package-workflows`` (native app-workflow creation).
+
+    The full server payload is preserved (``extra = allow``); the modeled keys
+    are the ones lifecycle calls need (``slug`` for :meth:`AppClient.submit`,
+    ``name`` for the UI profile URL)."""
+
+    class Config(AppObject.Config):
+        extra = Extra.allow
+
+    name: Optional[str] = None
+    slug: Optional[str] = None
+    guid: Optional[str] = None
+    status: Optional[str] = None
 
 
 class AppScheduleResponse(AppObject):
