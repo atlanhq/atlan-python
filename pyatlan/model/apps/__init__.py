@@ -7,8 +7,6 @@ Connection -> Metadata); see ``pyatlan.generator.generate_apps``.
 """
 
 from pyatlan.model.apps._base import AppBuilder, AppInput
-from pyatlan.model.apps.bigquery_crawler import BigqueryCrawler, BigqueryCrawlerInputs
-from pyatlan.model.apps.bigquery_miner import BigqueryMiner, BigqueryMinerInputs
 from pyatlan.model.apps.anaplan import Anaplan, AnaplanInputs
 from pyatlan.model.apps.atlan_athena import AtlanAthena, AtlanAthenaInputs
 from pyatlan.model.apps.atlan_dbt import AtlanDbt, AtlanDbtInputs
@@ -27,6 +25,8 @@ from pyatlan.model.apps.atlan_redash import AtlanRedash, AtlanRedashInputs
 from pyatlan.model.apps.atlan_sigma import AtlanSigma, AtlanSigmaInputs
 from pyatlan.model.apps.atlan_tableau import AtlanTableau, AtlanTableauInputs
 from pyatlan.model.apps.atlan_trino import AtlanTrino, AtlanTrinoInputs
+from pyatlan.model.apps.bigquery_crawler import BigqueryCrawler, BigqueryCrawlerInputs
+from pyatlan.model.apps.bigquery_miner import BigqueryMiner, BigqueryMinerInputs
 from pyatlan.model.apps.databricks_crawler import (
     DatabricksCrawler,
     DatabricksCrawlerInputs,
@@ -35,10 +35,7 @@ from pyatlan.model.apps.databricks_miner import DatabricksMiner, DatabricksMiner
 from pyatlan.model.apps.hive_crawler import HiveCrawler, HiveCrawlerInputs
 from pyatlan.model.apps.kafka_apache import KafkaApache, KafkaApacheInputs
 from pyatlan.model.apps.kafka_confluent import KafkaConfluent, KafkaConfluentInputs
-from pyatlan.model.apps.mongodbatlas_atlas import (
-    MongodbAtlas,
-    MongodbAtlasInputs,
-)
+from pyatlan.model.apps.mongodbatlas_atlas import MongodbAtlas, MongodbAtlasInputs
 from pyatlan.model.apps.oracle_crawler import OracleCrawler, OracleCrawlerInputs
 from pyatlan.model.apps.oracle_miner import OracleMiner, OracleMinerInputs
 from pyatlan.model.apps.postgres_crawler import PostgresCrawler, PostgresCrawlerInputs
