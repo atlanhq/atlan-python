@@ -296,9 +296,7 @@ class AtlanObjectWithDefaults(AtlanObject):
     def __init__(self, **data: Any) -> None:
         super().__init__(**data)
         self.__fields_set__.update(
-            name
-            for name, field in self.__fields__.items()
-            if field.default is not None
+            name for name, field in self.__fields__.items() if field.default is not None
         )
 
 
