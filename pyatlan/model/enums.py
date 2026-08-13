@@ -1956,6 +1956,38 @@ class AtlanIcon(str, Enum):
     YOUTUBE_LOGO = "PhYoutubeLogo"
 
 
+class ApprovalWorkflowRequestType(str, Enum):
+    """Type of a governance-workflow (Inbox) approval request/task."""
+
+    CHANGE_MANAGEMENT = "CHANGE_MANAGEMENT"
+    DATA_ACCESS = "DATA_ACCESS"
+    PUBLICATION_MANAGEMENT = "PUBLICATION_MANAGEMENT"
+    POLICY_APPROVAL = "POLICY_APPROVAL"
+
+
+class AtlanRequestStatus(str, Enum):
+    """Status of a request in the (classic) Metadata Inbox."""
+
+    ACTIVE = "active"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+
+
+class AtlanRequestType(str, Enum):
+    """Type of a request in the (classic) Metadata Inbox."""
+
+    ATTRIBUTE = "attribute"
+    CUSTOM_METADATA = "bm_attribute"
+    TERM_LINK = "term_link"
+    ATLAN_TAG = "attach_classification"
+    CREATE_TYPEDEF = "create_typedef"
+    CREATE_GLOSSARY = "create_glossary"
+    CREATE_CATEGORY = "create_category"
+    CREATE_TERM = "create_term"
+    PERSONA_ACCESS = "persona_access"
+    PURPOSE_POLICY_ACCESS = "purpose_policy_access"
+
+
 class AtlanTagColor(str, Enum):
     GREEN = "Green"
     YELLOW = "Yellow"

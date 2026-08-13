@@ -153,6 +153,46 @@ ADMIN_EVENTS = API(
 )
 
 # API token APIs
+APPROVAL_WORKFLOW_REQUESTS_API = "approval-workflow-requests"
+GET_APPROVAL_WORKFLOW_REQUEST = API(
+    APPROVAL_WORKFLOW_REQUESTS_API + "/{request_guid}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+BULK_ACTION_APPROVAL_WORKFLOW_REQUESTS = API(
+    APPROVAL_WORKFLOW_REQUESTS_API + "/actions/bulk",
+    HTTPMethod.PUT,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
+REQUESTS_API = "requests"
+GET_REQUESTS = API(
+    REQUESTS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+GET_ACTIONABLE_REQUESTS = API(
+    REQUESTS_API + "/actionable",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+CREATE_REQUEST = API(
+    REQUESTS_API, HTTPMethod.POST, HTTPStatus.OK, endpoint=EndPoint.HERACLES
+)
+GET_REQUEST_BY_ID = API(
+    REQUESTS_API + "/{request_id}",
+    HTTPMethod.GET,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+ACTION_REQUEST = API(
+    REQUESTS_API + "/{request_id}/action",
+    HTTPMethod.POST,
+    HTTPStatus.OK,
+    endpoint=EndPoint.HERACLES,
+)
+
 GET_API_TOKENS = API(
     TOKENS_API, HTTPMethod.GET, HTTPStatus.OK, endpoint=EndPoint.HERACLES
 )

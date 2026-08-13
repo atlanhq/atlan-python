@@ -49,6 +49,8 @@ from pyatlan.client.aio.role import AsyncRoleClient
 from pyatlan.client.aio.search_log import AsyncSearchLogClient
 from pyatlan.client.aio.sso import AsyncSSOClient
 from pyatlan.client.aio.task import AsyncTaskClient
+from pyatlan.client.aio.approval_workflow import AsyncApprovalWorkflowClient
+from pyatlan.client.aio.requests import AsyncRequestsClient
 from pyatlan.client.aio.token import AsyncTokenClient
 from pyatlan.client.aio.typedef import AsyncTypeDefClient
 from pyatlan.client.aio.app import AsyncAppClient
@@ -114,6 +116,10 @@ class AsyncAtlanClient(AtlanClient):
     _async_search_log_client: Optional[AsyncSearchLogClient] = PrivateAttr(default=None)
     _async_sso_client: Optional[AsyncSSOClient] = PrivateAttr(default=None)
     _async_task_client: Optional[AsyncTaskClient] = PrivateAttr(default=None)
+    _async_approval_workflow_client: Optional[AsyncApprovalWorkflowClient] = (
+        PrivateAttr(default=None)
+    )
+    _async_requests_client: Optional[AsyncRequestsClient] = PrivateAttr(default=None)
     _async_token_client: Optional[AsyncTokenClient] = PrivateAttr(default=None)
     _async_oauth_client_client: Optional[AsyncOAuthClient] = PrivateAttr(default=None)
     _async_typedef_client: Optional[AsyncTypeDefClient] = PrivateAttr(default=None)
@@ -360,6 +366,20 @@ class AsyncAtlanClient(AtlanClient):
         if self._async_task_client is None:
             self._async_task_client = AsyncTaskClient(client=self)  # type: ignore[arg-type]
         return self._async_task_client
+
+    @property
+    def inbox(self) -> AsyncApprovalWorkflowClient:  # type: ignore[override]
+        """Async approval-workflow client (governance Inbox)"""
+        if self._async_approval_workflow_client is None:
+            self._async_approval_workflow_client = AsyncApprovalWorkflowClient(self)  # type: ignore[arg-type]
+        return self._async_approval_workflow_client
+
+    @property
+    def requests(self) -> AsyncRequestsClient:  # type: ignore[override]
+        """Async requests client for Metadata Inbox operations"""
+        if self._async_requests_client is None:
+            self._async_requests_client = AsyncRequestsClient(self)  # type: ignore[arg-type]
+        return self._async_requests_client
 
     @property
     def token(self) -> AsyncTokenClient:  # type: ignore[override]

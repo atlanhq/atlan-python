@@ -52,6 +52,8 @@ from pyatlan.client.oauth import OAuthTokenManager
 from pyatlan.client.oauth_client import OAuthClient
 from pyatlan.client.open_lineage import OpenLineageClient
 from pyatlan.client.query import QueryClient
+from pyatlan.client.approval_workflow import ApprovalWorkflowClient
+from pyatlan.client.requests import RequestsClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.search_log import SearchLogClient
 from pyatlan.client.sso import SSOClient
@@ -164,6 +166,10 @@ class AtlanClient(BaseSettings):
     _role_client: Optional[RoleClient] = PrivateAttr(default=None)
     _asset_client: Optional[AssetClient] = PrivateAttr(default=None)
     _typedef_client: Optional[TypeDefClient] = PrivateAttr(default=None)
+    _approval_workflow_client: Optional[ApprovalWorkflowClient] = PrivateAttr(
+        default=None
+    )
+    _requests_client: Optional[RequestsClient] = PrivateAttr(default=None)
     _token_client: Optional[TokenClient] = PrivateAttr(default=None)
     _oauth_client_client: Optional[OAuthClient] = PrivateAttr(default=None)
     _user_client: Optional[UserClient] = PrivateAttr(default=None)
@@ -394,6 +400,18 @@ class AtlanClient(BaseSettings):
         if self._query_client is None:
             self._query_client = QueryClient(client=self)
         return self._query_client
+
+    @property
+    def inbox(self) -> ApprovalWorkflowClient:
+        if self._approval_workflow_client is None:
+            self._approval_workflow_client = ApprovalWorkflowClient(client=self)
+        return self._approval_workflow_client
+
+    @property
+    def requests(self) -> RequestsClient:
+        if self._requests_client is None:
+            self._requests_client = RequestsClient(client=self)
+        return self._requests_client
 
     @property
     def token(self) -> TokenClient:
