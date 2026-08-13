@@ -57,9 +57,7 @@ def client(mock_api_caller) -> RequestsClient:
 
 
 def test_init_rejects_non_api_caller():
-    with pytest.raises(
-        InvalidRequestError, match="ATLAN-PYTHON-400-048.*ApiCaller"
-    ):
+    with pytest.raises(InvalidRequestError, match="ATLAN-PYTHON-400-048.*ApiCaller"):
         RequestsClient("not-a-client")  # type: ignore[arg-type]
 
 
@@ -127,9 +125,7 @@ def test_filter_builder_combines_with_and():
 def test_filter_builder_rejects_raw_plus_typed():
     """The raw escape hatch cannot silently swallow typed filters."""
     with pytest.raises(InvalidRequestError):
-        build_requests_filter(
-            status=AtlanRequestStatus.ACTIVE, post_filter='{"x":1}'
-        )
+        build_requests_filter(status=AtlanRequestStatus.ACTIVE, post_filter='{"x":1}')
 
 
 def test_iteration_pages_lazily(client, mock_api_caller):

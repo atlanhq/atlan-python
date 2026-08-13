@@ -67,7 +67,9 @@ def test_bulk_action_body_is_snake_case(client, mock_api_caller, method, decisio
         "message": "queued",
     }
     result = getattr(client, method)(
-        group_key=ASSET_GUID, sub_type=ApprovalWorkflowRequestType.DATA_ACCESS, comment="bulk"
+        group_key=ASSET_GUID,
+        sub_type=ApprovalWorkflowRequestType.DATA_ACCESS,
+        comment="bulk",
     )
 
     assert result.total_tasks == 3

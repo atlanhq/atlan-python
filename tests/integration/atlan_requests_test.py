@@ -6,6 +6,7 @@ a disposable term and verifies approval applies the change on the backend.
 
 The governance-workflow Inbox (client.inbox) lives in inbox_test.py.
 """
+
 import time
 from typing import Generator
 
