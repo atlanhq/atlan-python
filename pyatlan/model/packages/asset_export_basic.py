@@ -10,7 +10,23 @@ from pyatlan.model.workflow import WorkflowMetadata
 class AssetExportBasic(AbstractCustomPackage):
     """
     Base configuration for the Asset Export package.
+
+    .. deprecated::
+        This submits the **legacy Argo workflow template**
+        (``csa-asset-export-basic``), which no longer exists on tenants
+        migrated to v3 native apps — submission fails there with
+        ``clusterworkflowtemplates.argoproj.io "csa-asset-export-basic" not
+        found``. On such tenants use the v3 builder instead::
+
+            from pyatlan.model.apps import CsaUberAssetExportBasic
+
+            CsaUberAssetExportBasic(client).export_via("DIRECT").export_scope(
+                "ALL"
+            ).qualified_name_prefix_for_assets("default/bigquery/123").run()
     """
+
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "CsaUberAssetExportBasic"
 
     _NAME = "asset-export-basic"
     _PACKAGE_NAME = f"@csa/{_NAME}"

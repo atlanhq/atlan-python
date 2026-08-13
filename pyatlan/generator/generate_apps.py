@@ -58,6 +58,9 @@ MANIFEST: List[Tuple[str, Optional[str]]] = [
     ("atlan-dynamodb", None),
     ("atlan-sigma", None),
     ("mongodbatlas-atlas", None),
+    # CSA "uber app" utilities (AICHAT-1588): the legacy Argo templates are gone
+    # on v3-only tenants, so the typed path must target the native app.
+    ("csa-uber-asset-export-basic", "asset-export-basic"),
 ]
 
 # Widgets handled by the builder/base as Step 1/2 plumbing — not metadata methods.
@@ -692,6 +695,8 @@ def _render_builder(
     lines += [
         f"    _INPUTS_CLASS = {inputs_cls}",
         f"    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {hidden!r}",
+    ]
+    lines += [
         "",
     ]
     lines.extend(cred_blocks)
@@ -1044,8 +1049,11 @@ def main() -> None:
         if existing.name not in keep:
             existing.unlink()
     test_dir.mkdir(parents=True, exist_ok=True)
+    # Clear only OUR generated tests (identified by the banner) — hand-written
+    # test files in this directory survive regeneration, mirroring _HAND_WRITTEN.
     for existing in test_dir.glob("test_*.py"):
-        existing.unlink()
+        if "AUTO-GENERATED" in existing.read_text()[:300]:
+            existing.unlink()
     for module, (_cls, content, test) in modules.items():
         (out_dir / f"{module}.py").write_text(content)
         (test_dir / f"test_{module}.py").write_text(test)

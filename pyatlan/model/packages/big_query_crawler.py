@@ -25,6 +25,9 @@ class BigQueryCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "BigqueryCrawler"
+
     _NAME = "bigquery"
     _PACKAGE_NAME = "@atlan/bigquery"
     _PACKAGE_PREFIX = WorkflowPackage.BIGQUERY.value

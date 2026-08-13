@@ -25,6 +25,9 @@ class SnowflakeCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "SnowflakeCrawler"
+
     _NAME = "snowflake"
     _PACKAGE_NAME = "@atlan/snowflake"
     _PACKAGE_PREFIX = WorkflowPackage.SNOWFLAKE.value

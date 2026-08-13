@@ -25,6 +25,9 @@ class DynamoDBCrawler(AbstractCrawler):
     that can be returned by a query, default: 10000
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "AtlanDynamodb"
+
     _NAME = "dynamodb"
     _PACKAGE_NAME = "@atlan/dynamodb"
     _PACKAGE_PREFIX = WorkflowPackage.DYNAMODB.value

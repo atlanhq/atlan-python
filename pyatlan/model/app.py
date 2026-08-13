@@ -156,6 +156,7 @@ class AppInfo(AppObject):
     name: Optional[str] = None
     native_ready: bool = False
     execution_mode: Optional[str] = None
+    app_service_url: Optional[str] = None
     entrypoints: List[AppEntrypoint] = Field(default_factory=list)
 
 

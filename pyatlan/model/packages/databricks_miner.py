@@ -17,6 +17,9 @@ class DatabricksMiner(AbstractMiner):
     Databricks connection whose assets should be mined
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "DatabricksMiner"
+
     _NAME = "databricks"
     _PACKAGE_NAME = "@atlan/databricks-lineage"
     _PACKAGE_PREFIX = WorkflowPackage.DATABRICKS_LINEAGE.value

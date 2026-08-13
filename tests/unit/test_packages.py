@@ -1827,3 +1827,56 @@ def test_wrong_glue_package_filter_raises_invalid_req_err(
             admin_groups=None,
             admin_users=None,
         ).include(assets=test_assets)
+
+
+def test_deprecation_warning_names_the_apps_equivalent():
+    """Legacy packages with a typed v3 builder name it in the deprecation
+    warning, so the migration path is one import away (AICHAT-1588)."""
+    import warnings
+
+    from pyatlan.model.packages.asset_export_basic import AssetExportBasic
+    from pyatlan.model.packages.connection_delete import ConnectionDelete
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        AssetExportBasic()
+        ConnectionDelete(qualified_name="qn", purge=False)
+
+    mapped, unmapped = str(caught[0].message), str(caught[1].message)
+    assert "pyatlan.model.apps.CsaUberAssetExportBasic" in mapped
+    # packages without an equivalent keep the generic AppClient guidance
+    assert "AppClient" in unmapped
+
+
+def test_every_apps_equivalent_pointer_resolves():
+    """Every _APPS_EQUIVALENT must name a real class in pyatlan.model.apps —
+    guards against typos here and against renames there silently breaking the
+    migration pointers (AICHAT-1588)."""
+    import importlib
+    import pkgutil
+
+    import pyatlan.model.apps as apps
+    import pyatlan.model.packages as packages
+    from pyatlan.model.packages.base.package import AbstractPackage
+
+    # import every package module so all subclasses are registered
+    for mod in pkgutil.iter_modules(packages.__path__):
+        importlib.import_module(f"pyatlan.model.packages.{mod.name}")
+
+    mapped = {}
+    stack = list(AbstractPackage.__subclasses__())
+    while stack:
+        cls = stack.pop()
+        stack.extend(cls.__subclasses__())
+        equivalent = cls.__dict__.get("_APPS_EQUIVALENT", "")
+        if equivalent:
+            # key by module+name: SQLServerCrawler exists in two legacy modules
+            mapped[f"{cls.__module__}.{cls.__name__}"] = equivalent
+
+    assert len(mapped) >= 18, f"expected 18+ mapped packages, got {sorted(mapped)}"
+    for legacy, equivalent in sorted(mapped.items()):
+        target = getattr(apps, equivalent, None)
+        assert target is not None, (
+            f"{legacy}._APPS_EQUIVALENT points at pyatlan.model.apps."
+            f"{equivalent}, which does not exist"
+        )

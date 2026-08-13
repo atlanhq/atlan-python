@@ -25,6 +25,9 @@ class DbtCrawler(AbstractCrawler):
     that can be returned by a query, default: 0
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "AtlanDbt"
+
     _NAME = "dbt"
     _PACKAGE_NAME = "@atlan/dbt"
     _PACKAGE_PREFIX = WorkflowPackage.DBT.value

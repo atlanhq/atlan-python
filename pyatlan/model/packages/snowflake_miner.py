@@ -16,6 +16,9 @@ class SnowflakeMiner(AbstractMiner):
     Snowflake connection whose assets should be mined
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "SnowflakeMiner"
+
     _NAME = "snowflake"
     _PACKAGE_NAME = "@atlan/snowflake-miner"
     _PACKAGE_PREFIX = WorkflowPackage.SNOWFLAKE_MINER.value

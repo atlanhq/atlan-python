@@ -25,6 +25,9 @@ class ConfluentKafkaCrawler(AbstractCrawler):
     that can be returned by a query, default: 0
     """
 
+    #: Typed v3 replacement in :mod:`pyatlan.model.apps` (see deprecation warning).
+    _APPS_EQUIVALENT = "KafkaConfluent"
+
     _NAME = "confluent-kafka"
     _PACKAGE_NAME = "@atlan/kafka-confluent-cloud"
     _PACKAGE_PREFIX = WorkflowPackage.KAFKA_CONFLUENT_CLOUD.value
