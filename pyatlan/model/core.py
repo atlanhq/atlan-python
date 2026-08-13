@@ -273,7 +273,34 @@ class Announcement:
     announcement_message: Optional[str] = Field(default=None)
 
 
-class AtlanTag(AtlanObject):
+class AtlanObjectWithDefaults(AtlanObject):
+    """An AtlanObject whose declared (non-None) field defaults actually reach
+    the wire.
+
+    pyatlan serializes requests with ``exclude_unset=True`` — necessary for
+    partial updates, but it silently strips model defaults the caller never
+    assigned. For request models that DECLARE meaningful defaults, that meant
+    the documented default never applied: the field was omitted and the
+    server's own default won (BLDX-1589: ``AtlanTag.propagate`` documented
+    ``False``, wire carried nothing, server stored ``True``).
+
+    Extending this base marks every field with a non-None declared default as
+    "set" at construction, so ``exclude_unset`` keeps it. Fields defaulting to
+    ``None`` (or using ``default_factory``) remain unset and omitted — nothing
+    new leaks onto the wire.
+
+    Do NOT extend this from ``Asset`` models: their fields must stay omitted
+    when untouched, or partial updates would stomp server-side values.
+    """
+
+    def __init__(self, **data: Any) -> None:
+        super().__init__(**data)
+        self.__fields_set__.update(
+            name for name, field in self.__fields__.items() if field.default is not None
+        )
+
+
+class AtlanTag(AtlanObjectWithDefaults):
     class Config:
         extra = "forbid"
 
@@ -301,26 +328,37 @@ class AtlanTag(AtlanObject):
     )
     propagate: Optional[bool] = Field(
         default=False,
-        description="whether to propagate the Atlan tag (True) or not (False)",
+        description=(
+            "whether to propagate the Atlan tag (True) or not (False). "
+            "The default (False) is always sent in the request — pass "
+            "propagate=True to propagate. (Before 9.12 the default was "
+            "silently omitted and the server default — propagate — won.)"
+        ),
     )
     remove_propagations_on_entity_delete: Optional[bool] = Field(
         default=True,
         description=(
             "whether to remove the propagated Atlan tags when the Atlan tag "
-            "is removed from this asset (True) or not (False)"
+            "is removed from this asset (True) or not (False). The default "
+            "(True) is always sent in the request."
         ),
         alias="removePropagationsOnEntityDelete",
     )
     restrict_propagation_through_lineage: Optional[bool] = Field(
         default=False,
-        description="whether to avoid propagating through lineage (True) or do propagate through lineage (False)",
+        description=(
+            "whether to avoid propagating through lineage (True) or do "
+            "propagate through lineage (False). The default (False) is "
+            "always sent in the request."
+        ),
         alias="restrictPropagationThroughLineage",
     )
     restrict_propagation_through_hierarchy: Optional[bool] = Field(
         default=False,
         description=(
             "Whether to prevent this Atlan tag from propagating through "
-            "hierarchy (True) or allow it to propagate through hierarchy (False)"
+            "hierarchy (True) or allow it to propagate through hierarchy "
+            "(False). The default (False) is always sent in the request."
         ),
         alias="restrictPropagationThroughHierarchy",
     )
@@ -347,7 +385,7 @@ class AtlanTag(AtlanObject):
         :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
         :param source_tag_attachment: (optional) source-specific details for the tag
         :param client: (optional) client instance used for translating source-specific details
-        :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
+        :return: an Atlan tag assignment with the SDK's declared propagation defaults sent explicitly (propagate=False); set propagate=True on the returned tag to propagate
         :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
         tag = AtlanTag(type_name=atlan_tag_name)  # type: ignore[call-arg]
@@ -382,7 +420,7 @@ class AtlanTag(AtlanObject):
         :param entity_guid: unique identifier (GUID) of the entity to which the Atlan tag is to be assigned
         :param source_tag_attachment: (optional) source-specific details for the tag
         :param client: (optional) async client instance used for translating source-specific details
-        :return: an Atlan tag assignment with default settings for propagation and a specific entity assignment
+        :return: an Atlan tag assignment with the SDK's declared propagation defaults sent explicitly (propagate=False); set propagate=True on the returned tag to propagate
         :raises InvalidRequestError: if client is not provided and source_tag_attachment is specified
         """
         tag = AtlanTag(type_name=atlan_tag_name)  # type: ignore[call-arg]
