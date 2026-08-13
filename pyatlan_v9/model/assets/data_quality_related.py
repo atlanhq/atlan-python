@@ -94,6 +94,9 @@ class RelatedDataQualityRule(RelatedDataQuality):
     dq_rule_latest_metric_value: Union[str, None, UnsetType] = UNSET
     """Last result metrics value of the rule."""
 
+    dq_rule_latest_total_rows_evaluated: Union[int, None, UnsetType] = UNSET
+    """Total number of rows that the rule's last run evaluated."""
+
     dq_rule_latest_metric_value_computed_at: Union[int, None, UnsetType] = UNSET
     """Time (epoch) at which the latest metric value was evaluated in the source."""
 

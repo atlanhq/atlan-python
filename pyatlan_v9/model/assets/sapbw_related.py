@@ -303,7 +303,7 @@ class RelatedSAPBWTransformation(RelatedSAPBW):
     # __post_init__ sets it to "SAPBWTransformation" so it serializes correctly
 
     sap_bw_rules: Union[List[Dict[str, str]], None, UnsetType] = UNSET
-    """Rules defined within this transformation as key-value pairs (rule_id -> rule_type, sourced from RSTRANRULE). Mirrors the SAP ERP sapErpFunctionModuleImportParams shape."""
+    """Rules defined within this transformation as key-value pairs (rule_id mapped to rule_type, sourced from RSTRANRULE). Mirrors the SAP ERP sapErpFunctionModuleImportParams shape."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
