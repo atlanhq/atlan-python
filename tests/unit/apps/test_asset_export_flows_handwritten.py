@@ -6,6 +6,7 @@ The generator's regen only clears files carrying the AUTO-GENERATED banner,
 so this file survives regeneration; it asserts the customer-facing flows
 stay stable across regens.
 """
+
 from unittest.mock import Mock
 
 from pyatlan.model.apps import CsaUberAssetExportBasic

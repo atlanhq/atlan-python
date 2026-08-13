@@ -17,7 +17,7 @@ class CsaUberAssetExportBasicInputs(AppInput):
     """Typed, UI-facing inputs for the `csa-uber-asset-export-basic` / `asset-export-basic` app (generated from its configmap)."""
 
     _APP_ID: ClassVar[str] = "csa-uber-asset-export-basic"
-    _ENTRYPOINT: ClassVar[Optional[str]] = 'asset-export-basic'
+    _ENTRYPOINT: ClassVar[Optional[str]] = "asset-export-basic"
 
     # Step 1 · Credential / Connection plumbing
     connection: Optional[Any] = None
@@ -26,13 +26,13 @@ class CsaUberAssetExportBasicInputs(AppInput):
     agent_json: Optional[Any] = None
 
     # Step 3 · Metadata (only fields the UI surfaces)
-    delivery_type: str = Field('DIRECT', alias="delivery-type")
+    delivery_type: str = Field("DIRECT", alias="delivery-type")
     """Export via — How to deliver the export. Download keeps it in Atlan (Runs tab); Email sends it to the recipients below; Object storage uploads to S3 / GCS / ADLS / Google Sheet."""
     email_addresses: str = Field("", alias="email-addresses")
     """Recipient email address(es) — Comma-separated email addresses to send the export to as an attachment. Only commas are supported as separators. Leave blank to skip email."""
-    export_scope: str = Field('ENRICHED_ONLY', alias="export-scope")
+    export_scope: str = Field("ENRICHED_ONLY", alias="export-scope")
     """Export scope — Whether to export only assets enriched by users, or all assets with the qualified name prefix."""
-    qn_prefix: str = Field('default', alias="qn-prefix")
+    qn_prefix: str = Field("default", alias="qn-prefix")
     """Qualified name prefix (for assets) — Starting value for a qualifiedName that determines which assets to export."""
     include_description: bool = Field(True, alias="include-description")
     """Include description? — Whether to also include system-level description (Yes), or only user-entered description (No)."""
@@ -59,14 +59,23 @@ class CsaUberAssetExportBasic(AppBuilder):
     """
 
     _APP_ID: ClassVar[str] = "csa-uber-asset-export-basic"
-    _ENTRYPOINT: ClassVar[Optional[str]] = 'asset-export-basic'
+    _ENTRYPOINT: ClassVar[Optional[str]] = "asset-export-basic"
     _CONNECTOR_NAME: ClassVar[str] = "csa-connectors-objectstore"
     _CONNECTOR_CONFIG: ClassVar[str] = "csa-connectors-objectstore"
     _INPUTS_CLASS = CsaUberAssetExportBasicInputs
-    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {'all_attributes': False}
+    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"all_attributes": False}
 
     # ── Step 1 · Credential ──
-    def s3(self, *, username: str, password: str, aws_role_arn: Optional[str] = None, region: Optional[str] = None, s3_bucket: Optional[str] = None, **extra: Any) -> "CsaUberAssetExportBasic":
+    def s3(
+        self,
+        *,
+        username: str,
+        password: str,
+        aws_role_arn: Optional[str] = None,
+        region: Optional[str] = None,
+        s3_bucket: Optional[str] = None,
+        **extra: Any,
+    ) -> "CsaUberAssetExportBasic":
         """Direct extraction with S3 auth.
 
         :param username: AWS access key.
@@ -95,7 +104,14 @@ class CsaUberAssetExportBasic(AppBuilder):
         )
 
     # ── Step 1 · Credential ──
-    def gcs(self, *, username: str, password: str, gcs_bucket: Optional[str] = None, **extra: Any) -> "CsaUberAssetExportBasic":
+    def gcs(
+        self,
+        *,
+        username: str,
+        password: str,
+        gcs_bucket: Optional[str] = None,
+        **extra: Any,
+    ) -> "CsaUberAssetExportBasic":
         """Direct extraction with GCS auth.
 
         :param username: Project ID.
@@ -118,7 +134,16 @@ class CsaUberAssetExportBasic(AppBuilder):
         )
 
     # ── Step 1 · Credential ──
-    def adls(self, *, username: str, password: str, azure_tenant_id: Optional[str] = None, storage_account_name: Optional[str] = None, adls_container: Optional[str] = None, **extra: Any) -> "CsaUberAssetExportBasic":
+    def adls(
+        self,
+        *,
+        username: str,
+        password: str,
+        azure_tenant_id: Optional[str] = None,
+        storage_account_name: Optional[str] = None,
+        adls_container: Optional[str] = None,
+        **extra: Any,
+    ) -> "CsaUberAssetExportBasic":
         """Direct extraction with ADLS auth.
 
         :param username: Azure client ID.
@@ -147,7 +172,9 @@ class CsaUberAssetExportBasic(AppBuilder):
         )
 
     # ── Step 3 · Metadata ──
-    def export_via(self, value: Literal['DIRECT', 'EMAIL', 'CLOUD']) -> "CsaUberAssetExportBasic":
+    def export_via(
+        self, value: Literal["DIRECT", "EMAIL", "CLOUD"]
+    ) -> "CsaUberAssetExportBasic":
         """Export via — How to deliver the export. Download keeps it in Atlan (Runs tab); Email sends it to the recipients below; Object storage uploads to S3 / GCS / ADLS / Google Sheet."""
         self._metadata["delivery-type"] = value
         return self
@@ -157,7 +184,9 @@ class CsaUberAssetExportBasic(AppBuilder):
         self._metadata["email-addresses"] = value
         return self
 
-    def export_scope(self, value: Literal['GLOSSARIES_ONLY', 'PRODUCTS_ONLY', 'ENRICHED_ONLY', 'ALL']) -> "CsaUberAssetExportBasic":
+    def export_scope(
+        self, value: Literal["GLOSSARIES_ONLY", "PRODUCTS_ONLY", "ENRICHED_ONLY", "ALL"]
+    ) -> "CsaUberAssetExportBasic":
         """Export scope — Whether to export only assets enriched by users, or all assets with the qualified name prefix."""
         self._metadata["export-scope"] = value
         return self
