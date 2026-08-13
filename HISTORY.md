@@ -1,3 +1,20 @@
+## 10.0.0 (August 13, 2026)
+
+### New Features
+
+- **Manage requests and approvals programmatically (`client.requests` and `client.inbox`)**: Two new clients cover both of Atlan's approval systems. `client.requests` lists, creates, approves, and rejects requests in the classic Requests module (Governance Center → Requests) with typed filters, enums (`AtlanRequestStatus`, `AtlanRequestType`), and lazy pagination. `client.inbox` inspects and bulk-approves or bulk-rejects governance-workflow tasks (the Inbox) — the first SDK to support it — with group-scoped `approve_all` / `reject_all` keyed by a task GUID (one task) or an asset GUID (all pending tasks on it). Sync and async parity throughout.
+- **Asset Export (Basic) v3 app builder (`CsaUberAssetExportBasic`)**: A new typed builder in `pyatlan.model.apps` runs Asset Export on v3 native-app tenants, where the legacy Argo-template path (`packages.AssetExportBasic` + `client.workflow.run()`) no longer resolves. Supports `DIRECT` / `EMAIL` / `CLOUD` delivery and `s3()` / `gcs()` / `adls()` object-store targets, mirroring the legacy builder's ergonomics. Every legacy `model.packages` class that has a typed v3 builder now emits a deprecation warning naming its replacement.
+
+### Breaking Changes
+
+- **`AtlanTag` now sends its propagation defaults on the wire**: Previously, constructing a tag as `AtlanTag(type_name=t)` sent no `propagate` field, so the server applied its own default (`propagate=True`) — the SDK documented `False`, but such tags propagated anyway. A new `AtlanObjectWithDefaults` base marks fields with a non-`None` declared default as set at construction, so a bare `AtlanTag` now serializes all four propagation flags with their documented defaults (`propagate=false`, `removePropagationsOnEntityDelete=true`, `restrictPropagationThroughLineage=false`, `restrictPropagationThroughHierarchy=false`). **Impact:** tags created without explicit propagation settings will no longer propagate by default. Set the flags explicitly if you relied on the previous server-side behavior.
+
+### Documentation
+
+- **Manage requests**: [Managing requests with the Python SDK](https://docs.atlan.com/product/capabilities/build-apps/sdks/python/how-tos/manage-requests) — `client.requests` (classic Requests module).
+- **Manage governance workflow approvals**: [Managing the Inbox with the Python SDK](https://docs.atlan.com/product/capabilities/build-apps/sdks/python/how-tos/manage-governance-workflow-approvals) — `client.inbox`.
+- **Run the Asset Export Basic app**: [Asset Export Basic with the Python SDK](https://docs.atlan.com/product/capabilities/build-apps/sdks/python/apps/utilities/asset-export-basic) — `CsaUberAssetExportBasic`.
+
 ## 9.11.0 (July 29, 2026)
 
 ### New Features
