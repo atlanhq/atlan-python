@@ -249,7 +249,120 @@ def test_miner_auto_resolves_connection_credential(client):
     SnowflakeMiner(client).connection(qualified_name="default/snowflake/123").create()
     assert client.asset.search.called  # connection was looked up
     out = client.app.create.call_args.kwargs["inputs"].to_inputs()
-    assert out["credential_guid"] == "conn-cred-guid"  # its credential reused
+    # CONNECT-843: the reused guid rides on the connection entity (the UI's wire
+    # shape), never as a bare top-level credential_guid. A top-level guid with no
+    # credential body makes the create endpoint rewrite that credential's shared
+    # config record. Do not "fix" this back to out["credential_guid"].
+    attrs = out["connection"]["attributes"]
+    assert attrs["defaultCredentialGuid"] == "conn-cred-guid"  # its credential reused
+    assert out["credential_guid"] == ""  # and not duplicated at the top level
+
+
+# --------------------------------------------------------------------------- #
+# CONNECT-843: where a REUSED credential guid is allowed to ride
+#
+# Reusing an already-vaulted guid on an existing connection must send the guid
+# on the connection entity (the UI's wire shape) and leave top-level
+# credential_guid "". A bare top-level guid with no credential body makes the
+# create endpoint rewrite that credential's shared config record down to
+# {"credentialSource": "direct"}, breaking every workflow sharing the guid.
+# --------------------------------------------------------------------------- #
+def _resolve_to(client, guid):
+    """Make the connection lookup in _create() resolve to ``guid``."""
+    client.asset.search.return_value = iter([Mock(default_credential_guid=guid)])
+
+
+@pytest.mark.parametrize(
+    "cls, connector",
+    [(apps.BigqueryMiner, "bigquery"), (apps.SnowflakeMiner, "snowflake")],
+    ids=["bigquery", "snowflake"],
+)
+def test_auto_resolved_guid_rides_on_connection_not_top_level(client, cls, connector):
+    # Generic across connectors: the base builder owns this, no connector
+    # overrides _build_connection/_assemble.
+    _resolve_to(client, "resolved-guid")
+    cls(client).connection(qualified_name=f"default/{connector}/123").create()
+    out = client.app.create.call_args.kwargs["inputs"].to_inputs()
+    attrs = out["connection"]["attributes"]
+    # exactly the UI's reuse shape: identity + the connection's own credential
+    assert attrs["defaultCredentialGuid"] == "resolved-guid"
+    assert attrs["qualifiedName"] == f"default/{connector}/123"
+    assert attrs["connectorName"] == connector
+    # the guid is NOT echoed at the top level, and no credential body is invented
+    assert out["credential_guid"] == ""
+    assert "credential" not in out
+
+
+def test_explicit_guid_on_existing_connection_rides_on_connection():
+    # Same routing when the caller supplies the guid itself instead of letting
+    # _create() resolve it. The trigger is "guid + existing connection", not
+    # "guid came from a lookup".
+    out = (
+        apps.BigqueryMiner(Mock())
+        .connection(qualified_name="default/bigquery/1700000000")
+        .credential_guid("caller-supplied-guid")
+        .preview()
+    )
+    assert (
+        out["connection"]["attributes"]["defaultCredentialGuid"]
+        == "caller-supplied-guid"
+    )
+    assert out["credential_guid"] == ""
+
+
+def test_explicit_guid_on_new_connection_stays_top_level():
+    # Deliberately unchanged, and NOT safe. This shape is KNOWN to still trigger
+    # the CONNECT-843 server bug: the credential config record is keyed by the guid
+    # alone, so minting a new connection protects nothing -- a bare top-level guid
+    # with no credential body still flattens that guid's shared config record to
+    # {"credentialSource": "direct"} for every workflow using it. It is left as-is
+    # because rerouting it here would newly affect crawler-shaped apps, whose
+    # connection-attribute fallback is unverified (crawler forms carry an explicit
+    # credential-guid widget, so they may legitimately read the top-level field),
+    # and because the real fix for this branch is the server-side guard (see the
+    # heracles handoff on CONNECT-843). This test pins today's behaviour so any
+    # future reroute is a deliberate, evidenced change and not a drive-by.
+    out = (
+        BigqueryCrawler(Mock())
+        .connection(name="prod-bq")
+        .credential_guid("existing-guid")
+        .preview()
+    )
+    assert out["credential_guid"] == "existing-guid"
+    assert "defaultCredentialGuid" not in out["connection"]["attributes"]
+
+
+def test_staged_credential_on_existing_connection_keeps_vaulting_shape(client):
+    # A staged raw credential is still vaulted by the create endpoint from the
+    # `credential` key, even on an existing connection: nothing moves onto the
+    # connection and credential_guid stays "" for the server to fill in.
+    (
+        BigqueryCrawler(client)
+        .workload_identity_federation(project_id="proj")
+        .connection(qualified_name="default/bigquery/1700000000")
+        .include({"proj": ["ds"]})
+        .create()
+    )
+    out = client.app.create.call_args.kwargs["inputs"].to_inputs()
+    assert out["credential"]["authType"] == "gcp-wif"
+    assert out["credential_guid"] == ""
+    assert "defaultCredentialGuid" not in out["connection"]["attributes"]
+    client.asset.search.assert_not_called()  # a staged cred needs no lookup
+
+
+def test_agent_mode_on_existing_connection_ignores_credential_guid():
+    # The agent/SDR path returns before any credential routing, so neither field
+    # appears. Unchanged by CONNECT-843.
+    out = (
+        apps.SnowflakeMiner(Mock())
+        .agent({"name": "my-agent"})
+        .connection(qualified_name="default/snowflake/123")
+        .credential_guid("should-be-ignored")
+        .preview()
+    )
+    assert out["agent_json"] == {"name": "my-agent"}
+    assert "credential_guid" not in out
+    assert "defaultCredentialGuid" not in out["connection"]["attributes"]
 
 
 def test_agent_mode_uses_agent_json_not_credential(client):

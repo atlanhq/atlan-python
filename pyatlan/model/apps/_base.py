@@ -161,7 +161,12 @@ class AppBuilder:
         return self
 
     # ── assembly (no network) ──────────────────────────────────────────────
-    def _build_connection(self, qualified_name: str) -> Dict[str, Any]:
+    def _build_connection(
+        self,
+        qualified_name: str,
+        *,
+        default_credential_guid: Optional[str] = None,
+    ) -> Dict[str, Any]:
         # Derive the connector from the QN (``default/{connector}/{epoch}``) so a
         # referenced existing connection (e.g. for miners) reports the right
         # connectorName, not the builder's app-id-derived fallback.
@@ -175,6 +180,8 @@ class AppBuilder:
             "qualifiedName": qualified_name,
             "connectorName": connector,
         }
+        if default_credential_guid:
+            attrs["defaultCredentialGuid"] = default_credential_guid
         if self._connection_name:
             attrs["name"] = self._connection_name
         if self._admin_users:
@@ -219,9 +226,27 @@ class AppBuilder:
         resolved_guids: Optional[Dict[str, str]] = None,
     ) -> AppInput:
         resolved_guids = resolved_guids or {}
+        # Reusing an already-vaulted credential on an EXISTING connection (e.g. a
+        # miner picking up that connection's own credential): the guid rides on the
+        # connection entity, the way the UI sends it, and the top-level
+        # credential_guid stays "". A bare top-level guid with no credential body
+        # makes the create endpoint rewrite that credential's shared config record
+        # from the (absent) body, flattening it to {"credentialSource": "direct"}
+        # for every workflow sharing the guid (CONNECT-843).
+        reuse_on_existing_connection = bool(
+            self._extraction_method != "agent"
+            and self._credential_guid
+            and self._connection_qualified_name
+            and "credential_guid" not in self._raw_creds
+        )
         kwargs: Dict[str, Any] = dict(self._HIDDEN_DEFAULTS)
         kwargs.update(self._metadata)
-        kwargs["connection"] = self._build_connection(qualified_name)
+        kwargs["connection"] = self._build_connection(
+            qualified_name,
+            default_credential_guid=(
+                self._credential_guid if reuse_on_existing_connection else None
+            ),
+        )
         kwargs["extraction_method"] = self._extraction_method
         if self._extraction_method == "agent":
             kwargs["agent_json"] = self._agent_json
@@ -245,9 +270,12 @@ class AppBuilder:
             else:
                 kwargs[field] = self._raw_credential(cred, epoch=epoch, redact=True)
         # credential_guid is a (non-null) string in the contract: reuse an existing
-        # guid if given, else "" (omitting it reads as null and is rejected).
+        # guid if given, else "" (omitting it reads as null and is rejected). When
+        # the guid rides on the connection instead, this stays "" (see above).
         kwargs["credential_guid"] = (
-            self._credential_guid if self._credential_guid is not None else ""
+            ""
+            if reuse_on_existing_connection or self._credential_guid is None
+            else self._credential_guid
         )
         return self._INPUTS_CLASS(**kwargs)
 
