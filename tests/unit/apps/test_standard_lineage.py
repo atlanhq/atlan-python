@@ -1,5 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
+"""HAND-WRITTEN tests for the Standard Lineage builder (CONNECT-182).
+
+The generator's regen only clears files carrying the AUTO-GENERATED banner, so this
+file survives regeneration alongside the builder it covers.
+
+Most cases pin the re-scope path rather than create: the builder's job is to change an
+existing workflow's set of connections without disturbing the workflow's own connection
+entity, and ``client.app.update`` is a full replace — so what is *absent* from the
+payload matters as much as what is present.
+"""
+
 import json
 from unittest.mock import Mock
 
