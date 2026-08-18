@@ -158,7 +158,13 @@ def test_service_account_credential_shape():
 
 
 def test_workload_identity_federation_auth_type():
-    b = BigqueryCrawler(Mock()).workload_identity_federation(project_id="proj")
+    b = BigqueryCrawler(Mock()).workload_identity_federation(
+        project_id="proj",
+        service_account_email="svc@proj.iam.gserviceaccount.com",
+        wif_pool_provider_id="pool/provider",
+        atlan_oauth_id="oauth-id",
+        atlan_oauth_secret="oauth-secret",
+    )
     cred = b._raw_creds["credential_guid"]
     assert cred.auth_type == "gcp-wif"
     assert cred.extras["project_id"] == "proj"
