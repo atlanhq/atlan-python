@@ -86,10 +86,10 @@ class RelatedQlikChart(RelatedQlik):
     qlik_chart_footnote: Union[str, None, UnsetType] = UNSET
     """Footnote of this chart."""
 
-    qlik_chart_orientation: Union[str, None, UnsetType] = UNSET
+    qlik_orientation: Union[str, None, UnsetType] = UNSET
     """Orientation of this chart."""
 
-    qlik_chart_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: Union[str, None, UnsetType] = UNSET
     """Subtype of this chart, for example: bar, graph, pie, etc."""
 
     def __post_init__(self) -> None:
@@ -107,7 +107,7 @@ class RelatedQlikSheet(RelatedQlik):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QlikSheet" so it serializes correctly
 
-    qlik_sheet_is_approved: Union[bool, None, UnsetType] = UNSET
+    qlik_is_approved: Union[bool, None, UnsetType] = UNSET
     """Whether this is approved (true) or not (false)."""
 
     def __post_init__(self) -> None:
@@ -125,7 +125,7 @@ class RelatedQlikSpace(RelatedQlik):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "QlikSpace" so it serializes correctly
 
-    qlik_space_type: Union[str, None, UnsetType] = UNSET
+    qlik_type: Union[str, None, UnsetType] = UNSET
     """Type of this space, for exmaple: Private, Shared, etc."""
 
     def __post_init__(self) -> None:
