@@ -312,3 +312,119 @@ def test_load_update_preserves_reinjects_and_references_credential():
 def test_update_without_load_raises():
     with pytest.raises(ValueError):
         BigqueryCrawler(Mock()).update()
+
+
+@pytest.mark.parametrize("cls", BUILDERS, ids=BUILDER_IDS)
+def test_load_update_is_generic_across_builders(cls):
+    """load()/update() lives on the base, so every app builder can update: it
+    re-injects connection_qualified_name and references the existing credential
+    (no rotation), targeting the right slug/entrypoint. The builder's own
+    preview() is used as the 'current inputs' so the seed is valid for its
+    typed inputs model."""
+    from types import SimpleNamespace
+
+    qn = f"default/{cls._CONNECTOR_NAME}/1700000000"
+    current = cls(Mock()).connection(qualified_name=qn).credential_guid("cred-x").preview()
+    client = Mock()
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(properties={})
+    client.app.update.return_value = Mock(version=2)
+
+    cls(client).load("slug-x").update()
+
+    kw = client.app.update.call_args.kwargs
+    inp = kw["inputs"]
+    assert kw["slug"] == "slug-x"
+    assert kw["entrypoint"] == (cls._ENTRYPOINT or None)
+    assert inp["connection_qualified_name"] == qn      # re-injected
+    assert inp["credential_guid"] == "cred-x"          # referenced, not rotated
+    assert "credential" not in inp                      # no raw credential re-sent
+
+
+def test_update_retries_without_entrypoint_on_1003():
+    """update() falls back to the default entrypoint when the named one has no
+    registered contract (server 1003) — mirroring _create()."""
+    from types import SimpleNamespace
+
+    current = (
+        BigqueryCrawler(Mock())
+        .connection(qualified_name="default/bigquery/1")
+        .credential_guid("g")
+        .preview()
+    )
+    client = Mock()
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(properties={})
+    client.app.update.side_effect = [
+        Exception("Server responded 1003: unknown entrypoint"),
+        Mock(version=3),
+    ]
+
+    BigqueryCrawler(client).load("slug-x").update()
+
+    assert client.app.update.call_count == 2
+    assert client.app.update.call_args_list[0].kwargs["entrypoint"] == "crawler"
+    assert client.app.update.call_args_list[1].kwargs["entrypoint"] is None
+
+
+def test_load_update_applies_multiple_field_changes():
+    """load(slug).<several typed changes>.update() applies every change and
+    preserves + re-injects the rest (connection_qualified_name, credential ref,
+    hidden defaults), dropping runtime keys."""
+    from types import SimpleNamespace
+
+    current = {
+        "connection": {"typeName": "Connection", "attributes": {
+            "qualifiedName": "default/bigquery/1", "connectorName": "bigquery",
+            "name": "prod", "adminRoles": ["role-1"]}},
+        "credential_guid": "cred-1", "extraction_method": "direct",
+        "include_filter": {"^p$": ["^old$"]}, "exclude_filter": {},
+        "temp_table_regex": "", "enable_nested_columns": True,
+        "enable_bigquery_tag_sync": False, "filter_sharded_tables": True,
+        "hidden_datasets": False, "control_config": {},
+        "control_config_strategy": "default", "atlas_auth_type": "internal",
+        "user-id": "u1",
+    }
+    client = Mock()
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(
+        properties={"control_config": {"type": "string"}}
+    )
+    client.app.update.return_value = Mock(version=2)
+
+    (
+        BigqueryCrawler(client)
+        .load("slug-1")
+        .include({"p": ["a", "b"]})
+        .exclude({"p": ["tmp"]})
+        .exclude_regex(".*_bak$")
+        .import_nested_columns(False)
+        .import_tags(True)
+        .combine_sharded_tables(False)
+        .hidden_assets(True)
+        .custom_config('{"flag": 1}')
+        .update()
+    )
+
+    inp = client.app.update.call_args.kwargs["inputs"]
+    # every requested change applied
+    assert inp["include_filter"] == '{"^p$": ["^a$", "^b$"]}'
+    assert inp["exclude_filter"] == '{"^p$": ["^tmp$"]}'
+    assert inp["temp_table_regex"] == ".*_bak$"
+    assert inp["enable_nested_columns"] is False
+    assert inp["enable_bigquery_tag_sync"] is True
+    assert inp["filter_sharded_tables"] is False
+    assert inp["hidden_datasets"] is True
+    assert inp["control_config_strategy"] == "custom"
+    assert inp["control_config"] == '{"flag": 1}'
+    # rest preserved / re-injected / stripped
+    assert inp["connection_qualified_name"] == "default/bigquery/1"
+    assert inp["credential_guid"] == "cred-1" and "credential" not in inp
+    assert inp["atlas_auth_type"] == "internal"
+    assert "user-id" not in inp
