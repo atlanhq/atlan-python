@@ -277,15 +277,22 @@ def test_load_update_preserves_reinjects_and_references_credential():
 
     client = Mock()
     current = {
-        "connection": {"typeName": "Connection", "attributes": {
-            "qualifiedName": "default/bigquery/123", "connectorName": "bigquery",
-            "name": "prod", "adminRoles": ["role-1"]}},
+        "connection": {
+            "typeName": "Connection",
+            "attributes": {
+                "qualifiedName": "default/bigquery/123",
+                "connectorName": "bigquery",
+                "name": "prod",
+                "adminRoles": ["role-1"],
+            },
+        },
         "credential_guid": "cred-1",
         "extraction_method": "direct",
         "include_filter": {"^proj$": ["^old$"]},
-        "control_config": {},          # object on read-back -> must normalize to "{}"
-        "user-id": "u1", "workflow_id": "w1",   # runtime keys -> must be dropped
-        "atlas_auth_type": "internal",          # non-structural -> preserved
+        "control_config": {},  # object on read-back -> must normalize to "{}"
+        "user-id": "u1",
+        "workflow_id": "w1",  # runtime keys -> must be dropped
+        "atlas_auth_type": "internal",  # non-structural -> preserved
     }
     client.app.get.return_value.dict.return_value = {
         "dag": {"extract": {"inputs": {"args": current}}}
@@ -306,7 +313,9 @@ def test_load_update_preserves_reinjects_and_references_credential():
     assert inp["control_config"] == "{}"  # normalized object -> string
     assert "user-id" not in inp and "workflow_id" not in inp  # runtime keys dropped
     assert inp["atlas_auth_type"] == "internal"  # preserved
-    assert inp["connection"]["attributes"]["adminRoles"] == ["role-1"]  # connection kept
+    assert inp["connection"]["attributes"]["adminRoles"] == [
+        "role-1"
+    ]  # connection kept
 
 
 def test_update_without_load_raises():
@@ -324,7 +333,9 @@ def test_load_update_is_generic_across_builders(cls):
     from types import SimpleNamespace
 
     qn = f"default/{cls._CONNECTOR_NAME}/1700000000"
-    current = cls(Mock()).connection(qualified_name=qn).credential_guid("cred-x").preview()
+    current = (
+        cls(Mock()).connection(qualified_name=qn).credential_guid("cred-x").preview()
+    )
     client = Mock()
     client.app.get.return_value.dict.return_value = {
         "dag": {"extract": {"inputs": {"args": current}}}
@@ -338,9 +349,9 @@ def test_load_update_is_generic_across_builders(cls):
     inp = kw["inputs"]
     assert kw["slug"] == "slug-x"
     assert kw["entrypoint"] == (cls._ENTRYPOINT or None)
-    assert inp["connection_qualified_name"] == qn      # re-injected
-    assert inp["credential_guid"] == "cred-x"          # referenced, not rotated
-    assert "credential" not in inp                      # no raw credential re-sent
+    assert inp["connection_qualified_name"] == qn  # re-injected
+    assert inp["credential_guid"] == "cred-x"  # referenced, not rotated
+    assert "credential" not in inp  # no raw credential re-sent
 
 
 def test_update_retries_without_entrypoint_on_1003():
@@ -378,15 +389,27 @@ def test_load_update_applies_multiple_field_changes():
     from types import SimpleNamespace
 
     current = {
-        "connection": {"typeName": "Connection", "attributes": {
-            "qualifiedName": "default/bigquery/1", "connectorName": "bigquery",
-            "name": "prod", "adminRoles": ["role-1"]}},
-        "credential_guid": "cred-1", "extraction_method": "direct",
-        "include_filter": {"^p$": ["^old$"]}, "exclude_filter": {},
-        "temp_table_regex": "", "enable_nested_columns": True,
-        "enable_bigquery_tag_sync": False, "filter_sharded_tables": True,
-        "hidden_datasets": False, "control_config": {},
-        "control_config_strategy": "default", "atlas_auth_type": "internal",
+        "connection": {
+            "typeName": "Connection",
+            "attributes": {
+                "qualifiedName": "default/bigquery/1",
+                "connectorName": "bigquery",
+                "name": "prod",
+                "adminRoles": ["role-1"],
+            },
+        },
+        "credential_guid": "cred-1",
+        "extraction_method": "direct",
+        "include_filter": {"^p$": ["^old$"]},
+        "exclude_filter": {},
+        "temp_table_regex": "",
+        "enable_nested_columns": True,
+        "enable_bigquery_tag_sync": False,
+        "filter_sharded_tables": True,
+        "hidden_datasets": False,
+        "control_config": {},
+        "control_config_strategy": "default",
+        "atlas_auth_type": "internal",
         "user-id": "u1",
     }
     client = Mock()

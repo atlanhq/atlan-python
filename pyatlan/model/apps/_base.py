@@ -303,7 +303,9 @@ class AppBuilder:
         self._admin_groups = list(attrs.get("adminGroups") or [])
         self._admin_roles = list(attrs.get("adminRoles") or [])
         self._credential_guid = args.get("credential_guid") or ""
-        self._extraction_method = args.get("extraction_method") or self._EXTRACTION_METHOD
+        self._extraction_method = (
+            args.get("extraction_method") or self._EXTRACTION_METHOD
+        )
         # Carry every non-structural current field so nothing is dropped on the
         # full replace; the structural bits are rebuilt from the state above.
         structural = {
@@ -331,7 +333,9 @@ class AppBuilder:
         # field (e.g. control_config) that the read-back returned as an object.
         self._metadata = self._normalize_string_inputs(dict(self._metadata))
         epoch = int(time.time())
-        qn = self._connection_qualified_name or f"default/{self._CONNECTOR_NAME}/{epoch}"
+        qn = (
+            self._connection_qualified_name or f"default/{self._CONNECTOR_NAME}/{epoch}"
+        )
         payload = self._assemble(qualified_name=qn, epoch=epoch).to_inputs()
         payload["connection_qualified_name"] = qn
 
