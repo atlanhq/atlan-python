@@ -264,3 +264,51 @@ def test_agent_mode_uses_agent_json_not_credential(client):
     assert out["agent_json"] == {"name": "my-agent"}
     assert "credential" not in out
     assert "credential_guid" not in out
+
+
+# --------------------------------------------------------------------------- #
+# update() — load an existing workflow, change a field, full-replace
+# --------------------------------------------------------------------------- #
+def test_load_update_preserves_reinjects_and_references_credential():
+    """load(slug).<change>.update() re-injects connection_qualified_name, keeps
+    the existing credential (referenced, not rotated), normalizes string-typed
+    fields, drops runtime keys, and preserves everything else."""
+    from types import SimpleNamespace
+
+    client = Mock()
+    current = {
+        "connection": {"typeName": "Connection", "attributes": {
+            "qualifiedName": "default/bigquery/123", "connectorName": "bigquery",
+            "name": "prod", "adminRoles": ["role-1"]}},
+        "credential_guid": "cred-1",
+        "extraction_method": "direct",
+        "include_filter": {"^proj$": ["^old$"]},
+        "control_config": {},          # object on read-back -> must normalize to "{}"
+        "user-id": "u1", "workflow_id": "w1",   # runtime keys -> must be dropped
+        "atlas_auth_type": "internal",          # non-structural -> preserved
+    }
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(
+        properties={"control_config": {"type": "string"}}
+    )
+    client.app.update.return_value = Mock(version=2)
+
+    BigqueryCrawler(client).load("slug-1").include({"proj": ["new"]}).update()
+
+    kw = client.app.update.call_args.kwargs
+    inp = kw["inputs"]
+    assert kw["slug"] == "slug-1" and kw["entrypoint"] == "crawler"
+    assert inp["connection_qualified_name"] == "default/bigquery/123"  # re-injected
+    assert inp["credential_guid"] == "cred-1" and "credential" not in inp  # no rotation
+    assert inp["include_filter"] == '{"^proj$": ["^new$"]}'  # changed + anchored
+    assert inp["control_config"] == "{}"  # normalized object -> string
+    assert "user-id" not in inp and "workflow_id" not in inp  # runtime keys dropped
+    assert inp["atlas_auth_type"] == "internal"  # preserved
+    assert inp["connection"]["attributes"]["adminRoles"] == ["role-1"]  # connection kept
+
+
+def test_update_without_load_raises():
+    with pytest.raises(ValueError):
+        BigqueryCrawler(Mock()).update()

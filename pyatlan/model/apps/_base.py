@@ -25,6 +25,10 @@ from pydantic.v1 import BaseModel, Extra
 
 from pyatlan.model.credential import Credential
 
+# Handshake/runtime ids the server injects into a workflow's inputs; they must
+# not be echoed back on update (stripped server-side on create).
+_RUNTIME_KEYS = frozenset({"user-id", "user_id", "workflow_id", "correlation_id"})
+
 
 class AppInput(BaseModel):
     """A typed, configmap-derived ``inputs`` payload for an app workflow."""
@@ -109,6 +113,7 @@ class AppBuilder:
         self._admin_groups: List[str] = []
         self._admin_roles: List[str] = []
         self._metadata: Dict[str, Any] = {}
+        self._update_slug: Optional[str] = None
 
     # ── Step 1 · Credential ────────────────────────────────────────────────
     def _stage_credential(self, field: str, credential: Credential):
@@ -266,6 +271,103 @@ class AppBuilder:
     def run(self, *, name: Optional[str] = None, schedule: Optional[Any] = None):
         """Create the workflow **and** submit a run immediately (``run=True``)."""
         return self._create(name=name, run=True, schedule=schedule)
+
+    # ── update (load an existing workflow, change fields, full-replace) ─────
+    def load(self, slug: str) -> "AppBuilder":
+        """Seed this builder from an existing workflow's current inputs, so
+        :meth:`update` can change a few fields and preserve the rest.
+
+        Mirrors the create builders — same fluent methods, one extra step::
+
+            Builder(client).load(slug).include({...}).update()
+
+        The connection and the existing credential are read from the workflow and
+        reused: the credential is referenced by guid and **never re-vaulted or
+        rotated**. Everything you don't change is carried through untouched.
+        """
+        args = (
+            self._client.app.get(slug)
+            .dict()
+            .get("dag", {})
+            .get("extract", {})
+            .get("inputs", {})
+            .get("args", {})
+        )
+        self._update_slug = slug
+        conn = args.get("connection")
+        conn = json.loads(conn) if isinstance(conn, str) else conn
+        attrs = (conn or {}).get("attributes", {}) if isinstance(conn, dict) else {}
+        self._connection_qualified_name = attrs.get("qualifiedName")
+        self._connection_name = attrs.get("name")
+        self._admin_users = list(attrs.get("adminUsers") or [])
+        self._admin_groups = list(attrs.get("adminGroups") or [])
+        self._admin_roles = list(attrs.get("adminRoles") or [])
+        self._credential_guid = args.get("credential_guid") or ""
+        self._extraction_method = args.get("extraction_method") or self._EXTRACTION_METHOD
+        # Carry every non-structural current field so nothing is dropped on the
+        # full replace; the structural bits are rebuilt from the state above.
+        structural = {
+            "connection",
+            "connection_qualified_name",
+            "credential",
+            "credential_guid",
+            "agent_json",
+            "extraction_method",
+        } | _RUNTIME_KEYS
+        self._metadata = {k: v for k, v in args.items() if k not in structural}
+        return self
+
+    def update(self):
+        """Publish a new version of the loaded workflow (full-replace) with the
+        builder's current fields. Call :meth:`load` first.
+
+        Re-injects ``connection_qualified_name`` (the read-back omits it, but the
+        run needs it) and re-encodes string-typed contract fields returned as
+        objects — so a caller only sets what they want to change.
+        """
+        if not self._update_slug:
+            raise ValueError("call load(slug) before update()")
+        # Normalize BEFORE assembly — the typed inputs model rejects a string
+        # field (e.g. control_config) that the read-back returned as an object.
+        self._metadata = self._normalize_string_inputs(dict(self._metadata))
+        epoch = int(time.time())
+        qn = self._connection_qualified_name or f"default/{self._CONNECTOR_NAME}/{epoch}"
+        payload = self._assemble(qualified_name=qn, epoch=epoch).to_inputs()
+        payload["connection_qualified_name"] = qn
+
+        def _update_with(entrypoint: Optional[str]):
+            return self._client.app.update(
+                slug=self._update_slug, inputs=payload, entrypoint=entrypoint or None
+            )
+
+        # Same 1003 fallback as _create(): retry at the default slot if the named
+        # entrypoint has no registered contract.
+        ep = self._ENTRYPOINT or None
+        try:
+            return _update_with(ep)
+        except Exception as exc:  # noqa: BLE001
+            msg = str(exc)
+            if ep is not None and ("1003" in msg or "unknown entrypoint" in msg):
+                return _update_with(None)
+            raise
+
+    def _normalize_string_inputs(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """JSON-encode string-typed contract fields the read-back returned as
+        objects (e.g. ``control_config``), so the full-replace matches the contract."""
+        try:
+            contract = self._client.app.get_input_contract(
+                self._APP_ID, self._ENTRYPOINT or None
+            )
+        except Exception:  # noqa: BLE001 - best-effort; skip if the contract can't load
+            return payload
+        for key, spec in (contract.properties or {}).items():
+            if (
+                isinstance(spec, dict)
+                and spec.get("type") == "string"
+                and isinstance(payload.get(key), (dict, list))
+            ):
+                payload[key] = json.dumps(payload[key])
+        return payload
 
     def _vault_credential(self, cred: Credential) -> str:
         """Vault a raw credential into Atlan's secret store and return its guid.
