@@ -338,7 +338,13 @@ def test_staged_credential_on_existing_connection_keeps_vaulting_shape(client):
     # connection and credential_guid stays "" for the server to fill in.
     (
         BigqueryCrawler(client)
-        .workload_identity_federation(project_id="proj")
+        .workload_identity_federation(
+            project_id="proj",
+            service_account_email="svc@proj.iam.gserviceaccount.com",
+            wif_pool_provider_id="projects/1/locations/global/workloadIdentityPools/p/providers/pr",
+            atlan_oauth_id="oauth-id",
+            atlan_oauth_secret="oauth-secret",
+        )
         .connection(qualified_name="default/bigquery/1700000000")
         .include({"proj": ["ds"]})
         .create()
@@ -421,7 +427,10 @@ def test_load_update_preserves_reinjects_and_references_credential():
     inp = kw["inputs"]
     assert kw["slug"] == "slug-1" and kw["entrypoint"] == "crawler"
     assert inp["connection_qualified_name"] == "default/bigquery/123"  # re-injected
-    assert inp["credential_guid"] == "cred-1" and "credential" not in inp  # no rotation
+    # CONNECT-843: reused credential rides on the connection, never top-level, and
+    # is never re-vaulted (no rotation).
+    assert inp["connection"]["attributes"]["defaultCredentialGuid"] == "cred-1"
+    assert inp["credential_guid"] == "" and "credential" not in inp
     assert inp["include_filter"] == '{"^proj$": ["^new$"]}'  # changed + anchored
     assert inp["control_config"] == "{}"  # normalized object -> string
     assert "user-id" not in inp and "workflow_id" not in inp  # runtime keys dropped
@@ -463,7 +472,10 @@ def test_load_update_is_generic_across_builders(cls):
     assert kw["slug"] == "slug-x"
     assert kw["entrypoint"] == (cls._ENTRYPOINT or None)
     assert inp["connection_qualified_name"] == qn  # re-injected
-    assert inp["credential_guid"] == "cred-x"  # referenced, not rotated
+    # CONNECT-843: the guid rides on the connection (also proves load() reads it
+    # back from attributes.defaultCredentialGuid, not just top-level).
+    assert inp["connection"]["attributes"]["defaultCredentialGuid"] == "cred-x"
+    assert inp["credential_guid"] == ""  # referenced, not rotated, not top-level
     assert "credential" not in inp  # no raw credential re-sent
 
 
@@ -561,6 +573,8 @@ def test_load_update_applies_multiple_field_changes():
     assert inp["control_config"] == '{"flag": 1}'
     # rest preserved / re-injected / stripped
     assert inp["connection_qualified_name"] == "default/bigquery/1"
-    assert inp["credential_guid"] == "cred-1" and "credential" not in inp
+    # CONNECT-843: reused credential on the connection, top-level empty, no rotation
+    assert inp["connection"]["attributes"]["defaultCredentialGuid"] == "cred-1"
+    assert inp["credential_guid"] == "" and "credential" not in inp
     assert inp["atlas_auth_type"] == "internal"
     assert "user-id" not in inp

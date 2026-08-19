@@ -330,7 +330,13 @@ class AppBuilder:
         self._admin_users = list(attrs.get("adminUsers") or [])
         self._admin_groups = list(attrs.get("adminGroups") or [])
         self._admin_roles = list(attrs.get("adminRoles") or [])
-        self._credential_guid = args.get("credential_guid") or ""
+        # The reused credential guid may ride on the connection entity
+        # (attributes.defaultCredentialGuid, the UI/CONNECT-843 shape) or, on
+        # older workflows, sit top-level. Read whichever is present so update()
+        # never drops the credential reference.
+        self._credential_guid = (
+            args.get("credential_guid") or attrs.get("defaultCredentialGuid") or ""
+        )
         self._extraction_method = (
             args.get("extraction_method") or self._EXTRACTION_METHOD
         )
