@@ -34,6 +34,8 @@ from pyatlan.cache.aio import (
     AsyncUserCache,
 )
 from pyatlan.client.aio.admin import AsyncAdminClient
+from pyatlan.client.aio.app import AsyncAppClient
+from pyatlan.client.aio.approval_workflow import AsyncApprovalWorkflowClient
 from pyatlan.client.aio.asset import AsyncAssetClient
 from pyatlan.client.aio.audit import AsyncAuditClient
 from pyatlan.client.aio.contract import AsyncContractClient
@@ -45,15 +47,13 @@ from pyatlan.client.aio.oauth import AsyncOAuthTokenManager
 from pyatlan.client.aio.oauth_client import AsyncOAuthClient
 from pyatlan.client.aio.open_lineage import AsyncOpenLineageClient
 from pyatlan.client.aio.query import AsyncQueryClient
+from pyatlan.client.aio.requests import AsyncRequestsClient
 from pyatlan.client.aio.role import AsyncRoleClient
 from pyatlan.client.aio.search_log import AsyncSearchLogClient
 from pyatlan.client.aio.sso import AsyncSSOClient
 from pyatlan.client.aio.task import AsyncTaskClient
-from pyatlan.client.aio.approval_workflow import AsyncApprovalWorkflowClient
-from pyatlan.client.aio.requests import AsyncRequestsClient
 from pyatlan.client.aio.token import AsyncTokenClient
 from pyatlan.client.aio.typedef import AsyncTypeDefClient
-from pyatlan.client.aio.app import AsyncAppClient
 from pyatlan.client.aio.user import AsyncUserClient
 from pyatlan.client.aio.workflow import AsyncWorkflowClient
 from pyatlan.client.atlan import (
