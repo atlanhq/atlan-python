@@ -74,7 +74,7 @@ class RelatedAtlanAppInstalled(RelatedAtlanApp):
     """Configuration settings used by the atlan application."""
 
     atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
-    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
+    """Target deployment environment where the app is installed, for example atlan (Atlan-managed infra) or a customer SDR deployment name (customer-managed infra)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
@@ -109,7 +109,7 @@ class RelatedAtlanAppDeployment(RelatedAtlanApp):
     """Detailed error message explaining why the deployment failed. Should only be populated when status = FAILED."""
 
     atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
-    """Target deployment environment where the app is installed (e.g. "atlan" for Atlan-managed infra, or a customer SDR deployment name for customer-managed infra)."""
+    """Target deployment environment where the app is installed, for example atlan (Atlan-managed infra) or a customer SDR deployment name (customer-managed infra)."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
@@ -126,16 +126,16 @@ class RelatedAtlanAppTool(RelatedAtlanApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanAppTool" so it serializes correctly
 
-    atlan_app_tool_input_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_input_schema: Union[str, None, UnsetType] = UNSET
     """Input schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_tool_output_schema: Union[str, None, UnsetType] = UNSET
+    atlan_app_output_schema: Union[str, None, UnsetType] = UNSET
     """Output schema for the Atlan application tool (escaped JSON string of JSONSchema)."""
 
-    atlan_app_tool_task_queue: Union[str, None, UnsetType] = UNSET
+    atlan_app_task_queue: Union[str, None, UnsetType] = UNSET
     """Name of the Temporal task queue for the Atlan application tool."""
 
-    atlan_app_tool_category: Union[str, None, UnsetType] = UNSET
+    atlan_app_category: Union[str, None, UnsetType] = UNSET
     """Category of the tool."""
 
     def __post_init__(self) -> None:
@@ -153,26 +153,38 @@ class RelatedAtlanAppWorkflow(RelatedAtlanApp):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "AtlanAppWorkflow" so it serializes correctly
 
-    atlan_app_workflow_version: Union[str, None, UnsetType] = UNSET
+    atlan_app_version: Union[str, None, UnsetType] = UNSET
     """Version of the workflow."""
 
-    atlan_app_workflow_slug: Union[str, None, UnsetType] = UNSET
+    atlan_app_slug: Union[str, None, UnsetType] = UNSET
     """Slug of the workflow."""
 
-    atlan_app_workflow_dag: Union[str, None, UnsetType] = UNSET
+    atlan_app_dag: Union[str, None, UnsetType] = UNSET
     """Map of all activity steps for the workflow (escaped JSON string)."""
 
-    atlan_app_workflow_status: Union[str, None, UnsetType] = UNSET
+    atlan_app_status: Union[str, None, UnsetType] = UNSET
     """Status of the workflow."""
 
-    atlan_app_workflow_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
+    atlan_app_error_handling: Union[Dict[str, Any], None, UnsetType] = UNSET
     """Error handling strategy for the workflow."""
 
-    atlan_app_workflow_ownership: Union[str, None, UnsetType] = UNSET
+    atlan_app_ownership: Union[str, None, UnsetType] = UNSET
     """Ownership type of the workflow, indicating whether it is managed by Atlan or by a user."""
 
-    atlan_app_workflow_triggers: Union[str, None, UnsetType] = UNSET
+    atlan_app_source: Union[str, None, UnsetType] = UNSET
+    """Product surface the workflow originated from (marketplace, enrichment_studio, context_studio), emitted as an AE workflow-metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
+
+    atlan_app_triggers: Union[str, None, UnsetType] = UNSET
     """Triggers configured for this workflow (escaped JSON string)."""
+
+    atlan_app_agent_name: Union[str, None, UnsetType] = UNSET
+    """Name of the SDR agent this workflow's runs are routed to (the atlan-prefixed task queue's agent). Indexed so an agent's runs can be filtered server-side by joining runs to their parent workflow (DISTR-832)."""
+
+    atlan_app_deployment_name: Union[str, None, UnsetType] = UNSET
+    """SDR deployment name this workflow's runs execute under. Denormalized from the run-time config for run-history filtering and metric labels."""
+
+    atlan_app_runtime_mode: Union[str, None, UnsetType] = UNSET
+    """Execution runtime for this workflow's runs (SDR or DIRECT). Set at workflow save and constant across the workflow's runs."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
