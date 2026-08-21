@@ -26,6 +26,8 @@ __all__ = [
     "RelatedSigmaDatasetColumn",
     "RelatedSigmaPage",
     "RelatedSigmaWorkbook",
+    "RelatedSigmaDataModel",
+    "RelatedSigmaDataModelColumn",
 ]
 
 
@@ -73,10 +75,10 @@ class RelatedSigmaDataElement(RelatedSigma):
     # __post_init__ sets it to "SigmaDataElement" so it serializes correctly
 
     sigma_data_element_query: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Query backing this data element."""
 
     sigma_data_element_type: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Type of this data element."""
 
     sigma_data_element_field_count: Union[int, None, UnsetType] = UNSET
     """Number of fields in this data element."""
@@ -96,11 +98,11 @@ class RelatedSigmaDataElementField(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaDataElementField" so it serializes correctly
 
-    sigma_data_element_field_is_hidden: Union[bool, None, UnsetType] = UNSET
+    sigma_is_hidden: Union[bool, None, UnsetType] = UNSET
     """Whether this field is hidden (true) or not (false)."""
 
     sigma_data_element_field_formula: Union[str, None, UnsetType] = UNSET
-    """"""
+    """Formula or expression that defines this field."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
@@ -117,7 +119,7 @@ class RelatedSigmaDataset(RelatedSigma):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SigmaDataset" so it serializes correctly
 
-    sigma_dataset_column_count: Union[int, None, UnsetType] = UNSET
+    sigma_column_count: Union[int, None, UnsetType] = UNSET
     """Number of columns in this dataset."""
 
     def __post_init__(self) -> None:
@@ -180,3 +182,66 @@ class RelatedSigmaWorkbook(RelatedSigma):
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SigmaWorkbook"
+
+
+class RelatedSigmaDataModel(RelatedSigma):
+    """
+    Related entity reference for SigmaDataModel assets.
+
+    Extends RelatedSigma with SigmaDataModel-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SigmaDataModel" so it serializes correctly
+
+    sigma_data_model_url_id: Union[str, None, UnsetType] = UNSET
+    """Short (21-22 character) URL-safe identifier of this data model in Sigma, used in deep-link URLs into the Sigma UI."""
+
+    sigma_data_model_document_version: Union[int, None, UnsetType] = UNSET
+    """Current document version of this data model, as reported by the Sigma /spec endpoint. Sigma increments this on each save."""
+
+    sigma_data_model_latest_document_version: Union[int, None, UnsetType] = UNSET
+    """Latest document version of this data model, as reported by the Sigma /spec endpoint (falls back to the latestVersion field from /dataModels when /spec is unavailable)."""
+
+    sigma_data_model_schema_version: Union[int, None, UnsetType] = UNSET
+    """Schema version of this data model, as reported by the Sigma /spec endpoint."""
+
+    sigma_data_model_element_count: Union[int, None, UnsetType] = UNSET
+    """Number of elements (warehouse-table, sql, data-model, dataset sources) inside this data model."""
+
+    sigma_data_model_column_count: Union[int, None, UnsetType] = UNSET
+    """Number of columns defined across all elements of this data model."""
+
+    sigma_data_model_path: Union[str, None, UnsetType] = UNSET
+    """Folder path of this data model in Sigma (for example, the root path "/My Documents")."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SigmaDataModel"
+
+
+class RelatedSigmaDataModelColumn(RelatedSigma):
+    """
+    Related entity reference for SigmaDataModelColumn assets.
+
+    Extends RelatedSigma with SigmaDataModelColumn-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SigmaDataModelColumn" so it serializes correctly
+
+    sigma_data_model_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Sigma data model in which this column exists."""
+
+    sigma_data_model_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the Sigma data model in which this column exists."""
+
+    sigma_data_model_column_formula: Union[str, None, UnsetType] = UNSET
+    """Formula expression that defines this column (Sigma's formula language). Truncated to 100,000 characters by the connector for parity with sigmaDataElementFieldFormula."""
+
+    sigma_data_model_column_data_type: Union[str, None, UnsetType] = UNSET
+    """Data type of this column as reported by Sigma (vocabulary: datetime, integer, number, text, variant). Flattened by the connector from the API's nested type.type field."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SigmaDataModelColumn"
