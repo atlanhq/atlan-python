@@ -43,7 +43,6 @@ from .data_mesh_related import RelatedDataProduct
 from .data_quality_related import RelatedDataQualityRule, RelatedMetric
 from .gcp_dataplex_related import RelatedGCPDataplexAspectType
 from .gtc_related import RelatedAtlasGlossaryTerm
-from .knowledge_related import RelatedKnowledge
 from .model_related import RelatedModelAttribute, RelatedModelEntity
 from .monte_carlo_related import RelatedMCIncident, RelatedMCMonitor
 from .partial_related import RelatedPartialField, RelatedPartialObject
@@ -66,6 +65,7 @@ class Knowledge(Asset):
     """
 
     AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -100,8 +100,13 @@ class Knowledge(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Knowledge"
+
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -216,66 +221,6 @@ class Knowledge(Asset):
         self.type_name = "Knowledge"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Knowledge instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Knowledge validation failed: {errors}")
-
-    def minimize(self) -> "Knowledge":
-        """
-        Return a minimal copy of this Knowledge with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Knowledge with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Knowledge instance with only the minimum required fields.
-        """
-        self.validate()
-        return Knowledge(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedKnowledge":
-        """
-        Create a :class:`RelatedKnowledge` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedKnowledge reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedKnowledge(guid=self.guid)
-        return RelatedKnowledge(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -332,6 +277,9 @@ class KnowledgeAttributes(AssetAttributes):
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -505,6 +453,7 @@ def _populate_knowledge_attrs(attrs: KnowledgeAttributes, obj: Knowledge) -> Non
     """Populate Knowledge-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -512,6 +461,7 @@ def _extract_knowledge_attrs(attrs: KnowledgeAttributes) -> dict:
     """Extract all Knowledge attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -549,9 +499,6 @@ def _knowledge_to_nested(knowledge: Knowledge) -> KnowledgeNested:
         is_incomplete=knowledge.is_incomplete,
         provenance_type=knowledge.provenance_type,
         home_id=knowledge.home_id,
-        depth=knowledge.depth,
-        immediate_upstream=knowledge.immediate_upstream,
-        immediate_downstream=knowledge.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -583,6 +530,7 @@ def _knowledge_from_nested(nested: KnowledgeNested) -> Knowledge:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -591,9 +539,6 @@ def _knowledge_from_nested(nested: KnowledgeNested) -> Knowledge:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_knowledge_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -621,6 +566,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Knowledge.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+Knowledge.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
 Knowledge.CATALOG_DATASET_GUID = KeywordField(
     "catalogDatasetGuid", "catalogDatasetGuid"
 )

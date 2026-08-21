@@ -16,6 +16,7 @@ from typing import Dict, List, Union
 from msgspec import UNSET, UnsetType
 
 from .catalog_related import RelatedCatalog
+from .flow_related import RelatedFlowControlOperation
 from .referenceable_related import RelatedReferenceable
 
 __all__ = [
@@ -31,6 +32,7 @@ __all__ = [
     "RelatedSapErpTable",
     "RelatedSapErpAbapProgram",
     "RelatedSapErpFioriApp",
+    "RelatedSapDatasphereReplicationFlow",
 ]
 
 
@@ -125,10 +127,10 @@ class RelatedSapErpView(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpView" so it serializes correctly
 
-    sap_erp_view_type: Union[str, None, UnsetType] = UNSET
+    sap_type: Union[str, None, UnsetType] = UNSET
     """Type of the SAP ERP View."""
 
-    sap_erp_view_definition: Union[str, None, UnsetType] = UNSET
+    sap_definition: Union[str, None, UnsetType] = UNSET
     """Specifies the definition of the SAP ERP View."""
 
     def __post_init__(self) -> None:
@@ -146,13 +148,13 @@ class RelatedSapErpCdsView(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpCdsView" so it serializes correctly
 
-    sap_erp_cds_view_technical_name: Union[str, None, UnsetType] = UNSET
+    sap_technical_name: Union[str, None, UnsetType] = UNSET
     """The technical database view name of the SAP ERP CDS View."""
 
-    sap_erp_cds_view_source_name: Union[str, None, UnsetType] = UNSET
+    sap_source_name: Union[str, None, UnsetType] = UNSET
     """The source name of the SAP ERP CDS View Definition."""
 
-    sap_erp_cds_view_source_type: Union[str, None, UnsetType] = UNSET
+    sap_source_type: Union[str, None, UnsetType] = UNSET
     """The source type of the SAP ERP CDS View Definition."""
 
     def __post_init__(self) -> None:
@@ -170,25 +172,25 @@ class RelatedSapErpColumn(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpColumn" so it serializes correctly
 
-    sap_erp_column_data_element: Union[str, None, UnsetType] = UNSET
+    sap_data_element: Union[str, None, UnsetType] = UNSET
     """Represents the SAP ERP data element, providing semantic information about the column."""
 
-    sap_erp_column_logical_data_type: Union[str, None, UnsetType] = UNSET
+    sap_logical_data_type: Union[str, None, UnsetType] = UNSET
     """Specifies the logical data type of values in this SAP ERP column."""
 
-    sap_erp_column_length: Union[str, None, UnsetType] = UNSET
+    sap_length: Union[str, None, UnsetType] = UNSET
     """Indicates the maximum length of the values that the SAP ERP column can store."""
 
-    sap_erp_column_decimals: Union[str, None, UnsetType] = UNSET
+    sap_decimals: Union[str, None, UnsetType] = UNSET
     """Defines the number of decimal places allowed for numeric values in the SAP ERP column."""
 
-    sap_erp_column_is_primary: Union[bool, None, UnsetType] = UNSET
+    sap_is_primary: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the primary key for the SAP ERP table or view."""
 
-    sap_erp_column_is_foreign: Union[bool, None, UnsetType] = UNSET
+    sap_is_foreign: Union[bool, None, UnsetType] = UNSET
     """When true, this column is the foreign key for the SAP ERP table or view."""
 
-    sap_erp_column_is_mandatory: Union[bool, None, UnsetType] = UNSET
+    sap_is_mandatory: Union[bool, None, UnsetType] = UNSET
     """When true, the values in this column can be null."""
 
     sap_erp_table_name: Union[str, None, UnsetType] = UNSET
@@ -209,10 +211,10 @@ class RelatedSapErpColumn(RelatedSAP):
     sap_erp_cds_view_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP CDS view in which this column asset exists."""
 
-    sap_erp_column_check_table_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_name: Union[str, None, UnsetType] = UNSET
     """Defines the SAP ERP table name used as a foreign key reference to validate permissible values for this column."""
 
-    sap_erp_column_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
+    sap_check_table_qualified_name: Union[str, None, UnsetType] = UNSET
     """Unique name of the SAP ERP Table used as a foreign key reference to validate permissible values for this column."""
 
     def __post_init__(self) -> None:
@@ -245,7 +247,7 @@ class RelatedSapErpFunctionModule(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpFunctionModule" so it serializes correctly
 
-    sap_erp_function_module_group: Union[str, None, UnsetType] = UNSET
+    sap_group: Union[str, None, UnsetType] = UNSET
     """Represents the group to which the SAP ERP function module belongs."""
 
     sap_erp_function_module_import_params: Union[
@@ -253,7 +255,7 @@ class RelatedSapErpFunctionModule(RelatedSAP):
     ] = UNSET
     """Parameters imported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_erp_function_module_import_params_count: Union[int, None, UnsetType] = UNSET
+    sap_import_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Import Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_module_export_params: Union[
@@ -261,7 +263,7 @@ class RelatedSapErpFunctionModule(RelatedSAP):
     ] = UNSET
     """Parameters exported by the SAP ERP function module, defined as key-value pairs."""
 
-    sap_erp_function_module_export_params_count: Union[int, None, UnsetType] = UNSET
+    sap_export_params_count: Union[int, None, UnsetType] = UNSET
     """Represents the total number of Export Parameters in a given SAP ERP Function Module."""
 
     sap_erp_function_exception_list: Union[List[Dict[str, str]], None, UnsetType] = (
@@ -326,27 +328,60 @@ class RelatedSapErpFioriApp(RelatedSAP):
     # type_name inherited from parent with default=UNSET
     # __post_init__ sets it to "SapErpFioriApp" so it serializes correctly
 
-    sap_erp_fiori_app_type: Union[str, None, UnsetType] = UNSET
+    sap_type: Union[str, None, UnsetType] = UNSET
     """Application type of the Fiori App from sap.app.type in the manifest, such as application, transactional, or factsheet."""
 
-    sap_erp_fiori_app_arche_type: Union[str, None, UnsetType] = UNSET
+    sap_arche_type: Union[str, None, UnsetType] = UNSET
     """Fiori archetype from sap.fiori.archeType in the manifest, such as transactional."""
 
-    sap_erp_fiori_app_is_custom: Union[bool, None, UnsetType] = UNSET
+    sap_is_custom: Union[bool, None, UnsetType] = UNSET
     """When true, the Fiori App has no sap.fiori.registrationIds in its manifest and is treated as a customer (Z-app) build."""
 
-    sap_erp_fiori_app_bsp_application: Union[str, None, UnsetType] = UNSET
+    sap_bsp_application: Union[str, None, UnsetType] = UNSET
     """BSP container name for the Fiori App as registered in O2APPL (e.g. ATP_ABOPVARS1)."""
 
-    sap_erp_fiori_app_odata_service_name: Union[str, None, UnsetType] = UNSET
+    sap_odata_service_name: Union[str, None, UnsetType] = UNSET
     """Resolved OData service name extracted from the manifest mainService URI (e.g. UI_ABOPVARIANT_CONFIGURE or C_SUPPLIEREVALUATION_CDS)."""
 
-    sap_erp_fiori_app_odata_service_uri: Union[str, None, UnsetType] = UNSET
+    sap_odata_service_uri: Union[str, None, UnsetType] = UNSET
     """Full OData service URI from sap.app.dataSources.mainService.uri in the manifest."""
 
-    sap_erp_fiori_app_odata_version: Union[str, None, UnsetType] = UNSET
+    sap_odata_version: Union[str, None, UnsetType] = UNSET
     """OData protocol version of the Fiori App's main data source, such as 2.0 or 4.0."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "SapErpFioriApp"
+
+
+class RelatedSapDatasphereReplicationFlow(RelatedFlowControlOperation):
+    """
+    Related entity reference for SapDatasphereReplicationFlow assets.
+
+    Extends RelatedFlowControlOperation with SapDatasphereReplicationFlow-specific attributes.
+    """
+
+    # type_name inherited from parent with default=UNSET
+    # __post_init__ sets it to "SapDatasphereReplicationFlow" so it serializes correctly
+
+    sap_space_name: Union[str, None, UnsetType] = UNSET
+    """Simple name of the Datasphere space in which this replication flow runs and creates its target tables."""
+
+    sap_space_qualified_name: Union[str, None, UnsetType] = UNSET
+    """Unique name of the Datasphere space in which this replication flow runs and creates its target tables."""
+
+    sap_source_connection: Union[str, None, UnsetType] = UNSET
+    """Name of the source connection from which this replication flow reads data, such as an S/4HANA, SAP ECC, SAP BW, or S3 connection outside Datasphere."""
+
+    sap_target_connection: Union[str, None, UnsetType] = UNSET
+    """Name of the target connection into which this replication flow writes data, such as the local Datasphere repository."""
+
+    sap_load_type: Union[str, None, UnsetType] = UNSET
+    """Type of load performed by this replication flow, such as INITIAL or INITIAL_AND_DELTA."""
+
+    sap_dataset_count: Union[int, None, UnsetType] = UNSET
+    """Number of datasets moved by this replication flow."""
+
+    def __post_init__(self) -> None:
+        RelatedReferenceable.__post_init__(self)
+        self.type_name = "SapDatasphereReplicationFlow"
