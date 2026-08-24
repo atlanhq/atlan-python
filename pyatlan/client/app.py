@@ -13,8 +13,10 @@ Obtain via :attr:`pyatlan.client.atlan.AtlanClient.app`.
 from __future__ import annotations
 
 import logging
+import time
 from typing import Any, Dict, Optional, Union
 
+from httpx_retries import Retry
 from pydantic.v1 import validate_arguments
 
 from pyatlan.client.common import ApiCaller
@@ -36,6 +38,9 @@ from pyatlan.client.common.app import (
 )
 from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.apps import AppInput
+from pyatlan.model.assets import AppWorkflowRun
+from pyatlan.model.enums import AppWorkflowRunStatus
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
@@ -55,6 +60,44 @@ from pyatlan.model.app import (
 
 LOGGER = logging.getLogger(__name__)
 
+# App-workflow runs are Atlan assets under this qualifiedName prefix; their status
+# lives on ``AppWorkflowRun.appWorkflowRunStatus``.
+_APP_WORKFLOW_RUN_QN_PREFIX = "default/apps/automation_engine/workflows/"
+# Non-terminal run statuses — a workflow with a run in one of these is "running".
+_ACTIVE_RUN_STATUSES = [
+    AppWorkflowRunStatus.PENDING.value,
+    AppWorkflowRunStatus.RUNNING.value,
+]
+# App-management calls must not retry HTTP 500 (AICHAT-1659): a 500 here is not
+# transient (e.g. submitting a workflow that already has an active run), and
+# retrying a non-idempotent POST can spawn duplicate runs. This policy mirrors the
+# client default but drops 500 from the retryable statuses; every AppClient call
+# goes through it via ``_call``.
+_APP_NO_500_RETRY = Retry(
+    total=5,
+    backoff_factor=1,
+    status_forcelist=[429, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
+    respect_retry_after_header=True,
+)
+
+# Search is eventually consistent (~seconds), so a just-started run may not be
+# indexed yet. When an idempotent submit gets a server error (most often
+# "already running"), briefly poll the index to confirm before surfacing the
+# ambiguous 500. Tunable (module-level so callers/tests can override).
+_RUN_CHECK_TIMEOUT_SECONDS = 6.0
+_RUN_CHECK_INTERVAL_SECONDS = 1.5
+
+
+def _already_running_error(slug: str, run: "AppWorkflowRun"):
+    return ErrorCode.APP_WORKFLOW_ALREADY_RUNNING.exception_with_parameters(
+        slug, run.qualified_name or "in-progress run"
+    )
+
+
+def _is_server_error(exc: AtlanError) -> bool:
+    return getattr(exc.error_code, "http_error_code", 0) >= 500
+
 
 class AppClient:
     """Create, run, schedule, and manage app workflows."""
@@ -65,6 +108,15 @@ class AppClient:
                 "client", "ApiCaller"
             )
         self._client = client
+
+    def _call(self, api, **kwargs):
+        """Invoke an app API with the app-management retry policy.
+
+        Routes every AppClient request through :data:`_APP_NO_500_RETRY` so app
+        management never retries HTTP 500 (AICHAT-1659).
+        """
+        with self._client.max_retries(_APP_NO_500_RETRY):  # type: ignore[attr-defined]
+            return self._client._call_api(api, **kwargs)
 
     # ----------------------------- discovery ----------------------------- #
     @validate_arguments
@@ -77,7 +129,7 @@ class AppClient:
         :param app_id: marketplace application id (e.g. ``bigquery-crawler``).
         :returns: an :class:`AppInfo`.
         """
-        raw = self._client._call_api(AppGetInfo.prepare_request(app_id))
+        raw = self._call(AppGetInfo.prepare_request(app_id))
         return AppGetInfo.process_response(raw)
 
     @validate_arguments
@@ -94,7 +146,7 @@ class AppClient:
         :returns: an :class:`AppInputContract`.
         """
         endpoint, query_params = AppGetInputContract.prepare_request(app_id, entrypoint)
-        raw = self._client._call_api(endpoint, query_params=query_params)
+        raw = self._call(endpoint, query_params=query_params)
         return AppGetInputContract.process_response(raw)
 
     # ----------------------------- lifecycle ----------------------------- #
@@ -143,7 +195,7 @@ class AppClient:
         request = CreateApp(**request_kwargs)
         endpoint, request_obj = AppCreate.prepare_request(request)
         try:
-            raw = self._client._call_api(endpoint, request_obj=request_obj)
+            raw = self._call(endpoint, request_obj=request_obj)
         except AtlanError as exc:
             if is_duplicate_name_conflict(exc):
                 return self._reuse_on_conflict(name, exc)
@@ -186,7 +238,7 @@ class AppClient:
         :returns: an :class:`AppList`.
         """
         endpoint, query_params = AppListAll.prepare_request(limit, cursor, name)
-        raw = self._client._call_api(endpoint, query_params=query_params)
+        raw = self._call(endpoint, query_params=query_params)
         return AppListAll.process_response(raw)
 
     @validate_arguments
@@ -196,7 +248,7 @@ class AppClient:
         :param slug: the server-minted workflow identity.
         :returns: an :class:`AppSummary`.
         """
-        raw = self._client._call_api(AppGet.prepare_request(slug))
+        raw = self._call(AppGet.prepare_request(slug))
         return AppGet.process_response(raw)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
@@ -224,7 +276,7 @@ class AppClient:
             request_kwargs["entrypoint"] = entrypoint
         request = UpdateApp(**request_kwargs)
         endpoint, request_obj = AppUpdate.prepare_request(slug, request)
-        raw = self._client._call_api(endpoint, request_obj=request_obj)
+        raw = self._call(endpoint, request_obj=request_obj)
         return AppUpdate.process_response(raw)
 
     @validate_arguments
@@ -234,18 +286,84 @@ class AppClient:
         :param slug: the workflow identity.
         :returns: an :class:`AppDeleteResponse`.
         """
-        raw = self._client._call_api(AppDelete.prepare_request(slug))
+        raw = self._call(AppDelete.prepare_request(slug))
         return AppDelete.process_response(raw)
 
     # ------------------------------ running ------------------------------ #
+    def _find_current_run(self, slug: str) -> Optional[AppWorkflowRun]:
+        """Return an in-progress (Pending/Running) run for this workflow, else ``None``.
+
+        App-workflow runs are Atlan assets (:class:`AppWorkflowRun`) under the
+        workflow's qualifiedName; this searches for one whose
+        ``appWorkflowRunStatus`` is non-terminal. Used by :meth:`submit` to guard
+        against launching a duplicate run. There is a brief (~seconds) indexing
+        lag after a run starts, so a just-started run may not be found yet.
+        """
+        request = (
+            FluentSearch()
+            .where(CompoundQuery.active_assets())
+            .where(CompoundQuery.asset_type(AppWorkflowRun))
+            .where(
+                AppWorkflowRun.QUALIFIED_NAME.startswith(
+                    f"{_APP_WORKFLOW_RUN_QN_PREFIX}{slug}/"
+                )
+            )
+            .where(AppWorkflowRun.APP_WORKFLOW_RUN_STATUS.within(_ACTIVE_RUN_STATUSES))
+            .include_on_results(AppWorkflowRun.APP_WORKFLOW_RUN_STATUS)
+            .page_size(1)
+        ).to_request()
+        results = self._client.asset.search(request)  # type: ignore[attr-defined]
+        for asset in results.current_page() or []:
+            if isinstance(asset, AppWorkflowRun):
+                return asset
+        return None
+
+    def _await_active_run(self, slug: str) -> Optional[AppWorkflowRun]:
+        """Poll the search index for an active run, tolerating indexing lag.
+
+        Returns the run once it appears within :data:`_RUN_CHECK_TIMEOUT_SECONDS`,
+        else ``None``. Used only on the submit error-recovery path (see
+        :meth:`submit`), never on the happy path.
+        """
+        deadline = time.monotonic() + _RUN_CHECK_TIMEOUT_SECONDS
+        while True:
+            run = self._find_current_run(slug)
+            if run is not None:
+                return run
+            if time.monotonic() >= deadline:
+                return None
+            time.sleep(_RUN_CHECK_INTERVAL_SECONDS)
+
     @validate_arguments
-    def submit(self, slug: str) -> AppRunResponse:
+    def submit(self, slug: str, idempotent: bool = False) -> AppRunResponse:
         """Run the workflow's current published version.
 
         :param slug: the workflow identity.
+        :param idempotent: opt-in guard against launching a duplicate run
+            (default ``False``). When ``True``, refuse to submit if the workflow
+            already has an in-progress run — checked before submitting and, if the
+            submit still fails with a server error (the run may not have been
+            indexed yet), reconfirmed against the search index before the error is
+            surfaced.
         :returns: an :class:`AppRunResponse` with the new ``run_id``.
+        :raises InvalidRequestError: if ``idempotent`` and a run is already in
+            progress for this workflow.
         """
-        raw = self._client._call_api(AppSubmit.prepare_request(slug))
+        if idempotent:
+            current = self._find_current_run(slug)
+            if current is not None:
+                raise _already_running_error(slug, current)
+        try:
+            raw = self._call(AppSubmit.prepare_request(slug))
+        except AtlanError as exc:
+            # A server error on submit is most often "already running", but the
+            # run may not have been indexed when we pre-checked. Confirm against
+            # the (eventually-consistent) index before surfacing the raw 500.
+            if idempotent and _is_server_error(exc):
+                current = self._await_active_run(slug)
+                if current is not None:
+                    raise _already_running_error(slug, current) from exc
+            raise
         return AppSubmit.process_response(raw)
 
     @validate_arguments
@@ -255,7 +373,7 @@ class AppClient:
         :param run_id: the run identifier.
         :returns: an :class:`AppRunResponse`.
         """
-        raw = self._client._call_api(AppGetRun.prepare_request(run_id))
+        raw = self._call(AppGetRun.prepare_request(run_id))
         return AppGetRun.process_response(raw)
 
     @validate_arguments
@@ -265,7 +383,7 @@ class AppClient:
         :param run_id: the run identifier.
         :returns: an :class:`AppRunCancelResponse`.
         """
-        raw = self._client._call_api(AppCancelRun.prepare_request(run_id))
+        raw = self._call(AppCancelRun.prepare_request(run_id))
         return AppCancelRun.process_response(raw)
 
     # ---------------------------- scheduling ----------------------------- #
@@ -283,7 +401,7 @@ class AppClient:
         # The server rejects a null timezone, so apply the documented UTC default.
         schedule = AppSchedule(cron=cron, timezone=timezone or "UTC")
         endpoint, request_obj = AppAddSchedule.prepare_request(slug, schedule)
-        raw = self._client._call_api(endpoint, request_obj=request_obj)
+        raw = self._call(endpoint, request_obj=request_obj)
         return AppAddSchedule.process_response(raw)
 
     @validate_arguments
@@ -294,7 +412,5 @@ class AppClient:
         :param trigger_id: the schedule's trigger id.
         :returns: an :class:`AppScheduleDeleteResponse`.
         """
-        raw = self._client._call_api(
-            AppRemoveSchedule.prepare_request(slug, trigger_id)
-        )
+        raw = self._call(AppRemoveSchedule.prepare_request(slug, trigger_id))
         return AppRemoveSchedule.process_response(raw)

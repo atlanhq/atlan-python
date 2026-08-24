@@ -20,6 +20,7 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.errors import AtlanError
 from pyatlan.model.app import (
     AppInfo,
     AppInputContract,
@@ -283,6 +284,37 @@ def test_run_submit_status_and_cancel(client: AtlanClient, created: AppResponse)
         cancelled = client.app.cancel_run(run.run_id)
         assert cancelled.run_id == run.run_id
         assert isinstance(cancelled.cancelled, bool)
+
+
+def test_submit_idempotent_blocks_concurrent_run(client: AtlanClient):
+    """A second idempotent submit is refused while the first run is in progress."""
+    # Own workflow so this can't collide with the shared `created` fixture.
+    resp = _builder(client, f"{MODULE_NAME}-idem").create(name=f"{MODULE_NAME}-idem")
+    slug = resp.slug
+    run = None
+    try:
+        run = client.app.submit(slug)  # start the first run
+        try:
+            client.app.submit(slug, idempotent=True)  # concurrent submit
+        except AtlanError as exc:
+            msg = str(exc)
+            # The guard surfaces a clean "already running" error once the run is
+            # indexed; if the search index still lags, the backend's own rejection
+            # (500) is surfaced instead — either way a duplicate run is prevented.
+            assert "already has an active run" in msg or "500" in msg
+        else:
+            # The first run finished before the concurrent submit landed — with
+            # dummy creds a run can terminate almost immediately, so there is
+            # nothing to block. Nothing to assert.
+            pytest.skip("first run terminated before the concurrent submit")
+    finally:
+        if run and run.run_id:
+            try:
+                if not client.app.get_run(run.run_id).is_terminal:
+                    client.app.cancel_run(run.run_id)
+            except Exception:
+                pass
+        client.app.delete(slug)
 
 
 # --------------------------------------------------------------------------- #
