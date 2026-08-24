@@ -161,6 +161,9 @@ class RelatedConnection(RelatedAsset):
     vector_embeddings_updated_at: Union[int, None, UnsetType] = UNSET
     """"""
 
+    connection_source_account_identifier: Union[str, None, UnsetType] = UNSET
+    """Identifier of the source account this connection points to, expressed in the source's own namespace (for example 'MYORG.MYACCOUNT' for Snowflake). Distinct from the credential host, which uses a different namespace and does not convert."""
+
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
         self.type_name = "Connection"
