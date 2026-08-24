@@ -132,12 +132,41 @@ class BigqueryCrawler(AppBuilder):
         self,
         *,
         project_id: str,
+        service_account_email: str,
+        wif_pool_provider_id: str,
+        atlan_oauth_id: str,
+        atlan_oauth_secret: str,
         connectivity: str = "public",
         host: Optional[str] = None,
         port: Optional[int] = None,
         **extra: Any,
     ) -> "BigqueryCrawler":
-        """Direct extraction with Workload Identity Federation auth."""
+        """Direct extraction with Workload Identity Federation (keyless) auth.
+
+        Atlan mints a token from its own OAuth client and exchanges it through the
+        WIF pool/provider to impersonate ``service_account_email`` — so no Service
+        Account key is stored. All five values are required by the ``gcp-wif``
+        credential; a missing one is a ``TypeError`` rather than a silently broken
+        credential. Any additional keyword rides through into ``extra`` unchanged
+        (forward-compatible with fields newer than this signature).
+
+        :param project_id: GCP project ID.
+        :param service_account_email: Service Account that Atlan impersonates via WIF.
+        :param wif_pool_provider_id: full Workload Identity Pool *provider* resource id.
+        :param atlan_oauth_id: Atlan OAuth client id used for the token exchange.
+        :param atlan_oauth_secret: Atlan OAuth client secret (vaulted, never logged).
+        :param connectivity: ``public`` (Google's endpoint) or ``private`` (PSC).
+        :param host: Private Service Connect host (required for ``private``).
+        """
+        wif: Dict[str, Any] = {
+            "project_id": project_id,
+            "connect_type": connectivity,
+            "service_account_email": service_account_email,
+            "wif_pool_provider_id": wif_pool_provider_id,
+            "atlan_oauth_id": atlan_oauth_id,
+            "atlan_oauth_secret": atlan_oauth_secret,
+        }
+        wif.update(extra)
         return self._stage_credential(
             "credential_guid",
             Credential(
@@ -146,7 +175,7 @@ class BigqueryCrawler(AppBuilder):
                 auth_type="gcp-wif",
                 host=host or self._DEFAULT_HOST,
                 port=port or self._DEFAULT_PORT,
-                extra={"project_id": project_id, "connect_type": connectivity, **extra},
+                extra=wif,
             ),
         )
 

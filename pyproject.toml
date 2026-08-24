@@ -152,7 +152,7 @@ filterwarnings = [
 
 [tool.uv]
 environments = ["python_version >= '3.9' and python_version < '3.15' and platform_python_implementation == 'CPython'"]
-constraint-dependencies = ["cryptography>=48.0.1"]
+constraint-dependencies = ["cryptography>=50.0.0"]
 
 [tool.poe.tasks]
 snyk-requirements = "uv export --all-extras --no-hashes > snyk-requirements.txt"

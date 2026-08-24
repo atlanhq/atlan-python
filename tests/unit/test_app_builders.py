@@ -158,7 +158,13 @@ def test_service_account_credential_shape():
 
 
 def test_workload_identity_federation_auth_type():
-    b = BigqueryCrawler(Mock()).workload_identity_federation(project_id="proj")
+    b = BigqueryCrawler(Mock()).workload_identity_federation(
+        project_id="proj",
+        service_account_email="svc@proj.iam.gserviceaccount.com",
+        wif_pool_provider_id="pool/provider",
+        atlan_oauth_id="oauth-id",
+        atlan_oauth_secret="oauth-secret",
+    )
     cred = b._raw_creds["credential_guid"]
     assert cred.auth_type == "gcp-wif"
     assert cred.extras["project_id"] == "proj"
@@ -243,7 +249,126 @@ def test_miner_auto_resolves_connection_credential(client):
     SnowflakeMiner(client).connection(qualified_name="default/snowflake/123").create()
     assert client.asset.search.called  # connection was looked up
     out = client.app.create.call_args.kwargs["inputs"].to_inputs()
-    assert out["credential_guid"] == "conn-cred-guid"  # its credential reused
+    # CONNECT-843: the reused guid rides on the connection entity (the UI's wire
+    # shape), never as a bare top-level credential_guid. A top-level guid with no
+    # credential body makes the create endpoint rewrite that credential's shared
+    # config record. Do not "fix" this back to out["credential_guid"].
+    attrs = out["connection"]["attributes"]
+    assert attrs["defaultCredentialGuid"] == "conn-cred-guid"  # its credential reused
+    assert out["credential_guid"] == ""  # and not duplicated at the top level
+
+
+# --------------------------------------------------------------------------- #
+# CONNECT-843: where a REUSED credential guid is allowed to ride
+#
+# Reusing an already-vaulted guid on an existing connection must send the guid
+# on the connection entity (the UI's wire shape) and leave top-level
+# credential_guid "". A bare top-level guid with no credential body makes the
+# create endpoint rewrite that credential's shared config record down to
+# {"credentialSource": "direct"}, breaking every workflow sharing the guid.
+# --------------------------------------------------------------------------- #
+def _resolve_to(client, guid):
+    """Make the connection lookup in _create() resolve to ``guid``."""
+    client.asset.search.return_value = iter([Mock(default_credential_guid=guid)])
+
+
+@pytest.mark.parametrize(
+    "cls, connector",
+    [(apps.BigqueryMiner, "bigquery"), (apps.SnowflakeMiner, "snowflake")],
+    ids=["bigquery", "snowflake"],
+)
+def test_auto_resolved_guid_rides_on_connection_not_top_level(client, cls, connector):
+    # Generic across connectors: the base builder owns this, no connector
+    # overrides _build_connection/_assemble.
+    _resolve_to(client, "resolved-guid")
+    cls(client).connection(qualified_name=f"default/{connector}/123").create()
+    out = client.app.create.call_args.kwargs["inputs"].to_inputs()
+    attrs = out["connection"]["attributes"]
+    # exactly the UI's reuse shape: identity + the connection's own credential
+    assert attrs["defaultCredentialGuid"] == "resolved-guid"
+    assert attrs["qualifiedName"] == f"default/{connector}/123"
+    assert attrs["connectorName"] == connector
+    # the guid is NOT echoed at the top level, and no credential body is invented
+    assert out["credential_guid"] == ""
+    assert "credential" not in out
+
+
+def test_explicit_guid_on_existing_connection_rides_on_connection():
+    # Same routing when the caller supplies the guid itself instead of letting
+    # _create() resolve it. The trigger is "guid + existing connection", not
+    # "guid came from a lookup".
+    out = (
+        apps.BigqueryMiner(Mock())
+        .connection(qualified_name="default/bigquery/1700000000")
+        .credential_guid("caller-supplied-guid")
+        .preview()
+    )
+    assert (
+        out["connection"]["attributes"]["defaultCredentialGuid"]
+        == "caller-supplied-guid"
+    )
+    assert out["credential_guid"] == ""
+
+
+def test_explicit_guid_on_new_connection_stays_top_level():
+    # Deliberately unchanged, and NOT safe. This shape is KNOWN to still trigger
+    # the CONNECT-843 server bug: the credential config record is keyed by the guid
+    # alone, so minting a new connection protects nothing -- a bare top-level guid
+    # with no credential body still flattens that guid's shared config record to
+    # {"credentialSource": "direct"} for every workflow using it. It is left as-is
+    # because rerouting it here would newly affect crawler-shaped apps, whose
+    # connection-attribute fallback is unverified (crawler forms carry an explicit
+    # credential-guid widget, so they may legitimately read the top-level field),
+    # and because the real fix for this branch is the server-side guard (see the
+    # heracles handoff on CONNECT-843). This test pins today's behaviour so any
+    # future reroute is a deliberate, evidenced change and not a drive-by.
+    out = (
+        BigqueryCrawler(Mock())
+        .connection(name="prod-bq")
+        .credential_guid("existing-guid")
+        .preview()
+    )
+    assert out["credential_guid"] == "existing-guid"
+    assert "defaultCredentialGuid" not in out["connection"]["attributes"]
+
+
+def test_staged_credential_on_existing_connection_keeps_vaulting_shape(client):
+    # A staged raw credential is still vaulted by the create endpoint from the
+    # `credential` key, even on an existing connection: nothing moves onto the
+    # connection and credential_guid stays "" for the server to fill in.
+    (
+        BigqueryCrawler(client)
+        .workload_identity_federation(
+            project_id="proj",
+            service_account_email="svc@proj.iam.gserviceaccount.com",
+            wif_pool_provider_id="projects/1/locations/global/workloadIdentityPools/p/providers/pr",
+            atlan_oauth_id="oauth-id",
+            atlan_oauth_secret="oauth-secret",
+        )
+        .connection(qualified_name="default/bigquery/1700000000")
+        .include({"proj": ["ds"]})
+        .create()
+    )
+    out = client.app.create.call_args.kwargs["inputs"].to_inputs()
+    assert out["credential"]["authType"] == "gcp-wif"
+    assert out["credential_guid"] == ""
+    assert "defaultCredentialGuid" not in out["connection"]["attributes"]
+    client.asset.search.assert_not_called()  # a staged cred needs no lookup
+
+
+def test_agent_mode_on_existing_connection_ignores_credential_guid():
+    # The agent/SDR path returns before any credential routing, so neither field
+    # appears. Unchanged by CONNECT-843.
+    out = (
+        apps.SnowflakeMiner(Mock())
+        .agent({"name": "my-agent"})
+        .connection(qualified_name="default/snowflake/123")
+        .credential_guid("should-be-ignored")
+        .preview()
+    )
+    assert out["agent_json"] == {"name": "my-agent"}
+    assert "credential_guid" not in out
+    assert "defaultCredentialGuid" not in out["connection"]["attributes"]
 
 
 def test_agent_mode_uses_agent_json_not_credential(client):
@@ -258,3 +383,198 @@ def test_agent_mode_uses_agent_json_not_credential(client):
     assert out["agent_json"] == {"name": "my-agent"}
     assert "credential" not in out
     assert "credential_guid" not in out
+
+
+# --------------------------------------------------------------------------- #
+# update() — load an existing workflow, change a field, full-replace
+# --------------------------------------------------------------------------- #
+def test_load_update_preserves_reinjects_and_references_credential():
+    """load(slug).<change>.update() re-injects connection_qualified_name, keeps
+    the existing credential (referenced, not rotated), normalizes string-typed
+    fields, drops runtime keys, and preserves everything else."""
+    from types import SimpleNamespace
+
+    client = Mock()
+    current = {
+        "connection": {
+            "typeName": "Connection",
+            "attributes": {
+                "qualifiedName": "default/bigquery/123",
+                "connectorName": "bigquery",
+                "name": "prod",
+                "adminRoles": ["role-1"],
+            },
+        },
+        "credential_guid": "cred-1",
+        "extraction_method": "direct",
+        "include_filter": {"^proj$": ["^old$"]},
+        "control_config": {},  # object on read-back -> must normalize to "{}"
+        "user-id": "u1",
+        "workflow_id": "w1",  # runtime keys -> must be dropped
+        "atlas_auth_type": "internal",  # non-structural -> preserved
+    }
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(
+        properties={"control_config": {"type": "string"}}
+    )
+    client.app.update.return_value = Mock(version=2)
+
+    BigqueryCrawler(client).load("slug-1").include({"proj": ["new"]}).update()
+
+    kw = client.app.update.call_args.kwargs
+    inp = kw["inputs"]
+    assert kw["slug"] == "slug-1" and kw["entrypoint"] == "crawler"
+    assert inp["connection_qualified_name"] == "default/bigquery/123"  # re-injected
+    # CONNECT-843: reused credential rides on the connection, never top-level, and
+    # is never re-vaulted (no rotation).
+    assert inp["connection"]["attributes"]["defaultCredentialGuid"] == "cred-1"
+    assert inp["credential_guid"] == "" and "credential" not in inp
+    assert inp["include_filter"] == '{"^proj$": ["^new$"]}'  # changed + anchored
+    assert inp["control_config"] == "{}"  # normalized object -> string
+    assert "user-id" not in inp and "workflow_id" not in inp  # runtime keys dropped
+    assert inp["atlas_auth_type"] == "internal"  # preserved
+    assert inp["connection"]["attributes"]["adminRoles"] == [
+        "role-1"
+    ]  # connection kept
+
+
+def test_update_without_load_raises():
+    with pytest.raises(ValueError):
+        BigqueryCrawler(Mock()).update()
+
+
+@pytest.mark.parametrize("cls", BUILDERS, ids=BUILDER_IDS)
+def test_load_update_is_generic_across_builders(cls):
+    """load()/update() lives on the base, so every app builder can update: it
+    re-injects connection_qualified_name and references the existing credential
+    (no rotation), targeting the right slug/entrypoint. The builder's own
+    preview() is used as the 'current inputs' so the seed is valid for its
+    typed inputs model."""
+    from types import SimpleNamespace
+
+    qn = f"default/{cls._CONNECTOR_NAME}/1700000000"
+    current = (
+        cls(Mock()).connection(qualified_name=qn).credential_guid("cred-x").preview()
+    )
+    client = Mock()
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(properties={})
+    client.app.update.return_value = Mock(version=2)
+
+    cls(client).load("slug-x").update()
+
+    kw = client.app.update.call_args.kwargs
+    inp = kw["inputs"]
+    assert kw["slug"] == "slug-x"
+    assert kw["entrypoint"] == (cls._ENTRYPOINT or None)
+    assert inp["connection_qualified_name"] == qn  # re-injected
+    # CONNECT-843: the guid rides on the connection (also proves load() reads it
+    # back from attributes.defaultCredentialGuid, not just top-level).
+    assert inp["connection"]["attributes"]["defaultCredentialGuid"] == "cred-x"
+    assert inp["credential_guid"] == ""  # referenced, not rotated, not top-level
+    assert "credential" not in inp  # no raw credential re-sent
+
+
+def test_update_retries_without_entrypoint_on_1003():
+    """update() falls back to the default entrypoint when the named one has no
+    registered contract (server 1003) — mirroring _create()."""
+    from types import SimpleNamespace
+
+    current = (
+        BigqueryCrawler(Mock())
+        .connection(qualified_name="default/bigquery/1")
+        .credential_guid("g")
+        .preview()
+    )
+    client = Mock()
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(properties={})
+    client.app.update.side_effect = [
+        Exception("Server responded 1003: unknown entrypoint"),
+        Mock(version=3),
+    ]
+
+    BigqueryCrawler(client).load("slug-x").update()
+
+    assert client.app.update.call_count == 2
+    assert client.app.update.call_args_list[0].kwargs["entrypoint"] == "crawler"
+    assert client.app.update.call_args_list[1].kwargs["entrypoint"] is None
+
+
+def test_load_update_applies_multiple_field_changes():
+    """load(slug).<several typed changes>.update() applies every change and
+    preserves + re-injects the rest (connection_qualified_name, credential ref,
+    hidden defaults), dropping runtime keys."""
+    from types import SimpleNamespace
+
+    current = {
+        "connection": {
+            "typeName": "Connection",
+            "attributes": {
+                "qualifiedName": "default/bigquery/1",
+                "connectorName": "bigquery",
+                "name": "prod",
+                "adminRoles": ["role-1"],
+            },
+        },
+        "credential_guid": "cred-1",
+        "extraction_method": "direct",
+        "include_filter": {"^p$": ["^old$"]},
+        "exclude_filter": {},
+        "temp_table_regex": "",
+        "enable_nested_columns": True,
+        "enable_bigquery_tag_sync": False,
+        "filter_sharded_tables": True,
+        "hidden_datasets": False,
+        "control_config": {},
+        "control_config_strategy": "default",
+        "atlas_auth_type": "internal",
+        "user-id": "u1",
+    }
+    client = Mock()
+    client.app.get.return_value.dict.return_value = {
+        "dag": {"extract": {"inputs": {"args": current}}}
+    }
+    client.app.get_input_contract.return_value = SimpleNamespace(
+        properties={"control_config": {"type": "string"}}
+    )
+    client.app.update.return_value = Mock(version=2)
+
+    (
+        BigqueryCrawler(client)
+        .load("slug-1")
+        .include({"p": ["a", "b"]})
+        .exclude({"p": ["tmp"]})
+        .exclude_regex(".*_bak$")
+        .import_nested_columns(False)
+        .import_tags(True)
+        .combine_sharded_tables(False)
+        .hidden_assets(True)
+        .custom_config('{"flag": 1}')
+        .update()
+    )
+
+    inp = client.app.update.call_args.kwargs["inputs"]
+    # every requested change applied
+    assert inp["include_filter"] == '{"^p$": ["^a$", "^b$"]}'
+    assert inp["exclude_filter"] == '{"^p$": ["^tmp$"]}'
+    assert inp["temp_table_regex"] == ".*_bak$"
+    assert inp["enable_nested_columns"] is False
+    assert inp["enable_bigquery_tag_sync"] is True
+    assert inp["filter_sharded_tables"] is False
+    assert inp["hidden_datasets"] is True
+    assert inp["control_config_strategy"] == "custom"
+    assert inp["control_config"] == '{"flag": 1}'
+    # rest preserved / re-injected / stripped
+    assert inp["connection_qualified_name"] == "default/bigquery/1"
+    # CONNECT-843: reused credential on the connection, top-level empty, no rotation
+    assert inp["connection"]["attributes"]["defaultCredentialGuid"] == "cred-1"
+    assert inp["credential_guid"] == "" and "credential" not in inp
+    assert inp["atlas_auth_type"] == "internal"
+    assert "user-id" not in inp
