@@ -114,6 +114,10 @@ class AppBuilder:
         self._admin_roles: List[str] = []
         self._metadata: Dict[str, Any] = {}
         self._update_slug: Optional[str] = None
+        # Full persisted connection captured by load(); re-sent verbatim by
+        # update() so the full-replace drops no connection attributes. Cleared by
+        # an explicit connection() call, which then wins.
+        self._loaded_connection: Optional[Any] = None
 
     # ── Step 1 · Credential ────────────────────────────────────────────────
     def _stage_credential(self, field: str, credential: Credential):
@@ -158,6 +162,8 @@ class AppBuilder:
         self._admin_groups = list(admin_groups or [])
         self._admin_roles = list(admin_roles or [])
         self._connection_qualified_name = qualified_name
+        # An explicit connection() replaces any connection captured by load().
+        self._loaded_connection = None
         return self
 
     # ── assembly (no network) ──────────────────────────────────────────────
@@ -241,12 +247,25 @@ class AppBuilder:
         )
         kwargs: Dict[str, Any] = dict(self._HIDDEN_DEFAULTS)
         kwargs.update(self._metadata)
-        kwargs["connection"] = self._build_connection(
-            qualified_name,
-            default_credential_guid=(
-                self._credential_guid if reuse_on_existing_connection else None
-            ),
-        )
+        # On the update path (after load()), re-send the full persisted connection
+        # so the full-replace drops no attributes (e.g. category/rowLimit); still
+        # make sure the reused credential guid rides on it (#1007) when the
+        # read-back carried the guid top-level instead of on the connection.
+        # Otherwise build one from the supplied name/admins (create path).
+        if self._loaded_connection is not None:
+            conn = dict(self._loaded_connection)
+            if reuse_on_existing_connection:
+                attrs = dict(conn.get("attributes") or {})
+                attrs.setdefault("defaultCredentialGuid", self._credential_guid)
+                conn["attributes"] = attrs
+            kwargs["connection"] = conn
+        else:
+            kwargs["connection"] = self._build_connection(
+                qualified_name,
+                default_credential_guid=(
+                    self._credential_guid if reuse_on_existing_connection else None
+                ),
+            )
         kwargs["extraction_method"] = self._extraction_method
         if self._extraction_method == "agent":
             kwargs["agent_json"] = self._agent_json
@@ -330,6 +349,9 @@ class AppBuilder:
         self._admin_users = list(attrs.get("adminUsers") or [])
         self._admin_groups = list(attrs.get("adminGroups") or [])
         self._admin_roles = list(attrs.get("adminRoles") or [])
+        # Keep the whole connection so update() re-sends it verbatim (a rebuilt one
+        # would drop attributes the read-back carried, e.g. category/rowLimit).
+        self._loaded_connection = conn if isinstance(conn, dict) else None
         # The reused credential guid may ride on the connection entity
         # (attributes.defaultCredentialGuid, the UI/CONNECT-843 shape) or, on
         # older workflows, sit top-level. Read whichever is present so update()
