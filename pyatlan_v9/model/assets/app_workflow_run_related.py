@@ -45,6 +45,9 @@ class RelatedAppWorkflowRun(RelatedCatalog):
     app_workflow_run_started_by: Union[str, None, UnsetType] = UNSET
     """Username of the user who started the workflow run."""
 
+    app_workflow_run_stopped_by: Union[str, None, UnsetType] = UNSET
+    """Username of the user who stopped the workflow run."""
+
     app_workflow_run_completed_at: Union[int, None, UnsetType] = UNSET
     """Timestamp when the workflow run finished execution."""
 
@@ -71,6 +74,12 @@ class RelatedAppWorkflowRun(RelatedCatalog):
 
     app_workflow_run_app_workflow_version: Union[str, None, UnsetType] = UNSET
     """Version of the parent workflow."""
+
+    app_workflow_run_workflow_ownership: Union[str, None, UnsetType] = UNSET
+    """Ownership of the parent workflow at execution time: SYSTEM (managed by Atlan) or USER (user-authored). Denormalized from the workflow so run-history listings can filter without a join."""
+
+    app_workflow_run_source: Union[str, None, UnsetType] = UNSET
+    """Product surface of the parent workflow (marketplace, enrichment_studio, context_studio), denormalized onto the run and emitted as a metric label so Marketplace runs are distinguishable without slug pattern matching (AUT-1028)."""
 
     app_workflow_run_temporal_run_id: Union[str, None, UnsetType] = UNSET
     """Unique identifier for the temporal run associated with this workflow execution."""
