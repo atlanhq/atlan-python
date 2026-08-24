@@ -110,12 +110,13 @@ class AppClient:
         self._client = client
 
     def _call(self, api, **kwargs):
-        """Invoke an app API with the app-management retry policy.
+        """Invoke an app API under the app-management retry policy.
 
-        Routes every AppClient request through :data:`_APP_NO_500_RETRY` so app
-        management never retries HTTP 500 (AICHAT-1659).
+        Applies :data:`_APP_NO_500_RETRY` so app management never retries HTTP 500
+        (AICHAT-1659) — a 500 here is not transient and retrying a non-idempotent
+        POST can spawn duplicate runs.
         """
-        with self._client.max_retries(_APP_NO_500_RETRY):  # type: ignore[attr-defined]
+        with self._client.max_retries(_APP_NO_500_RETRY):
             return self._client._call_api(api, **kwargs)
 
     # ----------------------------- discovery ----------------------------- #

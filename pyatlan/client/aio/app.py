@@ -77,12 +77,11 @@ class AsyncAppClient:
         self._client = client
 
     async def _call(self, api, **kwargs):
-        """Invoke an app API with the app-management retry policy.
+        """Invoke an app API under the app-management retry policy (AICHAT-1659).
 
-        Routes every AsyncAppClient request through :data:`_APP_NO_500_RETRY` so
-        app management never retries HTTP 500 (AICHAT-1659).
+        Async mirror of :meth:`pyatlan.client.app.AppClient._call`.
         """
-        async with self._client.max_retries(_APP_NO_500_RETRY):  # type: ignore[attr-defined]
+        async with self._client.max_retries(_APP_NO_500_RETRY):
             return await self._client._call_api(api, **kwargs)
 
     # ----------------------------- discovery ----------------------------- #
