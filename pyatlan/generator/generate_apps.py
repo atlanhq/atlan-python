@@ -74,6 +74,7 @@ def _overlay_for(module: str) -> Optional[Tuple[str, set]]:
     methods = set(re.findall(r"^    def (\w+)\(", src, re.MULTILINE))
     return classes[0], methods
 
+
 # Apps to generate even when not currently deployed/running on the tenant
 # (configmaps are served per app-id, so live discovery alone misses these).
 # Union'd with discovery — extend as more connectors are installed.

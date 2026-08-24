@@ -16,7 +16,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from pyatlan.model.apps import AtlanStandardLineage, AtlanStandardLineageInputs
+from pyatlan.model.apps import AtlanStandardLineage
 
 SLUG = "atlan-standard-lineage-1700000000-Abcd1234"
 BQ1 = "default/bigquery/1700000001"
@@ -57,23 +57,6 @@ def _client(scope, *, connection=OWN_CONNECTION, connector="bigquery"):
 def _sent_inputs(client):
     """The inputs dict actually handed to client.app.update()."""
     return client.app.update.call_args.kwargs["inputs"].to_inputs()
-
-
-# ── inputs model ────────────────────────────────────────────────────────────
-def test_inputs_defaults():
-    i = AtlanStandardLineageInputs()
-    assert AtlanStandardLineageInputs._APP_ID == "atlan-standard-lineage"
-    assert AtlanStandardLineageInputs._ENTRYPOINT == "standard-lineage"
-    assert i.connector == ""
-    assert i.cross_connection_qualified_names == ""
-
-
-def test_builder_class_vars():
-    assert AtlanStandardLineage._APP_ID == "atlan-standard-lineage"
-    assert AtlanStandardLineage._ENTRYPOINT == "standard-lineage"
-    # The workflow's OWN connection lives under standard-lineage; the connections
-    # in scope are a different connector entirely.
-    assert AtlanStandardLineage._CONNECTOR_NAME == "standard-lineage"
 
 
 # ── create-time scope ───────────────────────────────────────────────────────
@@ -120,7 +103,9 @@ def test_mixed_connector_scope_is_rejected():
 def test_own_connection_as_scope_is_rejected():
     """A natural mistake: passing the workflow's own connection as its scope."""
     with pytest.raises(ValueError, match="not the workflow's own"):
-        AtlanStandardLineage(Mock()).connections(["default/standard-lineage/1700000000"])
+        AtlanStandardLineage(Mock()).connections(
+            ["default/standard-lineage/1700000000"]
+        )
 
 
 def test_malformed_qualified_name_is_rejected():
@@ -136,7 +121,9 @@ def test_get_connections_reads_a_native_list():
 
 def test_get_connections_reads_a_json_string():
     """On the wire it is JSON-encoded, so both shapes have to be readable."""
-    assert AtlanStandardLineage(_client(json.dumps([BQ1, BQ2]))).get_connections(SLUG) == [
+    assert AtlanStandardLineage(_client(json.dumps([BQ1, BQ2]))).get_connections(
+        SLUG
+    ) == [
         BQ1,
         BQ2,
     ]

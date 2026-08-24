@@ -20,17 +20,10 @@ from __future__ import annotations
 
 import json
 import re
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Sequence,
-    TypeVar,
-    Union,
-)
+from collections.abc import Iterable, Sequence
+from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Optional, TypeVar, Union
+
+from typing_extensions import Self
 
 if TYPE_CHECKING:
     from pyatlan.model.app import AppResponse
@@ -114,16 +107,16 @@ class AtlanStandardLineageOverlay:
     if TYPE_CHECKING:
         _metadata: Dict[str, Any]
         _client: Any
-        _INPUTS_CLASS: type[AppInput]
-        _ENTRYPOINT: Optional[str]
+        _INPUTS_CLASS: ClassVar[type[AppInput]]
+        _ENTRYPOINT: ClassVar[Optional[str]]
 
     # ── Step 3 · Metadata ──────────────────────────────────────────────────
     def connections(
-        self: _S,
+        self,
         qualified_names: Union[Sequence[str], str],
         *,
         connector: Optional[str] = None,
-    ) -> _S:
+    ) -> Self:
         """Set the connections to build lineage across (create-time scope).
 
         :param qualified_names: source connection qualified names, e.g.
@@ -217,6 +210,10 @@ class AtlanStandardLineageOverlay:
             connector=connector or args.get("connector") or derived,
             cross_connection_qualified_names=json.dumps(scope),
             run_role=args.get("run_role") or "standard-lineage",
+            # The contract requires credential_guid as a (possibly empty) string;
+            # Standard Lineage has no credential, so it is "" — matching the create
+            # path's _assemble. Omitting it reads as null and is rejected.
+            credential_guid="",
         )
         return self._client.app.update(
             slug=slug, inputs=inputs, entrypoint=self._ENTRYPOINT

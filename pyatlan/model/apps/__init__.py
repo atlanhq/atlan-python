@@ -23,6 +23,10 @@ from pyatlan.model.apps.atlan_presto import AtlanPresto, AtlanPrestoInputs
 from pyatlan.model.apps.atlan_quicksight import AtlanQuicksight, AtlanQuicksightInputs
 from pyatlan.model.apps.atlan_redash import AtlanRedash, AtlanRedashInputs
 from pyatlan.model.apps.atlan_sigma import AtlanSigma, AtlanSigmaInputs
+from pyatlan.model.apps.atlan_standard_lineage import (
+    AtlanStandardLineage,
+    AtlanStandardLineageInputs,
+)
 from pyatlan.model.apps.atlan_tableau import AtlanTableau, AtlanTableauInputs
 from pyatlan.model.apps.atlan_trino import AtlanTrino, AtlanTrinoInputs
 from pyatlan.model.apps.bigquery_crawler import BigqueryCrawler, BigqueryCrawlerInputs
@@ -51,24 +55,14 @@ from pyatlan.model.apps.snowflake_crawler import (
     SnowflakeCrawlerInputs,
 )
 from pyatlan.model.apps.snowflake_miner import SnowflakeMiner, SnowflakeMinerInputs
-from pyatlan.model.apps.atlan_standard_lineage import (
-    AtlanStandardLineage,
-    AtlanStandardLineageInputs,
-)
 from pyatlan.model.apps.teradata_crawler import TeradataCrawler, TeradataCrawlerInputs
 from pyatlan.model.apps.teradata_miner import TeradataMiner, TeradataMinerInputs
 
 __all__ = [
-    "CsaUberAssetExportBasic",
-    "CsaUberAssetExportBasicInputs",
-    "AppInput",
-    "AppBuilder",
-    "BigqueryCrawler",
-    "BigqueryCrawlerInputs",
-    "BigqueryMiner",
-    "BigqueryMinerInputs",
     "Anaplan",
     "AnaplanInputs",
+    "AppBuilder",
+    "AppInput",
     "AtlanAthena",
     "AtlanAthenaInputs",
     "AtlanDbt",
@@ -93,10 +87,18 @@ __all__ = [
     "AtlanRedashInputs",
     "AtlanSigma",
     "AtlanSigmaInputs",
+    "AtlanStandardLineage",
+    "AtlanStandardLineageInputs",
     "AtlanTableau",
     "AtlanTableauInputs",
     "AtlanTrino",
     "AtlanTrinoInputs",
+    "BigqueryCrawler",
+    "BigqueryCrawlerInputs",
+    "BigqueryMiner",
+    "BigqueryMinerInputs",
+    "CsaUberAssetExportBasic",
+    "CsaUberAssetExportBasicInputs",
     "DatabricksCrawler",
     "DatabricksCrawlerInputs",
     "DatabricksMiner",
@@ -125,8 +127,6 @@ __all__ = [
     "SnowflakeCrawlerInputs",
     "SnowflakeMiner",
     "SnowflakeMinerInputs",
-    "AtlanStandardLineage",
-    "AtlanStandardLineageInputs",
     "TeradataCrawler",
     "TeradataCrawlerInputs",
     "TeradataMiner",

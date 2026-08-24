@@ -8,10 +8,11 @@ from typing import Any, ClassVar, Dict, Literal, Optional
 
 from pydantic.v1 import Field
 
-from ._base import AppBuilder, AppInput
 from pyatlan.model.apps._overlays.atlan_standard_lineage import (
     AtlanStandardLineageOverlay,
 )
+
+from ._base import AppBuilder, AppInput
 
 
 class AtlanStandardLineageInputs(AppInput):
@@ -57,7 +58,7 @@ class AtlanStandardLineage(AtlanStandardLineageOverlay, AppBuilder):
     _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"run_role": "standard-lineage"}
 
     # ── Step 3 · Metadata ──
-    def connector(self, value: Literal["bigquery"]) -> "AtlanStandardLineage":
+    def connector(self, value: Literal["bigquery"]) -> AtlanStandardLineage:
         """Connector"""
         self._metadata["connector"] = value
         return self
