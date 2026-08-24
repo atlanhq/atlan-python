@@ -3,16 +3,21 @@
 """Unit tests for the App workflow client — sync + async."""
 
 import json
+from contextlib import nullcontext
 from types import SimpleNamespace
 from typing import Optional
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock
 
+import httpx
 import pytest
 
+from pyatlan.client.transport import PyatlanSyncTransport
+
 from pyatlan.client.aio.app import AsyncAppClient
-from pyatlan.client.app import AppClient
+from pyatlan.client.app import _APP_NO_500_RETRY, AppClient
 from pyatlan.client.common import ApiCaller, AsyncApiCaller
 from pyatlan.errors import AtlanError
+from pyatlan.model.assets import AppWorkflowRun
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
@@ -28,7 +33,11 @@ from pyatlan.model.app import (
 
 @pytest.fixture
 def mock_api_caller():
-    return Mock(spec=ApiCaller)
+    m = Mock(spec=ApiCaller)
+    # Every AppClient call is wrapped in max_retries(...) (the no-500 policy);
+    # make it a no-op context manager for tests.
+    m.max_retries = Mock(side_effect=lambda *a, **k: nullcontext())
+    return m
 
 
 @pytest.fixture
@@ -40,6 +49,22 @@ def _path(mock) -> str:
     """The API endpoint path passed to the most recent _call_api call."""
     api = mock._call_api.call_args.args[0]
     return api.path
+
+
+def _running_run(slug: str = "a-1") -> AppWorkflowRun:
+    """A minimal in-progress AppWorkflowRun asset for the slug."""
+    run = AppWorkflowRun()
+    run.qualified_name = f"default/apps/automation_engine/workflows/{slug}/1/runs/r-9"
+    return run
+
+
+def _wire_asset_search(mock, active_runs=()):
+    """Wire ``mock.asset.search`` so ``current_page()`` returns ``active_runs``."""
+    results = Mock()
+    results.current_page = Mock(return_value=list(active_runs))
+    mock.asset = Mock()
+    mock.asset.search = Mock(return_value=results)
+    return mock.asset.search
 
 
 # --------------------------------------------------------------------------- #
@@ -221,12 +246,127 @@ def test_delete(client, mock_api_caller):
 # --------------------------------------------------------------------------- #
 # Running
 # --------------------------------------------------------------------------- #
+def _server_error_500() -> AtlanError:
+    return AtlanError(
+        SimpleNamespace(
+            http_error_code=500,
+            error_id="ATLAN-PYTHON-500-000",
+            error_message="internal error",
+            user_action="check the server message",
+        )
+    )
+
+
+def _wire_asset_search_sequence(mock, pages):
+    """Wire ``mock.asset.search`` to return a different current_page() per call."""
+
+    def _result(page):
+        r = Mock()
+        r.current_page = Mock(return_value=list(page))
+        return r
+
+    mock.asset = Mock()
+    mock.asset.search = Mock(side_effect=[_result(p) for p in pages])
+    return mock.asset.search
+
+
 def test_submit(client, mock_api_caller):
     mock_api_caller._call_api.return_value = {"slug": "a-1", "run_id": "r-1"}
     result = client.submit("a-1")
     assert isinstance(result, AppRunResponse)
     assert result.run_id == "r-1"
     assert _path(mock_api_caller) == "v1/app/a-1/submit"
+    # AICHAT-1659: submit runs under the no-500 retry policy.
+    mock_api_caller.max_retries.assert_called_once_with(_APP_NO_500_RETRY)
+
+
+def test_submit_default_is_not_idempotent(client, mock_api_caller):
+    """Default idempotent=False: no pre-check search, just submit (opt-in guard)."""
+    search = _wire_asset_search(mock_api_caller, active_runs=[_running_run("a-1")])
+    mock_api_caller._call_api.return_value = {"slug": "a-1", "run_id": "r-1"}
+    result = client.submit("a-1")  # no idempotent arg
+    assert result.run_id == "r-1"
+    search.assert_not_called()  # no running-run pre-check by default
+
+
+def test_submit_idempotent_raises_when_already_running(client, mock_api_caller):
+    """idempotent=True: an in-progress run blocks a duplicate submit up front."""
+    _wire_asset_search(mock_api_caller, active_runs=[_running_run("a-1")])
+    with pytest.raises(AtlanError) as exc:
+        client.submit("a-1", idempotent=True)
+    assert "already has an active run" in str(exc.value)
+    # No submit POST was sent — we short-circuited before _call_api.
+    mock_api_caller._call_api.assert_not_called()
+
+
+def test_submit_idempotent_recovers_already_running_on_500(client, mock_api_caller):
+    """Lag path: pre-check misses, submit 500s, re-check confirms already-running."""
+    # First search (pre-check) sees nothing; second (post-500 recovery) sees the run.
+    _wire_asset_search_sequence(mock_api_caller, pages=[[], [_running_run("a-1")]])
+    mock_api_caller._call_api.side_effect = _server_error_500()
+    with pytest.raises(AtlanError) as exc:
+        client.submit("a-1", idempotent=True)
+    assert "already has an active run" in str(exc.value)  # clean error, not raw 500
+    mock_api_caller._call_api.assert_called_once()  # exactly one submit attempt
+
+
+def test_submit_idempotent_reraises_genuine_500(client, mock_api_caller, monkeypatch):
+    """A 500 with no active run (genuine server error) is surfaced as-is."""
+    monkeypatch.setattr("pyatlan.client.app._RUN_CHECK_TIMEOUT_SECONDS", 0.0)
+    _wire_asset_search_sequence(mock_api_caller, pages=[[], []])  # never running
+    mock_api_caller._call_api.side_effect = _server_error_500()
+    with pytest.raises(AtlanError) as exc:
+        client.submit("a-1", idempotent=True)
+    assert "internal error" in str(exc.value)
+    assert "already has an active run" not in str(exc.value)
+
+
+def test_submit_idempotent_false_skips_check_and_submits(client, mock_api_caller):
+    """idempotent=False forces the submit without the running-run pre-check."""
+    search = _wire_asset_search(mock_api_caller, active_runs=[_running_run("a-1")])
+    mock_api_caller._call_api.return_value = {"slug": "a-1", "run_id": "r-2"}
+    result = client.submit("a-1", idempotent=False)
+    assert result.run_id == "r-2"
+    assert _path(mock_api_caller) == "v1/app/a-1/submit"
+    search.assert_not_called()  # pre-check skipped
+
+
+def test_find_current_run_none_when_no_active(client, mock_api_caller):
+    _wire_asset_search(mock_api_caller, active_runs=[])
+    assert client._find_current_run("a-1") is None
+
+
+# --------------------------------------------------------------------------- #
+# AICHAT-1659: app management never retries HTTP 500
+# --------------------------------------------------------------------------- #
+def _attempts_for_status(status: int) -> int:
+    """Drive the app retry policy through the real transport; count HTTP attempts."""
+    transport = PyatlanSyncTransport(
+        retry=_APP_NO_500_RETRY, client=None, trust_env=False
+    )
+    inner = MagicMock(return_value=httpx.Response(status))
+    transport._transport.handle_request = inner  # type: ignore[method-assign]
+    transport.handle_request(
+        httpx.Request("POST", "https://example.com/api/service/v1/app/a-1/submit")
+    )
+    return inner.call_count
+
+
+def test_app_policy_excludes_500():
+    assert 500 not in _APP_NO_500_RETRY.status_forcelist
+
+
+def test_app_policy_does_not_retry_500_on_the_wire():
+    # A single HTTP attempt: a 500 from an app-management POST is never retried,
+    # so one submit can never spawn duplicate runs.
+    assert _attempts_for_status(500) == 1
+
+
+def test_app_policy_still_retries_transient_statuses():
+    # Sanity: the policy isn't "no retries at all" — genuinely transient infra
+    # statuses (429/502/503/504) remain retryable; only 500 is excluded.
+    for status in (429, 502, 503, 504):
+        assert status in _APP_NO_500_RETRY.status_forcelist
 
 
 @pytest.mark.parametrize(
@@ -284,11 +424,28 @@ def test_remove_schedule(client, mock_api_caller):
 # --------------------------------------------------------------------------- #
 # Async parity (smoke)
 # --------------------------------------------------------------------------- #
+def _async_noop_cm(*_a, **_k):
+    cm = MagicMock()
+    cm.__aenter__ = AsyncMock(return_value=None)
+    cm.__aexit__ = AsyncMock(return_value=False)
+    return cm
+
+
 @pytest.fixture
 def async_mock_api_caller():
     m = Mock(spec=AsyncApiCaller)
     m._call_api = AsyncMock()
+    # Every AsyncAppClient call wraps in `async with max_retries(...)`.
+    m.max_retries = Mock(side_effect=_async_noop_cm)
     return m
+
+
+def _wire_async_asset_search(mock, active_runs=()):
+    results = Mock()
+    results.current_page = Mock(return_value=list(active_runs))
+    mock.asset = Mock()
+    mock.asset.search = AsyncMock(return_value=results)
+    return mock.asset.search
 
 
 @pytest.mark.asyncio
@@ -333,3 +490,40 @@ async def test_async_get_all_passes_name_filter(async_mock_api_caller):
     assert async_mock_api_caller._call_api.call_args.kwargs["query_params"] == {
         "name": "n"
     }
+
+
+@pytest.mark.asyncio
+async def test_async_submit_default_not_idempotent(async_mock_api_caller):
+    search = _wire_async_asset_search(
+        async_mock_api_caller, active_runs=[_running_run("a-1")]
+    )
+    async_mock_api_caller._call_api.return_value = {"slug": "a-1", "run_id": "r-1"}
+    client = AsyncAppClient(async_mock_api_caller)
+    result = await client.submit("a-1")  # default idempotent=False
+    assert result.run_id == "r-1"
+    search.assert_not_called()
+    async_mock_api_caller.max_retries.assert_called_once_with(_APP_NO_500_RETRY)
+
+
+@pytest.mark.asyncio
+async def test_async_submit_idempotent_raises_when_already_running(
+    async_mock_api_caller,
+):
+    _wire_async_asset_search(async_mock_api_caller, active_runs=[_running_run("a-1")])
+    client = AsyncAppClient(async_mock_api_caller)
+    with pytest.raises(AtlanError) as exc:
+        await client.submit("a-1", idempotent=True)
+    assert "already has an active run" in str(exc.value)
+    async_mock_api_caller._call_api.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_async_submit_idempotent_false_forces(async_mock_api_caller):
+    search = _wire_async_asset_search(
+        async_mock_api_caller, active_runs=[_running_run("a-1")]
+    )
+    async_mock_api_caller._call_api.return_value = {"slug": "a-1", "run_id": "r-2"}
+    client = AsyncAppClient(async_mock_api_caller)
+    result = await client.submit("a-1", idempotent=False)
+    assert result.run_id == "r-2"
+    search.assert_not_called()

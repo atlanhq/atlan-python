@@ -9,11 +9,22 @@ is awaited. Obtain via :attr:`pyatlan.client.aio.client.AsyncAtlanClient.app`.
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import time
 from typing import Any, Dict, Optional, Union
 
 from pydantic.v1 import validate_arguments
 
+from pyatlan.client.app import (
+    _ACTIVE_RUN_STATUSES,
+    _APP_NO_500_RETRY,
+    _APP_WORKFLOW_RUN_QN_PREFIX,
+    _RUN_CHECK_INTERVAL_SECONDS,
+    _RUN_CHECK_TIMEOUT_SECONDS,
+    _already_running_error,
+    _is_server_error,
+)
 from pyatlan.client.common import AsyncApiCaller
 from pyatlan.client.common.app import (
     AppAddSchedule,
@@ -33,6 +44,8 @@ from pyatlan.client.common.app import (
 )
 from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.model.apps import AppInput
+from pyatlan.model.assets import AppWorkflowRun
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
@@ -63,11 +76,19 @@ class AsyncAppClient:
             )
         self._client = client
 
+    async def _call(self, api, **kwargs):
+        """Invoke an app API under the app-management retry policy (AICHAT-1659).
+
+        Async mirror of :meth:`pyatlan.client.app.AppClient._call`.
+        """
+        async with self._client.max_retries(_APP_NO_500_RETRY):
+            return await self._client._call_api(api, **kwargs)
+
     # ----------------------------- discovery ----------------------------- #
     @validate_arguments
     async def describe(self, app_id: str) -> AppInfo:
         """Describe an app: native-readiness + entrypoints (contrast :meth:`get`)."""
-        raw = await self._client._call_api(AppGetInfo.prepare_request(app_id))
+        raw = await self._call(AppGetInfo.prepare_request(app_id))
         return AppGetInfo.process_response(raw)
 
     @validate_arguments
@@ -76,7 +97,7 @@ class AsyncAppClient:
     ) -> AppInputContract:
         """Fetch the app's input contract (JSON Schema) for an entrypoint."""
         endpoint, query_params = AppGetInputContract.prepare_request(app_id, entrypoint)
-        raw = await self._client._call_api(endpoint, query_params=query_params)
+        raw = await self._call(endpoint, query_params=query_params)
         return AppGetInputContract.process_response(raw)
 
     # ----------------------------- lifecycle ----------------------------- #
@@ -114,7 +135,7 @@ class AsyncAppClient:
         request = CreateApp(**request_kwargs)
         endpoint, request_obj = AppCreate.prepare_request(request)
         try:
-            raw = await self._client._call_api(endpoint, request_obj=request_obj)
+            raw = await self._call(endpoint, request_obj=request_obj)
         except AtlanError as exc:
             if is_duplicate_name_conflict(exc):
                 return await self._reuse_on_conflict(name, exc)
@@ -152,13 +173,13 @@ class AsyncAppClient:
             use it to resolve a workflow's slug from its name.
         """
         endpoint, query_params = AppListAll.prepare_request(limit, cursor, name)
-        raw = await self._client._call_api(endpoint, query_params=query_params)
+        raw = await self._call(endpoint, query_params=query_params)
         return AppListAll.process_response(raw)
 
     @validate_arguments
     async def get(self, slug: str) -> AppSummary:
         """Get a single workflow by slug."""
-        raw = await self._client._call_api(AppGet.prepare_request(slug))
+        raw = await self._call(AppGet.prepare_request(slug))
         return AppGet.process_response(raw)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
@@ -176,32 +197,83 @@ class AsyncAppClient:
             request_kwargs["entrypoint"] = entrypoint
         request = UpdateApp(**request_kwargs)
         endpoint, request_obj = AppUpdate.prepare_request(slug, request)
-        raw = await self._client._call_api(endpoint, request_obj=request_obj)
+        raw = await self._call(endpoint, request_obj=request_obj)
         return AppUpdate.process_response(raw)
 
     @validate_arguments
     async def delete(self, slug: str) -> AppDeleteResponse:
         """Archive/delete a workflow."""
-        raw = await self._client._call_api(AppDelete.prepare_request(slug))
+        raw = await self._call(AppDelete.prepare_request(slug))
         return AppDelete.process_response(raw)
 
     # ------------------------------ running ------------------------------ #
+    async def _find_current_run(self, slug: str) -> Optional[AppWorkflowRun]:
+        """Async mirror of :meth:`pyatlan.client.app.AppClient._find_current_run`."""
+        request = (
+            FluentSearch()
+            .where(CompoundQuery.active_assets())
+            .where(CompoundQuery.asset_type(AppWorkflowRun))
+            .where(
+                AppWorkflowRun.QUALIFIED_NAME.startswith(
+                    f"{_APP_WORKFLOW_RUN_QN_PREFIX}{slug}/"
+                )
+            )
+            .where(AppWorkflowRun.APP_WORKFLOW_RUN_STATUS.within(_ACTIVE_RUN_STATUSES))
+            .include_on_results(AppWorkflowRun.APP_WORKFLOW_RUN_STATUS)
+            .page_size(1)
+        ).to_request()
+        results = await self._client.asset.search(request)  # type: ignore[attr-defined]
+        for asset in results.current_page() or []:
+            if isinstance(asset, AppWorkflowRun):
+                return asset
+        return None
+
+    async def _await_active_run(self, slug: str) -> Optional[AppWorkflowRun]:
+        """Async mirror of :meth:`pyatlan.client.app.AppClient._await_active_run`."""
+        deadline = time.monotonic() + _RUN_CHECK_TIMEOUT_SECONDS
+        while True:
+            run = await self._find_current_run(slug)
+            if run is not None:
+                return run
+            if time.monotonic() >= deadline:
+                return None
+            await asyncio.sleep(_RUN_CHECK_INTERVAL_SECONDS)
+
     @validate_arguments
-    async def submit(self, slug: str) -> AppRunResponse:
-        """Run the workflow's current published version."""
-        raw = await self._client._call_api(AppSubmit.prepare_request(slug))
+    async def submit(self, slug: str, idempotent: bool = False) -> AppRunResponse:
+        """Run the workflow's current published version.
+
+        :param idempotent: opt-in guard against launching a duplicate run
+            (default ``False``). When ``True``, refuse to submit if a run is
+            already in progress — checked before submitting and reconfirmed
+            against the search index if the submit fails with a server error.
+        :raises InvalidRequestError: if ``idempotent`` and a run is already in
+            progress for this workflow.
+        """
+        if idempotent:
+            current = await self._find_current_run(slug)
+            if current is not None:
+                raise _already_running_error(slug, current)
+        try:
+            raw = await self._call(AppSubmit.prepare_request(slug))
+        except AtlanError as exc:
+            if idempotent and _is_server_error(exc):
+                current = await self._await_active_run(slug)
+                if current is not None:
+                    raise _already_running_error(slug, current) from exc
+            raise
         return AppSubmit.process_response(raw)
 
     @validate_arguments
     async def get_run(self, run_id: str) -> AppRunResponse:
         """Get a run's status. Poll until :attr:`AppRunResponse.is_terminal`."""
-        raw = await self._client._call_api(AppGetRun.prepare_request(run_id))
+        raw = await self._call(AppGetRun.prepare_request(run_id))
         return AppGetRun.process_response(raw)
 
     @validate_arguments
     async def cancel_run(self, run_id: str) -> AppRunCancelResponse:
         """Cancel an in-flight run."""
-        raw = await self._client._call_api(AppCancelRun.prepare_request(run_id))
+        raw = await self._call(AppCancelRun.prepare_request(run_id))
         return AppCancelRun.process_response(raw)
 
     # ---------------------------- scheduling ----------------------------- #
@@ -213,7 +285,7 @@ class AsyncAppClient:
         # The server rejects a null timezone, so apply the documented UTC default.
         schedule = AppSchedule(cron=cron, timezone=timezone or "UTC")
         endpoint, request_obj = AppAddSchedule.prepare_request(slug, schedule)
-        raw = await self._client._call_api(endpoint, request_obj=request_obj)
+        raw = await self._call(endpoint, request_obj=request_obj)
         return AppAddSchedule.process_response(raw)
 
     @validate_arguments
@@ -221,7 +293,5 @@ class AsyncAppClient:
         self, slug: str, trigger_id: str
     ) -> AppScheduleDeleteResponse:
         """Remove one schedule (by its ``trigger_id``) from a workflow."""
-        raw = await self._client._call_api(
-            AppRemoveSchedule.prepare_request(slug, trigger_id)
-        )
+        raw = await self._call(AppRemoveSchedule.prepare_request(slug, trigger_id))
         return AppRemoveSchedule.process_response(raw)

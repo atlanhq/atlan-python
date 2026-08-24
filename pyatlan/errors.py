@@ -696,6 +696,13 @@ class ErrorCode(Enum):
         "Replace any underscores with hyphens (e.g. 'dev_cmdr' -> 'dev-cmdr'). Underscores, dots, uppercase letters, whitespace, and other characters are not permitted because the Atlan platform's asset-import path rejects them at ingestion time, leaving phantom Connection rows in Atlas. Mirrors the Java SDK constraint (atlan-java ErrorCode.INVALID_CONNECTION_QN).",
         InvalidRequestError,
     )
+    APP_WORKFLOW_ALREADY_RUNNING = (
+        400,
+        "ATLAN-PYTHON-400-080",
+        "App workflow '{0}' already has an active run ({1}); it cannot be submitted again while a run is in progress.",
+        "Wait for the current run to reach a terminal status, or call submit(..., idempotent=False) to submit a new run anyway.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

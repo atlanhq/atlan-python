@@ -9,6 +9,7 @@ per-app spot checks anchor known contract defaults.
 """
 
 import inspect
+from contextlib import nullcontext
 from unittest.mock import Mock
 
 import pytest
@@ -110,6 +111,8 @@ def test_extra_fields_tolerated(cls):
 def test_create_accepts_generated_inputs(cls):
     api = Mock(spec=ApiCaller)
     api._call_api.return_value = {"slug": "s-1", "version": 1}
+    # app calls run under a no-op max_retries context manager (the no-500 policy)
+    api.max_retries = Mock(side_effect=lambda *a, **k: nullcontext())
     resp = AppClient(api).create(
         app_id=cls._APP_ID,
         entrypoint=cls._ENTRYPOINT,
