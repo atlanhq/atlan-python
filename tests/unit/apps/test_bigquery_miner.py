@@ -17,6 +17,7 @@ def test_bigquery_miner_inputs_defaults():
     assert i.fetch_all_projects_query_history is False
     assert i.calculate_popularity == "true"
     assert i.pricing_model == "on-demand"
+    assert i.billing_strategy == "central"
     assert i.popularity_window_days == 30
     assert i.popularity_exclude_user_config == []
     assert i.control_config_strategy == "default"
