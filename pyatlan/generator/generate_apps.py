@@ -44,15 +44,35 @@ from pyatlan.client.atlan import AtlanClient
 # Modules with a hand-polished builder — the generator leaves these untouched.
 # databricks_crawler has a hand-written multi-mode asset_selection (the configmap
 # can't express its include/exclude × hierarchy/regex widget).
-# standard_lineage re-scopes an EXISTING workflow (an update against a slug, which
-# no generated builder does) and must JSON-encode a list into a contract field
-# declared `str`; neither is expressible from a configmap.
 _HAND_WRITTEN = {
     "bigquery_crawler",
     "databricks_crawler",
     "kafka_confluent",
-    "standard_lineage",
 }
+
+# Per-app overlays: hand-authored mixins in ``pyatlan/model/apps/_overlays/`` that
+# add or override methods the configmap can't express (e.g. a `str` field that is
+# really a JSON list, or an update/re-scope lifecycle). The generated builder
+# inherits the overlay mixin and the generator skips any method the overlay
+# defines — so the base still regenerates from the contract while the tweaks stay
+# out of this script and out of a fully hand-written module.
+_OVERLAYS_DIR = Path(__file__).resolve().parents[1] / "model" / "apps" / "_overlays"
+
+
+def _overlay_for(module: str) -> Optional[Tuple[str, set]]:
+    """Return ``(overlay_class_name, method_names)`` for ``module`` if an overlay
+    exists in ``_overlays/{module}.py``, else ``None``. The overlay must define
+    exactly one class named ``{ClassName}Overlay``; the generated builder inherits
+    it and skips regenerating any method it defines."""
+    path = _OVERLAYS_DIR / f"{module}.py"
+    if not path.exists():
+        return None
+    src = path.read_text()
+    classes = re.findall(r"^class (\w+Overlay)\b", src, re.MULTILINE)
+    if not classes:
+        return None
+    methods = set(re.findall(r"^    def (\w+)\(", src, re.MULTILINE))
+    return classes[0], methods
 
 # Apps to generate even when not currently deployed/running on the tenant
 # (configmaps are served per app-id, so live discovery alone misses these).
@@ -296,8 +316,11 @@ _TYPING_NAMES = (
 )
 
 
-def _module_header(body: str) -> str:
-    """Build a header importing only the names ``body`` actually uses (no F401)."""
+def _module_header(body: str, extra_imports: Optional[List[str]] = None) -> str:
+    """Build a header importing only the names ``body`` actually uses (no F401).
+
+    ``extra_imports`` are appended verbatim (e.g. an overlay-mixin import); ruff
+    re-sorts the final header on format."""
     out = [_COMMENT_HEADER.rstrip("\n") + "\n\n"]
     if re.search(r"\bjson\.", body):
         out.append("import json\n\n")
@@ -311,7 +334,10 @@ def _module_header(body: str) -> str:
     base = ["AppBuilder", "AppInput"]
     if "_anchor_filter(" in body:
         base.append("_anchor_filter")
-    out.append(f"from ._base import {', '.join(sorted(base))}\n\n\n")
+    out.append(f"from ._base import {', '.join(sorted(base))}\n")
+    for imp in extra_imports or []:
+        out.append(imp + "\n")
+    out.append("\n\n")
     return "".join(out)
 
 
@@ -644,9 +670,13 @@ def _render_builder(
     creds: List[Tuple[str, Dict[str, Any], str]],
     connector_name: str,
     connector_config: str,
+    overlay: Optional[Tuple[str, set]] = None,
 ) -> Tuple[str, List[Dict[str, Any]]]:
     hidden = _hidden_defaults(cfg)
     auth_infos: List[Dict[str, Any]] = []
+    # An optional hand-authored overlay mixin the generated class inherits; any
+    # method it defines is skipped here so the overlay's version wins.
+    overlay_cls, overlay_methods = overlay or (None, set())
 
     # Render credential methods first (so the docstring example can reference one).
     # A connector may expose several credential widgets (e.g. dbt) — emit a method
@@ -659,6 +689,8 @@ def _render_builder(
             code, info = _render_credential_method(
                 av, cred_props, target_field, config_name, used
             )
+            if info["name"] in overlay_methods:
+                continue  # the overlay provides this method
             auth_infos.append(info)
             cred_blocks.append("    # ── Step 1 · Credential ──")
             cred_blocks.append(code.replace("{cls}", cls))
@@ -670,6 +702,8 @@ def _render_builder(
     meta_samples: List[Tuple[str, str]] = []
     for snake, key, spec in _metadata_fields(cfg):
         code, mname, sample = _render_metadata_method(snake, key, spec, meta_used)
+        if mname in overlay_methods:
+            continue  # the overlay provides this method
         meta_blocks.append(code.replace("{cls}", cls))
         meta_blocks.append("")
         meta_samples.append((mname, sample))
@@ -689,8 +723,9 @@ def _render_builder(
     em_default = ((cfg.get("properties") or {}).get("extraction-method") or {}).get(
         "default"
     ) or "direct"
+    bases = f"{overlay_cls}, AppBuilder" if overlay_cls else "AppBuilder"
     lines = [
-        f"class {cls}(AppBuilder):",
+        f"class {cls}({bases}):",
         docstring,
         "",
         f'    _APP_ID: ClassVar[str] = "{app_id}"',
@@ -851,6 +886,8 @@ def _render_module(
 ) -> Tuple[str, str, str]:
     base = _class_base(app_id, ep)
     inputs_cls, builder_cls = f"{base}Inputs", base
+    module = _module_name(app_id, ep)
+    overlay = _overlay_for(module)
     builder_code, auth_infos = _render_builder(
         builder_cls,
         inputs_cls,
@@ -860,6 +897,7 @@ def _render_module(
         creds,
         connector_name,
         connector_config,
+        overlay,
     )
     code = (
         _render_inputs(inputs_cls, app_id, ep, cfg)
@@ -867,8 +905,12 @@ def _render_module(
         + builder_code
         + f'\n\n__all__ = ["{builder_cls}", "{inputs_cls}"]\n'
     )
-    body = _module_header(code) + code
-    module = _module_name(app_id, ep)
+    extra_imports = (
+        [f"from pyatlan.model.apps._overlays.{module} import {overlay[0]}"]
+        if overlay
+        else None
+    )
+    body = _module_header(code, extra_imports) + code
     test = _render_test_module(
         module,
         app_id,

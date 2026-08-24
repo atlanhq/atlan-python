@@ -51,7 +51,10 @@ from pyatlan.model.apps.snowflake_crawler import (
     SnowflakeCrawlerInputs,
 )
 from pyatlan.model.apps.snowflake_miner import SnowflakeMiner, SnowflakeMinerInputs
-from pyatlan.model.apps.standard_lineage import StandardLineage, StandardLineageInputs
+from pyatlan.model.apps.atlan_standard_lineage import (
+    AtlanStandardLineage,
+    AtlanStandardLineageInputs,
+)
 from pyatlan.model.apps.teradata_crawler import TeradataCrawler, TeradataCrawlerInputs
 from pyatlan.model.apps.teradata_miner import TeradataMiner, TeradataMinerInputs
 
@@ -122,8 +125,8 @@ __all__ = [
     "SnowflakeCrawlerInputs",
     "SnowflakeMiner",
     "SnowflakeMinerInputs",
-    "StandardLineage",
-    "StandardLineageInputs",
+    "AtlanStandardLineage",
+    "AtlanStandardLineageInputs",
     "TeradataCrawler",
     "TeradataCrawlerInputs",
     "TeradataMiner",

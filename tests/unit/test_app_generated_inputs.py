@@ -88,9 +88,6 @@ _HAND_WRITTEN = {
     "BigqueryCrawlerInputs",
     "DatabricksCrawlerInputs",
     "KafkaConfluentInputs",
-    # Standard Lineage re-scopes an EXISTING workflow and JSON-encodes a list into a
-    # contract field declared `str`; neither is expressible from a configmap.
-    "StandardLineageInputs",
 }
 
 

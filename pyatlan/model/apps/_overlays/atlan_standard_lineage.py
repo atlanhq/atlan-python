@@ -1,35 +1,40 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Atlan Pte. Ltd.
-"""Standard Lineage app — typed inputs + fluent builder.
+"""Overlay for the generated ``AtlanStandardLineage`` builder.
 
-Hand-written rather than generated, for two reasons the configmap cannot express:
+Two things the configmap can't express, so they live here and are mixed into the
+generated builder (see :func:`pyatlan.generator.generate_apps._overlay_for`):
 
-* ``cross_connection_qualified_names`` is declared ``str`` in the app's input
-  contract but *means* a list of connection qualified names. The generator would
-  emit a bare ``str`` field and every caller would have to remember to
-  ``json.dumps`` it — sending a native list fails contract validation server-side.
-  :meth:`StandardLineage.connections` takes a ``List[str]`` and encodes it.
+* ``cross_connection_qualified_names`` is declared ``str`` in the contract but
+  *means* a list — sending a native list fails server-side validation. The
+  :meth:`connections` override takes a ``List[str]`` and JSON-encodes it.
 * Standard Lineage's defining operation is **re-scoping an existing workflow**
-  (adding a connection as it is onboarded), not creating a new one. That is an
-  update against a slug, and it has to preserve the workflow's own connection
-  entity — see :meth:`StandardLineage.add_connections`.
+  (adding a connection as it is onboarded) — an update against a slug that must
+  preserve the workflow's own connection. See :meth:`set_connections`.
 
-Sourced from the app's UI configmap and input contract:
-  * inputs form     : /api/service/configmaps/atlan-standard-lineage?entrypoint=standard-lineage
-  * input contract  : /api/service/v1/apps/atlan-standard-lineage/inputs?entrypoint=standard-lineage
-
-There is no credential: the app reads query history already extracted by each
-in-scope connection's own miner, so the contract's ``credential_ref`` and
-``agent_json`` are optional and stay null.
+Everything else (``_APP_ID``, ``_INPUTS_CLASS``, ``_HIDDEN_DEFAULTS``,
+``.connector()``) is generated from the contract and regenerates automatically.
 """
 
 from __future__ import annotations
 
 import json
 import re
-from typing import Any, ClassVar, Dict, Iterable, List, Optional, Sequence, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    TypeVar,
+    Union,
+)
 
-from ._base import AppBuilder, AppInput
+if TYPE_CHECKING:
+    from pyatlan.model.app import AppResponse
+    from pyatlan.model.apps._base import AppInput
 
 #: A connection qualified name is ``default/{connector}/{epoch}``.
 _CONNECTION_QN = re.compile(r"^default/([^/]+)/\d+$")
@@ -37,6 +42,8 @@ _CONNECTION_QN = re.compile(r"^default/([^/]+)/\d+$")
 #: The connector of the workflow's *own* connection — distinct from the
 #: ``connector`` input, which names the connector of the connections in scope.
 _OWN_CONNECTOR = "standard-lineage"
+
+_S = TypeVar("_S", bound="AtlanStandardLineageOverlay")
 
 
 def _connector_of(qualified_name: str) -> str:
@@ -100,73 +107,23 @@ def _parse_scope(value: Any) -> List[str]:
     return [str(value)]
 
 
-class StandardLineageInputs(AppInput):
-    """Typed inputs for the ``atlan-standard-lineage`` / ``standard-lineage`` app."""
+class AtlanStandardLineageOverlay:
+    """Hand-authored methods mixed into the generated ``AtlanStandardLineage``."""
 
-    _APP_ID: ClassVar[str] = "atlan-standard-lineage"
-    _ENTRYPOINT: ClassVar[Optional[str]] = "standard-lineage"
-
-    # Step 1 · Connection — the workflow's OWN connection, under the
-    # ``standard-lineage`` connector. Created by the workflow on first run.
-    connection: Optional[Any] = None
-
-    # Step 3 · Metadata
-    connector: str = ""
-    """Connector of the connections in scope (e.g. ``bigquery``)."""
-    cross_connection_qualified_names: str = ""
-    """JSON-encoded list of source connection qualified names. Prefer
-    :meth:`StandardLineage.connections`, which encodes a ``List[str]`` for you."""
-    run_role: str = "standard-lineage"
-    """Fixed — this is what makes the lineage app take its cross-connection path."""
-
-
-class StandardLineage(AppBuilder):
-    """Fluent builder for the Standard Lineage (cross-connection lineage) app.
-
-    Standard Lineage builds lineage *across* several connections of one connector,
-    using query history their own miners already extracted. One workflow owns a set
-    of connections; onboarding a new connection means adding it to that set.
-
-    Create a workflow::
-
-        resp = (
-            StandardLineage(client)
-            .connection(name="bigquery-cross-connection")
-            .connections([
-                "default/bigquery/1700000000",
-                "default/bigquery/1700000001",
-            ])
-            .run()
-        )
-
-    Add a connection to an existing workflow — the common case, and idempotent::
-
-        resp = StandardLineage(client).add_connections(
-            resp.slug, ["default/bigquery/1700000002"]
-        )
-
-    Also available: :meth:`remove_connections`, :meth:`set_connections` and the
-    read-only :meth:`get_connections`.
-    """
-
-    _APP_ID: ClassVar[str] = "atlan-standard-lineage"
-    _ENTRYPOINT: ClassVar[Optional[str]] = "standard-lineage"
-    #: The workflow's own connection is minted under this connector; the connector
-    #: of the connections in scope is the separate ``connector`` input.
-    _CONNECTOR_NAME: ClassVar[str] = _OWN_CONNECTOR
-    _CONNECTOR_CONFIG: ClassVar[str] = ""
-    _INPUTS_CLASS = StandardLineageInputs
-    _HIDDEN_DEFAULTS: ClassVar[Dict[str, Any]] = {"run_role": "standard-lineage"}
-    #: No credential — nothing is extracted from a source system directly.
-    _EXTRACTION_METHOD: ClassVar[str] = ""
+    # Attributes provided by ``AppBuilder`` (the class this mixes into).
+    if TYPE_CHECKING:
+        _metadata: Dict[str, Any]
+        _client: Any
+        _INPUTS_CLASS: type[AppInput]
+        _ENTRYPOINT: Optional[str]
 
     # ── Step 3 · Metadata ──────────────────────────────────────────────────
     def connections(
-        self,
+        self: _S,
         qualified_names: Union[Sequence[str], str],
         *,
         connector: Optional[str] = None,
-    ):
+    ) -> _S:
         """Set the connections to build lineage across (create-time scope).
 
         :param qualified_names: source connection qualified names, e.g.
@@ -197,7 +154,9 @@ class StandardLineage(AppBuilder):
             self._persisted_args(slug).get("cross_connection_qualified_names")
         )
 
-    def add_connections(self, slug: str, qualified_names: Union[Sequence[str], str]):
+    def add_connections(
+        self, slug: str, qualified_names: Union[Sequence[str], str]
+    ) -> Optional[AppResponse]:
         """Add connections to an existing workflow's scope, keeping the rest.
 
         Idempotent: connections already in scope are ignored, and when nothing
@@ -210,7 +169,9 @@ class StandardLineage(AppBuilder):
             return None
         return self.set_connections(slug, current + additions)
 
-    def remove_connections(self, slug: str, qualified_names: Union[Sequence[str], str]):
+    def remove_connections(
+        self, slug: str, qualified_names: Union[Sequence[str], str]
+    ) -> Optional[AppResponse]:
         """Remove connections from an existing workflow's scope, keeping the rest.
 
         Idempotent in the same way as :meth:`add_connections`. Removing every
@@ -232,7 +193,7 @@ class StandardLineage(AppBuilder):
         qualified_names: Union[Sequence[str], str],
         *,
         connector: Optional[str] = None,
-    ):
+    ) -> AppResponse:
         """Replace an existing workflow's scope with exactly ``qualified_names``.
 
         Preserves the workflow's own connection, its ``run_role`` and its identity
@@ -282,6 +243,3 @@ class StandardLineage(AppBuilder):
                 "Lineage workflow?"
             )
         return args
-
-
-__all__ = ["StandardLineage", "StandardLineageInputs"]

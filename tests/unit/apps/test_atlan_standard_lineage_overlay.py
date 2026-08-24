@@ -16,7 +16,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from pyatlan.model.apps import StandardLineage, StandardLineageInputs
+from pyatlan.model.apps import AtlanStandardLineage, AtlanStandardLineageInputs
 
 SLUG = "atlan-standard-lineage-1700000000-Abcd1234"
 BQ1 = "default/bigquery/1700000001"
@@ -61,26 +61,25 @@ def _sent_inputs(client):
 
 # ── inputs model ────────────────────────────────────────────────────────────
 def test_inputs_defaults():
-    i = StandardLineageInputs()
-    assert StandardLineageInputs._APP_ID == "atlan-standard-lineage"
-    assert StandardLineageInputs._ENTRYPOINT == "standard-lineage"
+    i = AtlanStandardLineageInputs()
+    assert AtlanStandardLineageInputs._APP_ID == "atlan-standard-lineage"
+    assert AtlanStandardLineageInputs._ENTRYPOINT == "standard-lineage"
     assert i.connector == ""
     assert i.cross_connection_qualified_names == ""
-    assert i.run_role == "standard-lineage"
 
 
 def test_builder_class_vars():
-    assert StandardLineage._APP_ID == "atlan-standard-lineage"
-    assert StandardLineage._ENTRYPOINT == "standard-lineage"
+    assert AtlanStandardLineage._APP_ID == "atlan-standard-lineage"
+    assert AtlanStandardLineage._ENTRYPOINT == "standard-lineage"
     # The workflow's OWN connection lives under standard-lineage; the connections
     # in scope are a different connector entirely.
-    assert StandardLineage._CONNECTOR_NAME == "standard-lineage"
+    assert AtlanStandardLineage._CONNECTOR_NAME == "standard-lineage"
 
 
 # ── create-time scope ───────────────────────────────────────────────────────
 def test_connections_json_encodes_and_derives_connector():
     out = (
-        StandardLineage(Mock())
+        AtlanStandardLineage(Mock())
         .connection(name="bq-cross-connection")
         .connections([BQ1, BQ2])
         .preview()
@@ -95,7 +94,7 @@ def test_connections_json_encodes_and_derives_connector():
 
 def test_connections_explicit_connector_wins():
     out = (
-        StandardLineage(Mock())
+        AtlanStandardLineage(Mock())
         .connections([BQ1], connector="bigquery-custom")
         .preview()
     )
@@ -103,55 +102,55 @@ def test_connections_explicit_connector_wins():
 
 
 def test_connections_accepts_a_preencoded_json_string():
-    out = StandardLineage(Mock()).connections(json.dumps([BQ1, BQ2])).preview()
+    out = AtlanStandardLineage(Mock()).connections(json.dumps([BQ1, BQ2])).preview()
     assert json.loads(out["cross_connection_qualified_names"]) == [BQ1, BQ2]
 
 
 # ── validation ──────────────────────────────────────────────────────────────
 def test_empty_scope_is_rejected():
     with pytest.raises(ValueError, match="at least one connection"):
-        StandardLineage(Mock()).connections([])
+        AtlanStandardLineage(Mock()).connections([])
 
 
 def test_mixed_connector_scope_is_rejected():
     with pytest.raises(ValueError, match="same connector"):
-        StandardLineage(Mock()).connections([BQ1, "default/snowflake/1700000004"])
+        AtlanStandardLineage(Mock()).connections([BQ1, "default/snowflake/1700000004"])
 
 
 def test_own_connection_as_scope_is_rejected():
     """A natural mistake: passing the workflow's own connection as its scope."""
     with pytest.raises(ValueError, match="not the workflow's own"):
-        StandardLineage(Mock()).connections(["default/standard-lineage/1700000000"])
+        AtlanStandardLineage(Mock()).connections(["default/standard-lineage/1700000000"])
 
 
 def test_malformed_qualified_name_is_rejected():
     with pytest.raises(ValueError, match="not a connection qualified name"):
-        StandardLineage(Mock()).connections(["bigquery/1700000001"])
+        AtlanStandardLineage(Mock()).connections(["bigquery/1700000001"])
 
 
 # ── reading an existing workflow ────────────────────────────────────────────
 def test_get_connections_reads_a_native_list():
     """Once the Automation Engine renders the DAG the value is a real list."""
-    assert StandardLineage(_client([BQ1, BQ2])).get_connections(SLUG) == [BQ1, BQ2]
+    assert AtlanStandardLineage(_client([BQ1, BQ2])).get_connections(SLUG) == [BQ1, BQ2]
 
 
 def test_get_connections_reads_a_json_string():
     """On the wire it is JSON-encoded, so both shapes have to be readable."""
-    assert StandardLineage(_client(json.dumps([BQ1, BQ2]))).get_connections(SLUG) == [
+    assert AtlanStandardLineage(_client(json.dumps([BQ1, BQ2]))).get_connections(SLUG) == [
         BQ1,
         BQ2,
     ]
 
 
 def test_get_connections_on_empty_scope():
-    assert StandardLineage(_client("")).get_connections(SLUG) == []
+    assert AtlanStandardLineage(_client("")).get_connections(SLUG) == []
 
 
 def test_missing_extract_args_raises():
     client = Mock()
     client.app.get.return_value = Mock(dag={"publish": {}})
     with pytest.raises(ValueError, match="no extract node args"):
-        StandardLineage(client).get_connections(SLUG)
+        AtlanStandardLineage(client).get_connections(SLUG)
 
 
 # ── re-scoping ──────────────────────────────────────────────────────────────
@@ -163,7 +162,7 @@ def test_set_connections_preserves_the_persisted_connection_verbatim():
     overwrite the real one in Atlan.
     """
     client = _client([BQ1, BQ2])
-    StandardLineage(client).set_connections(SLUG, [BQ1, BQ2, BQ3])
+    AtlanStandardLineage(client).set_connections(SLUG, [BQ1, BQ2, BQ3])
     sent = _sent_inputs(client)
     assert sent["connection"] == OWN_CONNECTION
     assert sent["run_role"] == "standard-lineage"
@@ -175,20 +174,20 @@ def test_set_connections_preserves_the_persisted_connection_verbatim():
 def test_set_connections_refuses_when_the_workflow_has_no_connection():
     client = _client([BQ1], connection=None)
     with pytest.raises(ValueError, match="no connection on its extract node"):
-        StandardLineage(client).set_connections(SLUG, [BQ1, BQ2])
+        AtlanStandardLineage(client).set_connections(SLUG, [BQ1, BQ2])
     client.app.update.assert_not_called()
 
 
 def test_set_connections_refuses_to_empty_the_scope():
     client = _client([BQ1])
     with pytest.raises(ValueError, match="at least one connection"):
-        StandardLineage(client).set_connections(SLUG, [])
+        AtlanStandardLineage(client).set_connections(SLUG, [])
     client.app.update.assert_not_called()
 
 
 def test_add_connections_appends_and_keeps_the_rest():
     client = _client([BQ1, BQ2])
-    StandardLineage(client).add_connections(SLUG, [BQ3])
+    AtlanStandardLineage(client).add_connections(SLUG, [BQ3])
     assert json.loads(_sent_inputs(client)["cross_connection_qualified_names"]) == [
         BQ1,
         BQ2,
@@ -199,13 +198,13 @@ def test_add_connections_appends_and_keeps_the_rest():
 def test_add_connections_is_idempotent():
     """The onboarding portal may replay; a no-op must not publish a version."""
     client = _client([BQ1, BQ2])
-    assert StandardLineage(client).add_connections(SLUG, [BQ2]) is None
+    assert AtlanStandardLineage(client).add_connections(SLUG, [BQ2]) is None
     client.app.update.assert_not_called()
 
 
 def test_add_connections_adds_only_the_new_ones():
     client = _client([BQ1])
-    StandardLineage(client).add_connections(SLUG, [BQ1, BQ2])
+    AtlanStandardLineage(client).add_connections(SLUG, [BQ1, BQ2])
     assert json.loads(_sent_inputs(client)["cross_connection_qualified_names"]) == [
         BQ1,
         BQ2,
@@ -214,7 +213,7 @@ def test_add_connections_adds_only_the_new_ones():
 
 def test_remove_connections_keeps_the_rest():
     client = _client([BQ1, BQ2, BQ3])
-    StandardLineage(client).remove_connections(SLUG, [BQ2])
+    AtlanStandardLineage(client).remove_connections(SLUG, [BQ2])
     assert json.loads(_sent_inputs(client)["cross_connection_qualified_names"]) == [
         BQ1,
         BQ3,
@@ -223,12 +222,12 @@ def test_remove_connections_keeps_the_rest():
 
 def test_remove_connections_not_in_scope_is_a_noop():
     client = _client([BQ1, BQ2])
-    assert StandardLineage(client).remove_connections(SLUG, [BQ3]) is None
+    assert AtlanStandardLineage(client).remove_connections(SLUG, [BQ3]) is None
     client.app.update.assert_not_called()
 
 
 def test_remove_last_connection_is_refused():
     client = _client([BQ1])
     with pytest.raises(ValueError, match="at least one connection"):
-        StandardLineage(client).remove_connections(SLUG, [BQ1])
+        AtlanStandardLineage(client).remove_connections(SLUG, [BQ1])
     client.app.update.assert_not_called()
