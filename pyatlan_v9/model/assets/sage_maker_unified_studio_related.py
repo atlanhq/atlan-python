@@ -84,7 +84,7 @@ class RelatedSageMakerUnifiedStudioProject(RelatedSageMakerUnifiedStudio):
     """Amazon S3 location of the SageMaker Unified Studio project."""
 
     smus_project_sso_users: Union[List[Dict[str, Any]], None, UnsetType] = UNSET
-    """SSO users associated with the SageMaker Unified Studio project, sourced from the source system. Each entry has `email` and `role` fields."""
+    """SSO users associated with the SageMaker Unified Studio project, sourced from the source system. Each entry has `email`, `role` and optional `fullName` fields."""
 
     def __post_init__(self) -> None:
         RelatedReferenceable.__post_init__(self)
