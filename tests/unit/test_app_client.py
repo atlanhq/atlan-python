@@ -11,13 +11,11 @@ from unittest.mock import AsyncMock, MagicMock, Mock
 import httpx
 import pytest
 
-from pyatlan.client.transport import PyatlanSyncTransport
-
 from pyatlan.client.aio.app import AsyncAppClient
 from pyatlan.client.app import _APP_NO_500_RETRY, AppClient
 from pyatlan.client.common import ApiCaller, AsyncApiCaller
+from pyatlan.client.transport import PyatlanSyncTransport
 from pyatlan.errors import AtlanError
-from pyatlan.model.assets import AppWorkflowRun
 from pyatlan.model.app import (
     AppDeleteResponse,
     AppInfo,
@@ -29,6 +27,7 @@ from pyatlan.model.app import (
     AppScheduleResponse,
     AppSummary,
 )
+from pyatlan.model.assets import AppWorkflowRun
 
 
 @pytest.fixture
