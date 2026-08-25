@@ -38,6 +38,8 @@ class BigqueryMinerInputs(AppInput):
     """Calculate popularity — Enable popularity metrics generated using mined data."""
     pricing_model: str = Field("on-demand", alias="pricing-model")
     """Pricing Model — Pricing Model configured on BigQuery for running queries"""
+    billing_strategy: str = Field("central", alias="billing-strategy")
+    """Billing Strategy — Where this miner's query history jobs run and get billed. Doesn't change which projects are mined."""
     popularity_window_days: float = Field(30, alias="popularity-window-days")
     """Popularity Window (days) — Number of days to consider for calculating popularity. Maximum allowed value is 30."""
     popularity_exclude_user_config: List[Any] = Field(
@@ -111,6 +113,13 @@ class BigqueryMiner(AppBuilder):
     ) -> "BigqueryMiner":
         """Pricing Model — Pricing Model configured on BigQuery for running queries"""
         self._metadata["pricing-model"] = value
+        return self
+
+    def billing_strategy(
+        self, value: Literal["central", "distributed"]
+    ) -> "BigqueryMiner":
+        """Billing Strategy — Where this miner's query history jobs run and get billed. Doesn't change which projects are mined."""
+        self._metadata["billing_strategy"] = value
         return self
 
     def popularity_window_days(self, value: float) -> "BigqueryMiner":
