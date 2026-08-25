@@ -3,13 +3,6 @@
 
 # Non-validation constants from the legacy test suite.
 from pyatlan_v9.model.assets import AtlasGlossary
-from pyatlan_v9.model.enums import AtlanWorkflowPhase
-from pyatlan_v9.model.workflow import (
-    ScheduleQueriesSearchRequest,
-    WorkflowMetadata,
-    WorkflowResponse,
-    WorkflowSpec,
-)
 from tests.unit.constants import (  # noqa: F401, F403
     APPLICABLE_AI_ASSET_TYPES,
     APPLICABLE_ASSET_TYPES,
@@ -535,71 +528,6 @@ TEST_FILE_CLIENT_METHODS = {
 }
 
 
-TEST_WORKFLOW_CLIENT_METHODS = {
-    "update": [
-        (["abc"], "instance of Workflow expected"),
-        ([None], "none is not an allowed value"),
-    ],
-    "find_by_type": [
-        (["abc"], "value is not a valid enumeration member"),
-        ([None], "none is not an allowed value"),
-    ],
-    "monitor": [
-        (["abc", "test-logger"], "instance of WorkflowResponse expected"),
-        (
-            [
-                WorkflowResponse(metadata=WorkflowMetadata(), spec=WorkflowSpec()),
-                "test-logger",
-            ],
-            "instance of Logger expected",
-        ),
-    ],
-    "get_runs": [
-        ([[123], AtlanWorkflowPhase.RUNNING, 123, 456], "str type expected"),
-        ([None, AtlanWorkflowPhase.RUNNING, 123, 456], "none is not an allowed value"),
-    ],
-    "stop": [
-        ([[123]], "str type expected"),
-        ([None], "none is not an allowed value"),
-    ],
-    "delete": [
-        ([[123]], "str type expected"),
-        ([None], "none is not an allowed value"),
-    ],
-    "get_scheduled_run": [
-        ([[123]], "str type expected"),
-        ([None], "none is not an allowed value"),
-    ],
-    "find_schedule_query": [
-        ([[123], 10], "saved_query_id\n  str type expected"),
-        ([None, 10], "none is not an allowed value"),
-        (["test-query-id", [123]], "max_results\n  value is not a valid int"),
-        (["test-query-id", None], "none is not an allowed value"),
-    ],
-    "re_run_schedule_query": [
-        ([[123]], "schedule_query_id\n  str type expected"),
-        ([None], "none is not an allowed value"),
-    ],
-    "find_schedule_query_between": [
-        ([[123], True], "instance of ScheduleQueriesSearchRequest expected"),
-        ([None, True], "none is not an allowed value"),
-        (
-            [ScheduleQueriesSearchRequest(start_date="start", end_date="end"), [123]],
-            "missed\n  value is not a valid boolean",
-        ),
-        (
-            [ScheduleQueriesSearchRequest(start_date="start", end_date="end"), None],
-            "none is not an allowed value",
-        ),
-    ],
-    "update_owner": [
-        ([[123], 10], "workflow_name\n  str type expected"),
-        ([None, 10], "none is not an allowed value"),
-        (["test-workflow", [123]], "username\n  str type expected"),
-        (["test-workflow", None], "none is not an allowed value"),
-    ],
-}
-
 # Async-specific constants (same as sync but with AsyncCustomMetadataDict)
 TEST_ASSET_CLIENT_METHODS_ASYNC = {
     **TEST_ASSET_CLIENT_METHODS,
@@ -621,11 +549,4 @@ TEST_ASSET_CLIENT_METHODS_ASYNC = {
         ),
         (["name", None], "none is not an allowed value"),
     ],
-}
-
-
-# Rename create/update keys to creator/updater for v9 sub-clients
-_V9_WF_METHODS = dict(TEST_WORKFLOW_CLIENT_METHODS)
-TEST_WORKFLOW_CLIENT_METHODS = {  # noqa: F811
-    ("updater" if k == "update" else k): v for k, v in _V9_WF_METHODS.items()
 }

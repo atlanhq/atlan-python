@@ -45,7 +45,6 @@ from .task import AsyncTaskClient
 from .token import AsyncTokenClient
 from .typedef import AsyncTypeDefClient
 from .user import AsyncUserClient
-from .workflow import AsyncWorkflowClient
 
 __all__ = [
     "AsyncAtlanClient",
@@ -76,6 +75,4 @@ __all__ = [
     "AsyncTypeDefClient",
     "AsyncUserClient",
     "AsyncUserResponse",
-    "AsyncWorkflowClient",
-    "AsyncWorkflowSearchResponse",
 ]

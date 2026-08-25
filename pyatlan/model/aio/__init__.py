@@ -23,7 +23,6 @@ from .search_log import AsyncSearchLogResults
 from .task import AsyncTaskSearchResponse
 from .translators import AsyncAtlanTagTranslator, AsyncBaseTranslator
 from .user import AsyncUserResponse
-from .workflow import AsyncWorkflowSearchResponse
 
 __all__ = [
     # Asset search results
@@ -48,8 +47,6 @@ __all__ = [
     # Group response
     "AsyncAtlanRequestResponse",
     "AsyncGroupResponse",
-    # Workflow search response
-    "AsyncWorkflowSearchResponse",
     # Task search response
     "AsyncTaskSearchResponse",
     # Async translators

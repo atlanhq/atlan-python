@@ -38,14 +38,6 @@ Models for the app-workflow APIs (`client.app`).
 
 ::: pyatlan.model.app
 
-## Packages
-
-> **Deprecated.** Package builders produce legacy workflows, which no longer run
-> on newer Atlan tenants. Use `client.app` with the app's input contract instead
-> (see the **App** models above).
-
-::: pyatlan.model.packages
-
 ## Group
 
 ::: pyatlan.model.group
@@ -61,10 +53,6 @@ Models for the app-workflow APIs (`client.app`).
 ## Task
 
 ::: pyatlan.model.task
-
-## Workflow
-
-::: pyatlan.model.workflow
 
 ## Query
 
