@@ -18,8 +18,6 @@ from typing import Any, Dict, List, Union
 import msgspec
 from msgspec import UNSET, UnsetType
 
-from .related_entity import SaveSemantic
-
 
 class AtlasClassification(
     msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"
@@ -31,8 +29,8 @@ class AtlasClassification(
     propagation settings and validity periods.
     """
 
-    type_name: Union[Any, UnsetType] = UNSET
-    """The name of the classification type (str or AtlanTagName after translation)."""
+    type_name: Union[str, UnsetType] = UNSET
+    """The name of the classification type."""
 
     entity_guid: Union[str, UnsetType] = UNSET
     """The GUID of the entity this classification is assigned to."""
@@ -51,18 +49,6 @@ class AtlasClassification(
 
     attributes: Union[Dict[str, Any], UnsetType] = UNSET
     """Custom attributes for this classification."""
-
-    source_tag_attachments: Union[List[Any], None, UnsetType] = UNSET
-    """Source tag attachments extracted by the AtlanTagName translator."""
-
-    tag_id: Union[str, None, UnsetType] = UNSET
-    """Original tag ID before translation to a human-readable name."""
-
-    restrict_propagation_through_lineage: Union[bool, None, UnsetType] = UNSET
-    """Whether propagation through lineage is restricted."""
-
-    restrict_propagation_through_hierarchy: Union[bool, None, UnsetType] = UNSET
-    """Whether propagation through hierarchy is restricted."""
 
 
 class TermAssignment(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
@@ -170,8 +156,19 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
     business_attributes: Union[Dict[str, Any], UnsetType] = UNSET
     """Business metadata attributes for this entity."""
 
-    custom_attributes: Union[Dict[str, str], UnsetType] = UNSET
-    """Custom key-value pairs for this entity."""
+    custom_attributes: Union[Dict[str, Any], None, UnsetType] = UNSET
+    """Custom key-value pairs for this entity.
+
+    Values are typed ``Any``, matching ``business_attributes`` above and the
+    nested ``ReferenceableAttributes.custom_attributes``. This is a free-form
+    producer-written bag, not a modelled Atlas attribute, and connectors
+    legitimately write ints, floats and bools into it — the legacy transform
+    did too. Typing the values ``str`` made msgspec reject the entire entity
+    on decode, which is a strict-decode failure on data Atlas accepts.
+
+    ``None`` is admitted for the same reason: producers emit an explicit
+    ``"customAttributes": null`` rather than omitting the key, and without it
+    that alone fails the decode."""
 
     pending_tasks: Union[List[str], UnsetType] = UNSET
     """Identifiers of pending tasks for this entity."""
@@ -187,18 +184,3 @@ class Entity(msgspec.Struct, kw_only=True, omit_defaults=True, rename="camel"):
 
     home_id: Union[str, UnsetType] = UNSET
     """Home identifier for distributed Atlas systems."""
-
-    # Lineage-specific fields (only populated in lineage API responses)
-    depth: Union[int, None, UnsetType] = UNSET
-    """Depth of this asset within lineage. Only available in assets retrieved via lineage."""
-
-    immediate_upstream: Union[List[Any], None, UnsetType] = UNSET
-    """Assets immediately upstream of this asset within lineage."""
-
-    immediate_downstream: Union[List[Any], None, UnsetType] = UNSET
-    """Assets immediately downstream of this asset within lineage."""
-
-    # Internal SDK fields (not sent to API)
-    semantic: Union[SaveSemantic, None, UnsetType] = UNSET
-    """Save semantic for relationship operations (REPLACE, APPEND, REMOVE).
-    Not serialized to JSON - used internally by ref_by_guid/ref_by_qualified_name."""

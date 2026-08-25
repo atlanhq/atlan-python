@@ -25,7 +25,6 @@ from pyatlan_v9.model.conversion_utils import (
 from pyatlan_v9.model.serde import Serde, get_serde
 from pyatlan_v9.model.transform import register_asset
 
-from .agentic_related import RelatedAgentic
 from .airflow_related import RelatedAirflowTask
 from .anomalo_related import RelatedAnomaloCheck
 from .app_related import RelatedApplication, RelatedApplicationField
@@ -66,6 +65,7 @@ class Agentic(Asset):
     """
 
     AGENTIC_VERSION: ClassVar[Any] = None
+    AGENTIC_SOURCE: ClassVar[Any] = None
     CATALOG_DATASET_GUID: ClassVar[Any] = None
     INPUT_TO_AIRFLOW_TASKS: ClassVar[Any] = None
     OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[Any] = None
@@ -100,8 +100,13 @@ class Agentic(Asset):
     INPUT_TO_SPARK_JOBS: ClassVar[Any] = None
     OUTPUT_FROM_SPARK_JOBS: ClassVar[Any] = None
 
+    type_name: Union[str, UnsetType] = "Agentic"
+
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -216,66 +221,6 @@ class Agentic(Asset):
         self.type_name = "Agentic"
 
     # =========================================================================
-    # SDK Methods
-    # =========================================================================
-
-    def validate(self, for_creation: bool = False) -> None:
-        """
-        Dry-run validation of this Agentic instance.
-
-        Checks that required fields (type_name, name, qualified_name) are set.
-        When ``for_creation=True``, also checks hierarchy-specific fields
-        (parent references, denormalized attributes) needed to create this asset.
-
-        This is purely opt-in and is NOT called by any serde path — only by
-        explicit user invocation (e.g., validating JSONL before sending to Atlan).
-
-        Args:
-            for_creation: If True, also validate fields required for asset creation.
-
-        Raises:
-            ValueError: If any required fields are missing or invalid.
-        """
-        errors: list[str] = []
-        if self.type_name is UNSET:
-            errors.append("type_name is required")
-        if self.name is UNSET:
-            errors.append("name is required")
-        if self.qualified_name is UNSET or self.qualified_name is None:
-            errors.append("qualified_name is required")
-        if errors:
-            raise ValueError(f"Agentic validation failed: {errors}")
-
-    def minimize(self) -> "Agentic":
-        """
-        Return a minimal copy of this Agentic with only updater-required fields.
-
-        Calls :meth:`validate` first to ensure the instance is valid, then
-        returns a new Agentic with only the fields needed for an update
-        (qualified_name, name, and any type-specific additional fields).
-
-        Returns:
-            A new Agentic instance with only the minimum required fields.
-        """
-        self.validate()
-        return Agentic(qualified_name=self.qualified_name, name=self.name)
-
-    def relate(self) -> "RelatedAgentic":
-        """
-        Create a :class:`RelatedAgentic` reference from this instance.
-
-        Returns a lightweight reference suitable for use in relationship
-        attributes. Prefers ``guid`` if set, otherwise falls back to
-        ``qualified_name``.
-
-        Returns:
-            A RelatedAgentic reference to this asset.
-        """
-        if self.guid is not UNSET:
-            return RelatedAgentic(guid=self.guid)
-        return RelatedAgentic(qualified_name=self.qualified_name)
-
-    # =========================================================================
     # Optimized Serialization Methods (override Asset base class)
     # =========================================================================
 
@@ -332,6 +277,9 @@ class AgenticAttributes(AssetAttributes):
 
     agentic_version: Union[int, None, UnsetType] = UNSET
     """Version of this agentic asset as an epoch-millisecond timestamp. One Atlan entity per (slug, version) tuple."""
+
+    agentic_source: Union[str, None, UnsetType] = UNSET
+    """Product surface this agentic asset was created from, so agents and skills can be attributed to their originating surface without slug pattern matching (AUT-1074). Mirrors AtlanAppWorkflow.source, which does the same for workflows (AUT-1028)."""
 
     catalog_dataset_guid: Union[str, None, UnsetType] = UNSET
     """Unique identifier of the dataset this asset belongs to."""
@@ -505,6 +453,7 @@ def _populate_agentic_attrs(attrs: AgenticAttributes, obj: Agentic) -> None:
     """Populate Agentic-specific attributes on the attrs struct."""
     _populate_asset_attrs(attrs, obj)
     attrs.agentic_version = obj.agentic_version
+    attrs.agentic_source = obj.agentic_source
     attrs.catalog_dataset_guid = obj.catalog_dataset_guid
 
 
@@ -512,6 +461,7 @@ def _extract_agentic_attrs(attrs: AgenticAttributes) -> dict:
     """Extract all Agentic attributes from the attrs struct into a flat dict."""
     result = _extract_asset_attrs(attrs)
     result["agentic_version"] = attrs.agentic_version
+    result["agentic_source"] = attrs.agentic_source
     result["catalog_dataset_guid"] = attrs.catalog_dataset_guid
     return result
 
@@ -549,9 +499,6 @@ def _agentic_to_nested(agentic: Agentic) -> AgenticNested:
         is_incomplete=agentic.is_incomplete,
         provenance_type=agentic.provenance_type,
         home_id=agentic.home_id,
-        depth=agentic.depth,
-        immediate_upstream=agentic.immediate_upstream,
-        immediate_downstream=agentic.immediate_downstream,
         attributes=attrs,
         relationship_attributes=replace_rels,
         append_relationship_attributes=append_rels,
@@ -581,6 +528,7 @@ def _agentic_from_nested(nested: AgenticNested) -> Agentic:
         updated_by=nested.updated_by,
         classifications=nested.classifications,
         classification_names=nested.classification_names,
+        meanings=nested.meanings,
         labels=nested.labels,
         business_attributes=nested.business_attributes,
         custom_attributes=nested.custom_attributes,
@@ -589,9 +537,6 @@ def _agentic_from_nested(nested: AgenticNested) -> Agentic:
         is_incomplete=nested.is_incomplete,
         provenance_type=nested.provenance_type,
         home_id=nested.home_id,
-        depth=nested.depth,
-        immediate_upstream=nested.immediate_upstream,
-        immediate_downstream=nested.immediate_downstream,
         **_extract_agentic_attrs(attrs),
         # Merged relationship attributes
         **merged_rels,
@@ -619,6 +564,7 @@ from pyatlan.model.fields.atlan_fields import (  # noqa: E402
 )
 
 Agentic.AGENTIC_VERSION = NumericField("agenticVersion", "agenticVersion")
+Agentic.AGENTIC_SOURCE = KeywordField("agenticSource", "agenticSource")
 Agentic.CATALOG_DATASET_GUID = KeywordField("catalogDatasetGuid", "catalogDatasetGuid")
 Agentic.INPUT_TO_AIRFLOW_TASKS = RelationField("inputToAirflowTasks")
 Agentic.OUTPUT_FROM_AIRFLOW_TASKS = RelationField("outputFromAirflowTasks")

@@ -51,6 +51,9 @@ class RelatedAgent(RelatedAgentic):
     agent_mcp_servers: Union[str, None, UnsetType] = UNSET
     """JSON list of MCPServerConfig entries (name, url, headers, enabled)."""
 
+    agent_schedules: Union[str, None, UnsetType] = UNSET
+    """JSON-serialized agent schedule configuration, including kickoff message, cron expression, timezone, version policy, status, and Temporal schedule identifier."""
+
     agent_skill_names: Union[List[str], None, UnsetType] = UNSET
     """Denormalized list of names of the skills bound to this agent version."""
 
